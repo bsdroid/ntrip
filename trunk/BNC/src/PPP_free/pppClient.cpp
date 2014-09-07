@@ -43,10 +43,10 @@
 #include <sstream>
 
 #include "pppClient.h"
+#include "pppFilter.h"
 #include "pppOptions.h"
 #include "bncutils.h"
 #include "bncconst.h"
-#include "bncmodel.h"
 
 using namespace BNC_PPP;
 using namespace std;
@@ -65,11 +65,11 @@ t_pppClient* t_pppClient::instance() {
 ////////////////////////////////////////////////////////////////////////////
 t_pppClient::t_pppClient(const t_pppOptions* opt) : bncEphUser(false) {
 
-  _opt       = new t_pppOptions(*opt);
-  _model     = new bncModel(this);
-  _epoData   = new t_epoData();
-  _log       = new ostringstream();
-  _staID     = QByteArray(_opt->_roverName.c_str());
+  _opt     = new t_pppOptions(*opt);
+  _filter  = new t_pppFilter(this);
+  _epoData = new t_epoData();
+  _log     = new ostringstream();
+  _staID   = QByteArray(_opt->_roverName.c_str());
 
   CLIENTS.setLocalData(this);  // CLIENTS takes ownership over "this"
 }
@@ -77,7 +77,7 @@ t_pppClient::t_pppClient(const t_pppOptions* opt) : bncEphUser(false) {
 // Destructor
 ////////////////////////////////////////////////////////////////////////////
 t_pppClient::~t_pppClient() {
-  delete _model;
+  delete _filter;
   delete _epoData;
   delete _opt;
   delete _log;
@@ -146,12 +146,12 @@ void t_pppClient::processEpoch(const vector<t_satObs*>& satObs, t_output* output
 
   // Filter Solution
   // ---------------
-  if (_model->update(_epoData) == success) {
+  if (_filter->update(_epoData) == success) {
     output->_error = false;
-    output->_epoTime     = _model->time();
-    output->_xyzRover[0] = _model->x();
-    output->_xyzRover[1] = _model->y();
-    output->_xyzRover[2] = _model->z();
+    output->_epoTime     = _filter->time();
+    output->_xyzRover[0] = _filter->x();
+    output->_xyzRover[1] = _filter->y();
+    output->_xyzRover[2] = _filter->z();
     output->_numSat      = 0;
     output->_pDop        = 0.0;
   }

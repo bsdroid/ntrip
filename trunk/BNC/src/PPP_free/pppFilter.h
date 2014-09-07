@@ -22,8 +22,8 @@
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 
-#ifndef BNCMODEL_H
-#define BNCMODEL_H
+#ifndef PPPFILTER_H
+#define PPPFILTER_H
 
 #include <QtCore>
 #include <QtNetwork>
@@ -42,12 +42,12 @@ class t_epoData;
 class t_satData;
 class t_tides;
 
-class bncParam {
+class t_pppParam {
  public:
   enum parType {CRD_X, CRD_Y, CRD_Z, RECCLK, TROPO, AMB_L3, 
                 GLONASS_OFFSET, GALILEO_OFFSET};
-  bncParam(parType typeIn, int indexIn, const QString& prn);
-  ~bncParam();
+  t_pppParam(parType typeIn, int indexIn, const QString& prn);
+  ~t_pppParam();
   double partial(t_satData* satData, bool phase);
   bool isCrd() const {
     return (type == CRD_X || type == CRD_Y || type == CRD_Z);
@@ -60,10 +60,10 @@ class bncParam {
   QString  prn;
 };
 
-class bncModel {
+class t_pppFilter {
  public:
-  bncModel(t_pppClient* pppClient);
-  ~bncModel();
+  t_pppFilter(t_pppClient* pppClient);
+  ~t_pppFilter();
   t_irc update(t_epoData* epoData);
   bncTime time()  const {return _time;}
   double x()      const {return _params[0]->xx;}
@@ -72,8 +72,8 @@ class bncModel {
   double clk()    const {return _params[3]->xx;}
   double trp() const {
     for (int ii = 0; ii < _params.size(); ++ii) {
-      bncParam* pp = _params[ii];
-      if (pp->type == bncParam::TROPO) {
+      t_pppParam* pp = _params[ii];
+      if (pp->type == t_pppParam::TROPO) {
         return pp->xx;
       }
     }
@@ -81,8 +81,8 @@ class bncModel {
   }
   double Glonass_offset() const {
     for (int ii = 0; ii < _params.size(); ++ii) {
-      bncParam* pp = _params[ii];
-      if (pp->type == bncParam::GLONASS_OFFSET) {
+      t_pppParam* pp = _params[ii];
+      if (pp->type == t_pppParam::GLONASS_OFFSET) {
         return pp->xx;
       }
     }
@@ -90,8 +90,8 @@ class bncModel {
   }
   double Galileo_offset() const {
     for (int ii = 0; ii < _params.size(); ++ii) {
-      bncParam* pp = _params[ii];
-      if (pp->type == bncParam::GALILEO_OFFSET) {
+      t_pppParam* pp = _params[ii];
+      if (pp->type == t_pppParam::GALILEO_OFFSET) {
         return pp->xx;
       }
     }
@@ -151,9 +151,9 @@ class bncModel {
   bncTime               _time;
   bncTime               _lastTimeOK;
   QByteArray            _staID;
-  QVector<bncParam*>    _params;
+  QVector<t_pppParam*>  _params;
   SymmetricMatrix       _QQ;
-  QVector<bncParam*>    _params_sav;
+  QVector<t_pppParam*>  _params_sav;
   SymmetricMatrix       _QQ_sav;
   t_epoData*            _epoData_sav;
   ColumnVector          _xcBanc;

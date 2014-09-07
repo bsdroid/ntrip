@@ -26,7 +26,7 @@
  * BKG NTRIP Client
  * -------------------------------------------------------------------------
  *
- * Class:      bncParam, bncModel
+ * Class:      t_pppParam, t_pppFilter
  *
  * Purpose:    Model for PPP
  *
@@ -43,7 +43,7 @@
 #include <newmatio.h>
 #include <sstream>
 
-#include "bncmodel.h"
+#include "pppFilter.h"
 #include "pppClient.h"
 #include "bncutils.h"
 #include "bncantex.h"
@@ -62,7 +62,7 @@ const double   GLONASS_WEIGHT_FACTOR = 5.0;
 
 // Constructor
 ////////////////////////////////////////////////////////////////////////////
-bncParam::bncParam(bncParam::parType typeIn, int indexIn, 
+t_pppParam::t_pppParam(t_pppParam::parType typeIn, int indexIn, 
                    const QString& prnIn) {
   type      = typeIn;
   index     = indexIn;
@@ -74,14 +74,14 @@ bncParam::bncParam(bncParam::parType typeIn, int indexIn,
 
 // Destructor
 ////////////////////////////////////////////////////////////////////////////
-bncParam::~bncParam() {
+t_pppParam::~t_pppParam() {
 }
 
 // Partial
 ////////////////////////////////////////////////////////////////////////////
-double bncParam::partial(t_satData* satData, bool phase) {
+double t_pppParam::partial(t_satData* satData, bool phase) {
 
-  Tracer tracer("bncParam::partial");
+  Tracer tracer("t_pppParam::partial");
 
   // Coordinates
   // -----------
@@ -147,7 +147,7 @@ double bncParam::partial(t_satData* satData, bool phase) {
 
 // Constructor
 ////////////////////////////////////////////////////////////////////////////
-bncModel::bncModel(t_pppClient* pppClient) {
+t_pppFilter::t_pppFilter(t_pppClient* pppClient) {
 
   _pppClient = pppClient;
   _staID     = pppClient->staID();
@@ -174,7 +174,7 @@ bncModel::bncModel(t_pppClient* pppClient) {
 
 // Destructor
 ////////////////////////////////////////////////////////////////////////////
-bncModel::~bncModel() {
+t_pppFilter::~t_pppFilter() {
   delete _tides;
   for (int ii = 0; ii < _posAverage.size(); ++ii) { 
     delete _posAverage[ii]; 
@@ -191,14 +191,14 @@ bncModel::~bncModel() {
 
 // Reset Parameters and Variance-Covariance Matrix
 ////////////////////////////////////////////////////////////////////////////
-void bncModel::reset() {
+void t_pppFilter::reset() {
 
-  Tracer tracer("bncModel::reset");
+  Tracer tracer("t_pppFilter::reset");
 
   double lastTrp = 0.0;
   for (int ii = 0; ii < _params.size(); ii++) {
-    bncParam* pp = _params[ii];
-    if (pp->type == bncParam::TROPO) {
+    t_pppParam* pp = _params[ii];
+    if (pp->type == t_pppParam::TROPO) {
       lastTrp = pp->xx;
     }
     delete pp;
@@ -206,39 +206,39 @@ void bncModel::reset() {
   _params.clear();
 
   int nextPar = 0;
-  _params.push_back(new bncParam(bncParam::CRD_X,  ++nextPar, ""));
-  _params.push_back(new bncParam(bncParam::CRD_Y,  ++nextPar, ""));
-  _params.push_back(new bncParam(bncParam::CRD_Z,  ++nextPar, ""));
-  _params.push_back(new bncParam(bncParam::RECCLK, ++nextPar, ""));
+  _params.push_back(new t_pppParam(t_pppParam::CRD_X,  ++nextPar, ""));
+  _params.push_back(new t_pppParam(t_pppParam::CRD_Y,  ++nextPar, ""));
+  _params.push_back(new t_pppParam(t_pppParam::CRD_Z,  ++nextPar, ""));
+  _params.push_back(new t_pppParam(t_pppParam::RECCLK, ++nextPar, ""));
   if (_opt->estTrp()) {
-    _params.push_back(new bncParam(bncParam::TROPO, ++nextPar, ""));
+    _params.push_back(new t_pppParam(t_pppParam::TROPO, ++nextPar, ""));
   }
   if (_opt->useSystem('R')) {
-    _params.push_back(new bncParam(bncParam::GLONASS_OFFSET, ++nextPar, ""));
+    _params.push_back(new t_pppParam(t_pppParam::GLONASS_OFFSET, ++nextPar, ""));
   }
   if (_opt->useSystem('E')) {
-    _params.push_back(new bncParam(bncParam::GALILEO_OFFSET, ++nextPar, ""));
+    _params.push_back(new t_pppParam(t_pppParam::GALILEO_OFFSET, ++nextPar, ""));
   }
 
   _QQ.ReSize(_params.size()); 
   _QQ = 0.0;
   for (int iPar = 1; iPar <= _params.size(); iPar++) {
-    bncParam* pp = _params[iPar-1];
+    t_pppParam* pp = _params[iPar-1];
     pp->xx = 0.0;
     if      (pp->isCrd()) {
       _QQ(iPar,iPar) = _opt->_aprSigCrd(1) * _opt->_aprSigCrd(1); 
     }
-    else if (pp->type == bncParam::RECCLK) {
+    else if (pp->type == t_pppParam::RECCLK) {
       _QQ(iPar,iPar) = _opt->_noiseClk * _opt->_noiseClk; 
     }
-    else if (pp->type == bncParam::TROPO) {
+    else if (pp->type == t_pppParam::TROPO) {
       _QQ(iPar,iPar) = _opt->_aprSigTrp * _opt->_aprSigTrp; 
       pp->xx = lastTrp;
     }
-    else if (pp->type == bncParam::GLONASS_OFFSET) {
+    else if (pp->type == t_pppParam::GLONASS_OFFSET) {
       _QQ(iPar,iPar) = 1000.0 * 1000.0;
     }
-    else if (pp->type == bncParam::GALILEO_OFFSET) {
+    else if (pp->type == t_pppParam::GALILEO_OFFSET) {
       _QQ(iPar,iPar) = 1000.0 * 1000.0;
     }
   }
@@ -246,12 +246,12 @@ void bncModel::reset() {
 
 // Bancroft Solution
 ////////////////////////////////////////////////////////////////////////////
-t_irc bncModel::cmpBancroft(t_epoData* epoData) {
+t_irc t_pppFilter::cmpBancroft(t_epoData* epoData) {
 
-  Tracer tracer("bncModel::cmpBancroft");
+  Tracer tracer("t_pppFilter::cmpBancroft");
 
   if (epoData->sizeSys('G') < MINOBS) {
-    _log += "bncModel::cmpBancroft: not enough data\n";
+    _log += "t_pppFilter::cmpBancroft: not enough data\n";
     return failure;
   }
 
@@ -296,9 +296,9 @@ t_irc bncModel::cmpBancroft(t_epoData* epoData) {
 
 // Computed Value
 ////////////////////////////////////////////////////////////////////////////
-double bncModel::cmpValue(t_satData* satData, bool phase) {
+double t_pppFilter::cmpValue(t_satData* satData, bool phase) {
 
-  Tracer tracer("bncModel::cmpValue");
+  Tracer tracer("t_pppFilter::cmpValue");
 
   ColumnVector xRec(3);
   xRec(1) = x();
@@ -356,9 +356,9 @@ double bncModel::cmpValue(t_satData* satData, bool phase) {
 
 // Tropospheric Model (Saastamoinen)
 ////////////////////////////////////////////////////////////////////////////
-double bncModel::delay_saast(double Ele) {
+double t_pppFilter::delay_saast(double Ele) {
 
-  Tracer tracer("bncModel::delay_saast");
+  Tracer tracer("t_pppFilter::delay_saast");
 
   double xyz[3]; 
   xyz[0] = x();
@@ -397,9 +397,9 @@ double bncModel::delay_saast(double Ele) {
 
 // Prediction Step of the Filter
 ////////////////////////////////////////////////////////////////////////////
-void bncModel::predict(int iPhase, t_epoData* epoData) {
+void t_pppFilter::predict(int iPhase, t_epoData* epoData) {
 
-  Tracer tracer("bncModel::predict");
+  Tracer tracer("t_pppFilter::predict");
 
   if (iPhase == 0) {
 
@@ -422,11 +422,11 @@ void bncModel::predict(int iPhase, t_epoData* epoData) {
     // Predict Parameter values, add white noise
     // -----------------------------------------
     for (int iPar = 1; iPar <= _params.size(); iPar++) {
-      bncParam* pp = _params[iPar-1];
+      t_pppParam* pp = _params[iPar-1];
     
       // Coordinates
       // -----------
-      if      (pp->type == bncParam::CRD_X) {
+      if      (pp->type == t_pppParam::CRD_X) {
         if (firstCrd) {
           if (_opt->xyzAprRoverSet()) {
             pp->xx = _opt->_xyzAprRover[0];
@@ -437,7 +437,7 @@ void bncModel::predict(int iPhase, t_epoData* epoData) {
         }
         _QQ(iPar,iPar) += sigCrdP_used * sigCrdP_used;
       }
-      else if (pp->type == bncParam::CRD_Y) {
+      else if (pp->type == t_pppParam::CRD_Y) {
         if (firstCrd) {
           if (_opt->xyzAprRoverSet()) {
             pp->xx = _opt->_xyzAprRover[1];
@@ -448,7 +448,7 @@ void bncModel::predict(int iPhase, t_epoData* epoData) {
         }
         _QQ(iPar,iPar) += sigCrdP_used * sigCrdP_used;
       }
-      else if (pp->type == bncParam::CRD_Z) {
+      else if (pp->type == t_pppParam::CRD_Z) {
         if (firstCrd) {
           if (_opt->xyzAprRoverSet()) {
             pp->xx = _opt->_xyzAprRover[2];
@@ -462,7 +462,7 @@ void bncModel::predict(int iPhase, t_epoData* epoData) {
     
       // Receiver Clocks
       // ---------------
-      else if (pp->type == bncParam::RECCLK) {
+      else if (pp->type == t_pppParam::RECCLK) {
         pp->xx = _xcBanc(4);
         for (int jj = 1; jj <= _params.size(); jj++) {
           _QQ(iPar, jj) = 0.0;
@@ -472,13 +472,13 @@ void bncModel::predict(int iPhase, t_epoData* epoData) {
     
       // Tropospheric Delay
       // ------------------
-      else if (pp->type == bncParam::TROPO) {
+      else if (pp->type == t_pppParam::TROPO) {
         _QQ(iPar,iPar) += _opt->_noiseTrp * _opt->_noiseTrp;
       }
     
       // Glonass Offset
       // --------------
-      else if (pp->type == bncParam::GLONASS_OFFSET) {
+      else if (pp->type == t_pppParam::GLONASS_OFFSET) {
         pp->xx = 0.0;
         for (int jj = 1; jj <= _params.size(); jj++) {
           _QQ(iPar, jj) = 0.0;
@@ -488,7 +488,7 @@ void bncModel::predict(int iPhase, t_epoData* epoData) {
 
       // Galileo Offset
       // --------------
-      else if (pp->type == bncParam::GALILEO_OFFSET) {
+      else if (pp->type == t_pppParam::GALILEO_OFFSET) {
         _QQ(iPar,iPar) += 0.1 * 0.1;
       }
     }
@@ -510,11 +510,11 @@ void bncModel::predict(int iPhase, t_epoData* epoData) {
     // Remove Ambiguity Parameters without observations
     // ------------------------------------------------
     int iPar = 0;
-    QMutableVectorIterator<bncParam*> im(_params);
+    QMutableVectorIterator<t_pppParam*> im(_params);
     while (im.hasNext()) {
-      bncParam* par = im.next();
+      t_pppParam* par = im.next();
       bool removed = false;
-      if (par->type == bncParam::AMB_L3) {
+      if (par->type == t_pppParam::AMB_L3) {
         if (epoData->satData.find(par->prn) == epoData->satData.end()) {
           removed = true;
           delete par;
@@ -539,11 +539,11 @@ void bncModel::predict(int iPhase, t_epoData* epoData) {
     int nPar = _params.size();
     _QQ.ReSize(nPar); _QQ = 0.0;
     for (int i1 = 1; i1 <= nPar; i1++) {
-      bncParam* p1 = _params[i1-1];
+      t_pppParam* p1 = _params[i1-1];
       if (p1->index_old != 0) {
         _QQ(p1->index, p1->index) = QQ_old(p1->index_old, p1->index_old);
         for (int i2 = 1; i2 <= nPar; i2++) {
-          bncParam* p2 = _params[i2-1];
+          t_pppParam* p2 = _params[i2-1];
           if (p2->index_old != 0) {
             _QQ(p1->index, p2->index) = QQ_old(p1->index_old, p2->index_old);
           }
@@ -552,7 +552,7 @@ void bncModel::predict(int iPhase, t_epoData* epoData) {
     }
     
     for (int ii = 1; ii <= nPar; ii++) {
-      bncParam* par = _params[ii-1];
+      t_pppParam* par = _params[ii-1];
       if (par->index_old == 0) {
         _QQ(par->index, par->index) = _opt->_aprSigAmb * _opt->_aprSigAmb;
       }
@@ -563,9 +563,9 @@ void bncModel::predict(int iPhase, t_epoData* epoData) {
 
 // Update Step of the Filter (currently just a single-epoch solution)
 ////////////////////////////////////////////////////////////////////////////
-t_irc bncModel::update(t_epoData* epoData) {
+t_irc t_pppFilter::update(t_epoData* epoData) {
 
-  Tracer tracer("bncModel::update");
+  Tracer tracer("t_pppFilter::update");
 
   _log.clear();  
 
@@ -598,16 +598,16 @@ t_irc bncModel::update(t_epoData* epoData) {
   // -------------------
   ostringstream strB;
   strB.setf(ios::fixed);
-  QVectorIterator<bncParam*> itPar(_params);
+  QVectorIterator<t_pppParam*> itPar(_params);
   while (itPar.hasNext()) {
-    bncParam* par = itPar.next();
+    t_pppParam* par = itPar.next();
 
-    if      (par->type == bncParam::RECCLK) {
+    if      (par->type == t_pppParam::RECCLK) {
       strB << "\n    clk     = " << setw(10) << setprecision(3) << par->xx 
            << " +- " << setw(6) << setprecision(3) 
            << sqrt(_QQ(par->index,par->index));
     }
-    else if (par->type == bncParam::AMB_L3) {
+    else if (par->type == t_pppParam::AMB_L3) {
       ++par->numEpo;
       strB << "\n    amb " << par->prn.toAscii().data() << " = "
            << setw(10) << setprecision(3) << par->xx 
@@ -615,7 +615,7 @@ t_irc bncModel::update(t_epoData* epoData) {
            << sqrt(_QQ(par->index,par->index))
            << "   nEpo = " << par->numEpo;
     }
-    else if (par->type == bncParam::TROPO) {
+    else if (par->type == t_pppParam::TROPO) {
       double aprTrp = delay_saast(M_PI/2.0);
       strB << "\n    trp     = " << par->prn.toAscii().data()
            << setw(7) << setprecision(3) << aprTrp << " "
@@ -624,12 +624,12 @@ t_irc bncModel::update(t_epoData* epoData) {
            << sqrt(_QQ(par->index,par->index));
       newPos->xnt[6] = aprTrp + par->xx;
     }
-    else if (par->type == bncParam::GLONASS_OFFSET) {
+    else if (par->type == t_pppParam::GLONASS_OFFSET) {
       strB << "\n    offGlo  = " << setw(10) << setprecision(3) << par->xx 
            << " +- " << setw(6) << setprecision(3) 
            << sqrt(_QQ(par->index,par->index));
     }
-    else if (par->type == bncParam::GALILEO_OFFSET) {
+    else if (par->type == t_pppParam::GALILEO_OFFSET) {
       strB << "\n    offGal  = " << setw(10) << setprecision(3) << par->xx 
            << " +- " << setw(6) << setprecision(3) 
            << sqrt(_QQ(par->index,par->index));
@@ -680,10 +680,10 @@ t_irc bncModel::update(t_epoData* epoData) {
 
 // Outlier Detection
 ////////////////////////////////////////////////////////////////////////////
-QString bncModel::outlierDetection(int iPhase, const ColumnVector& vv,
+QString t_pppFilter::outlierDetection(int iPhase, const ColumnVector& vv,
                                    QMap<QString, t_satData*>& satData) {
 
-  Tracer tracer("bncModel::outlierDetection");
+  Tracer tracer("t_pppFilter::outlierDetection");
 
   QString prnGPS;
   QString prnGlo;
@@ -714,11 +714,11 @@ QString bncModel::outlierDetection(int iPhase, const ColumnVector& vv,
 
 //
 //////////////////////////////////////////////////////////////////////////////
-void bncModel::kalman(const Matrix& AA, const ColumnVector& ll, 
+void t_pppFilter::kalman(const Matrix& AA, const ColumnVector& ll, 
                       const DiagonalMatrix& PP, 
                       SymmetricMatrix& QQ, ColumnVector& dx) {
 
-  Tracer tracer("bncModel::kalman");
+  Tracer tracer("t_pppFilter::kalman");
 
   int nPar = AA.Ncols();
   int nObs = AA.Nrows();
@@ -751,10 +751,10 @@ void bncModel::kalman(const Matrix& AA, const ColumnVector& ll,
 
 // Phase Wind-Up Correction
 ///////////////////////////////////////////////////////////////////////////
-double bncModel::windUp(const QString& prn, const ColumnVector& rSat,
+double t_pppFilter::windUp(const QString& prn, const ColumnVector& rSat,
                         const ColumnVector& rRec) {
 
-  Tracer tracer("bncModel::windUp");
+  Tracer tracer("t_pppFilter::windUp");
 
   double Mjd = _time.mjd() + _time.daysec() / 86400.0;
 
@@ -834,8 +834,8 @@ double bncModel::windUp(const QString& prn, const ColumnVector& rSat,
 
 // 
 ///////////////////////////////////////////////////////////////////////////
-void bncModel::cmpEle(t_satData* satData) {
-  Tracer tracer("bncModel::cmpEle");
+void t_pppFilter::cmpEle(t_satData* satData) {
+  Tracer tracer("t_pppFilter::cmpEle");
   ColumnVector rr = satData->xx - _xcBanc.Rows(1,3);
   double       rho = rr.norm_Frobenius();
 
@@ -851,18 +851,18 @@ void bncModel::cmpEle(t_satData* satData) {
 
 // 
 ///////////////////////////////////////////////////////////////////////////
-void bncModel::addAmb(t_satData* satData) {
-  Tracer tracer("bncModel::addAmb");
+void t_pppFilter::addAmb(t_satData* satData) {
+  Tracer tracer("t_pppFilter::addAmb");
   bool    found = false;
   for (int iPar = 1; iPar <= _params.size(); iPar++) {
-    if (_params[iPar-1]->type == bncParam::AMB_L3 && 
+    if (_params[iPar-1]->type == t_pppParam::AMB_L3 && 
         _params[iPar-1]->prn == satData->prn) {
       found = true;
       break;
     }
   }
   if (!found) {
-    bncParam* par = new bncParam(bncParam::AMB_L3, 
+    t_pppParam* par = new t_pppParam(t_pppParam::AMB_L3, 
                                  _params.size()+1, satData->prn);
     _params.push_back(par);
     par->xx = satData->L3 - cmpValue(satData, true);
@@ -871,10 +871,10 @@ void bncModel::addAmb(t_satData* satData) {
 
 // 
 ///////////////////////////////////////////////////////////////////////////
-void bncModel::addObs(int iPhase, unsigned& iObs, t_satData* satData,
+void t_pppFilter::addObs(int iPhase, unsigned& iObs, t_satData* satData,
                       Matrix& AA, ColumnVector& ll, DiagonalMatrix& PP) {
 
-  Tracer tracer("bncModel::addObs");
+  Tracer tracer("t_pppFilter::addObs");
 
   const double ELEWGHT = 20.0;
   double ellWgtCoef = 1.0;
@@ -898,7 +898,7 @@ void bncModel::addObs(int iPhase, unsigned& iObs, t_satData* satData,
     }
     PP(iObs,iObs) = 1.0 / (sigL3 * sigL3) / (ellWgtCoef * ellWgtCoef);
     for (int iPar = 1; iPar <= _params.size(); iPar++) {
-      if (_params[iPar-1]->type == bncParam::AMB_L3 &&
+      if (_params[iPar-1]->type == t_pppParam::AMB_L3 &&
           _params[iPar-1]->prn  == satData->prn) {
         ll(iObs) -= _params[iPar-1]->xx;
       } 
@@ -920,10 +920,10 @@ void bncModel::addObs(int iPhase, unsigned& iObs, t_satData* satData,
 
 // 
 ///////////////////////////////////////////////////////////////////////////
-QByteArray bncModel::printRes(int iPhase, const ColumnVector& vv, 
+QByteArray t_pppFilter::printRes(int iPhase, const ColumnVector& vv, 
                               const QMap<QString, t_satData*>& satDataMap) {
 
-  Tracer tracer("bncModel::printRes");
+  Tracer tracer("t_pppFilter::printRes");
 
   ostringstream str;
   str.setf(ios::fixed);
@@ -945,12 +945,12 @@ QByteArray bncModel::printRes(int iPhase, const ColumnVector& vv,
 
 // 
 ///////////////////////////////////////////////////////////////////////////
-void bncModel::findMaxRes(const ColumnVector& vv,
+void t_pppFilter::findMaxRes(const ColumnVector& vv,
                           const QMap<QString, t_satData*>& satData,
                           QString& prnGPS, QString& prnGlo, 
                           double& maxResGPS, double& maxResGlo) { 
 
-  Tracer tracer("bncModel::findMaxRes");
+  Tracer tracer("t_pppFilter::findMaxRes");
 
   maxResGPS  = 0.0;
   maxResGlo  = 0.0;
@@ -979,9 +979,9 @@ void bncModel::findMaxRes(const ColumnVector& vv,
  
 // Update Step (private - loop over outliers)
 ////////////////////////////////////////////////////////////////////////////
-t_irc bncModel::update_p(t_epoData* epoData) {
+t_irc t_pppFilter::update_p(t_epoData* epoData) {
 
-  Tracer tracer("bncModel::update_p");
+  Tracer tracer("t_pppFilter::update_p");
 
   // Save Variance-Covariance Matrix, and Status Vector
   // --------------------------------------------------
@@ -1064,9 +1064,9 @@ t_irc bncModel::update_p(t_epoData* epoData) {
       // -------------------
       if (lastOutlierPrn.isEmpty()) {
 
-        QVectorIterator<bncParam*> itPar(_params);
+        QVectorIterator<t_pppParam*> itPar(_params);
         while (itPar.hasNext()) {
-          bncParam* par = itPar.next();
+          t_pppParam* par = itPar.next();
           par->xx += dx(par->index);
         }
 
@@ -1107,21 +1107,21 @@ t_irc bncModel::update_p(t_epoData* epoData) {
 
 // Remeber Original State Vector and Variance-Covariance Matrix
 ////////////////////////////////////////////////////////////////////////////
-void bncModel::rememberState(t_epoData* epoData) {
+void t_pppFilter::rememberState(t_epoData* epoData) {
 
   _QQ_sav = _QQ;
 
-  QVectorIterator<bncParam*> itSav(_params_sav);
+  QVectorIterator<t_pppParam*> itSav(_params_sav);
   while (itSav.hasNext()) {
-    bncParam* par = itSav.next();
+    t_pppParam* par = itSav.next();
     delete par;
   }
   _params_sav.clear();
 
-  QVectorIterator<bncParam*> it(_params);
+  QVectorIterator<t_pppParam*> it(_params);
   while (it.hasNext()) {
-    bncParam* par = it.next();
-    _params_sav.push_back(new bncParam(*par));
+    t_pppParam* par = it.next();
+    _params_sav.push_back(new t_pppParam(*par));
   }
 
   _epoData_sav->deepCopy(epoData);
@@ -1129,21 +1129,21 @@ void bncModel::rememberState(t_epoData* epoData) {
 
 // Restore Original State Vector and Variance-Covariance Matrix
 ////////////////////////////////////////////////////////////////////////////
-void bncModel::restoreState(t_epoData* epoData) {
+void t_pppFilter::restoreState(t_epoData* epoData) {
 
   _QQ = _QQ_sav;
 
-  QVectorIterator<bncParam*> it(_params);
+  QVectorIterator<t_pppParam*> it(_params);
   while (it.hasNext()) {
-    bncParam* par = it.next();
+    t_pppParam* par = it.next();
     delete par;
   }
   _params.clear();
 
-  QVectorIterator<bncParam*> itSav(_params_sav);
+  QVectorIterator<t_pppParam*> itSav(_params_sav);
   while (itSav.hasNext()) {
-    bncParam* par = itSav.next();
-    _params.push_back(new bncParam(*par));
+    t_pppParam* par = itSav.next();
+    _params.push_back(new t_pppParam(*par));
   }
 
   epoData->deepCopy(_epoData_sav);
@@ -1151,7 +1151,7 @@ void bncModel::restoreState(t_epoData* epoData) {
 
 // 
 ////////////////////////////////////////////////////////////////////////////
-t_irc bncModel::selectSatellites(const QString& lastOutlierPrn, 
+t_irc t_pppFilter::selectSatellites(const QString& lastOutlierPrn, 
                                  QMap<QString, t_satData*>& satData) {
 
   // First Call 
@@ -1208,7 +1208,7 @@ double lorentz(const ColumnVector& aa, const ColumnVector& bb) {
 
 // 
 ////////////////////////////////////////////////////////////////////////////
-void bncModel::bancroft(const Matrix& BBpass, ColumnVector& pos) {
+void t_pppFilter::bancroft(const Matrix& BBpass, ColumnVector& pos) {
 
   if (pos.Nrows() != 4) {
     pos.ReSize(4);

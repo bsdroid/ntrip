@@ -22,15 +22,15 @@
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 
-#ifndef BNCPPPCLIENT_H
-#define BNCPPPCLIENT_H
+#ifndef PPPCLIENT_H
+#define PPPCLIENT_H
 
 #include <vector>
 #include "bncephuser.h"
 
 namespace BNC_PPP {
   
-class bncModel;
+class t_pppFilter;
 class t_pppOptions;
 class t_satObs;
 class t_satData;
@@ -62,7 +62,7 @@ class t_pppClient : public bncEphUser {
   t_pppOptions*       _opt;
   QByteArray          _staID;
   t_epoData*          _epoData;
-  bncModel*           _model;
+  t_pppFilter*        _filter;
   std::ostringstream* _log; 
 };
 
