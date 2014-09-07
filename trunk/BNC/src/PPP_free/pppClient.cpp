@@ -228,12 +228,38 @@ void t_pppClient::putNewObs(t_satData* satData) {
 ////////////////////////////////////////////////////////////////////////////
 void t_pppClient::putOrbCorrections(const std::vector<t_orbCorr*>& corr) {
   QMutexLocker locker(&_mutex);
+  for (unsigned ii = 0; ii < corr.size(); ii++) {
+    QString prn = QString(corr[ii]->_prn.toString().c_str());
+    if (_eph.contains(prn)) {
+      t_eph* eLast = _eph.value(prn)->last;
+      t_eph* ePrev = _eph.value(prn)->prev;
+      if      (eLast && eLast->IOD() == corr[ii]->_iod) {
+        eLast->setOrbCorr(corr[ii]);
+      }
+      else if (ePrev && ePrev->IOD() == corr[ii]->_iod) {
+        ePrev->setOrbCorr(corr[ii]);
+      }
+    }
+  }
 }
 
 // 
 ////////////////////////////////////////////////////////////////////////////
 void t_pppClient::putClkCorrections(const std::vector<t_clkCorr*>& corr) {
   QMutexLocker locker(&_mutex);
+  for (unsigned ii = 0; ii < corr.size(); ii++) {
+    QString prn = QString(corr[ii]->_prn.toString().c_str());
+    if (_eph.contains(prn)) {
+      t_eph* eLast = _eph.value(prn)->last;
+      t_eph* ePrev = _eph.value(prn)->prev;
+      if      (eLast && eLast->IOD() == corr[ii]->_iod) {
+        eLast->setClkCorr(corr[ii]);
+      }
+      else if (ePrev && ePrev->IOD() == corr[ii]->_iod) {
+        ePrev->setClkCorr(corr[ii]);
+      }
+    }
+  }
 }
 
 // 
