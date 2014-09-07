@@ -174,8 +174,14 @@ void t_pppClient::putNewObs(t_satData* satData) {
 
       int channel = 0;
       if (satData->system() == 'R') {
-//        cerr << "not yet implemented" << endl;
-//        exit(0);
+        if (_eph.contains(satData->prn)) {
+          t_eph* eLast =_eph.value(satData->prn)->last;
+          channel = eLast->slotNum();
+        }
+        else {
+          delete satData;
+          return;
+        }
       }
 
       t_frequency::type fType1 = t_lc::toFreq(satData->system(), t_lc::l1);
