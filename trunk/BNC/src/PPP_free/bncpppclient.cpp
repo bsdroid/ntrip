@@ -143,19 +143,17 @@ void bncPPPclient::processEpoch(const vector<t_satObs*>& satObs, t_output* outpu
   // ---------------
   if (_model->update(_epoData) == success) {
     output->_error = false;
+    output->_epoTime     = _model->time();
+    output->_xyzRover[0] = _model->x();
+    output->_xyzRover[1] = _model->y();
+    output->_xyzRover[2] = _model->z();
+    output->_numSat      = 0;
+    output->_pDop        = 0.0;
   }
   else {
     output->_error = true;
   }
 
-  // Set Output
-  // ----------
-  output->_epoTime     = _model->time();
-  output->_xyzRover[0] = _model->x();
-  output->_xyzRover[1] = _model->y();
-  output->_xyzRover[2] = _model->z();
-  output->_numSat      = 0;
-  output->_pDop        = 0.0;
   output->_log         = LOG.str();  
 }
 
@@ -171,8 +169,8 @@ void bncPPPclient::putNewObs(t_satData* satData) {
 
       int channel = 0;
       if (satData->system() == 'R') {
-        cerr << "not yet implemented" << endl;
-        exit(0);
+//        cerr << "not yet implemented" << endl;
+//        exit(0);
       }
 
       t_frequency::type fType1 = t_lc::toFreq(satData->system(), t_lc::l1);
