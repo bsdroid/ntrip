@@ -146,7 +146,11 @@ void bncPPPclient::processEpoch(const vector<t_satObs*>& satObs, t_output* outpu
   // Filter Solution
   // ---------------
   if (_model->update(_epoData) == success) {
-    ///    emit newPosition(_model->time(), _model->x(), _model->y(), _model->z());
+    output->_error       = false;
+    output->_epoTime     = _model->time();
+    output->_xyzRover[0] = _model->x();
+    output->_xyzRover[1] = _model->y();
+    output->_xyzRover[2] = _model->z();
   }
   else {
     output->_error = true;
