@@ -127,7 +127,7 @@ void t_pppClient::processEpoch(const vector<t_satObs*>& satObs, t_output* output
     const t_satObs* obs     = satObs[ii]; 
     t_satData*      satData = new t_satData();
     satData->tt       = obs->_time;
-    satData->prn      = obs->_prn;
+    satData->prn      = QString(obs->_prn.toString().c_str());
     satData->slipFlag = false;
     satData->P1       = 0.0;
     satData->P2       = 0.0;

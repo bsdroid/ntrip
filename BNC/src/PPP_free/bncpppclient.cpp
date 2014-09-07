@@ -83,46 +83,8 @@ bncPPPclient::~bncPPPclient() {
 
 //
 ////////////////////////////////////////////////////////////////////////////
-void bncPPPclient::putNewObs(const t_obs& obs, t_output* output) {
+void bncPPPclient::putNewObs(t_satData* satData, t_output* output) {
   QMutexLocker locker(&_mutex);
-
-  if      (obs.satSys == 'R') {
-    if (!_opt->useSystem('R')) return;
-  }
-  else if (obs.satSys == 'E') {
-    if (!_opt->useSystem('E')) return;
-  }
-  else if (obs.satSys != 'G') {
-    return;
-  }
-
-  t_satData* satData = new t_satData();
-  satData->tt = bncTime(obs.GPSWeek, obs.GPSWeeks);
-
-  // Satellite Number
-  // ----------------
-  satData->prn = QString("%1%2").arg(obs.satSys).arg(obs.satNum,2,10,QChar('0'));
-
-  // Check Slips
-  // -----------
-  slipInfo& sInfo  = _slips[satData->prn];
-  if ( sInfo.slipCntL1 == obs.slip_cnt_L1  &&
-       sInfo.slipCntL2 == obs.slip_cnt_L2  &&
-       sInfo.slipCntL5 == obs.slip_cnt_L5 ) {
-    satData->slipFlag = false;
-  }
-  else {
-    satData->slipFlag = true;
-  }
-  sInfo.slipCntL1 = obs.slip_cnt_L1;
-  sInfo.slipCntL2 = obs.slip_cnt_L2;
-
-  // Handle Code Biases
-  // ------------------
-  t_bias* bb = 0;
-  if (_bias.contains(satData->prn)) {
-    bb = _bias.value(satData->prn); 
-  }
 
   // Add new epoch, process the older ones
   // -------------------------------------
@@ -138,62 +100,22 @@ void bncPPPclient::putNewObs(const t_obs& obs, t_output* output) {
 
   // Set Observations GPS and Glonass
   // --------------------------------
-  if      (obs.satSys == 'G' || obs.satSys == 'R') {
-    const QByteArray preferredTypes("WPC");
-    for (int ii = preferredTypes.length()-1; ii >= 0; ii--) {
-      for (int iPhase = 0; iPhase <= 1; iPhase++) {
-        for (int iFreq = 1; iFreq <= 2; iFreq++) {
-
-          char rnxStr[4]; rnxStr[3] = '\0';
-          double* p_value = 0;
-          if      (iPhase == 0 && iFreq == 1) {
-            rnxStr[0] = 'C';
-            rnxStr[1] = '1';
-            p_value = &satData->P1;
-          }
-          else if (iPhase == 0 && iFreq == 2) {
-            rnxStr[0] = 'C';
-            rnxStr[1] = '2';
-            p_value = &satData->P2;
-          }
-          else if (iPhase == 1 && iFreq == 1) {
-            rnxStr[0] = 'L';
-            rnxStr[1] = '1';
-            p_value = &satData->L1;
-          }
-          else if (iPhase == 1 && iFreq == 2) {
-            rnxStr[0] = 'L';
-            rnxStr[1] = '2';
-            p_value = &satData->L2;
-          }
-
-          rnxStr[2] = preferredTypes[ii];
-
-          double measdata = obs.measdata(rnxStr, 3.0);
-          if (measdata != 0.0) {
-            *p_value = measdata;
-            if (rnxStr[0] == 'C' && bb) {
-              char biasStr[3];
-              biasStr[0] = rnxStr[1];
-              biasStr[1] = rnxStr[2];
-              biasStr[2] = '\0';
-              *p_value += bb->value(biasStr);
-            }
-          }
-        }
-      }
-    }
-
+  if      (satData->system() == 'G' || satData->system() == 'R') {
     if (satData->P1 != 0.0 && satData->P2 != 0.0 && 
         satData->L1 != 0.0 && satData->L2 != 0.0 ) {
-      t_frequency::type fType1 = t_lc::toFreq(obs.satSys,t_lc::l1);
-      t_frequency::type fType2 = t_lc::toFreq(obs.satSys,t_lc::l2);
-      double f1 = t_CST::freq(fType1, obs.slotNum);
-      double f2 = t_CST::freq(fType2, obs.slotNum);
+
+      int channel = 0;
+      if (satData->system() == 'R') {
+        cerr << "not yet implemented" << endl;
+        exit(0);
+      }
+
+      t_frequency::type fType1 = t_lc::toFreq(satData->system(), t_lc::l1);
+      t_frequency::type fType2 = t_lc::toFreq(satData->system(), t_lc::l2);
+      double f1 = t_CST::freq(fType1, channel);
+      double f2 = t_CST::freq(fType2, channel);
       double a1 =   f1 * f1 / (f1 * f1 - f2 * f2);
       double a2 = - f2 * f2 / (f1 * f1 - f2 * f2);
-      satData->L1      = satData->L1 * t_CST::c / f1;
-      satData->L2      = satData->L2 * t_CST::c / f2;
       satData->P3      = a1 * satData->P1 + a2 * satData->P2;
       satData->L3      = a1 * satData->L1 + a2 * satData->L2;
       satData->lambda3 = a1 * t_CST::c / f1 + a2 * t_CST::c / f2;
@@ -206,19 +128,13 @@ void bncPPPclient::putNewObs(const t_obs& obs, t_output* output) {
 
   // Set Observations Galileo
   // ------------------------
-  else if (obs.satSys == 'E') {
-    satData->P1 = obs.measdata("C1", 3.0);
-    satData->L1 = obs.measdata("L1", 3.0);
-    satData->P5 = obs.measdata("C5", 3.0);
-    satData->L5 = obs.measdata("L5", 3.0);
+  else if (satData->system() == 'E') {
     if (satData->P1 != 0.0 && satData->P5 != 0.0 && 
         satData->L1 != 0.0 && satData->L5 != 0.0 ) {
       double f1 = t_CST::freq(t_frequency::E1, 0);
       double f5 = t_CST::freq(t_frequency::E5, 0);
       double a1 =   f1 * f1 / (f1 * f1 - f5 * f5);
       double a5 = - f5 * f5 / (f1 * f1 - f5 * f5);
-      satData->L1      = satData->L1 * t_CST::c / f1;
-      satData->L5      = satData->L5 * t_CST::c / f5;
       satData->P3      = a1 * satData->P1 + a5 * satData->P5;
       satData->L3      = a1 * satData->L1 + a5 * satData->L5;
       satData->lambda3 = a1 * t_CST::c / f1 + a5 * t_CST::c / f5;
