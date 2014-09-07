@@ -896,7 +896,7 @@ void bncModel::addObs(int iPhase, unsigned& iObs, t_satData* satData,
   // ------------------
   if (iPhase == 1) {
     ll(iObs)      = satData->L3 - cmpValue(satData, true);
-    double sigL3 = _opt->sigL3;
+    double sigL3 = 2.98 * _opt->_sigmaL1;
     if (satData->system() == 'R') {
       sigL3 *= GLONASS_WEIGHT_FACTOR;
     }
@@ -913,8 +913,9 @@ void bncModel::addObs(int iPhase, unsigned& iObs, t_satData* satData,
   // Code Observations
   // -----------------
   else {
+    double sigP3 = 2.98 * _opt->_sigmaC1;
     ll(iObs)      = satData->P3 - cmpValue(satData, false);
-    PP(iObs,iObs) = 1.0 / (_opt->sigP3 * _opt->sigP3) / (ellWgtCoef * ellWgtCoef);
+    PP(iObs,iObs) = 1.0 / (sigP3 * sigP3) / (ellWgtCoef * ellWgtCoef);
     for (int iPar = 1; iPar <= _params.size(); iPar++) {
       AA(iObs, iPar) = _params[iPar-1]->partial(satData, false);
     }
