@@ -117,5 +117,15 @@ void t_pppClient::putBiases(const vector<t_satBias*>& biases) {
 // 
 //////////////////////////////////////////////////////////////////////////////
 void t_pppClient::processEpoch(const vector<t_satObs*>& satObs, t_output* output) {
+  output->_numSat = 0;
+  output->_pDop   = 0.0;
+  output->_error  = false;
+  output->_log.clear();
+
+  for (unsigned ii = 0; ii < satObs.size(); ii++) {
+    t_obs pp;
+    _client->putNewObs(pp, output);
+  }
+  output->_log = _log->str();  
 }
 
