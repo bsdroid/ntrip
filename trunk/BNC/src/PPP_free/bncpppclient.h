@@ -27,10 +27,13 @@
 
 #include <queue>
 #include "bncephuser.h"
-#include "RTCM/GPSDecoder.h"
+#include "GPSDecoder.h"
 
+
+namespace BNC_PPP {
+  
 class bncModel;
-class t_pppOpt;
+class t_pppOptions;
 
 class t_satData {
  public:
@@ -116,13 +119,13 @@ class bncPPPclient : public bncEphUser {
  Q_OBJECT
 
  public:
-  bncPPPclient(QByteArray staID, t_pppOpt* opt = 0, bool connectSlots = true);
+  bncPPPclient(QByteArray staID, t_pppOptions* opt = 0, bool connectSlots = true);
   ~bncPPPclient();
   void putNewObs(const t_obs& pp);
   static t_irc applyCorr(const bncTime& tt, const t_corr* cc, ColumnVector& xc, 
                          ColumnVector& vv);
   QByteArray staID() const {return _staID;}
-  const t_pppOpt* opt() const {return _opt;}
+  const t_pppOptions* opt() const {return _opt;}
   void emitNewMessage(QByteArray msg, bool showOnScreen) {
     emit newMessage(msg, showOnScreen);
   }
@@ -159,7 +162,7 @@ class bncPPPclient : public bncEphUser {
   void processFrontEpoch();
   t_irc cmpToT(t_satData* satData);
 
-  t_pppOpt*               _opt;
+  t_pppOptions*           _opt;
   bool                    _optOwner;
   QByteArray              _staID;
   QMap<QString, t_corr*>  _corr;
@@ -169,5 +172,7 @@ class bncPPPclient : public bncEphUser {
   bncModel*               _model;
   QMap<QString, slipInfo> _slips;
 };
+
+}
 
 #endif

@@ -53,6 +53,7 @@
 #include "bncantex.h"
 #include "pppopt.h"
 
+using namespace BNC_PPP;
 using namespace std;
 
 const unsigned MINOBS                = 5;
