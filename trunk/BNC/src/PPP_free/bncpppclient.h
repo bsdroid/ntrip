@@ -34,6 +34,47 @@ namespace BNC_PPP {
   
 class bncModel;
 class t_pppOptions;
+class t_satData;
+class t_epoData;
+
+class bncPPPclient : public bncEphUser {
+ public:
+  bncPPPclient(QByteArray staID, t_pppOptions* opt);
+  ~bncPPPclient();
+  void                putNewObs(const t_obs& pp);
+  void                putNewCorrections(QList<QString> corrList);
+  QByteArray          staID() const {return _staID;}
+  const t_pppOptions* opt() const {return _opt;}
+
+ private:
+  class slipInfo {
+   public:
+    slipInfo() {
+      slipCntL1 = -1;
+      slipCntL2 = -1;
+      slipCntL5 = -1;
+    }
+    ~slipInfo(){}
+    int slipCntL1;
+    int slipCntL2;
+    int slipCntL5;
+  };
+
+  t_irc getSatPos(const bncTime& tt, const QString& prn, ColumnVector& xc, ColumnVector& vv);
+  void processEpochs();
+  void processFrontEpoch();
+  t_irc cmpToT(t_satData* satData);
+  static t_irc applyCorr(const bncTime& tt, const t_corr* cc, ColumnVector& xc, ColumnVector& vv);
+
+  const t_pppOptions*     _opt;
+  QByteArray              _staID;
+  QMap<QString, t_corr*>  _corr;
+  bncTime                 _corr_tt;
+  QMap<QString, t_bias*>  _bias;
+  std::queue<t_epoData*>  _epoData;
+  bncModel*               _model;
+  QMap<QString, slipInfo> _slips;
+};
 
 class t_satData {
  public:
@@ -113,49 +154,6 @@ class t_epoData {
 
   bncTime                   tt;
   QMap<QString, t_satData*> satData;
-};
-
-class bncPPPclient : public bncEphUser {
- public:
-  bncPPPclient(QByteArray staID, t_pppOptions* opt);
-  ~bncPPPclient();
-  void                putNewObs(const t_obs& pp);
-  void                putNewCorrections(QList<QString> corrList);
-
-  QByteArray          staID() const {return _staID;}
-  const t_pppOptions* opt() const {return _opt;}
-
-  static t_irc applyCorr(const bncTime& tt, const t_corr* cc, ColumnVector& xc, ColumnVector& vv);
-
-
- private:
-  class slipInfo {
-   public:
-    slipInfo() {
-      slipCntL1 = -1;
-      slipCntL2 = -1;
-      slipCntL5 = -1;
-    }
-    ~slipInfo(){}
-    int slipCntL1;
-    int slipCntL2;
-    int slipCntL5;
-  };
-
-  t_irc getSatPos(const bncTime& tt, const QString& prn, 
-                  ColumnVector& xc, ColumnVector& vv);
-  void processEpochs();
-  void processFrontEpoch();
-  t_irc cmpToT(t_satData* satData);
-
-  const t_pppOptions*     _opt;
-  QByteArray              _staID;
-  QMap<QString, t_corr*>  _corr;
-  bncTime                 _corr_tt;
-  QMap<QString, t_bias*>  _bias;
-  std::queue<t_epoData*>  _epoData;
-  bncModel*               _model;
-  QMap<QString, slipInfo> _slips;
 };
 
 }
