@@ -85,6 +85,18 @@ t_pppClient::~t_pppClient() {
 // 
 //////////////////////////////////////////////////////////////////////////////
 void t_pppClient::putEphemeris(const t_eph* eph) {
+  const t_ephGPS* ephGPS = dynamic_cast<const t_ephGPS*>(eph);
+  const t_ephGlo* ephGlo = dynamic_cast<const t_ephGlo*>(eph);
+  const t_ephGal* ephGal = dynamic_cast<const t_ephGal*>(eph);
+  if      (ephGPS) {
+    _client->putNewEph(new t_ephGPS(*ephGPS));
+  }
+  else if (ephGlo) {
+    _client->putNewEph(new t_ephGlo(*ephGlo));
+  }
+  else if (ephGal) {
+    _client->putNewEph(new t_ephGal(*ephGal));
+  }
 }
 
 // 
