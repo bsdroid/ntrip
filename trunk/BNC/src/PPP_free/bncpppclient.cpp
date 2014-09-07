@@ -54,7 +54,7 @@ using namespace std;
 
 // Constructor
 ////////////////////////////////////////////////////////////////////////////
-bncPPPclient::bncPPPclient(QByteArray staID, t_pppOptions* opt) : bncEphUser(false) {
+bncPPPclient::bncPPPclient(QByteArray staID, const t_pppOptions* opt) : bncEphUser(false) {
 
   _opt   = opt;
   _staID = staID;

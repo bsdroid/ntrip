@@ -57,20 +57,21 @@ using namespace std;
 
 // Global variable holding thread-specific pointers
 //////////////////////////////////////////////////////////////////////////////
-t_pppClient* CLIENT = 0;
+t_pppClient* PPP_CLIENT = 0;
 
 // Static function returning thread-specific pointer
 //////////////////////////////////////////////////////////////////////////////
 t_pppClient* t_pppClient::instance() {
-  return CLIENT;
+  return PPP_CLIENT;
 }
 
 // Constructor
 //////////////////////////////////////////////////////////////////////////////
 t_pppClient::t_pppClient(const t_pppOptions* opt) {
-  _opt      = new t_pppOptions(*opt);
-  _log      = new ostringstream();
-  CLIENT = this;
+  _opt       = new t_pppOptions(*opt);
+  _log       = new ostringstream();
+  _client    = new bncPPPclient(QByteArray(_opt->_roverName.c_str()), _opt);
+  PPP_CLIENT = this;
 }
 
 // Destructor
@@ -78,6 +79,7 @@ t_pppClient::t_pppClient(const t_pppOptions* opt) {
 t_pppClient::~t_pppClient() {
   delete _log;
   delete _opt;
+  delete _client;
 }
 
 // 

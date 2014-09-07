@@ -39,7 +39,7 @@ class t_epoData;
 
 class bncPPPclient : public bncEphUser {
  public:
-  bncPPPclient(QByteArray staID, t_pppOptions* opt);
+  bncPPPclient(QByteArray staID, const t_pppOptions* opt);
   ~bncPPPclient();
   void                putNewObs(const t_obs& pp);
   void                putNewCorrections(QList<QString> corrList);
