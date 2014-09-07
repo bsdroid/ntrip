@@ -68,6 +68,7 @@ t_pppClient::t_pppClient(const t_pppOptions* opt) : bncEphUser(false) {
   _opt       = new t_pppOptions(*opt);
   _model     = new bncModel(this);
   _epoData   = new t_epoData();
+  _log       = new ostringstream();
   _staID     = QByteArray(_opt->_roverName.c_str());
   PPP_CLIENT = this;
 }
@@ -78,6 +79,7 @@ t_pppClient::~t_pppClient() {
   delete _model;
   delete _epoData;
   delete _opt;
+  delete _log;
 }
 
 //
