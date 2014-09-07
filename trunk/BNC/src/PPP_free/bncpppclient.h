@@ -38,13 +38,16 @@ class t_satObs;
 class t_satData;
 class t_epoData;
 class t_output;
+class t_orbCorr;
+class t_clkCorr;
 
 class bncPPPclient : public bncEphUser {
  public:
   bncPPPclient(QByteArray staID, const t_pppOptions* opt);
   ~bncPPPclient();
   void                processEpoch(const std::vector<t_satObs*>& satObs, t_output* output);
-  void                putNewCorrections(QList<QString> corrList);
+  void                putOrbCorrections(const std::vector<t_orbCorr*>& corr); 
+  void                putClkCorrections(const std::vector<t_clkCorr*>& corr); 
   QByteArray          staID() const {return _staID;}
   const t_pppOptions* opt() const {return _opt;}
 
@@ -65,7 +68,6 @@ class bncPPPclient : public bncEphUser {
   t_irc getSatPos(const bncTime& tt, const QString& prn, ColumnVector& xc, ColumnVector& vv);
   void  putNewObs(t_satData* satData);
   t_irc cmpToT(t_satData* satData);
-  static t_irc applyCorr(const bncTime& tt, const t_corr* cc, ColumnVector& xc, ColumnVector& vv);
 
   const t_pppOptions*     _opt;
   QByteArray              _staID;

@@ -220,64 +220,14 @@ void bncPPPclient::putNewObs(t_satData* satData) {
 
 // 
 ////////////////////////////////////////////////////////////////////////////
-void bncPPPclient::putNewCorrections(QList<QString> corrList) {
+void bncPPPclient::putOrbCorrections(const std::vector<t_orbCorr*>& corr) {
   QMutexLocker locker(&_mutex);
+}
 
-  // Check the Mountpoint (source of corrections)
-  // --------------------------------------------
-  if (!_opt->_corrMount.empty()) {
-    QMutableListIterator<QString> itm(corrList);
-    while (itm.hasNext()) {
-      QStringList hlp = itm.next().split(" ");
-      if (hlp.size() > 0) {
-        QString mountpoint = hlp[hlp.size()-1];
-        if (mountpoint != QString(_opt->_corrMount.c_str())) {
-          itm.remove();     
-        }
-      }
-    }
-  }
-
-  if (corrList.size() == 0) {
-    return;
-  }
-
-  QListIterator<QString> it(corrList);
-  while (it.hasNext()) {
-    QString line = it.next();
-
-    QTextStream in(&line);
-    int     messageType;
-    int     updateInterval;
-    int     GPSweek;
-    double  GPSweeks;
-    QString prn;
-    in >> messageType >> updateInterval >> GPSweek >> GPSweeks >> prn;
-
-    if ( t_corr::relevantMessageType(messageType) ) {
-      t_corr* cc = 0;
-      if (_corr.contains(prn)) {
-        cc = _corr.value(prn); 
-      }
-      else {
-        cc = new t_corr();
-        _corr[prn] = cc;
-      }
-      cc->readLine(line);
-      _corr_tt = cc->tClk;
-    }
-    else if ( messageType == BTYPE_GPS || messageType == BTYPE_GLONASS ) { 
-      t_bias* bb = 0;
-      if (_bias.contains(prn)) {
-        bb = _bias.value(prn);
-      }
-      else {
-        bb = new t_bias();
-        _bias[prn] = bb;
-      }
-      bb->readLine(line);
-    }
-  }
+// 
+////////////////////////////////////////////////////////////////////////////
+void bncPPPclient::putClkCorrections(const std::vector<t_clkCorr*>& corr) {
+  QMutexLocker locker(&_mutex);
 }
 
 // Satellite Position
@@ -295,47 +245,6 @@ t_irc bncPPPclient::getSatPos(const bncTime& tt, const QString& prn,
     }
   }
   return failure;
-}
-
-// 
-////////////////////////////////////////////////////////////////////////////
-t_irc bncPPPclient::applyCorr(const bncTime& tt, const t_corr* cc, 
-                              ColumnVector& xc, ColumnVector& vv) {
-
-  double dtRao = tt - cc->tRao;
-
-  // Position
-  // --------
-  ColumnVector raoHlp = cc->rao + cc->dotRao * dtRao;
-
-  if (raoHlp.norm_Frobenius() > 20.0) {
-    return failure;
-  }
-
-  ColumnVector dx(3);
-  RSW_to_XYZ(xc.Rows(1,3), vv, raoHlp, dx);
-  xc[0] -= dx[0];
-  xc[1] -= dx[1];
-  xc[2] -= dx[2];
-
-  // Velocity
-  // --------
-  ColumnVector dotRaoHlp = cc->dotRao;
-
-  ColumnVector dv(3);
-  RSW_to_XYZ(xc.Rows(1,3), vv, dotRaoHlp, dv);
-  vv[0] -= dv[0];
-  vv[1] -= dv[1];
-  vv[2] -= dv[2];
-
-  // Clocks
-  // ------
-  double dtClk = tt - cc->tClk;
-
-  xc[3] += cc->dClk + cc->dotDClk * dtClk + cc->dotDotDClk * dtClk * dtClk
-        + cc->hrClk;
-
-  return success;
 }
 
 // Correct Time of Transmission

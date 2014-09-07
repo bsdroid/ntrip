@@ -102,11 +102,13 @@ void t_pppClient::putEphemeris(const t_eph* eph) {
 // 
 //////////////////////////////////////////////////////////////////////////////
 void t_pppClient::putOrbCorrections(const vector<t_orbCorr*>& corr) {
+  _client->putOrbCorrections(corr);
 }
 
 // 
 //////////////////////////////////////////////////////////////////////////////
 void t_pppClient::putClkCorrections(const vector<t_clkCorr*>& corr) {
+  _client->putClkCorrections(corr);
 }
 
 // 
