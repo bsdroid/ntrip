@@ -47,13 +47,14 @@
 #include "bncutils.h"
 #include "bncconst.h"
 #include "bncmodel.h"
-#include "pppopt.h"
+#include "pppOptions.h"
 
+using namespace BNC_PPP;
 using namespace std;
 
 // Constructor
 ////////////////////////////////////////////////////////////////////////////
-bncPPPclient::bncPPPclient(QByteArray staID, t_pppOpt* opt, bool connectSlots) :
+bncPPPclient::bncPPPclient(QByteArray staID, t_pppOptions* opt, bool connectSlots) :
   bncEphUser(connectSlots) {
 
   if (opt) {
@@ -61,7 +62,7 @@ bncPPPclient::bncPPPclient(QByteArray staID, t_pppOpt* opt, bool connectSlots) :
     _optOwner = false;
   }
   else {
-    _opt      = new t_pppOpt();
+    _opt      = new t_pppOptions();
     _optOwner = true;
   }
 
@@ -110,10 +111,10 @@ void bncPPPclient::putNewObs(const t_obs& obs) {
   QMutexLocker locker(&_mutex);
 
   if      (obs.satSys == 'R') {
-    if (!_opt->useGlonass) return;
+    if (!_opt->useSystem('R')) return;
   }
   else if (obs.satSys == 'E') {
-    if (!_opt->useGalileo) return;
+    if (!_opt->useSystem('E')) return;
   }
   else if (obs.satSys != 'G') {
     return;
@@ -209,8 +210,10 @@ void bncPPPclient::putNewObs(const t_obs& obs) {
 
     if (satData->P1 != 0.0 && satData->P2 != 0.0 && 
         satData->L1 != 0.0 && satData->L2 != 0.0 ) {
-      double f1 = t_CST::f1(obs.satSys, obs.slotNum);
-      double f2 = t_CST::f2(obs.satSys, obs.slotNum);
+      t_frequency::type fType1 = t_lc::toFreq(obs.satSys,t_lc::l1);
+      t_frequency::type fType2 = t_lc::toFreq(obs.satSys,t_lc::l2);
+      double f1 = t_CST::freq(fType1, obs.slotNum);
+      double f2 = t_CST::freq(fType2, obs.slotNum);
       double a1 =   f1 * f1 / (f1 * f1 - f2 * f2);
       double a2 = - f2 * f2 / (f1 * f1 - f2 * f2);
       satData->L1      = satData->L1 * t_CST::c / f1;
@@ -234,8 +237,8 @@ void bncPPPclient::putNewObs(const t_obs& obs) {
     satData->L5 = obs.measdata("L5", 3.0);
     if (satData->P1 != 0.0 && satData->P5 != 0.0 && 
         satData->L1 != 0.0 && satData->L5 != 0.0 ) {
-      double f1 = t_CST::freq1;
-      double f5 = t_CST::freq5;
+      double f1 = t_CST::freq(t_frequency::E1, 0);
+      double f5 = t_CST::freq(t_frequency::E5, 0);
       double a1 =   f1 * f1 / (f1 * f1 - f5 * f5);
       double a5 = - f5 * f5 / (f1 * f1 - f5 * f5);
       satData->L1      = satData->L1 * t_CST::c / f1;
@@ -258,13 +261,13 @@ void bncPPPclient::slotNewCorrections(QList<QString> corrList) {
 
   // Check the Mountpoint (source of corrections)
   // --------------------------------------------
-  if (!_opt->pppCorrMount.isEmpty()) {
+  if (!_opt->_corrMount.empty()) {
     QMutableListIterator<QString> itm(corrList);
     while (itm.hasNext()) {
       QStringList hlp = itm.next().split(" ");
       if (hlp.size() > 0) {
         QString mountpoint = hlp[hlp.size()-1];
-        if (mountpoint != _opt->pppCorrMount) {
+        if (mountpoint != QString(_opt->_corrMount.c_str())) {
           itm.remove();     
         }
       }
@@ -322,7 +325,7 @@ t_irc bncPPPclient::getSatPos(const bncTime& tt, const QString& prn,
 
   if (_eph.contains(prn)) {
 
-    if (_opt->pppMode && prn[0] != 'E') {
+    if (_opt->useOrbClkCorr() && prn[0] != 'E') {
       if (_corr.contains(prn)) {
         t_corr* cc = _corr.value(prn);
         if (cc->ready() && tt - cc->tClk < MAXAGE) {
@@ -513,13 +516,13 @@ void bncPPPclient::processEpochs() {
 
     // No corrections yet, skip the epoch
     // ----------------------------------
-    if (_opt->corrSync != 0.0 && !_corr_tt.valid()) {
+    if (_opt->useOrbClkCorr() && !_corr_tt.valid()) {
       return;
     }
 
     // Process the front epoch
     // -----------------------
-    if (_opt->corrSync == 0 || frontEpoData->tt - _corr_tt < _opt->corrSync) {
+    if (_opt->_corrWaitTime == 0.0 || frontEpoData->tt - _corr_tt >= _opt->_corrWaitTime) {
       processFrontEpoch();
       delete _epoData.front();
       _epoData.pop();
@@ -535,7 +538,7 @@ void bncPPPclient::processEpochs() {
 void bncPPPclient::slotProviderIDChanged(QString mountPoint) {
   QMutexLocker locker(&_mutex);
 
-  if (mountPoint != _opt->pppCorrMount) {
+  if (mountPoint != QString(_opt->_corrMount.c_str())) {
     return;
   }
   emit newMessage("bncPPPclient " + _staID + ": Provider Changed: " + mountPoint.toAscii() + "\n", true);

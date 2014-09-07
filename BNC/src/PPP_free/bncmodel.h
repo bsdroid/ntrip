@@ -35,7 +35,10 @@
 class t_epoData;
 class t_satData;
 class bncAntex;
-class t_pppOpt;
+
+namespace BNC_PPP {
+
+class t_pppOptions;
 class bncPPPclient;
 
 class bncParam {
@@ -142,7 +145,7 @@ class bncModel {
   };
 
   bncPPPclient*         _pppClient;
-  const t_pppOpt*       _opt;
+  const t_pppOptions*   _opt;
   bncTime               _time;
   bncTime               _lastTimeOK;
   QByteArray            _staID;
@@ -163,5 +166,7 @@ class bncModel {
   QStringList           _outlierGlo;
   bncAntex*             _antex;
 };
+
+}
 
 #endif
