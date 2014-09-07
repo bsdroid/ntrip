@@ -36,7 +36,7 @@ class bncAntex;
 
 namespace BNC_PPP {
 
-class bncPPPclient;
+class t_pppClient;
 class t_pppOptions;
 class t_epoData;
 class t_satData;
@@ -62,7 +62,7 @@ class bncParam {
 
 class bncModel {
  public:
-  bncModel(bncPPPclient* pppClient);
+  bncModel(t_pppClient* pppClient);
   ~bncModel();
   t_irc update(t_epoData* epoData);
   bncTime time()  const {return _time;}
@@ -144,7 +144,7 @@ class bncModel {
     double  xnt[7];
   };
 
-  bncPPPclient*         _pppClient;
+  t_pppClient*          _pppClient;
   const t_pppOptions*   _opt;
   bncTime               _time;
   bncTime               _lastTimeOK;
