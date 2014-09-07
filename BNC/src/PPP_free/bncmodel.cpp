@@ -45,7 +45,6 @@
 
 #include "bncmodel.h"
 #include "pppClient.h"
-#include "bancroft.h"
 #include "bncutils.h"
 #include "bncantex.h"
 #include "pppOptions.h"
