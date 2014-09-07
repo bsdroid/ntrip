@@ -87,14 +87,10 @@ bncPPPclient::~bncPPPclient() {
 ////////////////////////////////////////////////////////////////////////////
 void bncPPPclient::processEpoch(const vector<t_satObs*>& satObs, t_output* output) {
   QMutexLocker locker(&_mutex);
-
+  
+  // Convert and store observations
+  // ------------------------------
   _epoData->clear();
-
-  output->_numSat = 0;
-  output->_pDop   = 0.0;
-  output->_error  = false;
-  output->_log.clear();
-
   for (unsigned ii = 0; ii < satObs.size(); ii++) {
     const t_satObs* obs     = satObs[ii]; 
     t_satData*      satData = new t_satData();
@@ -146,17 +142,21 @@ void bncPPPclient::processEpoch(const vector<t_satObs*>& satObs, t_output* outpu
   // Filter Solution
   // ---------------
   if (_model->update(_epoData) == success) {
-    output->_error       = false;
-    output->_epoTime     = _model->time();
-    output->_xyzRover[0] = _model->x();
-    output->_xyzRover[1] = _model->y();
-    output->_xyzRover[2] = _model->z();
+    output->_error = false;
   }
   else {
     output->_error = true;
   }
 
-  output->_log = LOG.str();  
+  // Set Output
+  // ----------
+  output->_epoTime     = _model->time();
+  output->_xyzRover[0] = _model->x();
+  output->_xyzRover[1] = _model->y();
+  output->_xyzRover[2] = _model->z();
+  output->_numSat      = 0;
+  output->_pDop        = 0.0;
+  output->_log         = LOG.str();  
 }
 
 //
