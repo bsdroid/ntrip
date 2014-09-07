@@ -32,14 +32,14 @@
 #include "bncconst.h"
 #include "bnctime.h"
 
-class t_epoData;
-class t_satData;
 class bncAntex;
 
 namespace BNC_PPP {
 
-class t_pppOptions;
 class bncPPPclient;
+class t_pppOptions;
+class t_epoData;
+class t_satData;
 
 class bncParam {
  public:
@@ -120,7 +120,6 @@ class bncModel {
   t_irc  update_p(t_epoData* epoData);
   QString outlierDetection(int iPhase, const ColumnVector& vv,
                            QMap<QString, t_satData*>& satData);
-  void writeNMEAstr(const QString& nmStr);
 
   double windUp(const QString& prn, const ColumnVector& rSat,
                 const ColumnVector& rRec);
@@ -157,8 +156,6 @@ class bncModel {
   ColumnVector          _xcBanc;
   ColumnVector          _ellBanc;
   QByteArray            _log;
-  QFile*                _nmeaFile;
-  QTextStream*          _nmeaStream;
   QMap<QString, double> _windUpTime;
   QMap<QString, double> _windUpSum;
   QVector<pppPos*>      _posAverage;
