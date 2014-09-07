@@ -48,6 +48,7 @@
 #include "bncconst.h"
 #include "bncmodel.h"
 #include "pppOptions.h"
+#include "pppClient.h"
 
 using namespace BNC_PPP;
 using namespace std;
@@ -56,47 +57,107 @@ using namespace std;
 ////////////////////////////////////////////////////////////////////////////
 bncPPPclient::bncPPPclient(QByteArray staID, const t_pppOptions* opt) : bncEphUser(false) {
 
-  _opt   = opt;
-  _staID = staID;
-  _model = new bncModel(this);
+  _opt     = opt;
+  _staID   = staID;
+  _model   = new bncModel(this);
+  _epoData = new t_epoData();
 }
 
 // Destructor
 ////////////////////////////////////////////////////////////////////////////
 bncPPPclient::~bncPPPclient() {
-  while (!_epoData.empty()) {
-    delete _epoData.front();
-    _epoData.pop();
-  }
+  _epoData->clear();
+
   QMapIterator<QString, t_corr*> ic(_corr);
   while (ic.hasNext()) {
     ic.next();
     delete ic.value();
   }
+
   QMapIterator<QString, t_bias*> ib(_bias);
   while (ib.hasNext()) {
     ib.next();
     delete ib.value();
   }
+
   delete _model;
 }
 
 //
 ////////////////////////////////////////////////////////////////////////////
-void bncPPPclient::putNewObs(t_satData* satData, t_output* output) {
+void bncPPPclient::processEpoch(const vector<t_satObs*>& satObs, t_output* output) {
   QMutexLocker locker(&_mutex);
 
-  // Add new epoch, process the older ones
-  // -------------------------------------
-  if      (_epoData.size() == 0) {
-    _epoData.push(new t_epoData());
-    _epoData.back()->tt = satData->tt;
+  _epoData->clear();
+
+  output->_numSat = 0;
+  output->_pDop   = 0.0;
+  output->_error  = false;
+  output->_log.clear();
+
+  for (unsigned ii = 0; ii < satObs.size(); ii++) {
+    const t_satObs* obs     = satObs[ii]; 
+    t_satData*      satData = new t_satData();
+    satData->tt       = obs->_time;
+    satData->prn      = QString(obs->_prn.toString().c_str());
+    satData->slipFlag = false;
+    satData->P1       = 0.0;
+    satData->P2       = 0.0;
+    satData->P5       = 0.0;
+    satData->L1       = 0.0;
+    satData->L2       = 0.0;
+    satData->L5       = 0.0;
+    for (unsigned ifrq = 0; ifrq < obs->_obs.size(); ifrq++) {
+      t_frqObs* frqObs = obs->_obs[ifrq];
+      if      (frqObs->_rnxType2ch[0] == '1') {
+        if (frqObs->_codeValid)  satData->P1       = frqObs->_code;
+        if (frqObs->_phaseValid) satData->L1       = frqObs->_phase;
+        if (frqObs->_slip)       satData->slipFlag = true;
+      }
+      else if (frqObs->_rnxType2ch[0] == '2') {
+        if (frqObs->_codeValid)  satData->P2       = frqObs->_code;
+        if (frqObs->_phaseValid) satData->L2       = frqObs->_phase;
+        if (frqObs->_slip)       satData->slipFlag = true;
+      }
+      else if (frqObs->_rnxType2ch[0] == '5') {
+        if (frqObs->_codeValid)  satData->P5       = frqObs->_code;
+        if (frqObs->_phaseValid) satData->L5       = frqObs->_phase;
+        if (frqObs->_slip)       satData->slipFlag = true;
+      }
+    }
+    putNewObs(satData);
   }
-  else if (satData->tt != _epoData.back()->tt) {
-    processEpochs(output);
-    _epoData.push(new t_epoData());
-    _epoData.back()->tt = satData->tt;
+
+  // Data Pre-Processing
+  // -------------------
+  QMutableMapIterator<QString, t_satData*> it(_epoData->satData);
+  while (it.hasNext()) {
+    it.next();
+    QString    prn     = it.key();
+    t_satData* satData = it.value();
+
+    if (cmpToT(satData) != success) {
+      delete satData;
+      it.remove();
+      continue;
+    }
   }
+
+  // Filter Solution
+  // ---------------
+  if (_model->update(_epoData) == success) {
+    ///    emit newPosition(_model->time(), _model->x(), _model->y(), _model->z());
+  }
+  else {
+    output->_error = true;
+  }
+
+  output->_log = LOG.str();  
+}
+
+//
+////////////////////////////////////////////////////////////////////////////
+void bncPPPclient::putNewObs(t_satData* satData) {
 
   // Set Observations GPS and Glonass
   // --------------------------------
@@ -119,7 +180,7 @@ void bncPPPclient::putNewObs(t_satData* satData, t_output* output) {
       satData->P3      = a1 * satData->P1 + a2 * satData->P2;
       satData->L3      = a1 * satData->L1 + a2 * satData->L2;
       satData->lambda3 = a1 * t_CST::c / f1 + a2 * t_CST::c / f2;
-      _epoData.back()->satData[satData->prn] = satData;
+      _epoData->satData[satData->prn] = satData;
     }
     else {
       delete satData;
@@ -138,7 +199,7 @@ void bncPPPclient::putNewObs(t_satData* satData, t_output* output) {
       satData->P3      = a1 * satData->P1 + a5 * satData->P5;
       satData->L3      = a1 * satData->L1 + a5 * satData->L5;
       satData->lambda3 = a1 * t_CST::c / f1 + a5 * t_CST::c / f5;
-      _epoData.back()->satData[satData->prn] = satData;
+      _epoData->satData[satData->prn] = satData;
     }
     else {
       delete satData;
@@ -320,107 +381,3 @@ t_irc bncPPPclient::cmpToT(t_satData* satData) {
   return failure;
 }
 
-// 
-////////////////////////////////////////////////////////////////////////////
-void bncPPPclient::processFrontEpoch(t_output* output) {
-
-#ifdef BNC_DEBUG
-  QString msg = "List of Corrections\n";
-  QMapIterator<QString, t_corr*> itC(_corr);
-  while (itC.hasNext()) {
-    itC.next();
-    QString       src  = itC.key();
-    const t_corr* corr = itC.value();
-    msg += QString("%1 %2 %3 %4\n")
-      .arg(corr->prn)
-      .arg(corr->iod)
-      .arg(QString(corr->tClk.datestr().c_str()) + "_" + QString(corr->tClk.timestr().c_str()))
-      .arg(QString(corr->tRao.datestr().c_str()) + "_" + QString(corr->tRao.timestr().c_str()));
-  }
-
-  msg += "List of Ephemeris\n";
-  QMapIterator<QString, t_ephPair*> itE(_eph);
-  while (itE.hasNext()) {
-    itE.next();
-    QString          prn     = itE.key();
-    const t_ephPair* ephPair = itE.value();
-    if (ephPair->prev) {
-      msg += QString("%1 %2 %3 %4 %5\n")
-        .arg(prn)
-        .arg(ephPair->last->IOD())
-        .arg(QString(ephPair->last->TOC().datestr().c_str()) + "_" +
-             QString(ephPair->last->TOC().timestr().c_str()))
-        .arg(ephPair->prev->IOD())
-        .arg(QString(ephPair->prev->TOC().datestr().c_str()) + "_" +
-             QString(ephPair->prev->TOC().timestr().c_str()));
-    }
-    else {
-      msg += QString("%1 %2 %3\n")
-        .arg(prn)
-        .arg(ephPair->last->IOD())
-        .arg(QString(ephPair->last->TOC().datestr().c_str()) + "_" +
-             QString(ephPair->last->TOC().timestr().c_str()));
-    }
-  }
-
-  LOG << msg.toAscii() << endl;
-#endif // BNC_DEBUG
-
-  // Data Pre-Processing
-  // -------------------
-  QMutableMapIterator<QString, t_satData*> it(_epoData.front()->satData);
-  while (it.hasNext()) {
-    it.next();
-    QString    prn     = it.key();
-    t_satData* satData = it.value();
-
-    if (cmpToT(satData) != success) {
-      delete satData;
-      it.remove();
-      continue;
-    }
-  }
-
-  // Filter Solution
-  // ---------------
-  if (_model->update(_epoData.front()) == success) {
-    ///    emit newPosition(_model->time(), _model->x(), _model->y(), _model->z());
-  }
-}
-
-// 
-////////////////////////////////////////////////////////////////////////////
-void bncPPPclient::processEpochs(t_output* output) {
-
-  // Make sure the buffer does not grow beyond any limit
-  // ---------------------------------------------------
-  const unsigned MAX_EPODATA_SIZE = 120;
-  if (_epoData.size() > MAX_EPODATA_SIZE) {
-    delete _epoData.front();
-    _epoData.pop();
-  }
-
-  // Loop over all unprocessed epochs
-  // --------------------------------
-  while (!_epoData.empty()) {
-
-    t_epoData* frontEpoData = _epoData.front();
-
-    // No corrections yet, skip the epoch
-    // ----------------------------------
-    if (_opt->useOrbClkCorr() && !_corr_tt.valid()) {
-      return;
-    }
-
-    // Process the front epoch
-    // -----------------------
-    if (_opt->_corrWaitTime == 0.0 || frontEpoData->tt - _corr_tt >= _opt->_corrWaitTime) {
-      processFrontEpoch(output);
-      delete _epoData.front();
-      _epoData.pop();
-    }
-    else {
-      return;
-    }
-  }
-}

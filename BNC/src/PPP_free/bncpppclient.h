@@ -25,7 +25,7 @@
 #ifndef BNCPPPCLIENT_H
 #define BNCPPPCLIENT_H
 
-#include <queue>
+#include <vector>
 #include "bncephuser.h"
 #include "GPSDecoder.h"
 
@@ -34,6 +34,7 @@ namespace BNC_PPP {
   
 class bncModel;
 class t_pppOptions;
+class t_satObs;
 class t_satData;
 class t_epoData;
 class t_output;
@@ -42,7 +43,7 @@ class bncPPPclient : public bncEphUser {
  public:
   bncPPPclient(QByteArray staID, const t_pppOptions* opt);
   ~bncPPPclient();
-  void                putNewObs(t_satData* satData, t_output* output);
+  void                processEpoch(const std::vector<t_satObs*>& satObs, t_output* output);
   void                putNewCorrections(QList<QString> corrList);
   QByteArray          staID() const {return _staID;}
   const t_pppOptions* opt() const {return _opt;}
@@ -62,8 +63,7 @@ class bncPPPclient : public bncEphUser {
   };
 
   t_irc getSatPos(const bncTime& tt, const QString& prn, ColumnVector& xc, ColumnVector& vv);
-  void processEpochs(t_output* output);
-  void processFrontEpoch(t_output* output);
+  void  putNewObs(t_satData* satData);
   t_irc cmpToT(t_satData* satData);
   static t_irc applyCorr(const bncTime& tt, const t_corr* cc, ColumnVector& xc, ColumnVector& vv);
 
@@ -72,7 +72,7 @@ class bncPPPclient : public bncEphUser {
   QMap<QString, t_corr*>  _corr;
   bncTime                 _corr_tt;
   QMap<QString, t_bias*>  _bias;
-  std::queue<t_epoData*>  _epoData;
+  t_epoData*              _epoData;
   bncModel*               _model;
 };
 
