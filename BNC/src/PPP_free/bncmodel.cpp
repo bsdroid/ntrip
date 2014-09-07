@@ -782,7 +782,7 @@ double bncModel::windUp(const QString& prn, const ColumnVector& rSat,
     // -------------------------------------
     ColumnVector sz = -rSat / rSat.norm_Frobenius();
 
-    ColumnVector xSun = Sun(Mjd);
+    ColumnVector xSun = t_astro::Sun(Mjd);
     xSun /= xSun.norm_Frobenius();
 
     ColumnVector sy = crossproduct(sz, xSun);
@@ -1007,7 +1007,10 @@ t_irc bncModel::update_p(t_epoData* epoData) {
 
     // First update using code observations, then phase observations
     // -------------------------------------------------------------      
-    for (int iPhase = 0; iPhase <= (_opt->usePhase ? 1 : 0); iPhase++) {
+    bool usePhase = _opt->ambLCs('G').size() || _opt->ambLCs('R').size() ||
+                    _opt->ambLCs('E').size();
+
+    for (int iPhase = 0; iPhase <= (usePhase ? 1 : 0); iPhase++) {
     
       // Status Prediction
       // -----------------
@@ -1070,7 +1073,7 @@ t_irc bncModel::update_p(t_epoData* epoData) {
           par->xx += dx(par->index);
         }
 
-        if (!_opt->usePhase || iPhase == 1) {
+        if (!usePhase || iPhase == 1) {
           if (_outlierGPS.size() > 0 || _outlierGlo.size() > 0) {
             _log += "Neglected PRNs: ";
             if (!_outlierGPS.isEmpty()) {
