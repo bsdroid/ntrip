@@ -139,11 +139,11 @@ void t_pppClient::processEpoch(const vector<t_satObs*>& satObs, t_output* output
     output->_xyzRover[1] = _filter->y();
     output->_xyzRover[2] = _filter->z();
     copy(&_filter->Q().data()[0], &_filter->Q().data()[6], output->_covMatrix);
-    output->_neu[0]      = 0.0;
-    output->_neu[1]      = 0.0;
-    output->_neu[2]      = 0.0;
-    output->_numSat      = 0;
-    output->_pDop        = 0.0;
+    output->_neu[0]      = _filter->neu()[0];
+    output->_neu[1]      = _filter->neu()[1];
+    output->_neu[2]      = _filter->neu()[2];
+    output->_numSat      = _filter->numSat();
+    output->_pDop        = _filter->PDOP();
   }
   else {
     output->_error = true;
