@@ -43,22 +43,11 @@
 #include <sstream>
 
 #include "pppClient.h"
-#include "pppFilter.h"
 #include "bncephuser.h"
 #include "bncutils.h"
 
 using namespace BNC_PPP;
 using namespace std;
-
-// Global variable holding thread-specific pointers
-//////////////////////////////////////////////////////////////////////////////
-QThreadStorage<t_pppClient*> CLIENTS;
-
-// Static function returning thread-specific pointer
-//////////////////////////////////////////////////////////////////////////////
-t_pppClient* t_pppClient::instance() {
-  return CLIENTS.localData();
-}
 
 // Constructor
 ////////////////////////////////////////////////////////////////////////////
@@ -69,9 +58,6 @@ t_pppClient::t_pppClient(const t_pppOptions* opt) {
   _epoData = new t_epoData();
   _log     = new ostringstream();
   _ephUser = new bncEphUser(false);
-  _staID   = QByteArray(_opt->_roverName.c_str());
-
-  CLIENTS.setLocalData(this);  // CLIENTS takes ownership over "this"
 }
 
 // Destructor

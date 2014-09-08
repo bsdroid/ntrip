@@ -42,6 +42,87 @@ class t_epoData;
 class t_satData;
 class t_tides;
 
+class t_satData {
+ public:
+  t_satData() {
+    obsIndex = 0;
+    P1 = 0.0;
+    P2 = 0.0;
+    P5 = 0.0;
+    P3 = 0.0;
+    L1 = 0.0;
+    L2 = 0.0;
+    L5 = 0.0;
+    L3 = 0.0;
+  }
+  ~t_satData() {}
+  bncTime      tt;
+  QString      prn;
+  double       P1;
+  double       P2;
+  double       P5;
+  double       P3;
+  double       L1;
+  double       L2;
+  double       L5;
+  double       L3;
+  ColumnVector xx;
+  ColumnVector vv;
+  double       clk;
+  double       eleSat;
+  double       azSat;
+  double       rho;
+  bool         slipFlag;
+  double       lambda3;
+  unsigned     obsIndex;
+  char system() const {return prn.toAscii()[0];}
+};
+
+class t_epoData {
+ public:
+  t_epoData() {}
+
+  ~t_epoData() {
+    clear();
+  }
+
+  void clear() {
+    QMapIterator<QString, t_satData*> it(satData);
+    while (it.hasNext()) {
+      it.next();
+      delete it.value();
+    }
+    satData.clear();
+    tt.reset();
+  }
+
+  void deepCopy(const t_epoData* from) {
+    clear();
+    tt = from->tt;
+    QMapIterator<QString, t_satData*> it(from->satData);
+    while (it.hasNext()) {
+      it.next();
+      satData[it.key()] = new t_satData(*it.value());
+    }
+  }
+
+  unsigned sizeSys(char system) const {
+    unsigned ans = 0;
+    QMapIterator<QString, t_satData*> it(satData);
+    while (it.hasNext()) {
+      it.next();
+      if (it.value()->system() == system) {
+        ++ans;
+      }
+    }
+    return ans;
+  }
+  unsigned sizeAll() const {return satData.size();}
+
+  bncTime                   tt;
+  QMap<QString, t_satData*> satData;
+};
+
 class t_pppParam {
  public:
   enum parType {CRD_X, CRD_Y, CRD_Z, RECCLK, TROPO, AMB_L3, 
@@ -135,22 +216,9 @@ class t_pppFilter {
 
   void bancroft(const Matrix& BBpass, ColumnVector& pos);
 
-  class pppPos {
-   public:
-    pppPos() {
-      for (int ii = 0; ii < 7; ++ii) {
-        xnt[ii] = 0.0;
-      }
-    }
-    bncTime time;
-    double  xnt[7];
-  };
-
   t_pppClient*          _pppClient;
-  const t_pppOptions*   _opt;
   bncTime               _time;
   bncTime               _lastTimeOK;
-  QByteArray            _staID;
   QVector<t_pppParam*>  _params;
   SymmetricMatrix       _QQ;
   QVector<t_pppParam*>  _params_sav;
@@ -158,10 +226,8 @@ class t_pppFilter {
   t_epoData*            _epoData_sav;
   ColumnVector          _xcBanc;
   ColumnVector          _ellBanc;
-  QByteArray            _log;
   QMap<QString, double> _windUpTime;
   QMap<QString, double> _windUpSum;
-  QVector<pppPos*>      _posAverage;
   QStringList           _outlierGPS;
   QStringList           _outlierGlo;
   bncAntex*             _antex;

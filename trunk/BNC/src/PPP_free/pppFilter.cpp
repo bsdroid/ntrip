@@ -61,6 +61,9 @@ const double   MAXRES_PHASE_GPS      = 0.04;
 const double   MAXRES_PHASE_GLONASS  = 0.08;
 const double   GLONASS_WEIGHT_FACTOR = 5.0;
 
+#define LOG (_pppClient->log())
+#define OPT (_pppClient->opt())
+
 // Constructor
 ////////////////////////////////////////////////////////////////////////////
 t_pppParam::t_pppParam(t_pppParam::parType typeIn, int indexIn, 
@@ -151,16 +154,13 @@ double t_pppParam::partial(t_satData* satData, bool phase) {
 t_pppFilter::t_pppFilter(t_pppClient* pppClient) {
 
   _pppClient = pppClient;
-  _staID     = pppClient->staID();
-  _opt       = pppClient->opt();
-
   _tides     = new t_tides();
 
   // Antenna Name, ANTEX File
   // ------------------------
   _antex = 0;
-  if (!_opt->_antexFileName.empty()) {
-    _antex = new bncAntex(_opt->_antexFileName.c_str());
+  if (!OPT->_antexFileName.empty()) {
+    _antex = new bncAntex(OPT->_antexFileName.c_str());
   }
 
   // Bancroft Coordinates
@@ -177,9 +177,6 @@ t_pppFilter::t_pppFilter(t_pppClient* pppClient) {
 ////////////////////////////////////////////////////////////////////////////
 t_pppFilter::~t_pppFilter() {
   delete _tides;
-  for (int ii = 0; ii < _posAverage.size(); ++ii) { 
-    delete _posAverage[ii]; 
-  }
   delete _antex;
   for (int iPar = 1; iPar <= _params.size(); iPar++) {
     delete _params[iPar-1];
@@ -211,13 +208,13 @@ void t_pppFilter::reset() {
   _params.push_back(new t_pppParam(t_pppParam::CRD_Y,  ++nextPar, ""));
   _params.push_back(new t_pppParam(t_pppParam::CRD_Z,  ++nextPar, ""));
   _params.push_back(new t_pppParam(t_pppParam::RECCLK, ++nextPar, ""));
-  if (_opt->estTrp()) {
+  if (OPT->estTrp()) {
     _params.push_back(new t_pppParam(t_pppParam::TROPO, ++nextPar, ""));
   }
-  if (_opt->useSystem('R')) {
+  if (OPT->useSystem('R')) {
     _params.push_back(new t_pppParam(t_pppParam::GLONASS_OFFSET, ++nextPar, ""));
   }
-  if (_opt->useSystem('E')) {
+  if (OPT->useSystem('E')) {
     _params.push_back(new t_pppParam(t_pppParam::GALILEO_OFFSET, ++nextPar, ""));
   }
 
@@ -227,13 +224,13 @@ void t_pppFilter::reset() {
     t_pppParam* pp = _params[iPar-1];
     pp->xx = 0.0;
     if      (pp->isCrd()) {
-      _QQ(iPar,iPar) = _opt->_aprSigCrd(1) * _opt->_aprSigCrd(1); 
+      _QQ(iPar,iPar) = OPT->_aprSigCrd(1) * OPT->_aprSigCrd(1); 
     }
     else if (pp->type == t_pppParam::RECCLK) {
-      _QQ(iPar,iPar) = _opt->_noiseClk * _opt->_noiseClk; 
+      _QQ(iPar,iPar) = OPT->_noiseClk * OPT->_noiseClk; 
     }
     else if (pp->type == t_pppParam::TROPO) {
-      _QQ(iPar,iPar) = _opt->_aprSigTrp * _opt->_aprSigTrp; 
+      _QQ(iPar,iPar) = OPT->_aprSigTrp * OPT->_aprSigTrp; 
       pp->xx = lastTrp;
     }
     else if (pp->type == t_pppParam::GLONASS_OFFSET) {
@@ -252,7 +249,7 @@ t_irc t_pppFilter::cmpBancroft(t_epoData* epoData) {
   Tracer tracer("t_pppFilter::cmpBancroft");
 
   if (epoData->sizeSys('G') < MINOBS) {
-    _log += "t_pppFilter::cmpBancroft: not enough data\n";
+    LOG << "t_pppFilter::cmpBancroft: not enough data\n";
     return failure;
   }
 
@@ -336,9 +333,9 @@ double t_pppFilter::cmpValue(t_satData* satData, bool phase) {
   double phaseCenter = 0.0;
   if (_antex) { 
     bool found;
-    phaseCenter = _antex->pco(QString(_opt->_antNameRover.c_str()), satData->eleSat, found);
+    phaseCenter = _antex->pco(QString(OPT->_antNameRover.c_str()), satData->eleSat, found);
     if (!found) {
-      LOG << "ANTEX: antenna >" << _opt->_antNameRover << "< not found\n";
+      LOG << "ANTEX: antenna >" << OPT->_antNameRover << "< not found\n";
     }
   }
 
@@ -347,9 +344,9 @@ double t_pppFilter::cmpValue(t_satData* satData, bool phase) {
   double sina = sin(satData->azSat);
   double cose = cos(satData->eleSat);
   double sine = sin(satData->eleSat);
-  antennaOffset = -_opt->_neuEccRover(1) * cosa*cose 
-                  -_opt->_neuEccRover(2) * sina*cose 
-                  -_opt->_neuEccRover(3) * sine;
+  antennaOffset = -OPT->_neuEccRover(1) * cosa*cose 
+                  -OPT->_neuEccRover(2) * sina*cose 
+                  -OPT->_neuEccRover(3) * sine;
 
   return satData->rho + phaseCenter + antennaOffset + clk() 
                       + offset - satData->clk + tropDelay + wind;
@@ -415,8 +412,8 @@ void t_pppFilter::predict(int iPhase, t_epoData* epoData) {
     
     // Use different white noise for Quick-Start mode
     // ----------------------------------------------
-    double sigCrdP_used = _opt->_noiseCrd(1);
-    if ( _opt->_seedingTime > 0.0 && _opt->_seedingTime > (epoData->tt - _startTime) ) {
+    double sigCrdP_used = OPT->_noiseCrd(1);
+    if ( OPT->_seedingTime > 0.0 && OPT->_seedingTime > (epoData->tt - _startTime) ) {
       sigCrdP_used   = 0.0;
     }
 
@@ -429,8 +426,8 @@ void t_pppFilter::predict(int iPhase, t_epoData* epoData) {
       // -----------
       if      (pp->type == t_pppParam::CRD_X) {
         if (firstCrd) {
-          if (_opt->xyzAprRoverSet()) {
-            pp->xx = _opt->_xyzAprRover[0];
+          if (OPT->xyzAprRoverSet()) {
+            pp->xx = OPT->_xyzAprRover[0];
           }
           else {
             pp->xx = _xcBanc(1);
@@ -440,8 +437,8 @@ void t_pppFilter::predict(int iPhase, t_epoData* epoData) {
       }
       else if (pp->type == t_pppParam::CRD_Y) {
         if (firstCrd) {
-          if (_opt->xyzAprRoverSet()) {
-            pp->xx = _opt->_xyzAprRover[1];
+          if (OPT->xyzAprRoverSet()) {
+            pp->xx = OPT->_xyzAprRover[1];
           }
           else {
             pp->xx = _xcBanc(2);
@@ -451,8 +448,8 @@ void t_pppFilter::predict(int iPhase, t_epoData* epoData) {
       }
       else if (pp->type == t_pppParam::CRD_Z) {
         if (firstCrd) {
-          if (_opt->xyzAprRoverSet()) {
-            pp->xx = _opt->_xyzAprRover[2];
+          if (OPT->xyzAprRoverSet()) {
+            pp->xx = OPT->_xyzAprRover[2];
           }
           else {
             pp->xx = _xcBanc(3);
@@ -468,13 +465,13 @@ void t_pppFilter::predict(int iPhase, t_epoData* epoData) {
         for (int jj = 1; jj <= _params.size(); jj++) {
           _QQ(iPar, jj) = 0.0;
         }
-        _QQ(iPar,iPar) = _opt->_noiseClk * _opt->_noiseClk;
+        _QQ(iPar,iPar) = OPT->_noiseClk * OPT->_noiseClk;
       }
     
       // Tropospheric Delay
       // ------------------
       else if (pp->type == t_pppParam::TROPO) {
-        _QQ(iPar,iPar) += _opt->_noiseTrp * _opt->_noiseTrp;
+        _QQ(iPar,iPar) += OPT->_noiseTrp * OPT->_noiseTrp;
       }
     
       // Glonass Offset
@@ -497,7 +494,7 @@ void t_pppFilter::predict(int iPhase, t_epoData* epoData) {
 
   // Add New Ambiguities if necessary
   // --------------------------------
-  if (_opt->ambLCs('G').size() || _opt->ambLCs('R').size() || _opt->ambLCs('E').size()) {
+  if (OPT->ambLCs('G').size() || OPT->ambLCs('R').size() || OPT->ambLCs('E').size()) {
 
     // Make a copy of QQ and xx, set parameter indices
     // -----------------------------------------------
@@ -555,7 +552,7 @@ void t_pppFilter::predict(int iPhase, t_epoData* epoData) {
     for (int ii = 1; ii <= nPar; ii++) {
       t_pppParam* par = _params[ii-1];
       if (par->index_old == 0) {
-        _QQ(par->index, par->index) = _opt->_aprSigAmb * _opt->_aprSigAmb;
+        _QQ(par->index, par->index) = OPT->_aprSigAmb * OPT->_aprSigAmb;
       }
       par->index_old = par->index;
     }
@@ -568,112 +565,96 @@ t_irc t_pppFilter::update(t_epoData* epoData) {
 
   Tracer tracer("t_pppFilter::update");
 
-  _log.clear();  
-
   _time = epoData->tt; // current epoch time
 
-  if (_opt->useOrbClkCorr()) {
-    _log += "Precise Point Positioning of Epoch " 
-          + QByteArray(_time.timestr(1).c_str()) +
-          "\n---------------------------------------------------------------\n";
+  if (OPT->useOrbClkCorr()) {
+    LOG << "Precise Point Positioning of Epoch " << _time.timestr(1)
+        << "\n---------------------------------------------------------------\n";
   }
   else {
-    _log += "Single Point Positioning of Epoch " 
-          + QByteArray(_time.timestr(1).c_str()) +
-          "\n--------------------------------------------------------------\n";
+    LOG << "Single Point Positioning of Epoch " << _time.timestr(1)
+        << "\n--------------------------------------------------------------\n";
   }
 
   // Outlier Detection Loop
   // ----------------------
   if (update_p(epoData) != success) {
-    LOG << _log.data() << endl;
     return failure;
   }
 
-  // Remember the Epoch-specific Results for the computation of means
-  // ----------------------------------------------------------------
-  pppPos* newPos = new pppPos;
-  newPos->time   = epoData->tt;
-
   // Set Solution Vector
   // -------------------
-  ostringstream strB;
-  strB.setf(ios::fixed);
+  LOG.setf(ios::fixed);
   QVectorIterator<t_pppParam*> itPar(_params);
   while (itPar.hasNext()) {
     t_pppParam* par = itPar.next();
-
     if      (par->type == t_pppParam::RECCLK) {
-      strB << "\n    clk     = " << setw(10) << setprecision(3) << par->xx 
-           << " +- " << setw(6) << setprecision(3) 
-           << sqrt(_QQ(par->index,par->index));
+      LOG << "\n    clk     = " << setw(10) << setprecision(3) << par->xx 
+          << " +- " << setw(6) << setprecision(3) 
+          << sqrt(_QQ(par->index,par->index));
     }
     else if (par->type == t_pppParam::AMB_L3) {
       ++par->numEpo;
-      strB << "\n    amb " << par->prn.toAscii().data() << " = "
-           << setw(10) << setprecision(3) << par->xx 
-           << " +- " << setw(6) << setprecision(3) 
-           << sqrt(_QQ(par->index,par->index))
-           << "   nEpo = " << par->numEpo;
+      LOG << "\n    amb " << par->prn.toAscii().data() << " = "
+          << setw(10) << setprecision(3) << par->xx 
+          << " +- " << setw(6) << setprecision(3) 
+          << sqrt(_QQ(par->index,par->index))
+          << "   nEpo = " << par->numEpo;
     }
     else if (par->type == t_pppParam::TROPO) {
       double aprTrp = delay_saast(M_PI/2.0);
-      strB << "\n    trp     = " << par->prn.toAscii().data()
-           << setw(7) << setprecision(3) << aprTrp << " "
-           << setw(6) << setprecision(3) << showpos << par->xx << noshowpos
-           << " +- " << setw(6) << setprecision(3) 
-           << sqrt(_QQ(par->index,par->index));
-      newPos->xnt[6] = aprTrp + par->xx;
+      LOG << "\n    trp     = " << par->prn.toAscii().data()
+          << setw(7) << setprecision(3) << aprTrp << " "
+          << setw(6) << setprecision(3) << showpos << par->xx << noshowpos
+          << " +- " << setw(6) << setprecision(3) 
+          << sqrt(_QQ(par->index,par->index));
     }
     else if (par->type == t_pppParam::GLONASS_OFFSET) {
-      strB << "\n    offGlo  = " << setw(10) << setprecision(3) << par->xx 
-           << " +- " << setw(6) << setprecision(3) 
-           << sqrt(_QQ(par->index,par->index));
+      LOG << "\n    offGlo  = " << setw(10) << setprecision(3) << par->xx 
+          << " +- " << setw(6) << setprecision(3) 
+          << sqrt(_QQ(par->index,par->index));
     }
     else if (par->type == t_pppParam::GALILEO_OFFSET) {
-      strB << "\n    offGal  = " << setw(10) << setprecision(3) << par->xx 
-           << " +- " << setw(6) << setprecision(3) 
-           << sqrt(_QQ(par->index,par->index));
+      LOG << "\n    offGal  = " << setw(10) << setprecision(3) << par->xx 
+          << " +- " << setw(6) << setprecision(3) 
+          << sqrt(_QQ(par->index,par->index));
     }
   }
-  strB << '\n';
-  _log += strB.str().c_str();
-  LOG << _log.data() << endl;
+
+  LOG << endl;
 
   // Final Message (both log file and screen)
   // ----------------------------------------
-  ostringstream strC;
-  strC.setf(ios::fixed);
-  strC << _staID.data() << "  PPP " 
-       << epoData->tt.timestr(1) << " " << epoData->sizeAll() << " "
-       << setw(14) << setprecision(3) << x()                  << " +- "
-       << setw(6)  << setprecision(3) << sqrt(_QQ(1,1))       << " "
-       << setw(14) << setprecision(3) << y()                  << " +- "
-       << setw(6)  << setprecision(3) << sqrt(_QQ(2,2))       << " "
-       << setw(14) << setprecision(3) << z()                  << " +- "
-       << setw(6)  << setprecision(3) << sqrt(_QQ(3,3));
+  LOG << OPT->_roverName << "  PPP " 
+      << epoData->tt.timestr(1) << " " << epoData->sizeAll() << " "
+      << setw(14) << setprecision(3) << x()                  << " +- "
+      << setw(6)  << setprecision(3) << sqrt(_QQ(1,1))       << " "
+      << setw(14) << setprecision(3) << y()                  << " +- "
+      << setw(6)  << setprecision(3) << sqrt(_QQ(2,2))       << " "
+      << setw(14) << setprecision(3) << z()                  << " +- "
+      << setw(6)  << setprecision(3) << sqrt(_QQ(3,3));
 
   // NEU Output
   // ----------
-  if (_opt->xyzAprRoverSet()) {
-    newPos->xnt[0] = x() - _opt->_xyzAprRover[0];
-    newPos->xnt[1] = y() - _opt->_xyzAprRover[1];
-    newPos->xnt[2] = z() - _opt->_xyzAprRover[2];
+  if (OPT->xyzAprRoverSet()) {
+    double xyz[3];
+    xyz[0] = x() - OPT->_xyzAprRover[0];
+    xyz[1] = y() - OPT->_xyzAprRover[1];
+    xyz[2] = z() - OPT->_xyzAprRover[2];
 
     double ellRef[3];
-    xyz2ell(_opt->_xyzAprRover.data(), ellRef);
-    xyz2neu(ellRef, newPos->xnt, &newPos->xnt[3]);
+    xyz2ell(OPT->_xyzAprRover.data(), ellRef);
+    double neu[3];
+    xyz2neu(ellRef, xyz, neu);
 
-    strC << "  NEU "
-         << setw(8) << setprecision(3) << newPos->xnt[3] << " "
-         << setw(8) << setprecision(3) << newPos->xnt[4] << " "
-         << setw(8) << setprecision(3) << newPos->xnt[5] << endl;
-
+    LOG << "  NEU "
+        << setw(8) << setprecision(3) << neu[0] << " "
+        << setw(8) << setprecision(3) << neu[1] << " "
+        << setw(8) << setprecision(3) << neu[2] << endl;
   }
-
-  LOG << strC.str() << endl;
-
-  delete newPos;
+  else {
+    LOG << endl;
+  }
 
   _lastTimeOK = _time; // remember time of last successful update
   return success;
@@ -694,19 +675,16 @@ QString t_pppFilter::outlierDetection(int iPhase, const ColumnVector& vv,
 
   if      (iPhase == 1) {
     if      (maxResGlo > MAXRES_PHASE_GLONASS) { 
-      _log += "Outlier Phase " + prnGlo + " " 
-            + QByteArray::number(maxResGlo, 'f', 3) + "\n"; 
+      LOG << "Outlier Phase " << prnGlo.toAscii().data() << ' ' << maxResGlo << endl;
       return prnGlo;
     }
     else if (maxResGPS > MAXRES_PHASE_GPS) { 
-      _log += "Outlier Phase " + prnGPS + " " 
-            + QByteArray::number(maxResGPS, 'f', 3) + "\n"; 
+      LOG << "Outlier Phase " << prnGPS.toAscii().data() << ' ' << maxResGPS << endl;
       return prnGPS;
     }
   }
   else if (iPhase == 0 && maxResGPS > MAXRES_CODE) {
-    _log += "Outlier Code  " + prnGPS + " " 
-          + QByteArray::number(maxResGPS, 'f', 3) + "\n"; 
+    LOG << "Outlier Code  " << prnGPS.toAscii().data() << ' ' << maxResGPS << endl;
     return prnGPS;
   }
 
@@ -893,7 +871,7 @@ void t_pppFilter::addObs(int iPhase, unsigned& iObs, t_satData* satData,
   // ------------------
   if (iPhase == 1) {
     ll(iObs)      = satData->L3 - cmpValue(satData, true);
-    double sigL3 = 2.98 * _opt->_sigmaL1;
+    double sigL3 = 2.98 * OPT->_sigmaL1;
     if (satData->system() == 'R') {
       sigL3 *= GLONASS_WEIGHT_FACTOR;
     }
@@ -910,7 +888,7 @@ void t_pppFilter::addObs(int iPhase, unsigned& iObs, t_satData* satData,
   // Code Observations
   // -----------------
   else {
-    double sigP3 = 2.98 * _opt->_sigmaC1;
+    double sigP3 = 2.98 * OPT->_sigmaC1;
     ll(iObs)      = satData->P3 - cmpValue(satData, false);
     PP(iObs,iObs) = 1.0 / (sigP3 * sigP3) / (ellWgtCoef * ellWgtCoef);
     for (int iPar = 1; iPar <= _params.size(); iPar++) {
@@ -1005,8 +983,8 @@ t_irc t_pppFilter::update_p(t_epoData* epoData) {
 
     // First update using code observations, then phase observations
     // -------------------------------------------------------------      
-    bool usePhase = _opt->ambLCs('G').size() || _opt->ambLCs('R').size() ||
-                    _opt->ambLCs('E').size();
+    bool usePhase = OPT->ambLCs('G').size() || OPT->ambLCs('R').size() ||
+                    OPT->ambLCs('E').size();
 
     for (int iPhase = 0; iPhase <= (usePhase ? 1 : 0); iPhase++) {
     
@@ -1073,19 +1051,17 @@ t_irc t_pppFilter::update_p(t_epoData* epoData) {
 
         if (!usePhase || iPhase == 1) {
           if (_outlierGPS.size() > 0 || _outlierGlo.size() > 0) {
-            _log += "Neglected PRNs: ";
+            LOG << "Neglected PRNs: ";
             if (!_outlierGPS.isEmpty()) {
-              _log += _outlierGPS.last() + ' ';
+              LOG << _outlierGPS.last().toAscii().data() << ' ';
             }
             QStringListIterator itGlo(_outlierGlo);
             while (itGlo.hasNext()) {
               QString prn = itGlo.next();
-              _log += prn + ' ';
+              LOG << prn.toAscii().data() << ' ';
             }
           }
-          _log += '\n';
-
-          _log += strResCode + strResPhase;
+          LOG << endl << strResCode.data() << strResPhase.data();
 
           return success;
         }
