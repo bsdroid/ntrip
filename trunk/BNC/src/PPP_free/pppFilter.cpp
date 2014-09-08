@@ -171,6 +171,12 @@ t_pppFilter::t_pppFilter(t_pppClient* pppClient) {
   // Save copy of data (used in outlier detection)
   // ---------------------------------------------
   _epoData_sav = new t_epoData();
+
+  // Some statistics
+  // ---------------
+  _neu.ReSize(3); _neu = 0.0;
+  _numSat = 0;
+  _pDop   = 0.0;
 }
 
 // Destructor
@@ -623,6 +629,10 @@ t_irc t_pppFilter::update(t_epoData* epoData) {
 
   LOG << endl << endl;
 
+  // Compute dilution of precision
+  // -----------------------------
+  cmpDOP(epoData);
+
   // Final Message (both log file and screen)
   // ----------------------------------------
   LOG << OPT->_roverName << "  PPP " 
@@ -644,13 +654,12 @@ t_irc t_pppFilter::update(t_epoData* epoData) {
 
     double ellRef[3];
     xyz2ell(OPT->_xyzAprRover.data(), ellRef);
-    double neu[3];
-    xyz2neu(ellRef, xyz, neu);
+    xyz2neu(ellRef, xyz, _neu.data());
 
     LOG << "  NEU "
-        << setw(8) << setprecision(3) << neu[0] << " "
-        << setw(8) << setprecision(3) << neu[1] << " "
-        << setw(8) << setprecision(3) << neu[2] << endl << endl;
+        << setw(8) << setprecision(3) << _neu[0] << " "
+        << setw(8) << setprecision(3) << _neu[1] << " "
+        << setw(8) << setprecision(3) << _neu[2] << endl << endl;
   }
   else {
     LOG << endl << endl;
