@@ -44,9 +44,8 @@
 
 #include "pppClient.h"
 #include "pppFilter.h"
-#include "pppOptions.h"
+#include "bncephuser.h"
 #include "bncutils.h"
-#include "bncconst.h"
 
 using namespace BNC_PPP;
 using namespace std;
@@ -63,12 +62,13 @@ t_pppClient* t_pppClient::instance() {
 
 // Constructor
 ////////////////////////////////////////////////////////////////////////////
-t_pppClient::t_pppClient(const t_pppOptions* opt) : bncEphUser(false) {
+t_pppClient::t_pppClient(const t_pppOptions* opt) {
 
   _opt     = new t_pppOptions(*opt);
   _filter  = new t_pppFilter(this);
   _epoData = new t_epoData();
   _log     = new ostringstream();
+  _ephUser = new bncEphUser(false);
   _staID   = QByteArray(_opt->_roverName.c_str());
 
   CLIENTS.setLocalData(this);  // CLIENTS takes ownership over "this"
@@ -80,13 +80,13 @@ t_pppClient::~t_pppClient() {
   delete _filter;
   delete _epoData;
   delete _opt;
+  delete _ephUser;
   delete _log;
 }
 
 //
 ////////////////////////////////////////////////////////////////////////////
 void t_pppClient::processEpoch(const vector<t_satObs*>& satObs, t_output* output) {
-  QMutexLocker locker(&_mutex);
   
   // Convert and store observations
   // ------------------------------
@@ -175,9 +175,9 @@ void t_pppClient::putNewObs(t_satData* satData) {
 
       int channel = 0;
       if (satData->system() == 'R') {
-        if (_eph.contains(satData->prn)) {
-          t_eph* eLast =_eph.value(satData->prn)->last;
-          channel = eLast->slotNum();
+        const bncEphUser::t_ephPair* ephPair = _ephUser->ephPair(satData->prn);
+        if (ephPair) {
+          channel = ephPair->last->slotNum();
         }
         else {
           delete satData;
@@ -228,12 +228,12 @@ void t_pppClient::putNewObs(t_satData* satData) {
 // 
 ////////////////////////////////////////////////////////////////////////////
 void t_pppClient::putOrbCorrections(const std::vector<t_orbCorr*>& corr) {
-  QMutexLocker locker(&_mutex);
   for (unsigned ii = 0; ii < corr.size(); ii++) {
     QString prn = QString(corr[ii]->_prn.toString().c_str());
-    if (_eph.contains(prn)) {
-      t_eph* eLast = _eph.value(prn)->last;
-      t_eph* ePrev = _eph.value(prn)->prev;
+    const bncEphUser::t_ephPair* ephPair = _ephUser->ephPair(prn);
+    if (ephPair) {
+      t_eph* eLast = ephPair->last;
+      t_eph* ePrev = ephPair->prev;
       if      (eLast && eLast->IOD() == corr[ii]->_iod) {
         eLast->setOrbCorr(corr[ii]);
       }
@@ -247,12 +247,12 @@ void t_pppClient::putOrbCorrections(const std::vector<t_orbCorr*>& corr) {
 // 
 ////////////////////////////////////////////////////////////////////////////
 void t_pppClient::putClkCorrections(const std::vector<t_clkCorr*>& corr) {
-  QMutexLocker locker(&_mutex);
   for (unsigned ii = 0; ii < corr.size(); ii++) {
     QString prn = QString(corr[ii]->_prn.toString().c_str());
-    if (_eph.contains(prn)) {
-      t_eph* eLast = _eph.value(prn)->last;
-      t_eph* ePrev = _eph.value(prn)->prev;
+    const bncEphUser::t_ephPair* ephPair = _ephUser->ephPair(prn);
+    if (ephPair) {
+      t_eph* eLast = ephPair->last;
+      t_eph* ePrev = ephPair->prev;
       if      (eLast && eLast->IOD() == corr[ii]->_iod) {
         eLast->setClkCorr(corr[ii]);
       }
@@ -275,13 +275,13 @@ void t_pppClient::putEphemeris(const t_eph* eph) {
   const t_ephGlo* ephGlo = dynamic_cast<const t_ephGlo*>(eph);
   const t_ephGal* ephGal = dynamic_cast<const t_ephGal*>(eph);
   if      (ephGPS) {
-    putNewEph(new t_ephGPS(*ephGPS));
+    _ephUser->putNewEph(new t_ephGPS(*ephGPS));
   }
   else if (ephGlo) {
-    putNewEph(new t_ephGlo(*ephGlo));
+    _ephUser->putNewEph(new t_ephGlo(*ephGlo));
   }
   else if (ephGal) {
-    putNewEph(new t_ephGal(*ephGal));
+    _ephUser->putNewEph(new t_ephGal(*ephGal));
   }
 }
 
@@ -289,9 +289,11 @@ void t_pppClient::putEphemeris(const t_eph* eph) {
 ////////////////////////////////////////////////////////////////////////////
 t_irc t_pppClient::getSatPos(const bncTime& tt, const QString& prn, 
                               ColumnVector& xc, ColumnVector& vv) {
-  if (_eph.contains(prn)) {
-    t_eph* eLast = _eph.value(prn)->last;
-    t_eph* ePrev = _eph.value(prn)->prev;
+
+  const bncEphUser::t_ephPair* ephPair = _ephUser->ephPair(prn);
+  if (ephPair) {
+    t_eph* eLast = ephPair->last;
+    t_eph* ePrev = ephPair->prev;
     if      (eLast && eLast->getCrd(tt, xc, vv, _opt->useOrbClkCorr()) == success) {
       return success;
     }

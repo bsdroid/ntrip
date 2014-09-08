@@ -26,45 +26,17 @@
 #define PPPCLIENT_H
 
 #include <vector>
-#include "bncephuser.h"
+#include <QtCore>
+
+#include "pppInclude.h"
+#include "pppOptions.h"
+
+class bncEphUser;
+class t_eph;
 
 namespace BNC_PPP {
   
 class t_pppFilter;
-class t_pppOptions;
-class t_satObs;
-class t_satData;
-class t_epoData;
-class t_output;
-class t_orbCorr;
-class t_clkCorr;
-class t_satBias;
-
-class t_pppClient : public bncEphUser {
- public:
-  t_pppClient(const t_pppOptions* opt);
-  ~t_pppClient();
-  void                processEpoch(const std::vector<t_satObs*>& satObs, t_output* output);
-  void                putEphemeris(const t_eph* eph);                  
-  void                putOrbCorrections(const std::vector<t_orbCorr*>& corr); 
-  void                putClkCorrections(const std::vector<t_clkCorr*>& corr); 
-  void                putBiases(const std::vector<t_satBias*>& satBias);   
-  QByteArray          staID() const {return _staID;}
-  const t_pppOptions* opt() const {return _opt;}
-  static t_pppClient* instance();
-  std::ostringstream& log() {return *_log;}
-
- private:
-  t_irc getSatPos(const bncTime& tt, const QString& prn, ColumnVector& xc, ColumnVector& vv);
-  void  putNewObs(t_satData* satData);
-  t_irc cmpToT(t_satData* satData);
-
-  t_pppOptions*       _opt;
-  QByteArray          _staID;
-  t_epoData*          _epoData;
-  t_pppFilter*        _filter;
-  std::ostringstream* _log; 
-};
 
 class t_satData {
  public:
@@ -145,6 +117,33 @@ class t_epoData {
 
   bncTime                   tt;
   QMap<QString, t_satData*> satData;
+};
+
+class t_pppClient {
+ public:
+  t_pppClient(const t_pppOptions* opt);
+  ~t_pppClient();
+  void                processEpoch(const std::vector<t_satObs*>& satObs, t_output* output);
+  void                putEphemeris(const t_eph* eph);                  
+  void                putOrbCorrections(const std::vector<t_orbCorr*>& corr); 
+  void                putClkCorrections(const std::vector<t_clkCorr*>& corr); 
+  void                putBiases(const std::vector<t_satBias*>& satBias);   
+  QByteArray          staID() const {return _staID;}
+  const t_pppOptions* opt() const {return _opt;}
+  static t_pppClient* instance();
+  std::ostringstream& log() {return *_log;}
+
+ private:
+  t_irc getSatPos(const bncTime& tt, const QString& prn, ColumnVector& xc, ColumnVector& vv);
+  void  putNewObs(t_satData* satData);
+  t_irc cmpToT(t_satData* satData);
+
+  bncEphUser*         _ephUser;
+  t_pppOptions*       _opt;
+  QByteArray          _staID;
+  t_epoData*          _epoData;
+  t_pppFilter*        _filter;
+  std::ostringstream* _log; 
 };
 
 }
