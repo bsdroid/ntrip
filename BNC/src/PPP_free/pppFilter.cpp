@@ -1061,7 +1061,7 @@ t_irc t_pppFilter::update_p(t_epoData* epoData) {
               LOG << prn.toAscii().data() << ' ';
             }
           }
-          LOG << endl << strResCode.data() << strResPhase.data();
+          LOG << strResCode.data() << strResPhase.data();
 
           return success;
         }
