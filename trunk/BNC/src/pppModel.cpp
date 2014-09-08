@@ -361,7 +361,7 @@ double t_tropo::delay_saast(const ColumnVector& xyz, double Ele) {
   
   if (h_km < 0.0) h_km = 0.0;
   if (h_km > 5.0) h_km = 5.0;
-  int    ii   = int(h_km + 1);
+  int    ii   = int(h_km + 1); if (ii > 5) ii = 5;
   double href = ii - 1;
   
   double bCor[6]; 
