@@ -7,6 +7,7 @@
 
 #include "bncconst.h"
 #include "bnctime.h"
+#include "ephemeris.h"
 #include "t_prn.h"
 
 namespace BNC_PPP {
@@ -192,6 +193,16 @@ class t_lc {
     return "";
   }
 };
+
+class interface_pppClient {
+ public:
+  virtual      ~interface_pppClient();
+  virtual void processEpoch(const std::vector<t_satObs*>& satObs, t_output* output) = 0;
+  virtual void putEphemeris(const t_eph* eph) = 0;                  
+  virtual void putOrbCorrections(const std::vector<t_orbCorr*>& corr) = 0; 
+  virtual void putClkCorrections(const std::vector<t_clkCorr*>& corr) = 0; 
+  virtual void putBiases(const std::vector<t_satBias*>& satBias) = 0;
+};   
 
 } // namespace BNC_PPP
 
