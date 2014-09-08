@@ -621,7 +621,7 @@ t_irc t_pppFilter::update(t_epoData* epoData) {
     }
   }
 
-  LOG << endl;
+  LOG << endl << endl;
 
   // Final Message (both log file and screen)
   // ----------------------------------------
@@ -650,10 +650,10 @@ t_irc t_pppFilter::update(t_epoData* epoData) {
     LOG << "  NEU "
         << setw(8) << setprecision(3) << neu[0] << " "
         << setw(8) << setprecision(3) << neu[1] << " "
-        << setw(8) << setprecision(3) << neu[2] << endl;
+        << setw(8) << setprecision(3) << neu[2] << endl << endl;
   }
   else {
-    LOG << endl;
+    LOG << endl << endl;
   }
 
   _lastTimeOK = _time; // remember time of last successful update
