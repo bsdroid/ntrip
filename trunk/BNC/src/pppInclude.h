@@ -196,7 +196,7 @@ class t_lc {
 
 class interface_pppClient {
  public:
-  virtual      ~interface_pppClient();
+  virtual      ~interface_pppClient() {};
   virtual void processEpoch(const std::vector<t_satObs*>& satObs, t_output* output) = 0;
   virtual void putEphemeris(const t_eph* eph) = 0;                  
   virtual void putOrbCorrections(const std::vector<t_orbCorr*>& corr) = 0; 
