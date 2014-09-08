@@ -411,13 +411,11 @@ void bncComb::switchToLastEph(const t_eph* lastEph, t_corr* corr) {
 
   ColumnVector oldXC(4);
   ColumnVector oldVV(3);
-  corr->eph->position(corr->tRao.gpsw(), corr->tRao.gpssec(), 
-                      oldXC.data(), oldVV.data());
+  corr->eph->getCrd(corr->tRao, oldXC, oldVV, false);
 
   ColumnVector newXC(4);
   ColumnVector newVV(3);
-  lastEph->position(corr->tRao.gpsw(), corr->tRao.gpssec(), 
-                    newXC.data(), newVV.data());
+  lastEph->getCrd(corr->tRao, newXC, newVV, false);
 
   ColumnVector dX = newXC.Rows(1,3) - oldXC.Rows(1,3);
   ColumnVector dV = newVV           - oldVV;
@@ -639,15 +637,16 @@ void bncComb::printResults(QTextStream& out,
     t_corr* corr = it.value();
     const t_eph* eph = corr->eph;
     if (eph) {
-      double xx, yy, zz, cc;
-      eph->position(_resTime.gpsw(), _resTime.gpssec(), xx, yy, zz, cc);
+      ColumnVector xc(4);
+      ColumnVector vv(3);
+      eph->getCrd(_resTime, xc, vv, false);
 
       out << _resTime.datestr().c_str() << " " 
           << _resTime.timestr().c_str() << " ";
       out.setFieldWidth(3);
       out << "Full Clock " << corr->prn << " " << corr->iod << " ";
       out.setFieldWidth(14);
-      out << (cc + corr->dClk) * t_CST::c << endl;
+      out << (xc(4) + corr->dClk) * t_CST::c << endl;
       out.setFieldWidth(0);
     }
     else {
@@ -678,8 +677,7 @@ void bncComb::dumpResults(const QMap<QString, t_corr*>& resCorr) {
 
     ColumnVector xc(4);
     ColumnVector vv(3);
-    corr->eph->position(_resTime.gpsw(), _resTime.gpssec(), 
-                        xc.data(), vv.data());
+    corr->eph->getCrd(_resTime, xc, vv, false);
     
     // Correction Phase Center --> CoM
     // -------------------------------

@@ -553,13 +553,12 @@ void t_reqcAnalyze::preparePlotData(const QString& prn,
           }
           
           if (eph) {
-            double xSat, ySat, zSat, clkSat;
-            eph->position(oneObs->_GPSWeek, oneObs->_GPSWeeks, 
-                          xSat, ySat, zSat, clkSat);
+            ColumnVector xc(4);
+            ColumnVector vv(3);
+            eph->getCrd(bncTime(oneObs->_GPSWeek, oneObs->_GPSWeeks), xc, vv, false);
           
             double rho, eleSat, azSat;
-            topos(xyzSta(1), xyzSta(2), xyzSta(3), 
-                  xSat, ySat, zSat, rho, eleSat, azSat);
+            topos(xyzSta(1), xyzSta(2), xyzSta(3), xc(1), xc(2), xc(3), rho, eleSat, azSat);
           
             aziDeg = azSat * 180.0/M_PI;
             zenDeg = 90.0 - eleSat * 180.0/M_PI;
@@ -763,11 +762,10 @@ double t_reqcAnalyze::cmpDOP(const ColumnVector& xyzSta) const {
     }
     if (eph) {
       ++nSatUsed;
-      ColumnVector xSat(3);
-      double clkSat;
-      eph->position(_currEpo->tt.gpsw(), _currEpo->tt.gpssec(), 
-                    xSat(1), xSat(2), xSat(3), clkSat);
-      ColumnVector dx = xSat - xyzSta;
+      ColumnVector xSat(4);
+      ColumnVector vv(3);
+      eph->getCrd(_currEpo->tt, xSat, vv, false);
+      ColumnVector dx = xSat.Rows(1,3) - xyzSta;
       double rho = dx.norm_Frobenius();
       AA(nSatUsed,1) = dx(1) / rho;
       AA(nSatUsed,2) = dx(2) / rho;
