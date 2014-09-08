@@ -37,7 +37,7 @@ class t_eph;
 
 namespace BNC_PPP {
   
-class t_pppClient {
+class t_pppClient : public interface_pppClient {
  public:
   t_pppClient(const t_pppOptions* opt);
   ~t_pppClient();
