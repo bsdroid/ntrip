@@ -1255,3 +1255,36 @@ void t_pppFilter::bancroft(const Matrix& BBpass, ColumnVector& pos) {
   }
 }
 
+// 
+////////////////////////////////////////////////////////////////////////////
+void t_pppFilter::cmpDOP(t_epoData* epoData) {
+
+  Tracer tracer("t_pppFilter::cmpDOP");
+
+  _numSat = 0;
+  _pDop   = 0.0;
+
+  if (_params.size() < 4) {
+    return;
+  }
+
+  const unsigned numPar = 4;
+  Matrix AA(epoData->sizeAll(), numPar);
+  QMapIterator<QString, t_satData*> it(epoData->satData);
+  while (it.hasNext()) {
+    it.next();
+    t_satData* satData = it.value();
+    _numSat += 1;
+    for (unsigned iPar = 0; iPar < numPar; iPar++) {
+      AA[_numSat-1][iPar] = _params[iPar]->partial(satData, false);
+    }
+  }
+  if (_numSat < 4) {
+    return;
+  }
+  AA = AA.Rows(1, _numSat);
+  SymmetricMatrix NN; NN << AA.t() * AA;  
+  SymmetricMatrix QQ = NN.i();
+    
+  _pDop = sqrt(QQ(1,1) + QQ(2,2) + QQ(3,3));
+}
