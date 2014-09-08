@@ -147,6 +147,10 @@ class t_pppFilter {
   ~t_pppFilter();
   t_irc update(t_epoData* epoData);
   bncTime time()  const {return _time;}
+  const SymmetricMatrix& Q() const {return _QQ;}
+  const ColumnVector& neu() const {return _neu;}
+  int    numSat() const {return _numSat;}
+  double PDOP()   const {return _pDop;}
   double x()      const {return _params[0]->xx;}
   double y()      const {return _params[1]->xx;}
   double z()      const {return _params[2]->xx;}
@@ -234,6 +238,7 @@ class t_pppFilter {
   QStringList           _outlierGlo;
   bncAntex*             _antex;
   t_tides*              _tides;
+  ColumnVector          _neu;
   int                   _numSat;
   double                _pDop;
 };
