@@ -216,6 +216,8 @@ class t_pppFilter {
 
   void bancroft(const Matrix& BBpass, ColumnVector& pos);
 
+  void cmpDOP(t_epoData* epoData);
+
   t_pppClient*          _pppClient;
   bncTime               _time;
   bncTime               _lastTimeOK;
@@ -232,6 +234,8 @@ class t_pppFilter {
   QStringList           _outlierGlo;
   bncAntex*             _antex;
   t_tides*              _tides;
+  int                   _numSat;
+  double                _pDop;
 };
 
 }
