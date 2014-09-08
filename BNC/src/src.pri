@@ -115,7 +115,7 @@ exists(combination/bnccomb.h) {
   SOURCES += combination/bnccomb.cpp
 }
 
-exists(PPP) {
+exists(PPPxxx) {
   INCLUDEPATH += PPP
   HEADERS += PPP/pppClient.h    PPP/pppObsPool.h   PPP/pppEphPool.h   \
              PPP/pppStation.h   PPP/pppFilter.h    PPP/pppParlist.h   \

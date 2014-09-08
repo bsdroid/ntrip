@@ -35,7 +35,13 @@ int cmpRho(const t_eph* eph,
   // Initial values
   // --------------
   rho = 0.0;
-  eph->position(GPSWeek, GPSWeeks, xSat, ySat, zSat, clkSat); 
+  ColumnVector xc(4);
+  ColumnVector vv(3);
+  eph->getCrd(bncTime(GPSWeek, GPSWeeks), xc, vv, false);
+  xSat   = xc(1);
+  ySat   = xc(2);
+  zSat   = xc(3);
+  clkSat = xc(4);
 
   ////cout << "----- cmpRho -----\n";
   ////eph->print(cout);
@@ -76,7 +82,11 @@ int cmpRho(const t_eph* eph,
       GPSWeek_tot  += 1;
     }
       
-    eph->position(GPSWeek_tot, GPSWeeks_tot, xSat, ySat, zSat, clkSat); 
+    eph->getCrd(bncTime(GPSWeek_tot, GPSWeeks_tot), xc, vv, false);
+    xSat   = xc(1);
+    ySat   = xc(2);
+    zSat   = xc(3);
+    clkSat = xc(4);
 
     dx = xRec - xSat;
     dy = yRec - ySat;

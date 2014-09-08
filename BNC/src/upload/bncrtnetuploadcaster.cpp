@@ -646,7 +646,7 @@ void bncRtnetUploadCaster::processSatellite(t_eph* eph, int GPSweek,
   // -------------------------------
   ColumnVector xB(4);
   ColumnVector vB(3);
-  eph->position(GPSweek, GPSweeks, xB.data(), vB.data());
+  eph->getCrd(bncTime(GPSweek, GPSweeks), xB, vB, false);
 
   // Precise Position
   // ----------------

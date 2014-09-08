@@ -24,53 +24,28 @@ class t_eph {
   t_eph();
   virtual ~t_eph() {};
 
-  static bool earlierTime(const t_eph* eph1, const t_eph* eph2) {
-    return eph1->_TOC < eph2->_TOC;
-  }
-
-  virtual e_type type() const = 0;
+  virtual e_type  type() const = 0;
   virtual QString toString(double version) const = 0;
-  virtual void position(int GPSweek, double GPSweeks, 
-                        double* xc, double* vv) const = 0;
-  virtual int  IOD() const = 0;
-
-  bool ok() const {return _ok;}
+  virtual int     IOD() const = 0;
+  virtual int     slotNum() const {return 0;}
+  bool    ok() const {return _ok;}
   bncTime TOC() const {return _TOC;}
-  bool isNewerThan(const t_eph* eph) const {
-    return earlierTime(eph, this);
-  }
-  t_prn prn() const {return _prn;}
+  bool    isNewerThan(const t_eph* eph) const {return earlierTime(eph, this);}
+  t_prn   prn() const {return _prn;}
+  t_irc   getCrd(const bncTime& tt, ColumnVector& xc, ColumnVector& vv, bool useCorr) const;
+  void    setOrbCorr(const BNC_PPP::t_orbCorr* orbCorr);
+  void    setClkCorr(const BNC_PPP::t_clkCorr* clkCorr);
   const QDateTime& receptDateTime() const {return _receptDateTime;}
-
-  void position(int GPSweek, double GPSweeks, 
-                double& xx, double& yy, double& zz, double& cc) const {
-    double tmp_xx[4];
-    double tmp_vv[4];
-    position(GPSweek, GPSweeks, tmp_xx, tmp_vv);
-
-    xx = tmp_xx[0];
-    yy = tmp_xx[1];
-    zz = tmp_xx[2];
-    cc = tmp_xx[3];
-  }
-
-  t_irc getCrd(const bncTime& tt, ColumnVector& xc,
-               ColumnVector& vv, bool useCorr) const;
-  void setOrbCorr(const BNC_PPP::t_orbCorr* orbCorr);
-  void setClkCorr(const BNC_PPP::t_clkCorr* clkCorr);
-  virtual int slotNum() const {return 0;}
-
-  static QString rinexDateStr(const bncTime& tt, const t_prn& prn,
-                              double version);
-
-  static QString rinexDateStr(const bncTime& tt, const QString& prnStr,
-                              double version);
+  static QString rinexDateStr(const bncTime& tt, const t_prn& prn, double version);
+  static QString rinexDateStr(const bncTime& tt, const QString& prnStr, double version);
+  static bool earlierTime(const t_eph* eph1, const t_eph* eph2) {return eph1->_TOC < eph2->_TOC;}
 
  protected:  
-  t_prn           _prn;
-  bncTime         _TOC;
-  QDateTime       _receptDateTime;
-  bool            _ok;
+  virtual void position(int GPSweek, double GPSweeks, double* xc, double* vv) const = 0;
+  t_prn               _prn;
+  bncTime             _TOC;
+  QDateTime           _receptDateTime;
+  bool                _ok;
   BNC_PPP::t_orbCorr* _orbCorr;
   BNC_PPP::t_clkCorr* _clkCorr;
 };
@@ -84,20 +59,14 @@ class t_ephGPS : public t_eph {
   virtual ~t_ephGPS() {}
 
   virtual e_type type() const {return t_eph::GPS;}
-
   virtual QString toString(double version) const;
-
-  void set(const gpsephemeris* ee);
-
-  virtual void position(int GPSweek, double GPSweeks, 
-                        double* xc,
-                        double* vv) const;
-
   virtual int  IOD() const { return static_cast<int>(_IODC); }
-
+  void set(const gpsephemeris* ee);
   double TGD() const {return _TGD;} // Timing Group Delay (P1-P2 DCB)
 
  private:
+  virtual void position(int GPSweek, double GPSweeks, double* xc, double* vv) const;
+
   double  _clock_bias;      // [s]    
   double  _clock_drift;     // [s/s]  
   double  _clock_driftrate; // [s/s^2]
@@ -141,26 +110,17 @@ class t_ephGlo : public t_eph {
  public:
   t_ephGlo() { _xv.ReSize(6); }
   t_ephGlo(float rnxVersion, const QStringList& lines);
-
   virtual ~t_ephGlo() {}
 
   virtual e_type type() const {return t_eph::GLONASS;}
-
   virtual QString toString(double version) const;
-
-  virtual void position(int GPSweek, double GPSweeks, 
-                        double* xc,
-                        double* vv) const;
-
   virtual int  IOD() const;
-
+  virtual int slotNum() const {return int(_frequency_number);}
   void set(const glonassephemeris* ee);
 
-  virtual int slotNum() const {return int(_frequency_number);}
-
  private:
-  static ColumnVector glo_deriv(double /* tt */, const ColumnVector& xv,
-                                double* acc);
+  virtual void position(int GPSweek, double GPSweeks, double* xc, double* vv) const;
+  static ColumnVector glo_deriv(double /* tt */, const ColumnVector& xv, double* acc);
 
   mutable bncTime      _tt;  // time 
   mutable ColumnVector _xv;  // status vector (position, velocity) at time _tt
@@ -194,18 +154,13 @@ class t_ephGal : public t_eph {
   virtual ~t_ephGal() {}
 
   virtual QString toString(double version) const;
-
   virtual e_type type() const {return t_eph::Galileo;}
-
+  virtual int  IOD() const { return static_cast<int>(_IODnav); }
   void set(const galileoephemeris* ee);
 
-  virtual void position(int GPSweek, double GPSweeks, 
-                        double* xc,
-                        double* vv) const;
-
-  virtual int  IOD() const { return static_cast<int>(_IODnav); }
-
  private:
+  virtual void position(int GPSweek, double GPSweeks, double* xc, double* vv) const;
+
   double  _clock_bias;       //  [s]    
   double  _clock_drift;      //  [s/s]  
   double  _clock_driftrate;  //  [s/s^2]
