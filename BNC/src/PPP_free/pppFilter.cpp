@@ -54,12 +54,10 @@
 using namespace BNC_PPP;
 using namespace std;
 
-const unsigned MINOBS                = 5;
-const double   MINELE                = 10.0 * M_PI / 180.0;
-const double   MAXRES_CODE           = 15.0;
-const double   MAXRES_PHASE_GPS      = 0.04;
-const double   MAXRES_PHASE_GLONASS  = 0.08;
-const double   GLONASS_WEIGHT_FACTOR = 5.0;
+const double   MAXRES_CODE           = 2.98 * 3.0;
+const double   MAXRES_PHASE_GPS      = 2.98 * 0.03;
+const double   MAXRES_PHASE_GLONASS  = 2.98 * 0.03;
+const double   GLONASS_WEIGHT_FACTOR = 1.0;
 
 #define LOG (_pppClient->log())
 #define OPT (_pppClient->opt())
@@ -254,7 +252,7 @@ t_irc t_pppFilter::cmpBancroft(t_epoData* epoData) {
 
   Tracer tracer("t_pppFilter::cmpBancroft");
 
-  if (epoData->sizeSys('G') < MINOBS) {
+  if (epoData->sizeSys('G') < OPT->_minObs) {
     LOG << "t_pppFilter::cmpBancroft: not enough data\n";
     return failure;
   }
@@ -289,7 +287,7 @@ t_irc t_pppFilter::cmpBancroft(t_epoData* epoData) {
     im.next();
     t_satData* satData = im.value();
     cmpEle(satData);
-    if (satData->eleSat < MINELE) {
+    if (satData->eleSat < OPT->_minEle) {
       delete satData;
       im.remove();
     }
@@ -683,16 +681,16 @@ QString t_pppFilter::outlierDetection(int iPhase, const ColumnVector& vv,
   findMaxRes(vv, satData, prnGPS, prnGlo, maxResGPS, maxResGlo);
 
   if      (iPhase == 1) {
-    if      (maxResGlo > MAXRES_PHASE_GLONASS) { 
+    if      (maxResGlo > 2.98 * OPT->_maxResL1) { 
       LOG << "Outlier Phase " << prnGlo.toAscii().data() << ' ' << maxResGlo << endl;
       return prnGlo;
     }
-    else if (maxResGPS > MAXRES_PHASE_GPS) { 
+    else if (maxResGPS > 2.98 * OPT->_maxResL1) { 
       LOG << "Outlier Phase " << prnGPS.toAscii().data() << ' ' << maxResGPS << endl;
       return prnGPS;
     }
   }
-  else if (iPhase == 0 && maxResGPS > MAXRES_CODE) {
+  else if (iPhase == 0 && maxResGPS > 2.98 * OPT->_maxResC1) {
     LOG << "Outlier Code  " << prnGPS.toAscii().data() << ' ' << maxResGPS << endl;
     return prnGPS;
   }
