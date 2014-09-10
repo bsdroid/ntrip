@@ -55,6 +55,7 @@ class reqcDlg : public QDialog {
    QDateTimeEdit* _reqcStartDateTime;
    QDateTimeEdit* _reqcEndDateTime;
    QLineEdit*     _reqcRunBy;
+   QLineEdit*     _reqcUseObsTypes;
    QLineEdit*     _reqcComment;
    QLineEdit*     _reqcOldMarkerName;
    QLineEdit*     _reqcNewMarkerName;
