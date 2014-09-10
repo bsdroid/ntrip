@@ -63,6 +63,7 @@ reqcDlg::reqcDlg(QWidget* parent) : QDialog(parent) {
   _reqcEndDateTime     = new QDateTimeEdit(this);
   _reqcEndDateTime->setDisplayFormat(timeFmtString);
   _reqcRunBy           = new QLineEdit(this);
+  _reqcUseObsTypes     = new QLineEdit(this);
   _reqcComment         = new QLineEdit(this);
   _reqcOldMarkerName   = new QLineEdit(this);
   _reqcNewMarkerName   = new QLineEdit(this);
@@ -103,6 +104,7 @@ reqcDlg::reqcDlg(QWidget* parent) : QDialog(parent) {
     _reqcEndDateTime->setDateTime(settings.value("reqcEndDateTime").toDateTime());
   }
   _reqcRunBy->setText(settings.value("reqcRunBy").toString());
+  _reqcUseObsTypes->setText(settings.value("reqcUseObsTypes").toString());
   _reqcComment->setText(settings.value("reqcComment").toString());
   _reqcOldMarkerName->setText(settings.value("reqcOldMarkerName").toString());
   _reqcNewMarkerName->setText(settings.value("reqcNewMarkerName").toString());
@@ -128,6 +130,9 @@ reqcDlg::reqcDlg(QWidget* parent) : QDialog(parent) {
   ++ir;
   grid->addWidget(new QLabel("Run By"),        ir, 0);
   grid->addWidget(_reqcRunBy,                  ir, 1);
+  ++ir;
+  grid->addWidget(new QLabel("Use Obs. Types"),ir, 0);
+  grid->addWidget(_reqcUseObsTypes,            ir, 1, 1, 4);
   ++ir;
   grid->addWidget(new QLabel("Comment(s)"),    ir, 0);
   grid->addWidget(_reqcComment,                ir, 1, 1, 4);
@@ -232,6 +237,7 @@ void reqcDlg::saveOptions() {
   settings.setValue("reqcStartDateTime"  , _reqcStartDateTime->dateTime().toString(Qt::ISODate)); 
   settings.setValue("reqcEndDateTime"    , _reqcEndDateTime->dateTime().toString(Qt::ISODate));   
   settings.setValue("reqcRunBy"          , _reqcRunBy->text()); 
+  settings.setValue("reqcUseObsTypes"    , _reqcUseObsTypes->text()); 
   settings.setValue("reqcComment"        , _reqcComment->text()); 
   settings.setValue("reqcOldMarkerName"  , _reqcOldMarkerName->text()); 
   settings.setValue("reqcNewMarkerName"  , _reqcNewMarkerName->text()); 
