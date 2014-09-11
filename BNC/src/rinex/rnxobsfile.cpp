@@ -852,18 +852,23 @@ void t_rnxObsFile::writeEpochV2(const t_rnxEpo* epo) {
       }
       else {
         const t_rnxObs& rnxObs = rnxSat.obs[type]; 
-        *_stream << QString("%1").arg(rnxObs.value, 14, 'f', 3);
-        if (rnxObs.lli != 0.0) {
-          *_stream << QString("%1").arg(rnxObs.lli,1);
+        if (rnxObs.value == 0.0) {
+          *_stream << QString().leftJustified(16);
         }
         else {
-          *_stream << ' ';
-        }
-        if (rnxObs.snr != 0.0) {
-          *_stream << QString("%1").arg(rnxObs.snr,1);
-        }
-        else {
-          *_stream << ' ';
+          *_stream << QString("%1").arg(rnxObs.value, 14, 'f', 3);
+          if (rnxObs.lli != 0.0) {
+            *_stream << QString("%1").arg(rnxObs.lli,1);
+          }
+          else {
+            *_stream << ' ';
+          }
+          if (rnxObs.snr != 0.0) {
+            *_stream << QString("%1").arg(rnxObs.snr,1);
+          }
+          else {
+            *_stream << ' ';
+          }
         }
       }
     }
@@ -904,18 +909,23 @@ void t_rnxObsFile::writeEpochV3(const t_rnxEpo* epo) {
       }
       else {
         const t_rnxObs& rnxObs = rnxSat.obs[type];
-        *_stream << QString("%1").arg(rnxObs.value, 14, 'f', 3);
-        if (rnxObs.lli != 0.0) {
-          *_stream << QString("%1").arg(rnxObs.lli,1);
+        if (rnxObs.value == 0.0) {
+          *_stream << QString().leftJustified(16);
         }
         else {
-          *_stream << ' ';
-        }
-        if (rnxObs.snr != 0.0) {
-          *_stream << QString("%1").arg(rnxObs.snr,1);
-        }
-        else {
-          *_stream << ' ';
+          *_stream << QString("%1").arg(rnxObs.value, 14, 'f', 3);
+          if (rnxObs.lli != 0.0) {
+            *_stream << QString("%1").arg(rnxObs.lli,1);
+          }
+          else {
+            *_stream << ' ';
+          }
+          if (rnxObs.snr != 0.0) {
+            *_stream << QString("%1").arg(rnxObs.snr,1);
+          }
+          else {
+            *_stream << ' ';
+          }
         }
       }
     }
