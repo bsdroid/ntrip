@@ -230,11 +230,17 @@ void t_reqcEdit::editObservations() {
         if (sys != ' ') {
           for (int iType = 0; iType < obsFile->nTypes(sys); iType++) {
             QString type = obsFile->obsType(sys, iType);
-            QDebug() << ii << iSys << sys << type;
+            if (_rnxVersion < 3.0) {
+              useObsTypes << type;
+            }
+            else {
+              useObsTypes << QString(sys) + ":" + type;
+            }
           }
         }
       }
     }
+    useObsTypes.removeDuplicates();
   }
 
   // Loop over all input observation files
