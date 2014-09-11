@@ -161,8 +161,8 @@ t_irc t_rnxObsHeader::read(QTextStream* stream, int maxLines) {
       QTextStream* in = new QTextStream(value.toAscii(), QIODevice::ReadOnly);
       int nTypes;
       *in >> nTypes;
-      char sys = defaultSystems[0].toAscii();
-      _obsTypes[sys].clear();
+      char sys0 = defaultSystems[0].toAscii();
+      _obsTypes[sys0].clear();
       for (int ii = 0; ii < nTypes; ii++) {
         if (ii > 0 && ii % 9 == 0) {
           line = stream->readLine(); ++numLines;
@@ -171,11 +171,11 @@ t_irc t_rnxObsHeader::read(QTextStream* stream, int maxLines) {
         }
         QString hlp;
         *in >> hlp;
-        _obsTypes[sys].append(hlp);
+        _obsTypes[sys0].append(hlp);
       }
       for (int ii = 1; ii < defaultSystems.length(); ii++) {
-        char sys = defaultSystems[ii].toAscii();
-        _obsTypes[sys] = _obsTypes[0];
+        char sysI = defaultSystems[ii].toAscii();
+        _obsTypes[sysI] = _obsTypes[sys0];
       }
     }
     else if (key == "SYS / # / OBS TYPES") {
@@ -370,12 +370,12 @@ QStringList t_rnxObsHeader::obsTypesStrings() const {
   QStringList strList;
 
   if (_version < 3.0) {
-    char sys = defaultSystems[0].toAscii();
+    char sys0 = defaultSystems[0].toAscii();
     QString hlp;
-    QTextStream(&hlp) << QString("%1").arg(_obsTypes[sys].size(), 6);
-    for (int ii = 0; ii < _obsTypes[sys].size(); ii++) {
-      QTextStream(&hlp) << QString("%1").arg(_obsTypes[sys][ii], 6);   
-      if ((ii+1) % 9 == 0 || ii == _obsTypes[sys].size()-1) {
+    QTextStream(&hlp) << QString("%1").arg(_obsTypes[sys0].size(), 6);
+    for (int ii = 0; ii < _obsTypes[sys0].size(); ii++) {
+      QTextStream(&hlp) << QString("%1").arg(_obsTypes[sys0][ii], 6);   
+      if ((ii+1) % 9 == 0 || ii == _obsTypes[sys0].size()-1) {
         strList.append(hlp.leftJustified(60) + "# / TYPES OF OBSERV\n");
         hlp = QString().leftJustified(6);
       }
@@ -754,13 +754,13 @@ void t_rnxObsFile::setHeader(const t_rnxObsHeader& header, double version,
   }
   else {
     if (_header._version < 3.0) {
-      char sys = t_rnxObsHeader::defaultSystems[0].toAscii();
+      char sys0 = t_rnxObsHeader::defaultSystems[0].toAscii();
       for (int ii = 0; ii < useObsTypes.size(); ii++) {
-        _header._obsTypes[sys].push_back(useObsTypes[ii]);
+        _header._obsTypes[sys0].push_back(useObsTypes[ii]);
       }
       for (int ii = 1; ii < t_rnxObsHeader::defaultSystems.length(); ii++) {
-        char sys = t_rnxObsHeader::defaultSystems[ii].toAscii();
-        _header._obsTypes[sys] = _header._obsTypes[0];
+        char sysI = t_rnxObsHeader::defaultSystems[ii].toAscii();
+        _header._obsTypes[sysI] = _header._obsTypes[sys0];
       }
     }
     else {
