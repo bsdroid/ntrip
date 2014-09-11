@@ -749,13 +749,11 @@ double t_reqcAnalyze::cmpDOP(const ColumnVector& xyzSta) const {
   for (unsigned iSat = 0; iSat < nSat; iSat++) {
 
     const t_rnxObsFile::t_rnxSat& rnxSat = _currEpo->rnxSat[iSat];
-
-    QString prn = QString("%1%2").arg(rnxSat.satSys)
-                                 .arg(rnxSat.satNum, 2, 10, QChar('0'));
+    const t_prn& prn = rnxSat.prn;
 
     t_eph* eph = 0;
     for (int ie = 0; ie < _ephs.size(); ie++) {
-      if (QString(_ephs[ie]->prn().toString().c_str()) == prn) {
+      if (_ephs[ie]->prn() == prn) {
         eph = _ephs[ie];
         break;
       }
