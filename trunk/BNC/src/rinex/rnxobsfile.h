@@ -177,11 +177,6 @@ class t_rnxObsFile {
   t_rnxEpo* nextEpochV3();
   void handleEpochFlag(int flag, const QString& line, bool& headerReRead);
 
-  QMap<int, int>              _indexMap2to2;
-  QMap<char, QMap<int, int> > _indexMap3to3;
-  QMap<char, QMap<int, int> > _indexMap2to3;
-  QMap<char, QMap<int, int> > _indexMap3to2;
-
   e_inpOut       _inpOut;
   QFile*         _file;
   QString        _fileName;
