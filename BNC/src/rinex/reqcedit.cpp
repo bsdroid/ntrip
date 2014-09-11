@@ -220,6 +220,19 @@ void t_reqcEdit::editObservations() {
   bncSettings settings;
   QStringList useObsTypes = settings.value("reqcUseObsTypes").toString().split(" ", QString::SkipEmptyParts);
 
+  // Put together all observation types
+  // ----------------------------------
+  if (_rnxObsFiles.size() > 1 && useObsTypes.size() == 0) {
+    for (int ii = 0; ii < _rnxObsFiles.size(); ii++) {
+      t_rnxObsFile* obsFile = _rnxObsFiles[ii];
+      for (int iSys = 0; iSys < obsFile->numSys(); iSys++) {
+        char sys = obsFile->system(iSys);
+        if (sys != ' ') {
+        }
+      }
+    }
+  }
+
   // Loop over all input observation files
   // -------------------------------------
   for (int ii = 0; ii < _rnxObsFiles.size(); ii++) {
@@ -250,9 +263,6 @@ void t_reqcEdit::editObservations() {
       }
       outObsFile.header().write(outObsFile.stream(), &txtMap);
     }
-    else {
-      outObsFile.checkNewHeader(obsFile->header());
-    }
     t_rnxObsFile::t_rnxEpo* epo = 0;
     try {
       while ( (epo = obsFile->nextEpoch()) != 0) {
@@ -279,6 +289,15 @@ void t_reqcEdit::editObservations() {
       }
       else {
         qDebug() << str;    
+      }
+      return;
+    }
+    catch (...) {
+      if (_log) {
+        *_log << "Exception unknown" << endl;
+      }
+      else {
+        qDebug() << "Exception unknown";
       }
       return;
     }
