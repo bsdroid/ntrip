@@ -341,6 +341,21 @@ int t_rnxObsHeader::numSys() const {
   return _obsTypes.size();
 }
 
+// 
+////////////////////////////////////////////////////////////////////////////
+char t_rnxObsHeader::system(int iSys) const {
+  int iSysLocal = -1;
+  QMapIterator<char, QVector<QString> > it(_obsTypes);
+  while (it.hasNext()) {
+    ++iSysLocal;
+    it.next();
+    if (iSysLocal == iSys) {
+      return it.key();
+    }
+  }
+  return ' ';
+}
+
 // Number of Observation Types (satellite-system specific)
 ////////////////////////////////////////////////////////////////////////////
 int t_rnxObsHeader::nTypes(char sys) const {
@@ -1020,40 +1035,6 @@ QString t_rnxObsFile::type3to2(const QString& typeV3) {
   return "";
 }
 
-// Check for Changes in Header
-////////////////////////////////////////////////////////////////////////////
-void t_rnxObsFile::checkNewHeader(const t_rnxObsHeader& header) {
-
-  t_rnxObsHeader oldHeader(_header);
-  setHeader(header, oldHeader._version, QStringList());
-
-  // Check Observation Types
-  // -----------------------
-  bool same = true;
-  QMapIterator<char, QVector<QString> > it(_header._obsTypes);
-  while (it.hasNext()) {
-    it.next();
-    char                    sys   = it.key();
-    const QVector<QString>& types = it.value();
-    if (!oldHeader._obsTypes.contains(sys) || oldHeader._obsTypes[sys] != types) {
-      same = false;
-      break;
-    }
-  }
-
-  if (!same) {
-    QStringList strLst = _header.obsTypesStrings();
-    if (_header._version < 3.0) {
-      *_stream << QString().leftJustified(26);
-    }
-    else {
-      *_stream << '>' << QString().leftJustified(28);
-    }
-    *_stream << QString("  4%1\n").arg(strLst.size(), 3)
-             << strLst.join("");
-  }
-}
-
 // Set Observations from RINEX File
 ////////////////////////////////////////////////////////////////////////////
 void t_rnxObsFile::setObsFromRnx(const t_rnxObsFile* rnxObsFile,
@@ -1061,8 +1042,7 @@ void t_rnxObsFile::setObsFromRnx(const t_rnxObsFile* rnxObsFile,
                                  const t_rnxObsFile::t_rnxSat& rnxSat, 
                                  t_obs& obs) {
 
-  strncpy(obs.StatID, rnxObsFile->markerName().toAscii().constData(),
-          sizeof(obs.StatID));
+  strncpy(obs.StatID, rnxObsFile->markerName().toAscii().constData(), sizeof(obs.StatID));
 
   obs.satSys   = rnxSat.prn.system();
   obs.satNum   = rnxSat.prn.number();

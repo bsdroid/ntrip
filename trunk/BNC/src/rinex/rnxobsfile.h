@@ -52,6 +52,7 @@ class t_rnxObsHeader {
 
   t_irc       read(QTextStream* stream, int maxLines = 0);
   int         numSys() const;
+  char        system(int iSys) const;
   int         nTypes(char sys) const;
   QString     obsType(char sys, int index, double version = 0.0) const;
   QStringList obsTypesStrings() const;
@@ -121,6 +122,7 @@ class t_rnxObsFile {
   float          version() const {return _header._version;}
   double         interval() const {return _header._interval;}
   int            numSys() const {return _header.numSys();}
+  char           system(int iSys) const {return _header.system(iSys);}
   int            nTypes(char sys) const {return _header.nTypes(sys);}
   const QString& fileName() const {return _fileName;}
   QString obsType(char sys, int index, double version = 0.0) const {
@@ -153,7 +155,6 @@ class t_rnxObsFile {
 
   const t_rnxObsHeader& header() const {return _header;}
   void setHeader(const t_rnxObsHeader& header, double version, const QStringList& useObsTypes);
-  void checkNewHeader(const t_rnxObsHeader& header);
   void writeEpoch(const t_rnxEpo* epo);
 
   QTextStream* stream() {return _stream;}
