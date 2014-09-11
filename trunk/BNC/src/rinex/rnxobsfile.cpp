@@ -765,11 +765,20 @@ void t_rnxObsFile::setHeader(const t_rnxObsHeader& header, double version,
     }
     else {
       for (int ii = 0; ii < useObsTypes.size(); ii++) {
-        QStringList hlp = useObsTypes[ii].split(":", QString::SkipEmptyParts);
-        if (hlp.size() == 2 && hlp[0].length() == 1) {
-          char    sys  = hlp[0][0].toAscii();
-          QString type = hlp[1];
-          _header._obsTypes[sys].push_back(type);
+        if (useObsTypes[ii].indexOf(":") != -1) {
+          QStringList hlp = useObsTypes[ii].split(":", QString::SkipEmptyParts);
+          if (hlp.size() == 2 && hlp[0].length() == 1) {
+            char    sys  = hlp[0][0].toAscii();
+            QString type = hlp[1];
+            _header._obsTypes[sys].push_back(type);
+          }
+        }
+        else {
+          QString type = useObsTypes[ii];
+          for (int ii = 0; ii < t_rnxObsHeader::defaultSystems.length(); ii++) {
+            char sys = t_rnxObsHeader::defaultSystems[ii].toAscii();
+            _header._obsTypes[sys].push_back(type);
+          }
         }
       }
     }
