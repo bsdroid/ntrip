@@ -38,21 +38,25 @@
 #include "GPSDecoder.h"
 
 class t_rnxObsHeader {
+
+ friend class t_rnxObsFile;
+
  public:
-  static const double defaultRnxObsVersion2 = 2.11;
-  static const double defaultRnxObsVersion3 = 3.02;
+  static const double  defaultRnxObsVersion2 = 2.11;
+  static const double  defaultRnxObsVersion3 = 3.02;
+  static const QString defaultSystems;
 
   t_rnxObsHeader();
   ~t_rnxObsHeader();
 
-  t_irc           read(QTextStream* stream, int maxLines = 0);
-  int             nTypes(char sys) const;
-  const QString&  obsType(char sys, int index) const;
-  QStringList     obsTypesStrings() const;
-  void            write(QTextStream* stream,
-                        const QMap<QString, QString>* txtMap = 0) const;
+  t_irc       read(QTextStream* stream, int maxLines = 0);
+  int         numSys() const;
+  int         nTypes(char sys) const;
+  QString     obsType(char sys, int index) const;
+  QStringList obsTypesStrings() const;
+  void        write(QTextStream* stream, const QMap<QString, QString>* txtMap = 0) const;
 
-  static const QString          _emptyStr;
+ private:
   float                         _version;
   double                        _interval;
   QString                       _antennaNumber;
@@ -69,8 +73,7 @@ class t_rnxObsHeader {
   ColumnVector                  _antXYZ;
   ColumnVector                  _antBSG;
   ColumnVector                  _xyz;
-  QVector<QString>              _obsTypesV2;
-  QMap<char, QVector<QString> > _obsTypesV3;
+  QMap<char, QVector<QString> > _obsTypes;
   int                           _wlFactorsL1[t_prn::MAXPRN_GPS+1];
   int                           _wlFactorsL2[t_prn::MAXPRN_GPS+1];
   bncTime                       _startTime;
@@ -83,18 +86,23 @@ class t_rnxObsFile {
     return file1->startTime() < file2->startTime();
   }
 
+  class t_rnxObs {
+   public:
+    double value;
+    int    lli;
+    int    snr;
+  };
+
   class t_rnxSat {
    public:
-    char                satSys;
-    int                 satNum;
-    std::vector<double> obs;
-    std::vector<int>    lli;
-    std::vector<int>    snr;
+    t_prn                   prn;
+    QMap<QString, t_rnxObs> obs;
   };
 
   class t_rnxEpo {
    public:
     void clear() {
+      tt.reset();
       rnxSat.clear();
     }
     bncTime               tt;
@@ -106,15 +114,15 @@ class t_rnxObsFile {
   t_rnxObsFile(const QString& fileName, e_inpOut inpOut);
   ~t_rnxObsFile();
   
-  float               version() const {return _header._version;}
-  double              interval() const {return _header._interval;}
-  int                 nTypes(char sys) const {return _header.nTypes(sys);}
-  const QString&      fileName() const {return _fileName;}
-  const QString&      obsType(char sys, int index) const {return _header.obsType(sys, index);}
-
-  const QString&      antennaName() const {return _header._antennaName;}
-  const QString&      markerName() const {return _header._markerName;}
-  const QString&      receiverType() const {return _header._receiverType;}
+  float          version() const {return _header._version;}
+  double         interval() const {return _header._interval;}
+  int            numSys() const {return _header.numSys();}
+  int            nTypes(char sys) const {return _header.nTypes(sys);}
+  const QString& fileName() const {return _fileName;}
+  QString        obsType(char sys, int index) const {return _header.obsType(sys, index);}
+  const QString& antennaName() const {return _header._antennaName;}
+  const QString& markerName() const {return _header._markerName;}
+  const QString& receiverType() const {return _header._receiverType;}
 
   void setInterval(double interval) {_header._interval = interval;}
   void setAntennaName(const QString& antennaName) {_header._antennaName = antennaName;}
@@ -153,8 +161,6 @@ class t_rnxObsFile {
   static QString type3to2(const QString& typeV3);
 
  private:
-  enum e_trafo {trafoNone, trafo2to2, trafo3to3, trafo2to3, trafo3to2};
-
   t_rnxObsFile() {};
   void openRead(const QString& fileName);
   void openWrite(const QString& fileName);
@@ -178,7 +184,6 @@ class t_rnxObsFile {
   t_rnxObsHeader _header;
   t_rnxEpo       _currEpo;
   bool           _flgPowerFail;
-  e_trafo        _trafo;
 };
 
 #endif
