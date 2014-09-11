@@ -806,14 +806,13 @@ void t_rnxObsFile::writeEpochV2(const t_rnxEpo* epo) {
     .arg(sec,                 11, 'f', 7);
 
   int flag = 0;
-  *_stream << dateStr 
-           << QString("%1%2").arg(flag, 3).arg(epo->rnxSat.size(), 3);
+  *_stream << dateStr << QString("%1%2").arg(flag, 3).arg(epo->rnxSat.size(), 3);
   for (unsigned iSat = 0; iSat < epo->rnxSat.size(); iSat++) {
     const t_rnxSat& rnxSat = epo->rnxSat[iSat];
     if (iSat > 0 && iSat % 12 == 0) {
       *_stream << endl << QString().leftJustified(32);
     }
-    *_stream << rnxSat.prn;
+    *_stream << rnxSat.prn.toString().c_str();
   }
   *_stream << endl;
   for (unsigned iSat = 0; iSat < epo->rnxSat.size(); iSat++) {
@@ -869,14 +868,13 @@ void t_rnxObsFile::writeEpochV3(const t_rnxEpo* epo) {
     .arg(sec,  11, 'f', 7);
 
   int flag = 0;
-  *_stream << dateStr 
-           << QString("%1%2\n").arg(flag, 3).arg(epo->rnxSat.size(), 3);
+  *_stream << dateStr << QString("%1%2\n").arg(flag, 3).arg(epo->rnxSat.size(), 3);
 
   for (unsigned iSat = 0; iSat < epo->rnxSat.size(); iSat++) {
     const t_rnxSat& rnxSat = epo->rnxSat[iSat];
     char            sys    = rnxSat.prn.system();
 
-    *_stream << rnxSat.prn;
+    *_stream << rnxSat.prn.toString().c_str();
     for (int iType = 0; iType < nTypes(sys); iType++) {
       QString type = obsType(sys, iType);
       if (!rnxSat.obs.contains(type)) {
