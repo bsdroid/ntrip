@@ -35,7 +35,8 @@ void t_prn::set(const std::string& str) {
   unsigned    prn    = 0;
   char        system = '\x0';
   const char* number = 0;
-  if      ( str[0] == 'G' || str[0] == 'R' || str[0] == 'E') {
+  if      ( str[0] == 'G' || str[0] == 'R' || str[0] == 'E' ||
+            str[0] == 'J' || str[0] == 'S' || str[0] == 'C' ) {
     system = str[0];
     number = str.c_str() + 1;
   }
