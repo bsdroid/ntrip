@@ -228,6 +228,10 @@ void t_reqcEdit::editObservations() {
       for (int iSys = 0; iSys < obsFile->numSys(); iSys++) {
         char sys = obsFile->system(iSys);
         if (sys != ' ') {
+          for (int iType = 0; iType < obsFile->nTypes(sys); iType++) {
+            QString type = obsFile->obsType(sys, iType);
+            QDebug() << ii << iSys << sys << type;
+          }
         }
       }
     }
