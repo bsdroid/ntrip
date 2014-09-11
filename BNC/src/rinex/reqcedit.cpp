@@ -215,6 +215,11 @@ void t_reqcEdit::editObservations() {
   // ----------------------------------
   t_rnxObsFile outObsFile(_outObsFileName, t_rnxObsFile::output);
   
+  // Select observation types
+  // ------------------------
+  bncSettings settings;
+  QStringList useObsTypes = settings.value("reqcUseObsTypes").toString().split(" ", QString::SkipEmptyParts);
+
   // Loop over all input observation files
   // -------------------------------------
   for (int ii = 0; ii < _rnxObsFiles.size(); ii++) {
@@ -225,7 +230,7 @@ void t_reqcEdit::editObservations() {
             << obsFile->startTime().timestr(0).c_str() << endl;
     }
     if (ii == 0) {
-      outObsFile.setHeader(obsFile->header(), _rnxVersion);
+      outObsFile.setHeader(obsFile->header(), _rnxVersion, useObsTypes);
       if (_begTime.valid() && _begTime > outObsFile.startTime()) {
         outObsFile.setStartTime(_begTime);
       }

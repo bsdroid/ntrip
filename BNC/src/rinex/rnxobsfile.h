@@ -138,7 +138,7 @@ class t_rnxObsFile {
   }
 
   const t_rnxObsHeader& header() const {return _header;}
-  void setHeader(const t_rnxObsHeader& header, double version);
+  void setHeader(const t_rnxObsHeader& header, double version, const QStringList& useObsTypes);
   void checkNewHeader(const t_rnxObsHeader& header);
   void writeEpoch(const t_rnxEpo* epo);
 
@@ -153,7 +153,7 @@ class t_rnxObsFile {
   static QString type3to2(const QString& typeV3);
 
  private:
-  enum e_trafo {trafoNone, trafo2to3, trafo3to2};
+  enum e_trafo {trafoNone, trafo2to2, trafo3to3, trafo2to3, trafo3to2};
 
   t_rnxObsFile() {};
   void openRead(const QString& fileName);
@@ -164,7 +164,10 @@ class t_rnxObsFile {
   t_rnxEpo* nextEpochV2();
   t_rnxEpo* nextEpochV3();
   void handleEpochFlag(int flag, const QString& line, bool& headerReRead);
+  bool useType(const QStringList& useObsTypes, const QString& type);
 
+  QMap<int, int>              _indexMap2to2;
+  QMap<char, QMap<int, int> > _indexMap3to3;
   QMap<char, QMap<int, int> > _indexMap2to3;
   QMap<char, QMap<int, int> > _indexMap3to2;
 
