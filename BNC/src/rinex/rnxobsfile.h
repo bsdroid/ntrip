@@ -53,7 +53,7 @@ class t_rnxObsHeader {
   t_irc       read(QTextStream* stream, int maxLines = 0);
   int         numSys() const;
   int         nTypes(char sys) const;
-  QString     obsType(char sys, int index) const;
+  QString     obsType(char sys, int index, double version = 0.0) const;
   QStringList obsTypesStrings() const;
   void        write(QTextStream* stream, const QMap<QString, QString>* txtMap = 0) const;
 
@@ -102,12 +102,15 @@ class t_rnxObsFile {
 
   class t_rnxEpo {
    public:
+    t_rnxEpo() {clear();}
     void clear() {
       tt.reset();
       rnxSat.clear();
+      version = 0.0;
     }
     bncTime               tt;
     std::vector<t_rnxSat> rnxSat;
+    double                version;
   };
 
   enum e_inpOut {input, output};
@@ -120,7 +123,9 @@ class t_rnxObsFile {
   int            numSys() const {return _header.numSys();}
   int            nTypes(char sys) const {return _header.nTypes(sys);}
   const QString& fileName() const {return _fileName;}
-  QString        obsType(char sys, int index) const {return _header.obsType(sys, index);}
+  QString obsType(char sys, int index, double version = 0.0) const {
+    return _header.obsType(sys, index, version);
+  }
   const QString& antennaName() const {return _header._antennaName;}
   const QString& markerName() const {return _header._markerName;}
   const QString& receiverType() const {return _header._receiverType;}
@@ -171,7 +176,6 @@ class t_rnxObsFile {
   t_rnxEpo* nextEpochV2();
   t_rnxEpo* nextEpochV3();
   void handleEpochFlag(int flag, const QString& line, bool& headerReRead);
-  bool useType(const QStringList& useObsTypes, const QString& type);
 
   QMap<int, int>              _indexMap2to2;
   QMap<char, QMap<int, int> > _indexMap3to3;

@@ -354,13 +354,24 @@ int t_rnxObsHeader::nTypes(char sys) const {
 
 // Observation Type (satellite-system specific)
 ////////////////////////////////////////////////////////////////////////////
-QString t_rnxObsHeader::obsType(char sys, int index) const {
+QString t_rnxObsHeader::obsType(char sys, int index, double version) const {
+
+  if (version == 0.0) {
+    version = _version;
+  }
   if (_obsTypes.contains(sys)) {
-    return _obsTypes[sys].at(index);
+    QString origType = _obsTypes[sys].at(index);
+    if      (int(version) == int(_version)) {
+      return origType;
+    }
+    else if (int(version) == 2) {
+      return t_rnxObsFile::type3to2(origType);
+    }
+    else if (int(version) == 3) {
+      return t_rnxObsFile::type2to3(sys, origType);
+    }
   }
-  else {
-    return "";
-  }
+  return "";
 }
 
 // Write Observation Types
@@ -582,6 +593,7 @@ t_rnxObsFile::t_rnxEpo* t_rnxObsFile::nextEpochV3() {
     readInt(line, 32, 3, numSat);
   
     _currEpo.rnxSat.resize(numSat);
+    _currEpo.version = _header._version;
 
     // Observations
     // ------------
@@ -659,6 +671,7 @@ t_rnxObsFile::t_rnxEpo* t_rnxObsFile::nextEpochV2() {
     readInt(line, 29, 3, numSat);
   
     _currEpo.rnxSat.resize(numSat);
+    _currEpo.version = _header._version;
 
     // Read Satellite Numbers
     // ----------------------
@@ -833,7 +846,7 @@ void t_rnxObsFile::writeEpochV2(const t_rnxEpo* epo) {
       if (iType > 0 && iType % 5 == 0) {
         *_stream << endl;
       }
-      QString type = obsType(sys, iType);
+      QString type = obsType(sys, iType, epo->version);
       if (!rnxSat.obs.contains(type)) {
         *_stream << QString().leftJustified(16);
       }
@@ -885,7 +898,7 @@ void t_rnxObsFile::writeEpochV3(const t_rnxEpo* epo) {
 
     *_stream << rnxSat.prn.toString().c_str();
     for (int iType = 0; iType < nTypes(sys); iType++) {
-      QString type = obsType(sys, iType);
+      QString type = obsType(sys, iType, epo->version);
       if (!rnxSat.obs.contains(type)) {
         *_stream << QString().leftJustified(16);
       }
@@ -1067,17 +1080,3 @@ void t_rnxObsFile::setObsFromRnx(const t_rnxObsFile* rnxObsFile,
   }
 }
 
-// Set Observations from RINEX File
-////////////////////////////////////////////////////////////////////////////
-bool t_rnxObsFile::useType(const QStringList& useObsTypes, const QString& type) {
-
-  if (useObsTypes.size() == 0) {
-    return true;
-  }
-  for (int ii = 0; ii < useObsTypes.size(); ii++) {
-    if (type.left(2) == useObsTypes[ii].left(2)) {
-      return true;
-    }
-  }
-  return false;
-}
