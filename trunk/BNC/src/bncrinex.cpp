@@ -164,8 +164,7 @@ t_irc bncRinex::downloadSkeleton() {
     query->waitForRequestResult(url, outData);
     if (query->status() == bncNetQuery::finished) {
       irc = success;
-      _header._obsTypesV2.clear();
-      _header._obsTypesV3.clear();
+      _header._obsTypes.clear();
       QTextStream in(outData);
       _header.read(&in);
     }
@@ -187,8 +186,7 @@ bool bncRinex::readSkeleton() {
   QFile skl(_sklName);
   if ( skl.exists() && skl.open(QIODevice::ReadOnly) ) {
     readDone = true;
-    _header._obsTypesV2.clear();
-    _header._obsTypesV3.clear();
+    _header._obsTypes.clear();
     QTextStream in(&skl);
     _header.read(&in);
   }
@@ -361,7 +359,7 @@ void bncRinex::writeHeader(const QByteArray& format,
     _addComments.clear();
     _addComments << format.left(6) + " " 
                                    + _mountPoint.host() + _mountPoint.path();
-    if (_header._obsTypesV3.size() == 0 && _header._version >= 3.0) {
+    if (_header._obsTypes.size() == 0) {
       _addComments << "Default set of observation types used";
     }
     if (_nmea == "yes") {
@@ -375,44 +373,48 @@ void bncRinex::writeHeader(const QByteArray& format,
     _header._markerName = _statID;
   }
 
-  // Set Default RINEX v2 Types
-  // --------------------------
-  if (_header._obsTypesV2.size() == 0) {
-    _header._obsTypesV2 << "C1" << "P1" << "L1" << "S1" 
-                        << "C2" << "P2" << "L2" << "S2";
-  }
-
-  // Set Default RINEX v3 Types
-  // ---------------------------
-  if (_header._obsTypesV3.size() == 0) {
-    _header._obsTypesV3['G'] << "C1C" << "L1C" << "D1C" << "S1C" 
+  // Set Default Observation Types
+  // -----------------------------
+  if (_header._obsTypes.size() == 0) {
+    if (_header._version < 3.0) {
+      _header._obsTypes['G'] << "C1" << "P1" << "L1" << "S1" 
+                             << "C2" << "P2" << "L2" << "S2";
+      _header._obsTypes['R'] = _header._obsTypes['G'];
+      _header._obsTypes['E'] = _header._obsTypes['G'];
+      _header._obsTypes['J'] = _header._obsTypes['G'];
+      _header._obsTypes['S'] = _header._obsTypes['G'];
+      _header._obsTypes['C'] = _header._obsTypes['G'];
+    }
+    else {
+      _header._obsTypes['G'] << "C1C" << "L1C" << "D1C" << "S1C" 
                              << "C1P" << "L1P" << "D1P" << "S1P" 
                              << "C2C" << "L2C" << "D2C" << "S2C" 
                              << "C2P" << "L2P" << "D2P" << "S2P" 
                              << "C5"  << "D5"  << "L5"  << "S5";
-    
-    _header._obsTypesV3['R'] << "C1C" << "L1C" << "D1C" << "S1C" 
+      
+      _header._obsTypes['R'] << "C1C" << "L1C" << "D1C" << "S1C" 
                              << "C1P" << "L1P" << "D1P" << "S1P" 
                              << "C2C" << "L2C" << "D2C" << "S2C"
                              << "C2P" << "L2P" << "D2P" << "S2P";
-    
-    _header._obsTypesV3['E'] << "C1" << "L1" << "D1" << "S1"
+      
+      _header._obsTypes['E'] << "C1" << "L1" << "D1" << "S1"
                              << "C5" << "L5" << "D5" << "S5" 
                              << "C6" << "L6" << "D6" << "S6"
                              << "C7" << "L7" << "D7" << "S7"
                              << "C8" << "L8" << "D8" << "S8";
-    
-    _header._obsTypesV3['J'] << "C1" << "L1" << "D1" << "S1" 
+      
+      _header._obsTypes['J'] << "C1" << "L1" << "D1" << "S1" 
                              << "C2" << "L2" << "D2" << "S2"
                              << "C5" << "L5" << "D5" << "S5"
                              << "C6" << "D6" << "L6" << "S6";
-    
-    _header._obsTypesV3['S'] << "C1" << "L1" << "D1" << "S1" 
+      
+      _header._obsTypes['S'] << "C1" << "L1" << "D1" << "S1" 
                              << "C5" << "L5" << "D5" << "S5";
-    
-    _header._obsTypesV3['C'] << "C1" << "L1" << "D1" << "S1"
+      
+      _header._obsTypes['C'] << "C1" << "L1" << "D1" << "S1"
                              << "C6" << "L6" << "D6" << "S6"
                              << "C7" << "L7" << "D7" << "S7";
+    }
   }
 
   // Write the Header
@@ -488,7 +490,7 @@ void bncRinex::dumpEpoch(const QByteArray& format, long maxTime) {
   QMutableListIterator<t_obs> mItDump(dumpList);
   while (mItDump.hasNext()) {
     t_obs& obs = mItDump.next();
-    if (!_header._obsTypesV3.contains(obs.satSys) && !_header._obsTypesV3.contains(obs.satSys)) {
+    if (!_header._obsTypes.contains(obs.satSys) && !_header._obsTypes.contains(obs.satSys)) {
       mItDump.remove();
     }
   }
@@ -601,8 +603,7 @@ string bncRinex::rinexSatLine(const t_obs& obs, char lli1, char lli2,
         << setw(2) << setfill('0') << obs.satNum << setfill(' ');
   }
 
-  const QVector<QString>& types = (_header._version > 3.0) ?
-                          _header._obsTypesV3[obs.satSys] : _header._obsTypesV2;
+  const QVector<QString>& types = _header._obsTypes[obs.satSys];
   for (int ii = 0; ii < types.size(); ii++) {
     if (_header._version < 3.0 && ii > 0 && ii % 5 == 0) {
       str << endl;

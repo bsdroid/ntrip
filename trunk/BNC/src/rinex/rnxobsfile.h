@@ -40,6 +40,7 @@
 class t_rnxObsHeader {
 
  friend class t_rnxObsFile;
+ friend class bncRinex;
 
  public:
   static const double  defaultRnxObsVersion2 = 2.11;

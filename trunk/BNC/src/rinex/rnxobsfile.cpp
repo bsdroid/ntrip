@@ -720,11 +720,11 @@ t_rnxObsFile::t_rnxEpo* t_rnxObsFile::nextEpochV2() {
 void t_rnxObsFile::setHeader(const t_rnxObsHeader& header, double version, 
                              const QStringList& useObsTypes) {
 
-  if (version >= 3.0) {
-    _header._version = t_rnxObsHeader::defaultRnxObsVersion3;
+  if (version < 3.0) {
+    _header._version = t_rnxObsHeader::defaultRnxObsVersion2;
   }
   else {
-    _header._version = t_rnxObsHeader::defaultRnxObsVersion2;
+    _header._version = t_rnxObsHeader::defaultRnxObsVersion3;
   }
   _header._interval        = header._interval;    
   _header._antennaNumber   = header._antennaNumber; 
