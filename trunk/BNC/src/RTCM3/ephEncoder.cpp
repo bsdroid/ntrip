@@ -1,5 +1,10 @@
 
 #include "ephEncoder.h"
+
+extern "C" {
+#  include "rtcm3torinex.h"
+}
+
 using namespace std;
 
 // Returns CRC24

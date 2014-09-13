@@ -21,6 +21,10 @@
 #include "bncclockrinex.h"
 #include "bncsp3.h"
 
+extern "C" {
+#  include "rtcm3torinex.h"
+}
+
 using namespace std;
 
 // Constructor

@@ -30,7 +30,6 @@
 #include <QDateTime>
 #include <QFile>
 
-#include "rtcm3torinex.h"
 #include "bncconst.h"
 #include "bncnetquery.h"
 #include "bnctime.h"

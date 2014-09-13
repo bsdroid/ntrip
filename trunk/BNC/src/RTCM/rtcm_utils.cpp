@@ -2,10 +2,9 @@
 #include <iostream>
 #include <math.h>
 #include <stdio.h>
-#include <rtcm3torinex.h>
-#include <ephemeris.h>
 
 #include "rtcm_utils.h"
+#include "ephemeris.h"
 
 using namespace std;
 
