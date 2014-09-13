@@ -30,13 +30,14 @@
 #include <QDateTime>
 #include <QFile>
 
-#include "GPSDecoder.h"
 #include "rtcm3torinex.h"
 #include "bncconst.h"
 #include "bncnetquery.h"
 #include "bnctime.h"
 #include "bncrawfile.h"
+#include "satObs.h"
 
+class GPSDecoder;
 class QextSerialPort;
 class latencyChecker;
 
@@ -77,7 +78,7 @@ class bncGetThread : public QThread {
    void newBytes(QByteArray staID, double nbyte);
    void newRawData(QByteArray staID, QByteArray data);
    void newLatency(QByteArray staID, double clate);
-   void newObs(QByteArray staID, QList<t_obs> obsList);
+   void newObs(QByteArray staID, QList<t_satObs> obsList);
    void newAntCrd(QByteArray staID, double xx, double yy, double zz, 
                   double hh, QByteArray antType);
    void newMessage(QByteArray msg, bool showOnScreen);

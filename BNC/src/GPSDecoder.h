@@ -33,72 +33,9 @@
 
 #include "bncconst.h"
 #include "bnctime.h"
-
-extern "C" {
-#include "rtcm3torinex.h"
-}
+#include "satObs.h"
 
 class bncRinex;
-
-class t_obs {
- public:
-  t_obs() {
-    StatID[0]   = '\x0';
-    satSys      = 'G';
-    satNum      = 0;
-    slotNum     = 0;
-    GPSWeek     = 0;
-    GPSWeeks    = 0.0;
-    _dataflags  = 0;
-    _dataflags2 = 0;
-    for (int ie = 0; ie < GNSSENTRY_NUMBER; ie++) {
-      _measdata[ie] = 0.0;
-    }
-    slip_cnt_L1 = -1;
-    slip_cnt_L2 = -1;
-    slip_cnt_L5 = -1;
-    snrL1 = 0;
-    snrL2 = 0;
-    snrL5 = 0;
-    slipL1 = false;
-    slipL2 = false;
-    slipL5 = false;
-  }
-
-  ~t_obs() {}
-
-  double measdata(QString rnxStr, float rnxVer) const;
-  void   setMeasdata(QString rnxStr, float rnxVer, double value);
-
-  char   StatID[20+1]; // Station ID
-  char   satSys;       // Satellite System ('G' or 'R')
-  int    satNum;       // Satellite Number (PRN for GPS NAVSTAR)
-  int    slotNum;      // Slot Number (for Glonass)
-  int    GPSWeek;      // Week of GPS-Time
-  double GPSWeeks;     // Second of Week (GPS-Time)
-
-  int    slip_cnt_L1;  // L1 cumulative loss of continuity indicator (negative value = undefined)
-  int    slip_cnt_L2;  // L2 cumulative loss of continuity indicator (negative value = undefined)
-  int    slip_cnt_L5;  // L5 cumulative loss of continuity indicator (negative value = undefined)
-
-  int    snrL1;  // signal-to-noise ratio mapped to <1,9>
-  int    snrL2;  // s = int(floor(SNR/6)); if (s > 9) s = 9; if (s < 1) s = 1;
-  int    snrL5;
-
-  bool   slipL1;
-  bool   slipL2;
-  bool   slipL5;
-  
-  double             _measdata[GNSSENTRY_NUMBER];  // data fields */ 
-  unsigned long long _dataflags;                   // GNSSDF_xxx */
-  unsigned int       _dataflags2;                  // GNSSDF2_xxx */
-  QString            _codetype[GNSSENTRY_NUMBER];
-
-  QString rnxStr(int iEntry) const;
-
- private:
-  int iEntry(QString rnxStr, float rnxVers, bool cmode=false) const;
-};
 
 class GPSDecoder {
  public:
@@ -115,7 +52,7 @@ class GPSDecoder {
                  const QByteArray& latitude, const QByteArray& longitude, 
                  const QByteArray& nmea, const QByteArray& ntripVersion);
 
-  void dumpRinexEpoch(const t_obs& obs, const QByteArray& format);
+  void dumpRinexEpoch(const t_satObs& obs, const QByteArray& format);
 
   void setRinexReconnectFlag(bool flag);
 
@@ -138,7 +75,7 @@ class GPSDecoder {
     int    message;
   };
 
-  QList<t_obs>     _obsList;
+  QList<t_satObs>  _obsList;
   QList<int>       _typeList;  // RTCM message types
   QStringList      _antType;   // RTCM antenna descriptor
   QList<t_antInfo> _antList;   // RTCM antenna XYZ

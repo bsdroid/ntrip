@@ -5,7 +5,6 @@
 #include <vector>
 #include <QtCore>
 
-#include "GPSDecoder.h"
 #include "pppOptions.h"
 #include "pppClient.h"
 #include "pppRun.h"

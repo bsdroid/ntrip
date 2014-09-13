@@ -236,14 +236,14 @@ void t_reqcAnalyze::analyzeFile(t_rnxObsFile* obsFile) {
       // ------------------------
       for (unsigned iObs = 0; iObs < _currEpo->rnxSat.size(); iObs++) {
         const t_rnxObsFile::t_rnxSat& rnxSat = _currEpo->rnxSat[iObs];
-        t_obs obs;
+        t_satObs obs;
         t_rnxObsFile::setObsFromRnx(obsFile, _currEpo, rnxSat, obs);
   
-        QString prn = QString("%1%2").arg(obs.satSys)
-                                     .arg(obs.satNum, 2, 10, QChar('0'));
+        QString prn(obs._prn.toString().c_str());
   
-        t_ephGlo* ephGlo = 0;
-        if (obs.satSys == 'R') {
+        t_ephGlo* ephGlo  = 0;
+        int       slotNum = 0;
+        if (obs._prn.system() == 'R') {
           for (int ie = 0; ie < _ephs.size(); ie++) {
             if (QString(_ephs[ie]->prn().toString().c_str()) == prn) {
               ephGlo = dynamic_cast<t_ephGlo*>(_ephs[ie]);
@@ -251,11 +251,11 @@ void t_reqcAnalyze::analyzeFile(t_rnxObsFile* obsFile) {
             }
           }
           if (ephGlo) {
-            obs.slotNum = ephGlo->slotNum();
+            slotNum = ephGlo->slotNum();
           }
         }
   
-        t_irc irc = _allObsMap[prn].addObs(obs);
+        t_irc irc = _allObsMap[prn].addObs(obs, slotNum);
 
         if (irc == success) {
           t_oneObs* newObs = _allObsMap[prn]._oneObsVec.last();
@@ -338,26 +338,47 @@ void t_reqcAnalyze::analyzeFile(t_rnxObsFile* obsFile) {
 
 //  
 ////////////////////////////////////////////////////////////////////////////
-t_irc t_reqcAnalyze::t_allObs::addObs(const t_obs& obs) { 
+t_irc t_reqcAnalyze::t_allObs::addObs(const t_satObs& obs, int slotNum) { 
 
-  t_oneObs* newObs = new t_oneObs(obs.GPSWeek, obs.GPSWeeks);
+  t_oneObs* newObs = new t_oneObs(obs._time.gpsw(), obs._time.gpssec());
   bool      okFlag = false;
 
   // Availability and Slip Flags
   // ---------------------------
-  double L1 = obs.measdata("L1", 3.0);
-  if (L1 != 0) {
-    newObs->_hasL1 = true;
-  }
-  double L2 = obs.satSys == 'E' ? obs.measdata("L5", 3.0) : obs.measdata("L2", 3.0);;
-  if (L2 != 0) {
-    newObs->_hasL2 = true;
-  }
-  if (obs.slipL1) {
-    newObs->_slipL1 = true;
-  }
-  if (obs.slipL2) {
-    newObs->_slipL2 = true;
+  double L1 = 0.0;
+  double L2 = 0.0;
+  double P1 = 0.0;
+  double P2 = 0.0;
+
+  for (unsigned iFrq = 0; iFrq < obs._obs.size(); iFrq++) {
+    const t_frqObs* frqObs = obs._obs[iFrq];
+    if      (frqObs->_rnxType2ch[0] == '1') {
+      if (frqObs->_phaseValid) {
+        L1              = frqObs->_phase;
+        newObs->_hasL1  = true;
+        newObs->_slipL1 = frqObs->_slip;
+      }
+      if (frqObs->_codeValid) {
+        P1 = frqObs->_code;   
+      }
+      if (frqObs->_snrValid) {
+        newObs->_SNR1 = frqObs->_snr;   
+      }
+    }
+    else if ( (obs._prn.system() != 'E' && frqObs->_rnxType2ch[0] == '2') ||
+              (obs._prn.system() == 'E' && frqObs->_rnxType2ch[0] == '5') ) {
+      if (frqObs->_phaseValid) {
+        L2             = frqObs->_phase;
+        newObs->_hasL2 = true;
+        newObs->_slipL2 = frqObs->_slip;
+      }
+      if (frqObs->_codeValid) {
+        P2 = frqObs->_code;   
+      }
+      if (frqObs->_snrValid) {
+        newObs->_SNR2 = frqObs->_snr;   
+      }
+    }
   }
 
   // Compute the Multipath
@@ -365,15 +386,15 @@ t_irc t_reqcAnalyze::t_allObs::addObs(const t_obs& obs) {
   if (L1 != 0.0 && L2 != 0.0) {
     double f1 = 0.0;
     double f2 = 0.0;
-    if      (obs.satSys == 'G') {
+    if      (obs._prn.system() == 'G') {
       f1 = t_CST::freq(t_frequency::G1, 0);
       f2 = t_CST::freq(t_frequency::G2, 0);
     }
-    else if (obs.satSys == 'R') {
-      f1 = t_CST::freq(t_frequency::R1, obs.slotNum);
-      f2 = t_CST::freq(t_frequency::R2, obs.slotNum);
+    else if (obs._prn.system() == 'R') {
+      f1 = t_CST::freq(t_frequency::R1, slotNum);
+      f2 = t_CST::freq(t_frequency::R2, slotNum);
     }
-    else if (obs.satSys == 'E') {
+    else if (obs._prn.system() == 'E') {
       f1 = t_CST::freq(t_frequency::E1, 0);
       f2 = t_CST::freq(t_frequency::E5, 0);
     }
@@ -381,51 +402,12 @@ t_irc t_reqcAnalyze::t_allObs::addObs(const t_obs& obs) {
     L1 = L1 * t_CST::c / f1;
     L2 = L2 * t_CST::c / f2;
 
-    double P1 = obs.measdata("C1", 3.0);
     if (P1 != 0.0) {
       newObs->_MP1 = P1 - L1 - 2.0*f2*f2/(f1*f1-f2*f2) * (L1 - L2);
       okFlag = true;
     }
-    double P2 = obs.satSys == 'E' ? obs.measdata("C5", 3.0) : obs.measdata("C2", 3.0);
     if (P2 != 0.0) {
       newObs->_MP2 = P2 - L2 - 2.0*f1*f1/(f1*f1-f2*f2) * (L1 - L2);
-      okFlag = true;
-    }
-  }
-
-  // Signal-to-Noise
-  // ---------------
-  double S1 = obs.measdata("S1", 3.0);
-  if (S1 != 0.0) {
-    newObs->_SNR1 = floor(S1/6);
-    if (newObs->_SNR1 > 9.0) {
-      newObs->_SNR1 = 9.0; 
-    }
-    if (newObs->_SNR1 < 1.0) {
-      newObs->_SNR1 = 1.0;
-    }
-    okFlag = true;
-  }
-  else {
-    if (obs.snrL1 > 0) {
-      newObs->_SNR1 = obs.snrL1;
-      okFlag = true;
-    }
-  }
-  double S2 = obs.satSys == 'E' ? obs.measdata("S5", 3.0) : obs.measdata("S2", 3.0);
-  if (S2 != 0.0) {
-    newObs->_SNR2 = floor(S2/6);
-    if (newObs->_SNR2 > 9.0) {
-      newObs->_SNR2 = 9.0; 
-    }
-    if (newObs->_SNR2 < 1.0) {
-      newObs->_SNR2 = 1.0;
-    }
-    okFlag = true;
-  }
-  else {
-    if (obs.snrL2 > 0) {
-      newObs->_SNR2 = obs.snrL2;
       okFlag = true;
     }
   }

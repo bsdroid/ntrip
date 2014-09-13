@@ -50,7 +50,6 @@
 #include "bncgetthread.h"
 #include "bncutils.h"
 #include "bncsettings.h"
-#include "GPSDecoder.h"
 
 using namespace std;
 
@@ -112,7 +111,7 @@ bncCaster::bncCaster() {
     _nmeaSockets = 0;
   }
 
-  _epochs = new QMultiMap<long, t_obs>;
+  _epochs = new QMultiMap<long, t_satObs>;
 
   _samplingRate = settings.value("binSampl").toInt();
   _waitTime     = settings.value("waitTime").toInt();
@@ -163,25 +162,24 @@ bncCaster::~bncCaster() {
 
 // New Observations
 ////////////////////////////////////////////////////////////////////////////
-void bncCaster::slotNewObs(const QByteArray staID, QList<t_obs> obsList) {
+void bncCaster::slotNewObs(const QByteArray staID, QList<t_satObs> obsList) {
 
   QMutexLocker locker(&_mutex);
 
   reopenOutFile();
 
   unsigned index = 0;
-  QMutableListIterator<t_obs> it(obsList);
+  QMutableListIterator<t_satObs> it(obsList);
   while (it.hasNext()) {
     ++index;
-    t_obs& obs = it.next();
+    t_satObs& obs = it.next();
 
-    long iSec    = long(floor(obs.GPSWeeks+0.5));
-    long newTime = obs.GPSWeek * 7*24*3600 + iSec;
+    long iSec    = long(floor(obs._time.gpssec()+0.5));
+    long newTime = obs._time.gpsw() * 7*24*3600 + iSec;
     
     // Rename the Station
     // ------------------
-    strncpy(obs.StatID, staID.constData(),sizeof(obs.StatID));
-    obs.StatID[sizeof(obs.StatID)-1] = '\0';
+    obs._staID = staID.data();
     
     // Output into the socket
     // ----------------------
@@ -189,9 +187,9 @@ void bncCaster::slotNewObs(const QByteArray staID, QList<t_obs> obsList) {
     
       ostringstream oStr;
       oStr.setf(ios::showpoint | ios::fixed);
-      oStr << obs.StatID                                  << " " 
-           << setw(4)  << obs.GPSWeek                     << " "
-           << setw(14) << setprecision(7) << obs.GPSWeeks << " "
+      oStr << obs._staID                                        << " " 
+           << setw(4)  << obs._time.gpsw()                      << " "
+           << setw(14) << setprecision(7) << obs._time.gpssec() << " "
            << bncRinex::asciiSatLine(obs) << endl;
     
       string hlpStr = oStr.str();
@@ -275,17 +273,17 @@ void bncCaster::slotNewNMEAConnection() {
 ////////////////////////////////////////////////////////////////////////////
 void bncCaster::addGetThread(bncGetThread* getThread, bool noNewThread) {
 
-  qRegisterMetaType<t_obs>("t_obs");
-  qRegisterMetaType< QList<t_obs> >("QList<t_obs>");
+  qRegisterMetaType<t_satObs>("t_satObs");
+  qRegisterMetaType< QList<t_satObs> >("QList<t_satObs>");
   qRegisterMetaType<gpsephemeris>("gpsephemeris");
   qRegisterMetaType<glonassephemeris>("glonassephemeris");
   qRegisterMetaType<galileoephemeris>("galileoephemeris");
 
-  connect(getThread, SIGNAL(newObs(QByteArray, QList<t_obs>)),
-          this,      SLOT(slotNewObs(QByteArray, QList<t_obs>)));
+  connect(getThread, SIGNAL(newObs(QByteArray, QList<t_satObs>)),
+          this,      SLOT(slotNewObs(QByteArray, QList<t_satObs>)));
 
-  connect(getThread, SIGNAL(newObs(QByteArray, QList<t_obs>)),
-          this,      SIGNAL(newObs(QByteArray, QList<t_obs>)));
+  connect(getThread, SIGNAL(newObs(QByteArray, QList<t_satObs>)),
+          this,      SIGNAL(newObs(QByteArray, QList<t_satObs>)));
 
   connect(getThread, SIGNAL(newRawData(QByteArray, QByteArray)),
           this,      SLOT(slotNewRawData(QByteArray, QByteArray)));
@@ -335,21 +333,21 @@ void bncCaster::dumpEpochs(long minTime, long maxTime) {
     if ( (_out || _sockets) && 
          (_samplingRate == 0 || sec % _samplingRate == 0) ) {
 
-      QList<t_obs> allObs = _epochs->values(sec);
+      QList<t_satObs> allObs = _epochs->values(sec);
       
-      QListIterator<t_obs> it(allObs);
+      QListIterator<t_satObs> it(allObs);
       bool firstObs = true;
       while (it.hasNext()) {
-        const t_obs& obs = it.next();
+        const t_satObs& obs = it.next();
 
         ostringstream oStr;
         oStr.setf(ios::showpoint | ios::fixed);
         if (firstObs) { 
           firstObs = false;
-          oStr << "> " << obs.GPSWeek << ' ' 
-               << setprecision(7) << obs.GPSWeeks << endl;;
+          oStr << "> " << obs._time.gpsw() << ' ' 
+               << setprecision(7) << obs._time.gpssec() << endl;;
         }
-        oStr << obs.StatID << ' ' << bncRinex::asciiSatLine(obs) << endl;
+        oStr << obs._staID << ' ' << bncRinex::asciiSatLine(obs) << endl;
         if (!it.hasNext()) { 
           oStr << endl;
         }

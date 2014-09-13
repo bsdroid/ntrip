@@ -40,7 +40,6 @@
 
 #include "bnctableitem.h"
 #include "bncgetthread.h"
-#include "GPSDecoder.h"
 
 // Constructor
 ////////////////////////////////////////////////////////////////////////////

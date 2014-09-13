@@ -227,63 +227,49 @@ t_irc RTCM3Decoder::Decode(char* buffer, int bufLen, vector<string>& errmsg) {
             
             for (int iSat = 0; iSat < gnssData.numsats; iSat++) {
 
-              t_obs obs;
+              t_satObs obs;
               int   satID = gnssData.satellites[iSat];
 
               // GPS
               // ---
               if      (satID >= PRN_GPS_START     && satID <= PRN_GPS_END) {
-                obs.satSys = 'G';
-                obs.satNum = satID;
+                obs._prn.set('G', satID);
               }
 
               // Glonass
               // -------
               else if (satID >= PRN_GLONASS_START && satID <= PRN_GLONASS_END) {
-                obs.satSys = 'R';
-                obs.satNum = satID - PRN_GLONASS_START + 1;
-                if (obs.satNum <= PRN_GLONASS_NUM && 
-                    parser.GLOFreq[obs.satNum-1] != 0) {
-                  obs.slotNum   = parser.GLOFreq[obs.satNum-1] - 100;
-                }
-                else { 
-                  continue;
-                }
+                obs._prn.set('R', satID - PRN_GLONASS_START + 1);
               }
 
               // Galileo
               // -------
               else if (satID >= PRN_GALILEO_START && satID <= PRN_GALILEO_END) {
-                obs.satSys = 'E';
-                obs.satNum = satID - PRN_GALILEO_START + 1;
+                obs._prn.set('E', satID - PRN_GALILEO_START + 1);
               }
 
               // SBAS
               // ----
               else if (satID >= PRN_SBAS_START && satID <= PRN_SBAS_END) {
-                obs.satSys = 'S';
-                obs.satNum = satID - PRN_SBAS_START + 20;
+                obs._prn.set('S', satID - PRN_SBAS_START + 20);
               }
 
               // Giove A and B
               // -------------
               else if (satID >= PRN_GIOVE_START && satID <= PRN_GIOVE_END) {
-                obs.satSys = 'E';
-                obs.satNum = satID - PRN_GIOVE_START + PRN_GIOVE_OFFSET;
+                obs._prn.set('E', satID - PRN_GIOVE_START + PRN_GIOVE_OFFSET);
               }
 
               // QZSS
               // -------------
               else if (satID >= PRN_QZSS_START && satID <= PRN_QZSS_END) {
-                obs.satSys = 'J';
-                obs.satNum = satID - PRN_QZSS_START + 1;
+                obs._prn.set('J', satID - PRN_QZSS_START + 1);
               }
 
               // COMPASS
               // -------------
               else if (satID >= PRN_COMPASS_START && satID <= PRN_COMPASS_END) {
-                obs.satSys = 'C';
-                obs.satNum = satID - PRN_COMPASS_START + 1;
+                obs._prn.set('C', satID - PRN_COMPASS_START + 1);
               }
 
               // Unknown System
@@ -292,11 +278,13 @@ t_irc RTCM3Decoder::Decode(char* buffer, int bufLen, vector<string>& errmsg) {
                 continue;
               }
 
-              obs.GPSWeek  = gnssData.week;
-              obs.GPSWeeks = gnssData.timeofweek / 1000.0;
+              obs._time.set(gnssData.week, gnssData.timeofweek / 1000.0);
 
-              QString prn = QString("%1%2").arg(obs.satSys)
-                            .arg(obs.satNum, 2, 10, QChar('0'));
+              QString prn(obs._prn.toString().c_str());
+
+              int obs_slip_cnt_L1 = 0;
+              int obs_slip_cnt_L2 = 0;
+              int obs_slip_cnt_L5 = 0;
 
               // Handle loss-of-lock flags
               // -------------------------
@@ -313,7 +301,7 @@ t_irc RTCM3Decoder::Decode(char* buffer, int bufLen, vector<string>& errmsg) {
                 else {
                   _slip_cnt_L1[prn] = 1;
                 }
-                obs.slip_cnt_L1 = _slip_cnt_L1[prn];
+                obs_slip_cnt_L1 = _slip_cnt_L1[prn];
               }
               if (GNSSDF2_LOCKLOSSL2 & gnssData.dataflags2[iSat]) {
                 if (_slip_cnt_L2[prn] < maxSlipCnt) {
@@ -322,7 +310,7 @@ t_irc RTCM3Decoder::Decode(char* buffer, int bufLen, vector<string>& errmsg) {
                 else {
                   _slip_cnt_L2[prn] = 1;
                 }
-                obs.slip_cnt_L2 = _slip_cnt_L2[prn];
+                obs_slip_cnt_L2 = _slip_cnt_L2[prn];
               }
               if (GNSSDF2_LOCKLOSSL5 & gnssData.dataflags2[iSat]) {
                 if (_slip_cnt_L5[prn] < maxSlipCnt) {
@@ -331,17 +319,58 @@ t_irc RTCM3Decoder::Decode(char* buffer, int bufLen, vector<string>& errmsg) {
                 else {
                   _slip_cnt_L5[prn] = 1;
                 }
-                obs.slip_cnt_L5 = _slip_cnt_L5[prn];
+                obs_slip_cnt_L5 = _slip_cnt_L5[prn];
               }
-
-              obs._dataflags  = gnssData.dataflags[iSat];
-              obs._dataflags2 = gnssData.dataflags2[iSat];
 
               // Loop over all data types
               // ------------------------
               for (int iEntry = 0; iEntry < GNSSENTRY_NUMBER; ++iEntry) {
-                obs._measdata[iEntry] = gnssData.measdata[iSat][iEntry];
-                obs._codetype[iEntry] = gnssData.codetype[iSat][iEntry];
+                if (gnssData.codetype[iSat][iEntry] == 0) {
+                  continue;
+                }
+                string rnxType(gnssData.codetype[iSat][iEntry]);
+                cout << "rnxType " << rnxType << endl;
+
+                t_frqObs* frqObs = 0;
+                for (unsigned iFrq = 0; iFrq < obs._obs.size(); iFrq++) {
+                  if (obs._obs[iFrq]->_rnxType2ch == rnxType) {
+                    frqObs = obs._obs[iFrq];
+                    break;
+                  }
+                }
+                if (frqObs == 0) {
+                  frqObs = new t_frqObs;
+                  frqObs->_rnxType2ch = rnxType;
+                  obs._obs.push_back(frqObs);
+                }
+
+                switch(iEntry & 3) {
+                case GNSSENTRY_CODE:
+                  frqObs->_codeValid = true;
+                  frqObs->_code      = gnssData.measdata[iSat][iEntry];
+                  break;
+                case GNSSENTRY_PHASE:
+                  frqObs->_phaseValid = true;
+                  frqObs->_phase      = gnssData.measdata[iSat][iEntry];
+                  if      (rnxType[0] == '1') {
+                    frqObs->_slipCounter = obs_slip_cnt_L1;
+                  }
+                  else if (rnxType[0] == '2') {
+                    frqObs->_slipCounter = obs_slip_cnt_L2;
+                  }
+                  else if (rnxType[0] == '5') {
+                    frqObs->_slipCounter = obs_slip_cnt_L5;
+                  }
+                  break;
+                case GNSSENTRY_DOPPLER: 
+                  frqObs->_dopplerValid = true;
+                  frqObs->_doppler      = gnssData.measdata[iSat][iEntry];
+                  break;
+                case GNSSENTRY_SNR:
+                  frqObs->_snrValid = true;
+                  frqObs->_snr      = gnssData.measdata[iSat][iEntry];
+                  break;
+                }
               }
               _obsList.push_back(obs);
             }

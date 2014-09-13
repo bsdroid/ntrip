@@ -305,15 +305,15 @@ void latencyChecker::checkOutage(bool decoded) {
 
 // Perform latency checks (observations)
 //////////////////////////////////////////////////////////////////////////////
-void latencyChecker::checkObsLatency(const QList<t_obs>& obsList) {
+void latencyChecker::checkObsLatency(const QList<t_satObs>& obsList) {
 
   if (_perfIntr > 0 ) {
 
-    QListIterator<t_obs> it(obsList);
+    QListIterator<t_satObs> it(obsList);
     while (it.hasNext()) {
-      const t_obs& obs = it.next();
+      const t_satObs& obs = it.next();
       
-      _newSecGPS = static_cast<int>(obs.GPSWeeks);
+      _newSecGPS = static_cast<int>(obs._time.gpssec());
       if (_newSecGPS != _oldSecGPS) {
         if (_newSecGPS % _perfIntr < _oldSecGPS % _perfIntr) {
           if (_numLat > 0) {
@@ -362,19 +362,19 @@ void latencyChecker::checkObsLatency(const QList<t_obs>& obsList) {
 
         // Compute the observations latency
         // --------------------------------
-        int week;
-        double sec;
+        int      week;
+        double   sec;
         currentGPSWeeks(week, sec);
         const double secPerWeek = 7.0 * 24.0 * 3600.0;
-        if (week < obs.GPSWeek) {
+        if (week < int(obs._time.gpsw())) {
           week += 1;
           sec  -= secPerWeek;
         }
-        if (week > obs.GPSWeek) {
+        if (week > int(obs._time.gpsw())) {
           week -= 1;
           sec  += secPerWeek;
         }
-         _curLat   = sec - obs.GPSWeeks;
+         _curLat   = sec - obs._time.gpssec();
         _sumLat  += _curLat;
         _sumLatQ += _curLat * _curLat;
         if (_curLat < _minLat) {

@@ -28,8 +28,7 @@
 #include <QFile>
 #include <QtNetwork>
 #include <QMultiMap>
-
-#include "GPSDecoder.h"
+#include "satObs.h"
 
 class bncGetThread;
 
@@ -44,7 +43,7 @@ class bncCaster : public QObject {
    void readMountPoints();
 
  public slots:
-   void slotNewObs(QByteArray staID, QList<t_obs> obsList);
+   void slotNewObs(QByteArray staID, QList<t_satObs> obsList);
    void slotNewRawData(QByteArray staID, QByteArray data);
    void slotNewNMEAstr(QByteArray staID, QByteArray str);
    void slotNewMiscConnection();
@@ -53,7 +52,7 @@ class bncCaster : public QObject {
    void mountPointsRead(QList<bncGetThread*>);
    void getThreadsFinished();   
    void newMessage(QByteArray msg, bool showOnScreen);
-   void newObs(QByteArray staID, QList<t_obs> obsList);
+   void newObs(QByteArray staID, QList<t_satObs> obsList);
 
  private slots:
    void slotReadMountPoints();
@@ -67,27 +66,27 @@ class bncCaster : public QObject {
    static int myWrite(QTcpSocket* sock, const char* buf, int bufLen);
    void reopenOutFile();
 
-   QFile*                   _outFile;
-   int                      _port;
-   QTextStream*             _out;
-   QMultiMap<long, t_obs>*  _epochs;
-   long                     _lastDumpSec;
-   QTcpServer*              _server;
-   QTcpServer*              _uServer;
-   QTcpServer*              _nmeaServer;
-   QList<QTcpSocket*>*      _sockets;
-   QList<QTcpSocket*>*      _uSockets;
-   QList<QTcpSocket*>*      _nmeaSockets;
-   QList<QByteArray>        _staIDs;
-   QList<bncGetThread*>     _threads;
-   int                      _samplingRate;
-   long                     _waitTime;
-   QMutex                   _mutex;
-   int                      _confInterval;
-   QString                  _miscMount;
-   int                      _miscPort;
-   QTcpServer*              _miscServer;
-   QList<QTcpSocket*>*      _miscSockets;
+   QFile*                     _outFile;
+   int                        _port;
+   QTextStream*               _out;
+   QMultiMap<long, t_satObs>* _epochs;
+   long                       _lastDumpSec;
+   QTcpServer*                _server;
+   QTcpServer*                _uServer;
+   QTcpServer*                _nmeaServer;
+   QList<QTcpSocket*>*        _sockets;
+   QList<QTcpSocket*>*        _uSockets;
+   QList<QTcpSocket*>*        _nmeaSockets;
+   QList<QByteArray>          _staIDs;
+   QList<bncGetThread*>       _threads;
+   int                        _samplingRate;
+   long                       _waitTime;
+   QMutex                     _mutex;
+   int                        _confInterval;
+   QString                    _miscMount;
+   int                        _miscPort;
+   QTcpServer*                _miscServer;
+   QList<QTcpSocket*>*        _miscSockets;
 };
 
 #endif
