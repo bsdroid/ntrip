@@ -596,36 +596,62 @@ void bncRinex::closeFile() {
 ////////////////////////////////////////////////////////////////////////////
 string bncRinex::rinexSatLine(const t_satObs& obs, char lli1, char lli2, char lli5) {
   ostringstream str;
-////  str.setf(ios::showpoint | ios::fixed);
-////
-////  if (_header._version >= 3.0) {
-////    str << obs._prn;
-////  }
-////
-////  const QVector<QString>& types = _header._obsTypes[obs._prn.system()];
-////  for (int ii = 0; ii < types.size(); ii++) {
-////    if (_header._version < 3.0 && ii > 0 && ii % 5 == 0) {
-////      str << endl;
-////    }
-////    for (unsigned iFrq = 0; iFrq < obs._obs.size(); iFrq++) {
-////      const t_frqObs*     frqObs   = obs._obs[iFrq];
-////
-////
-////    double value = obs.measdata(types[ii], _header._version);
-////    str << setw(14) << setprecision(3) << value;
-////    if      (value != 0.0 && types[ii].indexOf("L1") == 0) {
-////      str << lli1 << ' ';
-////    }
-////    else if (value != 0.0 && types[ii].indexOf("L2") == 0) {
-////      str << lli2 << ' ';
-////    }
-////    else if (value != 0.0 && types[ii].indexOf("L5") == 0) {
-////      str << lli5 << ' ';
-////    }
-////    else {
-////      str << "  ";
-////    }
-////  }
+  str.setf(ios::showpoint | ios::fixed);
+
+  if (_header._version >= 3.0) {
+    str << obs._prn;
+  }
+
+  const QString obsKinds = "LCDS";
+
+  char sys = obs._prn.system();
+  const QVector<QString>& types = _header._obsTypes[sys];
+  for (int ii = 0; ii < types.size(); ii++) {
+    if (_header._version < 3.0 && ii > 0 && ii % 5 == 0) {
+      str << endl;
+    }
+    double  obsValue = 0.0;
+    char    lli      = ' ';
+    QString rnxType = types[ii];
+    for (unsigned iFrq = 0; iFrq < obs._obs.size(); iFrq++) {
+      const t_frqObs* frqObs = obs._obs[iFrq];
+      for (int ik = 0; ik < obsKinds.length(); ik++) {
+        QChar ch = obsKinds[ik];
+        QString obsType  = (ch + QString(frqObs->_rnxType2ch.c_str())).left(rnxType.length());
+        if (rnxType == obsType) {
+          if      (ch == 'L' && frqObs->_phaseValid) {
+            obsValue = frqObs->_phase;
+            if      (obsType[1] == '1') {
+              lli = lli1;
+            }
+            else if (obsType[1] == '2') {
+              lli = lli2;
+            }
+            else if (obsType[1] == '5') {
+              lli = lli5;
+            }
+          }
+          else if (ch == 'C' && frqObs->_codeValid) {
+            obsValue = frqObs->_code;
+          }
+          else if (ch == 'D' && frqObs->_dopplerValid) {
+            obsValue = frqObs->_doppler;
+          }
+          else if (ch == 'S' && frqObs->_snrValid) {
+            obsValue = frqObs->_snr;
+          }
+        }
+      }
+    }
+    if (obsValue != 0.0) {
+      str << setw(14) << setprecision(3) << obsValue << lli << ' ';
+    }
+    else {
+      str << "                ";
+    }
+  }
+
+  cout << str.str() << endl;
 
   return str.str();
 }

@@ -950,73 +950,14 @@ void t_rnxObsFile::writeEpochV3(const t_rnxEpo* epo) {
 
 // Translate Observation Type v2 --> v3
 ////////////////////////////////////////////////////////////////////////////
-QString t_rnxObsFile::type2to3(char sys, const QString& typeV2) {
-
-  if      (sys == 'G') {
-    if (typeV2 == "C1") return "C1C";
-    if (typeV2 == "C2") return "C2C";
-    if (typeV2 == "C5") return "C5C";
-    if (typeV2 == "P1") return "C1P";
-    if (typeV2 == "P2") return "C2P";
-    if (typeV2 == "L1") return "L1";
-    if (typeV2 == "L2") return "L2";
-    if (typeV2 == "L5") return "L5";
-    if (typeV2 == "D1") return "D1";
-    if (typeV2 == "D2") return "D2";
-    if (typeV2 == "D5") return "D5";
-    if (typeV2 == "S1") return "S1";
-    if (typeV2 == "S2") return "S2";
-    if (typeV2 == "S5") return "S5";
+QString t_rnxObsFile::type2to3(char /* sys */, const QString& typeV2) {
+  if      (typeV2 == "P1") {
+    return "C1P";
   }
-
-  else if (sys == 'R') {
-    if (typeV2 == "C1") return "C1C";
-    if (typeV2 == "C2") return "C2C";
-    if (typeV2 == "P1") return "C1P";
-    if (typeV2 == "P2") return "C2P";
-    if (typeV2 == "L1") return "L1";
-    if (typeV2 == "L2") return "L2";
-    if (typeV2 == "D1") return "D1";
-    if (typeV2 == "D2") return "D2";
-    if (typeV2 == "S1") return "S1";
-    if (typeV2 == "S2") return "S2";
+  else if (typeV2 == "P2") {
+    return "C2P";
   }
-
-  else if (sys == 'E') {
-    if (typeV2 == "C1") return "C1";
-    if (typeV2 == "C5") return "C5";
-    if (typeV2 == "C6") return "C6";
-    if (typeV2 == "C7") return "C7";
-    if (typeV2 == "C8") return "C8";
-    if (typeV2 == "L1") return "L1";
-    if (typeV2 == "L5") return "L5";
-    if (typeV2 == "L6") return "L6";
-    if (typeV2 == "L7") return "L7";
-    if (typeV2 == "L8") return "L8";
-    if (typeV2 == "D1") return "D1";
-    if (typeV2 == "D5") return "D5";
-    if (typeV2 == "D6") return "D6";
-    if (typeV2 == "D7") return "D7";
-    if (typeV2 == "D8") return "D8";
-    if (typeV2 == "S1") return "S1";
-    if (typeV2 == "S5") return "S5";
-    if (typeV2 == "S6") return "S6";
-    if (typeV2 == "S7") return "S7";
-    if (typeV2 == "S8") return "S8";
-  }
-
-  else if (sys == 'S') {
-    if (typeV2 == "C1") return "C1C";
-    if (typeV2 == "C5") return "C5C";
-    if (typeV2 == "L1") return "L1";
-    if (typeV2 == "L5") return "L5";
-    if (typeV2 == "D1") return "D1";
-    if (typeV2 == "D5") return "D5";
-    if (typeV2 == "S1") return "S1";
-    if (typeV2 == "S5") return "S5";
-  }
-
-  return "";
+  return typeV2;
 }
 
 // Translate Observation Type v3 --> v2
@@ -1028,11 +969,7 @@ QString t_rnxObsFile::type3to2(const QString& typeV3) {
   else if (typeV3 == "C2P") {
     return "P2";
   }
-  else {
-    return typeV3.left(2);
-  }
-
-  return "";
+  return typeV3.left(2);
 }
 
 // Set Observations from RINEX File
