@@ -599,7 +599,7 @@ string bncRinex::rinexSatLine(const t_satObs& obs, char lli1, char lli2, char ll
   str.setf(ios::showpoint | ios::fixed);
 
   if (_header._version >= 3.0) {
-    str << obs._prn;
+    str << obs._prn.toString();
   }
 
   const QString obsKinds = "LCDS";
@@ -643,15 +643,8 @@ string bncRinex::rinexSatLine(const t_satObs& obs, char lli1, char lli2, char ll
         }
       }
     }
-    if (obsValue != 0.0) {
-      str << setw(14) << setprecision(3) << obsValue << lli << ' ';
-    }
-    else {
-      str << "                ";
-    }
+    str << setw(14) << setprecision(3) << obsValue << lli << ' ';
   }
-
-  cout << str.str() << endl;
 
   return str.str();
 }
