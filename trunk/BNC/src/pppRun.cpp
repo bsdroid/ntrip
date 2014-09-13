@@ -377,8 +377,6 @@ void t_pppRun::slotNewCorrections(QStringList corrList) {
       }
     }
     else if ( messageType == BTYPE_GPS || messageType == BTYPE_GLONASS ) { 
-      t_bias bias;
-      bias.readLine(line);
     }
   }
 
