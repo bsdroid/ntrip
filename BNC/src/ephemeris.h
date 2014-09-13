@@ -8,8 +8,9 @@
 #include "bnctime.h"
 #include "bncconst.h"
 #include "t_prn.h"
+
 extern "C" {
-#include "rtcm3torinex.h"
+#  include "rtcm3torinex.h"
 }
 
 namespace BNC_PPP {

@@ -33,7 +33,7 @@
 #include "ephemeris.h"
 
 extern "C" {
-#include "clock_orbit_rtcm.h"
+#  include "clock_orbit_rtcm.h"
 }
 
 class t_corr {
