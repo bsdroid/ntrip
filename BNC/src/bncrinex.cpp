@@ -509,7 +509,7 @@ void bncRinex::dumpEpoch(const QByteArray& format, long maxTime) {
     while (it.hasNext()) {
       iSat++;
       const t_satObs& obs = it.next();
-      _out << obs._prn;
+      _out << obs._prn.toString();
       if (iSat == 12 && it.hasNext()) {
         _out << endl << "                                ";
         iSat = 0;
