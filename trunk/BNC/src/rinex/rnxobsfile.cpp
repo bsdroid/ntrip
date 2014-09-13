@@ -1037,34 +1037,53 @@ QString t_rnxObsFile::type3to2(const QString& typeV3) {
 
 // Set Observations from RINEX File
 ////////////////////////////////////////////////////////////////////////////
-void t_rnxObsFile::setObsFromRnx(const t_rnxObsFile* rnxObsFile,
-                                 const t_rnxObsFile::t_rnxEpo* epo, 
-                                 const t_rnxObsFile::t_rnxSat& rnxSat, 
-                                 t_obs& obs) {
+void t_rnxObsFile::setObsFromRnx(const t_rnxObsFile* rnxObsFile, const t_rnxObsFile::t_rnxEpo* epo, 
+                                 const t_rnxObsFile::t_rnxSat& rnxSat, t_satObs& obs) {
 
-  strncpy(obs.StatID, rnxObsFile->markerName().toAscii().constData(), sizeof(obs.StatID));
+  obs._staID = rnxObsFile->markerName().toAscii().constData();
+  obs._prn   = rnxSat.prn;
+  obs._time  = epo->tt;
 
-  obs.satSys   = rnxSat.prn.system();
-  obs.satNum   = rnxSat.prn.number();
-  obs.GPSWeek  = epo->tt.gpsw();
-  obs.GPSWeeks = epo->tt.gpssec();
+  char sys   = rnxSat.prn.system();
 
-  for (int iType = 0; iType < rnxObsFile->nTypes(obs.satSys); iType++) {
-    QString type   = rnxObsFile->obsType(obs.satSys, iType);
+  for (int iType = 0; iType < rnxObsFile->nTypes(sys); iType++) {
+    QString type = rnxObsFile->obsType(sys, iType);
     if (rnxSat.obs.contains(type)) {
       const t_rnxObs& rnxObs = rnxSat.obs[type];
-      obs.setMeasdata(type, rnxObsFile->version(), rnxObs.value);
-      if      (type.indexOf("L1") == 0) {
-        obs.snrL1  = rnxObs.snr;
-        obs.slipL1 = (rnxObs.lli & 1);
+      string type2ch(type.mid(1).toAscii().data());
+
+
+      t_frqObs* frqObs = 0;
+      for (unsigned iFrq = 0; iFrq < obs._obs.size(); iFrq++) {
+        if (obs._obs[iFrq]->_rnxType2ch == type2ch) {
+          frqObs = obs._obs[iFrq];
+          break;
+        }
       }
-      else if (type.indexOf("L2") == 0) {
-        obs.snrL2  = rnxObs.snr;
-        obs.slipL2 = (rnxObs.lli & 1);
+      if (frqObs == 0) {
+        frqObs = new t_frqObs;
+        frqObs->_rnxType2ch = type2ch;
+        obs._obs.push_back(frqObs);
       }
-      else if (type.indexOf("L5") == 0) {
-        obs.snrL5  = rnxObs.snr;
-        obs.slipL5 = (rnxObs.lli & 1);
+
+      switch( type.toAscii().data()[0] ) {
+      case 'C':
+        frqObs->_codeValid = true;
+        frqObs->_code      = rnxObs.value;
+        break;
+      case 'L':
+        frqObs->_phaseValid = true;
+        frqObs->_phase      = rnxObs.value;
+        frqObs->_slip       = (rnxObs.lli & 1);
+        break;
+      case 'D':
+        frqObs->_dopplerValid = true;
+        frqObs->_doppler      = rnxObs.value;
+        break;
+      case 'S':
+        frqObs->_snrValid = true;
+        frqObs->_snr      = rnxObs.value;
+        break;
       }
     }
   }

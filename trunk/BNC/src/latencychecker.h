@@ -26,8 +26,7 @@
 #define LATENCYCHECKER_H
 
 #include <QDateTime>
-
-#include "GPSDecoder.h"
+#include "satObs.h"
 
 class latencyChecker : public QObject {
 Q_OBJECT
@@ -37,7 +36,7 @@ Q_OBJECT
   ~latencyChecker();
   void checkReconnect();
   void checkOutage(bool decoded);
-  void checkObsLatency(const QList<t_obs>& obsList);
+  void checkObsLatency(const QList<t_satObs>& obsList);
   void checkCorrLatency(int corrGPSEpochTime);
   double currentLatency() const {return _curLat;}
 

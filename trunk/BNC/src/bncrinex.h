@@ -29,9 +29,8 @@
 #include <fstream>
 
 #include "bncconst.h"
+#include "satObs.h"
 #include "rinex/rnxobsfile.h"
-
-class t_obs;
 
 class bncRinex {
  public:
@@ -41,17 +40,17 @@ class bncRinex {
    ~bncRinex();
 
    int  samplingRate() const {return _samplingRate;}
-   void deepCopy(t_obs obs);
+   void deepCopy(t_satObs obs);
    void dumpEpoch(const QByteArray& format, long maxTime);
    void setReconnectFlag(bool flag){_reconnectFlag = flag;}
 
    static QString nextEpochStr(const QDateTime& datTim,
                                const QString& intStr, 
                                QDateTime* nextEpoch = 0);
-   static std::string asciiSatLine(const t_obs& obs);
+   static std::string asciiSatLine(const t_satObs& obs);
 
  private:
-   std::string rinexSatLine(const t_obs& obs, char lli1, char lli2, char lli5);
+   std::string rinexSatLine(const t_satObs& obs, char lli1, char lli2, char lli5);
    static std::string obsToStr(double val, int width = 14, int precision = 3);
    void resolveFileName(const QDateTime& datTim);
    bool readSkeleton();
@@ -59,25 +58,25 @@ class bncRinex {
    void closeFile();
    t_irc downloadSkeleton();
 
-   QByteArray    _statID;
-   QByteArray    _fName;
-   QList<t_obs>  _obs;
-   std::ofstream _out;
-   bool          _headerWritten;
-   QDateTime     _nextCloseEpoch;
-   QString       _rnxScriptName;
-   QUrl          _mountPoint;
-   QString       _pgmName;
-   QString       _userName;
-   QString       _sklName;
-   QByteArray    _latitude;
-   QByteArray    _longitude;
-   QByteArray    _nmea;
-   QByteArray    _ntripVersion;
-   bool          _reconnectFlag;
-   QDate         _skeletonDate;
-   int           _samplingRate;
-   QStringList   _addComments;
+   QByteArray      _statID;
+   QByteArray      _fName;
+   QList<t_satObs> _obs;
+   std::ofstream   _out;
+   bool            _headerWritten;
+   QDateTime       _nextCloseEpoch;
+   QString         _rnxScriptName;
+   QUrl            _mountPoint;
+   QString         _pgmName;
+   QString         _userName;
+   QString         _sklName;
+   QByteArray      _latitude;
+   QByteArray      _longitude;
+   QByteArray      _nmea;
+   QByteArray      _ntripVersion;
+   bool            _reconnectFlag;
+   QDate           _skeletonDate;
+   int             _samplingRate;
+   QStringList     _addComments;
 
    QMap<QString, int>  _slip_cnt_L1;
    QMap<QString, int>  _slip_cnt_L2;

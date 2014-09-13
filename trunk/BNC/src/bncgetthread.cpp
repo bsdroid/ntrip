@@ -470,17 +470,16 @@ void bncGetThread::run() {
 
       // Loop over all observations (observations output)
       // ------------------------------------------------
-      QListIterator<t_obs> it(decoder()->_obsList);
+      QListIterator<t_satObs> it(decoder()->_obsList);
 
-      QList<t_obs> obsListHlp;
+      QList<t_satObs> obsListHlp;
 
       while (it.hasNext()) {
-        const t_obs& obs = it.next();
+        const t_satObs& obs = it.next();
 
-        QString prn  = QString("%1%2").arg(obs.satSys)
-                                      .arg(obs.satNum, 2, 10, QChar('0'));
-        long iSec    = long(floor(obs.GPSWeeks+0.5));
-        long obsTime = obs.GPSWeek * 7*24*3600 + iSec;
+        QString prn(obs._prn.toString().c_str());
+        long iSec    = long(floor(obs._time.gpssec()+0.5));
+        long obsTime = obs._time.gpsw()*7*24*3600 + iSec;
 
         // Check observation epoch
         // -----------------------
@@ -659,21 +658,20 @@ void bncGetThread::scanRTCM() {
       // Check Observation Types
       // -----------------------
       for (int ii = 0; ii < decoder()->_obsList.size(); ii++) {
-        t_obs& obs = decoder()->_obsList[ii];
-        QVector<QString>& rnxTypes = _rnxTypes[obs.satSys];
+        t_satObs& obs = decoder()->_obsList[ii];
+        QVector<QString>& rnxTypes = _rnxTypes[obs._prn.system()];
         bool allFound = true;
-        for (int iEntry = 0; iEntry < GNSSENTRY_NUMBER; iEntry++) {
-          if (obs._measdata[iEntry] != 0.0) {
-            if (rnxTypes.indexOf(obs.rnxStr(iEntry)) == -1) {
-              allFound = false;
-              rnxTypes << obs.rnxStr(iEntry);
-            }
+        for (unsigned iFrq = 0; iFrq < obs._obs.size(); iFrq++) {
+          QString rnxStr(obs._obs[iFrq]->_rnxType2ch.c_str());
+          if (rnxTypes.indexOf(rnxStr) == -1) {
+            allFound = false;
+            rnxTypes << rnxStr;
           }
         }
         if (!allFound) {
           QString msg; 
           QTextStream str(&msg);
-          str << obs.satSys << "    " << rnxTypes.size() << "  ";
+          str << obs._prn.system() << "    " << rnxTypes.size() << "  ";
           for (int iType = 0; iType < rnxTypes.size(); iType++) {
             str << " " << rnxTypes[iType];
           }

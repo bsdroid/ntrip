@@ -5,7 +5,6 @@
 #include <vector>
 #include <QtCore>
 
-#include "GPSDecoder.h"
 #include "pppOptions.h"
 #include "pppClient.h"
 
@@ -38,7 +37,7 @@ class t_pppRun : public QObject {
   void slotNewEphGlonass(glonassephemeris gloeph);
   void slotNewEphGalileo(galileoephemeris galeph);
   void slotNewCorrections(QStringList corrList);
-  void slotNewObs(QByteArray staID, QList<t_obs> obsList);
+  void slotNewObs(QByteArray staID, QList<t_satObs> obsList);
   void slotSetSpeed(int speed);
   void slotSetStopFlag();
 

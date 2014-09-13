@@ -45,7 +45,6 @@
 
 #include "../bncutils.h"
 #include "rtcm_utils.h"
-#include "GPSDecoder.h"
 #include "RTCM2Decoder.h"
 
 using namespace std;
@@ -136,24 +135,39 @@ t_irc RTCM2Decoder::Decode(char* buffer, int bufLen, vector<string>& errmsg) {
         _ObsBlock.resolveEpoch(refWeek, refSecs, epochWeek, epochSecs);
           
         for (int iSat=0; iSat < _ObsBlock.nSat; iSat++) {
-          t_obs obs;
+          t_satObs obs;
           if (_ObsBlock.PRN[iSat] > 100) {
-            obs.satNum      = _ObsBlock.PRN[iSat] % 100;
-            obs.satSys      = 'R';
+            obs._prn.set('R', _ObsBlock.PRN[iSat] % 100);
 	  }		        
-	  else {	        
-            obs.satNum      = _ObsBlock.PRN[iSat];
-            obs.satSys      = 'G';
+	  else {
+            obs._prn.set('R', _ObsBlock.PRN[iSat]);
 	  }		        
-          obs.GPSWeek       = epochWeek;
-          obs.GPSWeeks      = epochSecs;
-          obs.setMeasdata("C1", 2.0, _ObsBlock.rng_C1[iSat]);
-          obs.setMeasdata("P1", 2.0, _ObsBlock.rng_P1[iSat]);
-          obs.setMeasdata("P2", 2.0, _ObsBlock.rng_P2[iSat]);
-          obs.setMeasdata("L1", 2.0, _ObsBlock.resolvedPhase_L1(iSat));
-          obs.setMeasdata("L2", 2.0, _ObsBlock.resolvedPhase_L2(iSat));
-	  obs.slip_cnt_L1   = _ObsBlock.slip_L1[iSat];
-	  obs.slip_cnt_L2   = _ObsBlock.slip_L2[iSat];
+          obs._time.set(epochWeek, epochSecs);
+          t_frqObs* frqObs1C = new t_frqObs;
+          frqObs1C->_rnxType2ch  = "1C";
+          frqObs1C->_codeValid   = true;
+          frqObs1C->_code        = _ObsBlock.rng_C1[iSat];
+          obs._obs.push_back(frqObs1C);
+
+          t_frqObs* frqObs1P = new t_frqObs;
+          frqObs1P->_rnxType2ch  = "1P";
+          frqObs1P->_codeValid   = true;
+          frqObs1P->_code        = _ObsBlock.rng_P1[iSat];
+          obs._obs.push_back(frqObs1P);
+          frqObs1P->_phaseValid  = true;
+          frqObs1P->_phase       = _ObsBlock.resolvedPhase_L1(iSat);
+          frqObs1P->_slipCounter = _ObsBlock.slip_L1[iSat];
+          obs._obs.push_back(frqObs1P);
+
+          t_frqObs* frqObs2P = new t_frqObs;
+          frqObs2P->_rnxType2ch  = "2P";
+          frqObs2P->_codeValid   = true;
+          frqObs2P->_code        = _ObsBlock.rng_P2[iSat];
+          obs._obs.push_back(frqObs2P);
+          frqObs2P->_phaseValid  = true;
+          frqObs2P->_phase       = _ObsBlock.resolvedPhase_L2(iSat);
+          frqObs2P->_slipCounter = _ObsBlock.slip_L2[iSat];
+          obs._obs.push_back(frqObs2P);
 
           _obsList.push_back(obs);
         }
@@ -282,7 +296,19 @@ void RTCM2Decoder::translateCorr2Obs(vector<string>& errmsg) {
     string obsT = "";
 
     // new observation
-    t_obs* new_obs = 0;
+    t_satObs* new_obs = 0;
+
+    t_frqObs* frqObs1C = new t_frqObs;
+    frqObs1C->_rnxType2ch  = "1C";
+    new_obs->_obs.push_back(frqObs1C);
+
+    t_frqObs* frqObs1P = new t_frqObs;
+    frqObs1P->_rnxType2ch  = "1P";
+    new_obs->_obs.push_back(frqObs1P);
+
+    t_frqObs* frqObs2P = new t_frqObs;
+    frqObs2P->_rnxType2ch  = "2P";
+    new_obs->_obs.push_back(frqObs2P);
 
     // missing IOD
     vector<string> missingIOD;
@@ -353,38 +379,44 @@ void RTCM2Decoder::translateCorr2Obs(vector<string>& errmsg) {
 	// Allocate new memory
 	// -------------------
 	if ( !new_obs ) {
-	  new_obs = new t_obs();
-
-	  new_obs->StatID[0] = '\x0';
-	  new_obs->satSys    = (corr->PRN < 200 ? 'G'       : 'R');
-	  new_obs->satNum    = (corr->PRN < 200 ? corr->PRN : corr->PRN - 200);
-	  
-	  new_obs->GPSWeek   = GPSWeek_rcv;
-	  new_obs->GPSWeeks  = GPSWeeks_rcv;
+	  new_obs = new t_satObs();
+          if (corr->PRN < 200) {
+            new_obs->_prn.set('G', corr->PRN);
+          }
+          else {
+            new_obs->_prn.set('R', corr->PRN-200);
+          }
+	  new_obs->_time.set(GPSWeek_rcv, GPSWeeks_rcv);
 	}
 	
 	// Store estimated measurements
 	// ----------------------------
 	switch (ii) {
 	case 0: // --- L1 ---
-          new_obs->setMeasdata("L1", 2.0, *obsVal / LAMBDA_1);
-	  new_obs->slip_cnt_L1   = corr->lock1;
+          frqObs1P->_phaseValid  = true;
+          frqObs1P->_phase       = *obsVal / LAMBDA_1;
+          frqObs1P->_slipCounter = corr->lock1;
 	  break;
 	case 1: // --- L2 ---
-          new_obs->setMeasdata("L2", 2.0, *obsVal / LAMBDA_2);
-	  new_obs->slip_cnt_L2   = corr->lock2;
+          frqObs2P->_phaseValid  = true;
+          frqObs2P->_phase       = *obsVal / LAMBDA_2;
+          frqObs2P->_slipCounter = corr->lock2;
 	  break;
 	case 2: // --- C1 / P1 ---
-	  if ( corr->Pind1 )
-            new_obs->setMeasdata("P1", 2.0, *obsVal);
-	  else
-            new_obs->setMeasdata("C1", 2.0, *obsVal);
+	  if ( corr->Pind1 ) {
+            frqObs1P->_codeValid = true;
+            frqObs1P->_code      = *obsVal;
+          }
+	  else {
+            frqObs1C->_codeValid = true;
+            frqObs1C->_code      = *obsVal;
+          }
 	  break;
 	case 3: // --- C2 / P2 ---
-	  if ( corr->Pind2 )
-            new_obs->setMeasdata("P2", 2.0, *obsVal);
-	  else
-            new_obs->setMeasdata("C2", 2.0, *obsVal);
+	  if ( corr->Pind2 ) {
+            frqObs2P->_codeValid = true;
+            frqObs2P->_code      = *obsVal;
+          }
 	  break;
 	default:
 	  continue;

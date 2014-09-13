@@ -41,7 +41,16 @@ class t_frqObs  {
 class t_satObs {
  public:
   t_satObs() {}
+  t_satObs(const t_satObs& old) { // copy constructor (deep copy)
+    _staID = old._staID;
+    _prn   = old._prn;
+    _time  = old._time;
+    for (unsigned ii = 0; ii < old._obs.size(); ii++) {
+      _obs.push_back(new t_frqObs(*old._obs[ii]));
+    }
+  }
   ~t_satObs() {for (unsigned ii = 0; ii < _obs.size(); ii++) delete _obs[ii];}
+  std::string            _staID;
   t_prn                  _prn;
   bncTime                _time;
   std::vector<t_frqObs*> _obs;

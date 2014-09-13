@@ -28,8 +28,8 @@
 #include <QtCore>
 #include "rnxobsfile.h"
 #include "rnxnavfile.h"
-#include "GPSDecoder.h"
 #include "ephemeris.h"
+#include "satObs.h"
 
 class t_polarPoint;
 
@@ -149,7 +149,7 @@ Q_OBJECT
         delete _oneObsVec[ii];
       }
     }
-    t_irc addObs(const t_obs& obs);
+    t_irc addObs(const t_satObs& obs, int slotNum);
     QVector<t_oneObs*> _oneObsVec;
   };
 

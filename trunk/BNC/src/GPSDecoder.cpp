@@ -45,10 +45,6 @@
 #include "bncsettings.h"
 #include "bncrinex.h"
 
-extern "C" {
-#include "rtcm3torinex.h"
-}
-
 using namespace std;
 
 // Constructor
@@ -81,10 +77,10 @@ void GPSDecoder::initRinex(const QByteArray& staID, const QUrl& mountPoint,
 
 // Write RINEX Epoch
 //////////////////////////////////////////////////////////////////////////////
-void GPSDecoder::dumpRinexEpoch(const t_obs& obs, const QByteArray& format) {
+void GPSDecoder::dumpRinexEpoch(const t_satObs& obs, const QByteArray& format) {
   if (_rnx) {
-    long iSec    = long(floor(obs.GPSWeeks+0.5));
-    long obsTime = obs.GPSWeek * 7*24*3600 + iSec;
+    long iSec    = long(floor(obs._time.gpssec()+0.5));
+    long obsTime = obs._time.gpsw() * 7*24*3600 + iSec;
     if (_rnx->samplingRate() == 0 || iSec % _rnx->samplingRate() == 0) {
       _rnx->deepCopy(obs);
     }
@@ -100,164 +96,3 @@ void GPSDecoder::setRinexReconnectFlag(bool flag) {
   }
 }
 
-// 
-//////////////////////////////////////////////////////////////////////////////
-void t_obs::setMeasdata(QString rnxStr, float rnxVers, double value) {
-  int ie = iEntry(rnxStr, rnxVers);
-
-  if (ie != -1) {
-    _codetype[ie] = rnxStr.mid(1);
-    _measdata[ie] = value;
-  }
-}
-
-// 
-//////////////////////////////////////////////////////////////////////////////
-double t_obs::measdata(QString rnxStr, float rnxVers) const {
-  int ie = iEntry(rnxStr, rnxVers);
-
-  if (ie != -1) {
-    return _measdata[ie];
-  }
-
-  return 0.0;
-}
-
-// 
-//////////////////////////////////////////////////////////////////////////////
-QString t_obs::rnxStr(int iEntry) const {
-  QString str(1,' ');
-  switch(iEntry & 3) {
-    case GNSSENTRY_CODE:    str[0] = 'C'; break;
-    case GNSSENTRY_PHASE:   str[0] = 'L'; break;
-    case GNSSENTRY_DOPPLER: str[0] = 'D'; break;
-    case GNSSENTRY_SNR:     str[0] = 'S'; break;
-  }
-  str += _codetype[iEntry];
-  return str.trimmed();
-}
-
-// 
-//////////////////////////////////////////////////////////////////////////////
-int t_obs::iEntry(QString rnxStr, float rnxVers, bool cmode) const {
-
-  int res = 0;
-  bool tryagain = false;
-  QString rnxStrOrig = rnxStr;
-  
-  if (rnxVers < 3.0) {
-    if      (rnxStr == "C1") rnxStr = "C1C";
-    else if (rnxStr == "P1") rnxStr = "C1P";
-    else if (rnxStr == "C2") rnxStr = "C2C";
-    else if (rnxStr == "P2") rnxStr = "C2P";
-    if(cmode)
-    {
-      if      (rnxStr == "S1") rnxStr = "S1C";
-      else if (rnxStr == "L1") rnxStr = "L1C";
-      else if (rnxStr == "S2") rnxStr = "S2C";
-      else if (rnxStr == "L2") rnxStr = "L2C";
-    }
-    else
-    {
-      if      (rnxStr == "S1") {rnxStr = "S1P"; tryagain = true; }
-      else if (rnxStr == "L1") {rnxStr = "L1P"; tryagain = true; }
-      else if (rnxStr == "S2") {rnxStr = "S2P"; tryagain = true; }
-      else if (rnxStr == "L2") {rnxStr = "L2P"; tryagain = true; }
-    }
-  }
-
-  // Observation Type (Code, Phase, Doppler, SNR)
-  // --------------------------------------------
-  if      (rnxStr[0] == 'C') {
-    res += GNSSENTRY_CODE;
-  }
-  else if (rnxStr[0] == 'L') {
-    res += GNSSENTRY_PHASE;
-  }
-  else if (rnxStr[0] == 'D') {
-    res += GNSSENTRY_DOPPLER;
-  }
-  else if (rnxStr[0] == 'S') {
-    res += GNSSENTRY_SNR;
-  }
-  else {
-    return -1;
-  }
-
-  // Frequency
-  // ---------
-  if      (rnxStr[1] == '1') {
-    if      (rnxStr.length() < 3) {
-      res += GNSSENTRY_TYPEC1;
-    }
-    else if (QString("ABCIQ").indexOf(rnxStr[2]) != -1) {
-      res += GNSSENTRY_TYPEC1;
-    }
-    else if (QString("SL").indexOf(rnxStr[2]) != -1) {
-      res += GNSSENTRY_TYPEC1N;
-    }
-    else if (QString("PWY").indexOf(rnxStr[2])    != -1) {
-      res += GNSSENTRY_TYPEP1;
-    }
-    else if (rnxStr[2] == 'Z') {
-      res += GNSSENTRY_TYPECSAIF;
-    }
-    else if (rnxStr[2] == 'X') {
-      if (satSys == 'C' || satSys == 'E') {
-        res += GNSSENTRY_TYPEC1;
-      }
-      else {
-        res += GNSSENTRY_TYPEC1N;
-      }
-    }
-    else {
-      return -1;
-    }
-  }
-  else if (rnxStr[1] == '2') {
-    if      (rnxStr.length() < 3) {
-      res += GNSSENTRY_TYPEC2;
-    }
-    else if (QString("PWY").indexOf(rnxStr[2])  != -1) {
-      res += GNSSENTRY_TYPEP2;
-    }
-    else if (QString("CSLX").indexOf(rnxStr[2]) != -1) {
-      res += GNSSENTRY_TYPEC2;
-    }
-    else if (rnxStr[2] == 'I') {
-      if (satSys == 'C') {
-        res += GNSSENTRY_TYPEC1;  // Compass: RINEX 3.01 "2I" corresponds to "1I" RINEX 3.02
-      }
-      else {
-        res += GNSSENTRY_TYPEC2;
-      }
-    }
-    else if (rnxStr[2] == 'Q') {
-      res += GNSSENTRY_TYPEC2;
-    }
-    else {
-      return -1;
-    }
-  }
-  else if (rnxStr[1] == '5') {
-    res += GNSSENTRY_TYPEC5;
-  }
-  else if (rnxStr[1] == '6') {
-    res += GNSSENTRY_TYPEC6;
-  }
-  else if (rnxStr[1] == '7') {
-    res += GNSSENTRY_TYPEC5B;
-  }
-  else if (rnxStr[1] == '8') {
-    res += GNSSENTRY_TYPEC5AB;
-  }
-  else {
-    return -1;
-  }
-
-  /* Note: We prefer P over C for Lx or Sx (i.e. we first try for P values) */
-  if(_codetype[res].isEmpty() && tryagain)
-    res = iEntry(rnxStrOrig, rnxVers, true);
-
-  return res;
-}

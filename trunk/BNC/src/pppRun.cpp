@@ -89,8 +89,8 @@ t_pppRun::t_pppRun(const t_pppOptions* opt) {
       conType = Qt::BlockingQueuedConnection;
     }
 
-    connect(BNC_CORE->caster(), SIGNAL(newObs(QByteArray, QList<t_obs>)),
-            this, SLOT(slotNewObs(QByteArray, QList<t_obs>)),conType);
+    connect(BNC_CORE->caster(), SIGNAL(newObs(QByteArray, QList<t_satObs>)),
+            this, SLOT(slotNewObs(QByteArray, QList<t_satObs>)),conType);
 
     connect(BNC_CORE, SIGNAL(newEphGPS(gpsephemeris)),
             this, SLOT(slotNewEphGPS(gpsephemeris)),conType);
@@ -185,7 +185,7 @@ void t_pppRun::slotNewEphGalileo(galileoephemeris galeph) {
 
 //
 ////////////////////////////////////////////////////////////////////////////
-void t_pppRun::slotNewObs(QByteArray staID, QList<t_obs> obsList) {
+void t_pppRun::slotNewObs(QByteArray staID, QList<t_satObs> obsList) {
   QMutexLocker locker(&_mutex);
 
   if (string(staID.data()) != _opt->_roverName) {
@@ -194,13 +194,10 @@ void t_pppRun::slotNewObs(QByteArray staID, QList<t_obs> obsList) {
 
   // Loop over all obsevations (possible different epochs)
   // -----------------------------------------------------
-  QListIterator<t_obs> it(obsList);
+  QListIterator<t_satObs> it(obsList);
   while (it.hasNext()) {
-    const t_obs& oldObs = it.next();
-    t_satObs* newObs = new t_satObs;
-   
-    newObs->_prn.set(oldObs.satSys, oldObs.satNum);
-    newObs->_time.set(oldObs.GPSWeek, oldObs.GPSWeeks);
+    const t_satObs& oldObs = it.next();
+    t_satObs*       newObs = new t_satObs(oldObs);
 
     // Find the corresponding data epoch or create a new one
     // -----------------------------------------------------
@@ -220,38 +217,13 @@ void t_pppRun::slotNewObs(QByteArray staID, QList<t_obs> obsList) {
       }
     }
 
-    // Fill the new observation and add it to the corresponding epoch
-    // --------------------------------------------------------------
+    // Put data into the epoch
+    // -----------------------
     if (epoch != 0) {
       epoch->_satObs.push_back(newObs);
-      map<string, t_frqObs*> frqObsMap;
-      for (unsigned iEntry = 0; iEntry < GNSSENTRY_NUMBER; iEntry++) {
-        string hlp = oldObs.rnxStr(iEntry).toAscii().data();
-        if (hlp.length() >= 2 && oldObs._measdata[iEntry] != 0.0) {
-          char   obsType    = hlp[0];
-          string rnxType2ch = hlp.substr(1);
-          if (obsType == 'C' || obsType == 'L') {
-            t_frqObs* frqObs = 0;
-            if (frqObsMap.find(rnxType2ch) == frqObsMap.end()) {
-              frqObs                = new t_frqObs();
-              frqObsMap[rnxType2ch] = frqObs;
-              frqObs->_rnxType2ch   = rnxType2ch;
-              newObs->_obs.push_back(frqObs);
-            }
-            else {
-              frqObs = frqObsMap[rnxType2ch];
-            }
-            if      (obsType == 'C') {
-              frqObs->_code      = oldObs._measdata[iEntry];
-              frqObs->_codeValid = true;
-            }
-            else if (obsType == 'L') {
-              frqObs->_phase      = oldObs._measdata[iEntry];
-              frqObs->_phaseValid = true;
-            }
-          }
-        }
-      }
+    }
+    else {
+      delete newObs;
     }
   }
 
@@ -476,11 +448,11 @@ void t_pppRun::processFiles() {
 
     // Create list of observations and start epoch processing
     // ------------------------------------------------------
-    QList<t_obs> obsList;
+    QList<t_satObs> obsList;
     for (unsigned iObs = 0; iObs < epo->rnxSat.size(); iObs++) {
       const t_rnxObsFile::t_rnxSat& rnxSat = epo->rnxSat[iObs];
     
-      t_obs obs;
+      t_satObs obs;
       t_rnxObsFile::setObsFromRnx(_rnxObsFile, epo, rnxSat, obs);
       obsList << obs;
     }

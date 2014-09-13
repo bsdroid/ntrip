@@ -35,7 +35,7 @@
 #include "bncconst.h"
 #include "bnctime.h"
 #include "t_prn.h"
-#include "GPSDecoder.h"
+#include "satObs.h"
 
 class t_rnxObsHeader {
 
@@ -162,7 +162,7 @@ class t_rnxObsFile {
   static void setObsFromRnx(const t_rnxObsFile* rnxObsFile,
                             const t_rnxObsFile::t_rnxEpo* epo, 
                             const t_rnxObsFile::t_rnxSat& rnxSat, 
-                            t_obs& obs);
+                            t_satObs& obs);
 
   static QString type2to3(char sys, const QString& typeV2);
   static QString type3to2(const QString& typeV3);
