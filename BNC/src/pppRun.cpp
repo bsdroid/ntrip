@@ -227,13 +227,9 @@ void t_pppRun::slotNewObs(QByteArray staID, QList<t_satObs> obsList) {
 
   // Process the oldest epochs
   // ------------------------
-  cout << "epoData " << _epoData.size() << endl;
-
   while (_epoData.size() && !waitForCorr(_epoData.front()->_time)) {
 
     const vector<t_satObs*>& satObs = _epoData.front()->_satObs;
-
-    cout << "satObs " << satObs.size() << endl;
 
     t_output output;
     _pppClient->processEpoch(satObs, &output);
