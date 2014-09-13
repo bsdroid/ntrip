@@ -117,7 +117,7 @@ t_bncCore::t_bncCore() {
   expandEnvVar(_userName);
   _userName = _userName.leftJustified(20, ' ', true);
 
-  _corrs = new QMultiMap<bncTime, QString>;
+  _corrs = new QMultiMap<bncTime, t_clkCorr>;
 
   _dateAndTimeGPS = 0;
 
@@ -632,22 +632,32 @@ void t_bncCore::slotNewConnectionCorr() {
 // 
 ////////////////////////////////////////////////////////////////////////////
 void t_bncCore::slotQuit() {
-  cout << "t_bncCore::slotQuit" << endl;
   delete _caster; _caster = 0;
   qApp->quit();
 }
 
 // 
 ////////////////////////////////////////////////////////////////////////////
-void t_bncCore::slotNewCorrLine(QString line, QString staID, bncTime coTime) {
+void t_bncCore::slotNewOrbCorrections(QList<t_orbCorr> orbCorrections) {
+  emit newOrbCorrections(orbCorrections);
+}
 
+// 
+////////////////////////////////////////////////////////////////////////////
+void t_bncCore::slotNewClkCorrections(QList<t_clkCorr> clkCorrections) {
   QMutexLocker locker(&_mutex);
+
+  if (clkCorrections.size() == 0) {
+    return;
+  }
+  bncTime coTime = clkCorrections[0]._time;
+  QString staID(clkCorrections[0]._staID.c_str());
 
   // Combination of Corrections
   // --------------------------
 #ifdef USE_COMBINATION
   if (_bncComb) {
-    _bncComb->processCorrLine(staID, line);
+    _bncComb->processClkCorrections(clkCorrections);
   }
 #endif
 
@@ -676,7 +686,9 @@ void t_bncCore::slotNewCorrLine(QString line, QString staID, bncTime coTime) {
     return;
   }
 
-  _corrs->insert(coTime, QString(line + " " + staID));
+  for (int ii = 0; ii < clkCorrections.size(); ii++) {
+    _corrs->insert(coTime, clkCorrections[ii]);
+  }
 
   // Dump Corrections
   // ----------------
@@ -692,8 +704,8 @@ void t_bncCore::slotNewCorrLine(QString line, QString staID, bncTime coTime) {
 // Dump Complete Correction Epochs
 ////////////////////////////////////////////////////////////////////////////
 void t_bncCore::dumpCorrs(bncTime minTime, bncTime maxTime) {
-  QStringList allCorrs;
-  QMutableMapIterator<bncTime, QString> it(*_corrs);
+  QList<t_clkCorr> allCorrs;
+  QMutableMapIterator<bncTime, t_clkCorr> it(*_corrs);
   while (it.hasNext()) {
     it.next();
     const bncTime& corrTime = it.key();
@@ -708,8 +720,8 @@ void t_bncCore::dumpCorrs(bncTime minTime, bncTime maxTime) {
 // Dump all corrections
 ////////////////////////////////////////////////////////////////////////////
 void t_bncCore::dumpCorrs() {
-  QStringList allCorrs;
-  QMutableMapIterator<bncTime, QString> it(*_corrs);
+  QList<t_clkCorr> allCorrs;
+  QMutableMapIterator<bncTime, t_clkCorr> it(*_corrs);
   while (it.hasNext()) {
     allCorrs << it.next().value();
     it.remove();
@@ -719,18 +731,17 @@ void t_bncCore::dumpCorrs() {
 
 // Dump List of Corrections 
 ////////////////////////////////////////////////////////////////////////////
-void t_bncCore::dumpCorrs(const QStringList& allCorrs) {
-  emit newCorrections(allCorrs);
+void t_bncCore::dumpCorrs(const QList<t_clkCorr>& allCorrs) {
+  emit newClkCorrections(allCorrs);
   if (_socketsCorr) {
-    QListIterator<QString> it(allCorrs);
+    QListIterator<t_clkCorr> it(allCorrs);
     while (it.hasNext()) {
-      QString corrLine = it.next() + "\n";
-    
+      const t_clkCorr& corr = it.next();
       QMutableListIterator<QTcpSocket*> is(*_socketsCorr);
       while (is.hasNext()) {
         QTcpSocket* sock = is.next();
         if (sock->state() == QAbstractSocket::ConnectedState) {
-          if (sock->write(corrLine.toAscii()) == -1) {
+          if (sock->write(corr.toString().c_str()) == -1) {
             delete sock;
             is.remove();
           }

@@ -83,7 +83,7 @@ SOURCES =             bncgetthread.cpp  bncwindow.cpp bnctabledlg.cpp \
           bncmap_svg.cpp bncantex.cpp                                 \
           bncephuser.cpp bncoutf.cpp bncclockrinex.cpp bncsp3.cpp     \
           bncbytescounter.cpp bncsslconfig.cpp reqcdlg.cpp            \
-          ephemeris.cpp t_prn.cpp                                     \
+          ephemeris.cpp t_prn.cpp satObs.cpp                          \
           upload/bncrtnetdecoder.cpp upload/bncuploadcaster.cpp       \
           upload/bncrtnetuploadcaster.cpp upload/bnccustomtrafo.cpp   \
           upload/bncephuploadcaster.cpp qtfilechooser.cpp             \
@@ -109,11 +109,11 @@ RC_FILE = bnc.rc
 
 QT += network
 
-exists(combination/bnccomb.h) {
-  DEFINES += USE_COMBINATION
-  HEADERS += combination/bnccomb.h
-  SOURCES += combination/bnccomb.cpp
-}
+# exists(combination/bnccomb.h) {
+#   DEFINES += USE_COMBINATION
+#   HEADERS += combination/bnccomb.h
+#   SOURCES += combination/bnccomb.cpp
+# }
 
 exists(PPP) {
   INCLUDEPATH += PPP

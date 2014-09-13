@@ -70,10 +70,10 @@ void t_corrFile::syncRead(const bncTime& tt) {
     return;
   }
 
-  QStringList corrs;
+  QStringList lines;
 
   if (!_lastLine.isEmpty()) {
-    corrs << _lastLine;
+    lines << _lastLine;
   }
 
   while (_stream->status() == QTextStream::Ok && !_stream->atEnd()) {
@@ -84,24 +84,32 @@ void t_corrFile::syncRead(const bncTime& tt) {
     _lastLine = line;
 
     if (stopRead(tt)) {
-      if (corrs.size()) {
-
-        QListIterator<QString> it(corrs);
-        while (it.hasNext()) {
-          const QString& cLine = it.next();
-          t_corr* corr = new t_corr();
-          corr->readLine(cLine);
-          if (corr->tRao.valid()) {
-            _corrIODs[corr->prn] = corr->iod;
-          }
+      QList<t_orbCorr> orbCorr;
+      QList<t_clkCorr> clkCorr;
+      QListIterator<QString> it(lines);
+      while (it.hasNext()) {
+        const QString& str = it.next();
+        if      (str[0] == 'C') {
+          t_clkCorr corr(str.toAscii().data());
+          _lastTime = corr._time;
+          clkCorr.push_back(corr);
         }
-
-        emit newCorrections(corrs);
+        else if (str[0] == 'O') {
+          t_orbCorr corr(str.toAscii().data());
+          _lastTime = corr._time;
+          orbCorr.push_back(corr);
+        }
+      }         
+      if (orbCorr.size() > 0) {
+        emit newOrbCorrections(orbCorr);
+      }
+      if (clkCorr.size() > 0) {
+        emit newClkCorrections(clkCorr);
       }
       return;
     }
     else {
-      corrs << _lastLine;
+      lines << _lastLine;
     }
   }
 }
@@ -110,18 +118,11 @@ void t_corrFile::syncRead(const bncTime& tt) {
 ////////////////////////////////////////////////////////////////////////////
 bool t_corrFile::stopRead(const bncTime& tt) {
 
-  if (_lastLine.isEmpty()) {
+  if (_lastTime.undef()) {
     return false;
   }
 
-  QTextStream in(_lastLine.toAscii(), QIODevice::ReadOnly);
-  int    messageType, updateInterval, GPSweek;
-  double GPSweeks;
-  in >> messageType >> updateInterval >> GPSweek >> GPSweeks;
-
-  bncTime tNew(GPSweek, GPSweeks);
-
-  if (tNew > tt) {
+  if (_lastTime > tt) {
     return true;
   }    
   else {

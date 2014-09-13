@@ -36,55 +36,6 @@ class t_output {
   bool         _error;        
 };
 
-class t_orbCorr {
- public:
-  t_prn          prn() const {return _prn;}
-  unsigned short IOD() const {return _iod;}
-  t_prn          _prn;
-  unsigned short _iod;
-  bncTime        _time;
-  char           _system;
-  double         _xr[3];
-  double         _dotXr[3]; 
-};
-
-class t_clkCorr {
- public:
-  t_prn          prn() const {return _prn;}
-  unsigned short IOD() const {return _iod;}
-  t_prn          _prn;
-  unsigned short _iod;
-  bncTime        _time;
-  double         _dClk;
-  double         _dotDClk;
-  double         _dotDotDClk;
-  double         _clkPartial;
-};
-
-class t_frqBias {
- public:
-  t_frqBias() {
-    _code       = 0.0;          
-    _codeValid  = false;     
-    _phase      = 0.0;         
-    _phaseValid = false;    
-  }
-  std::string _rnxType2ch;
-  double      _code;          
-  bool        _codeValid;     
-  double      _phase;         
-  bool        _phaseValid;    
-};
-
-class t_satBias {
- public:
-  t_prn                  _prn;
-  bncTime                _time;
-  int                    _nx;
-  int                    _jumpCount;
-  std::vector<t_frqBias> _bias;
-};
-
 class t_lc {
  public:
   enum type {dummy = 0, l1, l2, c1, c2, lIF, cIF, MW, CL, maxLc};

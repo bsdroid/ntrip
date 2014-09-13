@@ -11,6 +11,7 @@
 #include "bnctime.h"
 #include "bnccore.h"
 #include "bncutils.h"
+#include "satObs.h"
 #include "pppInclude.h"
 
 using namespace std;
@@ -25,16 +26,16 @@ t_eph::t_eph() {
 
 // 
 ////////////////////////////////////////////////////////////////////////////
-void t_eph::setOrbCorr(const BNC_PPP::t_orbCorr* orbCorr) {
+void t_eph::setOrbCorr(const t_orbCorr* orbCorr) {
   delete _orbCorr; 
-  _orbCorr = new BNC_PPP::t_orbCorr(*orbCorr);
+  _orbCorr = new t_orbCorr(*orbCorr);
 }
 
 // 
 ////////////////////////////////////////////////////////////////////////////
-void t_eph::setClkCorr(const BNC_PPP::t_clkCorr* clkCorr) {
+void t_eph::setClkCorr(const t_clkCorr* clkCorr) {
   delete _clkCorr; 
-  _clkCorr = new BNC_PPP::t_clkCorr(*clkCorr);
+  _clkCorr = new t_clkCorr(*clkCorr);
 }
 
 // 

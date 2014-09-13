@@ -5,6 +5,7 @@
 #include <vector>
 #include <QtCore>
 
+#include "satObs.h"
 #include "pppOptions.h"
 #include "pppClient.h"
 
@@ -36,7 +37,8 @@ class t_pppRun : public QObject {
   void slotNewEphGPS(gpsephemeris gpseph);
   void slotNewEphGlonass(glonassephemeris gloeph);
   void slotNewEphGalileo(galileoephemeris galeph);
-  void slotNewCorrections(QStringList corrList);
+  void slotNewOrbCorrections(QList<t_orbCorr> orbCorr);
+  void slotNewClkCorrections(QList<t_clkCorr> clkCorr);
   void slotNewObs(QByteArray staID, QList<t_satObs> obsList);
   void slotSetSpeed(int speed);
   void slotSetStopFlag();
@@ -60,8 +62,6 @@ class t_pppRun : public QObject {
   const t_pppOptions*    _opt;
   t_pppClient*           _pppClient;
   std::deque<t_epoData*> _epoData;
-  int                    _lastOrbCorrIOD[t_prn::MAXPRN+1];
-  double                 _lastClkCorrValue[t_prn::MAXPRN+1];
   bncTime                _lastClkCorrTime;
   t_rnxObsFile*          _rnxObsFile;
   t_rnxNavFile*          _rnxNavFile;
