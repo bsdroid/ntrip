@@ -49,7 +49,7 @@ HEADERS = bnchelp.html bncgetthread.h    bncwindow.h   bnctabledlg.h  \
           bncephuser.h bncoutf.h bncclockrinex.h bncsp3.h             \
           bncbytescounter.h bncsslconfig.h reqcdlg.h                  \
           upload/bncrtnetdecoder.h upload/bncuploadcaster.h           \
-          ephemeris.h t_prn.h                                         \
+          ephemeris.h t_prn.h satObs.h                                \
           upload/bncrtnetuploadcaster.h upload/bnccustomtrafo.h       \
           upload/bncephuploadcaster.h qtfilechooser.h                 \
           GPSDecoder.h pppInclude.h pppWidgets.h pppModel.h           \
