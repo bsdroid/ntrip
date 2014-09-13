@@ -340,8 +340,8 @@ void t_pppRun::processFiles() {
 
   if (!_opt->_corrFile.empty()) {
     _corrFile = new t_corrFile(QString(_opt->_corrFile.c_str()));
-    connect(_corrFile, SIGNAL(newCorrections(QStringList)),
-            this, SLOT(slotNewCorrections(QStringList)));
+    connect(_corrFile, SIGNAL(newOrbCorrections(QList<t_orbCorr>)),
+            this, SLOT(slotNewOrbCorrections(QList<t_orbCorr>)));
   }
 
   // Read/Process Observations
