@@ -92,11 +92,13 @@ void t_corrFile::syncRead(const bncTime& tt) {
         if      (str[0] == 'C') {
           t_clkCorr corr(str.toAscii().data());
           _lastTime = corr._time;
+          _corrIODs[QString(corr._prn.toString().c_str())] = corr.IOD();
           clkCorr.push_back(corr);
         }
         else if (str[0] == 'O') {
           t_orbCorr corr(str.toAscii().data());
           _lastTime = corr._time;
+          _corrIODs[QString(corr._prn.toString().c_str())] = corr.IOD();
           orbCorr.push_back(corr);
         }
       }         
