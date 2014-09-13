@@ -329,7 +329,6 @@ t_irc RTCM3Decoder::Decode(char* buffer, int bufLen, vector<string>& errmsg) {
                   continue;
                 }
                 string rnxType(gnssData.codetype[iSat][iEntry]);
-                cout << "rnxType " << rnxType << endl;
 
                 t_frqObs* frqObs = 0;
                 for (unsigned iFrq = 0; iFrq < obs._obs.size(); iFrq++) {
