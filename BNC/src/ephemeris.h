@@ -13,10 +13,8 @@ extern "C" {
 #  include "rtcm3torinex.h"
 }
 
-namespace BNC_PPP {
-  class t_orbCorr;
-  class t_clkCorr;
-}
+class t_orbCorr;
+class t_clkCorr;
 
 class t_eph {
  public:
@@ -34,8 +32,8 @@ class t_eph {
   bool    isNewerThan(const t_eph* eph) const {return earlierTime(eph, this);}
   t_prn   prn() const {return _prn;}
   t_irc   getCrd(const bncTime& tt, ColumnVector& xc, ColumnVector& vv, bool useCorr) const;
-  void    setOrbCorr(const BNC_PPP::t_orbCorr* orbCorr);
-  void    setClkCorr(const BNC_PPP::t_clkCorr* clkCorr);
+  void    setOrbCorr(const t_orbCorr* orbCorr);
+  void    setClkCorr(const t_clkCorr* clkCorr);
   const QDateTime& receptDateTime() const {return _receptDateTime;}
   static QString rinexDateStr(const bncTime& tt, const t_prn& prn, double version);
   static QString rinexDateStr(const bncTime& tt, const QString& prnStr, double version);
@@ -43,12 +41,12 @@ class t_eph {
 
  protected:  
   virtual void position(int GPSweek, double GPSweeks, double* xc, double* vv) const = 0;
-  t_prn               _prn;
-  bncTime             _TOC;
-  QDateTime           _receptDateTime;
-  bool                _ok;
-  BNC_PPP::t_orbCorr* _orbCorr;
-  BNC_PPP::t_clkCorr* _clkCorr;
+  t_prn      _prn;
+  bncTime    _TOC;
+  QDateTime  _receptDateTime;
+  bool       _ok;
+  t_orbCorr* _orbCorr;
+  t_clkCorr* _clkCorr;
 };
 
 

@@ -36,53 +36,6 @@ extern "C" {
 #  include "clock_orbit_rtcm.h"
 }
 
-class t_corr {
- public:
-  t_corr() {
-    rao.ReSize(3);       
-    dotRao.ReSize(3);    
-    messageType = 0;
-    iod         = 0;
-    dClk        = 0.0;
-    dotDClk     = 0.0;
-    dotDotDClk  = 0.0;
-    hrClk       = 0.0;
-    rao         = 0.0;
-    dotRao      = 0.0;
-    eph         = 0;
-  }
-  
-  ~t_corr() {}
-
-  bool ready() {return tRao.valid() && tClk.valid();}
-
-  static bool relevantMessageType(int msgType) {
-    return ( msgType == COTYPE_GPSCOMBINED     || 
-             msgType == COTYPE_GLONASSCOMBINED ||
-             msgType == COTYPE_GPSORBIT        ||
-             msgType == COTYPE_GPSCLOCK        ||
-             msgType == COTYPE_GLONASSORBIT    ||
-             msgType == COTYPE_GLONASSCLOCK    ||
-             msgType == COTYPE_GPSHR           ||
-             msgType == COTYPE_GLONASSHR );
-  }
-
-  t_irc readLine(const QString& line);
-
-  int          messageType;
-  QString      prn;
-  bncTime      tClk;
-  bncTime      tRao;
-  int          iod;
-  double       dClk;
-  double       dotDClk;
-  double       dotDotDClk;
-  double       hrClk;
-  ColumnVector rao;
-  ColumnVector dotRao;
-  const t_eph* eph;
-};
-
 class bncEphUser : public QObject {
  Q_OBJECT
 

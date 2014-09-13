@@ -28,6 +28,7 @@
 #include <QtCore>
 #include "bncconst.h"
 #include "bnctime.h"
+#include "satObs.h"
 
 class t_corrFile : public QObject {
  Q_OBJECT
@@ -39,7 +40,8 @@ class t_corrFile : public QObject {
   const QMap<QString, int>& corrIODs() const {return _corrIODs;}
 
  signals:
-  void newCorrections(QStringList);
+  void newOrbCorrections(QList<t_orbCorr>);
+  void newClkCorrections(QList<t_clkCorr>);
 
  private:
   bool stopRead(const bncTime& tt);
@@ -47,6 +49,7 @@ class t_corrFile : public QObject {
   QTextStream*       _stream;
   QString            _lastLine;
   QMap<QString, int> _corrIODs;
+  bncTime            _lastTime;
 };
 
 #endif

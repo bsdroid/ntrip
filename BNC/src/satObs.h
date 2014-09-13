@@ -58,8 +58,12 @@ class t_satObs {
 
 class t_orbCorr {
  public:
+  t_orbCorr();
+  t_orbCorr(const std::string& str);
   t_prn          prn() const {return _prn;}
   unsigned short IOD() const {return _iod;}
+  std::string    toString() const;
+  std::string    _staID;
   t_prn          _prn;
   unsigned short _iod;
   bncTime        _time;
@@ -70,8 +74,12 @@ class t_orbCorr {
 
 class t_clkCorr {
  public:
+  t_clkCorr();
+  t_clkCorr(const std::string& str);
   t_prn          prn() const {return _prn;}
   unsigned short IOD() const {return _iod;}
+  std::string    toString() const;
+  std::string    _staID;
   t_prn          _prn;
   unsigned short _iod;
   bncTime        _time;
@@ -98,6 +106,7 @@ class t_frqBias {
 
 class t_satBias {
  public:
+  std::string            _staID;
   t_prn                  _prn;
   bncTime                _time;
   int                    _nx;

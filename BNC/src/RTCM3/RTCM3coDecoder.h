@@ -26,14 +26,12 @@
 #define RTCM3CODECODER_H
 
 #include <fstream>
-
 #include <QtCore>
 #include <QtNetwork>
-
 #include "GPSDecoder.h"
 
 extern "C" {
-#include "clock_orbit_rtcm.h"
+# include "clock_orbit_rtcm.h"
 }
 
 class RTCM3coDecoder : public QObject, public GPSDecoder {
@@ -42,29 +40,29 @@ Q_OBJECT
   RTCM3coDecoder(const QString& staID);
   virtual ~RTCM3coDecoder();
   virtual t_irc Decode(char* buffer, int bufLen, std::vector<std::string>& errmsg);
-  virtual int corrGPSEpochTime() const {return (int) _GPSweeks;}
+  virtual int   corrGPSEpochTime() const {return int(_lastTime.gpssec());}
 
-  static QStringList corrsToASCIIlines(int GPSweek, double GPSweeks, 
-                                       const ClockOrbit& co, const CodeBias* bias);
-  static void reopen(const QString& fileNameSkl, QString& fileName,
-                     std::ofstream*& out);
  signals:
-  void newCorrLine(QString line, QString staID, bncTime coTime);
+  void newOrbCorrections(QList<t_orbCorr> orbCorr);
+  void newClkCorrections(QList<t_clkCorr> clkCorr);
+  void newBiases(QList<t_satBias> biases);
   void newMessage(QByteArray msg, bool showOnScreen);
   void providerIDChanged(QString staID);
 
  private:
-  void printLine(const QString& line, int GPSweek, double GPSweeks);
+  void sendResults();
+  void reopen();
   void checkProviderID();
   std::ofstream* _out;
   QString        _staID;
   QString        _fileNameSkl;
   QString        _fileName;
   QByteArray     _buffer;
-  double         _GPSweeks;
   ClockOrbit     _co;
   CodeBias       _bias;
   int            _providerID[3];
+  bncTime        _lastTime;
+  QMap<std::string, unsigned short> _IODs;
 };
 
 #endif

@@ -5,6 +5,7 @@
 #include <fstream>
 #include <newmat.h>
 #include "bncephuser.h"
+#include "satObs.h"
 
 class bncRtnetDecoder;
 class bncSP3;
@@ -34,7 +35,8 @@ class bncComb : public bncEphUser  {
  public:
   bncComb();
   virtual ~bncComb();
-  void processCorrLine(const QString& staID, const QString& line);
+  void processOrbCorrections(const QList<t_orbCorr>& orbCorrections);
+  void processClkCorrections(const QList<t_clkCorr>& clkCorrections);
   int  nStreams() const {return _ACs.size();}
 
  public slots:
@@ -61,11 +63,11 @@ class bncComb : public bncEphUser  {
     unsigned numObs;
   };
 
-  class cmbCorr : public t_corr {
+  class cmbCorr : public t_clkCorr {
    public:
     QString      acName;
     ColumnVector diffRao;
-    QString ID() {return acName + "_" + prn;}
+    QString ID() {return acName + "_" + QString(_prn.toString().c_str());}
   };
 
   class cmbEpoch {
@@ -82,16 +84,16 @@ class bncComb : public bncEphUser  {
 
   void processEpoch();
   t_irc processEpoch_filter(QTextStream& out,
-                            QMap<QString, t_corr*>& resCorr,
+                            QMap<QString, t_clkCorr*>& resCorr,
                             ColumnVector& dx);
   t_irc processEpoch_singleEpoch(QTextStream& out,
-                                 QMap<QString, t_corr*>& resCorr,
+                                 QMap<QString, t_clkCorr*>& resCorr,
                                  ColumnVector& dx);
   t_irc createAmat(Matrix& AA, ColumnVector& ll, DiagonalMatrix& PP,
-                   const ColumnVector& x0, QMap<QString, t_corr*>& resCorr);
-  void dumpResults(const QMap<QString, t_corr*>& resCorr);
-  void printResults(QTextStream& out, const QMap<QString, t_corr*>& resCorr);
-  void switchToLastEph(const t_eph* lastEph, t_corr* corr);
+                   const ColumnVector& x0, QMap<QString, t_clkCorr*>& resCorr);
+  void dumpResults(const QMap<QString, t_clkCorr*>& resCorr);
+  void printResults(QTextStream& out, const QMap<QString, t_clkCorr*>& resCorr);
+  void switchToLastEph(const t_eph* lastEph, t_clkCorr* corr);
   t_irc checkOrbits(QTextStream& out);
 
   QVector<cmbCorr*>& corrs() {return _buffer[_resTime].corrs;}

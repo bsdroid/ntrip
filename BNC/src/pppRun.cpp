@@ -74,11 +74,6 @@ t_pppRun::t_pppRun(const t_pppOptions* opt) {
   connect(this,     SIGNAL(newNMEAstr(QByteArray, QByteArray)),
           BNC_CORE, SIGNAL(newNMEAstr(QByteArray, QByteArray)));
 
-  for (unsigned iPrn = 0; iPrn <= t_prn::MAXPRN; iPrn++) {
-    _lastOrbCorrIOD[iPrn]   = -1;
-    _lastClkCorrValue[iPrn] = 0.0;
-  }
-
   _pppClient = new t_pppClient(_opt);
 
   bncSettings settings;
@@ -101,8 +96,11 @@ t_pppRun::t_pppRun(const t_pppOptions* opt) {
     connect(BNC_CORE, SIGNAL(newEphGalileo(galileoephemeris)),
             this, SLOT(slotNewEphGalileo(galileoephemeris)),conType);
 
-    connect(BNC_CORE, SIGNAL(newCorrections(QStringList)),
-            this, SLOT(slotNewCorrections(QStringList)),conType);
+    connect(BNC_CORE, SIGNAL(newOrbCorrections(QList<t_orbCorr>)),
+            this, SLOT(slotNewOrbCorrections(QList<t_orbCorr>)),conType);
+
+    connect(BNC_CORE, SIGNAL(newClkCorrections(QList<t_clkCorr>)),
+            this, SLOT(slotNewClkCorrections(QList<t_clkCorr>)),conType);
   }
   else {
     _rnxObsFile = 0;
@@ -229,9 +227,13 @@ void t_pppRun::slotNewObs(QByteArray staID, QList<t_satObs> obsList) {
 
   // Process the oldest epochs
   // ------------------------
+  cout << "epoData " << _epoData.size() << endl;
+
   while (_epoData.size() && !waitForCorr(_epoData.front()->_time)) {
 
     const vector<t_satObs*>& satObs = _epoData.front()->_satObs;
+
+    cout << "satObs " << satObs.size() << endl;
 
     t_output output;
     _pppClient->processEpoch(satObs, &output);
@@ -286,115 +288,44 @@ void t_pppRun::slotNewObs(QByteArray staID, QList<t_satObs> obsList) {
     
 // 
 ////////////////////////////////////////////////////////////////////////////
-void t_pppRun::slotNewCorrections(QStringList corrList) {
-  QMutexLocker locker(&_mutex);
-
-  // Check the Mountpoint (source of corrections)
-  // --------------------------------------------
-  if (_opt->_realTime) {
-    if (_opt->_corrMount.empty()) {
-      return;
-    }
-    QMutableListIterator<QString> itm(corrList);
-    while (itm.hasNext()) {
-      QStringList hlp = itm.next().split(" ");
-      if (hlp.size() > 0) {
-        QString mountpoint = hlp[hlp.size()-1];
-        if (mountpoint != QString(_opt->_corrMount.c_str())) {
-          itm.remove();     
-        }
-      }
-    }
-  }
-
-  if (corrList.size() == 0) {
+void t_pppRun::slotNewOrbCorrections(QList<t_orbCorr> orbCorr) {
+  if (orbCorr.size() == 0) {
     return;
   }
 
-  vector<t_orbCorr*> orbCorr;
-  vector<t_clkCorr*> clkCorr;
-  vector<t_satBias*> satBias;
-
-  QListIterator<QString> it(corrList);
-  while (it.hasNext()) {
-    QString line = it.next();
-
-    QTextStream in(&line);
-    int     messageType;
-    int     updateInterval;
-    int     GPSweek;
-    double  GPSweeks;
-    QString prn;
-    in >> messageType >> updateInterval >> GPSweek >> GPSweeks >> prn;
-
-    if ( t_corr::relevantMessageType(messageType) ) {
-      t_corr corr;
-      corr.readLine(line);
-      if      (messageType == COTYPE_GPSCOMBINED || messageType == COTYPE_GLONASSCOMBINED ||
-               messageType == COTYPE_GPSORBIT    || messageType == COTYPE_GLONASSORBIT    ) {
-        t_orbCorr* cc = new t_orbCorr();
-        cc->_prn.set(corr.prn.toAscii().data());
-        cc->_iod       = corr.iod;
-        cc->_time      = corr.tRao;
-        cc->_system    = 'R';
-        cc->_xr[0]     = corr.rao[0]; 
-        cc->_xr[1]     = corr.rao[1]; 
-        cc->_xr[2]     = corr.rao[2]; 
-        cc->_dotXr[0]  = corr.dotRao[0]; 
-        cc->_dotXr[0]  = corr.dotRao[1]; 
-        cc->_dotXr[0]  = corr.dotRao[2]; 
-        orbCorr.push_back(cc);
-
-        _lastOrbCorrIOD[cc->_prn.toInt()] = cc->_iod;
-      }
-      else if (messageType == COTYPE_GPSCOMBINED || messageType == COTYPE_GLONASSCOMBINED ||
-               messageType == COTYPE_GPSCLOCK    || messageType == COTYPE_GLONASSCLOCK    ) {
-        t_clkCorr* cc = new t_clkCorr();
-        cc->_prn.set(corr.prn.toAscii().data());
-        cc->_iod         = corr.iod;
-        cc->_time        = corr.tClk;
-        cc->_dClk        = corr.dClk;
-        cc->_dotDClk     = corr.dotDClk;
-        cc->_dotDotDClk  = corr.dotDotDClk;
-        cc->_clkPartial  = 0.0;
-        if (messageType == COTYPE_GPSCLOCK || messageType == COTYPE_GLONASSCLOCK) {
-          int lastIOD = _lastOrbCorrIOD[cc->_prn.toInt()];
-          if (lastIOD != -1) {
-            cc->_iod = lastIOD;
-          }
-          else {
-            delete cc;
-            cc = 0;
-          }
-        }
-        if (cc) {
-          clkCorr.push_back(cc); 
-          _lastClkCorrValue[cc->_prn.toInt()] = cc->_dClk;
-          if (_lastClkCorrTime.undef() || cc->_time > _lastClkCorrTime) {
-            _lastClkCorrTime = cc->_time;
-          }
-        }
-      }
-    }
-    else if ( messageType == BTYPE_GPS || messageType == BTYPE_GLONASS ) { 
+  if (_opt->_realTime) {
+    if (_opt->_corrMount.empty() || _opt->_corrMount != orbCorr[0]._staID) {
+      return;
     }
   }
+  vector<t_orbCorr*> corrections;
+  for (int ii = 0; ii < orbCorr.size(); ii++) {
+    corrections.push_back(new t_orbCorr(orbCorr[ii]));
+    _lastClkCorrTime = orbCorr[ii]._time;
+  }
 
-  _pppClient->putOrbCorrections(orbCorr); 
-  _pppClient->putClkCorrections(clkCorr); 
-  _pppClient->putBiases(satBias);   
-
-  for (unsigned ii = 0; ii < orbCorr.size(); ii++) {
-    delete orbCorr[ii];
-  }
-  for (unsigned ii = 0; ii < clkCorr.size(); ii++) {
-    delete clkCorr[ii];
-  }
-  for (unsigned ii = 0; ii < satBias.size(); ii++) {
-    delete satBias[ii];
-  }
+  _pppClient->putOrbCorrections(corrections); 
 }
 
+// 
+////////////////////////////////////////////////////////////////////////////
+void t_pppRun::slotNewClkCorrections(QList<t_clkCorr> clkCorr) {
+  if (clkCorr.size() == 0) {
+    return;
+  }
+
+  if (_opt->_realTime) {
+    if (_opt->_corrMount.empty() || _opt->_corrMount != clkCorr[0]._staID) {
+      return;
+    }
+  }
+  vector<t_clkCorr*> corrections;
+  for (int ii = 0; ii < clkCorr.size(); ii++) {
+    corrections.push_back(new t_clkCorr(clkCorr[ii]));
+  }
+
+  _pppClient->putClkCorrections(corrections); 
+}
 
 // 
 ////////////////////////////////////////////////////////////////////////////

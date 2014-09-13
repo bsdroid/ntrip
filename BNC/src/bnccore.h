@@ -80,7 +80,8 @@ friend class bncSettings;
   void slotNewGPSEph(gpsephemeris* gpseph);
   void slotNewGlonassEph(glonassephemeris* glonasseph, const QString& staID);
   void slotNewGalileoEph(galileoephemeris* galileoeph);
-  void slotNewCorrLine(QString line, QString staID, bncTime coTime);
+  void slotNewOrbCorrections(QList<t_orbCorr> orbCorr);
+  void slotNewClkCorrections(QList<t_clkCorr> clkCorr);
   void slotQuit();
 
  signals:
@@ -88,7 +89,8 @@ friend class bncSettings;
   void newEphGPS(gpsephemeris gpseph);
   void newEphGlonass(glonassephemeris glonasseph);
   void newEphGalileo(galileoephemeris galileoeph);
-  void newCorrections(QStringList);
+  void newOrbCorrections(QList<t_orbCorr> orbCorr);
+  void newClkCorrections(QList<t_clkCorr> clkCorr);
   void providerIDChanged(QString);
   void newPosition(QByteArray staID, bncTime time, QVector<double> xx);
   void newNMEAstr(QByteArray staID, QByteArray str);
@@ -110,7 +112,7 @@ friend class bncSettings;
                    const QString& strV2, const QString& strV3);
   void dumpCorrs(bncTime minTime, bncTime maxTime);
   void dumpCorrs();
-  void dumpCorrs(const QStringList& allCorrs);
+  void dumpCorrs(const QList<t_clkCorr>& allCorrs);
   void messagePrivate(const QByteArray& msg);
   void checkEphemeris(gpsephemeris* oldEph, gpsephemeris* newEph);
 
@@ -146,7 +148,7 @@ friend class bncSettings;
   bncCaster*          _caster;
   QMap<QString, bncTime> _lastCorrDumpTime;
   double              _waitCoTime;
-  QMultiMap<bncTime, QString>* _corrs;
+  QMultiMap<bncTime, t_clkCorr>* _corrs;
   QString             _confFileName;
   QDate               _fileDate;
   bncRawFile*         _rawFile;
