@@ -385,34 +385,26 @@ void bncRinex::writeHeader(const QByteArray& format,
       _header._obsTypes['C'] = _header._obsTypes['G'];
     }
     else {
-      _header._obsTypes['G'] << "C1C" << "L1C" << "D1C" << "S1C" 
-                             << "C1P" << "L1P" << "D1P" << "S1P" 
-                             << "C2C" << "L2C" << "D2C" << "S2C" 
-                             << "C2P" << "L2P" << "D2P" << "S2P" 
-                             << "C5"  << "D5"  << "L5"  << "S5";
+      _header._obsTypes['G'] << "C1C" << "L1C"  << "S1C" 
+                             << "C2W" << "L2W"  << "S2W" 
+                             << "C5"  << "L5"   << "S5";
       
-      _header._obsTypes['R'] << "C1C" << "L1C" << "D1C" << "S1C" 
-                             << "C1P" << "L1P" << "D1P" << "S1P" 
-                             << "C2C" << "L2C" << "D2C" << "S2C"
-                             << "C2P" << "L2P" << "D2P" << "S2P";
+      _header._obsTypes['J'] = _header._obsTypes['G'];
       
-      _header._obsTypes['E'] << "C1" << "L1" << "D1" << "S1"
-                             << "C5" << "L5" << "D5" << "S5" 
-                             << "C6" << "L6" << "D6" << "S6"
-                             << "C7" << "L7" << "D7" << "S7"
-                             << "C8" << "L8" << "D8" << "S8";
+      _header._obsTypes['R'] << "C1C" << "L1C" << "S1C" 
+                             << "C2P" << "L2P" << "S2P";
       
-      _header._obsTypes['J'] << "C1" << "L1" << "D1" << "S1" 
-                             << "C2" << "L2" << "D2" << "S2"
-                             << "C5" << "L5" << "D5" << "S5"
-                             << "C6" << "D6" << "L6" << "S6";
+      _header._obsTypes['E'] << "C1" << "L1" << "S1"
+                             << "C5" << "L5" << "S5" 
+                             << "C7" << "L7" << "S7"
+                             << "C8" << "L8" << "S8";
       
-      _header._obsTypes['S'] << "C1" << "L1" << "D1" << "S1" 
-                             << "C5" << "L5" << "D5" << "S5";
+      _header._obsTypes['S'] << "C1" << "L1" << "S1" 
+                             << "C5" << "L5" << "S5";
       
-      _header._obsTypes['C'] << "C1" << "L1" << "D1" << "S1"
-                             << "C6" << "L6" << "D6" << "S6"
-                             << "C7" << "L7" << "D7" << "S7";
+      _header._obsTypes['C'] << "C1" << "L1" << "S1"
+                             << "C6" << "L6" << "S6"
+                             << "C7" << "L7" << "S7";
     }
   }
 
@@ -612,12 +604,13 @@ string bncRinex::rinexSatLine(const t_satObs& obs, char lli1, char lli2, char ll
     }
     double  obsValue = 0.0;
     char    lli      = ' ';
-    QString rnxType = types[ii];
+    QString rnxType = t_rnxObsFile::type2to3(types[ii]);
     for (unsigned iFrq = 0; iFrq < obs._obs.size(); iFrq++) {
       const t_frqObs* frqObs = obs._obs[iFrq];
       for (int ik = 0; ik < obsKinds.length(); ik++) {
         QChar ch = obsKinds[ik];
-        QString obsType  = (ch + QString(frqObs->_rnxType2ch.c_str())).left(rnxType.length());
+        QString obsType = (ch + QString(frqObs->_rnxType2ch.c_str()));
+        obsType = t_rnxObsFile::type2to3(obsType).left(rnxType.length());
         if (rnxType == obsType) {
           if      (ch == 'L' && frqObs->_phaseValid) {
             obsValue = frqObs->_phase;

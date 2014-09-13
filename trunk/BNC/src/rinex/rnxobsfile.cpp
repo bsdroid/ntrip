@@ -383,7 +383,7 @@ QString t_rnxObsHeader::obsType(char sys, int index, double version) const {
       return t_rnxObsFile::type3to2(origType);
     }
     else if (int(version) == 3) {
-      return t_rnxObsFile::type2to3(sys, origType);
+      return t_rnxObsFile::type2to3(origType);
     }
   }
   return "";
@@ -950,7 +950,7 @@ void t_rnxObsFile::writeEpochV3(const t_rnxEpo* epo) {
 
 // Translate Observation Type v2 --> v3
 ////////////////////////////////////////////////////////////////////////////
-QString t_rnxObsFile::type2to3(char /* sys */, const QString& typeV2) {
+QString t_rnxObsFile::type2to3(const QString& typeV2) {
   if      (typeV2 == "P1") {
     return "C1P";
   }
