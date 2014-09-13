@@ -297,9 +297,9 @@ void RTCM3coDecoder::sendResults() {
       clkCorr._prn.set(sysCh, _co.Sat[ii].ID);
       clkCorr._staID      = _staID.toAscii().data();
       clkCorr._time       = _lastTime;
-      clkCorr._dClk       = _co.Sat[ii].Clock.DeltaA0,
-      clkCorr._dotDClk    = _co.Sat[ii].Clock.DeltaA1,
-      clkCorr._dotDotDClk = _co.Sat[ii].Clock.DeltaA2;
+      clkCorr._dClk       = _co.Sat[ii].Clock.DeltaA0 / t_CST::c;
+      clkCorr._dotDClk    = _co.Sat[ii].Clock.DeltaA1 / t_CST::c;
+      clkCorr._dotDotDClk = _co.Sat[ii].Clock.DeltaA2 / t_CST::c;
       clkCorr._clkPartial = 0.0;
 
       if (_IODs.contains(clkCorr._prn.toString())) {
