@@ -661,37 +661,30 @@ string bncRinex::obsToStr(double val, int width, int precision) {
 string bncRinex::asciiSatLine(const t_satObs& obs) {
 
   ostringstream str;
-////  str.setf(ios::showpoint | ios::fixed);
-////
-////  str << obs._prn << ' ';
-////
-////  float rnxVers = 3.0;
-////
-////  for (int ie = 0; ie < GNSSENTRY_NUMBER; ie++) {
-////    QString rnxStr = obs.rnxStr(ie);
-////    if (rnxStr.length() >= 2) {
-////      double data = obs.measdata(rnxStr, rnxVers);
-////      if (data != 0.0) {
-////        int width = (rnxStr[0] == 'S') ? 8 : 14;
-////        int prec  = 3;
-////        str << ' ' << rnxStr.toAscii().data() 
-////            << ' ' << obsToStr(data, width, prec);
-////        if (rnxStr[0] == 'L') {
-////          int slipCnt = 0;
-////          if      (rnxStr[1] == '1') {
-////            slipCnt = obs.slip_cnt_L1;
-////          }
-////          else if (rnxStr[1] == '2') {
-////            slipCnt = obs.slip_cnt_L2;
-////          }
-////          else if (rnxStr[1] == '5') {
-////            slipCnt = obs.slip_cnt_L5;
-////          }
-////          str << ' ' << setw(3)  << slipCnt;
-////        }
-////      }
-////    }
-////  }
+  str.setf(ios::showpoint | ios::fixed);
+
+  str << obs._prn.toString() << ' ';
+ 
+  for (unsigned ii = 0; ii < obs._obs.size(); ii++) {
+    const t_frqObs* frqObs = obs._obs[ii];
+    if (frqObs->_codeValid) {
+      str << " C" << frqObs->_rnxType2ch << ' ' 
+          << setw(14) << setprecision(3) << frqObs->_code;
+    }
+    if (frqObs->_phaseValid) {
+      str << " L" << frqObs->_rnxType2ch << ' ' 
+          << setw(14) << setprecision(3) << frqObs->_phase
+          << ' ' << setw(3)  << frqObs->_slipCounter;
+    }
+    if (frqObs->_dopplerValid) {
+      str << " D" << frqObs->_rnxType2ch << ' ' 
+          << setw(14) << setprecision(3) << frqObs->_doppler;
+    }
+    if (frqObs->_snrValid) {
+      str << " S" << frqObs->_rnxType2ch << ' ' 
+          << setw(8) << setprecision(3) << frqObs->_doppler;
+    }
+  }
 
   return str.str();
 }
