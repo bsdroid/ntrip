@@ -197,10 +197,12 @@ class bncWindow : public QMainWindow {
     bncFigureLate*  _bncFigureLate;
     bncFigurePPP*   _bncFigurePPP;
 
-    QTableWidget* _cmbTable;
-    QLineEdit*    _cmbMaxresLineEdit;
-    QComboBox*    _cmbMethodComboBox;
-    QSpinBox*     _cmbSamplSpinBox;
+    QTableWidget*  _cmbTable;
+    QLineEdit*     _cmbMaxresLineEdit;
+    QComboBox*     _cmbMethodComboBox;
+    QSpinBox*      _cmbSamplSpinBox;
+    qtFileChooser* _cmbAntexFile;
+    QCheckBox*     _cmbUseGlonass;
 
     QTableWidget* _uploadTable;
     QComboBox*    _uploadIntrComboBox;
