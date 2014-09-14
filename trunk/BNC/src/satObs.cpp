@@ -1,3 +1,5 @@
+#include <iostream>
+#include <sstream>
 
 #include "satObs.h"
 using namespace std;
@@ -20,7 +22,10 @@ t_clkCorr::t_clkCorr(const string& line) {
 // 
 ////////////////////////////////////////////////////////////////////////////
 string t_clkCorr::toLine() const {
-  return "CLK";
+  ostringstream str;
+  str.setf(ios::showpoint | ios::fixed);
+  str << "C " << endl;
+  return str.str();
 }
 
 // 
@@ -40,6 +45,9 @@ t_orbCorr::t_orbCorr(const string& line) {
 // 
 ////////////////////////////////////////////////////////////////////////////
 string t_orbCorr::toLine() const {
-  return "ORB";
+  ostringstream str;
+  str.setf(ios::showpoint | ios::fixed);
+  str << "O " << endl;
+  return str.str();
 }
 
