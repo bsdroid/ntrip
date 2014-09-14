@@ -183,10 +183,6 @@ class t_pppFilter {
     return 0.0;
   }
 
-  static void kalman(const Matrix& AA, const ColumnVector& ll, 
-                     const DiagonalMatrix& PP, 
-                     SymmetricMatrix& QQ, ColumnVector& dx);
-
  private:
   void   reset();
   t_irc  cmpBancroft(t_epoData* epoData);

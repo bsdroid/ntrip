@@ -698,43 +698,6 @@ QString t_pppFilter::outlierDetection(int iPhase, const ColumnVector& vv,
   return QString();
 }
 
-//
-//////////////////////////////////////////////////////////////////////////////
-void t_pppFilter::kalman(const Matrix& AA, const ColumnVector& ll, 
-                      const DiagonalMatrix& PP, 
-                      SymmetricMatrix& QQ, ColumnVector& dx) {
-
-  Tracer tracer("t_pppFilter::kalman");
-
-  int nPar = AA.Ncols();
-  int nObs = AA.Nrows();
-  UpperTriangularMatrix SS = Cholesky(QQ).t();
-
-  Matrix SA = SS*AA.t();
-  Matrix SRF(nObs+nPar, nObs+nPar); SRF = 0;
-  for (int ii = 1; ii <= nObs; ++ii) {
-    SRF(ii,ii) = 1.0 / sqrt(PP(ii,ii));
-  }
-
-  SRF.SubMatrix   (nObs+1, nObs+nPar, 1, nObs) = SA;
-  SRF.SymSubMatrix(nObs+1, nObs+nPar)          = SS;
-  
-  UpperTriangularMatrix UU;
-  QRZ(SRF, UU);
-  
-  SS = UU.SymSubMatrix(nObs+1, nObs+nPar);
-  UpperTriangularMatrix SH_rt = UU.SymSubMatrix(1, nObs);
-  Matrix YY  = UU.SubMatrix(1, nObs, nObs+1, nObs+nPar);
-  
-  UpperTriangularMatrix SHi = SH_rt.i();
-  
-  Matrix KT  = SHi * YY; 
-  SymmetricMatrix Hi; Hi << SHi * SHi.t();
-
-  dx = KT.t() * ll;
-  QQ << (SS.t() * SS);
-}
-
 // Phase Wind-Up Correction
 ///////////////////////////////////////////////////////////////////////////
 double t_pppFilter::windUp(const QString& prn, const ColumnVector& rSat,
