@@ -992,7 +992,7 @@ t_irc t_pppFilter::update_p(t_epoData* epoData) {
 
       // Compute Filter Update
       // ---------------------
-      ColumnVector dx;
+      ColumnVector dx(nPar); dx = 0.0;
       kalman(AA, ll, PP, _QQ, dx);
       ColumnVector vv = ll - AA * dx;
       
