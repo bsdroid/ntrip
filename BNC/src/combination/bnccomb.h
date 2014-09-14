@@ -11,24 +11,6 @@ class bncRtnetDecoder;
 class bncSP3;
 class bncAntex;
 
-class cmbParam {
- public:
-  enum parType {offACgps, offACglo, offACSat, clkSat};
-  cmbParam(parType type_, int index_, const QString& ac_, const QString& prn_);
-  ~cmbParam();
-  double partial(const QString& AC_, const QString& prn_);
-  QString toString() const;
-  parType type;
-  int     index;
-  QString AC;
-  QString prn;
-  double  xx;
-  double  sig0;
-  double  sigP;
-  bool    epoSpec;
-  const t_eph* eph;
-};
-
 class bncComb : public bncEphUser  {
  Q_OBJECT
  public:
@@ -47,6 +29,24 @@ class bncComb : public bncEphUser  {
 
  private:
   enum e_method{singleEpoch, filter};
+
+  class cmbParam {
+   public:
+    enum parType {offACgps, offACglo, offACSat, clkSat};
+    cmbParam(parType type_, int index_, const QString& ac_, const QString& prn_);
+    ~cmbParam();
+    double partial(const QString& AC_, const QString& prn_);
+    QString toString() const;
+    parType type;
+    int     index;
+    QString AC;
+    QString prn;
+    double  xx;
+    double  sig0;
+    double  sigP;
+    bool    epoSpec;
+    const t_eph* eph;
+  };
 
   class cmbAC {
    public:
@@ -80,23 +80,20 @@ class bncComb : public bncEphUser  {
     QVector<cmbCorr*> corrs;
   };
 
-  void processEpoch();
-  t_irc processEpoch_filter(QTextStream& out,
-                            QMap<QString, t_clkCorr*>& resCorr,
+  void  processEpoch();
+  t_irc processEpoch_filter(QTextStream& out, QMap<QString, t_clkCorr*>& resCorr,
                             ColumnVector& dx);
-  t_irc processEpoch_singleEpoch(QTextStream& out,
-                                 QMap<QString, t_clkCorr*>& resCorr,
+  t_irc processEpoch_singleEpoch(QTextStream& out, QMap<QString, t_clkCorr*>& resCorr,
                                  ColumnVector& dx);
   t_irc createAmat(Matrix& AA, ColumnVector& ll, DiagonalMatrix& PP,
                    const ColumnVector& x0, QMap<QString, t_clkCorr*>& resCorr);
-  void dumpResults(const QMap<QString, t_clkCorr*>& resCorr);
-  void printResults(QTextStream& out, const QMap<QString, t_clkCorr*>& resCorr);
-  void switchToLastEph(const t_eph* lastEph, t_clkCorr* corr);
+  void  dumpResults(const QMap<QString, t_clkCorr*>& resCorr);
+  void  printResults(QTextStream& out, const QMap<QString, t_clkCorr*>& resCorr);
+  void  switchToLastEph(const t_eph* lastEph, t_clkCorr* corr);
   t_irc checkOrbits(QTextStream& out);
+  t_irc mergeOrbitCorr(const cmbCorr* orbitCorr, cmbCorr* clkCorr);
 
   QVector<cmbCorr*>& corrs() {return _buffer[_resTime].corrs;}
-
-  t_irc mergeOrbitCorr(const cmbCorr* orbitCorr, cmbCorr* clkCorr);
 
   QList<cmbAC*>           _ACs;
   bncTime                 _resTime;
