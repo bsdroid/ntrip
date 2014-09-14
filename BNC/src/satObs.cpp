@@ -26,6 +26,8 @@ t_orbCorr::t_orbCorr() {
 // 
 ////////////////////////////////////////////////////////////////////////////
 t_orbCorr::t_orbCorr(const string& str) {
+  _xr.ReSize(3);    _xr    = 0.0;
+  _dotXr.ReSize(3); _dotXr = 0.0;
 }
 
 // 
