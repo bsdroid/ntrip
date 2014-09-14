@@ -140,8 +140,9 @@ t_irc RTCM2Decoder::Decode(char* buffer, int bufLen, vector<string>& errmsg) {
             obs._prn.set('R', _ObsBlock.PRN[iSat] % 100);
 	  }		        
 	  else {
-            obs._prn.set('R', _ObsBlock.PRN[iSat]);
+            obs._prn.set('G', _ObsBlock.PRN[iSat]);
 	  }		        
+          char sys = obs._prn.system();
           obs._time.set(epochWeek, epochSecs);
           t_frqObs* frqObs1C = new t_frqObs;
           frqObs1C->_rnxType2ch  = "1C";
@@ -150,7 +151,7 @@ t_irc RTCM2Decoder::Decode(char* buffer, int bufLen, vector<string>& errmsg) {
           obs._obs.push_back(frqObs1C);
 
           t_frqObs* frqObs1P = new t_frqObs;
-          frqObs1P->_rnxType2ch  = "1P";
+          frqObs1P->_rnxType2ch  = (sys == 'G') ? "1W" : "1P";
           frqObs1P->_codeValid   = true;
           frqObs1P->_code        = _ObsBlock.rng_P1[iSat];
           obs._obs.push_back(frqObs1P);
@@ -160,7 +161,7 @@ t_irc RTCM2Decoder::Decode(char* buffer, int bufLen, vector<string>& errmsg) {
           obs._obs.push_back(frqObs1P);
 
           t_frqObs* frqObs2P = new t_frqObs;
-          frqObs2P->_rnxType2ch  = "2P";
+          frqObs2P->_rnxType2ch  = (sys == 'G') ? "2W" : "2P";
           frqObs2P->_codeValid   = true;
           frqObs2P->_code        = _ObsBlock.rng_P2[iSat];
           obs._obs.push_back(frqObs2P);
@@ -280,11 +281,14 @@ void RTCM2Decoder::translateCorr2Obs(vector<string>& errmsg) {
     // end test
 
     QString prn;
+    char    sys;
     if (corr->PRN < 200) {
-      prn = 'G' + QString("%1").arg(corr->PRN, 2, 10, QChar('0'));
+      sys = 'G';
+      prn = sys + QString("%1").arg(corr->PRN, 2, 10, QChar('0'));
     }
     else {
-      prn = 'R' + QString("%1").arg(corr->PRN - 200, 2, 10, QChar('0'));
+      sys = 'R';
+      prn = sys + QString("%1").arg(corr->PRN - 200, 2, 10, QChar('0'));
     }
 
     const t_ephPair* ePair = ephPair(prn); 
@@ -303,11 +307,11 @@ void RTCM2Decoder::translateCorr2Obs(vector<string>& errmsg) {
     new_obs->_obs.push_back(frqObs1C);
 
     t_frqObs* frqObs1P = new t_frqObs;
-    frqObs1P->_rnxType2ch  = "1P";
+    frqObs1P->_rnxType2ch  = (sys == 'G') ? "1W" : "1P";
     new_obs->_obs.push_back(frqObs1P);
 
     t_frqObs* frqObs2P = new t_frqObs;
-    frqObs2P->_rnxType2ch  = "2P";
+    frqObs2P->_rnxType2ch  = (sys == 'G') ? "2W" : "2P";
     new_obs->_obs.push_back(frqObs2P);
 
     // missing IOD
