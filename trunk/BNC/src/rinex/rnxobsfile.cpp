@@ -950,12 +950,12 @@ void t_rnxObsFile::writeEpochV3(const t_rnxEpo* epo) {
 
 // Translate Observation Type v2 --> v3
 ////////////////////////////////////////////////////////////////////////////
-QString t_rnxObsFile::type2to3(char /* sys */, const QString& typeV2) {
+QString t_rnxObsFile::type2to3(char sys, const QString& typeV2) {
   if      (typeV2 == "P1") {
-    return "C1P";
+    return (sys == 'G') ? "C1W" : "C1P";
   }
   else if (typeV2 == "P2") {
-    return "C2P";
+    return (sys == 'G') ? "C2W" : "C2P";
   }
   return typeV2;
 }
@@ -963,10 +963,10 @@ QString t_rnxObsFile::type2to3(char /* sys */, const QString& typeV2) {
 // Translate Observation Type v3 --> v2
 ////////////////////////////////////////////////////////////////////////////
 QString t_rnxObsFile::type3to2(char /* sys */, const QString& typeV3) {
-  if      (typeV3 == "C1P") {
+  if      (typeV3 == "C1P" || typeV3 == "C1W") {
     return "P1";
   }
-  else if (typeV3 == "C2P") {
+  else if (typeV3 == "C2P" || typeV3 == "C2W") {
     return "P2";
   }
   return typeV3.left(2);
