@@ -74,15 +74,16 @@ class bncComb : public bncEphUser  {
       delete _orbCorr;
       delete _clkCorr;
     }
-    t_prn        _prn;
+    QString      _prn;
     bncTime      _time;
     int          _iod;
     const t_eph* _eph;
-    t_orbCorr*   _orbCorr;
-    t_clkCorr*   _clkCorr;
-    QString      _acName;
+    t_orbCorr*   _orbCorr; // used for input
+    t_clkCorr*   _clkCorr; // used for input
+    QString      _acName; 
+    double       _dClk;    // used for output
     ColumnVector _diffRao;
-    QString ID() {return _acName + "_" + QString(_prn.toString().c_str());}
+    QString ID() {return _acName + "_" + _prn;}
   };
 
   class cmbEpoch {
@@ -108,7 +109,7 @@ class bncComb : public bncEphUser  {
   void  printResults(QTextStream& out, const QMap<QString, cmbCorr*>& resCorr);
   void  switchToLastEph(const t_eph* lastEph, cmbCorr* corr);
   t_irc checkOrbits(QTextStream& out);
-  t_irc mergeOrbitCorr(const cmbCorr* orbitCorr, cmbCorr* clkCorr);
+  QVector<cmbCorr*>& corrs() {return _buffer[_resTime].corrs;}
 
   QList<cmbAC*>                          _ACs;
   bncTime                                _resTime;
