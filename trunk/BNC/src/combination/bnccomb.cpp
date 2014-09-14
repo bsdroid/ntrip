@@ -356,7 +356,7 @@ void bncComb::slotNewClkCorrections(QList<t_clkCorr> clkCorrections) {
     // Create new correction
     // ---------------------
     cmbCorr* newCorr  = new cmbCorr();
-    newCorr->_prn     = clkCorr._prn;
+    newCorr->_prn     = prn;
     newCorr->_time    = clkCorr._time;
     newCorr->_iod     = clkCorr._iod;
     newCorr->_acName  = acName;
@@ -489,7 +489,7 @@ void bncComb::processEpoch() {
     QVectorIterator<cmbCorr*> itCorr(corrs());
     while (itCorr.hasNext()) {
       cmbCorr* corr = itCorr.next();
-      if (corr->acName == AC->name) {
+      if (corr->_acName == AC->name) {
         AC->numObs += 1;
         if (AC->name == _masterOrbitAC) {
           masterPresent = true;
@@ -531,7 +531,7 @@ void bncComb::processEpoch() {
     }
   }
 
-  QMap<QString, t_corr*> resCorr;
+  QMap<QString, cmbCorr*> resCorr;
 
   // Perform the actual Combination using selected Method
   // ----------------------------------------------------
@@ -552,7 +552,7 @@ void bncComb::processEpoch() {
       pp->xx += dx(iPar);
       if (pp->type == cmbParam::clkSat) {
         if (resCorr.find(pp->prn) != resCorr.end()) {
-          resCorr[pp->prn]->dClk = pp->xx / t_CST::c;
+          resCorr[pp->prn]->_dClk = pp->xx / t_CST::c;
         }
       }
       out << _resTime.datestr().c_str() << " " 
@@ -577,7 +577,7 @@ void bncComb::processEpoch() {
 // Process Epoch - Filter Method
 ////////////////////////////////////////////////////////////////////////////
 t_irc bncComb::processEpoch_filter(QTextStream& out,
-                                   QMap<QString, t_corr*>& resCorr,
+                                   QMap<QString, cmbCorr*>& resCorr,
                                    ColumnVector& dx) {
 
   // Prediction Step
@@ -627,14 +627,14 @@ t_irc bncComb::processEpoch_filter(QTextStream& out,
     out.setRealNumberPrecision(3);  
     out << _resTime.datestr().c_str() << " " << _resTime.timestr().c_str()
         << " Maximum Residuum " << maxRes << ' '
-        << corrs()[maxResIndex-1]->acName << ' ' << corrs()[maxResIndex-1]->prn;
+        << corrs()[maxResIndex-1]->_acName << ' ' << corrs()[maxResIndex-1]->_prn;
 
     if (maxRes > _MAXRES) {
       for (int iPar = 1; iPar <= _params.size(); iPar++) {
         cmbParam* pp = _params[iPar-1];
         if (pp->type == cmbParam::offACSat            && 
-            pp->AC   == corrs()[maxResIndex-1]->acName &&
-            pp->prn  == corrs()[maxResIndex-1]->prn) { 
+            pp->AC   == corrs()[maxResIndex-1]->_acName &&
+            pp->prn  == corrs()[maxResIndex-1]->_prn) { 
           QQ_sav.Row(iPar)    = 0.0;
           QQ_sav.Column(iPar) = 0.0;
           QQ_sav(iPar,iPar)   = pp->sig0 * pp->sig0;
@@ -657,13 +657,13 @@ t_irc bncComb::processEpoch_filter(QTextStream& out,
 // Print results
 ////////////////////////////////////////////////////////////////////////////
 void bncComb::printResults(QTextStream& out,
-                           const QMap<QString, t_corr*>& resCorr) {
+                           const QMap<QString, cmbCorr*>& resCorr) {
 
-  QMapIterator<QString, t_corr*> it(resCorr);
+  QMapIterator<QString, cmbCorr*> it(resCorr);
   while (it.hasNext()) {
     it.next();
-    t_corr* corr = it.value();
-    const t_eph* eph = corr->eph;
+    cmbCorr* corr = it.value();
+    const t_eph* eph = corr->_eph;
     if (eph) {
       ColumnVector xc(4);
       ColumnVector vv(3);
@@ -672,9 +672,9 @@ void bncComb::printResults(QTextStream& out,
       out << _resTime.datestr().c_str() << " " 
           << _resTime.timestr().c_str() << " ";
       out.setFieldWidth(3);
-      out << "Full Clock " << corr->prn << " " << corr->iod << " ";
+      out << "Full Clock " << corr->_prn << " " << corr->_iod << " ";
       out.setFieldWidth(14);
-      out << (xc(4) + corr->dClk) * t_CST::c << endl;
+      out << (xc(4) + corr->_dClk) * t_CST::c << endl;
       out.setFieldWidth(0);
     }
     else {
@@ -685,7 +685,7 @@ void bncComb::printResults(QTextStream& out,
 
 // Send results to RTNet Decoder and directly to PPP Client
 ////////////////////////////////////////////////////////////////////////////
-void bncComb::dumpResults(const QMap<QString, t_corr*>& resCorr) {
+void bncComb::dumpResults(const QMap<QString, cmbCorr*>& resCorr) {
 
   QString     outLines;
   QStringList corrLines;
@@ -698,27 +698,27 @@ void bncComb::dumpResults(const QMap<QString, t_corr*>& resCorr) {
   outLines.sprintf("*  %4d %2d %2d %d %d %12.8f\n", 
                    year, month, day, hour, minute, sec);
 
-  QMapIterator<QString, t_corr*> it(resCorr);
+  QMapIterator<QString, cmbCorr*> it(resCorr);
   while (it.hasNext()) {
     it.next();
-    t_corr* corr = it.value();
+    cmbCorr* corr = it.value();
 
     ColumnVector xc(4);
     ColumnVector vv(3);
-    corr->eph->getCrd(_resTime, xc, vv, false);
+    corr->_eph->getCrd(_resTime, xc, vv, false);
     
     // Correction Phase Center --> CoM
     // -------------------------------
     ColumnVector dx(3); dx = 0.0;
     if (_antex) {
       double Mjd = _resTime.mjd() + _resTime.daysec()/86400.0;
-      if (_antex->satCoMcorrection(corr->prn, Mjd, xc.Rows(1,3), dx) != success) {
+      if (_antex->satCoMcorrection(corr->_prn, Mjd, xc.Rows(1,3), dx) != success) {
         dx = 0;
-        cout << "antenna not found " << corr->prn.toAscii().data() << endl;
+        cout << "antenna not found " << corr->_prn.toAscii().data() << endl;
       }
     }
     
-    outLines += corr->prn;
+    outLines += corr->_prn;
     QString hlp;
     hlp.sprintf(" APC 3 %15.4f %15.4f %15.4f"
                 " Clk 1 %15.4f"
@@ -739,17 +739,17 @@ void bncComb::dumpResults(const QMap<QString, t_corr*>& resCorr) {
                  "   %10.5f %10.5f %10.5f %10.5f"
                  "   %10.5f INTERNAL",
                  messageType, updateInt, _resTime.gpsw(), _resTime.gpssec(),
-                 corr->prn.toAscii().data(),
-                 corr->iod,
-                 corr->dClk * t_CST::c,
-                 corr->rao[0],
-                 corr->rao[1],
-                 corr->rao[2],
-                 corr->dotDClk * t_CST::c,
-                 corr->dotRao[0],
-                 corr->dotRao[1],
-                 corr->dotRao[2],
-                 corr->dotDotDClk * t_CST::c);
+                 corr->_prn.toAscii().data(),
+                 corr->_iod,
+                 corr->_dClk * t_CST::c,
+                 corr->_orbCorr->_xr[0],
+                 corr->_orbCorr->_xr[1],
+                 corr->_orbCorr->_xr[2],
+                 0.0,
+                 corr->_orbCorr->_dotXr[0],
+                 corr->_orbCorr->_dotXr[1],
+                 corr->_orbCorr->_dotXr[2],
+                 0.0);
     corrLines << line;
 
     delete corr;
@@ -766,14 +766,14 @@ void bncComb::dumpResults(const QMap<QString, t_corr*>& resCorr) {
 
   // Send new Corrections to PPP etc.
   // --------------------------------
-  emit newCorrections(corrLines);
+  ////  emit newCorrections(corrLines);
 }
 
 // Create First Design Matrix and Vector of Measurements
 ////////////////////////////////////////////////////////////////////////////
 t_irc bncComb::createAmat(Matrix& AA, ColumnVector& ll, DiagonalMatrix& PP,
                           const ColumnVector& x0, 
-                          QMap<QString, t_corr*>& resCorr) {
+                          QMap<QString, cmbCorr*>& resCorr) {
 
   unsigned nPar = _params.size();
   unsigned nObs = corrs().size(); 
@@ -798,20 +798,20 @@ t_irc bncComb::createAmat(Matrix& AA, ColumnVector& ll, DiagonalMatrix& PP,
   QVectorIterator<cmbCorr*> itCorr(corrs());
   while (itCorr.hasNext()) {
     cmbCorr* corr = itCorr.next();
-    QString  prn  = corr->prn;
+    QString  prn  = corr->_prn;
 
     ++iObs;
 
-    if (corr->acName == _masterOrbitAC && resCorr.find(prn) == resCorr.end()) {
-      resCorr[prn] = new t_corr(*corr);
+    if (corr->_acName == _masterOrbitAC && resCorr.find(prn) == resCorr.end()) {
+      resCorr[prn] = new cmbCorr(*corr);
     }
 
     for (int iPar = 1; iPar <= _params.size(); iPar++) {
       cmbParam* pp = _params[iPar-1];
-      AA(iObs, iPar) = pp->partial(corr->acName, prn);
+      AA(iObs, iPar) = pp->partial(corr->_acName, prn);
     }
 
-    ll(iObs) = corr->dClk * t_CST::c - DotProduct(AA.Row(iObs), x0);
+    ll(iObs) = corr->_dClk * t_CST::c - DotProduct(AA.Row(iObs), x0);
   }
 
   // Regularization
@@ -863,7 +863,7 @@ t_irc bncComb::createAmat(Matrix& AA, ColumnVector& ll, DiagonalMatrix& PP,
 // Process Epoch - Single-Epoch Method
 ////////////////////////////////////////////////////////////////////////////
 t_irc bncComb::processEpoch_singleEpoch(QTextStream& out,
-                                        QMap<QString, t_corr*>& resCorr,
+                                        QMap<QString, cmbCorr*>& resCorr,
                                         ColumnVector& dx) {
 
   // Check Satellite Positions for Outliers
@@ -881,13 +881,13 @@ t_irc bncComb::processEpoch_singleEpoch(QTextStream& out,
     QMutableVectorIterator<cmbCorr*> it(corrs());
     while (it.hasNext()) {
       cmbCorr* corr = it.next();
-      QString  prn  = corr->prn;
+      QString  prn  = corr->_prn;
       bool foundMaster = false;
       QVectorIterator<cmbCorr*> itHlp(corrs());
       while (itHlp.hasNext()) {
         cmbCorr* corrHlp = itHlp.next();
-        QString  prnHlp  = corrHlp->prn;
-        QString  ACHlp   = corrHlp->acName;
+        QString  prnHlp  = corrHlp->_prn;
+        QString  ACHlp   = corrHlp->_acName;
         if (ACHlp == _masterOrbitAC && prn == prnHlp) {
           foundMaster = true;
           break;
@@ -906,8 +906,8 @@ t_irc bncComb::processEpoch_singleEpoch(QTextStream& out,
     QVectorIterator<cmbCorr*> itCorr(corrs());
     while (itCorr.hasNext()) {
       cmbCorr* corr = itCorr.next();
-      QString  prn  = corr->prn;
-      QString  AC   = corr->acName;
+      QString  prn  = corr->_prn;
+      QString  AC   = corr->_acName;
       if (numObsPrn.find(prn) == numObsPrn.end()) {
         numObsPrn[prn]  = 1;
       }
@@ -989,7 +989,7 @@ t_irc bncComb::processEpoch_singleEpoch(QTextStream& out,
     out.setRealNumberPrecision(3);  
     out << _resTime.datestr().c_str() << " " << _resTime.timestr().c_str()
         << " Maximum Residuum " << maxRes << ' '
-        << corrs()[maxResIndex-1]->acName << ' ' << corrs()[maxResIndex-1]->prn;
+        << corrs()[maxResIndex-1]->_acName << ' ' << corrs()[maxResIndex-1]->_prn;
 
     if (maxRes > _MAXRES) {
       out << "  Outlier" << endl;
@@ -1004,9 +1004,9 @@ t_irc bncComb::processEpoch_singleEpoch(QTextStream& out,
         const cmbCorr* corr = corrs()[ii];
         out << _resTime.datestr().c_str() << ' ' 
             << _resTime.timestr().c_str() << " "
-            << corr->acName << ' ' << corr->prn;
+            << corr->_acName << ' ' << corr->_prn;
         out.setFieldWidth(6);
-        out << " dClk = " << corr->dClk * t_CST::c << " res = " << vv[ii] << endl;
+        out << " dClk = " << corr->_dClk * t_CST::c << " res = " << vv[ii] << endl;
         out.setFieldWidth(0);
       }
       return success;
@@ -1028,23 +1028,23 @@ t_irc bncComb::checkOrbits(QTextStream& out) {
   QMutableVectorIterator<cmbCorr*> im(corrs());
   while (im.hasNext()) {
     cmbCorr* corr = im.next();
-    QString  prn  = corr->prn;
+    QString  prn  = corr->_prn;
     if      (_eph.find(prn) == _eph.end()) {
-      out << "checkOrbit: missing eph (not found) " << corr->prn << endl;
+      out << "checkOrbit: missing eph (not found) " << corr->_prn << endl;
       delete corr;
       im.remove();
     }
-    else if (corr->eph == 0) {
-      out << "checkOrbit: missing eph (zero) " << corr->prn << endl;
+    else if (corr->_eph == 0) {
+      out << "checkOrbit: missing eph (zero) " << corr->_prn << endl;
       delete corr;
       im.remove();
     }
     else {
-      if ( corr->eph == _eph[prn]->last || corr->eph == _eph[prn]->prev ) {
+      if ( corr->_eph == _eph[prn]->last || corr->_eph == _eph[prn]->prev ) {
         switchToLastEph(_eph[prn]->last, corr);
       }
       else {
-        out << "checkOrbit: missing eph (deleted) " << corr->prn << endl;
+        out << "checkOrbit: missing eph (deleted) " << corr->_prn << endl;
         delete corr;
         im.remove();
       }
@@ -1060,14 +1060,14 @@ t_irc bncComb::checkOrbits(QTextStream& out) {
     QVectorIterator<cmbCorr*> it(corrs());
     while (it.hasNext()) {
       cmbCorr* corr = it.next();
-      QString  prn  = corr->prn;
+      QString  prn  = corr->_prn;
       if (meanRao.find(prn) == meanRao.end()) {
         meanRao[prn].ReSize(4);
-        meanRao[prn].Rows(1,3) = corr->rao;
+        meanRao[prn].Rows(1,3) = corr->_orbCorr->_xr;
         meanRao[prn](4)        = 1; 
       }
       else {
-        meanRao[prn].Rows(1,3) += corr->rao;
+        meanRao[prn].Rows(1,3) += corr->_orbCorr->_xr;
         meanRao[prn](4)        += 1; 
       }
       if (numCorr.find(prn) == numCorr.end()) {
@@ -1084,18 +1084,18 @@ t_irc bncComb::checkOrbits(QTextStream& out) {
     it.toFront();
     while (it.hasNext()) {
       cmbCorr* corr = it.next();
-      QString  prn  = corr->prn;
+      QString  prn  = corr->_prn;
       if (meanRao[prn](4) != 0) {
         meanRao[prn] /= meanRao[prn](4);
         meanRao[prn](4) = 0;
       }
-      corr->diffRao = corr->rao - meanRao[prn].Rows(1,3);
+      corr->_diffRao = corr->_orbCorr->_xr - meanRao[prn].Rows(1,3);
       if (maxDiff.find(prn) == maxDiff.end()) {
         maxDiff[prn] = corr;
       }
       else {
-        double normMax = maxDiff[prn]->diffRao.norm_Frobenius();
-        double norm    = corr->diffRao.norm_Frobenius();
+        double normMax = maxDiff[prn]->_diffRao.norm_Frobenius();
+        double norm    = corr->_diffRao.norm_Frobenius();
         if (norm > normMax) {
           maxDiff[prn] = corr;
         }
@@ -1112,21 +1112,21 @@ t_irc bncComb::checkOrbits(QTextStream& out) {
     QMutableVectorIterator<cmbCorr*> im(corrs());
     while (im.hasNext()) {
       cmbCorr* corr = im.next();
-      QString  prn  = corr->prn;
+      QString  prn  = corr->_prn;
       if      (numCorr[prn] < 2) {
         delete corr;
         im.remove();
       }
       else if (corr == maxDiff[prn]) {
-        double norm = corr->diffRao.norm_Frobenius();
+        double norm = corr->_diffRao.norm_Frobenius();
         if (norm > MAX_DISPLACEMENT) {
           out << _resTime.datestr().c_str()    << " "
               << _resTime.timestr().c_str()    << " "
               << "Orbit Outlier: " 
-              << corr->acName.toAscii().data() << " " 
-              << prn.toAscii().data()          << " "
-              << corr->iod                     << " " 
-              << norm                          << endl;
+              << corr->_acName.toAscii().data() << " " 
+              << prn.toAscii().data()           << " "
+              << corr->_iod                     << " " 
+              << norm                           << endl;
           delete corr;
           im.remove();
           removed = true;
@@ -1138,19 +1138,6 @@ t_irc bncComb::checkOrbits(QTextStream& out) {
       break;
     }
   }
-
-  return success;
-}
-
-// 
-////////////////////////////////////////////////////////////////////////////
-t_irc bncComb::mergeOrbitCorr(const cmbCorr* orbitCorr, cmbCorr* clkCorr) {
-
-  clkCorr->iod       = orbitCorr->iod; // is it always correct?
-  clkCorr->eph       = orbitCorr->eph; 
-  clkCorr->tRao      = orbitCorr->tRao;
-  clkCorr->rao       = orbitCorr->rao;
-  clkCorr->dotRao    = orbitCorr->dotRao;
 
   return success;
 }
@@ -1184,7 +1171,7 @@ void bncComb::slotProviderIDChanged(QString mountPoint) {
     QMutableVectorIterator<cmbCorr*> it(corrVec);
     while (it.hasNext()) {
       cmbCorr* corr = it.next();
-      if (acName == corr->acName) {
+      if (acName == corr->_acName) {
         delete corr;
         it.remove();
       }

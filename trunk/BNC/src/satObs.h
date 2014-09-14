@@ -58,7 +58,10 @@ class t_satObs {
 
 class t_orbCorr {
  public:
-  t_orbCorr();
+  t_orbCorr() {
+    _xr.ReSize(3);    _xr    = 0.0;
+    _dotXr.ReSize(3); _dotXr = 0.0;
+  }
   t_orbCorr(const std::string& str);
   t_prn          prn() const {return _prn;}
   unsigned short IOD() const {return _iod;}
@@ -68,8 +71,8 @@ class t_orbCorr {
   unsigned short _iod;
   bncTime        _time;
   char           _system;
-  double         _xr[3];
-  double         _dotXr[3]; 
+  ColumnVector   _xr;
+  ColumnVector   _dotXr; 
 };
 
 class t_clkCorr {
