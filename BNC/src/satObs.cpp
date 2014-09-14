@@ -3,6 +3,7 @@
 #include <sstream>
 
 #include "satObs.h"
+
 using namespace std;
 
 // 
@@ -26,11 +27,11 @@ t_clkCorr::t_clkCorr(const string& line) {
 string t_clkCorr::toLine() const {
   ostringstream str;
   str.setf(ios::showpoint | ios::fixed);
-  str << "C " << _time.gpsw() << setprecision(2) << _time.gpssec() << ' '
+  str << "C " << _time.gpsw() << ' ' << setprecision(2) << _time.gpssec() << ' '
       << _prn.toString() << ' '
-      << setw(10) << setprecision(4) << _dClk       << ' '
-      << setw(10) << setprecision(4) << _dotDClk    << ' '
-      << setw(10) << setprecision(4) << _dotDotDClk << endl;
+      << setw(10) << setprecision(4) << _dClk       * t_CST::c << ' '
+      << setw(10) << setprecision(4) << _dotDClk    * t_CST::c << ' '
+      << setw(10) << setprecision(4) << _dotDotDClk * t_CST::c << endl;
   return str.str();
 }
 
