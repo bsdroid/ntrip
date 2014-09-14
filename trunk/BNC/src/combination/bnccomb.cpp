@@ -38,8 +38,7 @@ using namespace std;
 
 // Constructor
 ////////////////////////////////////////////////////////////////////////////
-cmbParam::cmbParam(parType type_, int index_,
-                   const QString& ac_, const QString& prn_) {
+bncComb::cmbParam::cmbParam(parType type_, int index_, const QString& ac_, const QString& prn_) {
 
   type   = type_;
   index  = index_;
@@ -72,12 +71,12 @@ cmbParam::cmbParam(parType type_, int index_,
 
 // Destructor
 ////////////////////////////////////////////////////////////////////////////
-cmbParam::~cmbParam() {
+bncComb::cmbParam::~cmbParam() {
 }
 
 // Partial
 ////////////////////////////////////////////////////////////////////////////
-double cmbParam::partial(const QString& AC_, const QString& prn_) {
+double bncComb::cmbParam::partial(const QString& AC_, const QString& prn_) {
   
   if      (type == offACgps) {
     if (AC == AC_ && prn_[0] == 'G') {
@@ -105,7 +104,7 @@ double cmbParam::partial(const QString& AC_, const QString& prn_) {
 
 // 
 ////////////////////////////////////////////////////////////////////////////
-QString cmbParam::toString() const {
+QString bncComb::cmbParam::toString() const {
 
   QString outStr;
  
@@ -127,7 +126,7 @@ QString cmbParam::toString() const {
 
 // Constructor
 ////////////////////////////////////////////////////////////////////////////
-bncComb::bncComb() {
+bncComb::bncComb() : bncEphUser(true) {
 
   bncSettings settings;
 
@@ -157,11 +156,17 @@ bncComb::bncComb() {
 
   _rtnetDecoder = 0;
 
-  connect(this, SIGNAL(newMessage(QByteArray,bool)), 
+  connect(this,     SIGNAL(newMessage(QByteArray,bool)), 
           BNC_CORE, SLOT(slotMessage(const QByteArray,bool)));
 
   connect(BNC_CORE, SIGNAL(providerIDChanged(QString)),
-          this, SLOT(slotProviderIDChanged(QString)));
+          this,     SLOT(slotProviderIDChanged(QString)));
+
+  connect(BNC_CORE, SIGNAL(newOrbCorrections(QList<t_orbCorr>)),
+          this,     SLOT(slotNewOrbCorrections(QList<t_orbCorr>)));
+
+  connect(BNC_CORE, SIGNAL(newClkCorrections(QList<t_clkCorr>)),
+          this,     SLOT(slotNewClkCorrections(QList<t_clkCorr>)));
 
   // Combination Method
   // ------------------
@@ -262,109 +267,130 @@ bncComb::~bncComb() {
     bncTime epoTime = itTime.next();
     _buffer.remove(epoTime);
   }
-  QMapIterator<QString, cmbCorr*> itOrbCorr(_orbitCorrs);
-  while (itOrbCorr.hasNext()) {
-    itOrbCorr.next();
-    delete itOrbCorr.value();
+}
+
+// Remember orbit corrections
+////////////////////////////////////////////////////////////////////////////
+void bncComb::slotNewOrbCorrections(QList<t_orbCorr> orbCorrections) {
+  QMutexLocker locker(&_mutex);
+
+  for (int ii = 0; ii < orbCorrections.size(); ii++) {
+    t_orbCorr& orbCorr = orbCorrections[ii];
+    QString    staID(orbCorr._staID.c_str());
+    QString    prn(orbCorr._prn.toString().c_str());
+
+    // Find/Check the AC Name
+    // ----------------------
+    QString acName;
+    QListIterator<cmbAC*> icAC(_ACs);
+    while (icAC.hasNext()) {
+      cmbAC* AC = icAC.next();
+      if (AC->mountPoint == staID) {
+        acName = AC->name;
+        break;
+      }
+    }
+    if (acName.isEmpty()) {
+      continue;
+    }
+
+    // Store the correction
+    // --------------------
+    QMap<t_prn, t_orbCorr>& storage = _orbCorrections[acName];
+    storage[orbCorr._prn] = orbCorr;
   }
 }
 
-// Read and store one correction line
+// Process clock corrections
 ////////////////////////////////////////////////////////////////////////////
-void bncComb::processCorrLine(const QString& staID, const QString& line) {
+void bncComb::slotNewClkCorrections(QList<t_clkCorr> clkCorrections) {
   QMutexLocker locker(&_mutex);
 
-  // Find the AC Name
-  // ----------------
-  QString acName;
-  QListIterator<cmbAC*> icAC(_ACs);
-  while (icAC.hasNext()) {
-    cmbAC* AC = icAC.next();
-    if (AC->mountPoint == staID) {
-      acName = AC->name;
-      break;
+  bncTime lastTime;
+
+  for (int ii = 0; ii < clkCorrections.size(); ii++) {
+    t_clkCorr& clkCorr = clkCorrections[ii];
+    QString    staID(clkCorr._staID.c_str());
+    QString    prn(clkCorr._prn.toString().c_str());
+
+    // Set the last time
+    // -----------------
+    if (lastTime.undef() || clkCorr._time > lastTime) {
+      lastTime = clkCorr._time;
     }
-  }
-  if (acName.isEmpty()) {
-    return;
-  }
 
-  // Read the Correction
-  // -------------------
-  cmbCorr* newCorr = new cmbCorr();
-  newCorr->acName = acName;
-  if (!newCorr->readLine(line) == success) {
-    delete newCorr;
-    return;
-  }
+    // Find/Check the AC Name
+    // ----------------------
+    QString acName;
+    QListIterator<cmbAC*> icAC(_ACs);
+    while (icAC.hasNext()) {
+      cmbAC* AC = icAC.next();
+      if (AC->mountPoint == staID) {
+        acName = AC->name;
+        break;
+      }
+    }
+    if (acName.isEmpty()) {
+      continue;
+    }
 
-  // Check Glonass
-  // -------------
-  if (!_useGlonass) {
-    if (newCorr->prn[0] == 'R') {
+    // Check GLONASS
+    // -------------
+    if (!_useGlonass && clkCorr._prn.system() == 'R') {
+      continue;
+    }
+
+    // Check Modulo Time
+    // -----------------
+    if (int(clkCorr._time.gpssec()) % _cmbSampl != 0.0) {
+      continue;
+    }
+
+    // Check Correction Age
+    // --------------------
+    if (_resTime.valid() && clkCorr._time <= _resTime) {
+      emit newMessage("bncComb: old correction: " + acName.toAscii() + " " + prn.toAscii(), true);
+      continue;
+    }
+
+    // Create new correction
+    // ---------------------
+    cmbCorr* newCorr  = new cmbCorr();
+    newCorr->_prn     = clkCorr._prn;
+    newCorr->_time    = clkCorr._time;
+    newCorr->_iod     = clkCorr._iod;
+    newCorr->_acName  = acName;
+    newCorr->_clkCorr = new t_clkCorr(clkCorr);
+
+    // Check the Ephemeris
+    //--------------------
+    if (_eph.find(prn) == _eph.end()) {
+      emit newMessage("bncComb: eph not found "  + prn.toAscii(), true);
       delete newCorr;
-      return;
-    }
-  }
-
-  // Save Orbit-Only Corrections
-  // ---------------------------
-  if (newCorr->tRao.valid() && !newCorr->tClk.valid()) {
-    QString corrID = newCorr->ID();
-    if (_orbitCorrs.find(corrID) != _orbitCorrs.end()) {
-      delete _orbitCorrs[corrID];
-    }
-    _orbitCorrs[corrID] = newCorr;
-    return;
-  }
-
-  // Merge with saved orbit correction
-  // ---------------------------------
-  else if (newCorr->tClk.valid() && !newCorr->tRao.valid()) {
-    QString corrID = newCorr->ID();
-    if (_orbitCorrs.find(corrID) != _orbitCorrs.end()) {
-      mergeOrbitCorr(_orbitCorrs[corrID], newCorr);
-    }
-  }
-
-  // Check Modulo Time
-  // -----------------
-  if (int(newCorr->tClk.gpssec()) % _cmbSampl != 0.0) {
-    delete newCorr;
-    return;
-  }
-
-  // Delete old corrections
-  // ----------------------
-  if (_resTime.valid() && newCorr->tClk <= _resTime) {
-    emit newMessage("bncComb: old correction: " + staID.toAscii() + " " + line.toAscii(), true);
-    delete newCorr;
-    return;
-  }
-
-  // Check the Ephemeris
-  //--------------------
-  if (_eph.find(newCorr->prn) == _eph.end()) {
-    emit newMessage("bncComb: eph not found "  + newCorr->prn.toAscii(), true);
-    delete newCorr;
-    return;
-  }
-  else {
-    t_eph* lastEph = _eph[newCorr->prn]->last;
-    t_eph* prevEph = _eph[newCorr->prn]->prev;
-    if      (lastEph && lastEph->IOD() == newCorr->iod) {
-      newCorr->eph = lastEph;
-    }
-    else if (lastEph && prevEph && prevEph->IOD() == newCorr->iod) {
-      newCorr->eph = prevEph;
-      switchToLastEph(lastEph, newCorr);
+      continue;
     }
     else {
-      emit newMessage("bncComb: eph not found "  + newCorr->prn.toAscii() + 
-                      QString(" %1").arg(newCorr->iod).toAscii(), true);
-      delete newCorr;
-      return;
+      t_eph* lastEph = _eph[prn]->last;
+      t_eph* prevEph = _eph[prn]->prev;
+      if      (lastEph && lastEph->IOD() == newCorr->_iod) {
+        newCorr->_eph = lastEph;
+      }
+      else if (lastEph && prevEph && prevEph->IOD() == newCorr->_iod) {
+        newCorr->_eph = prevEph;
+        switchToLastEph(lastEph, newCorr);
+      }
+      else {
+        emit newMessage("bncComb: eph not found "  + prn.toAscii() + 
+                        QString(" %1").arg(newCorr->_iod).toAscii(), true);
+        delete newCorr;
+        continue;
+      }
     }
+
+    // Store correction into the buffer
+    // --------------------------------
+    QVector<cmbCorr*>& corrs = _buffer[newCorr->_time].corrs;
+    corrs.push_back(newCorr);
   }
 
   // Process previous Epoch(s)
@@ -373,49 +399,28 @@ void bncComb::processCorrLine(const QString& staID, const QString& line) {
   QListIterator<bncTime> itTime(_buffer.keys());
   while (itTime.hasNext()) {
     bncTime epoTime = itTime.next();
-    if (epoTime < newCorr->tClk - waitTime) {
+    if (epoTime < lastTime - waitTime) {
       _resTime = epoTime;
       processEpoch();
     }
-  }
-
-  // Merge or add the correction
-  // ---------------------------
-  QVector<cmbCorr*>& corrs = _buffer[newCorr->tClk].corrs;
-  cmbCorr* existingCorr = 0;
-  QVectorIterator<cmbCorr*> itCorr(corrs);
-  while (itCorr.hasNext()) {
-    cmbCorr* hlp = itCorr.next();
-    if (hlp->prn == newCorr->prn && hlp->acName == newCorr->acName) {
-      existingCorr = hlp;
-      break;
-    }
-  }
-  if (existingCorr) {
-    delete newCorr; newCorr = 0;
-    existingCorr->readLine(line); // merge (multiple messages)
-   
-  }
-  else {
-    corrs.append(newCorr);
   }
 }
 
 // Change the correction so that it refers to last received ephemeris 
 ////////////////////////////////////////////////////////////////////////////
-void bncComb::switchToLastEph(const t_eph* lastEph, t_corr* corr) {
+void bncComb::switchToLastEph(const t_eph* lastEph, cmbCorr* corr) {
 
-  if (corr->eph == lastEph) {
+  if (corr->_eph == lastEph) {
     return;
   }
 
   ColumnVector oldXC(4);
   ColumnVector oldVV(3);
-  corr->eph->getCrd(corr->tRao, oldXC, oldVV, false);
+  corr->_eph->getCrd(corr->_time, oldXC, oldVV, false);
 
   ColumnVector newXC(4);
   ColumnVector newVV(3);
-  lastEph->getCrd(corr->tRao, newXC, newVV, false);
+  lastEph->getCrd(corr->_time, newXC, newVV, false);
 
   ColumnVector dX = newXC.Rows(1,3) - oldXC.Rows(1,3);
   ColumnVector dV = newVV           - oldVV;
@@ -427,17 +432,23 @@ void bncComb::switchToLastEph(const t_eph* lastEph, t_corr* corr) {
   ColumnVector dDotRAO(3);
   XYZ_to_RSW(newXC.Rows(1,3), newVV, dV, dDotRAO);
 
-  QString msg = "switch corr " + corr->prn 
-    + QString(" %1 -> %2 %3").arg(corr->iod,3)
-    .arg(lastEph->IOD(),3).arg(dC*t_CST::c, 8, 'f', 4);
+  QString msg = "switch corr " + corr->_prn 
+    + QString(" %1 -> %2 %3").arg(corr->_iod,3).arg(lastEph->IOD(),3).arg(dC*t_CST::c, 8, 'f', 4);
 
   emit newMessage(msg.toAscii(), false);
 
-  corr->iod     = lastEph->IOD();
-  corr->eph     = lastEph;
-  corr->rao    += dRAO;
-  corr->dotRao += dDotRAO;
-  corr->dClk   -= dC;
+  corr->_iod = lastEph->IOD();
+  corr->_eph = lastEph;
+
+  if (corr->_clkCorr) {
+    corr->_clkCorr->_dClk -= dC;
+  }
+  if (corr->_orbCorr) {
+    for (int ii = 0; ii < 3; ii++) {
+      corr->_orbCorr->_xr[ii]    += dRAO[ii];
+      corr->_orbCorr->_dotXr[ii] += dDotRAO[ii];
+    }
+  }
 }
 
 // Process Epoch
