@@ -1738,12 +1738,6 @@ void bncWindow::startRealTime() {
     if (!advisefile.exists()) BNC_CORE->slotMessage("Cannot find Outages script", true);
   }
 
-  QString ant_file = settings.value("pppAntex").toString();
-  if ( !ant_file.isEmpty() ) {
-    QFile anxfile(settings.value("pppAntex").toString());
-    if (!anxfile.exists()) BNC_CORE->slotMessage("Cannot find IGS ANTEX file", true);
-  }
-
   _caster->readMountPoints();
 
   _casterEph = new bncEphUploadCaster();
