@@ -634,7 +634,7 @@ void kalman(const Matrix& AA, const ColumnVector& ll, const DiagonalMatrix& PP,
   Matrix KT  = SHi * YY; 
   SymmetricMatrix Hi; Hi << SHi * SHi.t();
 
-  dx = KT.t() * (ll - AA * xx);
+  xx = KT.t() * (ll - AA * xx);
   QQ << (SS.t() * SS);
 }
 
