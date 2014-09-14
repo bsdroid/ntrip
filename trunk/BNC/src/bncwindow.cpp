@@ -415,6 +415,10 @@ bncWindow::bncWindow() {
   _cmbTable->horizontalHeader()->setDefaultAlignment(Qt::AlignLeft);
   
   _cmbMaxresLineEdit = new QLineEdit(settings.value("cmbMaxres").toString());
+  _cmbAntexFile      = new qtFileChooser(0, qtFileChooser::File);
+  _cmbAntexFile->setFileName(settings.value("cmbAntexFile").toString());
+  _cmbUseGlonass     = new QCheckBox();
+  _cmbUseGlonass->setCheckState(Qt::CheckState(settings.value("cmbUseGlonass").toInt()));
 
   _cmbSamplSpinBox = new QSpinBox;
   _cmbSamplSpinBox->setMinimum(10);
@@ -444,12 +448,16 @@ bncWindow::bncWindow() {
     _cmbMaxresLineEdit->setStyleSheet("background-color: white");
     _cmbMaxresLineEdit->setEnabled(true);
     _cmbSamplSpinBox->setEnabled(true);
+    _cmbAntexFile->setEnabled(true);
+    _cmbUseGlonass->setEnabled(true);
   } 
   else {
     enableWidget(false, _cmbMethodComboBox);
     _cmbMaxresLineEdit->setStyleSheet("background-color: lightGray");
     _cmbMaxresLineEdit->setEnabled(false);
     _cmbSamplSpinBox->setEnabled(false);
+    _cmbAntexFile->setEnabled(false);
+    _cmbUseGlonass->setEnabled(false);
   }
 
   // Upload Results
@@ -1043,7 +1051,7 @@ bncWindow::bncWindow() {
   populateCmbTable();
   cmbLayout->addWidget(_cmbTable,                                           0, 0, 6, 3);
   cmbLayout->addWidget(new QLabel("    "),                                  0, 5);
-  cmbLayout->addWidget(new QLabel("Combine Broadcast Correction streams."), 0, 6, 1, 50);
+  cmbLayout->addWidget(new QLabel("Combine Broadcast Correction streams."), 0, 6, 1, 10);
   cmbLayout->addWidget(new QLabel("    "),                                  1, 5);
   cmbLayout->addWidget(addCmbRowButton,                                     1, 6);
   cmbLayout->addWidget(delCmbRowButton,                                     1, 7);
@@ -1053,9 +1061,13 @@ bncWindow::bncWindow() {
   cmbLayout->addWidget(new QLabel("    "),                                  3, 5);
   cmbLayout->addWidget(new QLabel("Maximal Residuum"),                      3, 6, Qt::AlignRight);
   cmbLayout->addWidget(_cmbMaxresLineEdit,                                  3, 7, Qt::AlignRight);
+  cmbLayout->addWidget(new QLabel("ANTEX"),                                 3, 9, Qt::AlignRight);
+  cmbLayout->addWidget(_cmbAntexFile,                                       3, 10);
   cmbLayout->addWidget(new QLabel("    "),                                  4, 5);
   cmbLayout->addWidget(new QLabel("Sampling"),                              4, 6, Qt::AlignRight);
   cmbLayout->addWidget(_cmbSamplSpinBox,                                    4, 7, Qt::AlignRight);
+  cmbLayout->addWidget(new QLabel("Use Glonass"),                           4, 9, Qt::AlignRight);
+  cmbLayout->addWidget(_cmbUseGlonass,                                      4, 10);
   cmbLayout->addWidget(new QLabel("    "),                                  5, 0);
 
   connect(addCmbRowButton, SIGNAL(clicked()), this, SLOT(slotAddCmbRow()));
@@ -1620,9 +1632,11 @@ void bncWindow::saveOptions() {
   else {
     settings.setValue("combineStreams", "");
   }
-  settings.setValue("cmbMethod", _cmbMethodComboBox->currentText());
-  settings.setValue("cmbMaxres", _cmbMaxresLineEdit->text());
-  settings.setValue("cmbSampl",  _cmbSamplSpinBox->value());
+  settings.setValue("cmbMethod",    _cmbMethodComboBox->currentText());
+  settings.setValue("cmbMaxres",    _cmbMaxresLineEdit->text());
+  settings.setValue("cmbSampl",     _cmbSamplSpinBox->value());
+  settings.setValue("cmbAntexFile", _cmbAntexFile->fileName());
+  settings.setValue("cmbUseGlonas", _cmbUseGlonass->checkState());
 // Upload Corrections
   if (!uploadMountpointsOut.isEmpty()) {
     settings.setValue("uploadMountpointsOut", uploadMountpointsOut);
@@ -2102,12 +2116,16 @@ void bncWindow::slotBncTextChanged(){
       _cmbMaxresLineEdit->setStyleSheet("background-color: white");
       _cmbMaxresLineEdit->setEnabled(true);
       _cmbSamplSpinBox->setEnabled(true);
+      _cmbAntexFile->setEnabled(true);
+      _cmbUseGlonass->setEnabled(true);
     } 
     else {
       enableWidget(false, _cmbMethodComboBox);
       _cmbMaxresLineEdit->setStyleSheet("background-color: lightGray");
       _cmbMaxresLineEdit->setEnabled(false);
       _cmbSamplSpinBox->setEnabled(false);
+      _cmbAntexFile->setEnabled(false);
+      _cmbUseGlonass->setEnabled(false);
     }
   }
 
@@ -2179,6 +2197,8 @@ void bncWindow::slotDelCmbRow() {
     _cmbMaxresLineEdit->setStyleSheet("background-color: lightGray");
     _cmbMaxresLineEdit->setEnabled(false);
     _cmbSamplSpinBox->setEnabled(false);
+    _cmbAntexFile->setEnabled(false);
+    _cmbUseGlonass->setEnabled(false);
   }
 }
 
