@@ -58,8 +58,9 @@ class t_satObs {
 
 class t_orbCorr {
  public:
-  t_orbCorr();
+  t_orbCorr() {reset();}
   t_orbCorr(const std::string& line);
+  void           reset();
   t_prn          prn() const {return _prn;}
   unsigned short IOD() const {return _iod;}
   std::string    toLine() const;
@@ -74,8 +75,9 @@ class t_orbCorr {
 
 class t_clkCorr {
  public:
-  t_clkCorr();
+  t_clkCorr() {reset();}
   t_clkCorr(const std::string& line);
+  void           reset();
   t_prn          prn() const {return _prn;}
   unsigned short IOD() const {return _iod;}
   std::string    toLine() const;
