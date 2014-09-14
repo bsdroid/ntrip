@@ -604,13 +604,13 @@ string bncRinex::rinexSatLine(const t_satObs& obs, char lli1, char lli2, char ll
     }
     double  obsValue = 0.0;
     char    lli      = ' ';
-    QString rnxType = t_rnxObsFile::type2to3(types[ii]);
+    QString rnxType = t_rnxObsFile::type2to3(sys, types[ii]);
     for (unsigned iFrq = 0; iFrq < obs._obs.size(); iFrq++) {
       const t_frqObs* frqObs = obs._obs[iFrq];
       for (int ik = 0; ik < obsKinds.length(); ik++) {
         QChar ch = obsKinds[ik];
         QString obsType = (ch + QString(frqObs->_rnxType2ch.c_str()));
-        obsType = t_rnxObsFile::type2to3(obsType).left(rnxType.length());
+        obsType = t_rnxObsFile::type2to3(sys, obsType).left(rnxType.length());
         if (rnxType == obsType) {
           if      (ch == 'L' && frqObs->_phaseValid) {
             obsValue = frqObs->_phase;
