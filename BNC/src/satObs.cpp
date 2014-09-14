@@ -51,7 +51,7 @@ string t_clkCorr::toLine() const {
 t_orbCorr::t_orbCorr(const string& line) {
   reset();
   istringstream in(line);
-  char ch; in >> ch; if (ch != '0') return;
+  char ch; in >> ch; if (ch != 'O') return;
   int    gpsw;
   double gpssec;
   in >> gpsw >> gpssec >> _prn >> _iod 
