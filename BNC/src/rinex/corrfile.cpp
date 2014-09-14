@@ -53,6 +53,8 @@ t_corrFile::t_corrFile(QString fileName) {
   _file->open(QIODevice::ReadOnly | QIODevice::Text);
   _stream = new QTextStream();
   _stream->setDevice(_file);
+  _lastOrbCorr = 0;
+  _lastClkCorr = 0;
 }
 
 // Destructor
@@ -70,64 +72,57 @@ void t_corrFile::syncRead(const bncTime& tt) {
     return;
   }
 
-  QStringList lines;
-
-  if (!_lastLine.isEmpty()) {
-    lines << _lastLine;
-  }
+  _orbCorr.clear();
+  _clkCorr.clear();
 
   while (_stream->status() == QTextStream::Ok && !_stream->atEnd()) {
-    QString line = _stream->readLine();
+    QString line = _stream->readLine().trimmed();
     if (line.isEmpty() || line[0] == '!') {
       continue;
     }
-    _lastLine = line;
-
+    if      (line[0] == 'O') {
+      delete _lastOrbCorr; _lastOrbCorr = new t_orbCorr(line.toAscii().data());
+    }
+    else if (line[0] == 'C') {
+      delete _lastClkCorr; _lastClkCorr = new t_clkCorr(line.toAscii().data());
+    }
     if (stopRead(tt)) {
-      QList<t_orbCorr> orbCorr;
-      QList<t_clkCorr> clkCorr;
-      QListIterator<QString> it(lines);
-      while (it.hasNext()) {
-        const QString& str = it.next();
-        if      (str[0] == 'C') {
-          t_clkCorr corr(str.toAscii().data());
-          _lastTime = corr._time;
-          _corrIODs[QString(corr._prn.toString().c_str())] = corr.IOD();
-          clkCorr.push_back(corr);
-        }
-        else if (str[0] == 'O') {
-          t_orbCorr corr(str.toAscii().data());
-          _lastTime = corr._time;
-          _corrIODs[QString(corr._prn.toString().c_str())] = corr.IOD();
-          orbCorr.push_back(corr);
-        }
-      }         
-      if (orbCorr.size() > 0) {
-        emit newOrbCorrections(orbCorr);
-      }
-      if (clkCorr.size() > 0) {
-        emit newClkCorrections(clkCorr);
-      }
-      return;
+      break;
     }
-    else {
-      lines << _lastLine;
-    }
+  }
+
+  if (_orbCorr.size() > 0) {
+    emit newOrbCorrections(_orbCorr);
+    _orbCorr.clear();
+  }
+  if (_clkCorr.size() > 0) {
+    emit newClkCorrections(_clkCorr);
+    _clkCorr.clear();
   }
 }
 
 // Read till a given time
 ////////////////////////////////////////////////////////////////////////////
 bool t_corrFile::stopRead(const bncTime& tt) {
-
-  if (_lastTime.undef()) {
-    return false;
+  if (_lastOrbCorr) {
+    if (_lastOrbCorr->_time > tt) {
+      return true;
+    }
+    else {
+      _orbCorr.push_back(*_lastOrbCorr);
+      _corrIODs[QString(_lastOrbCorr->_prn.toString().c_str())] = _lastOrbCorr->_iod;
+      delete _lastOrbCorr; _lastOrbCorr = 0;
+    }
   }
-
-  if (_lastTime > tt) {
-    return true;
-  }    
-  else {
-    return false;
+  if (_lastClkCorr) {
+    if (_lastClkCorr->_time > tt) {
+      return true;
+    }
+    else {
+      _clkCorr.push_back(*_lastClkCorr);
+      _corrIODs[QString(_lastClkCorr->_prn.toString().c_str())] = _lastClkCorr->_iod;
+      delete _lastClkCorr; _lastClkCorr = 0;
+    }
   }
+  return false;
 }

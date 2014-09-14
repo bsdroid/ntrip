@@ -47,9 +47,11 @@ class t_corrFile : public QObject {
   bool stopRead(const bncTime& tt);
   QFile*             _file;
   QTextStream*       _stream;
-  QString            _lastLine;
+  QList<t_orbCorr>   _orbCorr;
+  QList<t_clkCorr>   _clkCorr;
+  t_orbCorr*         _lastOrbCorr;
+  t_clkCorr*         _lastClkCorr;
   QMap<QString, int> _corrIODs;
-  bncTime            _lastTime;
 };
 
 #endif
