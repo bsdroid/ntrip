@@ -5,6 +5,11 @@ using namespace std;
 // 
 ////////////////////////////////////////////////////////////////////////////
 t_clkCorr::t_clkCorr() {
+  _iod        = 0;
+  _dClk       = 0.0;
+  _dotDClk    = 0.0;
+  _dotDotDClk = 0.0;
+  _clkPartial = 0.0;
 }
 
 // 
@@ -21,13 +26,15 @@ string t_clkCorr::toString() const {
 // 
 ////////////////////////////////////////////////////////////////////////////
 t_orbCorr::t_orbCorr() {
+  _xr.ReSize(3);    _xr    = 0.0;
+  _dotXr.ReSize(3); _dotXr = 0.0;
+  _iod    = 0;
+  _system = 'R';
 }
 
 // 
 ////////////////////////////////////////////////////////////////////////////
 t_orbCorr::t_orbCorr(const string& str) {
-  _xr.ReSize(3);    _xr    = 0.0;
-  _dotXr.ReSize(3); _dotXr = 0.0;
 }
 
 // 

@@ -546,7 +546,7 @@ void bncComb::processEpoch() {
       pp->xx += dx(iPar);
       if (pp->type == cmbParam::clkSat) {
         if (resCorr.find(pp->prn) != resCorr.end()) {
-          resCorr[pp->prn]->_dClk = pp->xx / t_CST::c;
+          resCorr[pp->prn]->_dClkResult = pp->xx / t_CST::c;
         }
       }
       out << _resTime.datestr().c_str() << " " 
@@ -668,7 +668,7 @@ void bncComb::printResults(QTextStream& out,
       out.setFieldWidth(3);
       out << "Full Clock " << corr->_prn << " " << corr->_iod << " ";
       out.setFieldWidth(14);
-      out << (xc(4) + corr->_dClk) * t_CST::c << endl;
+      out << (xc(4) + corr->_dClkResult) * t_CST::c << endl;
       out.setFieldWidth(0);
     }
     else {
@@ -735,7 +735,7 @@ void bncComb::dumpResults(const QMap<QString, cmbCorr*>& resCorr) {
                  messageType, updateInt, _resTime.gpsw(), _resTime.gpssec(),
                  corr->_prn.toAscii().data(),
                  corr->_iod,
-                 corr->_dClk * t_CST::c,
+                 corr->_dClkResult * t_CST::c,
                  corr->_orbCorr._xr[0],
                  corr->_orbCorr._xr[1],
                  corr->_orbCorr._xr[2],
@@ -805,7 +805,7 @@ t_irc bncComb::createAmat(Matrix& AA, ColumnVector& ll, DiagonalMatrix& PP,
       AA(iObs, iPar) = pp->partial(corr->_acName, prn);
     }
 
-    ll(iObs) = corr->_dClk * t_CST::c - DotProduct(AA.Row(iObs), x0);
+    ll(iObs) = corr->_clkCorr._dClk * t_CST::c - DotProduct(AA.Row(iObs), x0);
   }
 
   // Regularization
@@ -1000,7 +1000,7 @@ t_irc bncComb::processEpoch_singleEpoch(QTextStream& out,
             << _resTime.timestr().c_str() << " "
             << corr->_acName << ' ' << corr->_prn;
         out.setFieldWidth(6);
-        out << " dClk = " << corr->_dClk * t_CST::c << " res = " << vv[ii] << endl;
+        out << " dClk = " << corr->_dClkResult * t_CST::c << " res = " << vv[ii] << endl;
         out.setFieldWidth(0);
       }
       return success;
