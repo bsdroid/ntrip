@@ -352,7 +352,7 @@ void bncComb::slotNewClkCorrections(QList<t_clkCorr> clkCorrections) {
       emit newMessage("bncComb: old correction: " + acName.toAscii() + " " + prn.toAscii(), true);
       continue;
     }
-
+  
     // Create new correction
     // ---------------------
     cmbCorr* newCorr  = new cmbCorr();
@@ -361,6 +361,23 @@ void bncComb::slotNewClkCorrections(QList<t_clkCorr> clkCorrections) {
     newCorr->_iod     = clkCorr._iod;
     newCorr->_acName  = acName;
     newCorr->_clkCorr = new t_clkCorr(clkCorr);
+
+    // Check orbit correction
+    // ----------------------
+    if (!_orbCorrections.contains(acName)) {
+      delete newCorr;
+      continue;
+    }
+    else {
+      QMap<t_prn, t_orbCorr>& storage = _orbCorrections[acName];
+      if (!storage.contains(clkCorr._prn)  || storage[clkCorr._prn]._iod != newCorr->_iod) {
+        delete newCorr;
+        continue;
+      }
+      else {
+        newCorr->_orbCorr = new t_orbCorr(storage[clkCorr._prn]); 
+      }
+    }
 
     // Check the Ephemeris
     //--------------------
