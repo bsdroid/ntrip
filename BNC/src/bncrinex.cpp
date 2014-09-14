@@ -682,7 +682,7 @@ string bncRinex::asciiSatLine(const t_satObs& obs) {
     }
     if (frqObs->_snrValid) {
       str << " S" << frqObs->_rnxType2ch << ' ' 
-          << setw(8) << setprecision(3) << frqObs->_doppler;
+          << setw(8) << setprecision(3) << frqObs->_snr;
     }
   }
 
