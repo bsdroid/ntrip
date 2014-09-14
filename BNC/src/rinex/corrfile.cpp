@@ -71,7 +71,7 @@ void t_corrFile::syncRead(const bncTime& tt) {
   _orbCorr.clear();
   _clkCorr.clear();
 
-  while (! stopRead(tt0 && _stream->status() == QTextStream::Ok && !_stream->atEnd()) {
+  while (!stopRead(tt) && _stream->status() == QTextStream::Ok && !_stream->atEnd()) {
     QString line = _stream->readLine().trimmed();
     if (line.isEmpty() || line[0] == '!') {
       continue;
