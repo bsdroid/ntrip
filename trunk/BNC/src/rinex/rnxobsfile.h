@@ -164,8 +164,8 @@ class t_rnxObsFile {
                             const t_rnxObsFile::t_rnxSat& rnxSat, 
                             t_satObs& obs);
 
-  static QString type2to3(const QString& typeV2);
-  static QString type3to2(const QString& typeV3);
+  static QString type2to3(char sys, const QString& typeV2);
+  static QString type3to2(char sys, const QString& typeV3);
 
  private:
   t_rnxObsFile() {};
