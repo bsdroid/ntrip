@@ -24,6 +24,8 @@ t_clkCorr::t_clkCorr(const string& line) {
 // 
 ////////////////////////////////////////////////////////////////////////////
 void t_clkCorr::reset() {
+  _prn.set(' ', 0);
+  _time.reset();
   _iod        = 0;
   _dClk       = 0.0;
   _dotDClk    = 0.0;
@@ -61,6 +63,8 @@ t_orbCorr::t_orbCorr(const string& line) {
 // 
 ////////////////////////////////////////////////////////////////////////////
 void t_orbCorr::reset() {
+  _prn.set(' ', 0);
+  _time.reset();
   _xr.ReSize(3);    _xr    = 0.0;
   _dotXr.ReSize(3); _dotXr = 0.0;
   _iod    = 0;
