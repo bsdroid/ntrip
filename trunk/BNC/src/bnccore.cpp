@@ -115,17 +115,10 @@ t_bncCore::t_bncCore() {
   _userName = QString("${USER}");
 #endif
   expandEnvVar(_userName);
-  _userName = _userName.leftJustified(20, ' ', true);
 
-  _corrs = new QMultiMap<bncTime, t_clkCorr>;
-
+  _userName       = _userName.leftJustified(20, ' ', true);
   _dateAndTimeGPS = 0;
-
-  for (int ii = 0; ii < PRN_GLONASS_NUM; ++ii) {
-    _GLOFreq[ii] = 0;
-  }
-
-  _mainWindow = 0;
+  _mainWindow     = 0;
 
   _pppMain = new BNC_PPP::t_pppMain();
   qRegisterMetaType< QVector<double> >("QVector<double>");
@@ -157,10 +150,7 @@ t_bncCore::~t_bncCore() {
     delete _galileoEph[ii-PRN_GALILEO_START];
   }
 
-  delete _corrs;
-
   delete _dateAndTimeGPS;
-
   delete _rawFile;
 
 #ifdef USE_COMBINATION
@@ -639,102 +629,37 @@ void t_bncCore::slotQuit() {
 // 
 ////////////////////////////////////////////////////////////////////////////
 void t_bncCore::slotNewOrbCorrections(QList<t_orbCorr> orbCorrections) {
+  QMutexLocker locker(&_mutex);
   emit newOrbCorrections(orbCorrections);
+  if (_socketsCorr) {
+    QListIterator<t_orbCorr> it(orbCorrections);
+    while (it.hasNext()) {
+      const t_orbCorr& corr = it.next();
+      QMutableListIterator<QTcpSocket*> is(*_socketsCorr);
+      while (is.hasNext()) {
+        QTcpSocket* sock = is.next();
+        if (sock->state() == QAbstractSocket::ConnectedState) {
+          if (sock->write(corr.toString().c_str()) == -1) {
+            delete sock;
+            is.remove();
+          }
+        }
+        else if (sock->state() != QAbstractSocket::ConnectingState) {
+          delete sock;
+          is.remove();
+        }
+      }
+    }
+  }
 }
 
 // 
 ////////////////////////////////////////////////////////////////////////////
 void t_bncCore::slotNewClkCorrections(QList<t_clkCorr> clkCorrections) {
   QMutexLocker locker(&_mutex);
-
-  if (clkCorrections.size() == 0) {
-    return;
-  }
-  bncTime coTime = clkCorrections[0]._time;
-  QString staID(clkCorrections[0]._staID.c_str());
-
-  // Combination of Corrections
-  // --------------------------
-#ifdef USE_COMBINATION
-  if (_bncComb) {
-    _bncComb->processClkCorrections(clkCorrections);
-  }
-#endif
-
-  bncSettings settings;
-  _waitCoTime = settings.value("corrTime").toDouble();
-  if (_waitCoTime < 0.0) {
-    _waitCoTime = 0.0;
-  }
-
-  // First time, set the _lastCorrDumpTime
-  // -------------------------------------
-  if (!_lastCorrDumpTime[staID].valid()) {
-    _lastCorrDumpTime[staID] = coTime - 1.0;
-  }
-
-  // An old correction - throw it away
-  // ---------------------------------
-  if (_waitCoTime > 0.0 && coTime <= _lastCorrDumpTime[staID]) {
-    if (!_bncComb) {
-      QString line = staID + ": Correction for one sat neglected because overaged by " +
-                      QString().sprintf(" %f sec",
-                      _lastCorrDumpTime[staID] - coTime + _waitCoTime);
-      messagePrivate(line.toAscii());
-      emit( newMessage(line.toAscii(), true) );
-    }
-    return;
-  }
-
-  for (int ii = 0; ii < clkCorrections.size(); ii++) {
-    _corrs->insert(coTime, clkCorrections[ii]);
-  }
-
-  // Dump Corrections
-  // ----------------
-  if      (_waitCoTime == 0.0) {
-    dumpCorrs();
-  }
-  else if (coTime - _waitCoTime > _lastCorrDumpTime[staID]) {
-    dumpCorrs(_lastCorrDumpTime[staID] + 1, coTime - _waitCoTime);
-    _lastCorrDumpTime[staID] = coTime - _waitCoTime;
-  }
-}
-
-// Dump Complete Correction Epochs
-////////////////////////////////////////////////////////////////////////////
-void t_bncCore::dumpCorrs(bncTime minTime, bncTime maxTime) {
-  QList<t_clkCorr> allCorrs;
-  QMutableMapIterator<bncTime, t_clkCorr> it(*_corrs);
-  while (it.hasNext()) {
-    it.next();
-    const bncTime& corrTime = it.key();
-    if (minTime <= corrTime && corrTime <= maxTime) {
-      allCorrs << it.value();
-      it.remove();
-    }
-  }
-  dumpCorrs(allCorrs);
-}
-
-// Dump all corrections
-////////////////////////////////////////////////////////////////////////////
-void t_bncCore::dumpCorrs() {
-  QList<t_clkCorr> allCorrs;
-  QMutableMapIterator<bncTime, t_clkCorr> it(*_corrs);
-  while (it.hasNext()) {
-    allCorrs << it.next().value();
-    it.remove();
-  }
-  dumpCorrs(allCorrs);
-}
-
-// Dump List of Corrections 
-////////////////////////////////////////////////////////////////////////////
-void t_bncCore::dumpCorrs(const QList<t_clkCorr>& allCorrs) {
-  emit newClkCorrections(allCorrs);
+  emit newClkCorrections(clkCorrections);
   if (_socketsCorr) {
-    QListIterator<t_clkCorr> it(allCorrs);
+    QListIterator<t_clkCorr> it(clkCorrections);
     while (it.hasNext()) {
       const t_clkCorr& corr = it.next();
       QMutableListIterator<QTcpSocket*> is(*_socketsCorr);
@@ -786,32 +711,6 @@ void t_bncCore::writeRawData(const QByteArray& data, const QByteArray& staID,
 
   if (_rawFile) {
     _rawFile->writeRawData(data, staID, format);
-  }
-}
-
-// Get Glonass Slot Numbers from Global Array
-////////////////////////////////////////////////////////////////////////////
-void t_bncCore::getGlonassSlotNums(int GLOFreq[]) {
-
-  QMutexLocker locker(&_mutex);
-
-  for (int ii = 0; ii < PRN_GLONASS_NUM; ++ii) {
-    if (_GLOFreq[ii] != 0) {
-      GLOFreq[ii] = _GLOFreq[ii];
-    }
-  }
-}
-
-// Store Glonass Slot Numbers to Global Array
-////////////////////////////////////////////////////////////////////////////
-void t_bncCore::storeGlonassSlotNums(const int GLOFreq[]) {
-
-  QMutexLocker locker(&_mutex);
-
-  for (int ii = 0; ii < PRN_GLONASS_NUM; ++ii) {
-    if (GLOFreq[ii] != 0) {
-      _GLOFreq[ii] = GLOFreq[ii];
-    }
   }
 }
 

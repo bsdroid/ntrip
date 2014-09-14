@@ -146,10 +146,6 @@ t_irc RTCM3Decoder::Decode(char* buffer, int bufLen, vector<string>& errmsg) {
     parser.GPSTOW = int(secGPS);
   }
 
-  // Get Glonass Slot Numbers from Global Array
-  // ------------------------------------------
-  BNC_CORE->getGlonassSlotNums(parser.GLOFreq);
-
   // Remaining part decodes the Observations
   // ---------------------------------------
   if (_mode == unknown || _mode == observations || 
@@ -405,7 +401,6 @@ t_irc RTCM3Decoder::Decode(char* buffer, int bufLen, vector<string>& errmsg) {
   }
 
   if (decoded) {
-    BNC_CORE->storeGlonassSlotNums(parser.GLOFreq);
     return success;
   }
   else {

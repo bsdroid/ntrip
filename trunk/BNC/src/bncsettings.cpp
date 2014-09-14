@@ -99,7 +99,6 @@ void bncSettings::reRead() {
     setValue_p("corrPath",            "");
     setValue_p("corrIntr",            "1 day");
     setValue_p("corrPort",            "");
-    setValue_p("corrTime",            "5");
     // Feed Engine
     setValue_p("outPort",             "");
     setValue_p("waitTime",            "5");
