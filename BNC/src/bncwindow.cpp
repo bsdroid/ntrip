@@ -246,12 +246,6 @@ bncWindow::bncWindow() {
     _corrIntrComboBox->setCurrentIndex(mm);
   }
   _corrPortLineEdit    = new QLineEdit(settings.value("corrPort").toString());
-  _corrTimeSpinBox   = new QSpinBox();
-  _corrTimeSpinBox->setMinimum(0);
-  _corrTimeSpinBox->setMaximum(60);
-  _corrTimeSpinBox->setSingleStep(1);
-  _corrTimeSpinBox->setSuffix(" sec");
-  _corrTimeSpinBox->setValue(settings.value("corrTime").toInt());
 
   connect(_corrPathLineEdit, SIGNAL(textChanged(const QString &)),
           this, SLOT(slotBncTextChanged()));
@@ -691,7 +685,6 @@ bncWindow::bncWindow() {
   cLayout->setColumnMinimumWidth(0,14*ww);
   _corrIntrComboBox->setMaximumWidth(9*ww);
   _corrPortLineEdit->setMaximumWidth(9*ww);
-  _corrTimeSpinBox->setMaximumWidth(9*ww);
 
   cLayout->addWidget(new QLabel("Saving Broadcast Ephemeris correction files and correction output through IP port."),0,0,1,50);
   cLayout->addWidget(new QLabel("Directory, ASCII"),              1, 0);
@@ -700,8 +693,6 @@ bncWindow::bncWindow() {
   cLayout->addWidget(_corrIntrComboBox,                           2, 1);
   cLayout->addWidget(new QLabel("Port"),                          3, 0);
   cLayout->addWidget(_corrPortLineEdit,                           3, 1);
-  cLayout->addWidget(new QLabel("  Wait for full corr epoch"),    3, 2, Qt::AlignRight);
-  cLayout->addWidget(_corrTimeSpinBox,                            3, 3, Qt::AlignLeft);
   cLayout->addWidget(new QLabel(" "),                             4, 0);
   cLayout->addWidget(new QLabel(" "),                             5, 0);
   cLayout->addWidget(new QLabel(" "),                             6, 0);
@@ -1154,7 +1145,6 @@ bncWindow::bncWindow() {
   _outUPortLineEdit->setWhatsThis(tr("BNC can produce unsynchronized observations in a plain ASCII format on your local host through an IP port. Specify a port number here to activate this function."));
   _outEphPortLineEdit->setWhatsThis(tr("BNC can produce ephemeris data in RINEX ASCII format on your local host through an IP port. Specify a port number here to activate this function."));
   _corrPortLineEdit->setWhatsThis(tr("BNC can produce Broadcast Ephemeris Corrections on your local host through an IP port. Specify a port number here to activate this function."));
-  _corrTimeSpinBox->setWhatsThis(tr("<p>Concerning output through IP port, BNC drops Broadcast Ephemeris Corrections received later than 'Wait for full corr epoch' seconds. A value of 2 to 5 seconds is recommended, depending on the latency of the incoming correction stream(s) and the delay acceptable to your real-time application.</p><p>Specifying a value of '0' means that BNC immediately outputs all incoming Broadcast Epemeris Corrections and does not drop any of them for latency reasons.</p>"));
   _rnxPathLineEdit->setWhatsThis(tr("Here you specify the path to where the RINEX Observation files will be stored. If the specified directory does not exist, BNC will not create RINEX Observation files.")); 
   _ephPathLineEdit->setWhatsThis(tr("Specify the path for saving Broadcast Ephemeris data as RINEX Navigation files. If the specified directory does not exist, BNC will not create RINEX Navigation files."));
   _corrPathLineEdit->setWhatsThis(tr("Specify a directory for saving Broadcast Ephemeris Correction files. If the specified directory does not exist, BNC will not create the files."));
@@ -1587,7 +1577,6 @@ void bncWindow::saveOptions() {
   settings.setValue("corrPath",    _corrPathLineEdit->text());
   settings.setValue("corrIntr",    _corrIntrComboBox->currentText());
   settings.setValue("corrPort",    _corrPortLineEdit->text());
-  settings.setValue("corrTime",    _corrTimeSpinBox->value());
 // Feed Engine
   settings.setValue("outPort",     _outPortLineEdit->text());
   settings.setValue("waitTime",    _waitTimeSpinBox->value());
