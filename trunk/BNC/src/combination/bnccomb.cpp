@@ -360,7 +360,7 @@ void bncComb::slotNewClkCorrections(QList<t_clkCorr> clkCorrections) {
     newCorr->_time    = clkCorr._time;
     newCorr->_iod     = clkCorr._iod;
     newCorr->_acName  = acName;
-    newCorr->_clkCorr = new t_clkCorr(clkCorr);
+    newCorr->_clkCorr = clkCorr;
 
     // Check orbit correction
     // ----------------------
@@ -375,7 +375,7 @@ void bncComb::slotNewClkCorrections(QList<t_clkCorr> clkCorrections) {
         continue;
       }
       else {
-        newCorr->_orbCorr = new t_orbCorr(storage[clkCorr._prn]); 
+        newCorr->_orbCorr = storage[clkCorr._prn];
       }
     }
 
@@ -457,15 +457,9 @@ void bncComb::switchToLastEph(const t_eph* lastEph, cmbCorr* corr) {
   corr->_iod = lastEph->IOD();
   corr->_eph = lastEph;
 
-  if (corr->_clkCorr) {
-    corr->_clkCorr->_dClk -= dC;
-  }
-  if (corr->_orbCorr) {
-    for (int ii = 0; ii < 3; ii++) {
-      corr->_orbCorr->_xr[ii]    += dRAO[ii];
-      corr->_orbCorr->_dotXr[ii] += dDotRAO[ii];
-    }
-  }
+  corr->_orbCorr._xr    += dRAO;
+  corr->_orbCorr._dotXr += dDotRAO;
+  corr->_clkCorr._dClk  -= dC;
 }
 
 // Process Epoch
@@ -742,13 +736,13 @@ void bncComb::dumpResults(const QMap<QString, cmbCorr*>& resCorr) {
                  corr->_prn.toAscii().data(),
                  corr->_iod,
                  corr->_dClk * t_CST::c,
-                 corr->_orbCorr->_xr[0],
-                 corr->_orbCorr->_xr[1],
-                 corr->_orbCorr->_xr[2],
+                 corr->_orbCorr._xr[0],
+                 corr->_orbCorr._xr[1],
+                 corr->_orbCorr._xr[2],
                  0.0,
-                 corr->_orbCorr->_dotXr[0],
-                 corr->_orbCorr->_dotXr[1],
-                 corr->_orbCorr->_dotXr[2],
+                 corr->_orbCorr._dotXr[0],
+                 corr->_orbCorr._dotXr[1],
+                 corr->_orbCorr._dotXr[2],
                  0.0);
     corrLines << line;
 
@@ -1063,11 +1057,11 @@ t_irc bncComb::checkOrbits(QTextStream& out) {
       QString  prn  = corr->_prn;
       if (meanRao.find(prn) == meanRao.end()) {
         meanRao[prn].ReSize(4);
-        meanRao[prn].Rows(1,3) = corr->_orbCorr->_xr;
+        meanRao[prn].Rows(1,3) = corr->_orbCorr._xr;
         meanRao[prn](4)        = 1; 
       }
       else {
-        meanRao[prn].Rows(1,3) += corr->_orbCorr->_xr;
+        meanRao[prn].Rows(1,3) += corr->_orbCorr._xr;
         meanRao[prn](4)        += 1; 
       }
       if (numCorr.find(prn) == numCorr.end()) {
@@ -1089,7 +1083,7 @@ t_irc bncComb::checkOrbits(QTextStream& out) {
         meanRao[prn] /= meanRao[prn](4);
         meanRao[prn](4) = 0;
       }
-      corr->_diffRao = corr->_orbCorr->_xr - meanRao[prn].Rows(1,3);
+      corr->_diffRao = corr->_orbCorr._xr - meanRao[prn].Rows(1,3);
       if (maxDiff.find(prn) == maxDiff.end()) {
         maxDiff[prn] = corr;
       }

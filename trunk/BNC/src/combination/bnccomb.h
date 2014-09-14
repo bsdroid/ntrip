@@ -65,21 +65,16 @@ class bncComb : public bncEphUser  {
   class cmbCorr {
    public:
     cmbCorr() {
-      _eph     = 0;
-      _iod     = 0;
-      _orbCorr = 0;
-      _clkCorr = 0;
+      _eph = 0;
+      _iod = 0;
     }
-    ~cmbCorr() {
-      delete _orbCorr;
-      delete _clkCorr;
-    }
+    ~cmbCorr() {}
     QString      _prn;
     bncTime      _time;
     int          _iod;
     const t_eph* _eph;
-    t_orbCorr*   _orbCorr; // used for input
-    t_clkCorr*   _clkCorr; // used for input
+    t_orbCorr    _orbCorr; // used for input
+    t_clkCorr    _clkCorr; // used for input
     QString      _acName; 
     double       _dClk;    // used for output
     ColumnVector _diffRao;
