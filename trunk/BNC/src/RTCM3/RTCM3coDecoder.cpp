@@ -348,12 +348,12 @@ void RTCM3coDecoder::sendResults() {
     QListIterator<t_orbCorr> itOrb(orbCorrections);
     while (itOrb.hasNext()) {
       const t_orbCorr& orbCorr = itOrb.next();
-      *_out << "O " << orbCorr.toString() << endl;
+      *_out << orbCorr.toLine() << endl;
     }
     QListIterator<t_clkCorr> itClk(clkCorrections);
     while (itClk.hasNext()) {
       const t_clkCorr& clkCorr = itClk.next();
-      *_out << "C " << clkCorr.toString() << endl;
+      *_out << clkCorr.toLine() << endl;
     }
     _out->flush();
   }

@@ -639,7 +639,7 @@ void t_bncCore::slotNewOrbCorrections(QList<t_orbCorr> orbCorrections) {
       while (is.hasNext()) {
         QTcpSocket* sock = is.next();
         if (sock->state() == QAbstractSocket::ConnectedState) {
-          if (sock->write(corr.toString().c_str()) == -1) {
+          if (sock->write(corr.toLine().c_str()) == -1) {
             delete sock;
             is.remove();
           }
@@ -666,7 +666,7 @@ void t_bncCore::slotNewClkCorrections(QList<t_clkCorr> clkCorrections) {
       while (is.hasNext()) {
         QTcpSocket* sock = is.next();
         if (sock->state() == QAbstractSocket::ConnectedState) {
-          if (sock->write(corr.toString().c_str()) == -1) {
+          if (sock->write(corr.toLine().c_str()) == -1) {
             delete sock;
             is.remove();
           }
