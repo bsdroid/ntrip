@@ -712,7 +712,7 @@ void bncComb::dumpResults(const QMap<QString, cmbCorr*>& resCorr) {
       double Mjd = _resTime.mjd() + _resTime.daysec()/86400.0;
       if (_antex->satCoMcorrection(corr->_prn, Mjd, xc.Rows(1,3), dx) != success) {
         dx = 0;
-        cout << "antenna not found " << corr->_prn.toAscii().data() << endl;
+        _log += "antenna not found " + corr->_prn.toAscii() + '\n';
       }
     }
     
@@ -806,14 +806,6 @@ t_irc bncComb::createAmat(Matrix& AA, ColumnVector& ll, DiagonalMatrix& PP,
   PP.ReSize(nObs+nCon);        PP = 1.0 / (sigObs * sigObs);
 
   int iObs = 0;
-
-  cout << "nObs, nCon, nPar: " << nObs << ' ' << nCon << ' ' << nPar << endl;
-
-  for (int iPar = 1; iPar <= _params.size(); iPar++) {
-    cmbParam* pp = _params[iPar-1];
-    cout << "PAR " << iPar << ' ' << pp->toString().toAscii().data() << endl;
-  }
-
   QVectorIterator<cmbCorr*> itCorr(corrs());
   while (itCorr.hasNext()) {
     cmbCorr* corr = itCorr.next();
@@ -823,8 +815,6 @@ t_irc bncComb::createAmat(Matrix& AA, ColumnVector& ll, DiagonalMatrix& PP,
 
     if (corr->_acName == _masterOrbitAC && resCorr.find(prn) == resCorr.end()) {
       resCorr[prn] = new cmbCorr(*corr);
-      cout << "resCor " << corr->_acName.toAscii().data() << ' '
-           << prn.toAscii().data() << endl;
     }
 
     for (int iPar = 1; iPar <= _params.size(); iPar++) {
@@ -833,8 +823,6 @@ t_irc bncComb::createAmat(Matrix& AA, ColumnVector& ll, DiagonalMatrix& PP,
     }
 
     ll(iObs) = corr->_clkCorr._dClk * t_CST::c - DotProduct(AA.Row(iObs), x0);
-    cout << "iObs, AC, prn, ll: " << iObs << ' ' << corr->_acName.toAscii().data() << ' '
-         << corr->_prn.toAscii().data() << ' ' << ll(iObs) << endl;
   }
 
   // Regularization
