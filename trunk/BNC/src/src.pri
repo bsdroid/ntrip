@@ -109,11 +109,11 @@ RC_FILE = bnc.rc
 
 QT += network
 
-# exists(combination/bnccomb.h) {
-#   DEFINES += USE_COMBINATION
-#   HEADERS += combination/bnccomb.h
-#   SOURCES += combination/bnccomb.cpp
-# }
+exists(combination/bnccomb.h) {
+  DEFINES += USE_COMBINATION
+  HEADERS += combination/bnccomb.h
+  SOURCES += combination/bnccomb.cpp
+}
 
 exists(PPP) {
   INCLUDEPATH += PPP
