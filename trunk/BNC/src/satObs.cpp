@@ -11,6 +11,14 @@ using namespace std;
 t_clkCorr::t_clkCorr(const string& line) {
   reset();
   istringstream in(line);
+  char ch; in >> ch; if (ch != 'C') return;
+  int    gpsw;
+  double gpssec;
+  in >> gpsw >> gpssec >> _prn >> _iod >> _dClk >> _dotDClk >> _dotDotDClk;
+  _time.set(gpsw, gpssec);
+  _dClk       /= t_CST::c;
+  _dotDClk    /= t_CST::c;
+  _dotDotDClk /= t_CST::c;
 }
 
 // 
@@ -41,6 +49,13 @@ string t_clkCorr::toLine() const {
 t_orbCorr::t_orbCorr(const string& line) {
   reset();
   istringstream in(line);
+  char ch; in >> ch; if (ch != '0') return;
+  int    gpsw;
+  double gpssec;
+  in >> gpsw >> gpssec >> _prn >> _iod 
+     >> _xr[0]    >> _xr[1]    >> _xr[2]
+     >> _dotXr[0] >> _dotXr[1] >> _dotXr[2];
+  _time.set(gpsw, gpssec);
 }
 
 // 
