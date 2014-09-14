@@ -611,20 +611,10 @@ t_irc bncComb::processEpoch_filter(QTextStream& out,
       return failure;
     }
 
-    cout << "AA:  " << AA.Nrows() << ' ' << AA.Ncols() << endl;
-    cout << "ll:  " << ll.Nrows() << endl;
-    cout << "PP:  " << PP.Nrows() << ' ' << PP.Ncols() << endl;
-    cout << "_QQ: " << _QQ.Nrows() << ' ' << _QQ.Ncols() << endl;
-    cout << "dx: "  << dx.Nrows() << endl;
-
-    dx = 0.0;
+    dx.ReSize(nPar); dx = 0.0;
     kalman(AA, ll, PP, _QQ, dx);
 
-    cout << "after Kalman" << endl;
-
     ColumnVector vv = ll - AA * dx;
-
-    cout << vv.t() << endl;
 
     int     maxResIndex;
     double  maxRes = vv.maximum_absolute_value1(maxResIndex);   
