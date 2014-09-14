@@ -1,4 +1,5 @@
 #include <iostream>
+#include <iomanip>
 #include <sstream>
 
 #include "satObs.h"
@@ -17,6 +18,7 @@ t_clkCorr::t_clkCorr() {
 // 
 ////////////////////////////////////////////////////////////////////////////
 t_clkCorr::t_clkCorr(const string& line) {
+  istringstream in(line);
 }
 
 // 
@@ -24,7 +26,11 @@ t_clkCorr::t_clkCorr(const string& line) {
 string t_clkCorr::toLine() const {
   ostringstream str;
   str.setf(ios::showpoint | ios::fixed);
-  str << "C " << endl;
+  str << "C " << _time.gpsw() << setprecision(2) << _time.gpssec() << ' '
+      << _prn.toString() << ' '
+      << setw(10) << setprecision(4) << _dClk       << ' '
+      << setw(10) << setprecision(4) << _dotDClk    << ' '
+      << setw(10) << setprecision(4) << _dotDotDClk << endl;
   return str.str();
 }
 
@@ -40,6 +46,7 @@ t_orbCorr::t_orbCorr() {
 // 
 ////////////////////////////////////////////////////////////////////////////
 t_orbCorr::t_orbCorr(const string& line) {
+  istringstream in(line);
 }
 
 // 
