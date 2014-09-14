@@ -179,7 +179,7 @@ bncComb::bncComb() : bncEphUser(true) {
 
   // Use Glonass
   // -----------
-  if ( Qt::CheckState(settings.value("").toInt()) == Qt::Checked) {
+  if ( Qt::CheckState(settings.value("cmbUseGlonass").toInt()) == Qt::Checked) {
     _useGlonass = true;
   }
   else {
@@ -232,7 +232,7 @@ bncComb::bncComb() : bncEphUser(true) {
   // ANTEX File
   // ----------
   _antex = 0;
-  QString antexFileName = settings.value("pppAntex").toString();
+  QString antexFileName = settings.value("cmbAntexFile").toString();
   if (!antexFileName.isEmpty()) {
     _antex = new bncAntex();
     if (_antex->readFile(antexFileName) != success) {
