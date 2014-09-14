@@ -14,12 +14,12 @@ t_clkCorr::t_clkCorr() {
 
 // 
 ////////////////////////////////////////////////////////////////////////////
-t_clkCorr::t_clkCorr(const string& str) {
+t_clkCorr::t_clkCorr(const string& line) {
 }
 
 // 
 ////////////////////////////////////////////////////////////////////////////
-string t_clkCorr::toString() const {
+string t_clkCorr::toLine() const {
   return "CLK";
 }
 
@@ -34,12 +34,12 @@ t_orbCorr::t_orbCorr() {
 
 // 
 ////////////////////////////////////////////////////////////////////////////
-t_orbCorr::t_orbCorr(const string& str) {
+t_orbCorr::t_orbCorr(const string& line) {
 }
 
 // 
 ////////////////////////////////////////////////////////////////////////////
-string t_orbCorr::toString() const {
+string t_orbCorr::toLine() const {
   return "ORB";
 }
 
