@@ -1632,11 +1632,11 @@ void bncWindow::saveOptions() {
   else {
     settings.setValue("combineStreams", "");
   }
-  settings.setValue("cmbMethod",    _cmbMethodComboBox->currentText());
-  settings.setValue("cmbMaxres",    _cmbMaxresLineEdit->text());
-  settings.setValue("cmbSampl",     _cmbSamplSpinBox->value());
-  settings.setValue("cmbAntexFile", _cmbAntexFile->fileName());
-  settings.setValue("cmbUseGlonas", _cmbUseGlonass->checkState());
+  settings.setValue("cmbMethod",     _cmbMethodComboBox->currentText());
+  settings.setValue("cmbMaxres",     _cmbMaxresLineEdit->text());
+  settings.setValue("cmbSampl",      _cmbSamplSpinBox->value());
+  settings.setValue("cmbAntexFile",  _cmbAntexFile->fileName());
+  settings.setValue("cmbUseGlonass", _cmbUseGlonass->checkState());
 // Upload Corrections
   if (!uploadMountpointsOut.isEmpty()) {
     settings.setValue("uploadMountpointsOut", uploadMountpointsOut);

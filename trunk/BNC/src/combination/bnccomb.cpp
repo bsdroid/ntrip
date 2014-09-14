@@ -179,7 +179,7 @@ bncComb::bncComb() : bncEphUser(true) {
 
   // Use Glonass
   // -----------
-  if ( Qt::CheckState(settings.value("pppGLONASS").toInt()) == Qt::Checked) {
+  if ( Qt::CheckState(settings.value("").toInt()) == Qt::Checked) {
     _useGlonass = true;
   }
   else {
