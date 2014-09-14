@@ -681,6 +681,9 @@ void bncComb::printResults(QTextStream& out,
 ////////////////////////////////////////////////////////////////////////////
 void bncComb::dumpResults(const QMap<QString, cmbCorr*>& resCorr) {
 
+  QList<t_orbCorr> orbCorrections;
+  QList<t_clkCorr> clkCorrections;
+
   QString     outLines;
   QStringList corrLines;
 
@@ -746,6 +749,17 @@ void bncComb::dumpResults(const QMap<QString, cmbCorr*>& resCorr) {
                  0.0);
     corrLines << line;
 
+    t_orbCorr orbCorr(corr->_orbCorr);
+    orbCorr._staID = "INTERNAL";
+    orbCorrections.push_back(orbCorr);
+
+    t_clkCorr clkCorr(corr->_clkCorr);
+    clkCorr._staID      = "INTERNAL";
+    clkCorr._dClk       = corr->_dClkResult;
+    clkCorr._dotDClk    = 0.0;
+    clkCorr._dotDotDClk = 0.0;
+    clkCorrections.push_back(clkCorr);
+
     delete corr;
   }
 
@@ -760,7 +774,10 @@ void bncComb::dumpResults(const QMap<QString, cmbCorr*>& resCorr) {
 
   // Send new Corrections to PPP etc.
   // --------------------------------
-  ////  emit newCorrections(corrLines);
+  if (orbCorrections.size() > 0 && clkCorrections.size() > 0) {
+    emit newOrbCorrections(orbCorrections);
+    emit newClkCorrections(clkCorrections);
+  }
 }
 
 // Create First Design Matrix and Vector of Measurements
