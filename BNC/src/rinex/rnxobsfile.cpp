@@ -987,40 +987,41 @@ void t_rnxObsFile::setObsFromRnx(const t_rnxObsFile* rnxObsFile, const t_rnxObsF
     QString type = rnxObsFile->obsType(sys, iType);
     if (rnxSat.obs.contains(type)) {
       const t_rnxObs& rnxObs = rnxSat.obs[type];
-      string type2ch(type.mid(1).toAscii().data());
-
-
-      t_frqObs* frqObs = 0;
-      for (unsigned iFrq = 0; iFrq < obs._obs.size(); iFrq++) {
-        if (obs._obs[iFrq]->_rnxType2ch == type2ch) {
-          frqObs = obs._obs[iFrq];
+      if (rnxObs.value != 0.0) {
+        string type2ch(type.mid(1).toAscii().data());
+        
+        t_frqObs* frqObs = 0;
+        for (unsigned iFrq = 0; iFrq < obs._obs.size(); iFrq++) {
+          if (obs._obs[iFrq]->_rnxType2ch == type2ch) {
+            frqObs = obs._obs[iFrq];
+            break;
+          }
+        }
+        if (frqObs == 0) {
+          frqObs = new t_frqObs;
+          frqObs->_rnxType2ch = type2ch;
+          obs._obs.push_back(frqObs);
+        }
+        
+        switch( type.toAscii().data()[0] ) {
+        case 'C':
+          frqObs->_codeValid = true;
+          frqObs->_code      = rnxObs.value;
+          break;
+        case 'L':
+          frqObs->_phaseValid = true;
+          frqObs->_phase      = rnxObs.value;
+          frqObs->_slip       = (rnxObs.lli & 1);
+          break;
+        case 'D':
+          frqObs->_dopplerValid = true;
+          frqObs->_doppler      = rnxObs.value;
+          break;
+        case 'S':
+          frqObs->_snrValid = true;
+          frqObs->_snr      = rnxObs.value;
           break;
         }
-      }
-      if (frqObs == 0) {
-        frqObs = new t_frqObs;
-        frqObs->_rnxType2ch = type2ch;
-        obs._obs.push_back(frqObs);
-      }
-
-      switch( type.toAscii().data()[0] ) {
-      case 'C':
-        frqObs->_codeValid = true;
-        frqObs->_code      = rnxObs.value;
-        break;
-      case 'L':
-        frqObs->_phaseValid = true;
-        frqObs->_phase      = rnxObs.value;
-        frqObs->_slip       = (rnxObs.lli & 1);
-        break;
-      case 'D':
-        frqObs->_dopplerValid = true;
-        frqObs->_doppler      = rnxObs.value;
-        break;
-      case 'S':
-        frqObs->_snrValid = true;
-        frqObs->_snr      = rnxObs.value;
-        break;
       }
     }
   }
