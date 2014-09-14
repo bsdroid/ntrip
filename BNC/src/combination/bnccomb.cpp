@@ -611,9 +611,20 @@ t_irc bncComb::processEpoch_filter(QTextStream& out,
       return failure;
     }
 
+    cout << "AA:  " << AA.Nrows() << ' ' << AA.Ncols() << endl;
+    cout << "ll:  " << ll.Nrows() << endl;
+    cout << "PP:  " << PP.Nrows() << ' ' << PP.Ncols() << endl;
+    cout << "_QQ: " << _QQ.Nrows() << ' ' << _QQ.Ncols() << endl;
+    cout << "dx: "  << dx.Nrows() << endl;
+
     dx = 0.0;
     kalman(AA, ll, PP, _QQ, dx);
+
+    cout << "after Kalman" << endl;
+
     ColumnVector vv = ll - AA * dx;
+
+    cout << vv.t() << endl;
 
     int     maxResIndex;
     double  maxRes = vv.maximum_absolute_value1(maxResIndex);   
@@ -806,6 +817,13 @@ t_irc bncComb::createAmat(Matrix& AA, ColumnVector& ll, DiagonalMatrix& PP,
 
   int iObs = 0;
 
+  cout << "nObs, nCon, nPar: " << nObs << ' ' << nCon << ' ' << nPar << endl;
+
+  for (int iPar = 1; iPar <= _params.size(); iPar++) {
+    cmbParam* pp = _params[iPar-1];
+    cout << "PAR " << iPar << ' ' << pp->toString().toAscii().data() << endl;
+  }
+
   QVectorIterator<cmbCorr*> itCorr(corrs());
   while (itCorr.hasNext()) {
     cmbCorr* corr = itCorr.next();
@@ -815,6 +833,8 @@ t_irc bncComb::createAmat(Matrix& AA, ColumnVector& ll, DiagonalMatrix& PP,
 
     if (corr->_acName == _masterOrbitAC && resCorr.find(prn) == resCorr.end()) {
       resCorr[prn] = new cmbCorr(*corr);
+      cout << "resCor " << corr->_acName.toAscii().data() << ' '
+           << prn.toAscii().data() << endl;
     }
 
     for (int iPar = 1; iPar <= _params.size(); iPar++) {
@@ -823,6 +843,8 @@ t_irc bncComb::createAmat(Matrix& AA, ColumnVector& ll, DiagonalMatrix& PP,
     }
 
     ll(iObs) = corr->_clkCorr._dClk * t_CST::c - DotProduct(AA.Row(iObs), x0);
+    cout << "iObs, AC, prn, ll: " << iObs << ' ' << corr->_acName.toAscii().data() << ' '
+         << corr->_prn.toAscii().data() << ' ' << ll(iObs) << endl;
   }
 
   // Regularization
