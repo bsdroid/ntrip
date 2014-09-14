@@ -31,23 +31,21 @@ class cmbParam {
 
 class bncComb : public bncEphUser  {
  Q_OBJECT
-
  public:
   bncComb();
   virtual ~bncComb();
-  void processOrbCorrections(const QList<t_orbCorr>& orbCorrections);
-  void processClkCorrections(const QList<t_clkCorr>& clkCorrections);
   int  nStreams() const {return _ACs.size();}
 
  public slots:
   void slotProviderIDChanged(QString mountPoint);
+  void slotNewOrbCorrections(QList<t_orbCorr> orbCorr);
+  void slotNewClkCorrections(QList<t_clkCorr> clkCorr);
 
  signals:
   void newMessage(QByteArray msg, bool showOnScreen);
-  void newCorrections(QStringList);
+  void newClkCorrections(QList<t_clkCorr> clkCorr);
 
  private:
-
   enum e_method{singleEpoch, filter};
 
   class cmbAC {
