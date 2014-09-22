@@ -1,5 +1,5 @@
 <META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
-<h3>BKG Ntrip Client (BNC) Version 2.11 Manual</h3>
+<h3>BKG Ntrip Client (BNC) Version 2.11.0 Manual</h3>
 
 <p>
 The BKG Ntrip Client (BNC) is a program for simultaneously retrieving, decoding, converting and processing real-time GNSS data streams. It has been developed within the framework of the IAG sub-commission for Europe (EUREF) and the International GNSS Service (IGS). Although meant as a real-time tool, it comes with some Post Processing functionality. You may like to use it for data coming from NTRIP Broadcasters like
@@ -2928,8 +2928,8 @@ Drag and drop of configuration file is currently not supported on Mac OS X.
 </tr>
 
 <tr>
-<td>Feb 2014 &nbsp;</td><td>Version 2.11 &nbsp;</td>
-<td>[Add] Started work on new version in Dec 2013<br>[Add] Raw stream output through TCP/IP port</td>
+<td>Sep 2014 &nbsp;</td><td>Version 2.11 &nbsp;</td>
+<td>[Add] Started work on new version in Dec 2013<br>[Mod] SIRGAS transformation parameters adjusted<br>[Mod] Antex file updated<br>[Mod] RTCM SSR messages updated<br>[Bug] GLONASS code biases<br>[Mod] Maximum number of GNSS observations increased<br>[Mod] Loss of lock handling changed<br>[Add] Raw stream output through TCP/IP port<br>[Add] Version 2.11.0 published</td>
 </tr>
 
 </table>
@@ -3271,7 +3271,7 @@ This configuration equals the 'Combi.bnc' configuration. However, the combined B
 
 <li>File 'UploadEph.bnc'<br>
 The purpose of this configuration is to pull a number of streams from reference stations to get hold of contained Broadcast Ephemeris messages. These are encoded then in a RTCM Version 3 stream which only provides Broadcast Ephemeris with an update rate of 5 seconds.
-</li>
+</li><br>
 
 <li>File 'Empty.bnc'<br>
 The purpose of this example is to provide an empty configuration file for BNC which only contains the default settings.
