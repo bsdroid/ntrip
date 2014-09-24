@@ -763,7 +763,7 @@ size_t size)
 #define G_DISPERSIVE_BIAS_INDICATOR(a)   GETBITS(a, 1)
 #define G_MW_CONSISTENCY_INDICATOR(a)    GETBITS(a, 1)
 #define G_INTEGER_INDICATOR(a)           GETBITS(a, 1)
-#define G_WIDE_LANE_INDICATOR(a)         GETBITS(a, 1)
+#define G_WIDE_LANE_INDICATOR(a)         GETBITS(a, 2)
 #define G_DISCONTINUITY_COUNTER(a)       GETBITS(a, 4)
 #define G_SSR_URA(a)                     {int temp; GETBITS(temp, 6) \
  (a) = URAToValue(temp);}
@@ -909,7 +909,7 @@ fprintf(stderr, "type %d size %d\n",type,sizeofrtcmblock);
         G_YAW_RATE(pb->Sat[pos].YawRate)
         for(j = 0; j < pb->Sat[pos].NumberOfPhaseBiases; ++j)
         {
-          G_SIGNAL_IDENTIFIER(pb->Sat[pos].Biases[j].Type)
+        	G_SIGNAL_IDENTIFIER(pb->Sat[pos].Biases[j].Type)
           G_INTEGER_INDICATOR(pb->Sat[pos].Biases[j].SignalIntegerIndicator)
           G_WIDE_LANE_INDICATOR(pb->Sat[pos].Biases[j].SignalsWideLaneIntegerIndicator)
           G_DISCONTINUITY_COUNTER(pb->Sat[pos].Biases[j].SignalDiscontinuityCounter)
@@ -1276,8 +1276,10 @@ fprintf(stderr, "type %d size %d\n",type,sizeofrtcmblock);
           }
         }
         break;
+
       default:
-        return GCOBR_UNKNOWNTYPE;
+    	  continue;
+
       }
 #ifdef COR_LATENCY
       if(s == CLOCKORBIT_SATGPS && type-corbase[s] != COBOFS_BIAS)
@@ -1292,8 +1294,8 @@ fprintf(stderr, "type %d size %d\n",type,sizeofrtcmblock);
         numbits += 8;
       fprintf(stderr, "numbits left %d\n",numbits);
 #endif
-      return mmi ? GCOBR_MESSAGEFOLLOWS : GCOBR_OK;
     }
+    return mmi ? GCOBR_MESSAGEFOLLOWS : GCOBR_OK;
   }
   return GCOBR_UNKNOWNTYPE;
 }
