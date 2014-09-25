@@ -763,7 +763,7 @@ size_t size)
 #define G_DISPERSIVE_BIAS_INDICATOR(a)   GETBITS(a, 1)
 #define G_MW_CONSISTENCY_INDICATOR(a)    GETBITS(a, 1)
 #define G_INTEGER_INDICATOR(a)           GETBITS(a, 1)
-#define G_WIDE_LANE_INDICATOR(a)         GETBITS(a, 1)
+#define G_WIDE_LANE_INDICATOR(a)         GETBITS(a, 2)
 #define G_DISCONTINUITY_COUNTER(a)       GETBITS(a, 4)
 #define G_SSR_URA(a)                     {int temp; GETBITS(temp, 6) \
  (a) = URAToValue(temp);}
