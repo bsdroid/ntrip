@@ -133,7 +133,7 @@ modified variables are:
 #define T_DISPERSIVE_BIAS_INDICATOR(a)   ADDBITS(1, a)
 #define T_MW_CONSISTENCY_INDICATOR(a)    ADDBITS(1, a)
 #define T_INTEGER_INDICATOR(a)           ADDBITS(1, a)
-#define T_WIDE_LANE_INDICATOR(a)         ADDBITS(1, a)
+#define T_WIDE_LANE_INDICATOR(a)         ADDBITS(2, a)
 #define T_DISCONTINUITY_COUNTER(a)       ADDBITS(4, a)
 #define T_SSR_URA(a)                     ADDBITS(6, a)
 #define T_HR_CLOCK_CORRECTION(a)         SCALEADDBITS(22,    10000.0, a)
