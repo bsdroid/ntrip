@@ -916,6 +916,12 @@ fprintf(stderr, "type %d size %d\n",type,sizeofrtcmblock);
           G_PHASE_BIAS(pb->Sat[pos].Biases[j].Bias)
         }
       }
+#ifdef DEBUG
+      for(type = 0; type < (int)size && (unsigned char)buffer[type] != 0xD3; ++type)
+        numbits += 8;
+      fprintf(stderr, "numbits left %d\n",numbits);
+#endif
+      return mmi ? GCOBR_MESSAGEFOLLOWS : GCOBR_OK;
     }
     else if(type >= corbase[s])
     {
@@ -1277,7 +1283,7 @@ fprintf(stderr, "type %d size %d\n",type,sizeofrtcmblock);
         }
         break;
       default:
-        return GCOBR_UNKNOWNTYPE;
+        continue;
       }
 #ifdef COR_LATENCY
       if(s == CLOCKORBIT_SATGPS && type-corbase[s] != COBOFS_BIAS)
