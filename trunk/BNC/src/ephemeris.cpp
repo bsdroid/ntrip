@@ -43,7 +43,9 @@ void t_eph::setClkCorr(const t_clkCorr* clkCorr) {
 t_irc t_eph::getCrd(const bncTime& tt, ColumnVector& xc, ColumnVector& vv, bool useCorr) const {
   xc.ReSize(4);
   vv.ReSize(3);
-  position(tt.gpsw(), tt.gpssec(), xc.data(), vv.data());
+  if (position(tt.gpsw(), tt.gpssec(), xc.data(), vv.data()) != success) {
+    return failure;
+  }
   if (useCorr) {
     if (_orbCorr && _clkCorr) {
 
@@ -127,10 +129,7 @@ void t_ephGPS::set(const gpsephemeris* ee) {
 
 // Compute GPS Satellite Position (virtual)
 ////////////////////////////////////////////////////////////////////////////
-void t_ephGPS::position(int GPSweek, double GPSweeks, 
-                        double* xc,
-                        double* vv) const {
-
+t_irc t_ephGPS::position(int GPSweek, double GPSweeks, double* xc, double* vv) const {
 
   static const double omegaEarth = 7292115.1467e-11;
   static const double gmGRS      = 398.6005e12;
@@ -140,7 +139,7 @@ void t_ephGPS::position(int GPSweek, double GPSweeks,
 
   double a0 = _sqrt_A * _sqrt_A;
   if (a0 == 0) {
-    return;
+    return failure;
   }
 
   double n0 = sqrt(gmGRS/(a0*a0*a0));
@@ -206,6 +205,8 @@ void t_ephGPS::position(int GPSweek, double GPSweeks,
   // Relativistic Correction
   // -----------------------
   xc[3] -= 2.0 * (xc[0]*vv[0] + xc[1]*vv[1] + xc[2]*vv[2]) / t_CST::c / t_CST::c;
+
+  return success;
 }
 
 // Derivative of the state vector using a simple force model (static)
@@ -247,8 +248,7 @@ ColumnVector t_ephGlo::glo_deriv(double /* tt */, const ColumnVector& xv,
 
 // Compute Glonass Satellite Position (virtual)
 ////////////////////////////////////////////////////////////////////////////
-void t_ephGlo::position(int GPSweek, double GPSweeks, 
-                        double* xc, double* vv) const {
+t_irc t_ephGlo::position(int GPSweek, double GPSweeks, double* xc, double* vv) const {
 
   static const double nominalStep = 10.0;
 
@@ -256,6 +256,10 @@ void t_ephGlo::position(int GPSweek, double GPSweeks,
   memset(vv, 0, 3*sizeof(double));
 
   double dtPos = bncTime(GPSweek, GPSweeks) - _tt;
+
+  if (fabs(dtPos) > 24*3600.0) {
+    return failure;
+  }
 
   int nSteps  = int(fabs(dtPos) / nominalStep) + 1;
   double step = dtPos / nSteps;
@@ -283,6 +287,8 @@ void t_ephGlo::position(int GPSweek, double GPSweeks,
   // ----------------
   double dtClk = bncTime(GPSweek, GPSweeks) - _TOC;
   xc[3] = -_tau + _gamma * dtClk;
+
+  return success;
 }
 
 // IOD of Glonass Ephemeris (virtual)
@@ -441,9 +447,7 @@ void t_ephGal::set(const galileoephemeris* ee) {
 
 // Compute Galileo Satellite Position (virtual)
 ////////////////////////////////////////////////////////////////////////////
-void t_ephGal::position(int GPSweek, double GPSweeks, 
-                        double* xc,
-                        double* vv) const {
+t_irc t_ephGal::position(int GPSweek, double GPSweeks, double* xc, double* vv) const {
 
   static const double omegaEarth = 7292115.1467e-11;
   static const double gmWGS = 398.60044e12;
@@ -453,7 +457,7 @@ void t_ephGal::position(int GPSweek, double GPSweeks,
 
   double a0 = _sqrt_A * _sqrt_A;
   if (a0 == 0) {
-    return;
+    return failure;
   }
 
   double n0 = sqrt(gmWGS/(a0*a0*a0));
@@ -520,6 +524,8 @@ void t_ephGal::position(int GPSweek, double GPSweeks,
   // -----------------------
   //  xc(4) -= 4.442807633e-10 * _e * sqrt(a0) *sin(E);
   xc[3] -= 2.0 * (xc[0]*vv[0] + xc[1]*vv[1] + xc[2]*vv[2]) / t_CST::c / t_CST::c;
+
+  return success;
 }
 
 // Constructor
