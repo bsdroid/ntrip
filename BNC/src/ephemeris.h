@@ -40,7 +40,7 @@ class t_eph {
   static bool earlierTime(const t_eph* eph1, const t_eph* eph2) {return eph1->_TOC < eph2->_TOC;}
 
  protected:  
-  virtual void position(int GPSweek, double GPSweeks, double* xc, double* vv) const = 0;
+  virtual t_irc position(int GPSweek, double GPSweeks, double* xc, double* vv) const = 0;
   t_prn      _prn;
   bncTime    _TOC;
   QDateTime  _receptDateTime;
@@ -64,7 +64,7 @@ class t_ephGPS : public t_eph {
   double TGD() const {return _TGD;} // Timing Group Delay (P1-P2 DCB)
 
  private:
-  virtual void position(int GPSweek, double GPSweeks, double* xc, double* vv) const;
+  virtual t_irc position(int GPSweek, double GPSweeks, double* xc, double* vv) const;
 
   double  _clock_bias;      // [s]    
   double  _clock_drift;     // [s/s]  
@@ -118,7 +118,7 @@ class t_ephGlo : public t_eph {
   void set(const glonassephemeris* ee);
 
  private:
-  virtual void position(int GPSweek, double GPSweeks, double* xc, double* vv) const;
+  virtual t_irc position(int GPSweek, double GPSweeks, double* xc, double* vv) const;
   static ColumnVector glo_deriv(double /* tt */, const ColumnVector& xv, double* acc);
 
   mutable bncTime      _tt;  // time 
@@ -158,7 +158,7 @@ class t_ephGal : public t_eph {
   void set(const galileoephemeris* ee);
 
  private:
-  virtual void position(int GPSweek, double GPSweeks, double* xc, double* vv) const;
+  virtual t_irc position(int GPSweek, double GPSweeks, double* xc, double* vv) const;
 
   double  _clock_bias;       //  [s]    
   double  _clock_drift;      //  [s/s]  
