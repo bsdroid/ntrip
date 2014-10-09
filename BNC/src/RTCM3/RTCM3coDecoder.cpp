@@ -34,7 +34,7 @@
  *
  * Created:    05-May-2008
  *
- * Changes:    
+ * Changes:
  *
  * -----------------------------------------------------------------------*/
 
@@ -71,19 +71,19 @@ RTCM3coDecoder::RTCM3coDecoder(const QString& staID) {
   _out = 0;
 
   qRegisterMetaType<bncTime>("bncTime");
-  qRegisterMetaType< QList<t_orbCorr> >("QList:t_orbCorr");
-  qRegisterMetaType< QList<t_clkCorr> >("QList:t_clkCorr");
+  qRegisterMetaType< QList<t_orbCorr> >("QList<t_orbCorr>");
+  qRegisterMetaType< QList<t_clkCorr> >("QList<t_clkCorr>");
 
-  connect(this, SIGNAL(newOrbCorrections(QList<t_orbCorr>)), 
+  connect(this, SIGNAL(newOrbCorrections(QList<t_orbCorr>)),
           BNC_CORE, SLOT(slotNewOrbCorrections(QList<t_orbCorr>)));
 
-  connect(this, SIGNAL(newClkCorrections(QList<t_clkCorr>)), 
+  connect(this, SIGNAL(newClkCorrections(QList<t_clkCorr>)),
           BNC_CORE, SLOT(slotNewClkCorrections(QList<t_clkCorr>)));
 
-  connect(this, SIGNAL(providerIDChanged(QString)), 
+  connect(this, SIGNAL(providerIDChanged(QString)),
           BNC_CORE, SIGNAL(providerIDChanged(QString)));
 
-  connect(this, SIGNAL(newMessage(QByteArray,bool)), 
+  connect(this, SIGNAL(newMessage(QByteArray,bool)),
           BNC_CORE, SLOT(slotMessage(const QByteArray,bool)));
 
   memset(&_co, 0, sizeof(_co));
@@ -101,7 +101,7 @@ RTCM3coDecoder::~RTCM3coDecoder() {
 }
 
 // Reopen Output File
-//////////////////////////////////////////////////////////////////////// 
+////////////////////////////////////////////////////////////////////////
 void RTCM3coDecoder::reopen() {
 
   if (!_fileNameSkl.isEmpty()) {
@@ -113,7 +113,7 @@ void RTCM3coDecoder::reopen() {
     QString hlpStr = bncRinex::nextEpochStr(datTim,
                                       settings.value("corrIntr").toString());
 
-    QString fileNameHlp = _fileNameSkl 
+    QString fileNameHlp = _fileNameSkl
       + QString("%1").arg(datTim.date().dayOfYear(), 3, 10, QChar('0'))
       + hlpStr + datTim.toString(".yyC");
 
@@ -134,7 +134,7 @@ void RTCM3coDecoder::reopen() {
   }
 }
 
-// 
+//
 ////////////////////////////////////////////////////////////////////////////
 t_irc RTCM3coDecoder::Decode(char* buffer, int bufLen, vector<string>& errmsg) {
 
@@ -167,7 +167,7 @@ t_irc RTCM3coDecoder::Decode(char* buffer, int bufLen, vector<string>& errmsg) {
     else {                 // OK or MESSAGEFOLLOWS
       _buffer = _buffer.mid(bytesused);
 
-      if ( (irc == GCOBR_OK          || irc == GCOBR_MESSAGEFOLLOWS ) && 
+      if ( (irc == GCOBR_OK          || irc == GCOBR_MESSAGEFOLLOWS ) &&
            (_co.NumberOfSat[CLOCKORBIT_SATGPS]   > 0 || _co.NumberOfSat[CLOCKORBIT_SATGLONASS]   > 0 ||
             _bias.NumberOfSat[CLOCKORBIT_SATGPS] > 0 || _bias.NumberOfSat[CLOCKORBIT_SATGLONASS] > 0) ) {
 
@@ -182,7 +182,7 @@ t_irc RTCM3coDecoder::Decode(char* buffer, int bufLen, vector<string>& errmsg) {
         // Correction Epoch from GPSEpochTime
         // ----------------------------------
         if (_co.NumberOfSat[CLOCKORBIT_SATGPS] > 0 || _bias.NumberOfSat[CLOCKORBIT_SATGPS] > 0) {
-          int GPSEpochTime = (_co.NumberOfSat[CLOCKORBIT_SATGPS] > 0) ? 
+          int GPSEpochTime = (_co.NumberOfSat[CLOCKORBIT_SATGPS] > 0) ?
                              _co.EpochTime[CLOCKORBIT_SATGPS] : _bias.EpochTime[CLOCKORBIT_SATGPS];
           if      (GPSweeksHlp > GPSEpochTime + 86400.0) {
             GPSweek += 1;
@@ -196,7 +196,7 @@ t_irc RTCM3coDecoder::Decode(char* buffer, int bufLen, vector<string>& errmsg) {
         // Correction Epoch from Glonass Epoch
         // -----------------------------------
         else if (_co.NumberOfSat[CLOCKORBIT_SATGLONASS] > 0 || _bias.NumberOfSat[CLOCKORBIT_SATGLONASS] > 0){
-          int GLONASSEpochTime = (_co.NumberOfSat[CLOCKORBIT_SATGLONASS] > 0) ? 
+          int GLONASSEpochTime = (_co.NumberOfSat[CLOCKORBIT_SATGLONASS] > 0) ?
                               _co.EpochTime[CLOCKORBIT_SATGLONASS] : _bias.EpochTime[CLOCKORBIT_SATGLONASS];
 
           // Second of day (GPS time) from Glonass Epoch
@@ -205,7 +205,7 @@ t_irc RTCM3coDecoder::Decode(char* buffer, int bufLen, vector<string>& errmsg) {
           int leapSecond = gnumleap(date.year(), date.month(), date.day());
           int GPSDaySec  = GLONASSEpochTime - 3 * 3600 + leapSecond;
 
-          int weekDay      = int(GPSweeksHlp/86400.0); 
+          int weekDay      = int(GPSweeksHlp/86400.0);
           int GPSDaySecHlp = int(GPSweeksHlp) - weekDay * 86400;
 
           // Handle the difference between system clock and correction epoch
@@ -223,7 +223,7 @@ t_irc RTCM3coDecoder::Decode(char* buffer, int bufLen, vector<string>& errmsg) {
               weekDay = 6;
               GPSweek -= 1;
             }
-          } 
+          }
           _lastTime.set(GPSweek, weekDay * 86400.0 + GPSDaySec);
         }
 
@@ -242,7 +242,7 @@ t_irc RTCM3coDecoder::Decode(char* buffer, int bufLen, vector<string>& errmsg) {
   return retCode;
 }
 
-// 
+//
 ////////////////////////////////////////////////////////////////////////////
 void RTCM3coDecoder::sendResults() {
 
@@ -265,7 +265,7 @@ void RTCM3coDecoder::sendResults() {
 
     // Orbit correction
     // ----------------
-    if ( _co.messageType == COTYPE_GPSCOMBINED     || 
+    if ( _co.messageType == COTYPE_GPSCOMBINED     ||
          _co.messageType == COTYPE_GLONASSCOMBINED ||
          _co.messageType == COTYPE_GPSORBIT        ||
          _co.messageType == COTYPE_GLONASSORBIT    ) {
@@ -279,7 +279,7 @@ void RTCM3coDecoder::sendResults() {
       orbCorr._xr[0]    = _co.Sat[ii].Orbit.DeltaRadial;
       orbCorr._xr[1]    = _co.Sat[ii].Orbit.DeltaAlongTrack;
       orbCorr._xr[2]    = _co.Sat[ii].Orbit.DeltaCrossTrack;
-      orbCorr._dotXr[0] = _co.Sat[ii].Orbit.DotDeltaRadial; 
+      orbCorr._dotXr[0] = _co.Sat[ii].Orbit.DotDeltaRadial;
       orbCorr._dotXr[1] = _co.Sat[ii].Orbit.DotDeltaAlongTrack;
       orbCorr._dotXr[2] = _co.Sat[ii].Orbit.DotDeltaCrossTrack;
 
@@ -288,7 +288,7 @@ void RTCM3coDecoder::sendResults() {
       _IODs[orbCorr._prn.toString()] = _co.Sat[ii].IOD;
     }
 
-    if ( _co.messageType == COTYPE_GPSCOMBINED     || 
+    if ( _co.messageType == COTYPE_GPSCOMBINED     ||
          _co.messageType == COTYPE_GLONASSCOMBINED ||
          _co.messageType == COTYPE_GPSCLOCK        ||
          _co.messageType == COTYPE_GLONASSCLOCK    ) {
@@ -310,7 +310,7 @@ void RTCM3coDecoder::sendResults() {
 
     // High-Resolution Clocks
     // ----------------------
-    if ( _co.messageType == COTYPE_GPSHR     || 
+    if ( _co.messageType == COTYPE_GPSHR     ||
          _co.messageType == COTYPE_GLONASSHR ) {
     }
   }
@@ -359,7 +359,7 @@ void RTCM3coDecoder::sendResults() {
   }
 }
 
-// 
+//
 ////////////////////////////////////////////////////////////////////////////
 void RTCM3coDecoder::checkProviderID() {
 
@@ -384,7 +384,7 @@ void RTCM3coDecoder::checkProviderID() {
     }
     _providerID[ii] = newProviderID[ii];
   }
-    
+
   if (alreadySet && different) {
     emit newMessage("RTCM3coDecoder: Provider Changed " + _staID.toAscii() + "\n", true);
     emit providerIDChanged(_staID);
