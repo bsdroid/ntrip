@@ -408,16 +408,14 @@ QStringList t_rnxObsHeader::obsTypesStrings() const {
     }
   }
   else {
-    QMapIterator<char, QVector<QString> > it(_obsTypes);
-    while (it.hasNext()) {
-      it.next();
-      char sys                      = it.key();
-      const QVector<QString>& types = it.value();
+    for (int iSys = 0; iSys < numSys(); iSys++) {
+      char sys = system(iSys);
       QString hlp;
-      QTextStream(&hlp) << QString("%1  %2").arg(sys).arg(types.size(), 3);
-      for (int ii = 0; ii < types.size(); ii++) {
-        QTextStream(&hlp) << QString(" %1").arg(types[ii], -3);   
-        if ((ii+1) % 13 == 0 || ii == types.size()-1) {
+      QTextStream(&hlp) << QString("%1  %2").arg(sys).arg(nTypes(sys), 3);
+      for (int iType = 0; iType < nTypes(sys); iType++) {
+        QString type = obsType(sys, iType, _version);
+        QTextStream(&hlp) << QString(" %1").arg(type, -3);   
+        if ((iType+1) % 13 == 0 || iType == nTypes(sys)-1) {
           strList.append(hlp.leftJustified(60) + "SYS / # / OBS TYPES\n");
           hlp = QString().leftJustified(6);
         }
@@ -784,16 +782,16 @@ void t_rnxObsFile::setHeader(const t_rnxObsHeader& header, double version,
     else {
       for (int iSys = 0; iSys < header.numSys(); iSys++) {
         char sys = header.system(iSys);
-        for (int iObs = 0; iObs < header.nTypes(sys); iObs++) {
-          _header._obsTypes[sys].push_back(header.obsType(sys, iObs, _header._version));
+        for (int iType = 0; iType < header.nTypes(sys); iType++) {
+          _header._obsTypes[sys].push_back(header.obsType(sys, iType, _header._version));
         }
       }
     }
   }
   else {
-    for (int iObs = 0; iObs < useObsTypes.size(); iObs++) {
-      if (useObsTypes[iObs].indexOf(":") != -1) {
-        QStringList hlp = useObsTypes[iObs].split(":", QString::SkipEmptyParts);
+    for (int iType = 0; iType < useObsTypes.size(); iType++) {
+      if (useObsTypes[iType].indexOf(":") != -1) {
+        QStringList hlp = useObsTypes[iType].split(":", QString::SkipEmptyParts);
         if (hlp.size() == 2 && hlp[0].length() == 1) {
           char    sys  = hlp[0][0].toAscii();
           QString type = hlp[1];
@@ -803,7 +801,7 @@ void t_rnxObsFile::setHeader(const t_rnxObsHeader& header, double version,
       else {
         for (int iSys = 0; iSys < t_rnxObsHeader::defaultSystems.length(); iSys++) {
           char sys = t_rnxObsHeader::defaultSystems[iSys].toAscii();
-          _header._obsTypes[sys].push_back(useObsTypes[iObs]);
+          _header._obsTypes[sys].push_back(useObsTypes[iType]);
         }
       }
     }
