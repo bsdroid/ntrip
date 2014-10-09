@@ -784,11 +784,10 @@ void t_rnxObsFile::setHeader(const t_rnxObsHeader& header, double version,
     else if (int(_header._version) == 2) {
       char sys0 = t_rnxObsHeader::defaultSystems[0].toAscii();
       for (int iObs = 0; iObs < header._obsTypes[sys0].size(); iObs++) {
-        _header._obsTypes[sys0].push_back(header.obsType(sys0, iObs, _header._version));
-      }
-      for (int iSys = 1; iSys < t_rnxObsHeader::defaultSystems.length(); iSys++) {
-        char sysI = t_rnxObsHeader::defaultSystems[iSys].toAscii();
-        _header._obsTypes[sysI] = _header._obsTypes[sys0];
+        for (int iSys = 0; iSys < t_rnxObsHeader::defaultSystems.length(); iSys++) {
+          char sysI = t_rnxObsHeader::defaultSystems[iSys].toAscii();
+          _header._obsTypes[sysI].push_back(header.obsType(sys0, iObs, _header._version));
+        }
       }
     }
     else if (int(_header._version) == 3) {
@@ -796,7 +795,7 @@ void t_rnxObsFile::setHeader(const t_rnxObsHeader& header, double version,
       for (int iSys = 0; iSys < t_rnxObsHeader::defaultSystems.length(); iSys++) {
         char sysI = t_rnxObsHeader::defaultSystems[iSys].toAscii();
         for (int iObs = 0; iObs < header._obsTypes[sys0].size(); iObs++) {
-          _header._obsTypes[sysI].push_back(header.obsType(sys0, iObs, _header._version));
+          _header._obsTypes[sysI].push_back(header.obsType(sysI, iObs, _header._version));
         }
       }
     }
