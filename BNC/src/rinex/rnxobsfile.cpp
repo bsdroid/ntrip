@@ -920,31 +920,39 @@ void t_rnxObsFile::writeEpochV3(const t_rnxEpo* epo) {
     char            sys    = rnxSat.prn.system();
 
     *_stream << rnxSat.prn.toString().c_str();
-    for (int iType = 0; iType < nTypes(sys); iType++) {
-      QString type = obsType(sys, iType, epo->version);
-      if (!rnxSat.obs.contains(type)) {
-        *_stream << QString().leftJustified(16);
+
+    for (int iTypeV3 = 0; iTypeV3 < nTypes(sys); iTypeV3++) {
+      QString typeV3 = obsType(sys, iTypeV3);
+      bool    found  = false;
+      QMapIterator<QString, t_rnxObs> itObs(rnxSat.obs);
+      while (itObs.hasNext()) {
+        itObs.next();
+        const QString&  type   = itObs.key();
+        const t_rnxObs& rnxObs = itObs.value();
+        if (typeV3 == type2to3(sys, type)) {
+          found = true;
+          if (rnxObs.value == 0.0) {
+            *_stream << QString().leftJustified(16);
+          }
+          else {
+            *_stream << QString("%1").arg(rnxObs.value, 14, 'f', 3);
+            if (rnxObs.lli != 0.0) {
+              *_stream << QString("%1").arg(rnxObs.lli,1);
+            }
+            else {
+              *_stream << ' ';
+            }
+            if (rnxObs.snr != 0.0) {
+              *_stream << QString("%1").arg(rnxObs.snr,1);
+            }
+            else {
+              *_stream << ' ';
+            }
+          }
+        }
       }
-      else {
-        const t_rnxObs& rnxObs = rnxSat.obs[type];
-        if (rnxObs.value == 0.0) {
-          *_stream << QString().leftJustified(16);
-        }
-        else {
-          *_stream << QString("%1").arg(rnxObs.value, 14, 'f', 3);
-          if (rnxObs.lli != 0.0) {
-            *_stream << QString("%1").arg(rnxObs.lli,1);
-          }
-          else {
-            *_stream << ' ';
-          }
-          if (rnxObs.snr != 0.0) {
-            *_stream << QString("%1").arg(rnxObs.snr,1);
-          }
-          else {
-            *_stream << ' ';
-          }
-        }
+      if (!found) {
+        *_stream << QString().leftJustified(16);
       }
     }
     *_stream << endl;
