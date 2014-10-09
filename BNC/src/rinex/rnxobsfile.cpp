@@ -781,52 +781,29 @@ void t_rnxObsFile::setHeader(const t_rnxObsHeader& header, double version,
     if      (int(_header._version) == int(header._version)) {
       _header._obsTypes = header._obsTypes;
     }
-    else if (int(_header._version) == 2) {
-      char sys0 = t_rnxObsHeader::defaultSystems[0].toAscii();
-      for (int iObs = 0; iObs < header._obsTypes[sys0].size(); iObs++) {
-        for (int iSys = 0; iSys < t_rnxObsHeader::defaultSystems.length(); iSys++) {
-          char sysI = t_rnxObsHeader::defaultSystems[iSys].toAscii();
-          _header._obsTypes[sysI].push_back(header.obsType(sys0, iObs, _header._version));
-        }
-      }
-    }
-    else if (int(_header._version) == 3) {
-      char sys0 = t_rnxObsHeader::defaultSystems[0].toAscii();
-      for (int iSys = 0; iSys < t_rnxObsHeader::defaultSystems.length(); iSys++) {
-        char sysI = t_rnxObsHeader::defaultSystems[iSys].toAscii();
-        for (int iObs = 0; iObs < header._obsTypes[sys0].size(); iObs++) {
-          _header._obsTypes[sysI].push_back(header.obsType(sysI, iObs, _header._version));
+    else {
+      for (int iSys = 0; iSys < header.numSys(); iSys++) {
+        char sys = header.system(iSys);
+        for (int iObs = 0; iObs < header.nTypes(sys); iObs++) {
+          _header._obsTypes[sys].push_back(header.obsType(sys, iObs, _header._version));
         }
       }
     }
   }
   else {
-    if (_header._version < 3.0) {
-      char sys0 = t_rnxObsHeader::defaultSystems[0].toAscii();
-      for (int iObs = 0; iObs < useObsTypes.size(); iObs++) {
-        _header._obsTypes[sys0].push_back(useObsTypes[iObs]);
-      }
-      for (int iSys = 1; iSys < t_rnxObsHeader::defaultSystems.length(); iSys++) {
-        char sysI = t_rnxObsHeader::defaultSystems[iSys].toAscii();
-        _header._obsTypes[sysI] = _header._obsTypes[sys0];
-      }
-    }
-    else {
-      for (int iObs = 0; iObs < useObsTypes.size(); iObs++) {
-        if (useObsTypes[iObs].indexOf(":") != -1) {
-          QStringList hlp = useObsTypes[iObs].split(":", QString::SkipEmptyParts);
-          if (hlp.size() == 2 && hlp[0].length() == 1) {
-            char    sys  = hlp[0][0].toAscii();
-            QString type = hlp[1];
-            _header._obsTypes[sys].push_back(type);
-          }
+    for (int iObs = 0; iObs < useObsTypes.size(); iObs++) {
+      if (useObsTypes[iObs].indexOf(":") != -1) {
+        QStringList hlp = useObsTypes[iObs].split(":", QString::SkipEmptyParts);
+        if (hlp.size() == 2 && hlp[0].length() == 1) {
+          char    sys  = hlp[0][0].toAscii();
+          QString type = hlp[1];
+          _header._obsTypes[sys].push_back(type);
         }
-        else {
-          QString type = useObsTypes[iObs];
-          for (int iSys = 0; iSys < t_rnxObsHeader::defaultSystems.length(); iSys++) {
-            char sys = t_rnxObsHeader::defaultSystems[iSys].toAscii();
-            _header._obsTypes[sys].push_back(type);
-          }
+      }
+      else {
+        for (int iSys = 0; iSys < t_rnxObsHeader::defaultSystems.length(); iSys++) {
+          char sys = t_rnxObsHeader::defaultSystems[iSys].toAscii();
+          _header._obsTypes[sys].push_back(useObsTypes[iObs]);
         }
       }
     }
