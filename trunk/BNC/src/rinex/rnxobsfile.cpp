@@ -778,23 +778,44 @@ void t_rnxObsFile::setHeader(const t_rnxObsHeader& header, double version,
   // ---------------------
   _header._obsTypes.clear();
   if (useObsTypes.size() == 0) {
-    _header._obsTypes = header._obsTypes;
+    if      (int(_header._version) == int(header._version)) {
+      _header._obsTypes = header._obsTypes;
+    }
+    else if (int(_header._version) == 2) {
+      char sys0 = t_rnxObsHeader::defaultSystems[0].toAscii();
+      for (int iObs = 0; iObs < header._obsTypes[sys0].size(); iObs++) {
+        _header._obsTypes[sys0].push_back(header.obsType(sys0, iObs, _header._version));
+      }
+      for (int iSys = 1; iSys < t_rnxObsHeader::defaultSystems.length(); iSys++) {
+        char sysI = t_rnxObsHeader::defaultSystems[iSys].toAscii();
+        _header._obsTypes[sysI] = _header._obsTypes[sys0];
+      }
+    }
+    else if (int(_header._version) == 3) {
+      char sys0 = t_rnxObsHeader::defaultSystems[0].toAscii();
+      for (int iSys = 0; iSys < t_rnxObsHeader::defaultSystems.length(); iSys++) {
+        char sysI = t_rnxObsHeader::defaultSystems[iSys].toAscii();
+        for (int iObs = 0; iObs < header._obsTypes[sys0].size(); iObs++) {
+          _header._obsTypes[sysI].push_back(header.obsType(sys0, iObs, _header._version));
+        }
+      }
+    }
   }
   else {
     if (_header._version < 3.0) {
       char sys0 = t_rnxObsHeader::defaultSystems[0].toAscii();
-      for (int ii = 0; ii < useObsTypes.size(); ii++) {
-        _header._obsTypes[sys0].push_back(useObsTypes[ii]);
+      for (int iObs = 0; iObs < useObsTypes.size(); iObs++) {
+        _header._obsTypes[sys0].push_back(useObsTypes[iObs]);
       }
-      for (int ii = 1; ii < t_rnxObsHeader::defaultSystems.length(); ii++) {
-        char sysI = t_rnxObsHeader::defaultSystems[ii].toAscii();
+      for (int iSys = 1; iSys < t_rnxObsHeader::defaultSystems.length(); iSys++) {
+        char sysI = t_rnxObsHeader::defaultSystems[iSys].toAscii();
         _header._obsTypes[sysI] = _header._obsTypes[sys0];
       }
     }
     else {
-      for (int ii = 0; ii < useObsTypes.size(); ii++) {
-        if (useObsTypes[ii].indexOf(":") != -1) {
-          QStringList hlp = useObsTypes[ii].split(":", QString::SkipEmptyParts);
+      for (int iObs = 0; iObs < useObsTypes.size(); iObs++) {
+        if (useObsTypes[iObs].indexOf(":") != -1) {
+          QStringList hlp = useObsTypes[iObs].split(":", QString::SkipEmptyParts);
           if (hlp.size() == 2 && hlp[0].length() == 1) {
             char    sys  = hlp[0][0].toAscii();
             QString type = hlp[1];
@@ -802,9 +823,9 @@ void t_rnxObsFile::setHeader(const t_rnxObsHeader& header, double version,
           }
         }
         else {
-          QString type = useObsTypes[ii];
-          for (int ii = 0; ii < t_rnxObsHeader::defaultSystems.length(); ii++) {
-            char sys = t_rnxObsHeader::defaultSystems[ii].toAscii();
+          QString type = useObsTypes[iObs];
+          for (int iSys = 0; iSys < t_rnxObsHeader::defaultSystems.length(); iSys++) {
+            char sys = t_rnxObsHeader::defaultSystems[iSys].toAscii();
             _header._obsTypes[sys].push_back(type);
           }
         }
@@ -857,34 +878,42 @@ void t_rnxObsFile::writeEpochV2(const t_rnxEpo* epo) {
     const t_rnxSat& rnxSat = epo->rnxSat[iSat];
     char            sys    = rnxSat.prn.system();
 
-    for (int iType = 0; iType < nTypes(sys); iType++) {
-      if (iType > 0 && iType % 5 == 0) {
+    for (int iTypeV2 = 0; iTypeV2 < nTypes(sys); iTypeV2++) {
+      if (iTypeV2 > 0 && iTypeV2 % 5 == 0) {
         *_stream << endl;
       }
-      QString type = obsType(sys, iType, epo->version);
-      if (!rnxSat.obs.contains(type)) {
-        *_stream << QString().leftJustified(16);
+      QString typeV2 = obsType(sys, iTypeV2);
+      bool    found  = false;
+      QMapIterator<QString, t_rnxObs> itObs(rnxSat.obs);
+      while (itObs.hasNext()) {
+        itObs.next();
+        const QString&  type   = itObs.key();
+        const t_rnxObs& rnxObs = itObs.value();
+        if (typeV2 == type3to2(sys, type)) {
+          found = true;
+          if (rnxObs.value == 0.0) {
+            *_stream << QString().leftJustified(16);
+          }
+          else {
+            *_stream << QString("%1").arg(rnxObs.value, 14, 'f', 3);
+            if (rnxObs.lli != 0.0) {
+              *_stream << QString("%1").arg(rnxObs.lli,1);
+            }
+            else {
+              *_stream << ' ';
+            }
+            if (rnxObs.snr != 0.0) {
+              *_stream << QString("%1").arg(rnxObs.snr,1);
+            }
+            else {
+              *_stream << ' ';
+            }
+          }
+          break;
+        }
       }
-      else {
-        const t_rnxObs& rnxObs = rnxSat.obs[type]; 
-        if (rnxObs.value == 0.0) {
-          *_stream << QString().leftJustified(16);
-        }
-        else {
-          *_stream << QString("%1").arg(rnxObs.value, 14, 'f', 3);
-          if (rnxObs.lli != 0.0) {
-            *_stream << QString("%1").arg(rnxObs.lli,1);
-          }
-          else {
-            *_stream << ' ';
-          }
-          if (rnxObs.snr != 0.0) {
-            *_stream << QString("%1").arg(rnxObs.snr,1);
-          }
-          else {
-            *_stream << ' ';
-          }
-        }
+      if (!found) {
+        *_stream << QString().leftJustified(16);
       }
     }
     *_stream << endl;
