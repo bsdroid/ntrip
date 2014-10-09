@@ -413,7 +413,7 @@ QStringList t_rnxObsHeader::obsTypesStrings() const {
       QString hlp;
       QTextStream(&hlp) << QString("%1  %2").arg(sys).arg(nTypes(sys), 3);
       for (int iType = 0; iType < nTypes(sys); iType++) {
-        QString type = obsType(sys, iType, _version);
+        QString type = obsType(sys, iType);
         QTextStream(&hlp) << QString(" %1").arg(type, -3);   
         if ((iType+1) % 13 == 0 || iType == nTypes(sys)-1) {
           strList.append(hlp.leftJustified(60) + "SYS / # / OBS TYPES\n");
@@ -606,7 +606,6 @@ t_rnxObsFile::t_rnxEpo* t_rnxObsFile::nextEpochV3() {
     readInt(line, 32, 3, numSat);
   
     _currEpo.rnxSat.resize(numSat);
-    _currEpo.version = _header._version;
 
     // Observations
     // ------------
@@ -684,7 +683,6 @@ t_rnxObsFile::t_rnxEpo* t_rnxObsFile::nextEpochV2() {
     readInt(line, 29, 3, numSat);
   
     _currEpo.rnxSat.resize(numSat);
-    _currEpo.version = _header._version;
 
     // Read Satellite Numbers
     // ----------------------
