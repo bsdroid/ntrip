@@ -107,11 +107,9 @@ class t_rnxObsFile {
     void clear() {
       tt.reset();
       rnxSat.clear();
-      version = 0.0;
     }
     bncTime               tt;
     std::vector<t_rnxSat> rnxSat;
-    double                version;
   };
 
   enum e_inpOut {input, output};
