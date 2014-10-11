@@ -163,9 +163,8 @@ t_irc bncRinex::downloadSkeleton() {
     query->waitForRequestResult(url, outData);
     if (query->status() == bncNetQuery::finished) {
       irc = success;
-      _header._obsTypes.clear();
       QTextStream in(outData);
-      _header.read(&in);
+      _sklHeader.read(&in);
     }
 
     delete query;
@@ -185,9 +184,8 @@ bool bncRinex::readSkeleton() {
   QFile skl(_sklName);
   if ( skl.exists() && skl.open(QIODevice::ReadOnly) ) {
     readDone = true;
-    _header._obsTypes.clear();
     QTextStream in(&skl);
-    _header.read(&in);
+    _sklHeader.read(&in);
   }
 
   // Read downloaded file
@@ -339,73 +337,24 @@ void bncRinex::writeHeader(const QByteArray& format,
 
   _out.setf(ios::showpoint | ios::fixed);
 
-  // Read Skeleton Header
-  // --------------------
-  bool skelRead = readSkeleton();
-
   // Set RINEX Version
   // -----------------
-  if ( Qt::CheckState(settings.value("rnxV3").toInt()) == Qt::Checked) {
-    _header._version = t_rnxObsHeader::defaultRnxObsVersion3;
+  int intHeaderVers = (Qt::CheckState(settings.value("rnxV3").toInt()) == Qt::Checked ? 3 : 2);
+
+  // Read Skeleton Header
+  // --------------------
+  if (readSkeleton()) {
+    _header.set(_sklHeader, intHeaderVers);
   }
   else {
-    _header._version = t_rnxObsHeader::defaultRnxObsVersion2;
+    _header.setDefault(_statID, intHeaderVers);
   }
 
   // A Few Additional Comments
   // -------------------------
-  if (skelRead || _addComments.size() == 0) {
-    _addComments.clear();
-    _addComments << format.left(6) + " " 
-                                   + _mountPoint.host() + _mountPoint.path();
-    if (_header._obsTypes.size() == 0) {
-      _addComments << "Default set of observation types used";
-    }
-    if (_nmea == "yes") {
-      _addComments << "NMEA LAT=" + _latitude + " " + "LONG=" + _longitude;
-    }
-  }
-
-  // Set Marker Name
-  // ---------------
-  if (_header._markerName.isEmpty()) {
-    _header._markerName = _statID;
-  }
-
-  // Set Default Observation Types
-  // -----------------------------
-  if (_header._obsTypes.size() == 0) {
-    if (_header._version < 3.0) {
-      _header._obsTypes['G'] << "C1" << "P1" << "L1" << "S1" 
-                             << "C2" << "P2" << "L2" << "S2";
-      _header._obsTypes['R'] = _header._obsTypes['G'];
-      _header._obsTypes['E'] = _header._obsTypes['G'];
-      _header._obsTypes['J'] = _header._obsTypes['G'];
-      _header._obsTypes['S'] = _header._obsTypes['G'];
-      _header._obsTypes['C'] = _header._obsTypes['G'];
-    }
-    else {
-      _header._obsTypes['G'] << "C1C" << "L1C"  << "S1C" 
-                             << "C2W" << "L2W"  << "S2W" 
-                             << "C5"  << "L5"   << "S5";
-      
-      _header._obsTypes['J'] = _header._obsTypes['G'];
-      
-      _header._obsTypes['R'] << "C1C" << "L1C" << "S1C" 
-                             << "C2P" << "L2P" << "S2P";
-      
-      _header._obsTypes['E'] << "C1" << "L1" << "S1"
-                             << "C5" << "L5" << "S5" 
-                             << "C7" << "L7" << "S7"
-                             << "C8" << "L8" << "S8";
-      
-      _header._obsTypes['S'] << "C1" << "L1" << "S1" 
-                             << "C5" << "L5" << "S5";
-      
-      _header._obsTypes['C'] << "C1" << "L1" << "S1"
-                             << "C6" << "L6" << "S6"
-                             << "C7" << "L7" << "S7";
-    }
+  _addComments << format.left(6) + " " + _mountPoint.host() + _mountPoint.path();
+  if (_nmea == "yes") {
+    _addComments << "NMEA LAT=" + _latitude + " " + "LONG=" + _longitude;
   }
 
   // Write the Header
