@@ -313,13 +313,14 @@ void bncRinex::resolveFileName(const QDateTime& datTim) {
 
 // Write RINEX Header
 ////////////////////////////////////////////////////////////////////////////
-void bncRinex::writeHeader(const QByteArray& format, 
-                           const QDateTime& datTimNom) {
+void bncRinex::writeHeader(const QByteArray& format, const bncTime& firstObsTime) {
 
   bncSettings settings;
 
   // Open the Output File
   // --------------------
+  QDateTime datTimNom  = dateAndTimeFromGPSweek(firstObsTime.gpsw(), 
+                                                floor(firstObsTime.gpssec()+0.5));
   resolveFileName(datTimNom);
 
   // Append to existing file and return
@@ -365,6 +366,7 @@ void bncRinex::writeHeader(const QByteArray& format,
   QMap<QString, QString> txtMap;
   txtMap["COMMENT"] = _addComments.join("\\n");
 
+  _header.setStartTime(firstObsTime);
   _header.write(&outHlp, &txtMap);
 
   outHlp.flush();
@@ -407,7 +409,6 @@ void bncRinex::dumpEpoch(const QByteArray& format, long maxTime) {
   // Time of Epoch
   // -------------
   const t_satObs& fObs = obsList.first();
-  QDateTime datTim     = dateAndTimeFromGPSweek(fObs._time.gpsw(), fObs._time.gpssec());
   QDateTime datTimNom  = dateAndTimeFromGPSweek(fObs._time.gpsw(), floor(fObs._time.gpssec()+0.5));
 
   // Close the file
@@ -420,8 +421,7 @@ void bncRinex::dumpEpoch(const QByteArray& format, long maxTime) {
   // Write RINEX Header
   // ------------------
   if (!_headerWritten) {
-    _header.setStartTime(fObs._time);
-    writeHeader(format, datTimNom);
+    writeHeader(format, fObs._time);
   }
 
   // Prepare structure t_rnxEpo
