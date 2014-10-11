@@ -183,7 +183,7 @@ t_irc t_rnxObsHeader::read(QTextStream* stream, int maxLines) {
     }
     else if (key == "SYS / # / OBS TYPES") {
       if (_version == 0.0) {
-        _version = t_rnxObsHeader::defaultRnxObsVersion2;
+        _version = t_rnxObsHeader::defaultRnxObsVersion3;
       }
       QTextStream* in = new QTextStream(value.toAscii(), QIODevice::ReadOnly);
       char sys;
