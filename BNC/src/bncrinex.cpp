@@ -446,6 +446,9 @@ void bncRinex::dumpEpoch(const QByteArray& format, long maxTime) {
         QString type = 'L' + QString(frqObs->_rnxType2ch.c_str());
         t_rnxObsFile::t_rnxObs rnxObs;
         rnxObs.value = frqObs->_phase;
+        if (frqObs->_slip) {
+          rnxObs.lli |= 1;
+        }
         rnxSat.obs[type] = rnxObs;
       }
       if (frqObs->_dopplerValid) {
