@@ -291,7 +291,8 @@ void t_rnxObsHeader::set(const t_rnxObsHeader& header, int version,
   _receiverNumber  = header._receiverNumber; 
   _receiverType    = header._receiverType;   
   _receiverVersion = header._receiverVersion;
-  _startTime       =  header._startTime;   
+  _startTime       = header._startTime;   
+  _comments        = header._comments;
   for (unsigned iPrn = 1; iPrn <= t_prn::MAXPRN_GPS; iPrn++) {
     _wlFactorsL1[iPrn] =  header._wlFactorsL1[iPrn]; 
     _wlFactorsL2[iPrn] =  header._wlFactorsL2[iPrn]; 
