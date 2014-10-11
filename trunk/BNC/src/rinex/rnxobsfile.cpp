@@ -914,31 +914,38 @@ void t_rnxObsFile::writeEpochV2(QTextStream* stream, const t_rnxObsHeader& heade
       }
       QString typeV2 = header.obsType(sys, iTypeV2);
       bool    found  = false;
-      QMapIterator<QString, t_rnxObs> itObs(rnxSat.obs);
-      while (itObs.hasNext()) {
-        itObs.next();
-        const QString&  type   = itObs.key();
-        const t_rnxObs& rnxObs = itObs.value();
-        if (typeV2 == type3to2(sys, type)) {
-          found = true;
-          if (rnxObs.value == 0.0) {
-            *stream << QString().leftJustified(16);
-          }
-          else {
-            *stream << QString("%1").arg(rnxObs.value, 14, 'f', 3);
-            if (rnxObs.lli != 0.0) {
-              *stream << QString("%1").arg(rnxObs.lli,1);
+   
+      const QString preferredAttrib = "CWPX_";
+      for (int iPref = 0; iPref < preferredAttrib.length(); iPref++) {
+        QMapIterator<QString, t_rnxObs> itObs(rnxSat.obs);
+        while (itObs.hasNext()) {
+          itObs.next();
+          const QString&  type   = itObs.key();
+          const t_rnxObs& rnxObs = itObs.value();
+          if (typeV2 == type3to2(sys, type)) {
+            found = true;
+            if (rnxObs.value == 0.0) {
+              *stream << QString().leftJustified(16);
             }
             else {
-              *stream << ' ';
+              *stream << QString("%1").arg(rnxObs.value, 14, 'f', 3);
+              if (rnxObs.lli != 0.0) {
+                *stream << QString("%1").arg(rnxObs.lli,1);
+              }
+              else {
+                *stream << ' ';
+              }
+              if (rnxObs.snr != 0.0) {
+                *stream << QString("%1").arg(rnxObs.snr,1);
+              }
+              else {
+                *stream << ' ';
+              }
             }
-            if (rnxObs.snr != 0.0) {
-              *stream << QString("%1").arg(rnxObs.snr,1);
-            }
-            else {
-              *stream << ' ';
-            }
+            break;
           }
+        }
+        if (found) {
           break;
         }
       }
