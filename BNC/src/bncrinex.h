@@ -52,7 +52,7 @@ class bncRinex {
  private:
    void resolveFileName(const QDateTime& datTim);
    bool readSkeleton();
-   void writeHeader(const QByteArray& format, const QDateTime& datTimNom);
+   void writeHeader(const QByteArray& format, const bncTime& firstObsTime);
    void closeFile();
    t_irc downloadSkeleton();
 
