@@ -63,26 +63,26 @@ class t_rnxObsHeader {
 
  private:
   QStringList obsTypesStrings() const;
-  double                        _version;
-  double                        _interval;
-  QString                       _antennaNumber;
-  QString                       _antennaName;
-  QString                       _markerName;
-  QString                       _markerNumber;
-  QString                       _observer;
-  QString                       _agency;
-  QString                       _receiverNumber;
-  QString                       _receiverType;
-  QString                       _receiverVersion;
-  QStringList                   _comments;
-  ColumnVector                  _antNEU;
-  ColumnVector                  _antXYZ;
-  ColumnVector                  _antBSG;
-  ColumnVector                  _xyz;
-  QMap<char, QVector<QString> > _obsTypes;
-  int                           _wlFactorsL1[t_prn::MAXPRN_GPS+1];
-  int                           _wlFactorsL2[t_prn::MAXPRN_GPS+1];
-  bncTime                       _startTime;
+  double                  _version;
+  double                  _interval;
+  QString                 _antennaNumber;
+  QString                 _antennaName;
+  QString                 _markerName;
+  QString                 _markerNumber;
+  QString                 _observer;
+  QString                 _agency;
+  QString                 _receiverNumber;
+  QString                 _receiverType;
+  QString                 _receiverVersion;
+  QStringList             _comments;
+  ColumnVector            _antNEU;
+  ColumnVector            _antXYZ;
+  ColumnVector            _antBSG;
+  ColumnVector            _xyz;
+  QMap<char, QStringList> _obsTypes;
+  int                     _wlFactorsL1[t_prn::MAXPRN_GPS+1];
+  int                     _wlFactorsL2[t_prn::MAXPRN_GPS+1];
+  bncTime                 _startTime;
 };
 
 class t_rnxObsFile {
