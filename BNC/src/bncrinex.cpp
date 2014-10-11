@@ -434,17 +434,45 @@ void bncRinex::dumpEpoch(const QByteArray& format, long maxTime) {
     const t_satObs& satObs = it.next();
     t_rnxObsFile::t_rnxSat rnxSat;
     rnxSat.prn = satObs._prn;
+    for (unsigned ii = 0; ii < satObs._obs.size(); ii++) {
+      const t_frqObs* frqObs = satObs._obs[ii];
+      if (frqObs->_codeValid) {
+        QString type = 'C' + QString(frqObs->_rnxType2ch.c_str());
+        t_rnxObsFile::t_rnxObs rnxObs;
+        rnxObs.value = frqObs->_code;
+        rnxSat.obs[type] = rnxObs;
+      }
+      if (frqObs->_phaseValid) {
+        QString type = 'L' + QString(frqObs->_rnxType2ch.c_str());
+        t_rnxObsFile::t_rnxObs rnxObs;
+        rnxObs.value = frqObs->_phase;
+        rnxSat.obs[type] = rnxObs;
+      }
+      if (frqObs->_dopplerValid) {
+        QString type = 'D' + QString(frqObs->_rnxType2ch.c_str());
+        t_rnxObsFile::t_rnxObs rnxObs;
+        rnxObs.value = frqObs->_doppler;
+        rnxSat.obs[type] = rnxObs;
+      }
+      if (frqObs->_snrValid) {
+        QString type = 'S' + QString(frqObs->_rnxType2ch.c_str());
+        t_rnxObsFile::t_rnxObs rnxObs;
+        rnxObs.value = frqObs->_snr;
+        rnxSat.obs[type] = rnxObs;
+      }
+    }
+
 
     rnxEpo.rnxSat.push_back(rnxSat);
   }
 
   // Write the epoch
   // ---------------
-  QString outLines;
+  QByteArray outLines;
   QTextStream outStream(&outLines);
   t_rnxObsFile::writeEpoch(&outStream, _header, &rnxEpo);
 
-  _out << outLines.toAscii().data();
+  _out << outLines.data();
   _out.flush();
 }
 
