@@ -51,6 +51,8 @@ class t_rnxObsHeader {
   ~t_rnxObsHeader();
 
   t_irc       read(QTextStream* stream, int maxLines = 0);
+  void        setDefault(const QString& markerName, int version);
+  void        set(const t_rnxObsHeader& header, int version, const QStringList* useObsTypes = 0);
   int         numSys() const;
   char        system(int iSys) const;
   int         nTypes(char sys) const;
@@ -144,6 +146,7 @@ class t_rnxObsFile {
   void  setStartTime(const bncTime& startTime) {_header._startTime = startTime;}
 
   t_rnxEpo* nextEpoch(); 
+
   int wlFactorL1(unsigned iPrn) {
     return iPrn <= t_prn::MAXPRN_GPS ? _header._wlFactorsL1[iPrn] : 1;
   }
@@ -152,18 +155,23 @@ class t_rnxObsFile {
   }
 
   const t_rnxObsHeader& header() const {return _header;}
-  void setHeader(const t_rnxObsHeader& header, double version, const QStringList& useObsTypes);
+
+  void setHeader(const t_rnxObsHeader& header, int version, const QStringList* useObsTypes = 0) {
+    _header.set(header, version, useObsTypes);
+  }
+
   void writeEpoch(const t_rnxEpo* epo);
 
   QTextStream* stream() {return _stream;}
 
-  static void setObsFromRnx(const t_rnxObsFile* rnxObsFile,
-                            const t_rnxObsFile::t_rnxEpo* epo, 
-                            const t_rnxObsFile::t_rnxSat& rnxSat, 
-                            t_satObs& obs);
+  static void setObsFromRnx(const t_rnxObsFile* rnxObsFile, const t_rnxObsFile::t_rnxEpo* epo, 
+                            const t_rnxObsFile::t_rnxSat& rnxSat, t_satObs& obs);
 
   static QString type2to3(char sys, const QString& typeV2);
   static QString type3to2(char sys, const QString& typeV3);
+
+  static void writeEpochV2(QTextStream* stream, const t_rnxObsHeader& header, const t_rnxEpo* epo);
+  static void writeEpochV3(QTextStream* stream, const t_rnxObsHeader& header, const t_rnxEpo* epo);
 
  private:
   t_rnxObsFile() {};
