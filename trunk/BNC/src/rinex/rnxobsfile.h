@@ -94,6 +94,9 @@ class t_rnxObsFile {
 
   class t_rnxObs {
    public:
+    t_rnxObs() {
+      value = 0.0; lli = 0; snr = 0;
+    }
     double value;
     int    lli;
     int    snr;
