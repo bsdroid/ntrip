@@ -253,7 +253,7 @@ void t_reqcEdit::editObservations() {
             << obsFile->startTime().timestr(0).c_str() << endl;
     }
     if (ii == 0) {
-      outObsFile.setHeader(obsFile->header(), _rnxVersion, useObsTypes);
+      outObsFile.setHeader(obsFile->header(), _rnxVersion, &useObsTypes);
       if (_begTime.valid() && _begTime > outObsFile.startTime()) {
         outObsFile.setStartTime(_begTime);
       }

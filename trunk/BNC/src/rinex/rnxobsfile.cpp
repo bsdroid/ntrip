@@ -158,6 +158,9 @@ t_irc t_rnxObsHeader::read(QTextStream* stream, int maxLines) {
       in >> _antBSG[0] >> _antBSG[1] >> _antBSG[2];
     }
     else if (key == "# / TYPES OF OBSERV") {
+      if (_version == 0.0) {
+        _version = t_rnxObsHeader::defaultRnxObsVersion2;
+      }
       QTextStream* in = new QTextStream(value.toAscii(), QIODevice::ReadOnly);
       int nTypes;
       *in >> nTypes;
@@ -179,6 +182,9 @@ t_irc t_rnxObsHeader::read(QTextStream* stream, int maxLines) {
       }
     }
     else if (key == "SYS / # / OBS TYPES") {
+      if (_version == 0.0) {
+        _version = t_rnxObsHeader::defaultRnxObsVersion2;
+      }
       QTextStream* in = new QTextStream(value.toAscii(), QIODevice::ReadOnly);
       char sys;
       int nTypes;
