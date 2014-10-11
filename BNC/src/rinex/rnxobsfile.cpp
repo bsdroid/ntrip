@@ -311,6 +311,7 @@ void t_rnxObsHeader::set(const t_rnxObsHeader& header, int version,
         for (int iType = 0; iType < header.nTypes(sys); iType++) {
           _obsTypes[sys].push_back(header.obsType(sys, iType, _version));
         }
+        _obsTypes[sys].removeDuplicates();
       }
     }
   }
@@ -468,7 +469,7 @@ int t_rnxObsHeader::numSys() const {
 ////////////////////////////////////////////////////////////////////////////
 char t_rnxObsHeader::system(int iSys) const {
   int iSysLocal = -1;
-  QMapIterator<char, QVector<QString> > it(_obsTypes);
+  QMapIterator<char, QStringList> it(_obsTypes);
   while (it.hasNext()) {
     ++iSysLocal;
     it.next();
