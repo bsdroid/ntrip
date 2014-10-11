@@ -96,7 +96,7 @@ bncRinex::bncRinex(const QByteArray& statID, const QUrl& mountPoint,
 ////////////////////////////////////////////////////////////////////////////
 bncRinex::~bncRinex() {
   bncSettings settings;
-  if ((_header._version >= 3.0) && ( Qt::CheckState(settings.value("rnxAppend").toInt()) != Qt::Checked) ) {
+  if ((_header.version() >= 3.0) && ( Qt::CheckState(settings.value("rnxAppend").toInt()) != Qt::Checked) ) {
     _out << ">                              4  1" << endl;
     _out << "END OF FILE" << endl;
   }
@@ -388,28 +388,27 @@ void bncRinex::dumpEpoch(const QByteArray& format, long maxTime) {
 
   // Select observations older than maxTime
   // --------------------------------------
-  QList<t_satObs> dumpList;
+  QList<t_satObs> obsList;
   QMutableListIterator<t_satObs> mIt(_obs);
   while (mIt.hasNext()) {
     t_satObs obs = mIt.next();
     if (obs._time.gpsw() * 7*24*3600 + obs._time.gpssec() < maxTime - 0.05) {
-      dumpList.push_back(obs);
+      obsList.push_back(obs);
       mIt.remove();
     }
   }
 
   // Easy Return
   // -----------
-  if (dumpList.isEmpty()) {
+  if (obsList.isEmpty()) {
     return;
   }
 
   // Time of Epoch
   // -------------
-  const t_satObs& fObs   = dumpList.first();
-  QDateTime datTim    = dateAndTimeFromGPSweek(fObs._time.gpsw(), fObs._time.gpssec());
-  QDateTime datTimNom = dateAndTimeFromGPSweek(fObs._time.gpsw(), 
-                                               floor(fObs._time.gpssec()+0.5));
+  const t_satObs& fObs = obsList.first();
+  QDateTime datTim     = dateAndTimeFromGPSweek(fObs._time.gpsw(), fObs._time.gpssec());
+  QDateTime datTimNom  = dateAndTimeFromGPSweek(fObs._time.gpsw(), floor(fObs._time.gpssec()+0.5));
 
   // Close the file
   // --------------
@@ -421,103 +420,38 @@ void bncRinex::dumpEpoch(const QByteArray& format, long maxTime) {
   // Write RINEX Header
   // ------------------
   if (!_headerWritten) {
-    _header._startTime.set(fObs._time.gpsw(), fObs._time.gpssec());
+    _header.setStartTime(fObs._time);
     writeHeader(format, datTimNom);
   }
 
-  // Check whether observation types available
-  // -----------------------------------------
-  QMutableListIterator<t_satObs> mItDump(dumpList);
-  while (mItDump.hasNext()) {
-    t_satObs& obs = mItDump.next();
-    if (!_header._obsTypes.contains(obs._prn.system()) && !_header._obsTypes.contains(obs._prn.system())) {
-      mItDump.remove();
-    }
-  }
-  if (dumpList.isEmpty()) {
-    return;
-  }
+  // Prepare structure t_rnxEpo
+  // --------------------------
+  t_rnxObsFile::t_rnxEpo rnxEpo;  
+  rnxEpo.tt = fObs._time;
 
-  double sec = double(datTim.time().second()) + fmod(fObs._time.gpssec(),1.0);
-
-  // Epoch header line: RINEX Version 3
-  // ----------------------------------
-  if (_header._version >= 3.0) {
-    _out << datTim.toString("> yyyy MM dd hh mm ").toAscii().data()
-         << setw(10) << setprecision(7) << sec
-         << "  " << 0 << setw(3)  << dumpList.size() << endl;
-  }
-  // Epoch header line: RINEX Version 2
-  // ----------------------------------
-  else {
-    _out << datTim.toString(" yy MM dd hh mm ").toAscii().data()
-         << setw(10) << setprecision(7) << sec
-         << "  " << 0 << setw(3)  << dumpList.size();
-
-    QListIterator<t_satObs> it(dumpList); int iSat = 0;
-    while (it.hasNext()) {
-      iSat++;
-      const t_satObs& obs = it.next();
-      _out << obs._prn.toString();
-      if (iSat == 12 && it.hasNext()) {
-        _out << endl << "                                ";
-        iSat = 0;
-      }
-    }
-    _out << endl;
-  }
-
-  QListIterator<t_satObs> it(dumpList);
+  QListIterator<t_satObs> it(obsList);
   while (it.hasNext()) {
-    const t_satObs& obs = it.next();
+    const t_satObs& satObs = it.next();
+    t_rnxObsFile::t_rnxSat rnxSat;
+    rnxSat.prn = satObs._prn;
 
-    // Cycle slips detection
-    // ---------------------
-    QString prn(obs._prn.toString().c_str());
-    char  lli1 = ' ';
-    char  lli2 = ' ';
-    char  lli5 = ' ';
-    char* lli = 0;
-
-    for (unsigned iFrq = 0; iFrq < obs._obs.size(); iFrq++) {
-      const t_frqObs*     frqObs   = obs._obs[iFrq];
-      QMap<QString, int>* slip_cnt = 0;
-      if      (frqObs->_rnxType2ch[0] == '1') {
-        slip_cnt  = &_slip_cnt_L1;
-        lli       = &lli1;
-      }
-      else if (frqObs->_rnxType2ch[0] == '2') {
-        slip_cnt  = &_slip_cnt_L2;
-        lli       = &lli2;
-      }
-      else if (frqObs->_rnxType2ch[0] == '5') {
-        slip_cnt  = &_slip_cnt_L5;
-        lli       = &lli5;
-      }
-      else {
-        continue;
-      }
-      if (frqObs->_slip) {
-        if ( slip_cnt->find(prn)         != slip_cnt->end() && 
-             slip_cnt->find(prn).value() != frqObs->_slipCounter ) {
-          *lli = '1';
-        }
-      }
-      (*slip_cnt)[prn] = frqObs->_slipCounter;
-    }
-
-    // Write the data
-    // --------------
-    _out << rinexSatLine(obs, lli1, lli2, lli5) << endl;
+    rnxEpo.rnxSat.push_back(rnxSat);
   }
 
+  // Write the epoch
+  // ---------------
+  QString outLines;
+  QTextStream outStream(&outLines);
+  t_rnxObsFile::writeEpoch(&outStream, _header, &rnxEpo);
+
+  _out << outLines.toAscii().data();
   _out.flush();
 }
 
 // Close the Old RINEX File
 ////////////////////////////////////////////////////////////////////////////
 void bncRinex::closeFile() {
-  if (_header._version == 3) {
+  if (_header.version() == 3) {
     _out << ">                              4  1" << endl;
     _out << "END OF FILE" << endl;
   }
@@ -530,78 +464,6 @@ void bncRinex::closeFile() {
     QProcess::startDetached("nohup", QStringList() << _rnxScriptName << _fName) ;
 #endif
 
-  }
-}
-
-// One Line in RINEX v2 or v3
-////////////////////////////////////////////////////////////////////////////
-string bncRinex::rinexSatLine(const t_satObs& obs, char lli1, char lli2, char lli5) {
-  ostringstream str;
-  str.setf(ios::showpoint | ios::fixed);
-
-  if (_header._version >= 3.0) {
-    str << obs._prn.toString();
-  }
-
-  const QString obsKinds = "LCDS";
-
-  char sys = obs._prn.system();
-  const QVector<QString>& types = _header._obsTypes[sys];
-  for (int ii = 0; ii < types.size(); ii++) {
-    if (_header._version < 3.0 && ii > 0 && ii % 5 == 0) {
-      str << endl;
-    }
-    double  obsValue = 0.0;
-    char    lli      = ' ';
-    QString rnxType = t_rnxObsFile::type2to3(sys, types[ii]);
-    for (unsigned iFrq = 0; iFrq < obs._obs.size(); iFrq++) {
-      const t_frqObs* frqObs = obs._obs[iFrq];
-      for (int ik = 0; ik < obsKinds.length(); ik++) {
-        QChar ch = obsKinds[ik];
-        QString obsType = (ch + QString(frqObs->_rnxType2ch.c_str()));
-        obsType = t_rnxObsFile::type2to3(sys, obsType).left(rnxType.length());
-        if (rnxType == obsType) {
-          if      (ch == 'L' && frqObs->_phaseValid) {
-            obsValue = frqObs->_phase;
-            if      (obsType[1] == '1') {
-              lli = lli1;
-            }
-            else if (obsType[1] == '2') {
-              lli = lli2;
-            }
-            else if (obsType[1] == '5') {
-              lli = lli5;
-            }
-          }
-          else if (ch == 'C' && frqObs->_codeValid) {
-            obsValue = frqObs->_code;
-          }
-          else if (ch == 'D' && frqObs->_dopplerValid) {
-            obsValue = frqObs->_doppler;
-          }
-          else if (ch == 'S' && frqObs->_snrValid) {
-            obsValue = frqObs->_snr;
-          }
-        }
-      }
-    }
-    str << setw(14) << setprecision(3) << obsValue << lli << ' ';
-  }
-
-  return str.str();
-}
-
-// 
-////////////////////////////////////////////////////////////////////////////
-string bncRinex::obsToStr(double val, int width, int precision) {
-  if (val != 0.0) {
-    ostringstream str;
-    str.setf(ios::showpoint | ios::fixed);
-    str << setw(width) << setprecision(precision) << val;
-    return str.str();
-  }
-  else {
-    return "0.0";
   }
 }
 

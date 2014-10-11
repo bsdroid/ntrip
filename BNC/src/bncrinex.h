@@ -50,8 +50,6 @@ class bncRinex {
    static std::string asciiSatLine(const t_satObs& obs);
 
  private:
-   std::string rinexSatLine(const t_satObs& obs, char lli1, char lli2, char lli5);
-   static std::string obsToStr(double val, int width = 14, int precision = 3);
    void resolveFileName(const QDateTime& datTim);
    bool readSkeleton();
    void writeHeader(const QByteArray& format, const QDateTime& datTimNom);

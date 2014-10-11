@@ -40,7 +40,6 @@
 class t_rnxObsHeader {
 
  friend class t_rnxObsFile;
- friend class bncRinex;
 
  public:
   static const double  defaultRnxObsVersion2 = 2.11;
@@ -50,6 +49,7 @@ class t_rnxObsHeader {
   t_rnxObsHeader();
   ~t_rnxObsHeader();
 
+  double      version() const {return _version;}
   t_irc       read(QTextStream* stream, int maxLines = 0);
   void        setDefault(const QString& markerName, int version);
   void        set(const t_rnxObsHeader& header, int version, const QStringList* useObsTypes = 0);
@@ -57,11 +57,13 @@ class t_rnxObsHeader {
   char        system(int iSys) const;
   int         nTypes(char sys) const;
   QString     obsType(char sys, int index, double version = 0.0) const;
-  QStringList obsTypesStrings() const;
   void        write(QTextStream* stream, const QMap<QString, QString>* txtMap = 0) const;
+  bncTime     startTime() const {return _startTime;}
+  void        setStartTime(const bncTime& startTime) {_startTime = startTime;}
 
  private:
-  float                         _version;
+  QStringList obsTypesStrings() const;
+  double                        _version;
   double                        _interval;
   QString                       _antennaNumber;
   QString                       _antennaName;
@@ -119,7 +121,7 @@ class t_rnxObsFile {
   t_rnxObsFile(const QString& fileName, e_inpOut inpOut);
   ~t_rnxObsFile();
   
-  float          version() const {return _header._version;}
+  double         version() const {return _header._version;}
   double         interval() const {return _header._interval;}
   int            numSys() const {return _header.numSys();}
   char           system(int iSys) const {return _header.system(iSys);}
@@ -170,16 +172,22 @@ class t_rnxObsFile {
   static QString type2to3(char sys, const QString& typeV2);
   static QString type3to2(char sys, const QString& typeV3);
 
-  static void writeEpochV2(QTextStream* stream, const t_rnxObsHeader& header, const t_rnxEpo* epo);
-  static void writeEpochV3(QTextStream* stream, const t_rnxObsHeader& header, const t_rnxEpo* epo);
+  static void writeEpoch(QTextStream* stream, const t_rnxObsHeader& header, const t_rnxEpo* epo) {
+    if (header.version() >= 3.0) {
+      writeEpochV3(stream, header, epo);
+    }
+    else {
+      writeEpochV2(stream, header, epo);
+    }
+  }
 
  private:
+  static void writeEpochV2(QTextStream* stream, const t_rnxObsHeader& header, const t_rnxEpo* epo);
+  static void writeEpochV3(QTextStream* stream, const t_rnxObsHeader& header, const t_rnxEpo* epo);
   t_rnxObsFile() {};
   void openRead(const QString& fileName);
   void openWrite(const QString& fileName);
   void close();
-  void writeEpochV2(const t_rnxEpo* epo);
-  void writeEpochV3(const t_rnxEpo* epo);
   t_rnxEpo* nextEpochV2();
   t_rnxEpo* nextEpochV3();
   void handleEpochFlag(int flag, const QString& line, bool& headerReRead);
