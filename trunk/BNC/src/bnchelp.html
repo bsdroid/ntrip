@@ -761,7 +761,7 @@ and hence follows UNAVCO's famous 'TEQC' program. The remarkable thing about BNC
 </p>
 
 <p><a name="reqcedit"><h4>3.6.3 Set Edit Options - mandatory if 'Edit/Concatenate' is set</h4></p>
-<p>Once the 'Edit/Concatenate' action is selected, you have to 'Set Edit Options'. BNC lets you specify the RINEX version, sampling interval, begin and end of file, operator, comment lines, and marker, antenna, receiver details. Note that sampling, begin/end and marker/antenna/receiver specification are only meaningful for RINEX Observation files.
+<p>Once the 'Edit/Concatenate' action is selected, you have to 'Set Edit Options'. BNC lets you specify the RINEX version, sampling interval, begin and end of file, operator, observation codes, comment lines, and marker, antenna, receiver details. Note that some specification are only meaningful for RINEX Observation files but not for RINEX Navigation files.
 </p>
 <p>
 When converting RINEX Version 2 to RINEX Version 3 Observation files, the tracking mode or channel information in the (last character out of the three characters) observation code is left blank if unknown. When converting RINEX Version 3 to RINEX Version 2 Observation files:
@@ -771,9 +771,19 @@ When converting RINEX Version 2 to RINEX Version 3 Observation files, the tracki
 <li>If several observations in RINEX Version 3 come with the same observation type and same band/frequency but different tracking modes, BNC uses only the one provided first for creating RINEX Version 2 while ignoring others.</li>
 </ul>
 </p>
-<p>Optionally you may specify a comment line text to be added to the emerging new RINEX file header. Any introduction of a newline through '\n' in this enforces the beginning of a further comment line. Comment line(s) will be added to the header immediately after the 'PGM / RUN BY / DATE' record. Default is an empty option field, meaning that no additional comment line will be added to the RINEX header.</p>
 
-<p>Specifying a 'RUN BY' string to be included in the emerging new RINEX file header is another option. Default is an empty option field meaning the operator's ID is automatically used as 'RUN BY' string.</p>
+<p>
+Optionally you may specify a 'RUN BY' string to be included in the emerging new RINEX file header. Default is an empty option field, meaning the operator's ID is automatically used as 'RUN BY' string.
+</p>
+
+<p>
+Specifying comment line text to be added to the emerging new RINEX file header is another option. Any introduction of a newline through '\n' in this enforces the beginning of a further comment line. Comment line(s) will be added to the header immediately after the 'PGM / RUN BY / DATE' record. Default is an empty option field, meaning that no additional comment line will be added to the RINEX header.
+</p>
+
+<p>
+You can specify a list of observation codes in field 'Use Obs. Types' to limit the output file contents to specific observation codes. GNSS system characters in that list are followed by a colon and a two or three characters observation code. A two characters observation code would mean that all available tracking modes of the affected observation type and frequency will be accepted as part of the RINEX output file. Observation codes are separated by a blank character. Default is an empty option field, meaning that any input observation code will become part of the RINEX output file. 
+</p>
+
 <p>
 If you specify a 'New' but no 'Old' marker/antenna/receiver name, the corresponding data field in the emerging new RINEX Observation file will be filled accordingly. If you in addition specify an 'Old' marker/antenna/receiver name, the corresponding data field in the emerging new RINEX Observation file will only be filled accordingly where 'Old' specifications match existing file contents.
 </p>
@@ -2929,7 +2939,7 @@ Drag and drop of configuration file is currently not supported on Mac OS X.
 
 <tr>
 <td>Sep 2014 &nbsp;</td><td>Version 2.11 &nbsp;</td>
-<td>[Add] Started work on new version in Dec 2013<br>[Mod] SIRGAS transformation parameters adjusted<br>[Mod] Antex file updated<br>[Mod] RTCM SSR messages updated<br>[Bug] GLONASS code biases<br>[Mod] Maximum number of GNSS observations increased<br>[Mod] Loss of lock handling changed<br>[Add] Raw stream output through TCP/IP port<br>[Add] Version 2.11.0 published</td>
+<td>[Add] Started work on new version in Dec 2013<br>[Mod] SIRGAS transformation parameters adjusted<br>[Mod] Antex file updated<br>[Mod] RTCM SSR messages updated<br>[Bug] GLONASS code biases<br>[Mod] Maximum number of GNSS observations increased<br>[Mod] Loss of lock handling changed<br>[Add] Raw stream output through TCP/IP port<br>[Add] Version 2.11.0 published</td>
 </tr>
 
 <tr>
