@@ -796,7 +796,13 @@ If you specify a 'New' but no 'Old' marker/antenna/receiver name, the correspond
 Specify full path to input RINEX Observation file(s), and<br>
 specify full path to input RINEX Navigation file(s).
 </p>
-<p>When specifying several input files BNC will concatenate their contents. Note that you may specify several RINEX Version 2 Navigation files for GPS and GLONASS.</p>
+<p>
+When specifying several input files BNC will concatenate their contents. In case of RINEX Observation input files with different observation type header records, BNC will output only one specific set of adjustet observation type records in the RINEX header which fits to the whole file contents.
+</p>
+<p>
+Note that you may specify several RINEX Version 2 Navigation files for GPS and GLONASS. 
+
+</p>
 
 <p><a name="reqcoutput"><h4>3.6.5 Output Files - mandatory if 'Action' is set</h4></p>
 <p>
@@ -2944,7 +2950,7 @@ Drag and drop of configuration file is currently not supported on Mac OS X.
 
 <tr>
 <td>Sep 2014 &nbsp;</td><td>Version 2.12 &nbsp;</td>
-<td>[Add] Started work on new version in Sep 2014<br>[Mod] RINEX file concatenation</td>
+<td>[Add] Started work on new version in Sep 2014<br>[Mod] RINEX file concatenation<br>[Add] Observation code selection in RINEX file editing</td>
 </tr>
 
 </table>
