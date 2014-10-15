@@ -187,6 +187,7 @@ class t_rnxObsFile {
  private:
   static void writeEpochV2(QTextStream* stream, const t_rnxObsHeader& header, const t_rnxEpo* epo);
   static void writeEpochV3(QTextStream* stream, const t_rnxObsHeader& header, const t_rnxEpo* epo);
+  static QString signalPriorities(char sys);
   t_rnxObsFile() {};
   void openRead(const QString& fileName);
   void openWrite(const QString& fileName);
