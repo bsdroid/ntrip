@@ -915,7 +915,7 @@ void t_rnxObsFile::writeEpochV2(QTextStream* stream, const t_rnxObsHeader& heade
       QString typeV2 = header.obsType(sys, iTypeV2);
       bool    found  = false;
    
-      const QString preferredAttrib = "CWPX ?";
+      QString preferredAttrib = signalPriorities(sys);
       for (int iPref = 0; iPref < preferredAttrib.length(); iPref++) {
         QMapIterator<QString, t_rnxObs> itObs(rnxSat.obs);
         while (itObs.hasNext()) {
@@ -923,7 +923,7 @@ void t_rnxObsFile::writeEpochV2(QTextStream* stream, const t_rnxObsHeader& heade
           const QString&  type   = itObs.key();
           const t_rnxObs& rnxObs = itObs.value();
           if ( preferredAttrib[iPref] == '?'                             ||
-               (type.length() == 2 && preferredAttrib[iPref] == ' '    ) ||
+               (type.length() == 2 && preferredAttrib[iPref] == '_'    ) ||
                (type.length() == 3 && preferredAttrib[iPref] == type[2]) ) {
             if (typeV2 == type3to2(sys, type)) {
               found = true;
@@ -1106,3 +1106,8 @@ void t_rnxObsFile::setObsFromRnx(const t_rnxObsFile* rnxObsFile, const t_rnxObsF
   }
 }
 
+// Tracking Mode Priorities
+////////////////////////////////////////////////////////////////////////////
+QString t_rnxObsFile::signalPriorities(char sys) {
+  return "CWPX ?";
+}
