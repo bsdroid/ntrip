@@ -2382,6 +2382,7 @@ void bncWindow::slotPostProcessingFinished() {
 // Edit teqc-like editing options
 ////////////////////////////////////////////////////////////////////////////
 void bncWindow::slotReqcEditOption() {
+  saveOptions();
   reqcDlg* dlg = new reqcDlg(this);
   dlg->move(this->pos().x()+50, this->pos().y()+50);
   dlg->exec();

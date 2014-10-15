@@ -113,6 +113,8 @@ reqcDlg::reqcDlg(QWidget* parent) : QDialog(parent) {
   _reqcOldReceiverName->setText(settings.value("reqcOldReceiverName").toString());
   _reqcNewReceiverName->setText(settings.value("reqcNewReceiverName").toString());
 
+  QString rnxV2Priority = settings.value("rnxV2Priority").toString();
+
   // Dialog Layout
   // -------------
   QGridLayout* grid = new QGridLayout;
@@ -130,6 +132,8 @@ reqcDlg::reqcDlg(QWidget* parent) : QDialog(parent) {
   ++ir;
   grid->addWidget(new QLabel("Run By"),        ir, 0);
   grid->addWidget(_reqcRunBy,                  ir, 1);
+  grid->addWidget(new QLabel("V2 Priority:"),  ir, 2);
+  grid->addWidget(new QLabel(rnxV2Priority),   ir, 3);
   ++ir;
   grid->addWidget(new QLabel("Use Obs. Types"),ir, 0);
   grid->addWidget(_reqcUseObsTypes,            ir, 1, 1, 4);
