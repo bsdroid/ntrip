@@ -44,6 +44,7 @@
 #include "rnxobsfile.h"
 #include "bncutils.h"
 #include "bnccore.h"
+#include "bncsettings.h"
 
 using namespace std;
 
@@ -1109,5 +1110,27 @@ void t_rnxObsFile::setObsFromRnx(const t_rnxObsFile* rnxObsFile, const t_rnxObsF
 // Tracking Mode Priorities
 ////////////////////////////////////////////////////////////////////////////
 QString t_rnxObsFile::signalPriorities(char sys) {
-  return "CWPX ?";
+
+  bncSettings settings;
+  QStringList priorList = settings.value("rnxV2Priority").toString().split(" ", QString::SkipEmptyParts);
+
+  QString result;
+  for (int ii = 0; ii < priorList.size(); ii++) {
+    if (priorList[ii].indexOf(":") != -1) {
+      QStringList hlp = priorList[ii].split(":", QString::SkipEmptyParts);
+      if (hlp.size() == 2 && hlp[0].length() == 1 && hlp[0][0] == sys) {
+        result = hlp[1];
+        break;
+      }
+    }
+    else {
+      result = priorList[ii];
+    }
+  }
+
+  if (result.isEmpty()) {
+    result = "CWPX_?";
+  }
+
+  return result;
 }
