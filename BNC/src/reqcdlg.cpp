@@ -132,8 +132,8 @@ reqcDlg::reqcDlg(QWidget* parent) : QDialog(parent) {
   ++ir;
   grid->addWidget(new QLabel("Run By"),        ir, 0);
   grid->addWidget(_reqcRunBy,                  ir, 1);
-  grid->addWidget(new QLabel("V2 Priority:"),  ir, 2);
-  grid->addWidget(new QLabel(rnxV2Priority),   ir, 3);
+  grid->addWidget(new QLabel("V2 Priority:"),  ir, 2, Qt::AlignRight);
+  grid->addWidget(new QLabel(rnxV2Priority),   ir, 3, 1, 2);
   ++ir;
   grid->addWidget(new QLabel("Use Obs. Types"),ir, 0);
   grid->addWidget(_reqcUseObsTypes,            ir, 1, 1, 4);
