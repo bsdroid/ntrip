@@ -150,6 +150,7 @@ class bncWindow : public QMainWindow {
     QComboBox*     _reqcSkyPlotSystems;
 
     QCheckBox* _rnxV3CheckBox;
+    QLineEdit* _rnxV2Priority;
     QCheckBox* _ephV3CheckBox;
     QLineEdit* _rnxSkelLineEdit;
     QLineEdit* _rnxScrpLineEdit;

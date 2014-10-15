@@ -211,6 +211,11 @@ bncWindow::bncWindow() {
   _rnxScrpLineEdit    = new QLineEdit(settings.value("rnxScript").toString());
   _rnxV3CheckBox = new QCheckBox();
   _rnxV3CheckBox->setCheckState(Qt::CheckState(settings.value("rnxV3").toInt()));
+  QString hlp = settings.value("rnxSkel").toString();
+  if (hlp.isEmpty()) {
+    hlp = "CWPX_?";
+  }
+  _rnxV2Priority = new QLineEdit(hlp);
 
   connect(_rnxPathLineEdit, SIGNAL(textChanged(const QString &)), 
           this, SLOT(slotBncTextChanged()));
@@ -663,6 +668,8 @@ bncWindow::bncWindow() {
   oLayout->addWidget(_rnxScrpLineEdit,                             4, 1, 1,24);
   oLayout->addWidget(new QLabel("Version 3"),                      5, 0);
   oLayout->addWidget(_rnxV3CheckBox,                               5, 1);
+  oLayout->addWidget(new QLabel("Version 2 Signal Priority"),      5, 2);
+  oLayout->addWidget(_rnxV2Priority,                               5, 3, 1, 22);
   oLayout->addWidget(new QLabel(" "),                              6, 0);
   ogroup->setLayout(oLayout);
 
@@ -1580,6 +1587,7 @@ void bncWindow::saveOptions() {
   settings.setValue("rnxSkel",     _rnxSkelLineEdit->text());
   settings.setValue("rnxScript",   _rnxScrpLineEdit->text());
   settings.setValue("rnxV3",       _rnxV3CheckBox->checkState());
+  settings.setValue("rnxV2Priority",_rnxV2Priority->text());
 // RINEX Ephemeris
   settings.setValue("ephPath",     _ephPathLineEdit->text());
   settings.setValue("ephIntr",     _ephIntrComboBox->currentText());
