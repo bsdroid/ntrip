@@ -211,7 +211,7 @@ bncWindow::bncWindow() {
   _rnxScrpLineEdit    = new QLineEdit(settings.value("rnxScript").toString());
   _rnxV3CheckBox = new QCheckBox();
   _rnxV3CheckBox->setCheckState(Qt::CheckState(settings.value("rnxV3").toInt()));
-  QString hlp = settings.value("rnxSkel").toString();
+  QString hlp = settings.value("rnxV2Priority").toString();
   if (hlp.isEmpty()) {
     hlp = "CWPX_?";
   }
