@@ -63,6 +63,7 @@ class t_rnxObsHeader {
 
  private:
   QStringList obsTypesStrings() const;
+  QString                 _defaultSystems;
   double                  _version;
   double                  _interval;
   QString                 _antennaNumber;
