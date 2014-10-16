@@ -51,7 +51,7 @@ using namespace std;
 // Constructor
 ////////////////////////////////////////////////////////////////////////////
 t_rnxObsHeader::t_rnxObsHeader() {
-  _defaultSystems = "GRES";
+  _usedSystems = "GRES";
   _antNEU.ReSize(3); _antNEU = 0.0;
   _antXYZ.ReSize(3); _antXYZ = 0.0;
   _antBSG.ReSize(3); _antBSG = 0.0;
@@ -164,7 +164,7 @@ t_irc t_rnxObsHeader::read(QTextStream* stream, int maxLines) {
       QTextStream* in = new QTextStream(value.toAscii(), QIODevice::ReadOnly);
       int nTypes;
       *in >> nTypes;
-      char sys0 = _defaultSystems[0].toAscii();
+      char sys0 = _usedSystems[0].toAscii();
       _obsTypes[sys0].clear();
       for (int ii = 0; ii < nTypes; ii++) {
         if (ii > 0 && ii % 9 == 0) {
@@ -176,8 +176,8 @@ t_irc t_rnxObsHeader::read(QTextStream* stream, int maxLines) {
         *in >> hlp;
         _obsTypes[sys0].append(hlp);
       }
-      for (int ii = 1; ii < _defaultSystems.length(); ii++) {
-        char sysI = _defaultSystems[ii].toAscii();
+      for (int ii = 1; ii < _usedSystems.length(); ii++) {
+        char sysI = _usedSystems[ii].toAscii();
         _obsTypes[sysI] = _obsTypes[sys0];
       }
     }
@@ -212,6 +212,15 @@ t_irc t_rnxObsHeader::read(QTextStream* stream, int maxLines) {
     if (maxLines > 0 && numLines == maxLines) {
       break;
     }
+  }
+
+  // Systems used
+  // ------------
+  _usedSystems.clear();
+  QMapIterator<char, QStringList> it(_obsTypes);
+  while (it.hasNext()) {
+    it.next();
+    _usedSystems += QChar(it.key());
   }
 
   return success;
@@ -293,6 +302,7 @@ void t_rnxObsHeader::set(const t_rnxObsHeader& header, int version,
   _receiverVersion = header._receiverVersion;
   _startTime       = header._startTime;   
   _comments        = header._comments;
+  _usedSystems     = header._usedSystems;
   for (unsigned iPrn = 1; iPrn <= t_prn::MAXPRN_GPS; iPrn++) {
     _wlFactorsL1[iPrn] =  header._wlFactorsL1[iPrn]; 
     _wlFactorsL2[iPrn] =  header._wlFactorsL2[iPrn]; 
@@ -326,17 +336,17 @@ void t_rnxObsHeader::set(const t_rnxObsHeader& header, int version,
         }
       }
       else {
-        for (int iSys = 0; iSys < t_rnxObsHeader::_defaultSystems.length(); iSys++) {
-          char sys = t_rnxObsHeader::_defaultSystems[iSys].toAscii();
+        for (int iSys = 0; iSys < _usedSystems.length(); iSys++) {
+          char sys = _usedSystems[iSys].toAscii();
           _obsTypes[sys].push_back(useObsTypes->at(iType));
         }
       }
     }
-    _defaultSystems.clear();
+    _usedSystems.clear();
     QMapIterator<char, QStringList> it(_obsTypes);
     while (it.hasNext()) {
       it.next();
-      _defaultSystems += QChar(it.key());
+      _usedSystems += QChar(it.key());
     }
   }
 }
@@ -526,7 +536,7 @@ QStringList t_rnxObsHeader::obsTypesStrings() const {
   QStringList strList;
 
   if (_version < 3.0) {
-    char sys0 = _defaultSystems[0].toAscii();
+    char sys0 = _usedSystems[0].toAscii();
     QString hlp;
     QTextStream(&hlp) << QString("%1").arg(_obsTypes[sys0].size(), 6);
     for (int ii = 0; ii < _obsTypes[sys0].size(); ii++) {
