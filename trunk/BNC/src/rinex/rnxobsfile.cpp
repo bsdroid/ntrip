@@ -1113,6 +1113,9 @@ QString t_rnxObsFile::signalPriorities(char sys) {
 
   bncSettings settings;
   QStringList priorList = settings.value("rnxV2Priority").toString().split(" ", QString::SkipEmptyParts);
+  if (priorList.empty()) {
+    priorList << "CWPX_?";
+  }
 
   QString result;
   for (int ii = 0; ii < priorList.size(); ii++) {
@@ -1126,10 +1129,6 @@ QString t_rnxObsFile::signalPriorities(char sys) {
     else {
       result = priorList[ii];
     }
-  }
-
-  if (result.isEmpty()) {
-    result = "CWPX_?";
   }
 
   return result;
