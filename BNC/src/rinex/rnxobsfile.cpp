@@ -51,7 +51,7 @@ using namespace std;
 // Constructor
 ////////////////////////////////////////////////////////////////////////////
 t_rnxObsHeader::t_rnxObsHeader() {
-  _usedSystems = "GRES";
+  _usedSystems = "GREJCS";
   _antNEU.ReSize(3); _antNEU = 0.0;
   _antXYZ.ReSize(3); _antXYZ = 0.0;
   _antBSG.ReSize(3); _antBSG = 0.0;
