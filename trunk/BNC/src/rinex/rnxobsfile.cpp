@@ -882,11 +882,23 @@ t_rnxObsFile::t_rnxEpo* t_rnxObsFile::nextEpochV2() {
 // Write Data Epoch
 ////////////////////////////////////////////////////////////////////////////
 void t_rnxObsFile::writeEpoch(const t_rnxEpo* epo) {
+  if (epo == 0) {
+    return;
+  }
+  t_rnxEpo epoLocal;
+  epoLocal.tt = epo->tt;
+  for (unsigned ii = 0; ii < epo->rnxSat.size(); ii++) {
+    const t_rnxSat& rnxSat = epo->rnxSat[ii];
+    if (_header._obsTypes[rnxSat.prn.system()].size() > 0) {
+      epoLocal.rnxSat.push_back(rnxSat);    
+    }
+  }
+
   if (version() < 3.0) {
-    return writeEpochV2(_stream, _header, epo);
+    return writeEpochV2(_stream, _header, &epoLocal);
   }
   else {
-    return writeEpochV3(_stream, _header, epo);
+    return writeEpochV3(_stream, _header, &epoLocal);
   }
 }
 
