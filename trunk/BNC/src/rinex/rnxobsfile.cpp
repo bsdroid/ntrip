@@ -330,15 +330,32 @@ void t_rnxObsHeader::set(const t_rnxObsHeader& header, int version,
       if (useObsTypes->at(iType).indexOf(":") != -1) {
         QStringList hlp = useObsTypes->at(iType).split(":", QString::SkipEmptyParts);
         if (hlp.size() == 2 && hlp[0].length() == 1) {
-          char    sys  = hlp[0][0].toAscii();
-          QString type = hlp[1];
-          _obsTypes[sys].push_back(type);
+          if (_version >= 3.0) {
+            char    sys  = hlp[0][0].toAscii();
+            QString type = t_rnxObsFile::type2to3(sys, hlp[1]);
+            if (!_obsTypes[sys].contains(type)) {
+              _obsTypes[sys].push_back(type);
+            }
+          }
+          else {
+            for (int iSys = 0; iSys < _usedSystems.length(); iSys++) {
+              char    sys  = _usedSystems[iSys].toAscii();
+              QString type = t_rnxObsFile::type3to2(sys, hlp[1]);
+              if (!_obsTypes[sys].contains(type)) {
+                _obsTypes[sys].push_back(type);
+              }
+            }
+          }
         }
       }
       else {
         for (int iSys = 0; iSys < _usedSystems.length(); iSys++) {
-          char sys = _usedSystems[iSys].toAscii();
-          _obsTypes[sys].push_back(useObsTypes->at(iType));
+          char    sys  = _usedSystems[iSys].toAscii();
+          QString type = _version >= 3.0 ? t_rnxObsFile::type2to3(sys, useObsTypes->at(iType)) : 
+                                           t_rnxObsFile::type3to2(sys, useObsTypes->at(iType));
+          if (!_obsTypes[sys].contains(type)) {
+            _obsTypes[sys].push_back(type);
+          }
         }
       }
     }
