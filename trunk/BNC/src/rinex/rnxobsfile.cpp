@@ -316,14 +316,22 @@ void t_rnxObsHeader::set(const t_rnxObsHeader& header, int version,
       _obsTypes = header._obsTypes;
     }
     else {
-      for (int iSys = 0; iSys < header.numSys(); iSys++) {
-        char sys = header.system(iSys);
-        for (int iType = 0; iType < header.nTypes(sys); iType++) {
-          QString type = header.obsType(sys, iType, _version);
-          if (_version >= 3.0) {
-            _obsTypes[sys].push_back(type);
+      if (_version >= 3.0) {
+        for (int iSys = 0; iSys < header.numSys(); iSys++) {
+          char sys = header.system(iSys);
+          for (int iType = 0; iType < header.nTypes(sys); iType++) {
+            QString type = header.obsType(sys, iType, _version);
+            if (!_obsTypes[sys].contains(type)) {
+              _obsTypes[sys].push_back(type);
+            }
           }
-          else {
+        }
+      }
+      else {
+        for (int iSys = 0; iSys < header.numSys(); iSys++) {
+          char sys = header.system(iSys);
+          for (int iType = 0; iType < header.nTypes(sys); iType++) {
+            QString type = header.obsType(sys, iType, _version);
             for (int jSys = 0; jSys < _usedSystems.length(); jSys++) {
               char thisSys  = _usedSystems[jSys].toAscii();
               if (!_obsTypes[thisSys].contains(type)) {
@@ -332,7 +340,6 @@ void t_rnxObsHeader::set(const t_rnxObsHeader& header, int version,
             }
           }
         }
-        _obsTypes[sys].removeDuplicates();
       }
     }
   }
