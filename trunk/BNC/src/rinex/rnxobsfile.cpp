@@ -319,7 +319,18 @@ void t_rnxObsHeader::set(const t_rnxObsHeader& header, int version,
       for (int iSys = 0; iSys < header.numSys(); iSys++) {
         char sys = header.system(iSys);
         for (int iType = 0; iType < header.nTypes(sys); iType++) {
-          _obsTypes[sys].push_back(header.obsType(sys, iType, _version));
+          QString type = header.obsType(sys, iType, _version);
+          if (_version >= 3.0) {
+            _obsTypes[sys].push_back(type);
+          }
+          else {
+            for (int jSys = 0; jSys < _usedSystems.length(); jSys++) {
+              char thisSys  = _usedSystems[jSys].toAscii();
+              if (!_obsTypes[thisSys].contains(type)) {
+                _obsTypes[thisSys].push_back(type);
+              }
+            }
+          }
         }
         _obsTypes[sys].removeDuplicates();
       }
