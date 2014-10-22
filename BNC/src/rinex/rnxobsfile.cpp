@@ -1123,11 +1123,12 @@ void t_rnxObsFile::setObsFromRnx(const t_rnxObsFile* rnxObsFile, const t_rnxObsF
   char sys   = rnxSat.prn.system();
 
   for (int iType = 0; iType < rnxObsFile->nTypes(sys); iType++) {
-    QString type = rnxObsFile->obsType(sys, iType);
+    QString type   = rnxObsFile->obsType(sys, iType);
+    QString typeV3 = rnxObsFile->obsType(sys, iType, 3.0); // may or may not differ from type
     if (rnxSat.obs.contains(type)) {
       const t_rnxObs& rnxObs = rnxSat.obs[type];
       if (rnxObs.value != 0.0) {
-        string type2ch(type.mid(1).toAscii().data());
+        string type2ch(typeV3.mid(1).toAscii().data());
         
         t_frqObs* frqObs = 0;
         for (unsigned iFrq = 0; iFrq < obs._obs.size(); iFrq++) {
@@ -1142,7 +1143,7 @@ void t_rnxObsFile::setObsFromRnx(const t_rnxObsFile* rnxObsFile, const t_rnxObsF
           obs._obs.push_back(frqObs);
         }
         
-        switch( type.toAscii().data()[0] ) {
+        switch( typeV3.toAscii().data()[0] ) {
         case 'C':
           frqObs->_codeValid = true;
           frqObs->_code      = rnxObs.value;
