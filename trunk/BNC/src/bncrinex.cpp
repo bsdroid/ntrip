@@ -434,6 +434,16 @@ void bncRinex::dumpEpoch(const QByteArray& format, long maxTime) {
     const t_satObs& satObs = it.next();
     t_rnxObsFile::t_rnxSat rnxSat;
     rnxSat.prn = satObs._prn;
+
+    // Initialize all observations mentioned in skeleton header
+    // --------------------------------------------------------
+    char sys = rnxSat.prn.system();
+    for (int iType = 0; iType < _sklHeader.nTypes(sys); iType++) {
+      QString type = _sklHeader.obsType(sys, iType);
+      t_rnxObsFile::t_rnxObs rnxObs; // create an empty observation
+      rnxSat.obs[type] = rnxObs;
+    }
+
     for (unsigned ii = 0; ii < satObs._obs.size(); ii++) {
       const t_frqObs* frqObs = satObs._obs[ii];
       if (frqObs->_codeValid) {
