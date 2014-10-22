@@ -1008,14 +1008,11 @@ void t_rnxObsFile::writeEpochV2(QTextStream* stream, const t_rnxObsHeader& heade
                   *stream << ' ';
                 }
               }
-              break;
+              goto end_loop_iPref;
             }
           }
         }
-        if (found) {
-          break;
-        }
-      }
+      } end_loop_iPref:
       if (!found) {
         *stream << QString().leftJustified(16);
       }
