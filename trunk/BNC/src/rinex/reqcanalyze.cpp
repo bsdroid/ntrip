@@ -159,7 +159,7 @@ void t_reqcAnalyze::slotDspSkyPlot(const QString& fileName,
     bncSettings settings;
     QString dirName = settings.value("reqcPlotDir").toString();
     if (!dirName.isEmpty()) {
-      QByteArray ext = scaleTitle.isEmpty() ? "_S.png" : "_M.png";
+      QByteArray ext = (scaleTitle == "Meters") ? "_M.png" : "_S.png";
       graphWin->savePNG(dirName, ext);
     }
   }
