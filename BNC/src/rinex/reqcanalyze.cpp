@@ -316,7 +316,9 @@ void t_reqcAnalyze::analyzeFile(t_rnxObsFile* obsFile) {
       const t_polarPoint* point = dataSNR1->at(ii);
       mean += point->_value;
     }
-    mean /= dataSNR1->size();
+    if (dataSNR1->size() > 0) {
+      mean /= dataSNR1->size();
+    }
     double max = (mean > 9.0) ? 54.0 : 9.0;
     QByteArray str = (mean > 9.0) ? "dbHz" : "";
     emit dspSkyPlot(obsFile->fileName(), "SNR1", dataSNR1, "SNR2", dataSNR2,
@@ -835,7 +837,9 @@ void t_reqcAnalyze::printReport(QVector<t_polarPoint*>* dataMP1,
       const t_polarPoint* point = data->at(ii);
       mean += point->_value;
     }
-    mean /= data->size();
+    if (data->size() > 0) {
+      mean /= data->size();
+    }
     *_log << text << mean << endl;
   }
 
