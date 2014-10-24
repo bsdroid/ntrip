@@ -1118,16 +1118,30 @@ QString t_rnxObsFile::type3to2(char /* sys */, const QString& typeV3) {
 ////////////////////////////////////////////////////////////////////////////
 void t_rnxObsFile::setObsFromRnx(const t_rnxObsFile* rnxObsFile, const t_rnxObsFile::t_rnxEpo* epo, 
                                  const t_rnxObsFile::t_rnxSat& rnxSat, t_satObs& obs) {
-
   obs._staID = rnxObsFile->markerName().toAscii().constData();
   obs._prn   = rnxSat.prn;
   obs._time  = epo->tt;
 
   char sys   = rnxSat.prn.system();
 
+  QChar addToL2;
   for (int iType = 0; iType < rnxObsFile->nTypes(sys); iType++) {
     QString type   = rnxObsFile->obsType(sys, iType);
     QString typeV3 = rnxObsFile->obsType(sys, iType, 3.0); // may or may not differ from type
+    if (rnxSat.obs.contains(type) && rnxSat.obs[type].value != 0.0) {
+      if (type == "P2" && typeV3.length() > 2) {
+        addToL2 = typeV3[2];
+        break;
+      }
+    }
+  }
+
+  for (int iType = 0; iType < rnxObsFile->nTypes(sys); iType++) {
+    QString type   = rnxObsFile->obsType(sys, iType);
+    QString typeV3 = rnxObsFile->obsType(sys, iType, 3.0); // may or may not differ from type
+    if (type == "L2") {
+      typeV3 += addToL2;
+    }
     if (rnxSat.obs.contains(type)) {
       const t_rnxObs& rnxObs = rnxSat.obs[type];
       if (rnxObs.value != 0.0) {
