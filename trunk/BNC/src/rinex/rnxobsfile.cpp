@@ -869,6 +869,9 @@ t_rnxObsFile::t_rnxEpo* t_rnxObsFile::nextEpochV2() {
       }
 
       char sys = line.toAscii()[pos];
+      if (sys == ' ') {
+        sys = 'G';
+      }
       int satNum; readInt(line, pos + 1, 2, satNum);
       _currEpo.rnxSat[iSat].prn.set(sys, satNum);
  
