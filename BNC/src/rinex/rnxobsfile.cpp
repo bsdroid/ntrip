@@ -1179,6 +1179,13 @@ void t_rnxObsFile::setObsFromRnx(const t_rnxObsFile* rnxObsFile, const t_rnxObsF
           frqObs->_snr      = rnxObs.value;
           break;
         }
+
+        // Handle old-fashioned SNR values
+        // -------------------------------
+        if (rnxObs.snr != 0 && !frqObs->_snrValid) {
+          frqObs->_snrValid = true;
+          frqObs->_snr      = rnxObs.snr;
+        }
       }
     }
   }
