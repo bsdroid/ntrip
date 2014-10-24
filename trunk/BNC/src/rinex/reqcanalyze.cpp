@@ -34,7 +34,7 @@
  *
  * Created:    11-Apr-2012
  *
- * Changes:    
+ * Changes:
  *
  * -----------------------------------------------------------------------*/
 
@@ -71,15 +71,15 @@ t_reqcAnalyze::t_reqcAnalyze(QObject* parent) : QThread(parent) {
 
   _currEpo = 0;
 
-  connect(this, SIGNAL(dspSkyPlot(const QString&, 
-                                  const QByteArray&,
-                                  QVector<t_polarPoint*>*, 
+  connect(this, SIGNAL(dspSkyPlot(const QString&,
                                   const QByteArray&,
                                   QVector<t_polarPoint*>*,
-                                  const QByteArray&, double)), 
-          this, SLOT(slotDspSkyPlot(const QString&, 
+                                  const QByteArray&,
+                                  QVector<t_polarPoint*>*,
+                                  const QByteArray&, double)),
+          this, SLOT(slotDspSkyPlot(const QString&,
                                     const QByteArray&,
-                                    QVector<t_polarPoint*>*, 
+                                    QVector<t_polarPoint*>*,
                                     const QByteArray&,
                                     QVector<t_polarPoint*>*,
                                     const QByteArray&, double)));
@@ -104,11 +104,11 @@ t_reqcAnalyze::~t_reqcAnalyze() {
   }
 }
 
-//  
+//
 ////////////////////////////////////////////////////////////////////////////
-void t_reqcAnalyze::slotDspSkyPlot(const QString& fileName, 
+void t_reqcAnalyze::slotDspSkyPlot(const QString& fileName,
                                    const QByteArray& title1,
-                                   QVector<t_polarPoint*>* data1, 
+                                   QVector<t_polarPoint*>* data1,
                                    const QByteArray& title2,
                                    QVector<t_polarPoint*>* data2,
                                    const QByteArray& scaleTitle,
@@ -134,7 +134,7 @@ void t_reqcAnalyze::slotDspSkyPlot(const QString& fileName,
         }
       }
     }
-    
+
     QwtInterval scaleInterval(0.0, maxValue);
 
     QVector<QWidget*> plots;
@@ -151,7 +151,7 @@ void t_reqcAnalyze::slotDspSkyPlot(const QString& fileName,
       plots << plot2;
     }
 
-    t_graphWin* graphWin = new t_graphWin(0, fileName, plots, 
+    t_graphWin* graphWin = new t_graphWin(0, fileName, plots,
                                           &scaleTitle, &scaleInterval);
 
     graphWin->show();
@@ -165,7 +165,7 @@ void t_reqcAnalyze::slotDspSkyPlot(const QString& fileName,
   }
 }
 
-//  
+//
 ////////////////////////////////////////////////////////////////////////////
 void t_reqcAnalyze::run() {
 
@@ -197,7 +197,7 @@ void t_reqcAnalyze::run() {
   deleteLater();
 }
 
-//  
+//
 ////////////////////////////////////////////////////////////////////////////
 void t_reqcAnalyze::analyzeFile(t_rnxObsFile* obsFile) {
 
@@ -231,16 +231,16 @@ void t_reqcAnalyze::analyzeFile(t_rnxObsFile* obsFile) {
         _obsStat._interval     = obsFile->interval();
       }
       _obsStat._endTime = _currEpo->tt;
-  
+
       // Loop over all satellites
       // ------------------------
       for (unsigned iObs = 0; iObs < _currEpo->rnxSat.size(); iObs++) {
         const t_rnxObsFile::t_rnxSat& rnxSat = _currEpo->rnxSat[iObs];
         t_satObs obs;
         t_rnxObsFile::setObsFromRnx(obsFile, _currEpo, rnxSat, obs);
-  
+
         QString prn(obs._prn.toString().c_str());
-  
+
         t_ephGlo* ephGlo  = 0;
         int       slotNum = 0;
         if (obs._prn.system() == 'R') {
@@ -254,7 +254,7 @@ void t_reqcAnalyze::analyzeFile(t_rnxObsFile* obsFile) {
             slotNum = ephGlo->slotNum();
           }
         }
-  
+
         t_irc irc = _allObsMap[prn].addObs(obs, slotNum);
 
         if (irc == success) {
@@ -270,7 +270,7 @@ void t_reqcAnalyze::analyzeFile(t_rnxObsFile* obsFile) {
           }
         }
       }
-  
+
       prepareObsStat(iEpo, obsFile->interval(), xyzSta);
       iEpo++;
 
@@ -281,7 +281,7 @@ void t_reqcAnalyze::analyzeFile(t_rnxObsFile* obsFile) {
       *_log << "Exception " << str << endl;
     }
     else {
-      qDebug() << str;    
+      qDebug() << str;
     }
     _mutex.unlock();
     return;
@@ -298,7 +298,7 @@ void t_reqcAnalyze::analyzeFile(t_rnxObsFile* obsFile) {
   while (it.hasNext()) {
     it.next();
     QString    prn     = it.key();
-    preparePlotData(prn, xyzSta, obsFile->interval(), 
+    preparePlotData(prn, xyzSta, obsFile->interval(),
                     dataMP1, dataMP2, dataSNR1, dataSNR2);
   }
 
@@ -309,10 +309,18 @@ void t_reqcAnalyze::analyzeFile(t_rnxObsFile* obsFile) {
   if (BNC_CORE->GUIenabled()) {
     QFileInfo  fileInfo(obsFile->fileName());
     QByteArray title = fileInfo.fileName().toAscii();
-    emit dspSkyPlot(obsFile->fileName(), "MP1", dataMP1, "MP2", dataMP2, 
+    emit dspSkyPlot(obsFile->fileName(), "MP1", dataMP1, "MP2", dataMP2,
                     "Meters", 2.0);
-    emit dspSkyPlot(obsFile->fileName(), "SNR1", dataSNR1, "SNR2", dataSNR2, 
-                    "", 9.0);
+    double mean = 0.0;
+    for (int ii = 0; ii < dataSNR1->size(); ii++) {
+      const t_polarPoint* point = dataSNR1->at(ii);
+      mean += point->_value;
+    }
+    mean /= dataSNR1->size();
+    double max = (mean > 9.0) ? 54.0 : 9.0;
+    QByteArray str = (mean > 9.0) ? "dbHz" : "";
+    emit dspSkyPlot(obsFile->fileName(), "SNR1", dataSNR1, "SNR2", dataSNR2,
+    		str, max);
     emit dspAvailPlot(obsFile->fileName(), title);
   }
   else {
@@ -336,9 +344,9 @@ void t_reqcAnalyze::analyzeFile(t_rnxObsFile* obsFile) {
   }
 }
 
-//  
+//
 ////////////////////////////////////////////////////////////////////////////
-t_irc t_reqcAnalyze::t_allObs::addObs(const t_satObs& obs, int slotNum) { 
+t_irc t_reqcAnalyze::t_allObs::addObs(const t_satObs& obs, int slotNum) {
 
   t_oneObs* newObs = new t_oneObs(obs._time.gpsw(), obs._time.gpssec());
   bool      okFlag = false;
@@ -359,10 +367,10 @@ t_irc t_reqcAnalyze::t_allObs::addObs(const t_satObs& obs, int slotNum) {
         newObs->_slipL1 = frqObs->_slip;
       }
       if (frqObs->_codeValid) {
-        P1 = frqObs->_code;   
+        P1 = frqObs->_code;
       }
       if (frqObs->_snrValid) {
-        newObs->_SNR1 = frqObs->_snr;   
+        newObs->_SNR1 = frqObs->_snr;
       }
     }
     else if ( (obs._prn.system() != 'E' && frqObs->_rnxType2ch[0] == '2') ||
@@ -373,10 +381,10 @@ t_irc t_reqcAnalyze::t_allObs::addObs(const t_satObs& obs, int slotNum) {
         newObs->_slipL2 = frqObs->_slip;
       }
       if (frqObs->_codeValid) {
-        P2 = frqObs->_code;   
+        P2 = frqObs->_code;
       }
       if (frqObs->_snrValid) {
-        newObs->_SNR2 = frqObs->_snr;   
+        newObs->_SNR2 = frqObs->_snr;
       }
     }
   }
@@ -424,7 +432,7 @@ t_irc t_reqcAnalyze::t_allObs::addObs(const t_satObs& obs, int slotNum) {
   }
 }
 
-//  
+//
 ////////////////////////////////////////////////////////////////////////////
 void t_reqcAnalyze::prepareObsStat(unsigned iEpo, double obsInterval,
                                    const ColumnVector& xyzSta) {
@@ -442,17 +450,17 @@ void t_reqcAnalyze::prepareObsStat(unsigned iEpo, double obsInterval,
   }
 }
 
-//  
+//
 ////////////////////////////////////////////////////////////////////////////
-void t_reqcAnalyze::preparePlotData(const QString& prn, 
+void t_reqcAnalyze::preparePlotData(const QString& prn,
                                     const ColumnVector& xyzSta,
                                     double obsInterval,
-                                    QVector<t_polarPoint*>* dataMP1, 
+                                    QVector<t_polarPoint*>* dataMP1,
                                     QVector<t_polarPoint*>* dataMP2,
-                                    QVector<t_polarPoint*>* dataSNR1, 
+                                    QVector<t_polarPoint*>* dataSNR1,
                                     QVector<t_polarPoint*>* dataSNR2) {
 
-  const int chunkStep = int( 30.0 / obsInterval); // chunk step (30 sec)  
+  const int chunkStep = int( 30.0 / obsInterval); // chunk step (30 sec)
   const int numEpo    = int(600.0 / obsInterval); // # epochs in one chunk (10 min)
 
   t_allObs& allObs = _allObsMap[prn];
@@ -487,7 +495,7 @@ void t_reqcAnalyze::preparePlotData(const QString& prn,
       slipFound = false;
     }
 
-    // Chunk-Specific Variables 
+    // Chunk-Specific Variables
     // ------------------------
     bncTime currTime;
     bncTime prevTime;
@@ -533,7 +541,7 @@ void t_reqcAnalyze::preparePlotData(const QString& prn,
               break;
             }
           }
-          
+
           if (eph) {
             ColumnVector xc(4);
             ColumnVector vv(3);
@@ -547,7 +555,7 @@ void t_reqcAnalyze::preparePlotData(const QString& prn,
           }
         }
       }
- 
+
       // Check Interval
       // --------------
       if (prevTime.valid()) {
@@ -611,14 +619,14 @@ void t_reqcAnalyze::preparePlotData(const QString& prn,
         const t_oneObs* oneObs = allObs._oneObsVec[iEpo];
         double diff1 = oneObs->_MP1 - meanMP1;
         double diff2 = oneObs->_MP2 - meanMP2;
-      
+
         // Check Slip Threshold
         // --------------------
         if (fabs(diff1) > SLIPTRESH || fabs(diff2) > SLIPTRESH) {
           slipMP = true;
           break;
         }
-      
+
         MP1 += diff1 * diff1;
         MP2 += diff2 * diff2;
       }
@@ -629,7 +637,7 @@ void t_reqcAnalyze::preparePlotData(const QString& prn,
           slipFound = true;
           _obsStat._prnStat[prn]._numSlipsFound += 1;
         }
-      } 
+      }
       else {
         MP1 = sqrt(MP1 / (numEpo-1));
         MP2 = sqrt(MP2 / (numEpo-1));
@@ -678,9 +686,9 @@ void t_reqcAnalyze::preparePlotData(const QString& prn,
   }
 }
 
-//  
+//
 ////////////////////////////////////////////////////////////////////////////
-void t_reqcAnalyze::slotDspAvailPlot(const QString& fileName, 
+void t_reqcAnalyze::slotDspAvailPlot(const QString& fileName,
                                      const QByteArray& title) {
 
   if (BNC_CORE->GUIenabled()) {
@@ -760,7 +768,7 @@ double t_reqcAnalyze::cmpDOP(const ColumnVector& xyzSta) const {
 
   AA = AA.Rows(1, nSatUsed);
 
-  SymmetricMatrix QQ; 
+  SymmetricMatrix QQ;
   QQ << AA.t() * AA;
   QQ = QQ.i();
 
@@ -778,7 +786,7 @@ void t_reqcAnalyze::printReport(QVector<t_polarPoint*>* dataMP1,
     return;
   }
 
-  *_log << "Marker name:     " << _obsStat._markerName   << endl 
+  *_log << "Marker name:     " << _obsStat._markerName   << endl
         << "Receiver:        " << _obsStat._receiverType << endl
         << "Antenna:         " << _obsStat._antennaName  << endl
         << "Start time:      " << _obsStat._startTime.datestr().c_str() << ' '
