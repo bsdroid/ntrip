@@ -562,9 +562,7 @@ void t_reqcAnalyze::preparePlotData(const QString& prn,
       // --------------
       if (prevTime.valid()) {
         double dt = currTime - prevTime;
-        double intpart, fractpart;
-        fractpart = modf(dt, &intpart);
-        if (fractpart > obsInterval || intpart > obsInterval) {
+        if (dt > 1.5 * obsInterval) {
           gapL1 = true;
           gapL2 = true;
         }
