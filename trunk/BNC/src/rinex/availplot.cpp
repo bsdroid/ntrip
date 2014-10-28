@@ -41,6 +41,7 @@
 #include <qwt_scale_draw.h>
 #include <qwt_text.h>
 #include <qwt_legend.h>
+#include <qwt_plot_canvas.h>
 
 #include "availplot.h"
 #include "reqcanalyze.h"
@@ -74,6 +75,7 @@ t_availPlot::t_availPlot(QWidget* parent,
 : QwtPlot(parent) {
 
   setCanvasBackground(QColor(Qt::white));
+  canvas()->setFrameStyle(QFrame::NoFrame | QFrame::Plain);
 
   // Axes
   // ----
