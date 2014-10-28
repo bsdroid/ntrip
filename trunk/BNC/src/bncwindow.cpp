@@ -666,11 +666,12 @@ bncWindow::bncWindow() {
   oLayout->addWidget(_rnxSkelLineEdit,                             3, 1, 1, 1, Qt::AlignLeft);
   oLayout->addWidget(new QLabel("Script (full path)"),             4, 0);
   oLayout->addWidget(_rnxScrpLineEdit,                             4, 1, 1,24);
-  oLayout->addWidget(new QLabel("Version 3"),                      5, 0);
-  oLayout->addWidget(_rnxV3CheckBox,                               5, 1);
-  oLayout->addWidget(new QLabel("Version 2 Signal Priority"),      5, 2);
-  oLayout->addWidget(_rnxV2Priority,                               5, 3, 1, 22);
-  oLayout->addWidget(new QLabel(" "),                              6, 0);
+  oLayout->addWidget(new QLabel("Version 2"),                      5, 0);
+  oLayout->addWidget(_rnxV2Priority,                               5, 1);
+  oLayout->addWidget(new QLabel("  Signal Priority"),              5, 2, 1,15);
+  oLayout->addWidget(new QLabel("Version 3"),                      6, 0);
+  oLayout->addWidget(_rnxV3CheckBox,                               6, 1);
+  oLayout->addWidget(new QLabel(" "),                              7, 0);
   ogroup->setLayout(oLayout);
 
   // RINEX Ephemeris
@@ -1190,6 +1191,9 @@ bncWindow::bncWindow() {
   _bncFigureLate->setWhatsThis(tr("The individual latency of observations in each incoming stream is shown in the 'Latency' tab. Streams not carrying observations (i.e. those providing only broadcast ephemeris messages) are not considered here. Note that the calculation of correct latencies requires the clock of the host computer to be properly synchronized."));
   _ephV3CheckBox->setWhatsThis(tr("The default format for output of RINEX Navigation data containing Broadcast Ephemeris is RINEX Version 2. Select 'Version 3' if you want to output the ephemeris in RINEX Version 3 format."));
   _rnxV3CheckBox->setWhatsThis(tr("The default format for RINEX Observation files is RINEX Version 2. Select 'Version 3' if you want to save the observations in RINEX Version 3 format."));
+
+  _rnxV2Priority->setWhatsThis(tr("Test."));
+
   _miscMountLineEdit->setWhatsThis(tr("<p>Specify a mountpoint to apply any of the options shown below. Enter 'ALL' if you want to apply these options to all configured streams.</p><p>An empty option field (default) means that you don't want BNC to apply any of these options.</p>"));
   _miscPortLineEdit->setWhatsThis(tr("BNC can output an incoming stream through a TCP/IP port of your local host. Specify a port number here to activate this function."));
   _scanRTCMCheckBox->setWhatsThis(tr("<p>Tick 'Scan RTCM' to log the numbers of incomming message types as well as contained antenna coordinates, antenna heigt, and antenna descriptor.</p><p>In case of RTCM Version 3 MSM streams, BNC will also log contained RINEX Version 3 observation types.</p>."));
