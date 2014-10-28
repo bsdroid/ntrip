@@ -18,6 +18,7 @@
 #include <qpen.h>
 #include <qwt_symbol.h>
 #include <qwt_polar_grid.h>
+#include <qwt_polar_canvas.h>
 
 #include "polarplot.h"
 #include "graphwin.h"
@@ -46,7 +47,15 @@ t_polarPlot::t_polarPlot(const QwtText& title, const QwtInterval& scaleInterval,
 
   _scaleInterval = scaleInterval;
 
-  setPlotBackground(Qt::white);
+  if (false) {
+    setPlotBackground(Qt::white); // sets the background of the circle only
+  }
+  else {
+    canvas()->setAutoFillBackground(true);
+    QPalette palette = canvas()->palette();
+    palette.setColor(QPalette::Window, Qt::white);
+    canvas()->setPalette(palette);
+  }
 
   setAzimuthOrigin(M_PI/2.0);
 
