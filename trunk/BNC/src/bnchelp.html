@@ -267,7 +267,8 @@ This chapter describes how to set the BNC program options. It explains the top m
 &nbsp; &nbsp; &nbsp; 3.4.4. <a href=#rnxsample>Sampling</a><br>
 &nbsp; &nbsp; &nbsp; 3.4.5. <a href=#rnxskl>Skeleton Extension</a><br>
 &nbsp; &nbsp; &nbsp; 3.4.6. <a href=#rnxscript>Script</a><br>
-&nbsp; &nbsp; &nbsp; 3.4.7. <a href=#rnxvers>Version</a><br>
+&nbsp; &nbsp; &nbsp; 3.4.7. <a href=#rnxvers2>Version</a><br>
+&nbsp; &nbsp; &nbsp; 3.4.8. <a href=#rnxvers3>Version</a><br>
 3.5. <a href=#ephemeris>RINEX Ephemeris</a><br>
 &nbsp; &nbsp; &nbsp; 3.5.1. <a href=#ephdir>Directory</a><br>
 &nbsp; &nbsp; &nbsp; 3.5.2. <a href=#ephint>Interval</a><br>
@@ -676,7 +677,26 @@ The triggering event for calling the script or batch file is the end of a RINEX 
 As an alternative to initiating file uploads through BNC, you may like to call an upload script or batch file through your crontable or Task Scheduler (independent from BNC) once every one or two minutes after the end of each RINEX file 'Interval'.
 </p>
 
-<p><a name="rnxvers"><h4>3.4.7 Version - optional</h4></p>
+<p><a name="rnxvers2"><h4>3.4.7 Version 2 - optional</h4></p>
+<p>
+GNSS observation data are generally hold available by BNC according to attributes defined in RINEX Version 3. These attributes describe the tracking mode or channel of observations. Capital letters specifying observation attributes are C, D, I, L, M, P, Q, S, W, X, Y, and N, see RINEX Version 3 documentation.
+</p>
+<p>There are two applications where BNC can output observation data following RINEX Version 2: 
+<ul>
+<li>
+Saving incoming observation streams in RINEX Version 2 format.
+</li>
+<li>
+'Edit/Concatenate' RINEX 3 files and save them in Version 2 format.
+</li>
+</ul>
+As the Version 2 format ignores observation attributes, BNC is forced to map RINEX Version 3 to RINEX Version 2 although this can't be done in one-to-one correspondance. Hence we introduce a priority list of attributes for mapping Version 3 to Version 2.
+</p>
+<p>
+The default priority list is an empty option string meaing a priority of 'CWPX_?' attributes when mapping RINEX 3 to RINEX 2. (Noch nicht fertig.)
+</p>
+
+<p><a name="rnxvers3"><h4>3.4.8 Version 3 - optional</h4></p>
 <p>
 The default format for RINEX Observation files is RINEX Version 2.11. Select 'Version 3' if you would like to save observations in RINEX Version 3 format.
 </p>
