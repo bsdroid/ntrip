@@ -42,6 +42,7 @@
 #include <qwt_text.h>
 #include <qwt_legend.h>
 #include <qwt_plot_marker.h>
+#include <qwt_plot_canvas.h>
 
 #include "dopplot.h"
 #include "reqcanalyze.h"
@@ -63,6 +64,7 @@ t_dopPlot::t_dopPlot(QWidget* parent, t_obsStat* obsStat)
 : QwtPlot(parent) {
 
   setCanvasBackground(QColor(Qt::white));
+  canvas()->setFrameStyle(QFrame::NoFrame | QFrame::Plain);
 
   // Axes
   // ----

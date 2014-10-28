@@ -42,6 +42,7 @@
 #include <qwt_text.h>
 #include <qwt_legend.h>
 #include <qwt_plot_marker.h>
+#include <qwt_plot_canvas.h>
 
 #include "eleplot.h"
 #include "reqcanalyze.h"
@@ -63,6 +64,7 @@ t_elePlot::t_elePlot(QWidget* parent, QMap<QString, t_availData>* availDataMap)
 : QwtPlot(parent) {
 
   setCanvasBackground(QColor(Qt::white));
+  canvas()->setFrameStyle(QFrame::NoFrame | QFrame::Plain);
 
   // Axes
   // ----
