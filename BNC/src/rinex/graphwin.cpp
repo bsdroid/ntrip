@@ -40,7 +40,6 @@
 
 #include <qwt_scale_widget.h>
 #include <qwt_scale_engine.h>
-#include <qwt_plot_renderer.h>
 
 #include "graphwin.h"
 #include "bncsettings.h"
@@ -185,8 +184,16 @@ void t_graphWin::savePNG(const QString& dirName, QByteArray ext) {
   QString fileName = dir.path() + QDir::separator()
                    + fileInfo.completeBaseName() + ext;
 
+  QPalette palette = _canvas->palette();
+  QColor oldColor = palette.color(QPalette::Window);
+  palette.setColor(QPalette::Window, Qt::white);
+  _canvas->setPalette(palette);
+
   QImage image(_canvas->size(), QImage::Format_RGB32);
   QPainter painter(&image);
   _canvas->render(&painter);
   image.save(fileName,"PNG");
+
+  palette.setColor(QPalette::Window, oldColor);
+  _canvas->setPalette(palette);
 }
