@@ -48,6 +48,10 @@
 using namespace BNC_PPP;
 using namespace std;
 
+const double t_astro::RHO_DEG   = 180.0 / M_PI;
+const double t_astro::RHO_SEC   = 3600.0 * 180.0 / M_PI;
+const double t_astro::MJD_J2000 = 51544.5;
+
 Matrix t_astro::rotX(double Angle) {
   const double C = cos(Angle);
   const double S = sin(Angle);
