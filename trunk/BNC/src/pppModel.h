@@ -14,9 +14,9 @@ class t_astro {
   static ColumnVector Moon(double Mjd_TT);
 
  private:
-  static const double RHO_DEG   = 180.0 / M_PI;
-  static const double RHO_SEC   = 3600.0 * 180.0 / M_PI;
-  static const double MJD_J2000 = 51544.5;
+  static const double RHO_DEG;
+  static const double RHO_SEC;
+  static const double MJD_J2000;
 
   static Matrix rotX(double Angle);
   static Matrix rotY(double Angle);
