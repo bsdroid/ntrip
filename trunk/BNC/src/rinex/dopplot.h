@@ -11,7 +11,7 @@ class t_dopPlot: public QwtPlot {
  Q_OBJECT
 
 public:
- t_dopPlot(QWidget* parent, const QMap<t_prn, t_plotData>& plotDataMap);
+ t_dopPlot(QWidget* parent, const t_plotData& plotData);
 
 private:
 };
