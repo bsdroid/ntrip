@@ -80,10 +80,10 @@ Q_OBJECT
       _MP2      = 0.0;
       _SNR1     = 0.0;
       _SNR2     = 0.0;
+      _eleDeg   = 0.0;
+      _azDeg    = 0.0;
     }
     t_irc set(const t_satObs& obs);
-    double _eleDeg;
-    double _azDeg;
     bool   _hasL1;
     bool   _hasL2;
     bool   _slipL1;
@@ -96,6 +96,8 @@ Q_OBJECT
     double _MP2;
     double _SNR1;
     double _SNR2;
+    double _eleDeg;
+    double _azDeg;
   };
   
   class t_qcEpo {
