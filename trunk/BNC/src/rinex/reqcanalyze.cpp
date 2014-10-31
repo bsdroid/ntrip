@@ -418,7 +418,7 @@ void t_reqcAnalyze::preparePlotData(const t_rnxObsFile* obsFile) {
       // ---------------------------------------------
       bncTime prevTime;
       for (int iEpo = 0; iEpo < _qcFile._qcEpo.size(); iEpo++) {
-        const t_qcEpo& qcEpo = _qcFile._qcEpo[iEpo];
+        t_qcEpo& qcEpo = _qcFile._qcEpo[iEpo];
         if (qcEpo._epoTime < chunkStart) {
           continue;
         }
@@ -426,7 +426,7 @@ void t_reqcAnalyze::preparePlotData(const t_rnxObsFile* obsFile) {
           continue;
         }
       
-        const t_qcObs& qcObs = qcEpo._qcObs[prn];
+        t_qcObs& qcObs = qcEpo._qcObs[prn];
       
         // Compute the Azimuth and Zenith Distance
         // ---------------------------------------
@@ -452,8 +452,10 @@ void t_reqcAnalyze::preparePlotData(const t_rnxObsFile* obsFile) {
               if (eph->getCrd(qcEpo._epoTime, xc, vv, false) == success) {
                 double rho, eleSat, azSat;
                 topos(xyzSta(1), xyzSta(2), xyzSta(3), xc(1), xc(2), xc(3), rho, eleSat, azSat);
-                qcObsSampled._azDeg  = azSat * 180.0/M_PI;
+                qcObsSampled._azDeg  = azSat  * 180.0/M_PI;
                 qcObsSampled._eleDeg = eleSat * 180.0/M_PI;
+                qcObs._azDeg         = azSat  * 180.0/M_PI;
+                qcObs._eleDeg        = eleSat * 180.0/M_PI;
               }
             }
           }
@@ -646,27 +648,33 @@ void t_reqcAnalyze::slotDspSkyPlot(const QString& fileName, const QByteArray& ti
 ////////////////////////////////////////////////////////////////////////////
 void t_reqcAnalyze::slotDspAvailPlot(const QString& fileName, const QByteArray& title) {
 
+  t_plotData              plotData;
   QMap<t_prn, t_plotData> plotDataMap;
 
   for (int ii = 0; ii < _qcFile._qcEpo.size(); ii++) {
     const t_qcEpo& qcEpo = _qcFile._qcEpo[ii];
+    double mjdX24 = qcEpo._epoTime.mjddec() * 24.0;
+
+    plotData._mjdX24 << mjdX24;
+    plotData._PDOP   << qcEpo._PDOP;
+    plotData._numSat << qcEpo._qcObs.size();
+
     QMapIterator<t_prn, t_qcObs> it(qcEpo._qcObs);
     while (it.hasNext()) {
       it.next();
       const t_prn&   prn   = it.key();
       const t_qcObs& qcObs = it.value();
-      t_plotData& plotData = plotDataMap[prn];
-      double mjdX24 = qcEpo._epoTime.mjddec() * 24.0;
-      if (qcObs._hasL1)  plotData._L1ok   << mjdX24;
-      if (qcObs._hasL2)  plotData._L2ok   << mjdX24;
-      if (qcObs._slipL1) plotData._L1slip << mjdX24;
-      if (qcObs._slipL2) plotData._L2slip << mjdX24;
-      if (qcObs._gapL1)  plotData._L1gap  << mjdX24;
-      if (qcObs._gapL2)  plotData._L2gap  << mjdX24;
+      t_plotData&    data  = plotDataMap[prn];
+      if (qcObs._hasL1)  data._L1ok   << mjdX24;
+      if (qcObs._hasL2)  data._L2ok   << mjdX24;
+      if (qcObs._slipL1) data._L1slip << mjdX24;
+      if (qcObs._slipL2) data._L2slip << mjdX24;
+      if (qcObs._gapL1)  data._L1gap  << mjdX24;
+      if (qcObs._gapL2)  data._L2gap  << mjdX24;
+      data._eleDeg << qcObs._eleDeg;
     }
   }
 
-  t_plotData plotData;
 
   if (BNC_CORE->GUIenabled()) {
     t_availPlot* plotA = new t_availPlot(0, plotDataMap);
