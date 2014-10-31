@@ -239,13 +239,13 @@ void t_reqcAnalyze::analyzeFile(t_rnxObsFile* obsFile) {
         t_satObs obs;
         t_rnxObsFile::setObsFromRnx(obsFile, _currEpo, rnxSat, obs);
 
-        QString prn(obs._prn.toString().c_str());
+        const t_prn& prn = obs._prn;
 
         t_ephGlo* ephGlo  = 0;
         int       slotNum = 0;
-        if (obs._prn.system() == 'R') {
+        if (prn.system() == 'R') {
           for (int ie = 0; ie < _ephs.size(); ie++) {
-            if (QString(_ephs[ie]->prn().toString().c_str()) == prn) {
+            if (_ephs[ie]->prn() == prn) {
               ephGlo = dynamic_cast<t_ephGlo*>(_ephs[ie]);
               break;
             }
@@ -294,10 +294,10 @@ void t_reqcAnalyze::analyzeFile(t_rnxObsFile* obsFile) {
   QVector<t_polarPoint*>* dataSNR1 = new QVector<t_polarPoint*>;
   QVector<t_polarPoint*>* dataSNR2 = new QVector<t_polarPoint*>;
 
-  QMutableMapIterator<QString, t_allObs> it(_allObsMap);
+  QMutableMapIterator<t_prn, t_allObs> it(_allObsMap);
   while (it.hasNext()) {
     it.next();
-    QString    prn     = it.key();
+    const t_prn& prn = it.key();
     preparePlotData(prn, xyzSta, obsFile->interval(),
                     dataMP1, dataMP2, dataSNR1, dataSNR2);
   }
@@ -454,7 +454,7 @@ void t_reqcAnalyze::prepareObsStat(unsigned iEpo, double obsInterval,
 
 //
 ////////////////////////////////////////////////////////////////////////////
-void t_reqcAnalyze::preparePlotData(const QString& prn,
+void t_reqcAnalyze::preparePlotData(const t_prn& prn,
                                     const ColumnVector& xyzSta,
                                     double obsInterval,
                                     QVector<t_polarPoint*>* dataMP1,
@@ -538,7 +538,7 @@ void t_reqcAnalyze::preparePlotData(const QString& prn,
         if (xyzSta.size()) {
           t_eph* eph = 0;
           for (int ie = 0; ie < _ephs.size(); ie++) {
-            if (QString(_ephs[ie]->prn().toString().c_str()) == prn) {
+            if (_ephs[ie]->prn() == prn) {
               eph = _ephs[ie];
               break;
             }
@@ -608,9 +608,9 @@ void t_reqcAnalyze::preparePlotData(const QString& prn,
 
     // Compute the Multipath
     // ---------------------
-    if ( (prn[0] == 'G' && plotGPS           ) ||
-         (prn[0] == 'R' && plotGlo && slotSet) ||
-         (prn[0] == 'E' && plotGal           ) ) {
+    if ( (prn.system() == 'G' && plotGPS           ) ||
+         (prn.system() == 'R' && plotGlo && slotSet) ||
+         (prn.system() == 'E' && plotGal           ) ) {
       bool slipMP = false;
       meanMP1 /= numEpo;
       meanMP2 /= numEpo;
@@ -679,9 +679,9 @@ void t_reqcAnalyze::preparePlotData(const QString& prn,
 
     // Signal-to-Noise Ratio Plot Data
     // -------------------------------
-    if ( (prn[0] == 'G' && plotGPS) ||
-         (prn[0] == 'R' && plotGlo) ||
-         (prn[0] == 'E' && plotGal) ) {
+    if ( (prn.system() == 'G' && plotGPS) ||
+         (prn.system() == 'R' && plotGlo) ||
+         (prn.system() == 'E' && plotGal) ) {
       (*dataSNR1) << (new t_polarPoint(aziDeg, zenDeg, minSNR1));
       (*dataSNR2) << (new t_polarPoint(aziDeg, zenDeg, minSNR2));
     }
@@ -801,7 +801,7 @@ void t_reqcAnalyze::printReport(QVector<t_polarPoint*>* dataMP1,
   int numObs          = 0;
   int numSlipsFlagged = 0;
   int numSlipsFound   = 0;
-  QMapIterator<QString, t_prnStat> it(_obsStat._prnStat);
+  QMapIterator<t_prn, t_prnStat> it(_obsStat._prnStat);
   while (it.hasNext()) {
     it.next();
     const t_prnStat& prnStat = it.value();

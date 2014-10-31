@@ -76,7 +76,7 @@ class t_obsStat {
   QString         _markerName;
   QString         _receiverType;
   double          _interval;
-  QMap<QString, t_prnStat> _prnStat;
+  QMap<t_prn, t_prnStat> _prnStat;
 };
 
 class t_reqcAnalyze : public QThread {
@@ -154,7 +154,7 @@ Q_OBJECT
   };
 
   void analyzeFile(t_rnxObsFile* obsFile);
-  void preparePlotData(const QString& prn, const ColumnVector& xyzSta, 
+  void preparePlotData(const t_prn& prn, const ColumnVector& xyzSta, 
                        double obsInterval,
                        QVector<t_polarPoint*>* dataMP1, 
                        QVector<t_polarPoint*>* dataMP2,
@@ -168,18 +168,18 @@ Q_OBJECT
                    QVector<t_polarPoint*>* dataSNR1, 
                    QVector<t_polarPoint*>* dataSNR2);
 
-  QString                    _logFileName;
-  QFile*                     _logFile;
-  QTextStream*               _log;
-  QStringList                _obsFileNames;
-  QVector<t_rnxObsFile*>     _rnxObsFiles;
-  QStringList                _navFileNames;
-  QVector<t_eph*>            _ephs;
-  t_rnxObsFile::t_rnxEpo*    _currEpo;
-  QMap<QString, t_allObs>    _allObsMap;
-  QMap<QString, t_availData> _availDataMap;
-  t_obsStat                  _obsStat;
-  QMutex                     _mutex;
+  QString                  _logFileName;
+  QFile*                   _logFile;
+  QTextStream*             _log;
+  QStringList              _obsFileNames;
+  QVector<t_rnxObsFile*>   _rnxObsFiles;
+  QStringList              _navFileNames;
+  QVector<t_eph*>          _ephs;
+  t_rnxObsFile::t_rnxEpo*  _currEpo;
+  QMap<t_prn, t_allObs>    _allObsMap;
+  QMap<t_prn, t_availData> _availDataMap;
+  t_obsStat                _obsStat;
+  QMutex                   _mutex;
 };
 
 #endif

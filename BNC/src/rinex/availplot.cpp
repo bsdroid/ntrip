@@ -71,7 +71,7 @@ class t_scaleDrawPrn : public QwtScaleDraw {
 // Constructor
 //////////////////////////////////////////////////////////////////////////////
 t_availPlot::t_availPlot(QWidget* parent, 
-                        QMap<QString, t_availData>* availDataMap) 
+                        QMap<t_prn, t_availData>* availDataMap) 
 : QwtPlot(parent) {
 
   setCanvasBackground(QColor(Qt::white));
@@ -115,12 +115,12 @@ t_availPlot::t_availPlot(QWidget* parent,
   // Curves
   // ------
   int iC = 0;
-  QMapIterator<QString, t_availData > it(*availDataMap);
+  QMapIterator<t_prn, t_availData > it(*availDataMap);
   while (it.hasNext()) {
     it.next();
     ++iC;
-    const QString&         prn       = it.key();
-    const t_availData&     availData = it.value();
+    QString            prn       = QString(it.key().toString().c_str());
+    const t_availData& availData = it.value();
 
     scaleDrawPrn->_yLabels[iC] = prn;
 
