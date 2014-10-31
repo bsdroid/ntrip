@@ -666,13 +666,15 @@ void t_reqcAnalyze::slotDspAvailPlot(const QString& fileName, const QByteArray& 
     }
   }
 
+  t_plotData plotData;
+
   if (BNC_CORE->GUIenabled()) {
     t_availPlot* plotA = new t_availPlot(0, plotDataMap);
     plotA->setTitle(title);
 
     t_elePlot* plotZ = new t_elePlot(0, plotDataMap);
 
-    t_dopPlot* plotD = new t_dopPlot(0, plotDataMap);
+    t_dopPlot* plotD = new t_dopPlot(0, plotData);
 
     QVector<QWidget*> plots;
     plots << plotA << plotZ << plotD;
