@@ -528,7 +528,7 @@ void t_reqcAnalyze::preparePlotData(const t_rnxObsFile* obsFile) {
             break;
           }
           stdMP1 += diff1 * diff1;
-          stdMP1 += diff2 * diff2;
+          stdMP2 += diff2 * diff2;
         }
 
         if (slipMP) {
