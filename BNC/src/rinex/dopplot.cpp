@@ -60,7 +60,7 @@ class t_scaleDrawTime : public QwtScaleDraw {
 
 // Constructor
 //////////////////////////////////////////////////////////////////////////////
-t_dopPlot::t_dopPlot(QWidget* parent, t_obsStat* obsStat) 
+t_dopPlot::t_dopPlot(QWidget* parent, const QMap<t_prn, t_plotData>& plotDataMap) 
 : QwtPlot(parent) {
 
   setCanvasBackground(QColor(Qt::white));
@@ -89,11 +89,16 @@ t_dopPlot::t_dopPlot(QWidget* parent, t_obsStat* obsStat)
   textNumSat.setColor(Qt::blue);
   setAxisTitle(QwtPlot::yLeft,  textNumSat);
   double maxNumSat = 20.0;
-  if (obsStat) {
-    for (int ii = 0; ii < obsStat->_numSat.size(); ii++) {
-      if (maxNumSat < obsStat->_numSat[ii]) {
-        maxNumSat = obsStat->_numSat[ii] + 5;
-      } 
+  if (plotDataMap.size() > 0) {
+    QMapIterator<t_prn, t_plotData> it(plotDataMap);
+    while (it.hasNext()) {
+      it.next();
+      const t_plotData& plotData = it.value();
+      for (int ii = 0; ii < plotData._numSat.size(); ii++) {
+        if (maxNumSat < plotData._numSat[ii]) {
+          maxNumSat = plotData._numSat[ii] + 5;
+        } 
+      }
     }
   }
   setAxisScale(QwtPlot::yLeft,  0,  maxNumSat);
@@ -105,21 +110,26 @@ t_dopPlot::t_dopPlot(QWidget* parent, t_obsStat* obsStat)
 
   // Curves
   // ------
-  if (obsStat) {
+  if (plotDataMap.size() > 0) {
+    QMapIterator<t_prn, t_plotData> it(plotDataMap);
+    while (it.hasNext()) {
+      it.next();
+      const t_plotData& plotData = it.value();
 
-    QwtPlotCurve* curveNumSat = new QwtPlotCurve(textNumSat);
-    curveNumSat->setXAxis(QwtPlot::xBottom);
-    curveNumSat->setYAxis(QwtPlot::yLeft);
-    curveNumSat->setSamples(obsStat->_mjdX24, obsStat->_numSat);
-    curveNumSat->setPen(QPen(textNumSat.color()));
-    curveNumSat->attach(this);
-
-    QwtPlotCurve* curvePDOP = new QwtPlotCurve(textPDOP);
-    curvePDOP->setXAxis(QwtPlot::xBottom);
-    curvePDOP->setYAxis(QwtPlot::yRight);
-    curvePDOP->setSamples(obsStat->_mjdX24, obsStat->_PDOP);
-    curvePDOP->setPen(QPen(textPDOP.color()));
-    curvePDOP->attach(this);
+      QwtPlotCurve* curveNumSat = new QwtPlotCurve(textNumSat);
+      curveNumSat->setXAxis(QwtPlot::xBottom);
+      curveNumSat->setYAxis(QwtPlot::yLeft);
+      curveNumSat->setSamples(plotData._mjdX24, plotData._numSat);
+      curveNumSat->setPen(QPen(textNumSat.color()));
+      curveNumSat->attach(this);
+     
+      QwtPlotCurve* curvePDOP = new QwtPlotCurve(textPDOP);
+      curvePDOP->setXAxis(QwtPlot::xBottom);
+      curvePDOP->setYAxis(QwtPlot::yRight);
+      curvePDOP->setSamples(plotData._mjdX24, plotData._PDOP);
+      curvePDOP->setPen(QPen(textPDOP.color()));
+      curvePDOP->attach(this);
+    }
   }
   
   // Important !!!

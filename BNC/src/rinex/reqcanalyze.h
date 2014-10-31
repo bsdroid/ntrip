@@ -36,6 +36,7 @@ class t_polarPoint;
 class t_plotData {
  public:
   QVector<double> _mjdX24;
+  QVector<double> _numSat;
   QVector<double> _PDOP;
   QVector<double> _L1ok;
   QVector<double> _L2ok;
