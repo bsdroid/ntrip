@@ -60,7 +60,7 @@ class t_scaleDrawTime : public QwtScaleDraw {
 
 // Constructor
 //////////////////////////////////////////////////////////////////////////////
-t_elePlot::t_elePlot(QWidget* parent, QMap<QString, t_availData>* availDataMap) 
+t_elePlot::t_elePlot(QWidget* parent, QMap<t_prn, t_availData>* availDataMap) 
 : QwtPlot(parent) {
 
   setCanvasBackground(QColor(Qt::white));
@@ -83,11 +83,11 @@ t_elePlot::t_elePlot(QWidget* parent, QMap<QString, t_availData>* availDataMap)
   int numCurves = availDataMap->size();
   if (numCurves > 0) {
     int iC = 0;
-    QMapIterator<QString, t_availData > it(*availDataMap);
+    QMapIterator<t_prn, t_availData > it(*availDataMap);
     while (it.hasNext()) {
       it.next();
       ++iC;
-      const QString&     prn       = it.key();
+      QString            prn       = QString(it.key().toString().c_str());
       const t_availData& availData = it.value();
     
       // Draw one curve

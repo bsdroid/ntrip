@@ -5,6 +5,7 @@
 #include <qwt_plot.h>
 #include <qwt_symbol.h>
 #include <qwt_plot_curve.h>
+#include "t_prn.h"
 
 class t_availData;
 
@@ -12,7 +13,7 @@ class t_availPlot: public QwtPlot {
  Q_OBJECT
 
 public:
-  t_availPlot(QWidget* parent, QMap<QString, t_availData>* availDataMap);
+  t_availPlot(QWidget* parent, QMap<t_prn, t_availData>* availDataMap);
 
 private:
   QwtPlotCurve* addCurve(const QString& name, const QwtSymbol& symbol,
