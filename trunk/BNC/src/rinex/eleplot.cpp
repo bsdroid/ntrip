@@ -60,7 +60,7 @@ class t_scaleDrawTime : public QwtScaleDraw {
 
 // Constructor
 //////////////////////////////////////////////////////////////////////////////
-t_elePlot::t_elePlot(QWidget* parent, QMap<t_prn, t_availData>* availDataMap) 
+t_elePlot::t_elePlot(QWidget* parent, const QMap<t_prn, t_plotData>& plotDataMap) 
 : QwtPlot(parent) {
 
   setCanvasBackground(QColor(Qt::white));
@@ -80,21 +80,21 @@ t_elePlot::t_elePlot(QWidget* parent, QMap<t_prn, t_availData>* availDataMap)
 
   // Curves
   // ------
-  int numCurves = availDataMap->size();
+  int numCurves = plotDataMap.size();
   if (numCurves > 0) {
     int iC = 0;
-    QMapIterator<t_prn, t_availData > it(*availDataMap);
+    QMapIterator<t_prn, t_plotData> it(plotDataMap);
     while (it.hasNext()) {
       it.next();
       ++iC;
-      QString            prn       = QString(it.key().toString().c_str());
-      const t_availData& availData = it.value();
+      QString           prn      = QString(it.key().toString().c_str());
+      const t_plotData& plotData = it.value();
     
       // Draw one curve
       // --------------
-      if (availData._eleTim.size()) {
-        const QVector<double>& xData = availData._eleTim;
-        const QVector<double>& yData = availData._eleDeg;
+      if (plotData._mjdX24.size()) {
+        const QVector<double>& xData = plotData._mjdX24;
+        const QVector<double>& yData = plotData._eleDeg;
         QColor color = QColor::fromHsv((iC-1)*(359.0/numCurves), 255, 255);
         QwtSymbol symbol(QwtSymbol::Rect, QBrush(color), QPen(color), QSize(1,1));
         addCurve(prn, symbol, xData, yData);

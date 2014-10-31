@@ -636,13 +636,15 @@ void t_reqcAnalyze::dspSkyPlot(const QString& fileName, const QByteArray& title1
 ////////////////////////////////////////////////////////////////////////////
 void t_reqcAnalyze::dspAvailPlot(const QString& fileName, const QByteArray& title) {
 
+  QMap<t_prn, t_plotData> plotData;
+
   if (BNC_CORE->GUIenabled()) {
-    t_availPlot* plotA = new t_availPlot(0, _qcFile._qcEpoSampled);
+    t_availPlot* plotA = new t_availPlot(0, plotData);
     plotA->setTitle(title);
 
-    t_elePlot* plotZ = new t_elePlot(0, _qcFile._qcEpoSampled);
+    t_elePlot* plotZ = new t_elePlot(0, plotData);
 
-    t_dopPlot* plotD = new t_dopPlot(0, _qcFile._qcEpoSampled);
+    t_dopPlot* plotD = new t_dopPlot(0, plotData);
 
     QVector<QWidget*> plots;
     plots << plotA << plotZ << plotD;
