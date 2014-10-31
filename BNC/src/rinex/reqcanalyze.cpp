@@ -646,15 +646,33 @@ void t_reqcAnalyze::slotDspSkyPlot(const QString& fileName, const QByteArray& ti
 ////////////////////////////////////////////////////////////////////////////
 void t_reqcAnalyze::slotDspAvailPlot(const QString& fileName, const QByteArray& title) {
 
-  QMap<t_prn, t_plotData> plotData;
+  QMap<t_prn, t_plotData> plotDataMap;
+
+  for (int ii = 0; ii < _qcFile._qcEpo.size(); ii++) {
+    const t_qcEpo& qcEpo = _qcFile._qcEpo[ii];
+    QMapIterator<t_prn, t_qcObs> it(qcEpo._qcObs);
+    while (it.hasNext()) {
+      it.next();
+      const t_prn&   prn   = it.key();
+      const t_qcObs& qcObs = it.value();
+      t_plotData& plotData = plotDataMap[prn];
+      double mjdX24 = qcEpo._epoTime.mjddec() * 24.0;
+      if (qcObs._hasL1)  plotData._L1ok   << mjdX24;
+      if (qcObs._hasL2)  plotData._L2ok   << mjdX24;
+      if (qcObs._slipL1) plotData._L1slip << mjdX24;
+      if (qcObs._slipL2) plotData._L2slip << mjdX24;
+      if (qcObs._gapL1)  plotData._L1gap  << mjdX24;
+      if (qcObs._gapL2)  plotData._L2gap  << mjdX24;
+    }
+  }
 
   if (BNC_CORE->GUIenabled()) {
-    t_availPlot* plotA = new t_availPlot(0, plotData);
+    t_availPlot* plotA = new t_availPlot(0, plotDataMap);
     plotA->setTitle(title);
 
-    t_elePlot* plotZ = new t_elePlot(0, plotData);
+    t_elePlot* plotZ = new t_elePlot(0, plotDataMap);
 
-    t_dopPlot* plotD = new t_dopPlot(0, plotData);
+    t_dopPlot* plotD = new t_dopPlot(0, plotDataMap);
 
     QVector<QWidget*> plots;
     plots << plotA << plotZ << plotD;
