@@ -55,8 +55,6 @@
 
 using namespace std;
 
-const double SLIPTRESH = 10.0; // cycle-slip threshold (meters)
-
 // Constructor
 ////////////////////////////////////////////////////////////////////////////
 t_reqcAnalyze::t_reqcAnalyze(QObject* parent) : QThread(parent) {
@@ -66,26 +64,9 @@ t_reqcAnalyze::t_reqcAnalyze(QObject* parent) : QThread(parent) {
   _logFileName  = settings.value("reqcOutLogFile").toString(); expandEnvVar(_logFileName);
   _logFile      = 0;
   _log          = 0;
+  _currEpo      = 0;
   _obsFileNames = settings.value("reqcObsFile").toString().split(",", QString::SkipEmptyParts);
   _navFileNames = settings.value("reqcNavFile").toString().split(",", QString::SkipEmptyParts);
-
-  _currEpo = 0;
-
-  connect(this, SIGNAL(dspSkyPlot(const QString&,
-                                  const QByteArray&,
-                                  QVector<t_polarPoint*>*,
-                                  const QByteArray&,
-                                  QVector<t_polarPoint*>*,
-                                  const QByteArray&, double)),
-          this, SLOT(slotDspSkyPlot(const QString&,
-                                    const QByteArray&,
-                                    QVector<t_polarPoint*>*,
-                                    const QByteArray&,
-                                    QVector<t_polarPoint*>*,
-                                    const QByteArray&, double)));
-
-  connect(this, SIGNAL(dspAvailPlot(const QString&, const QByteArray&)),
-          this, SLOT(slotDspAvailPlot(const QString&, const QByteArray&)));
 }
 
 // Destructor
@@ -101,67 +82,6 @@ t_reqcAnalyze::~t_reqcAnalyze() {
   delete _logFile; _logFile = 0;
   if (BNC_CORE->mode() != t_bncCore::interactive) {
     qApp->exit(0);
-  }
-}
-
-//
-////////////////////////////////////////////////////////////////////////////
-void t_reqcAnalyze::slotDspSkyPlot(const QString& fileName,
-                                   const QByteArray& title1,
-                                   QVector<t_polarPoint*>* data1,
-                                   const QByteArray& title2,
-                                   QVector<t_polarPoint*>* data2,
-                                   const QByteArray& scaleTitle,
-                                   double maxValue) {
-
-  if (BNC_CORE->GUIenabled()) {
-
-    if (maxValue == 0.0) {
-      if (data1) {
-        for (int ii = 0; ii < data1->size(); ii++) {
-          double val = data1->at(ii)->_value;
-          if (maxValue < val) {
-            maxValue = val;
-          }
-        }
-      }
-      if (data2) {
-        for (int ii = 0; ii < data2->size(); ii++) {
-          double val = data2->at(ii)->_value;
-          if (maxValue < val) {
-            maxValue = val;
-          }
-        }
-      }
-    }
-
-    QwtInterval scaleInterval(0.0, maxValue);
-
-    QVector<QWidget*> plots;
-    if (data1) {
-      t_polarPlot* plot1 = new t_polarPlot(QwtText(title1), scaleInterval,
-                                          BNC_CORE->mainWindow());
-      plot1->addCurve(data1);
-      plots << plot1;
-    }
-    if (data2) {
-      t_polarPlot* plot2 = new t_polarPlot(QwtText(title2), scaleInterval,
-                                           BNC_CORE->mainWindow());
-      plot2->addCurve(data2);
-      plots << plot2;
-    }
-
-    t_graphWin* graphWin = new t_graphWin(0, fileName, plots,
-                                          &scaleTitle, &scaleInterval);
-
-    graphWin->show();
-
-    bncSettings settings;
-    QString dirName = settings.value("reqcPlotDir").toString();
-    if (!dirName.isEmpty()) {
-      QByteArray ext = (scaleTitle == "Meters") ? "_M.png" : "_S.png";
-      graphWin->savePNG(dirName, ext);
-    }
   }
 }
 
@@ -201,7 +121,7 @@ void t_reqcAnalyze::run() {
 ////////////////////////////////////////////////////////////////////////////
 void t_reqcAnalyze::analyzeFile(t_rnxObsFile* obsFile) {
 
-  _mutex.lock();
+  QMutexLocker lock(&_mutex);
 
   if (_log) {
     *_log << "\nAnalyze File\n"
@@ -209,9 +129,7 @@ void t_reqcAnalyze::analyzeFile(t_rnxObsFile* obsFile) {
           << "File:            " << obsFile->fileName().toAscii().data() << endl;
   }
 
-  _allObsMap.clear();
-  _availDataMap.clear();
-  _obsStat.reset();
+  _qcFile.clear();
 
   // A priori Coordinates
   // --------------------
@@ -220,61 +138,40 @@ void t_reqcAnalyze::analyzeFile(t_rnxObsFile* obsFile) {
   // Loop over all Epochs
   // --------------------
   try {
-    unsigned iEpo = 0;
+    bool firstEpo = true;
     while ( (_currEpo = obsFile->nextEpoch()) != 0) {
-
-      if (iEpo == 0) {
-        _obsStat._startTime    = _currEpo->tt;
-        _obsStat._antennaName  = obsFile->antennaName();
-        _obsStat._markerName   = obsFile->markerName();
-        _obsStat._receiverType = obsFile->receiverType();
-        _obsStat._interval     = obsFile->interval();
+      if (firstEpo) {
+        firstEpo = false;
+        _qcFile._startTime    = _currEpo->tt;
+        _qcFile._antennaName  = obsFile->antennaName();
+        _qcFile._markerName   = obsFile->markerName();
+        _qcFile._receiverType = obsFile->receiverType();
+        _qcFile._interval     = obsFile->interval();
       }
-      _obsStat._endTime = _currEpo->tt;
+      _qcFile._endTime = _currEpo->tt;
+
+      t_qcEpo qcEpo;
+      qcEpo._epoTime = _currEpo->tt;
+      qcEpo._PDOP    = cmpDOP(xyzSta);
 
       // Loop over all satellites
       // ------------------------
       for (unsigned iObs = 0; iObs < _currEpo->rnxSat.size(); iObs++) {
         const t_rnxObsFile::t_rnxSat& rnxSat = _currEpo->rnxSat[iObs];
-        t_satObs obs;
-        t_rnxObsFile::setObsFromRnx(obsFile, _currEpo, rnxSat, obs);
-
-        const t_prn& prn = obs._prn;
-
-        t_ephGlo* ephGlo  = 0;
-        int       slotNum = 0;
-        if (prn.system() == 'R') {
-          for (int ie = 0; ie < _ephs.size(); ie++) {
-            if (_ephs[ie]->prn() == prn) {
-              ephGlo = dynamic_cast<t_ephGlo*>(_ephs[ie]);
-              break;
-            }
-          }
-          if (ephGlo) {
-            slotNum = ephGlo->slotNum();
-          }
-        }
-
-        t_irc irc = _allObsMap[prn].addObs(obs, slotNum);
-
-        if (irc == success) {
-          t_oneObs* newObs = _allObsMap[prn]._oneObsVec.last();
-          if (ephGlo) {
-            newObs->_slotSet = true;
-          }
-          if (newObs->_hasL1 && newObs->_hasL2) {
-            _obsStat._prnStat[prn]._numObs += 1;
-          }
-          if (newObs->_slipL1 && newObs->_slipL2) {
-            _obsStat._prnStat[prn]._numSlipsFlagged += 1;
-          }
+        t_satObs satObs;
+        t_rnxObsFile::setObsFromRnx(obsFile, _currEpo, rnxSat, satObs);
+        t_qcObs qcObs;
+        if (setQcObs(satObs, qcObs) == success) {
+          qcEpo._qcObs[satObs._prn] = qcObs;
+          updateQcSat(qcObs, _qcFile._qcSat[satObs._prn]);
         }
       }
+      _qcFile._qcEpo.push_back(qcEpo);
+    }
 
-      prepareObsStat(iEpo, obsFile->interval(), xyzSta);
-      iEpo++;
+    preparePlotData(obsFile);
 
-    } // while (_currEpo)
+    printReport();
   }
   catch (QString str) {
     if (_log) {
@@ -283,441 +180,7 @@ void t_reqcAnalyze::analyzeFile(t_rnxObsFile* obsFile) {
     else {
       qDebug() << str;
     }
-    _mutex.unlock();
-    return;
   }
-
-  // Analyze the Multipath
-  // ---------------------
-  QVector<t_polarPoint*>* dataMP1  = new QVector<t_polarPoint*>;
-  QVector<t_polarPoint*>* dataMP2  = new QVector<t_polarPoint*>;
-  QVector<t_polarPoint*>* dataSNR1 = new QVector<t_polarPoint*>;
-  QVector<t_polarPoint*>* dataSNR2 = new QVector<t_polarPoint*>;
-
-  QMutableMapIterator<t_prn, t_allObs> it(_allObsMap);
-  while (it.hasNext()) {
-    it.next();
-    const t_prn& prn = it.key();
-    preparePlotData(prn, xyzSta, obsFile->interval(),
-                    dataMP1, dataMP2, dataSNR1, dataSNR2);
-  }
-
-  printReport(dataMP1, dataMP2, dataSNR1, dataSNR2);
-
-  // Show the plots
-  // --------------
-  if (BNC_CORE->GUIenabled()) {
-    QFileInfo  fileInfo(obsFile->fileName());
-    QByteArray title = fileInfo.fileName().toAscii();
-    emit dspSkyPlot(obsFile->fileName(), "MP1", dataMP1, "MP2", dataMP2,
-                    "Meters", 2.0);
-    double mean = 0.0;
-    for (int ii = 0; ii < dataSNR1->size(); ii++) {
-      const t_polarPoint* point = dataSNR1->at(ii);
-      mean += point->_value;
-    }
-    if (dataSNR1->size() > 0) {
-      mean /= dataSNR1->size();
-    }
-    double max = (mean > 9.0) ? 54.0 : 9.0;
-    QByteArray str = (mean > 9.0) ? "dbHz" : "";
-    emit dspSkyPlot(obsFile->fileName(), "SNR1", dataSNR1, "SNR2", dataSNR2,
-    		str, max);
-    emit dspAvailPlot(obsFile->fileName(), title);
-  }
-  else {
-    for (int ii = 0; ii < dataMP1->size(); ii++) {
-      delete dataMP1->at(ii);
-    }
-    delete dataMP1;
-    for (int ii = 0; ii < dataMP2->size(); ii++) {
-      delete dataMP2->at(ii);
-    }
-    delete dataMP2;
-    for (int ii = 0; ii < dataSNR1->size(); ii++) {
-      delete dataSNR1->at(ii);
-    }
-    delete dataSNR1;
-    for (int ii = 0; ii < dataSNR2->size(); ii++) {
-      delete dataSNR2->at(ii);
-    }
-    delete dataSNR2;
-    _mutex.unlock();
-  }
-}
-
-//
-////////////////////////////////////////////////////////////////////////////
-t_irc t_reqcAnalyze::t_allObs::addObs(const t_satObs& obs, int slotNum) {
-
-  t_oneObs* newObs = new t_oneObs(obs._time.gpsw(), obs._time.gpssec());
-  bool      okFlag = false;
-
-  // Availability and Slip Flags
-  // ---------------------------
-  double L1 = 0.0;
-  double L2 = 0.0;
-  double P1 = 0.0;
-  double P2 = 0.0;
-
-  for (unsigned iFrq = 0; iFrq < obs._obs.size(); iFrq++) {
-    const t_frqObs* frqObs = obs._obs[iFrq];
-    if      (frqObs->_rnxType2ch[0] == '1') {
-      if (frqObs->_phaseValid) {
-        L1              = frqObs->_phase;
-        newObs->_hasL1  = true;
-        newObs->_slipL1 = frqObs->_slip;
-      }
-      if (frqObs->_codeValid) {
-        P1 = frqObs->_code;
-      }
-      if (frqObs->_snrValid) {
-        newObs->_SNR1 = frqObs->_snr;
-      }
-    }
-    else if ( (obs._prn.system() != 'E' && frqObs->_rnxType2ch[0] == '2') ||
-              (obs._prn.system() == 'E' && frqObs->_rnxType2ch[0] == '5') ) {
-      if (frqObs->_phaseValid) {
-        L2             = frqObs->_phase;
-        newObs->_hasL2 = true;
-        newObs->_slipL2 = frqObs->_slip;
-      }
-      if (frqObs->_codeValid) {
-        P2 = frqObs->_code;
-      }
-      if (frqObs->_snrValid) {
-        newObs->_SNR2 = frqObs->_snr;
-      }
-    }
-  }
-
-  // Compute the Multipath
-  // ----------------------
-  if (L1 != 0.0 && L2 != 0.0) {
-    double f1 = 0.0;
-    double f2 = 0.0;
-    if      (obs._prn.system() == 'G') {
-      f1 = t_CST::freq(t_frequency::G1, 0);
-      f2 = t_CST::freq(t_frequency::G2, 0);
-    }
-    else if (obs._prn.system() == 'R') {
-      f1 = t_CST::freq(t_frequency::R1, slotNum);
-      f2 = t_CST::freq(t_frequency::R2, slotNum);
-    }
-    else if (obs._prn.system() == 'E') {
-      f1 = t_CST::freq(t_frequency::E1, 0);
-      f2 = t_CST::freq(t_frequency::E5, 0);
-    }
-
-    L1 = L1 * t_CST::c / f1;
-    L2 = L2 * t_CST::c / f2;
-
-    if (P1 != 0.0) {
-      newObs->_MP1 = P1 - L1 - 2.0*f2*f2/(f1*f1-f2*f2) * (L1 - L2);
-      okFlag = true;
-    }
-    if (P2 != 0.0) {
-      newObs->_MP2 = P2 - L2 - 2.0*f1*f1/(f1*f1-f2*f2) * (L1 - L2);
-      okFlag = true;
-    }
-  }
-
-  // Remember the Observation
-  // ------------------------
-  if (okFlag) {
-    _oneObsVec << newObs;
-    return success;
-  }
-  else {
-    delete newObs;
-    return failure;
-  }
-}
-
-//
-////////////////////////////////////////////////////////////////////////////
-void t_reqcAnalyze::prepareObsStat(unsigned iEpo, double obsInterval,
-                                   const ColumnVector& xyzSta) {
-  const int sampl = int(30.0 / obsInterval);
-  if (iEpo % sampl == 0) {
-    double mjdX24 = _currEpo->tt.mjddec() * 24.0;
-    if (iEpo != 0) {
-      _obsStat._mjdX24 << mjdX24;
-      _obsStat._numSat << _obsStat._numSat.last();
-      _obsStat._PDOP   << _obsStat._PDOP.last();
-    }
-    _obsStat._mjdX24 << mjdX24;
-    _obsStat._numSat << _currEpo->rnxSat.size();
-    _obsStat._PDOP   << cmpDOP(xyzSta);
-  }
-}
-
-//
-////////////////////////////////////////////////////////////////////////////
-void t_reqcAnalyze::preparePlotData(const t_prn& prn,
-                                    const ColumnVector& xyzSta,
-                                    double obsInterval,
-                                    QVector<t_polarPoint*>* dataMP1,
-                                    QVector<t_polarPoint*>* dataMP2,
-                                    QVector<t_polarPoint*>* dataSNR1,
-                                    QVector<t_polarPoint*>* dataSNR2) {
-
-  const int chunkStep = int( 30.0 / obsInterval); // chunk step (30 sec)
-  const int numEpo    = int(600.0 / obsInterval); // # epochs in one chunk (10 min)
-
-  t_allObs& allObs = _allObsMap[prn];
-
-  bncSettings settings;
-  QString reqSkyPlotSystems = settings.value("reqcSkyPlotSystems").toString();
-  bool plotGPS = false;
-  bool plotGlo = false;
-  bool plotGal = false;
-  if      (reqSkyPlotSystems == "GPS") {
-    plotGPS = true;
-  }
-  else if (reqSkyPlotSystems == "GLONASS") {
-    plotGlo = true;
-  }
-  else if (reqSkyPlotSystems == "Galileo") {
-    plotGal = true;
-  }
-  else {
-    plotGPS = true;
-    plotGlo = true;
-    plotGal = true;
-  }
-
-  // Loop over all Chunks of Data
-  // ----------------------------
-  bool slipFound = false;
-  for (int chunkStart = 0; chunkStart + numEpo < allObs._oneObsVec.size();
-       chunkStart += chunkStep) {
-
-    if (chunkStart * chunkStep == numEpo) {
-      slipFound = false;
-    }
-
-    // Chunk-Specific Variables
-    // ------------------------
-    bncTime currTime;
-    bncTime prevTime;
-    bncTime chunkStartTime;
-    double  mjdX24  = 0.0;
-    bool    availL1 = false;
-    bool    availL2 = false;
-    bool    gapL1   = false;
-    bool    gapL2   = false;
-    bool    slipL1  = false;
-    bool    slipL2  = false;
-    double  meanMP1 = 0.0;
-    double  meanMP2 = 0.0;
-    double  minSNR1 = 0.0;
-    double  minSNR2 = 0.0;
-    double  aziDeg  = 0.0;
-    double  zenDeg  = 0.0;
-    bool    zenFlag = false;
-
-    // Loop over all Epochs within one Chunk of Data
-    // ---------------------------------------------
-    bool slotSet = false;
-    for (int ii = 0; ii < numEpo; ii++) {
-      int iEpo = chunkStart + ii;
-      const t_oneObs* oneObs = allObs._oneObsVec[iEpo];
-      if (oneObs->_slotSet) {
-        slotSet = true;
-      }
-
-      currTime.set(oneObs->_GPSWeek, oneObs->_GPSWeeks);
-
-      // Compute the Azimuth and Zenith Distance
-      // ---------------------------------------
-      if (ii == 0) {
-        chunkStartTime = currTime;
-        mjdX24 = chunkStartTime.mjddec() * 24.0;
-
-        if (xyzSta.size()) {
-          t_eph* eph = 0;
-          for (int ie = 0; ie < _ephs.size(); ie++) {
-            if (_ephs[ie]->prn() == prn) {
-              eph = _ephs[ie];
-              break;
-            }
-          }
-
-          if (eph) {
-            ColumnVector xc(4);
-            ColumnVector vv(3);
-            if (eph->getCrd(bncTime(oneObs->_GPSWeek, oneObs->_GPSWeeks), xc, vv, false) == success) {
-              double rho, eleSat, azSat;
-              topos(xyzSta(1), xyzSta(2), xyzSta(3), xc(1), xc(2), xc(3), rho, eleSat, azSat);
-              aziDeg = azSat * 180.0/M_PI;
-              zenDeg = 90.0 - eleSat * 180.0/M_PI;
-              zenFlag = true;
-            }
-          }
-        }
-      }
-
-      // Check Interval
-      // --------------
-      if (prevTime.valid()) {
-        double dt = currTime - prevTime;
-        if (dt > 1.5 * obsInterval) {
-          gapL1 = true;
-          gapL2 = true;
-        }
-      }
-      prevTime = currTime;
-
-      // Check L1 and L2 availability
-      // ----------------------------
-      if (oneObs->_hasL1) {
-        availL1 = true;
-      }
-      else {
-        gapL1 = true;
-      }
-      if (oneObs->_hasL2) {
-        availL2 = true;
-      }
-      else {
-        gapL2 = true;
-      }
-
-      // Check Minimal Signal-to-Noise Ratio
-      // -----------------------------------
-      if ( oneObs->_SNR1 > 0 && (minSNR1 == 0 || minSNR1 > oneObs->_SNR1) ) {
-        minSNR1 = oneObs->_SNR1;
-      }
-      if ( oneObs->_SNR2 > 0 && (minSNR2 == 0 || minSNR2 > oneObs->_SNR2) ) {
-        minSNR2 = oneObs->_SNR2;
-      }
-
-      // Check Slip Flags
-      // ----------------
-      if (oneObs->_slipL1) {
-        slipL1 = true;
-      }
-      if (oneObs->_slipL2) {
-        slipL2 = true;
-      }
-
-      meanMP1 += oneObs->_MP1;
-      meanMP2 += oneObs->_MP2;
-    }
-
-    // Compute the Multipath
-    // ---------------------
-    if ( (prn.system() == 'G' && plotGPS           ) ||
-         (prn.system() == 'R' && plotGlo && slotSet) ||
-         (prn.system() == 'E' && plotGal           ) ) {
-      bool slipMP = false;
-      meanMP1 /= numEpo;
-      meanMP2 /= numEpo;
-      double MP1 = 0.0;
-      double MP2 = 0.0;
-      for (int ii = 0; ii < numEpo; ii++) {
-        int iEpo = chunkStart + ii;
-        const t_oneObs* oneObs = allObs._oneObsVec[iEpo];
-        double diff1 = oneObs->_MP1 - meanMP1;
-        double diff2 = oneObs->_MP2 - meanMP2;
-
-        // Check Slip Threshold
-        // --------------------
-        if (fabs(diff1) > SLIPTRESH || fabs(diff2) > SLIPTRESH) {
-          slipMP = true;
-          break;
-        }
-
-        MP1 += diff1 * diff1;
-        MP2 += diff2 * diff2;
-      }
-      if (slipMP) {
-        slipL1 = true;
-        slipL2 = true;
-        if (!slipFound) {
-          slipFound = true;
-          _obsStat._prnStat[prn]._numSlipsFound += 1;
-        }
-      }
-      else {
-        MP1 = sqrt(MP1 / (numEpo-1));
-        MP2 = sqrt(MP2 / (numEpo-1));
-        (*dataMP1)  << (new t_polarPoint(aziDeg, zenDeg, MP1));
-        (*dataMP2)  << (new t_polarPoint(aziDeg, zenDeg, MP2));
-      }
-    }
-
-    // Availability Plot Data
-    // ----------------------
-    if (availL1) {
-      if      (slipL1) {
-        _availDataMap[prn]._L1slip << mjdX24;
-      }
-      else if (gapL1) {
-        _availDataMap[prn]._L1gap << mjdX24;
-      }
-      else {
-        _availDataMap[prn]._L1ok << mjdX24;
-      }
-    }
-    if (availL2) {
-      if      (slipL2) {
-        _availDataMap[prn]._L2slip << mjdX24;
-      }
-      else if (gapL2) {
-        _availDataMap[prn]._L2gap << mjdX24;
-      }
-      else {
-        _availDataMap[prn]._L2ok << mjdX24;
-      }
-    }
-    if (zenFlag) {
-      _availDataMap[prn]._eleTim << mjdX24;
-      _availDataMap[prn]._eleDeg << 90.0 - zenDeg;
-    }
-
-    // Signal-to-Noise Ratio Plot Data
-    // -------------------------------
-    if ( (prn.system() == 'G' && plotGPS) ||
-         (prn.system() == 'R' && plotGlo) ||
-         (prn.system() == 'E' && plotGal) ) {
-      (*dataSNR1) << (new t_polarPoint(aziDeg, zenDeg, minSNR1));
-      (*dataSNR2) << (new t_polarPoint(aziDeg, zenDeg, minSNR2));
-    }
-  }
-}
-
-//
-////////////////////////////////////////////////////////////////////////////
-void t_reqcAnalyze::slotDspAvailPlot(const QString& fileName,
-                                     const QByteArray& title) {
-
-  if (BNC_CORE->GUIenabled()) {
-    t_availPlot* plotA = new t_availPlot(0, &_availDataMap);
-    plotA->setTitle(title);
-
-    t_elePlot* plotZ = new t_elePlot(0, &_availDataMap);
-
-    t_dopPlot* plotD = new t_dopPlot(0, &_obsStat);
-
-    QVector<QWidget*> plots;
-    plots << plotA << plotZ << plotD;
-    t_graphWin* graphWin = new t_graphWin(0, fileName, plots, 0, 0);
-
-    int ww = QFontMetrics(graphWin->font()).width('w');
-    graphWin->setMinimumSize(120*ww, 40*ww);
-
-    graphWin->show();
-
-    bncSettings settings;
-    QString dirName = settings.value("reqcPlotDir").toString();
-    if (!dirName.isEmpty()) {
-      QByteArray ext = "_A.png";
-      graphWin->savePNG(dirName, ext);
-    }
-  }
-  _mutex.unlock();
 }
 
 // Compute Dilution of Precision
@@ -777,71 +240,460 @@ double t_reqcAnalyze::cmpDOP(const ColumnVector& xyzSta) const {
   return sqrt(QQ.trace());
 }
 
+//
+////////////////////////////////////////////////////////////////////////////
+void t_reqcAnalyze::updateQcSat(const t_qcObs& qcObs, t_qcSat& qcSat) {
+  if (qcObs._hasL1 && qcObs._hasL2) {
+    qcSat._numObs += 1;
+  }
+  if (qcObs._slipL1 && qcObs._slipL2) {
+    qcSat._numSlipsFlagged += 1;
+  }
+}
+
+//
+////////////////////////////////////////////////////////////////////////////
+t_irc t_reqcAnalyze::setQcObs(const t_satObs& satObs, t_qcObs& qcObs) {
+
+  if (satObs._prn.system() == 'R') {
+    t_ephGlo* ephGlo  = 0;
+    for (int ie = 0; ie < _ephs.size(); ie++) {
+      if (_ephs[ie]->prn() == satObs._prn) {
+        ephGlo = dynamic_cast<t_ephGlo*>(_ephs[ie]);
+        break;
+      }
+    }
+    if (ephGlo) {
+      qcObs._slotSet = true;
+      qcObs._slotNum = ephGlo->slotNum();
+    }
+  }
+
+  bool okFlag = false;
+
+  // Availability and Slip Flags
+  // ---------------------------
+  double L1 = 0.0;
+  double L2 = 0.0;
+  double P1 = 0.0;
+  double P2 = 0.0;
+
+  for (unsigned iFrq = 0; iFrq < satObs._obs.size(); iFrq++) {
+    const t_frqObs* frqObs = satObs._obs[iFrq];
+    if      (frqObs->_rnxType2ch[0] == '1') {
+      if (frqObs->_phaseValid) {
+        L1              = frqObs->_phase;
+        qcObs._hasL1  = true;
+        qcObs._slipL1 = frqObs->_slip;
+      }
+      if (frqObs->_codeValid) {
+        P1 = frqObs->_code;
+      }
+      if (frqObs->_snrValid) {
+        qcObs._SNR1 = frqObs->_snr;
+      }
+    }
+    else if ( (satObs._prn.system() != 'E' && frqObs->_rnxType2ch[0] == '2') ||
+              (satObs._prn.system() == 'E' && frqObs->_rnxType2ch[0] == '5') ) {
+      if (frqObs->_phaseValid) {
+        L2             = frqObs->_phase;
+        qcObs._hasL2 = true;
+        qcObs._slipL2 = frqObs->_slip;
+      }
+      if (frqObs->_codeValid) {
+        P2 = frqObs->_code;
+      }
+      if (frqObs->_snrValid) {
+        qcObs._SNR2 = frqObs->_snr;
+      }
+    }
+  }
+
+  // Compute the Multipath
+  // ----------------------
+  if (L1 != 0.0 && L2 != 0.0) {
+    double f1 = 0.0;
+    double f2 = 0.0;
+    if      (satObs._prn.system() == 'G') {
+      f1 = t_CST::freq(t_frequency::G1, 0);
+      f2 = t_CST::freq(t_frequency::G2, 0);
+    }
+    else if (satObs._prn.system() == 'R') {
+      f1 = t_CST::freq(t_frequency::R1, qcObs._slotNum);
+      f2 = t_CST::freq(t_frequency::R2, qcObs._slotNum);
+    }
+    else if (satObs._prn.system() == 'E') {
+      f1 = t_CST::freq(t_frequency::E1, 0);
+      f2 = t_CST::freq(t_frequency::E5, 0);
+    }
+
+    L1 = L1 * t_CST::c / f1;
+    L2 = L2 * t_CST::c / f2;
+
+    if (P1 != 0.0) {
+      qcObs._MP1 = P1 - L1 - 2.0*f2*f2/(f1*f1-f2*f2) * (L1 - L2);
+      okFlag = true;
+    }
+    if (P2 != 0.0) {
+      qcObs._MP2 = P2 - L2 - 2.0*f1*f1/(f1*f1-f2*f2) * (L1 - L2);
+      okFlag = true;
+    }
+  }
+
+  if (okFlag) {
+    return success;
+  }
+  else {
+    return failure;
+  }
+}
+
+//
+////////////////////////////////////////////////////////////////////////////
+void t_reqcAnalyze::preparePlotData(const t_rnxObsFile* obsFile) {
+
+  ColumnVector xyzSta = obsFile->xyz();
+
+  QVector<t_polarPoint*>* dataMP1  = new QVector<t_polarPoint*>;
+  QVector<t_polarPoint*>* dataMP2  = new QVector<t_polarPoint*>;
+  QVector<t_polarPoint*>* dataSNR1 = new QVector<t_polarPoint*>;
+  QVector<t_polarPoint*>* dataSNR2 = new QVector<t_polarPoint*>;
+
+  const double SLIPTRESH = 10.0;  // cycle-slip threshold (meters)
+  const double chunkStep = 600.0; // 10 minutes
+
+  bncSettings settings;
+  QString reqSkyPlotSystems = settings.value("reqcSkyPlotSystems").toString();
+  bool plotGPS = false;
+  bool plotGlo = false;
+  bool plotGal = false;
+  if      (reqSkyPlotSystems == "GPS") {
+    plotGPS = true;
+  }
+  else if (reqSkyPlotSystems == "GLONASS") {
+    plotGlo = true;
+  }
+  else if (reqSkyPlotSystems == "Galileo") {
+    plotGal = true;
+  }
+  else {
+    plotGPS = true;
+    plotGlo = true;
+    plotGal = true;
+  }
+
+  // Loop over all satellites available
+  // ----------------------------------
+  QMutableMapIterator<t_prn, t_qcSat> it(_qcFile._qcSat);
+  while (it.hasNext()) {
+    it.next();
+    const t_prn& prn   = it.key();
+    t_qcSat&     qcSat = it.value();
+
+    // Loop over all Chunks of Data
+    // ----------------------------
+    for (bncTime chunkStart = _qcFile._startTime; 
+         chunkStart < _qcFile._endTime; chunkStart += chunkStep) {
+
+      // Chunk (sampled) Epoch
+      // ---------------------
+      _qcFile._qcEpoSampled.push_back(t_qcEpo());
+      t_qcEpo& qcEpoSampled = _qcFile._qcEpoSampled.back();
+      t_qcObs& qcObsSampled = qcEpoSampled._qcObs[prn];
+
+      QVector<double> MP1;
+      QVector<double> MP2;
+    
+      // Loop over all Epochs within one Chunk of Data
+      // ---------------------------------------------
+      bncTime prevTime;
+      for (int iEpo = 0; iEpo < _qcFile._qcEpo.size(); iEpo++) {
+        const t_qcEpo& qcEpo = _qcFile._qcEpo[iEpo];
+        if (qcEpo._epoTime < chunkStart) {
+          continue;
+        }
+        if (!qcEpo._qcObs.contains(prn)) {
+          continue;
+        }
+      
+        const t_qcObs& qcObs = qcEpo._qcObs[prn];
+      
+        // Compute the Azimuth and Zenith Distance
+        // ---------------------------------------
+        if (chunkStart == qcEpo._epoTime) {
+          qcEpoSampled._epoTime = qcEpo._epoTime;
+          qcEpoSampled._PDOP    = qcEpo._PDOP;
+
+          if (qcObs._slotSet) {
+            qcObsSampled._slotSet = true;
+            qcObsSampled._slotNum = qcObs._slotNum;
+          }
+          if (xyzSta.size()) {
+            t_eph* eph = 0;
+            for (int ie = 0; ie < _ephs.size(); ie++) {
+              if (_ephs[ie]->prn() == prn) {
+                eph = _ephs[ie];
+                break;
+              }
+            }
+            if (eph) {
+              ColumnVector xc(4);
+              ColumnVector vv(3);
+              if (eph->getCrd(qcEpo._epoTime, xc, vv, false) == success) {
+                double rho, eleSat, azSat;
+                topos(xyzSta(1), xyzSta(2), xyzSta(3), xc(1), xc(2), xc(3), rho, eleSat, azSat);
+                qcObsSampled._azDeg  = azSat * 180.0/M_PI;
+                qcObsSampled._eleDeg = eleSat * 180.0/M_PI;
+              }
+            }
+          }
+        }
+      
+        // Check Interval
+        // --------------
+        if (prevTime.valid()) {
+          double dt = qcEpo._epoTime - prevTime;
+          if (dt > 1.5 * _qcFile._interval) {
+            qcObsSampled._gapL1 = true;
+            qcObsSampled._gapL2 = true;
+          }
+        }
+        prevTime = qcEpo._epoTime;
+      
+        // Check L1 and L2 availability
+        // ----------------------------
+        if (qcObs._hasL1) {
+          qcObsSampled._hasL1 = true;
+        }
+        if (qcObs._hasL2) {
+          qcObsSampled._hasL2 = true;
+        }
+      
+        // Check Minimal Signal-to-Noise Ratio
+        // -----------------------------------
+        if ( qcObs._SNR1 > 0 && (qcObsSampled._SNR1 == 0 || qcObsSampled._SNR1 > qcObs._SNR1) ) {
+          qcObsSampled._SNR1 = qcObs._SNR1;
+        }
+        if ( qcObs._SNR2 > 0 && (qcObsSampled._SNR2 == 0 || qcObsSampled._SNR2 > qcObs._SNR2) ) {
+          qcObsSampled._SNR2 = qcObs._SNR2;
+        }
+      
+        // Check Slip Flags
+        // ----------------
+        if (qcObs._slipL1) {
+          qcObsSampled._slipL1 = true;
+        }
+        if (qcObs._slipL2) {
+          qcObsSampled._slipL2 = true;
+        }
+      
+        MP1 << qcObs._MP1;
+        MP2 << qcObs._MP2;
+      }
+
+      // Compute the Multipath
+      // ---------------------
+      if ( MP1.size() > 0 && MP2.size() > 0 &&
+           ( (prn.system() == 'G' && plotGPS                         ) ||
+             (prn.system() == 'R' && plotGlo && qcObsSampled._slotSet) ||
+             (prn.system() == 'E' && plotGal                         ) ) ) {
+
+        double meanMP1 = 0.0;
+        double meanMP2 = 0.0;
+        for (int ii = 0; ii < MP1.size(); ii++) {
+          meanMP1 += MP1[ii];
+          meanMP2 += MP2[ii];
+        }
+        meanMP1 /= MP1.size();
+        meanMP2 /= MP2.size();
+
+        bool slipMP = false;
+        double stdMP1 = 0.0;
+        double stdMP2 = 0.0;
+        for (int ii = 0; ii < MP1.size(); ii++) {
+          double diff1 = MP1[ii] - meanMP1;
+          double diff2 = MP2[ii] - meanMP2;
+          if (fabs(diff1) > SLIPTRESH || fabs(diff2) > SLIPTRESH) {
+            slipMP = true;
+            break;
+          }
+          stdMP1 += diff1 * diff1;
+          stdMP1 += diff2 * diff2;
+        }
+
+        if (slipMP) {
+          qcObsSampled._slipL1 = true;
+          qcObsSampled._slipL2 = true;
+          qcSat._numSlipsFound += 1;
+        }
+        else {
+          stdMP1 = sqrt(stdMP1 / MP1.size());
+          stdMP2 = sqrt(stdMP2 / MP2.size());
+          (*dataMP1)  << (new t_polarPoint(qcObsSampled._azDeg, 90.0 - qcObsSampled._eleDeg, stdMP1));
+          (*dataMP2)  << (new t_polarPoint(qcObsSampled._azDeg, 90.0 - qcObsSampled._eleDeg, stdMP2));
+        }
+      }
+    
+      // Signal-to-Noise Ratio Plot Data
+      // -------------------------------
+      if ( (prn.system() == 'G' && plotGPS) ||
+           (prn.system() == 'R' && plotGlo) ||
+           (prn.system() == 'E' && plotGal) ) {
+        (*dataSNR1) << (new t_polarPoint(qcObsSampled._azDeg, 90.0 - qcObsSampled._eleDeg, qcObsSampled._SNR1));
+        (*dataSNR2) << (new t_polarPoint(qcObsSampled._azDeg, 90.0 - qcObsSampled._eleDeg, qcObsSampled._SNR2));
+      }
+    }
+  }
+
+  // Show the plots
+  // --------------
+  if (BNC_CORE->GUIenabled()) {
+    QFileInfo  fileInfo(obsFile->fileName());
+    QByteArray title = fileInfo.fileName().toAscii();
+    dspSkyPlot(obsFile->fileName(), "MP1", dataMP1, "MP2", dataMP2, "Meters", 2.0);
+    dspSkyPlot(obsFile->fileName(), "SNR1", dataSNR1, "SNR2", dataSNR2, "dbHz", 54.0);
+    dspAvailPlot(obsFile->fileName(), title);
+  }
+  else {
+    for (int ii = 0; ii < dataMP1->size(); ii++) {
+      delete dataMP1->at(ii);
+    }
+    delete dataMP1;
+    for (int ii = 0; ii < dataMP2->size(); ii++) {
+      delete dataMP2->at(ii);
+    }
+    delete dataMP2;
+    for (int ii = 0; ii < dataSNR1->size(); ii++) {
+      delete dataSNR1->at(ii);
+    }
+    delete dataSNR1;
+    for (int ii = 0; ii < dataSNR2->size(); ii++) {
+      delete dataSNR2->at(ii);
+    }
+    delete dataSNR2;
+  }
+}
+
+//
+////////////////////////////////////////////////////////////////////////////
+void t_reqcAnalyze::dspSkyPlot(const QString& fileName, const QByteArray& title1,
+                               QVector<t_polarPoint*>* data1, const QByteArray& title2,
+                               QVector<t_polarPoint*>* data2, const QByteArray& scaleTitle,
+                               double maxValue) {
+
+  if (BNC_CORE->GUIenabled()) {
+
+    if (maxValue == 0.0) {
+      if (data1) {
+        for (int ii = 0; ii < data1->size(); ii++) {
+          double val = data1->at(ii)->_value;
+          if (maxValue < val) {
+            maxValue = val;
+          }
+        }
+      }
+      if (data2) {
+        for (int ii = 0; ii < data2->size(); ii++) {
+          double val = data2->at(ii)->_value;
+          if (maxValue < val) {
+            maxValue = val;
+          }
+        }
+      }
+    }
+
+    QwtInterval scaleInterval(0.0, maxValue);
+
+    QVector<QWidget*> plots;
+    if (data1) {
+      t_polarPlot* plot1 = new t_polarPlot(QwtText(title1), scaleInterval,
+                                          BNC_CORE->mainWindow());
+      plot1->addCurve(data1);
+      plots << plot1;
+    }
+    if (data2) {
+      t_polarPlot* plot2 = new t_polarPlot(QwtText(title2), scaleInterval,
+                                           BNC_CORE->mainWindow());
+      plot2->addCurve(data2);
+      plots << plot2;
+    }
+
+    t_graphWin* graphWin = new t_graphWin(0, fileName, plots,
+                                          &scaleTitle, &scaleInterval);
+
+    graphWin->show();
+
+    bncSettings settings;
+    QString dirName = settings.value("reqcPlotDir").toString();
+    if (!dirName.isEmpty()) {
+      QByteArray ext = (scaleTitle == "Meters") ? "_M.png" : "_S.png";
+      graphWin->savePNG(dirName, ext);
+    }
+  }
+}
+
+//
+////////////////////////////////////////////////////////////////////////////
+void t_reqcAnalyze::dspAvailPlot(const QString& fileName, const QByteArray& title) {
+
+  if (BNC_CORE->GUIenabled()) {
+    t_availPlot* plotA = new t_availPlot(0, _qcFile._qcEpoSampled);
+    plotA->setTitle(title);
+
+    t_elePlot* plotZ = new t_elePlot(0, _qcFile._qcEpoSampled);
+
+    t_dopPlot* plotD = new t_dopPlot(0, _qcFile._qcEpoSampled);
+
+    QVector<QWidget*> plots;
+    plots << plotA << plotZ << plotD;
+    t_graphWin* graphWin = new t_graphWin(0, fileName, plots, 0, 0);
+
+    int ww = QFontMetrics(graphWin->font()).width('w');
+    graphWin->setMinimumSize(120*ww, 40*ww);
+
+    graphWin->show();
+
+    bncSettings settings;
+    QString dirName = settings.value("reqcPlotDir").toString();
+    if (!dirName.isEmpty()) {
+      QByteArray ext = "_A.png";
+      graphWin->savePNG(dirName, ext);
+    }
+  }
+}
+
 // Finish the report
 ////////////////////////////////////////////////////////////////////////////
-void t_reqcAnalyze::printReport(QVector<t_polarPoint*>* dataMP1,
-                                QVector<t_polarPoint*>* dataMP2,
-                                QVector<t_polarPoint*>* dataSNR1,
-                                QVector<t_polarPoint*>* dataSNR2) {
+void t_reqcAnalyze::printReport() {
 
   if (!_log) {
     return;
   }
 
-  *_log << "Marker name:     " << _obsStat._markerName   << endl
-        << "Receiver:        " << _obsStat._receiverType << endl
-        << "Antenna:         " << _obsStat._antennaName  << endl
-        << "Start time:      " << _obsStat._startTime.datestr().c_str() << ' '
-                               << _obsStat._startTime.timestr().c_str() << endl
-        << "End time:        " << _obsStat._endTime.datestr().c_str() << ' '
-                               << _obsStat._endTime.timestr().c_str() << endl
-        << "Interval:        " << _obsStat._interval << endl
-        << "# Sat.:          " << _obsStat._prnStat.size() << endl;
+  *_log << "Marker name:     " << _qcFile._markerName   << endl
+        << "Receiver:        " << _qcFile._receiverType << endl
+        << "Antenna:         " << _qcFile._antennaName  << endl
+        << "Start time:      " << _qcFile._startTime.datestr().c_str() << ' '
+                               << _qcFile._startTime.timestr().c_str() << endl
+        << "End time:        " << _qcFile._endTime.datestr().c_str() << ' '
+                               << _qcFile._endTime.timestr().c_str() << endl
+        << "Interval:        " << _qcFile._interval << endl
+        << "# Sat.:          " << _qcFile._qcSat.size() << endl;
 
   int numObs          = 0;
   int numSlipsFlagged = 0;
   int numSlipsFound   = 0;
-  QMapIterator<t_prn, t_prnStat> it(_obsStat._prnStat);
+  QMapIterator<t_prn, t_qcSat> it(_qcFile._qcSat);
   while (it.hasNext()) {
     it.next();
-    const t_prnStat& prnStat = it.value();
-    numObs          += prnStat._numObs;
-    numSlipsFlagged += prnStat._numSlipsFlagged;
-    numSlipsFound   += prnStat._numSlipsFound;
+    const t_qcSat& qcSat = it.value();
+    numObs          += qcSat._numObs;
+    numSlipsFlagged += qcSat._numSlipsFlagged;
+    numSlipsFound   += qcSat._numSlipsFound;
   }
   *_log << "# Obs.:          " << numObs          << endl
         << "# Slips (file):  " << numSlipsFlagged << endl
         << "# Slips (found): " << numSlipsFound   << endl;
-
-  for (int kk = 1; kk <= 4; kk++) {
-    QVector<t_polarPoint*>* data = 0;
-    QString text;
-    if      (kk == 1) {
-      data = dataMP1;
-      text = "Mean MP1:        ";
-    }
-    else if (kk == 2) {
-      data = dataMP2;
-      text = "Mean MP2:        ";
-    }
-    else if (kk == 3) {
-      data = dataSNR1;
-      text = "Mean SNR1:       ";
-    }
-    else if (kk == 4) {
-      data = dataSNR2;
-      text = "Mean SNR2:       ";
-    }
-    double mean = 0.0;
-    for (int ii = 0; ii < data->size(); ii++) {
-      const t_polarPoint* point = data->at(ii);
-      mean += point->_value;
-    }
-    if (data->size() > 0) {
-      mean /= data->size();
-    }
-    *_log << text << mean << endl;
-  }
 
   _log->flush();
 }
