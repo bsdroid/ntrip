@@ -59,6 +59,9 @@ Q_OBJECT
 
  signals:
   void finished();
+  void dspSkyPlot(const QString&, const QByteArray&, QVector<t_polarPoint*>*, 
+                  const QByteArray&, QVector<t_polarPoint*>*, const QByteArray&, double);
+  void dspAvailPlot(const QString&, const QByteArray&);
 
  private:
 
@@ -131,6 +134,14 @@ Q_OBJECT
     QVector<t_qcEpo>     _qcEpoSampled;
   };
 
+ private slots:
+  void   slotDspSkyPlot(const QString& fileName, const QByteArray& title1, 
+                    QVector<t_polarPoint*>* data1, const QByteArray& title2, 
+                    QVector<t_polarPoint*>* data2, const QByteArray& scaleTitle, double maxValue);
+
+  void   slotDspAvailPlot(const QString& fileName, const QByteArray& title);
+
+ private:
   void   analyzeFile(t_rnxObsFile* obsFile);
 
   void   updateQcSat(const t_qcObs& qcObs, t_qcSat& qcSat);
@@ -140,12 +151,6 @@ Q_OBJECT
   void   preparePlotData(const t_rnxObsFile* obsFile);
 
   double cmpDOP(const ColumnVector& xyzSta) const;
-
-  void   dspSkyPlot(const QString& fileName, const QByteArray& title1, 
-                    QVector<t_polarPoint*>* data1, const QByteArray& title2, 
-                    QVector<t_polarPoint*>* data2, const QByteArray& scaleTitle, double maxValue);
-
-  void   dspAvailPlot(const QString& fileName, const QByteArray& title);
 
   void   printReport();
 

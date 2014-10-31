@@ -67,6 +67,16 @@ t_reqcAnalyze::t_reqcAnalyze(QObject* parent) : QThread(parent) {
   _currEpo      = 0;
   _obsFileNames = settings.value("reqcObsFile").toString().split(",", QString::SkipEmptyParts);
   _navFileNames = settings.value("reqcNavFile").toString().split(",", QString::SkipEmptyParts);
+
+  connect(this, SIGNAL(dspSkyPlot(const QString&, const QByteArray&, QVector<t_polarPoint*>*, 
+                                  const QByteArray&, QVector<t_polarPoint*>*,
+                                  const QByteArray&, double)), 
+          this, SLOT(slotDspSkyPlot(const QString&, const QByteArray&, QVector<t_polarPoint*>*, 
+                                    const QByteArray&, QVector<t_polarPoint*>*,
+                                    const QByteArray&, double)));
+
+  connect(this, SIGNAL(dspAvailPlot(const QString&, const QByteArray&)),
+          this, SLOT(slotDspAvailPlot(const QString&, const QByteArray&)));
 }
 
 // Destructor
@@ -550,9 +560,9 @@ void t_reqcAnalyze::preparePlotData(const t_rnxObsFile* obsFile) {
   if (BNC_CORE->GUIenabled()) {
     QFileInfo  fileInfo(obsFile->fileName());
     QByteArray title = fileInfo.fileName().toAscii();
-    dspSkyPlot(obsFile->fileName(), "MP1", dataMP1, "MP2", dataMP2, "Meters", 2.0);
-    dspSkyPlot(obsFile->fileName(), "SNR1", dataSNR1, "SNR2", dataSNR2, "dbHz", 54.0);
-    dspAvailPlot(obsFile->fileName(), title);
+    emit dspSkyPlot(obsFile->fileName(), "MP1", dataMP1, "MP2", dataMP2, "Meters", 2.0);
+    emit dspSkyPlot(obsFile->fileName(), "SNR1", dataSNR1, "SNR2", dataSNR2, "dbHz", 54.0);
+    emit dspAvailPlot(obsFile->fileName(), title);
   }
   else {
     for (int ii = 0; ii < dataMP1->size(); ii++) {
@@ -576,10 +586,10 @@ void t_reqcAnalyze::preparePlotData(const t_rnxObsFile* obsFile) {
 
 //
 ////////////////////////////////////////////////////////////////////////////
-void t_reqcAnalyze::dspSkyPlot(const QString& fileName, const QByteArray& title1,
-                               QVector<t_polarPoint*>* data1, const QByteArray& title2,
-                               QVector<t_polarPoint*>* data2, const QByteArray& scaleTitle,
-                               double maxValue) {
+void t_reqcAnalyze::slotDspSkyPlot(const QString& fileName, const QByteArray& title1,
+                                   QVector<t_polarPoint*>* data1, const QByteArray& title2,
+                                   QVector<t_polarPoint*>* data2, const QByteArray& scaleTitle,
+                                   double maxValue) {
 
   if (BNC_CORE->GUIenabled()) {
 
@@ -634,7 +644,7 @@ void t_reqcAnalyze::dspSkyPlot(const QString& fileName, const QByteArray& title1
 
 //
 ////////////////////////////////////////////////////////////////////////////
-void t_reqcAnalyze::dspAvailPlot(const QString& fileName, const QByteArray& title) {
+void t_reqcAnalyze::slotDspAvailPlot(const QString& fileName, const QByteArray& title) {
 
   QMap<t_prn, t_plotData> plotData;
 
