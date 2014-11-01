@@ -657,8 +657,10 @@ void t_reqcAnalyze::slotDspAvailPlot(const QString& fileName, const QByteArray& 
       const t_qcSat& qcSat = it.value();
       t_plotData&    data  = plotDataMap[prn];
 
-      data._mjdX24 << mjdX24;
-      data._eleDeg << qcSat._eleDeg;
+      if (qcSat._eleSet) {
+        data._mjdX24 << mjdX24;
+        data._eleDeg << qcSat._eleDeg;
+      }
 
       QString frqType1;
       QString frqType2;
