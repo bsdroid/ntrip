@@ -78,7 +78,6 @@ Q_OBJECT
       _SNR        = 0.0;
     }
     QString _rnxType2ch;
-    bncTime _lastObsTime;
     bool    _phaseValid;
     bool    _codeValid;
     bool    _slip;
@@ -159,7 +158,7 @@ Q_OBJECT
   void   updateQcSat(const t_qcSat& qcSat, t_qcSatSum& qcSatSum);
 
   void   setQcObs(const bncTime& epoTime, const ColumnVector& xyzSta, 
-                  const t_satObs& satObs, t_qcSat& qcSat);
+                  const t_satObs& satObs, QMap<QString, bncTime>& lastObsTime, t_qcSat& qcSat);
 
   void   analyzeMultipath();
 
