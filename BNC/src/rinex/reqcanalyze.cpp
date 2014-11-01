@@ -162,9 +162,9 @@ void t_reqcAnalyze::analyzeFile(t_rnxObsFile* obsFile) {
         const t_rnxObsFile::t_rnxSat& rnxSat = _currEpo->rnxSat[iObs];
         t_satObs satObs;
         t_rnxObsFile::setObsFromRnx(obsFile, _currEpo, rnxSat, satObs);
-        t_qcObs& qcObs = qcEpo._qcObs[satObs._prn];
-        setQcObs(qcEpo._epoTime, xyzSta, satObs, qcObs);
-        updateQcSat(qcObs, _qcFile._qcSatSum[satObs._prn]);
+        t_qcSat& qcSat = qcEpo._qcSat[satObs._prn];
+        setQcObs(qcEpo._epoTime, xyzSta, satObs, qcSat);
+        updateQcSat(qcSat, _qcFile._qcSatSum[satObs._prn]);
       }
       _qcFile._qcEpo.push_back(qcEpo);
     }
@@ -244,10 +244,10 @@ double t_reqcAnalyze::cmpDOP(const ColumnVector& xyzSta) const {
 
 //
 ////////////////////////////////////////////////////////////////////////////
-void t_reqcAnalyze::updateQcSat(const t_qcObs& qcObs, t_qcSatSum& qcSatSum) {
+void t_reqcAnalyze::updateQcSat(const t_qcSat& qcSat, t_qcSatSum& qcSatSum) {
 
-  for (int ii = 0; ii < qcObs._qcFrq.size(); ii++) {
-    const t_qcFrq& qcFrq    = qcObs._qcFrq[ii];
+  for (int ii = 0; ii < qcSat._qcFrq.size(); ii++) {
+    const t_qcFrq& qcFrq    = qcSat._qcFrq[ii];
     t_qcFrqSum&    qcFrqSum = qcSatSum._qcFrqSum[qcFrq._rnxType2ch];
     qcFrqSum._numObs += 1;
     if (qcFrq._slip) {
@@ -262,7 +262,7 @@ void t_reqcAnalyze::updateQcSat(const t_qcObs& qcObs, t_qcSatSum& qcSatSum) {
 //
 ////////////////////////////////////////////////////////////////////////////
 void t_reqcAnalyze::setQcObs(const bncTime& epoTime, const ColumnVector& xyzSta, 
-                             const t_satObs& satObs, t_qcObs& qcObs) {
+                             const t_satObs& satObs, t_qcSat& qcSat) {
 
   t_eph* eph = 0;
   for (int ie = 0; ie < _ephs.size(); ie++) {
@@ -277,13 +277,13 @@ void t_reqcAnalyze::setQcObs(const bncTime& epoTime, const ColumnVector& xyzSta,
     if (xyzSta.size() && eph->getCrd(epoTime, xc, vv, false) == success) {
       double rho, eleSat, azSat;
       topos(xyzSta(1), xyzSta(2), xyzSta(3), xc(1), xc(2), xc(3), rho, eleSat, azSat);
-      qcObs._eleSet = true;
-      qcObs._azDeg  = azSat  * 180.0/M_PI;
-      qcObs._eleDeg = eleSat * 180.0/M_PI;
+      qcSat._eleSet = true;
+      qcSat._azDeg  = azSat  * 180.0/M_PI;
+      qcSat._eleDeg = eleSat * 180.0/M_PI;
     }
     if (satObs._prn.system() == 'R') {
-      qcObs._slotSet = true;
-      qcObs._slotNum = eph->slotNum();
+      qcSat._slotSet = true;
+      qcSat._slotNum = eph->slotNum();
     }
   }
 
@@ -293,8 +293,8 @@ void t_reqcAnalyze::setQcObs(const bncTime& epoTime, const ColumnVector& xyzSta,
 
     const t_frqObs* frqObs = satObs._obs[ii];
 
-    qcObs._qcFrq.push_back(t_qcFrq());
-    t_qcFrq& qcFrq = qcObs._qcFrq.back();
+    qcSat._qcFrq.push_back(t_qcFrq());
+    t_qcFrq& qcFrq = qcSat._qcFrq.back();
 
     qcFrq._rnxType2ch = QString(frqObs->_rnxType2ch.c_str());
     qcFrq._SNR        = frqObs->_snr;
@@ -352,8 +352,8 @@ void t_reqcAnalyze::setQcObs(const bncTime& epoTime, const ColumnVector& xyzSta,
           if (frqObsB->_rnxType2ch[0] == t_frequency::toString(fB)[1] &&
               frqObsB->_phaseValid && frqObsB->_codeValid) {
 
-            double f_a = t_CST::freq(fA, qcObs._slotNum);
-            double f_b = t_CST::freq(fB, qcObs._slotNum);
+            double f_a = t_CST::freq(fA, qcSat._slotNum);
+            double f_b = t_CST::freq(fB, qcSat._slotNum);
 
             double L_a = frqObs->_phase  * t_CST::c / f_a;
             double C_a = frqObs->_code;
@@ -409,10 +409,10 @@ void t_reqcAnalyze::analyzeMultipath() {
         for (int iEpo = 0; iEpo < _qcFile._qcEpo.size(); iEpo++) {
           t_qcEpo& qcEpo = _qcFile._qcEpo[iEpo];
           if (chunkStart <= qcEpo._epoTime && qcEpo._epoTime < chunkEnd) {
-            if (qcEpo._qcObs.contains(prn)) {
-              t_qcObs& qcObs = qcEpo._qcObs[prn];
-              for (int iFrq = 0; iFrq < qcObs._qcFrq.size(); iFrq++) {
-                t_qcFrq& qcFrq = qcObs._qcFrq[iFrq];
+            if (qcEpo._qcSat.contains(prn)) {
+              t_qcSat& qcSat = qcEpo._qcSat[prn];
+              for (int iFrq = 0; iFrq < qcSat._qcFrq.size(); iFrq++) {
+                t_qcFrq& qcFrq = qcSat._qcFrq[iFrq];
                 if (qcFrq._rnxType2ch == frqType) {
                   frqVec << &qcFrq;
                   if (qcFrq._setMP) {
@@ -502,20 +502,20 @@ void t_reqcAnalyze::preparePlotData(const t_rnxObsFile* obsFile) {
   // --------------------------
   for (int iEpo = 0; iEpo < _qcFile._qcEpo.size(); iEpo++) {
     t_qcEpo& qcEpo = _qcFile._qcEpo[iEpo];
-    QMapIterator<t_prn, t_qcObs> it(qcEpo._qcObs);
+    QMapIterator<t_prn, t_qcSat> it(qcEpo._qcSat);
     while (it.hasNext()) {
       it.next();
       const t_prn&   prn   = it.key();
-      const t_qcObs& qcObs = it.value();
+      const t_qcSat& qcSat = it.value();
       if ( (prn.system() == 'G' && plotGPS) ||
            (prn.system() == 'R' && plotGlo) ||
            (prn.system() == 'E' && plotGal) ) {
 
-        if (qcObs._eleSet) {
+        if (qcSat._eleSet) {
           QString frqType1;
           QString frqType2;
-          for (int iFrq = 0; iFrq < qcObs._qcFrq.size(); iFrq++) {
-            const t_qcFrq& qcFrq = qcObs._qcFrq[iFrq];
+          for (int iFrq = 0; iFrq < qcSat._qcFrq.size(); iFrq++) {
+            const t_qcFrq& qcFrq = qcSat._qcFrq[iFrq];
             if (qcFrq._rnxType2ch[0] == '1' && frqType1.isEmpty()) {
               frqType1 = qcFrq._rnxType2ch;
             }
@@ -523,12 +523,12 @@ void t_reqcAnalyze::preparePlotData(const t_rnxObsFile* obsFile) {
               frqType2 = qcFrq._rnxType2ch;
             }
             if      (qcFrq._rnxType2ch == frqType1) {
-              (*dataSNR1) << (new t_polarPoint(qcObs._azDeg, 90.0 - qcObs._eleDeg, qcFrq._SNR));
-              (*dataMP1)  << (new t_polarPoint(qcObs._azDeg, 90.0 - qcObs._eleDeg, qcFrq._stdMP));
+              (*dataSNR1) << (new t_polarPoint(qcSat._azDeg, 90.0 - qcSat._eleDeg, qcFrq._SNR));
+              (*dataMP1)  << (new t_polarPoint(qcSat._azDeg, 90.0 - qcSat._eleDeg, qcFrq._stdMP));
             }
             else if (qcFrq._rnxType2ch == frqType2) {
-              (*dataSNR2) << (new t_polarPoint(qcObs._azDeg, 90.0 - qcObs._eleDeg, qcFrq._SNR));
-              (*dataMP2)  << (new t_polarPoint(qcObs._azDeg, 90.0 - qcObs._eleDeg, qcFrq._stdMP));
+              (*dataSNR2) << (new t_polarPoint(qcSat._azDeg, 90.0 - qcSat._eleDeg, qcFrq._SNR));
+              (*dataMP2)  << (new t_polarPoint(qcSat._azDeg, 90.0 - qcSat._eleDeg, qcFrq._stdMP));
             }
           }
         }
@@ -636,22 +636,22 @@ void t_reqcAnalyze::slotDspAvailPlot(const QString& fileName, const QByteArray& 
 
     plotData._mjdX24 << mjdX24;
     plotData._PDOP   << qcEpo._PDOP;
-    plotData._numSat << qcEpo._qcObs.size();
+    plotData._numSat << qcEpo._qcSat.size();
 
-    QMapIterator<t_prn, t_qcObs> it(qcEpo._qcObs);
+    QMapIterator<t_prn, t_qcSat> it(qcEpo._qcSat);
     while (it.hasNext()) {
       it.next();
       const t_prn&   prn   = it.key();
-      const t_qcObs& qcObs = it.value();
+      const t_qcSat& qcSat = it.value();
       t_plotData&    data  = plotDataMap[prn];
 
       data._mjdX24 << mjdX24;
-      data._eleDeg << qcObs._eleDeg;
+      data._eleDeg << qcSat._eleDeg;
 
       QString frqType1;
       QString frqType2;
-      for (int iFrq = 0; iFrq < qcObs._qcFrq.size(); iFrq++) {
-        const t_qcFrq& qcFrq = qcObs._qcFrq[iFrq];
+      for (int iFrq = 0; iFrq < qcSat._qcFrq.size(); iFrq++) {
+        const t_qcFrq& qcFrq = qcSat._qcFrq[iFrq];
         if (qcFrq._rnxType2ch[0] == '1' && frqType1.isEmpty()) {
           frqType1 = qcFrq._rnxType2ch;
         }
@@ -683,7 +683,6 @@ void t_reqcAnalyze::slotDspAvailPlot(const QString& fileName, const QByteArray& 
       }
     }
   }
-
 
   if (BNC_CORE->GUIenabled()) {
     t_availPlot* plotA = new t_availPlot(0, plotDataMap);

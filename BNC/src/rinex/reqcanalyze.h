@@ -85,9 +85,9 @@ Q_OBJECT
     double  _SNR;
   };
 
-  class t_qcObs {
+  class t_qcSat {
    public:
-    t_qcObs() {
+    t_qcSat() {
       _slotSet = false;
       _eleSet  = false;
       _slotNum = 0;
@@ -106,7 +106,7 @@ Q_OBJECT
    public:
     bncTime              _epoTime;
     double               _PDOP;
-    QMap<t_prn, t_qcObs> _qcObs;
+    QMap<t_prn, t_qcSat> _qcSat;
   };
   
   class t_qcFrqSum {
@@ -152,10 +152,10 @@ Q_OBJECT
  private:
   void   analyzeFile(t_rnxObsFile* obsFile);
 
-  void   updateQcSat(const t_qcObs& qcObs, t_qcSatSum& qcSatSum);
+  void   updateQcSat(const t_qcSat& qcSat, t_qcSatSum& qcSatSum);
 
   void   setQcObs(const bncTime& epoTime, const ColumnVector& xyzSta, 
-                  const t_satObs& satObs, t_qcObs& qcObs);
+                  const t_satObs& satObs, t_qcSat& qcSat);
 
   void   analyzeMultipath();
 
