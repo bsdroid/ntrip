@@ -516,10 +516,10 @@ void t_reqcAnalyze::preparePlotData(const t_rnxObsFile* obsFile) {
           QString frqType2;
           for (int iFrq = 0; iFrq < qcObs._qcFrq.size(); iFrq++) {
             const t_qcFrq& qcFrq = qcObs._qcFrq[iFrq];
-            if (qcFrq._rnxType2ch[0] == 1 && frqType1.isEmpty()) {
+            if (qcFrq._rnxType2ch[0] == '1' && frqType1.isEmpty()) {
               frqType1 = qcFrq._rnxType2ch;
             }
-            if (qcFrq._rnxType2ch[0] == 2 && frqType2.isEmpty()) {
+            if (qcFrq._rnxType2ch[0] == '2' && frqType2.isEmpty()) {
               frqType2 = qcFrq._rnxType2ch;
             }
             if      (qcFrq._rnxType2ch == frqType1) {
@@ -652,10 +652,10 @@ void t_reqcAnalyze::slotDspAvailPlot(const QString& fileName, const QByteArray& 
       QString frqType2;
       for (int iFrq = 0; iFrq < qcObs._qcFrq.size(); iFrq++) {
         const t_qcFrq& qcFrq = qcObs._qcFrq[iFrq];
-        if (qcFrq._rnxType2ch[0] == 1 && frqType1.isEmpty()) {
+        if (qcFrq._rnxType2ch[0] == '1' && frqType1.isEmpty()) {
           frqType1 = qcFrq._rnxType2ch;
         }
-        if (qcFrq._rnxType2ch[0] == 2 && frqType2.isEmpty()) {
+        if (qcFrq._rnxType2ch[0] == '2' && frqType2.isEmpty()) {
           frqType2 = qcFrq._rnxType2ch;
         }
         if      (qcFrq._rnxType2ch == frqType1) {
