@@ -131,8 +131,6 @@ void t_reqcAnalyze::run() {
 ////////////////////////////////////////////////////////////////////////////
 void t_reqcAnalyze::analyzeFile(t_rnxObsFile* obsFile) {
 
-  QMutexLocker lock(&_mutex);
-
   if (_log) {
     *_log << "\nAnalyze File\n"
           <<   "------------\n"

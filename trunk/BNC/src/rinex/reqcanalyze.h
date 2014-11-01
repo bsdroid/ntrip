@@ -175,7 +175,6 @@ Q_OBJECT
   QVector<t_eph*>         _ephs;
   t_rnxObsFile::t_rnxEpo* _currEpo;
   t_qcFile                _qcFile;
-  QMutex                  _mutex;
 };
 
 #endif
