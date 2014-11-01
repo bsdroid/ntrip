@@ -792,6 +792,19 @@ void t_reqcAnalyze::printReport(const t_rnxObsFile* obsFile) {
       for (int iFrq = 0; iFrq < qcSat._qcFrq.size(); iFrq++) {
         const t_qcFrq& qcFrq = qcSat._qcFrq[iFrq];
         *_log << "  " << qcFrq._rnxType2ch << ' ';
+        if (qcFrq._phaseValid) {
+          *_log << 'P';
+        }
+        else {
+          *_log << '.';
+        }
+        if (qcFrq._codeValid) {
+          *_log << 'C';
+        }
+        else {
+          *_log << '.';
+        }
+        *_log << ' ';
         if (qcFrq._slip) {
           *_log << 'S';
         }
