@@ -140,6 +140,7 @@ void t_reqcAnalyze::analyzeFile(t_rnxObsFile* obsFile) {
   // Loop over all Epochs
   // --------------------
   try {
+    QMap<QString, bncTime> lastObsTime; 
     bool firstEpo = true;
     while ( (_currEpo = obsFile->nextEpoch()) != 0) {
       if (firstEpo) {
@@ -163,7 +164,7 @@ void t_reqcAnalyze::analyzeFile(t_rnxObsFile* obsFile) {
         t_satObs satObs;
         t_rnxObsFile::setObsFromRnx(obsFile, _currEpo, rnxSat, satObs);
         t_qcSat& qcSat = qcEpo._qcSat[satObs._prn];
-        setQcObs(qcEpo._epoTime, xyzSta, satObs, qcSat);
+        setQcObs(qcEpo._epoTime, xyzSta, satObs, lastObsTime, qcSat);
         updateQcSat(qcSat, _qcFile._qcSatSum[satObs._prn]);
       }
       _qcFile._qcEpo.push_back(qcEpo);
@@ -262,7 +263,8 @@ void t_reqcAnalyze::updateQcSat(const t_qcSat& qcSat, t_qcSatSum& qcSatSum) {
 //
 ////////////////////////////////////////////////////////////////////////////
 void t_reqcAnalyze::setQcObs(const bncTime& epoTime, const ColumnVector& xyzSta, 
-                             const t_satObs& satObs, t_qcSat& qcSat) {
+                             const t_satObs& satObs, QMap<QString, bncTime>& lastObsTime,
+                             t_qcSat& qcSat) {
 
   t_eph* eph = 0;
   for (int ie = 0; ie < _ephs.size(); ie++) {
@@ -304,13 +306,14 @@ void t_reqcAnalyze::setQcObs(const bncTime& epoTime, const ColumnVector& xyzSta,
 
     // Check Gaps
     // ----------
-    if (qcFrq._lastObsTime.valid()) {
-      double dt = epoTime - qcFrq._lastObsTime;
+    QString key = QString(satObs._prn.toString().c_str()) + qcFrq._rnxType2ch;
+    if (lastObsTime[key].valid()) {
+      double dt = epoTime - lastObsTime[key];
       if (dt > 1.5 * _qcFile._interval) {
         qcFrq._gap = true;
       }
     }
-    qcFrq._lastObsTime = epoTime;
+    lastObsTime[key] = epoTime;
 
     // Compute the Multipath Linear Combination
     // ----------------------------------------
