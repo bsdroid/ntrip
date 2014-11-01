@@ -164,7 +164,7 @@ Q_OBJECT
 
   double cmpDOP(const ColumnVector& xyzSta) const;
 
-  void   printReport();
+  void   printReport(const t_rnxObsFile* obsFile);
 
   QString                 _logFileName;
   QFile*                  _logFile;
