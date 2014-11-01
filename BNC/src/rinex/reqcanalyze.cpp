@@ -312,7 +312,7 @@ void t_reqcAnalyze::setQcObs(const bncTime& epoTime, const ColumnVector& xyzSta,
 
     // Compute the Multipath Linear Combination
     // ----------------------------------------
-    if (frqObs->_phaseValid && frqObs->_codeValid) {
+    if (frqObs->_codeValid) {
       t_frequency::type fA;
       t_frequency::type fB;
       if      (satObs._prn.system() == 'G') {
@@ -347,21 +347,30 @@ void t_reqcAnalyze::setQcObs(const bncTime& epoTime, const ColumnVector& xyzSta,
       }
 
       if (fA != t_frequency::dummy && fB != t_frequency::dummy) {
+        double f_a = t_CST::freq(fA, qcSat._slotNum);
+        double f_b = t_CST::freq(fB, qcSat._slotNum);
+        double C_a = frqObs->_code;
+
+        bool   foundA = false;
+        double L_a    = 0.0;
+        bool   foundB = false;
+        double L_b    = 0.0;
         for (unsigned jj = 0; jj < satObs._obs.size(); jj++) {
-          const t_frqObs* frqObsB = satObs._obs[jj];
-          if (frqObsB->_rnxType2ch[0] == t_frequency::toString(fB)[1] &&
-              frqObsB->_phaseValid) {
-
-            double f_a = t_CST::freq(fA, qcSat._slotNum);
-            double f_b = t_CST::freq(fB, qcSat._slotNum);
-
-            double L_a = frqObs->_phase  * t_CST::c / f_a;
-            double C_a = frqObs->_code;
-            double L_b = frqObsB->_phase * t_CST::c / f_b;
-
-            qcFrq._setMP = true;
-            qcFrq._rawMP = C_a - L_a - 2.0*f_b*f_b/(f_a*f_a-f_b*f_b) * (L_a - L_b);
+          const t_frqObs* frqObsHlp = satObs._obs[jj];
+          if      (frqObsHlp->_rnxType2ch[0] == t_frequency::toString(fA)[1] &&
+              frqObsHlp->_phaseValid) {
+            foundA = true;
+            L_a    = frqObsHlp->_phase * t_CST::c / f_a;
           }
+          else if (frqObsHlp->_rnxType2ch[0] == t_frequency::toString(fB)[1] &&
+              frqObsHlp->_phaseValid) {
+            foundB = true;
+            L_b    = frqObsHlp->_phase * t_CST::c / f_b;
+          }
+        }
+        if (foundA && foundB) {
+          qcFrq._setMP = true;
+          qcFrq._rawMP = C_a - L_a - 2.0*f_b*f_b/(f_a*f_a-f_b*f_b) * (L_a - L_b);
         }
       }
     }
