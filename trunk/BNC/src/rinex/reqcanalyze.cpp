@@ -164,7 +164,7 @@ void t_reqcAnalyze::analyzeFile(t_rnxObsFile* obsFile) {
         t_rnxObsFile::setObsFromRnx(obsFile, _currEpo, rnxSat, satObs);
         t_qcObs& qcObs = qcEpo._qcObs[satObs._prn];
         setQcObs(qcEpo._epoTime, xyzSta, satObs, qcObs);
-        updateQcSat(qcObs, _qcFile._qcSat[satObs._prn]);
+        updateQcSat(qcObs, _qcFile._qcSatSum[satObs._prn]);
       }
       _qcFile._qcEpo.push_back(qcEpo);
     }
@@ -244,12 +244,18 @@ double t_reqcAnalyze::cmpDOP(const ColumnVector& xyzSta) const {
 
 //
 ////////////////////////////////////////////////////////////////////////////
-void t_reqcAnalyze::updateQcSat(const t_qcObs& qcObs, t_qcSat& qcSat) {
-  if (qcObs._hasL1 && qcObs._hasL2) {
-    qcSat._numObs += 1;
-  }
-  if (qcObs._slipL1 && qcObs._slipL2) {
-    qcSat._numSlipsFlagged += 1;
+void t_reqcAnalyze::updateQcSat(const t_qcObs& qcObs, t_qcSatSum& qcSatSum) {
+
+  for (int ii = 0; ii < qcObs._qcFrq.size(); ii++) {
+    const t_qcFrq& qcFrq    = qcObs._qcFrq[ii];
+    t_qcFrqSum&    qcFrqSum = qcSatSum._qcFrqSum[qcFrq._rnxType2ch];
+    qcFrqSum._numObs += 1;
+    if (qcFrq._slip) {
+      qcFrqSum._numSlipsFlagged += 1;
+    }
+    if (qcFrq._gap) {
+      qcFrqSum._numGaps += 1;
+    }
   }
 }
 
@@ -281,78 +287,86 @@ void t_reqcAnalyze::setQcObs(const bncTime& epoTime, const ColumnVector& xyzSta,
     }
   }
 
-  // Check Gaps
-  // ----------
-  if (qcObs._lastObsTime.valid()) {
-    double dt = epoTime - qcObs._lastObsTime;
-    if (dt > 1.5 * _qcFile._interval) {
-      qcObs._gapL1 = true;
-      qcObs._gapL2 = true;
-    }
-  }
-  qcObs._lastObsTime = epoTime;
-
   // Availability and Slip Flags
   // ---------------------------
-  double L1 = 0.0;
-  double L2 = 0.0;
-  double P1 = 0.0;
-  double P2 = 0.0;
-  for (unsigned iFrq = 0; iFrq < satObs._obs.size(); iFrq++) {
-    const t_frqObs* frqObs = satObs._obs[iFrq];
-    if      (frqObs->_rnxType2ch[0] == '1') {
-      if (frqObs->_phaseValid) {
-        L1            = frqObs->_phase;
-        qcObs._hasL1  = true;
-        qcObs._slipL1 = frqObs->_slip;
-      }
-      if (frqObs->_codeValid) {
-        P1 = frqObs->_code;
-      }
-      if (frqObs->_snrValid) {
-        qcObs._SNR1 = frqObs->_snr;
-      }
-    }
-    else if ( (satObs._prn.system() != 'E' && frqObs->_rnxType2ch[0] == '2') ||
-              (satObs._prn.system() == 'E' && frqObs->_rnxType2ch[0] == '5') ) {
-      if (frqObs->_phaseValid) {
-        L2            = frqObs->_phase;
-        qcObs._hasL2  = true;
-        qcObs._slipL2 = frqObs->_slip;
-      }
-      if (frqObs->_codeValid) {
-        P2 = frqObs->_code;
-      }
-      if (frqObs->_snrValid) {
-        qcObs._SNR2 = frqObs->_snr;
-      }
-    }
-  }
+  for (unsigned ii = 0; ii < satObs._obs.size(); ii++) {
 
-  // Compute the Multipath Linear Combination
-  // ----------------------------------------
-  if (L1 != 0.0 && L2 != 0.0 && P1 != 0.0 && P2 != 0.0) {
-    double f1 = 0.0;
-    double f2 = 0.0;
-    if      (satObs._prn.system() == 'G') {
-      f1 = t_CST::freq(t_frequency::G1, 0);
-      f2 = t_CST::freq(t_frequency::G2, 0);
-    }
-    else if (satObs._prn.system() == 'R') {
-      f1 = t_CST::freq(t_frequency::R1, qcObs._slotNum);
-      f2 = t_CST::freq(t_frequency::R2, qcObs._slotNum);
-    }
-    else if (satObs._prn.system() == 'E') {
-      f1 = t_CST::freq(t_frequency::E1, 0);
-      f2 = t_CST::freq(t_frequency::E5, 0);
-    }
+    const t_frqObs* frqObs = satObs._obs[ii];
 
-    L1 = L1 * t_CST::c / f1;
-    L2 = L2 * t_CST::c / f2;
+    qcObs._qcFrq.push_back(t_qcFrq());
+    t_qcFrq& qcFrq = qcObs._qcFrq.back();
 
-    qcObs._rawMP1 = P1 - L1 - 2.0*f2*f2/(f1*f1-f2*f2) * (L1 - L2);
-    qcObs._rawMP2 = P2 - L2 - 2.0*f1*f1/(f1*f1-f2*f2) * (L1 - L2);
-    qcObs._mpSet  = true;
+    qcFrq._rnxType2ch = QString(frqObs->_rnxType2ch.c_str());
+    qcFrq._SNR        = frqObs->_snr;
+    qcFrq._slip       = frqObs->_slip;
+
+    // Check Gaps
+    // ----------
+    if (qcFrq._lastObsTime.valid()) {
+      double dt = epoTime - qcFrq._lastObsTime;
+      if (dt > 1.5 * _qcFile._interval) {
+        qcFrq._gap = true;
+      }
+    }
+    qcFrq._lastObsTime = epoTime;
+
+    // Compute the Multipath Linear Combination
+    // ----------------------------------------
+    if (frqObs->_phaseValid && frqObs->_codeValid) {
+      t_frequency::type fA;
+      t_frequency::type fB;
+      if      (satObs._prn.system() == 'G') {
+        if      (frqObs->_rnxType2ch[0] == '1') {
+          fA = t_frequency::G1;
+          fB = t_frequency::G2;
+        }
+        else if (frqObs->_rnxType2ch[0] == '2') {
+          fA = t_frequency::G2;
+          fB = t_frequency::G1;
+        }
+      }
+      else if (satObs._prn.system() == 'R') {
+        if      (frqObs->_rnxType2ch[0] == '1') {
+          fA = t_frequency::R1;
+          fB = t_frequency::R2;
+        }
+        else if (frqObs->_rnxType2ch[0] == '2') {
+          fA = t_frequency::R2;
+          fB = t_frequency::R1;
+        }
+      }
+      else if (satObs._prn.system() == 'E') {
+        if      (frqObs->_rnxType2ch[0] == '1') {
+          fA = t_frequency::E1;
+          fB = t_frequency::E5;
+        }
+        else if (frqObs->_rnxType2ch[0] == '5') {
+          fA = t_frequency::E5;
+          fB = t_frequency::E1;
+        }
+      }
+
+      if (fA != t_frequency::dummy && fB != t_frequency::dummy) {
+        for (unsigned jj = 0; jj < satObs._obs.size(); jj++) {
+          const t_frqObs* frqObsB = satObs._obs[jj];
+          if (frqObsB->_rnxType2ch[0] == t_frequency::toString(fB)[1] &&
+              frqObsB->_phaseValid && frqObsB->_codeValid) {
+
+            double f_a = t_CST::freq(fA, qcObs._slotNum);
+            double f_b = t_CST::freq(fB, qcObs._slotNum);
+
+            double L_a = frqObs->_phase  * t_CST::c / f_a;
+            double C_a = frqObs->_code;
+            double L_b = frqObsB->_phase * t_CST::c / f_b;
+
+            qcFrq._setMP = true;
+            qcFrq._rawMP = C_a - L_a - 2.0*f_b*f_b/(f_a*f_a-f_b*f_b) * (L_a - L_b);
+            break;            
+          }
+        }
+      }
+
+    }
   }
 }
 
@@ -365,90 +379,94 @@ void t_reqcAnalyze::analyzeMultipath() {
 
   // Loop over all satellites available
   // ----------------------------------
-  QMutableMapIterator<t_prn, t_qcSat> it(_qcFile._qcSat);
-  while (it.hasNext()) {
-    it.next();
-    const t_prn& prn   = it.key();
-    t_qcSat&     qcSat = it.value();
+  QMutableMapIterator<t_prn, t_qcSatSum> itSat(_qcFile._qcSatSum);
+  while (itSat.hasNext()) {
+    itSat.next();
+    const t_prn& prn      = itSat.key();
+    t_qcSatSum&  qcSatSum = itSat.value();
 
-    // Loop over all Chunks of Data
-    // ----------------------------
-    for (bncTime chunkStart = _qcFile._startTime; 
-         chunkStart < _qcFile._endTime; chunkStart += chunkStep) {
+    // Loop over all frequencies available
+    // -----------------------------------
+    QMutableMapIterator<QString, t_qcFrqSum> itFrq(qcSatSum._qcFrqSum);
+    while (itFrq.hasNext()) {
+      itFrq.next();
+      const QString& frqType  = itFrq.key();
+      t_qcFrqSum&    qcFrqSum = itFrq.value();
 
-      bncTime chunkEnd = chunkStart + chunkStep;
 
-      QVector<t_qcObs*> obsVec;
-      QVector<double>   MP1;
-      QVector<double>   MP2;
+      // Loop over all Chunks of Data
+      // ----------------------------
+      for (bncTime chunkStart = _qcFile._startTime; 
+           chunkStart < _qcFile._endTime; chunkStart += chunkStep) {
+
+        bncTime chunkEnd = chunkStart + chunkStep;
+
+        QVector<t_qcFrq*> frqVec;
+        QVector<double>   MP;
     
-      // Loop over all Epochs within one Chunk of Data
-      // ---------------------------------------------
-      for (int iEpo = 0; iEpo < _qcFile._qcEpo.size(); iEpo++) {
-        t_qcEpo& qcEpo = _qcFile._qcEpo[iEpo];
-        if (chunkStart <= qcEpo._epoTime && qcEpo._epoTime < chunkEnd) {
-          if (qcEpo._qcObs.contains(prn)) {
-            t_qcObs& qcObs = qcEpo._qcObs[prn];
-            obsVec << &qcObs;
-            if (qcObs._mpSet) {
-              MP1 << qcObs._rawMP1;
-              MP2 << qcObs._rawMP2;
+        // Loop over all Epochs within one Chunk of Data
+        // ---------------------------------------------
+        for (int iEpo = 0; iEpo < _qcFile._qcEpo.size(); iEpo++) {
+          t_qcEpo& qcEpo = _qcFile._qcEpo[iEpo];
+          if (chunkStart <= qcEpo._epoTime && qcEpo._epoTime < chunkEnd) {
+            if (qcEpo._qcObs.contains(prn)) {
+              t_qcObs& qcObs = qcEpo._qcObs[prn];
+              for (int iFrq = 0; iFrq < qcObs._qcFrq.size(); iFrq++) {
+                t_qcFrq& qcFrq = qcObs._qcFrq[iFrq];
+                if (qcFrq._rnxType2ch == frqType) {
+                  frqVec << &qcFrq;
+                  if (qcFrq._setMP) {
+                    MP << qcFrq._rawMP;
+                  }
+                }
+              }
             }
           }
         }
-      }
 
-      // Compute the multipath mean and standard deviation
-      // -------------------------------------------------
-      if (MP1.size() > 1) {
-        double meanMP1 = 0.0;
-        double meanMP2 = 0.0;
-        for (int ii = 0; ii < MP1.size(); ii++) {
-          meanMP1 += MP1[ii];
-          meanMP2 += MP2[ii];
-        }
-        meanMP1 /= MP1.size();
-        meanMP2 /= MP2.size();
-
-        bool slipMP = false;
-
-        double stdMP1 = 0.0;
-        double stdMP2 = 0.0;
-        for (int ii = 0; ii < MP1.size(); ii++) {
-          double diff1 = MP1[ii] - meanMP1;
-          double diff2 = MP2[ii] - meanMP2;
-          if (fabs(diff1) > SLIPTRESH || fabs(diff2) > SLIPTRESH) {
-            slipMP = true;
-            break;
+        // Compute the multipath mean and standard deviation
+        // -------------------------------------------------
+        if (MP.size() > 1) {
+          double meanMP = 0.0;
+          for (int ii = 0; ii < MP.size(); ii++) {
+            meanMP += MP[ii];
           }
-          stdMP1 += diff1 * diff1;
-          stdMP2 += diff2 * diff2;
-        }
-
-        if (slipMP) {
-          stdMP1 = 0.0;
-          stdMP2 = 0.0;
-          qcSat._numSlipsFound += 1;
-        }
-        else {
-          stdMP1 = sqrt(stdMP1 / (MP1.size()-1));
-          stdMP2 = sqrt(stdMP2 / (MP2.size()-1));
-        }
-
-        for (int ii = 0; ii < obsVec.size(); ii++) {
-          t_qcObs* qcObs = obsVec[ii];
+          meanMP /= MP.size();
+        
+          bool slipMP = false;
+        
+          double stdMP = 0.0;
+          for (int ii = 0; ii < MP.size(); ii++) {
+            double diff = MP[ii] - meanMP;
+            if (fabs(diff) > SLIPTRESH) {
+              slipMP = true;
+              break;
+            }
+            stdMP += diff * diff;
+          }
+        
           if (slipMP) {
-            qcObs->_slipL1 = true;
-            qcObs->_slipL2 = true;
+            stdMP = 0.0;
+            stdMP = 0.0;
+            qcFrqSum._numSlipsFound += 1;
           }
           else {
-            qcObs->_stdMP1 = stdMP1;
-            qcObs->_stdMP2 = stdMP2;
+            stdMP = sqrt(stdMP / (MP.size()-1));
+          }
+        
+          for (int ii = 0; ii < frqVec.size(); ii++) {
+            t_qcFrq* qcFrq = frqVec[ii];
+            if (slipMP) {
+              qcFrq->_slip = true;
+            }
+            else {
+              qcFrq->_stdMP = stdMP;
+            }
           }
         }
-      }
-    }
-  }
+      } // chunk loop
+    } // frq loop
+  } // sat loop
 }
 
 //

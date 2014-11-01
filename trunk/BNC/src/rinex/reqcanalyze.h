@@ -65,47 +65,41 @@ Q_OBJECT
 
  private:
 
+  class t_qcFrq {
+   public:
+    t_qcFrq() {
+      _slip  = false;
+      _gap   = false;
+      _setMP = false;
+      _rawMP = 0.0;
+      _stdMP = 0.0;
+      _SNR   = 0.0;
+    }
+    QString _rnxType2ch;
+    bncTime _lastObsTime;
+    bool    _slip;
+    bool    _gap;
+    bool    _setMP;
+    double  _rawMP;
+    double  _stdMP;
+    double  _SNR;
+  };
+
   class t_qcObs {
    public:
     t_qcObs() {
-      _hasL1    = false;
-      _hasL2    = false;
-      _slipL1   = false;
-      _slipL2   = false;
-      _gapL1    = false;
-      _gapL2    = false;
-      _slotSet  = false;
-      _eleSet   = false;
-      _mpSet    = false;
-      _slotNum  = 0;
-      _rawMP1   = 0.0;
-      _rawMP2   = 0.0;
-      _stdMP1   = 0.0;
-      _stdMP2   = 0.0;
-      _SNR1     = 0.0;
-      _SNR2     = 0.0;
-      _eleDeg   = 0.0;
-      _azDeg    = 0.0;
+      _slotSet = false;
+      _eleSet  = false;
+      _slotNum = 0;
+      _eleDeg  = 0.0;
+      _azDeg   = 0.0;
     }
-    bncTime _lastObsTime;
-    bool    _hasL1;
-    bool    _hasL2;
-    bool    _slipL1;
-    bool    _slipL2;
-    bool    _gapL1;
-    bool    _gapL2;
-    bool    _slotSet;
-    int     _slotNum;
-    bool    _mpSet;
-    double  _rawMP1;
-    double  _rawMP2;
-    double  _stdMP1;
-    double  _stdMP2;
-    double  _SNR1;
-    double  _SNR2;
-    bool    _eleSet;
-    double  _eleDeg;
-    double  _azDeg;
+    bool             _slotSet;
+    bool             _eleSet;
+    int              _slotNum;
+    double           _eleDeg;
+    double           _azDeg;
+    QVector<t_qcFrq> _qcFrq;
   };
   
   class t_qcEpo {
@@ -115,9 +109,9 @@ Q_OBJECT
     QMap<t_prn, t_qcObs> _qcObs;
   };
   
-  class t_qcSat {
+  class t_qcFrqSum {
    public:
-    t_qcSat() {
+    t_qcFrqSum() {
       _numObs          = 0;
       _numSlipsFlagged = 0;
       _numSlipsFound   = 0;
@@ -128,19 +122,24 @@ Q_OBJECT
     int _numSlipsFound;
     int _numGaps;
   };
+
+  class t_qcSatSum {
+   public:
+    QMap<QString, t_qcFrqSum> _qcFrqSum;
+  };
   
   class t_qcFile {
    public:
     t_qcFile() {clear();}
-    void clear() {_qcSat.clear(); _qcEpo.clear();}
-    bncTime              _startTime;
-    bncTime              _endTime;
-    QString              _antennaName;
-    QString              _markerName;
-    QString              _receiverType;
-    double               _interval;
-    QMap<t_prn, t_qcSat> _qcSat;
-    QVector<t_qcEpo>     _qcEpo;
+    void clear() {_qcSatSum.clear(); _qcEpo.clear();}
+    bncTime                 _startTime;
+    bncTime                 _endTime;
+    QString                 _antennaName;
+    QString                 _markerName;
+    QString                 _receiverType;
+    double                  _interval;
+    QMap<t_prn, t_qcSatSum> _qcSatSum;
+    QVector<t_qcEpo>        _qcEpo;
   };
 
  private slots:
@@ -153,7 +152,7 @@ Q_OBJECT
  private:
   void   analyzeFile(t_rnxObsFile* obsFile);
 
-  void   updateQcSat(const t_qcObs& qcObs, t_qcSat& qcSat);
+  void   updateQcSat(const t_qcObs& qcObs, t_qcSatSum& qcSatSum);
 
   void   setQcObs(const bncTime& epoTime, const ColumnVector& xyzSta, 
                   const t_satObs& satObs, t_qcObs& qcObs);
