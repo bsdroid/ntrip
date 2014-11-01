@@ -616,13 +616,14 @@ void t_reqcAnalyze::slotDspAvailPlot(const QString& fileName, const QByteArray& 
       const t_prn&   prn   = it.key();
       const t_qcObs& qcObs = it.value();
       t_plotData&    data  = plotDataMap[prn];
+      data._mjdX24 << mjdX24;
+      data._eleDeg << qcObs._eleDeg;
       if (qcObs._hasL1)  data._L1ok   << mjdX24;
       if (qcObs._hasL2)  data._L2ok   << mjdX24;
       if (qcObs._slipL1) data._L1slip << mjdX24;
       if (qcObs._slipL2) data._L2slip << mjdX24;
       if (qcObs._gapL1)  data._L1gap  << mjdX24;
       if (qcObs._gapL2)  data._L2gap  << mjdX24;
-      data._eleDeg << qcObs._eleDeg;
     }
   }
 
