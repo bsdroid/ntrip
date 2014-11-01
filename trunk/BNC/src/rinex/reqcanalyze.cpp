@@ -512,10 +512,25 @@ void t_reqcAnalyze::preparePlotData(const t_rnxObsFile* obsFile) {
            (prn.system() == 'E' && plotGal) ) {
 
         if (qcObs._eleSet) {
-          (*dataSNR1) << (new t_polarPoint(qcObs._azDeg, 90.0 - qcObs._eleDeg, qcObs._SNR1));
-          (*dataSNR2) << (new t_polarPoint(qcObs._azDeg, 90.0 - qcObs._eleDeg, qcObs._SNR2));
-          (*dataMP1)  << (new t_polarPoint(qcObs._azDeg, 90.0 - qcObs._eleDeg, qcObs._stdMP1));
-          (*dataMP2)  << (new t_polarPoint(qcObs._azDeg, 90.0 - qcObs._eleDeg, qcObs._stdMP2));
+          QString frqType1;
+          QString frqType2;
+          for (int iFrq = 0; iFrq < qcObs._qcFrq.size(); iFrq++) {
+            const t_qcFrq& qcFrq = qcObs._qcFrq[iFrq];
+            if (qcFrq._rnxType2ch[0] == 1 && frqType1.isEmpty()) {
+              frqType1 = qcFrq._rnxType2ch;
+            }
+            if (qcFrq._rnxType2ch[0] == 2 && frqType2.isEmpty()) {
+              frqType2 = qcFrq._rnxType2ch;
+            }
+            if      (qcFrq._rnxType2ch == frqType1) {
+              (*dataSNR1) << (new t_polarPoint(qcObs._azDeg, 90.0 - qcObs._eleDeg, qcFrq._SNR));
+              (*dataMP1)  << (new t_polarPoint(qcObs._azDeg, 90.0 - qcObs._eleDeg, qcFrq._stdMP));
+            }
+            else if (qcFrq._rnxType2ch == frqType2) {
+              (*dataSNR2) << (new t_polarPoint(qcObs._azDeg, 90.0 - qcObs._eleDeg, qcFrq._SNR));
+              (*dataMP2)  << (new t_polarPoint(qcObs._azDeg, 90.0 - qcObs._eleDeg, qcFrq._stdMP));
+            }
+          }
         }
       }
     }
@@ -526,8 +541,8 @@ void t_reqcAnalyze::preparePlotData(const t_rnxObsFile* obsFile) {
   if (BNC_CORE->GUIenabled()) {
     QFileInfo  fileInfo(obsFile->fileName());
     QByteArray title = fileInfo.fileName().toAscii();
-    emit dspSkyPlot(obsFile->fileName(), "MP1", dataMP1, "MP2", dataMP2, "Meters", 2.0);
-    emit dspSkyPlot(obsFile->fileName(), "SNR1", dataSNR1, "SNR2", dataSNR2, "dbHz", 54.0);
+    emit dspSkyPlot(obsFile->fileName(), "MP1",  dataMP1,  "MP2",  dataMP2,  "Meters",  2.0);
+    emit dspSkyPlot(obsFile->fileName(), "SNR1", dataSNR1, "SNR2", dataSNR2, "dbHz",   54.0);
     emit dspAvailPlot(obsFile->fileName(), title);
   }
   else {
@@ -629,28 +644,41 @@ void t_reqcAnalyze::slotDspAvailPlot(const QString& fileName, const QByteArray& 
       const t_prn&   prn   = it.key();
       const t_qcObs& qcObs = it.value();
       t_plotData&    data  = plotDataMap[prn];
+
       data._mjdX24 << mjdX24;
       data._eleDeg << qcObs._eleDeg;
-      if (qcObs._hasL1) {
-        if      (qcObs._slipL1) {
-          data._L1slip << mjdX24;
+
+      QString frqType1;
+      QString frqType2;
+      for (int iFrq = 0; iFrq < qcObs._qcFrq.size(); iFrq++) {
+        const t_qcFrq& qcFrq = qcObs._qcFrq[iFrq];
+        if (qcFrq._rnxType2ch[0] == 1 && frqType1.isEmpty()) {
+          frqType1 = qcFrq._rnxType2ch;
         }
-        else if (qcObs._gapL1) {
-          data._L1gap << mjdX24;
+        if (qcFrq._rnxType2ch[0] == 2 && frqType2.isEmpty()) {
+          frqType2 = qcFrq._rnxType2ch;
         }
-        else {
-          data._L1ok << mjdX24;
+        if      (qcFrq._rnxType2ch == frqType1) {
+          if      (qcFrq._slip) {
+            data._L1slip << mjdX24;
+          }
+          else if (qcFrq._gap) {
+            data._L1gap << mjdX24;
+          }
+          else {
+            data._L1ok << mjdX24;
+          }
         }
-      }
-      if (qcObs._hasL2) {
-        if      (qcObs._slipL2) {
-          data._L2slip << mjdX24;
-        }
-        else if (qcObs._gapL2) {
-          data._L2gap << mjdX24;
-        }
-        else {
-          data._L2ok << mjdX24;
+        else if (qcFrq._rnxType2ch == frqType2) {
+          if      (qcFrq._slip) {
+            data._L2slip << mjdX24;
+          }
+          else if (qcFrq._gap) {
+            data._L2gap << mjdX24;
+          }
+          else {
+            data._L2ok << mjdX24;
+          }
         }
       }
     }
@@ -700,18 +728,24 @@ void t_reqcAnalyze::printReport(const t_rnxObsFile* obsFile) {
         << "End time:        " << _qcFile._endTime.datestr().c_str()   << ' '
                                << _qcFile._endTime.timestr().c_str()   << endl
         << "Interval:        " << _qcFile._interval                    << endl
-        << "# Sat.:          " << _qcFile._qcSat.size()                << endl;
+        << "# Sat.:          " << _qcFile._qcSatSum.size()             << endl;
 
   int numObs          = 0;
   int numSlipsFlagged = 0;
   int numSlipsFound   = 0;
-  QMapIterator<t_prn, t_qcSat> it(_qcFile._qcSat);
-  while (it.hasNext()) {
-    it.next();
-    const t_qcSat& qcSat = it.value();
-    numObs          += qcSat._numObs;
-    numSlipsFlagged += qcSat._numSlipsFlagged;
-    numSlipsFound   += qcSat._numSlipsFound;
+  QMapIterator<t_prn, t_qcSatSum> itSat(_qcFile._qcSatSum);
+  while (itSat.hasNext()) {
+    itSat.next();
+    const t_qcSatSum& qcSatSum = itSat.value();
+
+    QMapIterator<QString, t_qcFrqSum> itFrq(qcSatSum._qcFrqSum);
+    while (itFrq.hasNext()) {
+      itFrq.next();
+      const t_qcFrqSum& qcFrqSum = itFrq.value();
+      numObs          += qcFrqSum._numObs;
+      numSlipsFlagged += qcFrqSum._numSlipsFlagged;
+      numSlipsFound   += qcFrqSum._numSlipsFound;
+    }
   }
   *_log << "# Obs.:          " << numObs          << endl
         << "# Slips (file):  " << numSlipsFlagged << endl
