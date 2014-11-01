@@ -75,29 +75,37 @@ Q_OBJECT
       _gapL1    = false;
       _gapL2    = false;
       _slotSet  = false;
+      _eleSet   = false;
+      _mpSet    = false;
       _slotNum  = 0;
-      _MP1      = 0.0;
-      _MP2      = 0.0;
+      _rawMP1   = 0.0;
+      _rawMP2   = 0.0;
+      _stdMP1   = 0.0;
+      _stdMP2   = 0.0;
       _SNR1     = 0.0;
       _SNR2     = 0.0;
       _eleDeg   = 0.0;
       _azDeg    = 0.0;
     }
-    t_irc set(const t_satObs& obs);
-    bool   _hasL1;
-    bool   _hasL2;
-    bool   _slipL1;
-    bool   _slipL2;
-    bool   _gapL1;
-    bool   _gapL2;
-    bool   _slotSet;
-    int    _slotNum;
-    double _MP1;
-    double _MP2;
-    double _SNR1;
-    double _SNR2;
-    double _eleDeg;
-    double _azDeg;
+    bncTime _lastObsTime;
+    bool    _hasL1;
+    bool    _hasL2;
+    bool    _slipL1;
+    bool    _slipL2;
+    bool    _gapL1;
+    bool    _gapL2;
+    bool    _slotSet;
+    int     _slotNum;
+    bool    _mpSet;
+    double  _rawMP1;
+    double  _rawMP2;
+    double  _stdMP1;
+    double  _stdMP2;
+    double  _SNR1;
+    double  _SNR2;
+    bool    _eleSet;
+    double  _eleDeg;
+    double  _azDeg;
   };
   
   class t_qcEpo {
@@ -133,7 +141,6 @@ Q_OBJECT
     double               _interval;
     QMap<t_prn, t_qcSat> _qcSat;
     QVector<t_qcEpo>     _qcEpo;
-    QVector<t_qcEpo>     _qcEpoSampled;
   };
 
  private slots:
@@ -148,7 +155,10 @@ Q_OBJECT
 
   void   updateQcSat(const t_qcObs& qcObs, t_qcSat& qcSat);
 
-  t_irc  setQcObs(const t_satObs& satObs, t_qcObs& qcObs);
+  void   setQcObs(const bncTime& epoTime, const ColumnVector& xyzSta, 
+                  const t_satObs& satObs, t_qcObs& qcObs);
+
+  void   analyzeMultipath();
 
   void   preparePlotData(const t_rnxObsFile* obsFile);
 

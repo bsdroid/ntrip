@@ -170,14 +170,14 @@ void t_reqcAnalyze::analyzeFile(t_rnxObsFile* obsFile) {
         const t_rnxObsFile::t_rnxSat& rnxSat = _currEpo->rnxSat[iObs];
         t_satObs satObs;
         t_rnxObsFile::setObsFromRnx(obsFile, _currEpo, rnxSat, satObs);
-        t_qcObs qcObs;
-        if (setQcObs(satObs, qcObs) == success) {
-          qcEpo._qcObs[satObs._prn] = qcObs;
-          updateQcSat(qcObs, _qcFile._qcSat[satObs._prn]);
-        }
+        t_qcObs& qcObs = qcEpo._qcObs[satObs._prn];
+        setQcObs(qcEpo._epoTime, xyzSta, satObs, qcObs);
+        updateQcSat(qcObs, _qcFile._qcSat[satObs._prn]);
       }
       _qcFile._qcEpo.push_back(qcEpo);
     }
+
+    analyzeMultipath();
 
     preparePlotData(obsFile);
 
@@ -263,23 +263,42 @@ void t_reqcAnalyze::updateQcSat(const t_qcObs& qcObs, t_qcSat& qcSat) {
 
 //
 ////////////////////////////////////////////////////////////////////////////
-t_irc t_reqcAnalyze::setQcObs(const t_satObs& satObs, t_qcObs& qcObs) {
+void t_reqcAnalyze::setQcObs(const bncTime& epoTime, const ColumnVector& xyzSta, 
+                             const t_satObs& satObs, t_qcObs& qcObs) {
 
-  if (satObs._prn.system() == 'R') {
-    t_ephGlo* ephGlo  = 0;
-    for (int ie = 0; ie < _ephs.size(); ie++) {
-      if (_ephs[ie]->prn() == satObs._prn) {
-        ephGlo = dynamic_cast<t_ephGlo*>(_ephs[ie]);
-        break;
-      }
+  t_eph* eph = 0;
+  for (int ie = 0; ie < _ephs.size(); ie++) {
+    if (_ephs[ie]->prn() == satObs._prn) {
+      eph = _ephs[ie];
+      break;
     }
-    if (ephGlo) {
+  }
+  if (eph) {
+    ColumnVector xc(4);
+    ColumnVector vv(3);
+    if (xyzSta.size() && eph->getCrd(epoTime, xc, vv, false) == success) {
+      double rho, eleSat, azSat;
+      topos(xyzSta(1), xyzSta(2), xyzSta(3), xc(1), xc(2), xc(3), rho, eleSat, azSat);
+      qcObs._eleSet = true;
+      qcObs._azDeg  = azSat  * 180.0/M_PI;
+      qcObs._eleDeg = eleSat * 180.0/M_PI;
+    }
+    if (satObs._prn.system() == 'R') {
       qcObs._slotSet = true;
-      qcObs._slotNum = ephGlo->slotNum();
+      qcObs._slotNum = eph->slotNum();
     }
   }
 
-  bool okFlag = false;
+  // Check Gaps
+  // ----------
+  if (qcObs._lastObsTime.valid()) {
+    double dt = epoTime - qcObs._lastObsTime;
+    if (dt > 1.5 * _qcFile._interval) {
+      qcObs._gapL1 = true;
+      qcObs._gapL2 = true;
+    }
+  }
+  qcObs._lastObsTime = epoTime;
 
   // Availability and Slip Flags
   // ---------------------------
@@ -287,12 +306,11 @@ t_irc t_reqcAnalyze::setQcObs(const t_satObs& satObs, t_qcObs& qcObs) {
   double L2 = 0.0;
   double P1 = 0.0;
   double P2 = 0.0;
-
   for (unsigned iFrq = 0; iFrq < satObs._obs.size(); iFrq++) {
     const t_frqObs* frqObs = satObs._obs[iFrq];
     if      (frqObs->_rnxType2ch[0] == '1') {
       if (frqObs->_phaseValid) {
-        L1              = frqObs->_phase;
+        L1            = frqObs->_phase;
         qcObs._hasL1  = true;
         qcObs._slipL1 = frqObs->_slip;
       }
@@ -306,8 +324,8 @@ t_irc t_reqcAnalyze::setQcObs(const t_satObs& satObs, t_qcObs& qcObs) {
     else if ( (satObs._prn.system() != 'E' && frqObs->_rnxType2ch[0] == '2') ||
               (satObs._prn.system() == 'E' && frqObs->_rnxType2ch[0] == '5') ) {
       if (frqObs->_phaseValid) {
-        L2             = frqObs->_phase;
-        qcObs._hasL2 = true;
+        L2            = frqObs->_phase;
+        qcObs._hasL2  = true;
         qcObs._slipL2 = frqObs->_slip;
       }
       if (frqObs->_codeValid) {
@@ -319,9 +337,9 @@ t_irc t_reqcAnalyze::setQcObs(const t_satObs& satObs, t_qcObs& qcObs) {
     }
   }
 
-  // Compute the Multipath
-  // ----------------------
-  if (L1 != 0.0 && L2 != 0.0) {
+  // Compute the Multipath Linear Combination
+  // ----------------------------------------
+  if (L1 != 0.0 && L2 != 0.0 && P1 != 0.0 && P2 != 0.0) {
     double f1 = 0.0;
     double f2 = 0.0;
     if      (satObs._prn.system() == 'G') {
@@ -340,21 +358,104 @@ t_irc t_reqcAnalyze::setQcObs(const t_satObs& satObs, t_qcObs& qcObs) {
     L1 = L1 * t_CST::c / f1;
     L2 = L2 * t_CST::c / f2;
 
-    if (P1 != 0.0) {
-      qcObs._MP1 = P1 - L1 - 2.0*f2*f2/(f1*f1-f2*f2) * (L1 - L2);
-      okFlag = true;
-    }
-    if (P2 != 0.0) {
-      qcObs._MP2 = P2 - L2 - 2.0*f1*f1/(f1*f1-f2*f2) * (L1 - L2);
-      okFlag = true;
-    }
+    qcObs._rawMP1 = P1 - L1 - 2.0*f2*f2/(f1*f1-f2*f2) * (L1 - L2);
+    qcObs._rawMP2 = P2 - L2 - 2.0*f1*f1/(f1*f1-f2*f2) * (L1 - L2);
+    qcObs._mpSet  = true;
   }
+}
 
-  if (okFlag) {
-    return success;
-  }
-  else {
-    return failure;
+//
+////////////////////////////////////////////////////////////////////////////
+void t_reqcAnalyze::analyzeMultipath() {
+
+  const double SLIPTRESH = 10.0;  // cycle-slip threshold (meters)
+  const double chunkStep = 600.0; // 10 minutes
+
+  // Loop over all satellites available
+  // ----------------------------------
+  QMutableMapIterator<t_prn, t_qcSat> it(_qcFile._qcSat);
+  while (it.hasNext()) {
+    it.next();
+    const t_prn& prn   = it.key();
+    t_qcSat&     qcSat = it.value();
+
+    // Loop over all Chunks of Data
+    // ----------------------------
+    for (bncTime chunkStart = _qcFile._startTime; 
+         chunkStart < _qcFile._endTime; chunkStart += chunkStep) {
+
+      bncTime chunkEnd = chunkStart + chunkStep;
+
+      QVector<t_qcObs*> obsVec;
+      QVector<double>   MP1;
+      QVector<double>   MP2;
+    
+      // Loop over all Epochs within one Chunk of Data
+      // ---------------------------------------------
+      for (int iEpo = 0; iEpo < _qcFile._qcEpo.size(); iEpo++) {
+        t_qcEpo& qcEpo = _qcFile._qcEpo[iEpo];
+        if (chunkStart <= qcEpo._epoTime && qcEpo._epoTime < chunkEnd) {
+          if (qcEpo._qcObs.contains(prn)) {
+            t_qcObs& qcObs = qcEpo._qcObs[prn];
+            obsVec << &qcObs;
+            if (qcObs._mpSet) {
+              MP1 << qcObs._rawMP1;
+              MP2 << qcObs._rawMP2;
+            }
+          }
+        }
+      }
+
+      // Compute the multipath mean and standard deviation
+      // -------------------------------------------------
+      if (MP1.size() > 1) {
+        double meanMP1 = 0.0;
+        double meanMP2 = 0.0;
+        for (int ii = 0; ii < MP1.size(); ii++) {
+          meanMP1 += MP1[ii];
+          meanMP2 += MP2[ii];
+        }
+        meanMP1 /= MP1.size();
+        meanMP2 /= MP2.size();
+
+        bool slipMP = false;
+
+        double stdMP1 = 0.0;
+        double stdMP2 = 0.0;
+        for (int ii = 0; ii < MP1.size(); ii++) {
+          double diff1 = MP1[ii] - meanMP1;
+          double diff2 = MP2[ii] - meanMP2;
+          if (fabs(diff1) > SLIPTRESH || fabs(diff2) > SLIPTRESH) {
+            slipMP = true;
+            break;
+          }
+          stdMP1 += diff1 * diff1;
+          stdMP2 += diff2 * diff2;
+        }
+
+        if (slipMP) {
+          stdMP1 = 0.0;
+          stdMP2 = 0.0;
+          qcSat._numSlipsFound += 1;
+        }
+        else {
+          stdMP1 = sqrt(stdMP1 / (MP1.size()-1));
+          stdMP2 = sqrt(stdMP2 / (MP2.size()-1));
+        }
+
+        for (int ii = 0; ii < obsVec.size(); ii++) {
+          t_qcObs* qcObs = obsVec[ii];
+          if (slipMP) {
+            qcObs->_slipL1 = true;
+            qcObs->_slipL2 = true;
+          }
+          else {
+            qcObs->_stdMP1 = stdMP1;
+            qcObs->_stdMP2 = stdMP2;
+          }
+        }
+      }
+    }
   }
 }
 
@@ -362,15 +463,10 @@ t_irc t_reqcAnalyze::setQcObs(const t_satObs& satObs, t_qcObs& qcObs) {
 ////////////////////////////////////////////////////////////////////////////
 void t_reqcAnalyze::preparePlotData(const t_rnxObsFile* obsFile) {
 
-  ColumnVector xyzSta = obsFile->xyz();
-
   QVector<t_polarPoint*>* dataMP1  = new QVector<t_polarPoint*>;
   QVector<t_polarPoint*>* dataMP2  = new QVector<t_polarPoint*>;
   QVector<t_polarPoint*>* dataSNR1 = new QVector<t_polarPoint*>;
   QVector<t_polarPoint*>* dataSNR2 = new QVector<t_polarPoint*>;
-
-  const double SLIPTRESH = 10.0;  // cycle-slip threshold (meters)
-  const double chunkStep = 600.0; // 10 minutes
 
   bncSettings settings;
   QString reqSkyPlotSystems = settings.value("reqcSkyPlotSystems").toString();
@@ -392,167 +488,24 @@ void t_reqcAnalyze::preparePlotData(const t_rnxObsFile* obsFile) {
     plotGal = true;
   }
 
-  // Loop over all satellites available
-  // ----------------------------------
-  QMutableMapIterator<t_prn, t_qcSat> it(_qcFile._qcSat);
-  while (it.hasNext()) {
-    it.next();
-    const t_prn& prn   = it.key();
-    t_qcSat&     qcSat = it.value();
-
-    // Loop over all Chunks of Data
-    // ----------------------------
-    for (bncTime chunkStart = _qcFile._startTime; 
-         chunkStart < _qcFile._endTime; chunkStart += chunkStep) {
-
-      // Chunk (sampled) Epoch
-      // ---------------------
-      _qcFile._qcEpoSampled.push_back(t_qcEpo());
-      t_qcEpo& qcEpoSampled = _qcFile._qcEpoSampled.back();
-      t_qcObs& qcObsSampled = qcEpoSampled._qcObs[prn];
-
-      QVector<double> MP1;
-      QVector<double> MP2;
-    
-      // Loop over all Epochs within one Chunk of Data
-      // ---------------------------------------------
-      bncTime prevTime;
-      for (int iEpo = 0; iEpo < _qcFile._qcEpo.size(); iEpo++) {
-        t_qcEpo& qcEpo = _qcFile._qcEpo[iEpo];
-        if (qcEpo._epoTime < chunkStart) {
-          continue;
-        }
-        if (!qcEpo._qcObs.contains(prn)) {
-          continue;
-        }
-      
-        t_qcObs& qcObs = qcEpo._qcObs[prn];
-      
-        // Compute the Azimuth and Zenith Distance
-        // ---------------------------------------
-        if (chunkStart == qcEpo._epoTime) {
-          qcEpoSampled._epoTime = qcEpo._epoTime;
-          qcEpoSampled._PDOP    = qcEpo._PDOP;
-
-          if (qcObs._slotSet) {
-            qcObsSampled._slotSet = true;
-            qcObsSampled._slotNum = qcObs._slotNum;
-          }
-          if (xyzSta.size()) {
-            t_eph* eph = 0;
-            for (int ie = 0; ie < _ephs.size(); ie++) {
-              if (_ephs[ie]->prn() == prn) {
-                eph = _ephs[ie];
-                break;
-              }
-            }
-            if (eph) {
-              ColumnVector xc(4);
-              ColumnVector vv(3);
-              if (eph->getCrd(qcEpo._epoTime, xc, vv, false) == success) {
-                double rho, eleSat, azSat;
-                topos(xyzSta(1), xyzSta(2), xyzSta(3), xc(1), xc(2), xc(3), rho, eleSat, azSat);
-                qcObsSampled._azDeg  = azSat  * 180.0/M_PI;
-                qcObsSampled._eleDeg = eleSat * 180.0/M_PI;
-                qcObs._azDeg         = azSat  * 180.0/M_PI;
-                qcObs._eleDeg        = eleSat * 180.0/M_PI;
-              }
-            }
-          }
-        }
-      
-        // Check Interval
-        // --------------
-        if (prevTime.valid()) {
-          double dt = qcEpo._epoTime - prevTime;
-          if (dt > 1.5 * _qcFile._interval) {
-            qcObsSampled._gapL1 = true;
-            qcObsSampled._gapL2 = true;
-          }
-        }
-        prevTime = qcEpo._epoTime;
-      
-        // Check L1 and L2 availability
-        // ----------------------------
-        if (qcObs._hasL1) {
-          qcObsSampled._hasL1 = true;
-        }
-        if (qcObs._hasL2) {
-          qcObsSampled._hasL2 = true;
-        }
-      
-        // Check Minimal Signal-to-Noise Ratio
-        // -----------------------------------
-        if ( qcObs._SNR1 > 0 && (qcObsSampled._SNR1 == 0 || qcObsSampled._SNR1 > qcObs._SNR1) ) {
-          qcObsSampled._SNR1 = qcObs._SNR1;
-        }
-        if ( qcObs._SNR2 > 0 && (qcObsSampled._SNR2 == 0 || qcObsSampled._SNR2 > qcObs._SNR2) ) {
-          qcObsSampled._SNR2 = qcObs._SNR2;
-        }
-      
-        // Check Slip Flags
-        // ----------------
-        if (qcObs._slipL1) {
-          qcObsSampled._slipL1 = true;
-        }
-        if (qcObs._slipL2) {
-          qcObsSampled._slipL2 = true;
-        }
-      
-        MP1 << qcObs._MP1;
-        MP2 << qcObs._MP2;
-      }
-
-      // Compute the Multipath
-      // ---------------------
-      if ( MP1.size() > 0 && MP2.size() > 0 &&
-           ( (prn.system() == 'G' && plotGPS                         ) ||
-             (prn.system() == 'R' && plotGlo && qcObsSampled._slotSet) ||
-             (prn.system() == 'E' && plotGal                         ) ) ) {
-
-        double meanMP1 = 0.0;
-        double meanMP2 = 0.0;
-        for (int ii = 0; ii < MP1.size(); ii++) {
-          meanMP1 += MP1[ii];
-          meanMP2 += MP2[ii];
-        }
-        meanMP1 /= MP1.size();
-        meanMP2 /= MP2.size();
-
-        bool slipMP = false;
-        double stdMP1 = 0.0;
-        double stdMP2 = 0.0;
-        for (int ii = 0; ii < MP1.size(); ii++) {
-          double diff1 = MP1[ii] - meanMP1;
-          double diff2 = MP2[ii] - meanMP2;
-          if (fabs(diff1) > SLIPTRESH || fabs(diff2) > SLIPTRESH) {
-            slipMP = true;
-            break;
-          }
-          stdMP1 += diff1 * diff1;
-          stdMP2 += diff2 * diff2;
-        }
-
-        if (slipMP) {
-          qcObsSampled._slipL1 = true;
-          qcObsSampled._slipL2 = true;
-          qcSat._numSlipsFound += 1;
-        }
-        else {
-          stdMP1 = sqrt(stdMP1 / MP1.size());
-          stdMP2 = sqrt(stdMP2 / MP2.size());
-          (*dataMP1)  << (new t_polarPoint(qcObsSampled._azDeg, 90.0 - qcObsSampled._eleDeg, stdMP1));
-          (*dataMP2)  << (new t_polarPoint(qcObsSampled._azDeg, 90.0 - qcObsSampled._eleDeg, stdMP2));
-        }
-      }
-    
-      // Signal-to-Noise Ratio Plot Data
-      // -------------------------------
+  // Loop over all observations
+  // --------------------------
+  for (int iEpo = 0; iEpo < _qcFile._qcEpo.size(); iEpo++) {
+    t_qcEpo& qcEpo = _qcFile._qcEpo[iEpo];
+    QMapIterator<t_prn, t_qcObs> it(qcEpo._qcObs);
+    while (it.hasNext()) {
+      it.next();
+      const t_prn&   prn   = it.key();
+      const t_qcObs& qcObs = it.value();
       if ( (prn.system() == 'G' && plotGPS) ||
            (prn.system() == 'R' && plotGlo) ||
            (prn.system() == 'E' && plotGal) ) {
-        (*dataSNR1) << (new t_polarPoint(qcObsSampled._azDeg, 90.0 - qcObsSampled._eleDeg, qcObsSampled._SNR1));
-        (*dataSNR2) << (new t_polarPoint(qcObsSampled._azDeg, 90.0 - qcObsSampled._eleDeg, qcObsSampled._SNR2));
+
+        (*dataSNR1) << (new t_polarPoint(qcObs._azDeg, 90.0 - qcObs._eleDeg, qcObs._SNR1));
+        (*dataSNR2) << (new t_polarPoint(qcObs._azDeg, 90.0 - qcObs._eleDeg, qcObs._SNR2));
+
+        (*dataMP1)  << (new t_polarPoint(qcObs._azDeg, 90.0 - qcObs._eleDeg, qcObs._stdMP1));
+        (*dataMP2)  << (new t_polarPoint(qcObs._azDeg, 90.0 - qcObs._eleDeg, qcObs._stdMP2));
       }
     }
   }
