@@ -787,38 +787,48 @@ void t_reqcAnalyze::printReport(const t_rnxObsFile* obsFile) {
       const t_qcSat& qcSat = itSat.value();
 
       *_log << prn.toString().c_str()
-            << QString(" %1 %2").arg(qcSat._eleDeg, 6, 'f', 2).arg(qcSat._azDeg, 7, 'f', 2)
-            << QString("  %1").arg(qcSat._qcFrq.size());
+            << QString(" %1 %2").arg(qcSat._eleDeg, 6, 'f', 2).arg(qcSat._azDeg, 7, 'f', 2);
+
+      int numObsTypes = 0;
       for (int iFrq = 0; iFrq < qcSat._qcFrq.size(); iFrq++) {
         const t_qcFrq& qcFrq = qcSat._qcFrq[iFrq];
-        *_log << "  " << qcFrq._rnxType2ch << ' ';
         if (qcFrq._phaseValid) {
-          *_log << 'P';
-        }
-        else {
-          *_log << '.';
+          numObsTypes += 1;
         }
         if (qcFrq._codeValid) {
-          *_log << 'C';
+          numObsTypes += 1;
         }
-        else {
-          *_log << '.';
+      }
+      *_log << QString("  %1").arg(numObsTypes);
+
+      for (int iFrq = 0; iFrq < qcSat._qcFrq.size(); iFrq++) {
+        const t_qcFrq& qcFrq = qcSat._qcFrq[iFrq];
+        if (qcFrq._phaseValid) {
+          *_log << "  L" << qcFrq._rnxType2ch << ' ';
+          if (qcFrq._slip) {
+            *_log << 's';
+          }
+          else {
+            *_log << '.';
+          }
+          if (qcFrq._gap) {
+            *_log << 'g';
+          }
+          else {
+            *_log << '.';
+          }
+          *_log << QString(" %1").arg(qcFrq._SNR,   4, 'f', 1);
         }
-        *_log << ' ';
-        if (qcFrq._slip) {
-          *_log << 'S';
+        if (qcFrq._codeValid) {
+          *_log << "  C" << qcFrq._rnxType2ch << ' ';
+          if (qcFrq._gap) {
+            *_log << 'g';
+          }
+          else {
+            *_log << '.';
+          }
+          *_log << QString(" %1").arg(qcFrq._stdMP, 3, 'f', 2);
         }
-        else {
-          *_log << '.';
-        }
-        if (qcFrq._slip) {
-          *_log << 'G';
-        }
-        else {
-          *_log << '.';
-        }
-        *_log << QString(" %1").arg(qcFrq._SNR,   4, 'f', 1)
-              << QString(" %1").arg(qcFrq._stdMP, 2, 'f', 1);
       }
       *_log << endl;
     }
