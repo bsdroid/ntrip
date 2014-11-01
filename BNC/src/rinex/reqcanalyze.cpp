@@ -131,12 +131,6 @@ void t_reqcAnalyze::run() {
 ////////////////////////////////////////////////////////////////////////////
 void t_reqcAnalyze::analyzeFile(t_rnxObsFile* obsFile) {
 
-  if (_log) {
-    *_log << "\nAnalyze File\n"
-          <<   "------------\n"
-          << "File:            " << obsFile->fileName().toAscii().data() << endl;
-  }
-
   _qcFile.clear();
 
   // A priori Coordinates
@@ -179,7 +173,7 @@ void t_reqcAnalyze::analyzeFile(t_rnxObsFile* obsFile) {
 
     preparePlotData(obsFile);
 
-    printReport();
+    printReport(obsFile);
   }
   catch (QString str) {
     if (_log) {
@@ -499,11 +493,12 @@ void t_reqcAnalyze::preparePlotData(const t_rnxObsFile* obsFile) {
            (prn.system() == 'R' && plotGlo) ||
            (prn.system() == 'E' && plotGal) ) {
 
-        (*dataSNR1) << (new t_polarPoint(qcObs._azDeg, 90.0 - qcObs._eleDeg, qcObs._SNR1));
-        (*dataSNR2) << (new t_polarPoint(qcObs._azDeg, 90.0 - qcObs._eleDeg, qcObs._SNR2));
-
-        (*dataMP1)  << (new t_polarPoint(qcObs._azDeg, 90.0 - qcObs._eleDeg, qcObs._stdMP1));
-        (*dataMP2)  << (new t_polarPoint(qcObs._azDeg, 90.0 - qcObs._eleDeg, qcObs._stdMP2));
+        if (qcObs._eleSet) {
+          (*dataSNR1) << (new t_polarPoint(qcObs._azDeg, 90.0 - qcObs._eleDeg, qcObs._SNR1));
+          (*dataSNR2) << (new t_polarPoint(qcObs._azDeg, 90.0 - qcObs._eleDeg, qcObs._SNR2));
+          (*dataMP1)  << (new t_polarPoint(qcObs._azDeg, 90.0 - qcObs._eleDeg, qcObs._stdMP1));
+          (*dataMP2)  << (new t_polarPoint(qcObs._azDeg, 90.0 - qcObs._eleDeg, qcObs._stdMP2));
+        }
       }
     }
   }
@@ -618,12 +613,28 @@ void t_reqcAnalyze::slotDspAvailPlot(const QString& fileName, const QByteArray& 
       t_plotData&    data  = plotDataMap[prn];
       data._mjdX24 << mjdX24;
       data._eleDeg << qcObs._eleDeg;
-      if (qcObs._hasL1)  data._L1ok   << mjdX24;
-      if (qcObs._hasL2)  data._L2ok   << mjdX24;
-      if (qcObs._slipL1) data._L1slip << mjdX24;
-      if (qcObs._slipL2) data._L2slip << mjdX24;
-      if (qcObs._gapL1)  data._L1gap  << mjdX24;
-      if (qcObs._gapL2)  data._L2gap  << mjdX24;
+      if (qcObs._hasL1) {
+        if      (qcObs._slipL1) {
+          data._L1slip << mjdX24;
+        }
+        else if (qcObs._gapL1) {
+          data._L1gap << mjdX24;
+        }
+        else {
+          data._L1ok << mjdX24;
+        }
+      }
+      if (qcObs._hasL2) {
+        if      (qcObs._slipL2) {
+          data._L2slip << mjdX24;
+        }
+        else if (qcObs._gapL2) {
+          data._L2gap << mjdX24;
+        }
+        else {
+          data._L2ok << mjdX24;
+        }
+      }
     }
   }
 
@@ -656,21 +667,22 @@ void t_reqcAnalyze::slotDspAvailPlot(const QString& fileName, const QByteArray& 
 
 // Finish the report
 ////////////////////////////////////////////////////////////////////////////
-void t_reqcAnalyze::printReport() {
+void t_reqcAnalyze::printReport(const t_rnxObsFile* obsFile) {
 
   if (!_log) {
     return;
   }
 
-  *_log << "Marker name:     " << _qcFile._markerName   << endl
-        << "Receiver:        " << _qcFile._receiverType << endl
-        << "Antenna:         " << _qcFile._antennaName  << endl
+  *_log << "File:            " << obsFile->fileName().toAscii().data() << endl
+        << "Marker name:     " << _qcFile._markerName                  << endl
+        << "Receiver:        " << _qcFile._receiverType                << endl
+        << "Antenna:         " << _qcFile._antennaName                 << endl
         << "Start time:      " << _qcFile._startTime.datestr().c_str() << ' '
                                << _qcFile._startTime.timestr().c_str() << endl
-        << "End time:        " << _qcFile._endTime.datestr().c_str() << ' '
-                               << _qcFile._endTime.timestr().c_str() << endl
-        << "Interval:        " << _qcFile._interval << endl
-        << "# Sat.:          " << _qcFile._qcSat.size() << endl;
+        << "End time:        " << _qcFile._endTime.datestr().c_str()   << ' '
+                               << _qcFile._endTime.timestr().c_str()   << endl
+        << "Interval:        " << _qcFile._interval                    << endl
+        << "# Sat.:          " << _qcFile._qcSat.size()                << endl;
 
   int numObs          = 0;
   int numSlipsFlagged = 0;
