@@ -350,7 +350,7 @@ void t_reqcAnalyze::setQcObs(const bncTime& epoTime, const ColumnVector& xyzSta,
         for (unsigned jj = 0; jj < satObs._obs.size(); jj++) {
           const t_frqObs* frqObsB = satObs._obs[jj];
           if (frqObsB->_rnxType2ch[0] == t_frequency::toString(fB)[1] &&
-              frqObsB->_phaseValid && frqObsB->_codeValid) {
+              frqObsB->_phaseValid) {
 
             double f_a = t_CST::freq(fA, qcSat._slotNum);
             double f_b = t_CST::freq(fB, qcSat._slotNum);
@@ -361,13 +361,11 @@ void t_reqcAnalyze::setQcObs(const bncTime& epoTime, const ColumnVector& xyzSta,
 
             qcFrq._setMP = true;
             qcFrq._rawMP = C_a - L_a - 2.0*f_b*f_b/(f_a*f_a-f_b*f_b) * (L_a - L_b);
-            break;            
           }
         }
       }
-
     }
-  }
+  } // satObs loop
 }
 
 //
