@@ -68,15 +68,19 @@ Q_OBJECT
   class t_qcFrq {
    public:
     t_qcFrq() {
-      _slip  = false;
-      _gap   = false;
-      _setMP = false;
-      _rawMP = 0.0;
-      _stdMP = 0.0;
-      _SNR   = 0.0;
+      _phaseValid = false;
+      _codeValid  = false;
+      _slip       = false;
+      _gap        = false;
+      _setMP      = false;
+      _rawMP      = 0.0;
+      _stdMP      = 0.0;
+      _SNR        = 0.0;
     }
     QString _rnxType2ch;
     bncTime _lastObsTime;
+    bool    _phaseValid;
+    bool    _codeValid;
     bool    _slip;
     bool    _gap;
     bool    _setMP;

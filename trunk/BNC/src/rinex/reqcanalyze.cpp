@@ -299,6 +299,8 @@ void t_reqcAnalyze::setQcObs(const bncTime& epoTime, const ColumnVector& xyzSta,
     qcFrq._rnxType2ch = QString(frqObs->_rnxType2ch.c_str());
     qcFrq._SNR        = frqObs->_snr;
     qcFrq._slip       = frqObs->_slip;
+    qcFrq._phaseValid = frqObs->_phaseValid;
+    qcFrq._codeValid  = frqObs->_codeValid;
 
     // Check Gaps
     // ----------
