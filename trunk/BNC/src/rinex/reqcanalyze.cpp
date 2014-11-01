@@ -750,5 +750,33 @@ void t_reqcAnalyze::printReport(const t_rnxObsFile* obsFile) {
         << "# Slips (file):  " << numSlipsFlagged << endl
         << "# Slips (found): " << numSlipsFound   << endl;
 
+  for (int iEpo = 0; iEpo < _qcFile._qcEpo.size(); iEpo++) {
+    const t_qcEpo& qcEpo = _qcFile._qcEpo[iEpo];
+
+    unsigned year, month, day, hour, min;
+    double sec;
+    qcEpo._epoTime.civil_date(year, month, day);
+    qcEpo._epoTime.civil_time(hour, min, sec);
+
+    QString dateStr;
+    QTextStream(&dateStr) << QString("> %1 %2 %3 %4 %5%6")
+      .arg(year,  4)
+      .arg(month, 2, 10, QChar('0'))
+      .arg(day,   2, 10, QChar('0'))
+      .arg(hour,  2, 10, QChar('0'))
+      .arg(min,   2, 10, QChar('0'))
+      .arg(sec,  11, 'f', 7);
+
+    *_log << dateStr << QString("%1\n").arg(qcEpo._qcSat.size(), 3);
+
+    QMapIterator<t_prn, t_qcSat> itSat(qcEpo._qcSat);
+    while (itSat.hasNext()) {
+      itSat.next();
+      const t_prn&   prn   = itSat.key();
+      const t_qcSat& qcSat = itSat.value();
+
+      *_log << prn.toString().c_str() << endl;
+    }
+  }
   _log->flush();
 }
