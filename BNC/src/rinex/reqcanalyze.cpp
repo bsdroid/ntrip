@@ -767,7 +767,9 @@ void t_reqcAnalyze::printReport(const t_rnxObsFile* obsFile) {
       .arg(min,   2, 10, QChar('0'))
       .arg(sec,  11, 'f', 7);
 
-    *_log << dateStr << QString("%1\n").arg(qcEpo._qcSat.size(), 3);
+    *_log << dateStr << QString(" %1").arg(qcEpo._qcSat.size(), 2)
+          << QString(" %1").arg(qcEpo._PDOP, 4, 'f', 1)
+          << endl;
 
     QMapIterator<t_prn, t_qcSat> itSat(qcEpo._qcSat);
     while (itSat.hasNext()) {
@@ -775,7 +777,28 @@ void t_reqcAnalyze::printReport(const t_rnxObsFile* obsFile) {
       const t_prn&   prn   = itSat.key();
       const t_qcSat& qcSat = itSat.value();
 
-      *_log << prn.toString().c_str() << endl;
+      *_log << prn.toString().c_str()
+            << QString(" %1 %2").arg(qcSat._eleDeg, 6, 'f', 2).arg(qcSat._azDeg, 7, 'f', 2)
+            << QString("  %1").arg(qcSat._qcFrq.size());
+      for (int iFrq = 0; iFrq < qcSat._qcFrq.size(); iFrq++) {
+        const t_qcFrq& qcFrq = qcSat._qcFrq[iFrq];
+        *_log << "  " << qcFrq._rnxType2ch << ' ';
+        if (qcFrq._slip) {
+          *_log << 'S';
+        }
+        else {
+          *_log << '.';
+        }
+        if (qcFrq._slip) {
+          *_log << 'G';
+        }
+        else {
+          *_log << '.';
+        }
+        *_log << QString(" %1").arg(qcFrq._SNR,   4, 'f', 1)
+              << QString(" %1").arg(qcFrq._stdMP, 2, 'f', 1);
+      }
+      *_log << endl;
     }
   }
   _log->flush();
