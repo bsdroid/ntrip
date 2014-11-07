@@ -821,9 +821,11 @@ void t_reqcAnalyze::printReport(const t_rnxObsFile* obsFile) {
         numGaps         += qcFrqSum->_numGaps        ;
       }
       *_log << endl
-            << prefixSys << prefixFrq << "Observations          : " << numObs << endl
-            << prefixSys << prefixFrq << "Slips (file+found)    : " << numSlipsFlagged << " + " << numSlipsFound << endl
-            << prefixSys << prefixFrq << "Gaps                  : " << numGaps << endl;
+            << prefixSys << prefixFrq << "Observations      : " << numObs << endl
+            << prefixSys << prefixFrq << "Slips (file+found): " << numSlipsFlagged << " + " << numSlipsFound << endl
+            << prefixSys << prefixFrq << "Gaps              : " << numGaps << endl
+            << prefixSys << prefixFrq << "Mean SNR          : " << 0.0 << endl
+            << prefixSys << prefixFrq << "Mean Multipath    : " << 0.0 << endl;
     }
   }
 
