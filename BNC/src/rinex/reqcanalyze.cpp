@@ -740,27 +740,44 @@ void t_reqcAnalyze::printReport(const t_rnxObsFile* obsFile) {
     return;
   }
 
+  QFileInfo obsFi(obsFile->fileName());
+  QString obsFileName = obsFi.fileName();
+
+  QString navFileName;
+  QStringListIterator namIt(_navFileNames);
+  bool firstName = true;
+  while (namIt.hasNext()) {
+    QFileInfo navFi(namIt.next());
+    if (firstName) {
+      firstName = false;
+      navFileName += navFi.fileName();
+    }
+    else {
+      navFileName += ", " + navFi.fileName();
+    }
+  }
+
   // Summary
   // -------
-  *_log << "QC Format Version : " << QString("%1").arg(QC_FORMAT_VERSION,3,'f',1) << endl << endl
-        << "Observation File  : " << obsFile->fileName().toAscii().data() << endl
-        << "Navigation File(s): " << _navFileNames.join(", ")             << endl
+  *_log << "QC Format Version : " << QString("%1").arg(QC_FORMAT_VERSION,3,'f',1)  << endl << endl
+        << "Observation File  : " << obsFileName                                   << endl
+        << "Navigation File(s): " << navFileName                                   << endl
         << "RINEX Version     : " << QString("%1").arg(obsFile->version(),4,'f',2) << endl
-        << "Marker Name       : " << _qcFile._markerName                  << endl
-        << "Marker Number     : " << obsFile->markerNumber()              << endl
-        << "Receiver          : " << _qcFile._receiverType                << endl
-        << "Antenna           : " << _qcFile._antennaName                 << endl
+        << "Marker Name       : " << _qcFile._markerName                           << endl
+        << "Marker Number     : " << obsFile->markerNumber()                       << endl
+        << "Receiver          : " << _qcFile._receiverType                         << endl
+        << "Antenna           : " << _qcFile._antennaName                          << endl
         << "Position XYZ      : " << QString("%1 %2 %3").arg(obsFile->xyz()(1), 14, 'f', 4)
                                                         .arg(obsFile->xyz()(2), 14, 'f', 4)
                                                         .arg(obsFile->xyz()(3), 14, 'f', 4) << endl
         << "Antenna dH/dE/dN  : " << QString("%1 %2 %3").arg(obsFile->antNEU()(3), 8, 'f', 4)
                                                         .arg(obsFile->antNEU()(2), 8, 'f', 4)
                                                         .arg(obsFile->antNEU()(1), 8, 'f', 4) << endl
-        << "Start Time        : " << _qcFile._startTime.datestr().c_str() << ' '
-                                  << _qcFile._startTime.timestr(1,'.').c_str() << endl
-        << "End Time          : " << _qcFile._endTime.datestr().c_str()   << ' '
-                                  << _qcFile._endTime.timestr(1,'.').c_str()   << endl
-        << "Interval          : " << _qcFile._interval                    << endl;
+        << "Start Time        : " << _qcFile._startTime.datestr().c_str()         << ' '
+                                  << _qcFile._startTime.timestr(1,'.').c_str()    << endl
+        << "End Time          : " << _qcFile._endTime.datestr().c_str()           << ' '
+                                  << _qcFile._endTime.timestr(1,'.').c_str()      << endl
+        << "Interval          : " << _qcFile._interval                            << endl;
 
   // Number of systems
   // -----------------
