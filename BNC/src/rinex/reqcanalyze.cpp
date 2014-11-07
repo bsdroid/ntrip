@@ -815,23 +815,37 @@ void t_reqcAnalyze::printReport(const t_rnxObsFile* obsFile) {
       const QVector<const t_qcFrqSum*> qcFrqVec = itFrq.value();
       QString prefixFrq = QString("  ") + frqType + QString(": ");
 
-      int numObs           = 0;
-      int numSlipsFlagged  = 0;
-      int numSlipsFound    = 0;
-      int numGaps          = 0;
+      int    numObs          = 0;
+      int    numSlipsFlagged = 0;
+      int    numSlipsFound   = 0;
+      int    numGaps         = 0;
+      int    numSNR          = 0;
+      int    numMP           = 0;
+      double sumSNR          = 0.0;
+      double sumMP           = 0.0;
       for (int ii = 0; ii < qcFrqVec.size(); ii++) {
         const t_qcFrqSum* qcFrqSum = qcFrqVec[ii];
         numObs          += qcFrqSum->_numObs         ;
         numSlipsFlagged += qcFrqSum->_numSlipsFlagged;
         numSlipsFound   += qcFrqSum->_numSlipsFound  ;
         numGaps         += qcFrqSum->_numGaps        ;
+        numSNR          += qcFrqSum->_numSNR;
+        numMP           += qcFrqSum->_numMP;
+        sumSNR          += qcFrqSum->_sumSNR * qcFrqSum->_numSNR;
+        sumMP           += qcFrqSum->_sumMP  * qcFrqSum->_numMP;
+      }
+      if (numSNR > 0) {
+        sumSNR /= numSNR;
+      }
+      if (numMP > 0) {
+        sumMP /= numMP;
       }
       *_log << endl
             << prefixSys << prefixFrq << "Observations      : " << numObs << endl
             << prefixSys << prefixFrq << "Slips (file+found): " << numSlipsFlagged << " + " << numSlipsFound << endl
             << prefixSys << prefixFrq << "Gaps              : " << numGaps << endl
-            << prefixSys << prefixFrq << "Mean SNR          : " << 0.0 << endl
-            << prefixSys << prefixFrq << "Mean Multipath    : " << 0.0 << endl;
+            << prefixSys << prefixFrq << "Mean SNR          : " << sumSNR << endl
+            << prefixSys << prefixFrq << "Mean Multipath    : " << sumMP << endl;
     }
   }
 
