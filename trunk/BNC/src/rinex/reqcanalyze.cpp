@@ -781,7 +781,27 @@ void t_reqcAnalyze::printReport(const t_rnxObsFile* obsFile) {
     const QChar&                      sys      = itSys.key();
     const QVector<const t_qcSatSum*>& qcSatVec = itSys.value();
     QString prefixSys = QString("  ") + sys + QString(": ");
-    *_log << prefixSys << "Number of Satellites : " << qcSatVec.size() << endl; 
+    *_log << prefixSys << "Number of Satellites  : " << qcSatVec.size() << endl; 
+    int numObs           = 0;
+    int numSlipsFlagged  = 0;
+    int numSlipsFound    = 0;
+    int numGaps          = 0;
+    for (int ii = 0; ii < qcSatVec.size(); ii++) {
+      const t_qcSatSum* qcSatSum = qcSatVec[ii];
+      QMapIterator<QString, t_qcFrqSum> itFrq(qcSatSum->_qcFrqSum);
+      while (itFrq.hasNext()) {
+        itFrq.next();
+        const QString&    frqType  = itFrq.key();
+        const t_qcFrqSum& qcFrqSum = itFrq.value();
+        numObs          += qcFrqSum._numObs         ;
+        numSlipsFlagged += qcFrqSum._numSlipsFlagged;
+        numSlipsFound   += qcFrqSum._numSlipsFound  ;
+        numGaps         += qcFrqSum._numGaps        ;
+      }
+    }
+    *_log << prefixSys << "Observations          : " << numObs << endl
+          << prefixSys << "Slips (file+found)    : " << numSlipsFlagged << " + " << numSlipsFound << endl
+          << prefixSys << "Gaps                  : " << numGaps << endl;
   }
 
   // Epoch-Specific Output
