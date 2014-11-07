@@ -803,7 +803,16 @@ void t_reqcAnalyze::printReport(const t_rnxObsFile* obsFile) {
     }
     *_log << prefixSys << "Observations          : " << numObs << endl
           << prefixSys << "Slips (file+found)    : " << numSlipsFlagged << " + " << numSlipsFound << endl
-          << prefixSys << "Gaps                  : " << numGaps << endl;
+          << prefixSys << "Gaps                  : " << numGaps << endl
+          << prefixSys << "Tracking Modes        : " << frqMap.size() << endl;
+    QMapIterator<QString, QVector<const t_qcFrqSum*> > itFrq(frqMap); 
+    while (itFrq.hasNext()) {
+      itFrq.next();
+      const QString&                   frqType  = itFrq.key();
+      const QVector<const t_qcFrqSum*> qcFrqVec = itFrq.value();
+      QString prefixFrq = QString("  ") + frqType + QString(": ");
+      *_log << prefixSys << prefixFrq << endl;
+    }
   }
 
   // Epoch-Specific Output
