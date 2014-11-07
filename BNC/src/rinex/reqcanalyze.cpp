@@ -736,7 +736,7 @@ void t_reqcAnalyze::printReport(const t_rnxObsFile* obsFile) {
 
   // Summary
   // -------
-  *_log << "QC Format Version : " << QString("%1").arg(QC_FORMAT_VERSION,3,'f',1) << endl
+  *_log << "QC Format Version : " << QString("%1").arg(QC_FORMAT_VERSION,3,'f',1) << endl << endl
         << "Observation File  : " << obsFile->fileName().toAscii().data() << endl
         << "Navigation File(s): " << _navFileNames.join(", ")             << endl
         << "RINEX Version     : " << QString("%1").arg(obsFile->version(),4,'f',2) << endl
@@ -767,7 +767,7 @@ void t_reqcAnalyze::printReport(const t_rnxObsFile* obsFile) {
     systemMap[prn.system()].push_back(&qcSatSum);
   }
 
-  *_log << "Number of Systems : " << systemMap.size() << "   ";
+  *_log << "Navigation Systems: " << systemMap.size() << "   ";
   QMapIterator<QChar, QVector<const t_qcSatSum*> > itSys(systemMap);
   while (itSys.hasNext()) {
     itSys.next();
@@ -781,30 +781,31 @@ void t_reqcAnalyze::printReport(const t_rnxObsFile* obsFile) {
     const QChar&                      sys      = itSys.key();
     const QVector<const t_qcSatSum*>& qcSatVec = itSys.value();
     QString prefixSys = QString("  ") + sys + QString(": ");
-    *_log << prefixSys << "Number of Satellites  : " << qcSatVec.size() << endl; 
     QMap<QString, QVector<const t_qcFrqSum*> > frqMap; 
     for (int ii = 0; ii < qcSatVec.size(); ii++) {
       const t_qcSatSum* qcSatSum = qcSatVec[ii];
       QMapIterator<QString, t_qcFrqSum> itFrq(qcSatSum->_qcFrqSum);
       while (itFrq.hasNext()) {
         itFrq.next();
-        const QString&    frqType  = itFrq.key();
+        QString           frqType  = itFrq.key(); if (frqType.length() < 2) frqType += ' ';
         const t_qcFrqSum& qcFrqSum = itFrq.value();
         frqMap[frqType].push_back(&qcFrqSum);
       }
     }
-    *_log << prefixSys << "Tracking Modes        : " << frqMap.size() << "   ";
+    *_log << endl
+          << prefixSys << "Satellites    : " << qcSatVec.size() << endl
+          << prefixSys << "Tracking Modes: " << frqMap.size() << "   ";
     QMapIterator<QString, QVector<const t_qcFrqSum*> > itFrq(frqMap); 
     while (itFrq.hasNext()) {
       itFrq.next();
-      const QString& frqType = itFrq.key();
+      QString frqType = itFrq.key(); if (frqType.length() < 2) frqType += ' ';
       *_log << ' ' << frqType;
     }
     *_log << endl;
     itFrq.toFront();
     while (itFrq.hasNext()) {
       itFrq.next();
-      const QString&                   frqType  = itFrq.key();
+      QString                          frqType  = itFrq.key(); if (frqType.length() < 2) frqType += ' ';
       const QVector<const t_qcFrqSum*> qcFrqVec = itFrq.value();
       QString prefixFrq = QString("  ") + frqType + QString(": ");
 
@@ -819,7 +820,8 @@ void t_reqcAnalyze::printReport(const t_rnxObsFile* obsFile) {
         numSlipsFound   += qcFrqSum->_numSlipsFound  ;
         numGaps         += qcFrqSum->_numGaps        ;
       }
-      *_log << prefixSys << prefixFrq << "Observations          : " << numObs << endl
+      *_log << endl
+            << prefixSys << prefixFrq << "Observations          : " << numObs << endl
             << prefixSys << prefixFrq << "Slips (file+found)    : " << numSlipsFlagged << " + " << numSlipsFound << endl
             << prefixSys << prefixFrq << "Gaps                  : " << numGaps << endl;
     }
@@ -831,6 +833,7 @@ void t_reqcAnalyze::printReport(const t_rnxObsFile* obsFile) {
   if (Qt::CheckState(settings.value("reqcLogSummaryOnly").toInt()) == Qt::Checked) {
     return;
   }
+  *_log << endl;
   for (int iEpo = 0; iEpo < _qcFile._qcEpo.size(); iEpo++) {
     const t_qcEpo& qcEpo = _qcFile._qcEpo[iEpo];
 
