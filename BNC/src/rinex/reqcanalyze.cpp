@@ -804,7 +804,7 @@ void t_reqcAnalyze::printReport(const t_rnxObsFile* obsFile) {
           numObsTypes += 1;
         }
       }
-      *_log << QString("  %1").arg(numObsTypes);
+      *_log << QString("  %1").arg(numObsTypes, 2);
 
       for (int iFrq = 0; iFrq < qcSat._qcFrq.size(); iFrq++) {
         const t_qcFrq& qcFrq = qcSat._qcFrq[iFrq];
@@ -827,10 +827,10 @@ void t_reqcAnalyze::printReport(const t_rnxObsFile* obsFile) {
         if (qcFrq._codeValid) {
           *_log << "  C" << qcFrq._rnxType2ch << ' ';
           if (qcFrq._gap) {
-            *_log << 'g';
+            *_log << " g";
           }
           else {
-            *_log << '.';
+            *_log << " .";
           }
           *_log << QString(" %1").arg(qcFrq._stdMP, 3, 'f', 2);
         }
