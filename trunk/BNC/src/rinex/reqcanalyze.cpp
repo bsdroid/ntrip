@@ -744,33 +744,36 @@ void t_reqcAnalyze::printReport(const t_rnxObsFile* obsFile) {
         << "Marker number     : " << obsFile->markerNumber()              << endl
         << "Receiver          : " << _qcFile._receiverType                << endl
         << "Antenna           : " << _qcFile._antennaName                 << endl
+        << "Approx pos XYZ    : " << QString("%1 %2 %3").arg(obsFile->xyz()(1), 14, 'f', 4)
+                                                        .arg(obsFile->xyz()(2), 14, 'f', 4)
+                                                        .arg(obsFile->xyz()(3), 14, 'f', 4) << endl
+        << "Antenna dH/dE/dN  : " << QString("%1 %2 %3").arg(obsFile->antNEU()(3), 8, 'f', 4)
+                                                        .arg(obsFile->antNEU()(2), 8, 'f', 4)
+                                                        .arg(obsFile->antNEU()(1), 8, 'f', 4) << endl
         << "Start time        : " << _qcFile._startTime.datestr().c_str() << ' '
                                   << _qcFile._startTime.timestr().c_str() << endl
         << "End time          : " << _qcFile._endTime.datestr().c_str()   << ' '
                                   << _qcFile._endTime.timestr().c_str()   << endl
-        << "Interval          : " << _qcFile._interval                    << endl
-        << "# Satellites      : " << _qcFile._qcSatSum.size()             << endl;
+        << "Interval          : " << _qcFile._interval                    << endl;
 
-  int numObs          = 0;
-  int numSlipsFlagged = 0;
-  int numSlipsFound   = 0;
+  // Number of systems
+  // -----------------
+  QMap<QChar, QVector<const t_qcSatSum*> > systemMap; 
   QMapIterator<t_prn, t_qcSatSum> itSat(_qcFile._qcSatSum);
   while (itSat.hasNext()) {
     itSat.next();
+    const t_prn&      prn      = itSat.key();
     const t_qcSatSum& qcSatSum = itSat.value();
-
-    QMapIterator<QString, t_qcFrqSum> itFrq(qcSatSum._qcFrqSum);
-    while (itFrq.hasNext()) {
-      itFrq.next();
-      const t_qcFrqSum& qcFrqSum = itFrq.value();
-      numObs          += qcFrqSum._numObs;
-      numSlipsFlagged += qcFrqSum._numSlipsFlagged;
-      numSlipsFound   += qcFrqSum._numSlipsFound;
-    }
+    systemMap[prn.system()].push_back(&qcSatSum);
   }
-  *_log << "# Obs.:          " << numObs          << endl
-        << "# Slips (file):  " << numSlipsFlagged << endl
-        << "# Slips (found): " << numSlipsFound   << endl;
+
+  *_log << "Number of Systems : " << systemMap.size() << "   ";
+  QMapIterator<QChar, QVector<const t_qcSatSum*> > itSys(systemMap);
+  while (itSys.hasNext()) {
+    itSys.next();
+    *_log << ' ' << itSys.key();
+  }
+  *_log << endl;
 
   // Epoch-Specific Output
   // ---------------------
