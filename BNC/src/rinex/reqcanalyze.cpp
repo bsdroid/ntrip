@@ -728,22 +728,27 @@ void t_reqcAnalyze::slotDspAvailPlot(const QString& fileName, const QByteArray& 
 ////////////////////////////////////////////////////////////////////////////
 void t_reqcAnalyze::printReport(const t_rnxObsFile* obsFile) {
 
+  static const double QC_FORMAT_VERSION = 1.0;
+
   if (!_log) {
     return;
   }
 
   // Summary
   // -------
-  *_log << "File:            " << obsFile->fileName().toAscii().data() << endl
-        << "Marker name:     " << _qcFile._markerName                  << endl
-        << "Receiver:        " << _qcFile._receiverType                << endl
-        << "Antenna:         " << _qcFile._antennaName                 << endl
-        << "Start time:      " << _qcFile._startTime.datestr().c_str() << ' '
-                               << _qcFile._startTime.timestr().c_str() << endl
-        << "End time:        " << _qcFile._endTime.datestr().c_str()   << ' '
-                               << _qcFile._endTime.timestr().c_str()   << endl
-        << "Interval:        " << _qcFile._interval                    << endl
-        << "# Sat.:          " << _qcFile._qcSatSum.size()             << endl;
+  *_log << "QC Format Version : " << QString("%1").arg(QC_FORMAT_VERSION,3,'f',1) << endl
+        << "Observation File  : " << obsFile->fileName().toAscii().data() << endl
+        << "Navigation File(s): " << _navFileNames.join(", ")             << endl
+        << "RINEX Version     : " << QString("%1").arg(obsFile->version(),4,'f',2) << endl
+        << "Marker name       : " << _qcFile._markerName                  << endl
+        << "Receiver          : " << _qcFile._receiverType                << endl
+        << "Antenna           : " << _qcFile._antennaName                 << endl
+        << "Start time        : " << _qcFile._startTime.datestr().c_str() << ' '
+                                  << _qcFile._startTime.timestr().c_str() << endl
+        << "End time          : " << _qcFile._endTime.datestr().c_str()   << ' '
+                                  << _qcFile._endTime.timestr().c_str()   << endl
+        << "Interval          : " << _qcFile._interval                    << endl
+        << "# Satellites      : " << _qcFile._qcSatSum.size()             << endl;
 
   int numObs          = 0;
   int numSlipsFlagged = 0;
