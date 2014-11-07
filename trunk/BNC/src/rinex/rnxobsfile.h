@@ -136,6 +136,7 @@ class t_rnxObsFile {
   }
   const QString& antennaName() const {return _header._antennaName;}
   const QString& markerName() const {return _header._markerName;}
+  const QString& markerNumber() const {return _header._markerNumber;}
   const QString& receiverType() const {return _header._receiverType;}
 
   void setInterval(double interval) {_header._interval = interval;}

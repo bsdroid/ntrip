@@ -741,6 +741,7 @@ void t_reqcAnalyze::printReport(const t_rnxObsFile* obsFile) {
         << "Navigation File(s): " << _navFileNames.join(", ")             << endl
         << "RINEX Version     : " << QString("%1").arg(obsFile->version(),4,'f',2) << endl
         << "Marker name       : " << _qcFile._markerName                  << endl
+        << "Marker number     : " << obsFile->markerNumber()              << endl
         << "Receiver          : " << _qcFile._receiverType                << endl
         << "Antenna           : " << _qcFile._antennaName                 << endl
         << "Start time        : " << _qcFile._startTime.datestr().c_str() << ' '
