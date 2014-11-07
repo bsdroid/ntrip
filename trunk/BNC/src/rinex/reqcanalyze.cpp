@@ -732,6 +732,8 @@ void t_reqcAnalyze::printReport(const t_rnxObsFile* obsFile) {
     return;
   }
 
+  // Summary
+  // -------
   *_log << "File:            " << obsFile->fileName().toAscii().data() << endl
         << "Marker name:     " << _qcFile._markerName                  << endl
         << "Receiver:        " << _qcFile._receiverType                << endl
@@ -764,6 +766,12 @@ void t_reqcAnalyze::printReport(const t_rnxObsFile* obsFile) {
         << "# Slips (file):  " << numSlipsFlagged << endl
         << "# Slips (found): " << numSlipsFound   << endl;
 
+  // Epoch-Specific Output
+  // ---------------------
+  bncSettings settings;
+  if (Qt::CheckState(settings.value("reqcLogSummaryOnly").toInt()) == Qt::Checked) {
+    return;
+  }
   for (int iEpo = 0; iEpo < _qcFile._qcEpo.size(); iEpo++) {
     const t_qcEpo& qcEpo = _qcFile._qcEpo[iEpo];
 
