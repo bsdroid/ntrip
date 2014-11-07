@@ -148,6 +148,7 @@ class bncWindow : public QMainWindow {
     QLineEdit*     _reqcOutLogLineEdit;
     QLineEdit*     _reqcPlotDirLineEdit;
     QComboBox*     _reqcSkyPlotSystems;
+    QCheckBox*     _reqcLogSummaryOnly;
 
     QCheckBox* _rnxV3CheckBox;
     QLineEdit* _rnxV2Priority;

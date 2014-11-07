@@ -1012,6 +1012,9 @@ bncWindow::bncWindow() {
     _reqcSkyPlotSystems->setCurrentIndex(ik);
   }
 
+  _reqcLogSummaryOnly = new QCheckBox();
+  _reqcLogSummaryOnly->setCheckState(Qt::CheckState(settings.value("reqcLogSummaryOnly").toInt()));
+
   ir = 0;
   reqcLayout->addWidget(new QLabel("RINEX file editing, concatenation and quality check."),ir, 0, 1, 20);
   ++ir;
@@ -1032,8 +1035,10 @@ bncWindow::bncWindow() {
   reqcLayout->addWidget(_reqcOutNavLineEdit,                     ir, 3, Qt::AlignRight);
   reqcLayout->addWidget(new QLabel("Nav"),                       ir, 4, Qt::AlignLeft);
   ++ir;
+  reqcLayout->addWidget(new QLabel("Log File"),                  ir, 0, Qt::AlignLeft);
   reqcLayout->addWidget(_reqcOutLogLineEdit,                     ir, 1, Qt::AlignRight);
-  reqcLayout->addWidget(new QLabel("Log"),                       ir, 2, Qt::AlignLeft);
+  reqcLayout->addWidget(new QLabel("summary only"),              ir, 3, Qt::AlignRight);
+  reqcLayout->addWidget(_reqcLogSummaryOnly,                     ir, 4, Qt::AlignLeft);
   ++ir;
   reqcLayout->addWidget(new QLabel("Directory for plots"),       ir, 0, Qt::AlignLeft);
   reqcLayout->addWidget(_reqcPlotDirLineEdit,                    ir, 1, Qt::AlignRight);
@@ -1637,6 +1642,7 @@ void bncWindow::saveOptions() {
   settings.setValue("reqcOutLogFile", _reqcOutLogLineEdit->text());
   settings.setValue("reqcPlotDir",    _reqcPlotDirLineEdit->text());
   settings.setValue("reqcSkyPlotSystems", _reqcSkyPlotSystems->currentText());
+  settings.setValue("reqcLogSummaryOnly", _reqcLogSummaryOnly->checkState());
 // Combine Corrections
   if (!combineStreams.isEmpty()) {
     settings.setValue("combineStreams", combineStreams);
@@ -2170,6 +2176,7 @@ void bncWindow::slotBncTextChanged(){
     enableWidget(enable,              _reqcOutLogLineEdit);
     enableWidget(enable && !enable10, _reqcPlotDirLineEdit);
     enableWidget(enable && !enable10, _reqcSkyPlotSystems);
+    enableWidget(enable && !enable10, _reqcLogSummaryOnly);
   }
 
   enableStartStop();
