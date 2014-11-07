@@ -793,7 +793,7 @@ void t_reqcAnalyze::printReport(const t_rnxObsFile* obsFile) {
       QMapIterator<QString, t_qcFrqSum> itFrq(qcSatSum->_qcFrqSum);
       while (itFrq.hasNext()) {
         itFrq.next();
-        QString           frqType  = itFrq.key(); if (frqType.length() < 2) frqType += ' ';
+        QString           frqType  = itFrq.key(); if (frqType.length() < 2) frqType += '?';
         const t_qcFrqSum& qcFrqSum = itFrq.value();
         frqMap[frqType].push_back(&qcFrqSum);
       }
@@ -804,14 +804,14 @@ void t_reqcAnalyze::printReport(const t_rnxObsFile* obsFile) {
     QMapIterator<QString, QVector<const t_qcFrqSum*> > itFrq(frqMap); 
     while (itFrq.hasNext()) {
       itFrq.next();
-      QString frqType = itFrq.key(); if (frqType.length() < 2) frqType += ' ';
+      QString frqType = itFrq.key(); if (frqType.length() < 2) frqType += '?';
       *_log << ' ' << frqType;
     }
     *_log << endl;
     itFrq.toFront();
     while (itFrq.hasNext()) {
       itFrq.next();
-      QString                          frqType  = itFrq.key(); if (frqType.length() < 2) frqType += ' ';
+      QString                          frqType  = itFrq.key(); if (frqType.length() < 2) frqType += '?';
       const QVector<const t_qcFrqSum*> qcFrqVec = itFrq.value();
       QString prefixFrq = QString("  ") + frqType + QString(": ");
 
@@ -844,8 +844,8 @@ void t_reqcAnalyze::printReport(const t_rnxObsFile* obsFile) {
             << prefixSys << prefixFrq << "Observations      : " << numObs << endl
             << prefixSys << prefixFrq << "Slips (file+found): " << numSlipsFlagged << " + " << numSlipsFound << endl
             << prefixSys << prefixFrq << "Gaps              : " << numGaps << endl
-            << prefixSys << prefixFrq << "Mean SNR          : " << sumSNR << endl
-            << prefixSys << prefixFrq << "Mean Multipath    : " << sumMP << endl;
+            << prefixSys << prefixFrq << "Mean SNR          : " << QString(" %1").arg(sumSNR,   4, 'f', 1) << endl
+            << prefixSys << prefixFrq << "Mean Multipath    : " << QString(" %1").arg(sumMP, 3, 'f', 2) << endl;
     }
   }
 
