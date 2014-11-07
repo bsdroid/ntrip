@@ -793,8 +793,8 @@ void t_reqcAnalyze::printReport(const t_rnxObsFile* obsFile) {
       }
     }
     *_log << endl
-          << prefixSys << "Satellites    : " << qcSatVec.size() << endl
-          << prefixSys << "Tracking Modes: " << frqMap.size() << "   ";
+          << prefixSys << "Satellites: " << qcSatVec.size() << endl
+          << prefixSys << "Signals   : " << frqMap.size() << "   ";
     QMapIterator<QString, QVector<const t_qcFrqSum*> > itFrq(frqMap); 
     while (itFrq.hasNext()) {
       itFrq.next();
