@@ -119,11 +119,19 @@ Q_OBJECT
       _numSlipsFlagged = 0;
       _numSlipsFound   = 0;
       _numGaps         = 0;
+      _numSNR          = 0;
+      _sumSNR          = 0.0;
+      _numMP           = 0;
+      _sumMP           = 0.0;
     }
-    int _numObs;
-    int _numSlipsFlagged;
-    int _numSlipsFound;
-    int _numGaps;
+    int    _numObs;
+    int    _numSlipsFlagged;
+    int    _numSlipsFound;
+    int    _numGaps;
+    int    _numSNR;
+    double _sumSNR;
+    int    _numMP;
+    double _sumMP;
   };
 
   class t_qcSatSum {

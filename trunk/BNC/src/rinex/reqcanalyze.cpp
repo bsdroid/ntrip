@@ -257,6 +257,10 @@ void t_reqcAnalyze::updateQcSat(const t_qcSat& qcSat, t_qcSatSum& qcSatSum) {
     if (qcFrq._gap) {
       qcFrqSum._numGaps += 1;
     }
+    if (qcFrq._SNR > 0.0) {
+      qcFrqSum._numSNR += 1;
+      qcFrqSum._sumSNR += qcFrq._SNR;
+    }
   }
 }
 
@@ -464,6 +468,8 @@ void t_reqcAnalyze::analyzeMultipath() {
           }
           else {
             stdMP = sqrt(stdMP / (MP.size()-1));
+            qcFrqSum._numMP += 1;
+            qcFrqSum._sumMP += stdMP;
           }
         
           for (int ii = 0; ii < frqVec.size(); ii++) {
