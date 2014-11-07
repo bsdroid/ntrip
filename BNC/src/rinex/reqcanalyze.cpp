@@ -831,8 +831,8 @@ void t_reqcAnalyze::printReport(const t_rnxObsFile* obsFile) {
         numGaps         += qcFrqSum->_numGaps        ;
         numSNR          += qcFrqSum->_numSNR;
         numMP           += qcFrqSum->_numMP;
-        sumSNR          += qcFrqSum->_sumSNR * qcFrqSum->_numSNR;
-        sumMP           += qcFrqSum->_sumMP  * qcFrqSum->_numMP;
+        sumSNR          += qcFrqSum->_sumSNR;
+        sumMP           += qcFrqSum->_sumMP;
       }
       if (numSNR > 0) {
         sumSNR /= numSNR;
