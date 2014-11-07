@@ -746,19 +746,19 @@ void t_reqcAnalyze::printReport(const t_rnxObsFile* obsFile) {
         << "Observation File  : " << obsFile->fileName().toAscii().data() << endl
         << "Navigation File(s): " << _navFileNames.join(", ")             << endl
         << "RINEX Version     : " << QString("%1").arg(obsFile->version(),4,'f',2) << endl
-        << "Marker name       : " << _qcFile._markerName                  << endl
-        << "Marker number     : " << obsFile->markerNumber()              << endl
+        << "Marker Name       : " << _qcFile._markerName                  << endl
+        << "Marker Number     : " << obsFile->markerNumber()              << endl
         << "Receiver          : " << _qcFile._receiverType                << endl
         << "Antenna           : " << _qcFile._antennaName                 << endl
-        << "Approx pos XYZ    : " << QString("%1 %2 %3").arg(obsFile->xyz()(1), 14, 'f', 4)
+        << "Position XYZ      : " << QString("%1 %2 %3").arg(obsFile->xyz()(1), 14, 'f', 4)
                                                         .arg(obsFile->xyz()(2), 14, 'f', 4)
                                                         .arg(obsFile->xyz()(3), 14, 'f', 4) << endl
         << "Antenna dH/dE/dN  : " << QString("%1 %2 %3").arg(obsFile->antNEU()(3), 8, 'f', 4)
                                                         .arg(obsFile->antNEU()(2), 8, 'f', 4)
                                                         .arg(obsFile->antNEU()(1), 8, 'f', 4) << endl
-        << "Start time        : " << _qcFile._startTime.datestr().c_str() << ' '
+        << "Start Time        : " << _qcFile._startTime.datestr().c_str() << ' '
                                   << _qcFile._startTime.timestr(1,'.').c_str() << endl
-        << "End time          : " << _qcFile._endTime.datestr().c_str()   << ' '
+        << "End Time          : " << _qcFile._endTime.datestr().c_str()   << ' '
                                   << _qcFile._endTime.timestr(1,'.').c_str()   << endl
         << "Interval          : " << _qcFile._interval                    << endl;
 
@@ -808,6 +808,7 @@ void t_reqcAnalyze::printReport(const t_rnxObsFile* obsFile) {
       *_log << ' ' << frqType;
     }
     *_log << endl;
+    QString prefixSys2 = "    " + prefixSys;
     itFrq.toFront();
     while (itFrq.hasNext()) {
       itFrq.next();
@@ -841,11 +842,12 @@ void t_reqcAnalyze::printReport(const t_rnxObsFile* obsFile) {
         sumMP /= numMP;
       }
       *_log << endl
-            << prefixSys << prefixFrq << "Observations      : " << numObs << endl
-            << prefixSys << prefixFrq << "Slips (file+found): " << numSlipsFlagged << " + " << numSlipsFound << endl
-            << prefixSys << prefixFrq << "Gaps              : " << numGaps << endl
-            << prefixSys << prefixFrq << "Mean SNR          : " << QString(" %1").arg(sumSNR,   4, 'f', 1) << endl
-            << prefixSys << prefixFrq << "Mean Multipath    : " << QString(" %1").arg(sumMP, 3, 'f', 2) << endl;
+            << prefixSys2 << prefixFrq << "Observations      : " << QString("%1\n").arg(numObs,           6)
+            << prefixSys2 << prefixFrq << "Slips (file+found): " << QString("%1 +").arg(numSlipsFlagged,  6)
+                                                                << QString("%1\n").arg(numSlipsFound,    6)
+            << prefixSys2 << prefixFrq << "Gaps              : " << QString("%1\n").arg(numGaps,          6)
+            << prefixSys2 << prefixFrq << "Mean SNR          : " << QString("%1\n").arg(sumSNR,   6, 'f', 1)
+            << prefixSys2 << prefixFrq << "Mean Multipath    : " << QString("%1\n").arg(sumMP,    6, 'f', 2);
     }
   }
 
