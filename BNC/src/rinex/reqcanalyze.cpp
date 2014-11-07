@@ -782,10 +782,6 @@ void t_reqcAnalyze::printReport(const t_rnxObsFile* obsFile) {
     const QVector<const t_qcSatSum*>& qcSatVec = itSys.value();
     QString prefixSys = QString("  ") + sys + QString(": ");
     *_log << prefixSys << "Number of Satellites  : " << qcSatVec.size() << endl; 
-    int numObs           = 0;
-    int numSlipsFlagged  = 0;
-    int numSlipsFound    = 0;
-    int numGaps          = 0;
     QMap<QString, QVector<const t_qcFrqSum*> > frqMap; 
     for (int ii = 0; ii < qcSatVec.size(); ii++) {
       const t_qcSatSum* qcSatSum = qcSatVec[ii];
@@ -795,23 +791,37 @@ void t_reqcAnalyze::printReport(const t_rnxObsFile* obsFile) {
         const QString&    frqType  = itFrq.key();
         const t_qcFrqSum& qcFrqSum = itFrq.value();
         frqMap[frqType].push_back(&qcFrqSum);
-        numObs          += qcFrqSum._numObs         ;
-        numSlipsFlagged += qcFrqSum._numSlipsFlagged;
-        numSlipsFound   += qcFrqSum._numSlipsFound  ;
-        numGaps         += qcFrqSum._numGaps        ;
       }
     }
-    *_log << prefixSys << "Observations          : " << numObs << endl
-          << prefixSys << "Slips (file+found)    : " << numSlipsFlagged << " + " << numSlipsFound << endl
-          << prefixSys << "Gaps                  : " << numGaps << endl
-          << prefixSys << "Tracking Modes        : " << frqMap.size() << endl;
+    *_log << prefixSys << "Tracking Modes        : " << frqMap.size() << "   ";
     QMapIterator<QString, QVector<const t_qcFrqSum*> > itFrq(frqMap); 
+    while (itFrq.hasNext()) {
+      itFrq.next();
+      const QString& frqType = itFrq.key();
+      *_log << ' ' << frqType;
+    }
+    *_log << endl;
+    itFrq.toFront();
     while (itFrq.hasNext()) {
       itFrq.next();
       const QString&                   frqType  = itFrq.key();
       const QVector<const t_qcFrqSum*> qcFrqVec = itFrq.value();
       QString prefixFrq = QString("  ") + frqType + QString(": ");
-      *_log << prefixSys << prefixFrq << endl;
+
+      int numObs           = 0;
+      int numSlipsFlagged  = 0;
+      int numSlipsFound    = 0;
+      int numGaps          = 0;
+      for (int ii = 0; ii < qcFrqVec.size(); ii++) {
+        const t_qcFrqSum* qcFrqSum = qcFrqVec[ii];
+        numObs          += qcFrqSum->_numObs         ;
+        numSlipsFlagged += qcFrqSum->_numSlipsFlagged;
+        numSlipsFound   += qcFrqSum->_numSlipsFound  ;
+        numGaps         += qcFrqSum->_numGaps        ;
+      }
+      *_log << prefixSys << prefixFrq << "Observations          : " << numObs << endl
+            << prefixSys << prefixFrq << "Slips (file+found)    : " << numSlipsFlagged << " + " << numSlipsFound << endl
+            << prefixSys << prefixFrq << "Gaps                  : " << numGaps << endl;
     }
   }
 
