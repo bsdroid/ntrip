@@ -786,6 +786,7 @@ void t_reqcAnalyze::printReport(const t_rnxObsFile* obsFile) {
     int numSlipsFlagged  = 0;
     int numSlipsFound    = 0;
     int numGaps          = 0;
+    QMap<QString, QVector<const t_qcFrqSum*> > frqMap; 
     for (int ii = 0; ii < qcSatVec.size(); ii++) {
       const t_qcSatSum* qcSatSum = qcSatVec[ii];
       QMapIterator<QString, t_qcFrqSum> itFrq(qcSatSum->_qcFrqSum);
@@ -793,6 +794,7 @@ void t_reqcAnalyze::printReport(const t_rnxObsFile* obsFile) {
         itFrq.next();
         const QString&    frqType  = itFrq.key();
         const t_qcFrqSum& qcFrqSum = itFrq.value();
+        frqMap[frqType].push_back(&qcFrqSum);
         numObs          += qcFrqSum._numObs         ;
         numSlipsFlagged += qcFrqSum._numSlipsFlagged;
         numSlipsFound   += qcFrqSum._numSlipsFound  ;
