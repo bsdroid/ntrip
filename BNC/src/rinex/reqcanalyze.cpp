@@ -751,9 +751,9 @@ void t_reqcAnalyze::printReport(const t_rnxObsFile* obsFile) {
                                                         .arg(obsFile->antNEU()(2), 8, 'f', 4)
                                                         .arg(obsFile->antNEU()(1), 8, 'f', 4) << endl
         << "Start time        : " << _qcFile._startTime.datestr().c_str() << ' '
-                                  << _qcFile._startTime.timestr().c_str() << endl
+                                  << _qcFile._startTime.timestr(1,'.').c_str() << endl
         << "End time          : " << _qcFile._endTime.datestr().c_str()   << ' '
-                                  << _qcFile._endTime.timestr().c_str()   << endl
+                                  << _qcFile._endTime.timestr(1,'.').c_str()   << endl
         << "Interval          : " << _qcFile._interval                    << endl;
 
   // Number of systems
@@ -774,6 +774,15 @@ void t_reqcAnalyze::printReport(const t_rnxObsFile* obsFile) {
     *_log << ' ' << itSys.key();
   }
   *_log << endl;
+
+  itSys.toFront();
+  while (itSys.hasNext()) {
+    itSys.next();
+    const QChar&                      sys      = itSys.key();
+    const QVector<const t_qcSatSum*>& qcSatVec = itSys.value();
+    QString prefixSys = QString("  ") + sys + QString(": ");
+    *_log << prefixSys << "Number of Satellites : " << qcSatVec.size() << endl; 
+  }
 
   // Epoch-Specific Output
   // ---------------------
