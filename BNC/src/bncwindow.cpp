@@ -1006,11 +1006,13 @@ bncWindow::bncWindow() {
 
   _reqcSkyPlotSystems = new QComboBox();
   _reqcSkyPlotSystems->setEditable(false);
-  _reqcSkyPlotSystems->addItems(QString("ALL,GPS,GLONASS,Galileo").split(","));
+  _reqcSkyPlotSystems->addItems(QString(",ALL,GPS,GLONASS,Galileo").split(","));
   ik = _reqcSkyPlotSystems->findText(settings.value("reqcSkyPlotSystems").toString());
   if (ik != -1) {
     _reqcSkyPlotSystems->setCurrentIndex(ik);
   }
+  connect(_reqcSkyPlotSystems, SIGNAL(currentIndexChanged(const QString &)),
+          this, SLOT(slotBncTextChanged()));
 
   _reqcLogSummaryOnly = new QCheckBox();
   _reqcLogSummaryOnly->setCheckState(Qt::CheckState(settings.value("reqcLogSummaryOnly").toInt()));
@@ -2165,16 +2167,17 @@ void bncWindow::slotBncTextChanged(){
 
   // QC
   // --
-  if (sender() == 0 || sender() == _reqcActionComboBox) {
+  if (sender() == 0 || sender() == _reqcActionComboBox || sender() == _reqcSkyPlotSystems) {
     enable = !_reqcActionComboBox->currentText().isEmpty();
     bool enable10 = _reqcActionComboBox->currentText() == "Edit/Concatenate";
+    bool enablePlot = !_reqcSkyPlotSystems->currentText().isEmpty();
     enableWidget(enable &&  enable10, _reqcEditOptionButton);
     enableWidget(enable,              _reqcObsFileChooser);
     enableWidget(enable,              _reqcNavFileChooser);
     enableWidget(enable &&  enable10, _reqcOutObsLineEdit);
     enableWidget(enable &&  enable10, _reqcOutNavLineEdit);
     enableWidget(enable,              _reqcOutLogLineEdit);
-    enableWidget(enable && !enable10, _reqcPlotDirLineEdit);
+    enableWidget(enable && !enable10 && enablePlot, _reqcPlotDirLineEdit);
     enableWidget(enable && !enable10, _reqcSkyPlotSystems);
     enableWidget(enable && !enable10, _reqcLogSummaryOnly);
   }

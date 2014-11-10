@@ -491,11 +491,6 @@ void t_reqcAnalyze::analyzeMultipath() {
 ////////////////////////////////////////////////////////////////////////////
 void t_reqcAnalyze::preparePlotData(const t_rnxObsFile* obsFile) {
 
-  QVector<t_polarPoint*>* dataMP1  = new QVector<t_polarPoint*>;
-  QVector<t_polarPoint*>* dataMP2  = new QVector<t_polarPoint*>;
-  QVector<t_polarPoint*>* dataSNR1 = new QVector<t_polarPoint*>;
-  QVector<t_polarPoint*>* dataSNR2 = new QVector<t_polarPoint*>;
-
   bncSettings settings;
   QString reqSkyPlotSystems = settings.value("reqcSkyPlotSystems").toString();
   bool plotGPS = false;
@@ -510,11 +505,19 @@ void t_reqcAnalyze::preparePlotData(const t_rnxObsFile* obsFile) {
   else if (reqSkyPlotSystems == "Galileo") {
     plotGal = true;
   }
-  else {
+  else if (reqSkyPlotSystems == "ALL") {
     plotGPS = true;
     plotGlo = true;
     plotGal = true;
   }
+  else {
+	  return;
+  }
+
+  QVector<t_polarPoint*>* dataMP1  = new QVector<t_polarPoint*>;
+  QVector<t_polarPoint*>* dataMP2  = new QVector<t_polarPoint*>;
+  QVector<t_polarPoint*>* dataSNR1 = new QVector<t_polarPoint*>;
+  QVector<t_polarPoint*>* dataSNR2 = new QVector<t_polarPoint*>;
 
   // Loop over all observations
   // --------------------------
