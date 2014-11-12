@@ -1006,7 +1006,7 @@ bncWindow::bncWindow() {
 
   _reqcSkyPlotSystems = new QComboBox();
   _reqcSkyPlotSystems->setEditable(false);
-  _reqcSkyPlotSystems->addItems(QString(",ALL,GPS,GLONASS,Galileo").split(","));
+  _reqcSkyPlotSystems->addItems(QString(",ALL,GPS,GLONASS,Galileo,QZSS,SBAS,BDS").split(","));
   ik = _reqcSkyPlotSystems->findText(settings.value("reqcSkyPlotSystems").toString());
   if (ik != -1) {
     _reqcSkyPlotSystems->setCurrentIndex(ik);
