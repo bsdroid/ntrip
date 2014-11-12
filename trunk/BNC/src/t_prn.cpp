@@ -18,6 +18,15 @@ int t_prn::toInt() const {
   else if (_system == 'E') {
     return MAXPRN_GPS + MAXPRN_GLONASS + _number;
   }
+  else if (_system == 'J') {
+	  return MAXPRN_GPS + MAXPRN_GLONASS + MAXPRN_GALILEO + _number;
+  }
+  else if (_system == 'S') {
+	  return MAXPRN_GPS + MAXPRN_GLONASS + MAXPRN_GALILEO + MAXPRN_QZSS + _number;
+  }
+  else if (_system == 'C') {
+  	  return MAXPRN_GPS + MAXPRN_GLONASS + MAXPRN_GALILEO + MAXPRN_QZSS + MAXPRN_SBAS + _number;
+  }
   return 0;
 }
 
