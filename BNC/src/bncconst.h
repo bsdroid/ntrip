@@ -36,7 +36,16 @@ class t_frequency {
                         E5, // E5a / 1176.45          
                         E7, // E5b / 1207.140         
                         E8, // E5(E5a+E5b) / 1191.795 
-                        E6, // E6  / 1278.75          
+                        E6, // E6  / 1278.75
+						J1, // 1575.42
+						J2, // 1227.60
+						J5, // 1176.45
+						J6, // Lex(6) 1278.75
+						S1, // 1575.42
+						S5, // 1176.45
+						C1, // 1561.098
+						C7, // 1207.14
+						C6, // 1268.52
              max};
 
   static std::string toString(type tt) {
@@ -50,6 +59,15 @@ class t_frequency {
     else if (tt == E6) return "E6";
     else if (tt == E7) return "E7";
     else if (tt == E8) return "E8";
+    else if (tt == J1) return "J1";
+    else if (tt == J2) return "J2";
+    else if (tt == J5) return "J5";
+    else if (tt == J6) return "J6";
+    else if (tt == S1) return "S1";
+    else if (tt == S5) return "S5";
+    else if (tt == C1) return "C1";
+    else if (tt == C7) return "C7";
+    else if (tt == C6) return "C6";
     return std::string();
   }
 };
