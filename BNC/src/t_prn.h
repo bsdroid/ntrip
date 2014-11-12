@@ -7,8 +7,12 @@ class t_prn {
  public:
   static const unsigned MAXPRN_GPS     = 32;
   static const unsigned MAXPRN_GLONASS = 26;
-  static const unsigned MAXPRN_GALILEO = 30;
-  static const unsigned MAXPRN         = MAXPRN_GPS + MAXPRN_GLONASS + MAXPRN_GALILEO;
+  static const unsigned MAXPRN_GALILEO = 36;
+  static const unsigned MAXPRN_QZSS    = 10;
+  static const unsigned MAXPRN_SBAS    = 38;
+  static const unsigned MAXPRN_BDS     = 37;
+  static const unsigned MAXPRN         = MAXPRN_GPS  + MAXPRN_GLONASS + MAXPRN_GALILEO
+		                               + MAXPRN_QZSS + MAXPRN_SBAS    + MAXPRN_BDS;
 
   t_prn() : _system('G'), _number(0) {}
   t_prn(char system, int number) : _system(system), _number(number) {}
