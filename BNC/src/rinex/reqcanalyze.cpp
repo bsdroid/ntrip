@@ -68,11 +68,11 @@ t_reqcAnalyze::t_reqcAnalyze(QObject* parent) : QThread(parent) {
   _obsFileNames = settings.value("reqcObsFile").toString().split(",", QString::SkipEmptyParts);
   _navFileNames = settings.value("reqcNavFile").toString().split(",", QString::SkipEmptyParts);
 
-  connect(this, SIGNAL(dspSkyPlot(const QString&, const QByteArray&, QVector<t_polarPoint*>*, 
-                                  const QByteArray&, QVector<t_polarPoint*>*,
+  connect(this, SIGNAL(dspSkyPlot(const QString&, const QString&, QVector<t_polarPoint*>*,
+                                  const QString&, QVector<t_polarPoint*>*,
                                   const QByteArray&, double)), 
-          this, SLOT(slotDspSkyPlot(const QString&, const QByteArray&, QVector<t_polarPoint*>*, 
-                                    const QByteArray&, QVector<t_polarPoint*>*,
+          this, SLOT(slotDspSkyPlot(const QString&, const QString&, QVector<t_polarPoint*>*,
+                                    const QString&, QVector<t_polarPoint*>*,
                                     const QByteArray&, double)));
 
   connect(this, SIGNAL(dspAvailPlot(const QString&, const QByteArray&)),
@@ -296,7 +296,6 @@ void t_reqcAnalyze::setQcObs(const bncTime& epoTime, const ColumnVector& xyzSta,
   // Availability and Slip Flags
   // ---------------------------
   for (unsigned ii = 0; ii < satObs._obs.size(); ii++) {
-
     const t_frqObs* frqObs = satObs._obs[ii];
 
     qcSat._qcFrq.push_back(t_qcFrq());
@@ -307,7 +306,6 @@ void t_reqcAnalyze::setQcObs(const bncTime& epoTime, const ColumnVector& xyzSta,
     qcFrq._slip       = frqObs->_slip;
     qcFrq._phaseValid = frqObs->_phaseValid;
     qcFrq._codeValid  = frqObs->_codeValid;
-
     // Check Gaps
     // ----------
     QString key = QString(satObs._prn.toString().c_str()) + qcFrq._rnxType2ch;
@@ -354,7 +352,36 @@ void t_reqcAnalyze::setQcObs(const bncTime& epoTime, const ColumnVector& xyzSta,
           fB = t_frequency::E1;
         }
       }
-
+      else if (satObs._prn.system() == 'J') {
+        if      (frqObs->_rnxType2ch[0] == '1') {
+          fA = t_frequency::J1;
+          fB = t_frequency::J2;
+        }
+        else if (frqObs->_rnxType2ch[0] == '2') {
+          fA = t_frequency::J2;
+          fB = t_frequency::J1;
+        }
+      }
+      else if (satObs._prn.system() == 'S') {
+        if      (frqObs->_rnxType2ch[0] == '1') {
+          fA = t_frequency::S1;
+          fB = t_frequency::S5;
+        }
+        else if (frqObs->_rnxType2ch[0] == '5') {
+          fA = t_frequency::S5;
+          fB = t_frequency::S1;
+        }
+      }
+      else if (satObs._prn.system() == 'C') {
+        if      (frqObs->_rnxType2ch[0] == '1') {
+          fA = t_frequency::C1;
+          fB = t_frequency::C7;
+        }
+        else if (frqObs->_rnxType2ch[0] == '7') {
+          fA = t_frequency::C7;
+          fB = t_frequency::C1;
+        }
+      }
       if (fA != t_frequency::dummy && fB != t_frequency::dummy) {
         double f_a = t_CST::freq(fA, qcSat._slotNum);
         double f_b = t_CST::freq(fB, qcSat._slotNum);
@@ -408,7 +435,6 @@ void t_reqcAnalyze::analyzeMultipath() {
       itFrq.next();
       const QString& frqType  = itFrq.key();
       t_qcFrqSum&    qcFrqSum = itFrq.value();
-
 
       // Loop over all Chunks of Data
       // ----------------------------
@@ -493,9 +519,18 @@ void t_reqcAnalyze::preparePlotData(const t_rnxObsFile* obsFile) {
 
   bncSettings settings;
   QString reqSkyPlotSystems = settings.value("reqcSkyPlotSystems").toString();
-  bool plotGPS = false;
-  bool plotGlo = false;
-  bool plotGal = false;
+  bool plotGPS  = false;
+  bool plotGlo  = false;
+  bool plotGal  = false;
+  bool plotQZSS = false;
+  bool plotSBAS = false;
+  bool plotBDS  = false;
+  QString mp1Title = reqSkyPlotSystems + ": MP";
+  QString mp2Title = reqSkyPlotSystems + ": MP";
+  QString snr1Title = reqSkyPlotSystems + ": SNR";
+  QString snr2Title = reqSkyPlotSystems + ": SNR";
+  char freq1 = '1';
+  char freq2 = '2';
   if      (reqSkyPlotSystems == "GPS") {
     plotGPS = true;
   }
@@ -504,15 +539,34 @@ void t_reqcAnalyze::preparePlotData(const t_rnxObsFile* obsFile) {
   }
   else if (reqSkyPlotSystems == "Galileo") {
     plotGal = true;
+    freq2 = '5';
+  }
+  else if (reqSkyPlotSystems == "QZSS") {
+    plotQZSS = true;
+  }
+  else if (reqSkyPlotSystems == "SBAS") {
+    plotSBAS = true;
+    freq2 = '5';
+  }
+  else if (reqSkyPlotSystems == "BDS") {
+    plotBDS = true;
+    freq2 = '7';
   }
   else if (reqSkyPlotSystems == "ALL") {
     plotGPS = true;
     plotGlo = true;
     plotGal = true;
+    plotQZSS = true;
+    plotSBAS = true;
+    plotBDS = true;
   }
   else {
 	  return;
   }
+  mp1Title += freq1;
+  mp2Title += freq2;
+  snr1Title += freq1;
+  snr2Title += freq2;
 
   QVector<t_polarPoint*>* dataMP1  = new QVector<t_polarPoint*>;
   QVector<t_polarPoint*>* dataMP2  = new QVector<t_polarPoint*>;
@@ -530,17 +584,20 @@ void t_reqcAnalyze::preparePlotData(const t_rnxObsFile* obsFile) {
       const t_qcSat& qcSat = it.value();
       if ( (prn.system() == 'G' && plotGPS) ||
            (prn.system() == 'R' && plotGlo) ||
-           (prn.system() == 'E' && plotGal) ) {
+           (prn.system() == 'E' && plotGal) ||
+           (prn.system() == 'J' && plotQZSS) ||
+           (prn.system() == 'S' && plotSBAS) ||
+           (prn.system() == 'C' && plotBDS) ) {
 
         if (qcSat._eleSet) {
           QString frqType1;
           QString frqType2;
           for (int iFrq = 0; iFrq < qcSat._qcFrq.size(); iFrq++) {
             const t_qcFrq& qcFrq = qcSat._qcFrq[iFrq];
-            if (qcFrq._rnxType2ch[0] == '1' && frqType1.isEmpty()) {
+            if (qcFrq._rnxType2ch[0] == freq1 && frqType1.isEmpty()) {
               frqType1 = qcFrq._rnxType2ch;
             }
-            if (qcFrq._rnxType2ch[0] == '2' && frqType2.isEmpty()) {
+            if (qcFrq._rnxType2ch[0] == freq2 && frqType2.isEmpty()) {
               frqType2 = qcFrq._rnxType2ch;
             }
             if      (qcFrq._rnxType2ch == frqType1) {
@@ -562,8 +619,16 @@ void t_reqcAnalyze::preparePlotData(const t_rnxObsFile* obsFile) {
   if (BNC_CORE->GUIenabled()) {
     QFileInfo  fileInfo(obsFile->fileName());
     QByteArray title = fileInfo.fileName().toAscii();
-    emit dspSkyPlot(obsFile->fileName(), "MP1",  dataMP1,  "MP2",  dataMP2,  "Meters",  2.0);
-    emit dspSkyPlot(obsFile->fileName(), "SNR1", dataSNR1, "SNR2", dataSNR2, "dbHz",   54.0);
+    emit dspSkyPlot(obsFile->fileName(), mp1Title,  dataMP1,  mp2Title,  dataMP2,  "Meters",  2.0);
+    double mean = 0.0;
+    for (int ii = 0; ii < dataSNR1->size(); ii++) {
+      const t_polarPoint* point = dataSNR1->at(ii);
+      mean += point->_value;
+    }
+    mean /= dataSNR1->size();
+    double max = (mean > 9.0) ? 54.0 : 9.0;
+    QByteArray str = (mean > 9.0) ? "dbHz" : "";
+    emit dspSkyPlot(obsFile->fileName(), snr1Title, dataSNR1, snr2Title, dataSNR2, str,  max);
     emit dspAvailPlot(obsFile->fileName(), title);
   }
   else {
@@ -588,8 +653,8 @@ void t_reqcAnalyze::preparePlotData(const t_rnxObsFile* obsFile) {
 
 //
 ////////////////////////////////////////////////////////////////////////////
-void t_reqcAnalyze::slotDspSkyPlot(const QString& fileName, const QByteArray& title1,
-                                   QVector<t_polarPoint*>* data1, const QByteArray& title2,
+void t_reqcAnalyze::slotDspSkyPlot(const QString& fileName, const QString& title1,
+                                   QVector<t_polarPoint*>* data1, const QString& title2,
                                    QVector<t_polarPoint*>* data2, const QByteArray& scaleTitle,
                                    double maxValue) {
 

@@ -59,8 +59,8 @@ Q_OBJECT
 
  signals:
   void finished();
-  void dspSkyPlot(const QString&, const QByteArray&, QVector<t_polarPoint*>*, 
-                  const QByteArray&, QVector<t_polarPoint*>*, const QByteArray&, double);
+  void dspSkyPlot(const QString&, const QString&, QVector<t_polarPoint*>*,
+                  const QString&, QVector<t_polarPoint*>*, const QByteArray&, double);
   void dspAvailPlot(const QString&, const QByteArray&);
 
  private:
@@ -154,8 +154,8 @@ Q_OBJECT
   };
 
  private slots:
-  void   slotDspSkyPlot(const QString& fileName, const QByteArray& title1, 
-                    QVector<t_polarPoint*>* data1, const QByteArray& title2, 
+  void   slotDspSkyPlot(const QString& fileName, const QString& title1,
+                    QVector<t_polarPoint*>* data1, const QString& title2,
                     QVector<t_polarPoint*>* data2, const QByteArray& scaleTitle, double maxValue);
 
   void   slotDspAvailPlot(const QString& fileName, const QByteArray& title);
