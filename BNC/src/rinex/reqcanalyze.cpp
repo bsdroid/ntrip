@@ -620,15 +620,7 @@ void t_reqcAnalyze::preparePlotData(const t_rnxObsFile* obsFile) {
     QFileInfo  fileInfo(obsFile->fileName());
     QByteArray title = fileInfo.fileName().toAscii();
     emit dspSkyPlot(obsFile->fileName(), mp1Title,  dataMP1,  mp2Title,  dataMP2,  "Meters",  2.0);
-    double mean = 0.0;
-    for (int ii = 0; ii < dataSNR1->size(); ii++) {
-      const t_polarPoint* point = dataSNR1->at(ii);
-      mean += point->_value;
-    }
-    mean /= dataSNR1->size();
-    double max = (mean > 9.0) ? 54.0 : 9.0;
-    QByteArray str = (mean > 9.0) ? "dbHz" : "";
-    emit dspSkyPlot(obsFile->fileName(), snr1Title, dataSNR1, snr2Title, dataSNR2, str,  max);
+    emit dspSkyPlot(obsFile->fileName(), snr1Title, dataSNR1, snr2Title, dataSNR2, "dbHz",   54.0);
     emit dspAvailPlot(obsFile->fileName(), title);
   }
   else {
