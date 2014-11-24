@@ -1749,6 +1749,13 @@ void bncWindow::slotStart() {
     }
     enableStartStop();
   }
+  else if (!_sp3CompFileChooser->fileName().isEmpty()) {
+    _runningSp3Comp = true;
+    t_reqcEdit* reqcEdit = new t_reqcEdit(this);
+    connect(reqcEdit, SIGNAL(finished()), this, SLOT(slotPostProcessingFinished()));
+    reqcEdit->start();
+    enableStartStop();
+  }
   else {
     startRealTime();
     BNC_CORE->startPPP();
@@ -2419,9 +2426,10 @@ void bncWindow::slotPostProcessingProgress(int nEpo) {
 ////////////////////////////////////////////////////////////////////////////
 void bncWindow::slotPostProcessingFinished() {
   delete _caster; _caster = 0; BNC_CORE->setCaster(0);
-  _runningPPP  = false;
-  _runningEdit = false;
-  _runningQC   = false;
+  _runningPPP     = false;
+  _runningEdit    = false;
+  _runningQC      = false;
+  _runningSp3Comp = false;
   _actStart->setText(tr("Sta&rt"));
   enableStartStop();
 }
