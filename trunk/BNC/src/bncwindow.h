@@ -150,6 +150,9 @@ class bncWindow : public QMainWindow {
     QComboBox*     _reqcSkyPlotSystems;
     QCheckBox*     _reqcLogSummaryOnly;
 
+    qtFileChooser* _sp3CompFileChooser;
+    QLineEdit*     _sp3CompLogLineEdit;
+
     QCheckBox* _rnxV3CheckBox;
     QLineEdit* _rnxV2Priority;
     QCheckBox* _ephV3CheckBox;
@@ -226,8 +229,10 @@ class bncWindow : public QMainWindow {
     bool _runningPPP;
     bool _runningEdit;
     bool _runningQC;
+    bool _runningSp3Comp;
 
-    bool running() {return _runningRealTime || _runningPPP || _runningEdit || _runningQC;}
+    bool running() {return _runningRealTime || _runningPPP || _runningEdit || 
+                    _runningQC || _runningSp3Comp;}
 
     bncMapWin*           _mapWin;
 

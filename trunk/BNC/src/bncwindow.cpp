@@ -100,6 +100,7 @@ bncWindow::bncWindow() {
   _runningPPP         = false;
   _runningEdit        = false;
   _runningQC          = false;
+  _runningSp3Comp     = false;
   _reqcActionComboBox = 0; // necessary for enableStartStop()
 
   _mapWin = 0;
@@ -575,6 +576,7 @@ bncWindow::bncWindow() {
   QWidget* pppGroup3 = new QWidget();
   QWidget* pppGroup4 = new QWidget();
   QWidget* reqcgroup = new QWidget();
+  QWidget* sp3CompGroup = new QWidget();
   QWidget* cmbgroup = new QWidget();
   QWidget* uploadgroup = new QWidget();
   QWidget* uploadEphgroup = new QWidget();
@@ -583,6 +585,7 @@ bncWindow::bncWindow() {
   _aogroup->addTab(ogroup,tr("RINEX Observations"));
   _aogroup->addTab(egroup,tr("RINEX Ephemeris"));
   _aogroup->addTab(reqcgroup,tr("RINEX Editing && QC"));
+  _aogroup->addTab(sp3CompGroup,tr("SP3 Comparison"));
   _aogroup->addTab(cgroup,tr("Broadcast Corrections"));
   _aogroup->addTab(sgroup,tr("Feed Engine"));
   _aogroup->addTab(sergroup,tr("Serial Output"));
@@ -1058,6 +1061,36 @@ bncWindow::bncWindow() {
 
   connect(_reqcEditOptionButton, SIGNAL(clicked()), 
           this, SLOT(slotReqcEditOption()));
+
+  QGridLayout* sp3CompLayout = new QGridLayout;
+
+  _sp3CompFileChooser = new qtFileChooser(0, qtFileChooser::Files);
+  _sp3CompFileChooser->setFileName(settings.value("sp3CompFile").toString());
+  _sp3CompFileChooser->setWhatsThis(tr("Specify the full path to orbits in SP3 format"));
+  _sp3CompFileChooser->setMinimumWidth(15*ww);
+  _sp3CompFileChooser->setMaximumWidth(15*ww);
+
+  _sp3CompLogLineEdit = new QLineEdit(settings.value("sp3CompOutLogFile").toString());
+  _sp3CompLogLineEdit->setWhatsThis(tr("Specify the full path to a logfile."));
+  _sp3CompLogLineEdit->setMinimumWidth(15*ww);
+  _sp3CompLogLineEdit->setMaximumWidth(15*ww);
+
+  ir = 0;
+  sp3CompLayout->addWidget(new QLabel("Orbit and Clock Comparison"),   ir, 0, 1, 20);
+  ++ir;
+  sp3CompLayout->addWidget(new QLabel("Input SP3 files (full path)"),  ir, 0, Qt::AlignLeft);
+  sp3CompLayout->addWidget(_sp3CompFileChooser,                        ir, 1, Qt::AlignRight);
+  ++ir;
+  sp3CompLayout->addWidget(new QLabel("Log File"),                     ir, 0, Qt::AlignLeft);
+  sp3CompLayout->addWidget(_sp3CompLogLineEdit,                        ir, 1, Qt::AlignRight);
+  ++ir;
+  sp3CompLayout->addWidget(new QLabel(""), ir, 1);
+  sp3CompLayout->setRowStretch(ir, 999);
+
+  sp3CompLayout->setColumnMinimumWidth(2, 8*ww);
+  sp3CompLayout->setColumnMinimumWidth(4, 8*ww);
+
+  sp3CompGroup->setLayout(sp3CompLayout);
 
   // Combine Corrections
   // -------------------
