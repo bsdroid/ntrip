@@ -623,7 +623,6 @@ t_irc bncComb::processEpoch_filter(QTextStream& out,
     out << _resTime.datestr().c_str() << " " << _resTime.timestr().c_str()
         << " Maximum Residuum " << maxRes << ' '
         << corrs()[maxResIndex-1]->_acName << ' ' << corrs()[maxResIndex-1]->_prn;
-
     if (maxRes > _MAXRES) {
       for (int iPar = 1; iPar <= _params.size(); iPar++) {
         cmbParam* pp = _params[iPar-1];
@@ -642,6 +641,17 @@ t_irc bncComb::processEpoch_filter(QTextStream& out,
     }
     else {
       out << "  OK" << endl;
+      out.setRealNumberNotation(QTextStream::FixedNotation);
+      out.setRealNumberPrecision(4);
+      for (int ii = 0; ii < corrs().size(); ii++) {
+    	const cmbCorr* corr = corrs()[ii];
+        out << _resTime.datestr().c_str() << ' '
+            << _resTime.timestr().c_str() << " "
+            << corr->_acName << ' ' << corr->_prn;
+        out.setFieldWidth(10);
+        out <<  " res = " << vv[ii] << endl;
+        out.setFieldWidth(0);
+      }
       break;
     }
   }
@@ -1017,7 +1027,7 @@ t_irc bncComb::processEpoch_singleEpoch(QTextStream& out,
             << _resTime.timestr().c_str() << " "
             << corr->_acName << ' ' << corr->_prn;
         out.setFieldWidth(6);
-        out << " dClk = " << corr->_dClkResult * t_CST::c << " res = " << vv[ii] << endl;
+        out << " res = " << vv[ii] << endl;
         out.setFieldWidth(0);
       }
       return success;
