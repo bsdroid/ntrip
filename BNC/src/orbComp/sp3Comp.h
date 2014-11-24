@@ -26,9 +26,6 @@
 #define SP3COMP_H
 
 #include <QtCore>
-#include "rnxobsfile.h"
-#include "rnxnavfile.h"
-#include "ephemeris.h"
 
 class t_sp3Comp : public QThread {
 Q_OBJECT
