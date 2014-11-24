@@ -34,14 +34,16 @@ bncoutf::bncoutf(const QString& sklFileName, const QString& intr, int sampl) {
   _intr          = intr;
   _numSec        = 0;
 
-  QFileInfo fileInfo(sklFileName);
-  _path        = fileInfo.absolutePath() + QDir::separator();
-  _sklBaseName = fileInfo.baseName();
-  _extension   = fileInfo.completeSuffix(); 
-
-  expandEnvVar(_path);
-  if (!_extension.isEmpty()) {
-    _extension = "." + _extension;
+  if (! sklFileName.isEmpty()) {
+    QFileInfo fileInfo(sklFileName);
+    _path        = fileInfo.absolutePath() + QDir::separator();
+    _sklBaseName = fileInfo.baseName();
+    _extension   = fileInfo.completeSuffix(); 
+    
+    expandEnvVar(_path);
+    if (!_extension.isEmpty()) {
+      _extension = "." + _extension;
+    }
   }
 
   _append = Qt::CheckState(settings.value("rnxAppend").toInt()) == Qt::Checked;

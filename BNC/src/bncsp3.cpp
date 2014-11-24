@@ -16,6 +16,7 @@
  * -----------------------------------------------------------------------*/
 
 #include <iomanip>
+#include <sstream>
 #include <math.h>
 
 #include "bncsp3.h"
@@ -25,13 +26,38 @@ using namespace std;
 
 // Constructor
 ////////////////////////////////////////////////////////////////////////////
+bncSP3::bncSP3(const QString& fileName) : bncoutf(QString(), QString(), 0) {
+  _inpOut    = input;
+  _currEpoch = 0;
+  _prevEpoch = 0;
+
+  _stream.open(fileName.toAscii().data());
+  if (!_stream.good()) {
+    throw "t_sp3File: cannot open file " + fileName;
+  }  
+
+  while (_stream.good()) {
+    getline(_stream, _lastLine);
+    if (_lastLine[0] == '*') {
+      break;
+    }
+  }
+}
+
+// Constructor
+////////////////////////////////////////////////////////////////////////////
 bncSP3::bncSP3(const QString& sklFileName, const QString& intr, int sampl) 
   : bncoutf(sklFileName, intr, sampl) {
+  _inpOut    = output;
+  _currEpoch = 0;
+  _prevEpoch = 0;
 }
 
 // Destructor
 ////////////////////////////////////////////////////////////////////////////
 bncSP3::~bncSP3() {
+  delete _currEpoch;
+  delete _prevEpoch;
 }
 
 // Write One Epoch
@@ -132,3 +158,41 @@ void bncSP3::writeHeader(const QDateTime& datTim) {
        << "/*                                                          \n";
 }
 
+// Read Next Epoch
+////////////////////////////////////////////////////////////////////////////
+const bncSP3::t_sp3Epoch* bncSP3::nextEpoch() {
+
+  delete _prevEpoch; _prevEpoch = _currEpoch; _currEpoch = 0;
+
+  while (true) {
+
+    if (!_currEpoch) {
+      _currEpoch = new t_sp3Epoch();
+      istringstream in(_lastLine.substr(1).c_str());
+      int    YY, MM, DD, hh, mm;
+      double ss;
+      in >> YY >> MM >> DD >> hh >> mm >> ss;
+      _currEpoch->_tt.set(YY, MM, DD, hh, mm, ss);
+    }
+
+    getline(_stream, _lastLine);
+    if (_stream.eof() || _lastLine.find("EOF") == 0) {
+      throw "t_sp3File: end of file";
+      break;
+    }
+    if (_lastLine[0] == '*') {
+      break;
+    }
+
+    t_sp3Sat* sp3Sat = new t_sp3Sat();
+    istringstream in(_lastLine.substr(1).c_str());
+    in >> sp3Sat->_prn >> sp3Sat->_xyz(1) >> sp3Sat->_xyz(2) >> sp3Sat->_xyz(3) >> sp3Sat->_clk; 
+
+    sp3Sat->_xyz *= 1.e3;
+    sp3Sat->_clk *= t_CST::c * 1.e-6;
+
+    _currEpoch->_sp3Sat.push_back(sp3Sat);
+  }
+
+  return _currEpoch;
+}
