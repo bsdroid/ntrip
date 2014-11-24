@@ -72,6 +72,8 @@ void t_sp3Comp::run() {
 //    _log->setDevice(_logFile);
 //  }
 
+  qDebug() << "sp3Comp::run";
+
   // Exit (thread)
   // -------------
   if (BNC_CORE->mode() != t_bncCore::interactive) {

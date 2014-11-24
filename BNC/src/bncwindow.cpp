@@ -65,6 +65,7 @@
 #include "bncmap.h"
 #include "rinex/reqcedit.h"
 #include "rinex/reqcanalyze.h"
+#include "orbComp/sp3Comp.h"
 #ifdef QT_WEBKIT
 #  include "map/bncmapwin.h"
 #endif
@@ -1751,9 +1752,9 @@ void bncWindow::slotStart() {
   }
   else if (!_sp3CompFileChooser->fileName().isEmpty()) {
     _runningSp3Comp = true;
-    t_reqcEdit* reqcEdit = new t_reqcEdit(this);
-    connect(reqcEdit, SIGNAL(finished()), this, SLOT(slotPostProcessingFinished()));
-    reqcEdit->start();
+    t_sp3Comp* sp3Comp = new t_sp3Comp(this);
+    connect(sp3Comp, SIGNAL(finished()), this, SLOT(slotPostProcessingFinished()));
+    sp3Comp->start();
     enableStartStop();
   }
   else {
