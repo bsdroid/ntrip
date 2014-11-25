@@ -126,7 +126,8 @@ BNC supports decoding the following GNSS stream formats and message types:
 <p>
 <ul>
 <li>RTCM Version 2 message types for GPS and GLONASS observations; </li>
-<li>RTCM Version 3 'conventional' message types for observations and Broadcast Ephemeris for GPS and GLONASS;</li>
+<li>RTCM Version 3 'conventional' message types for GPS and GLONASS observations;</li>
+<li>RTCM Version 3 message types for Broadcast Ephemeris for GPS, GLONASS, Galileo, QZSS, and SBAS;</li>
 <li>RTCM Version 3 'State Space Representation' (SSR) messages for GPS and GLONASS;</li>
 <li>RTCM Version 3 'Multiple Signal Messages' (MSM) and 'High Precision Multiple Signal Messages' (HP MSM) including X-type observations for GPS, GLONASS, Galileo, BeiDou, QZSS, and SBAS (draft);</li>
 <li>RTNET, a plain ASCII format defined within BNC to receive orbits and clocks from a serving GNSS engine.
@@ -2982,7 +2983,9 @@ Drag and drop of configuration file is currently not supported on Mac OS X.
 [Add] RTCMv3 QZSS Broadcast Ephemeris message 1044<br>
 [Add] Handle old-fashioned SNR values in RINEX<br>
 [Mod] SNR and MP visualization depending on RINEX observation attribute<br>
-[Bug] Saastamoinen tropospheric correction for very high elevation receivers
+[Bug] Saastamoinen tropospheric correction for very high elevation receivers<br>
+[Add] Comparison of SP3 files
+[Add] RTCMv3 SBAS Broadcast Ephemeris message 1043<br>
 </td>
 </tr>
 
