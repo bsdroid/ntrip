@@ -42,15 +42,15 @@ class bncSP3 : public bncoutf {
   virtual ~bncSP3();
   t_irc write(int GPSweek, double GPSweeks, const QString& prn, 
               const ColumnVector& xCoM, double sp3Clk);
+  const t_sp3Epoch* nextEpoch();
+  const t_sp3Epoch* currEpoch() const {return _currEpoch;}
+  const t_sp3Epoch* prevEpoch() const {return _prevEpoch;}
 
  private:
   enum e_inpOut {input, output};
 
   virtual void writeHeader(const QDateTime& datTim);
   virtual void closeFile();
-  const t_sp3Epoch* nextEpoch();
-  const t_sp3Epoch* currEpoch() const {return _currEpoch;}
-  const t_sp3Epoch* prevEpoch() const {return _prevEpoch;}
 
   e_inpOut      _inpOut;
   bncTime       _lastEpoTime;
