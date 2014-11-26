@@ -16,13 +16,15 @@ class bncSP3 : public bncoutf {
    public:
     t_sp3Sat() {
       _xyz.ReSize(3); 
-      _xyz = 0.0;
-      _clk = 0.0;
+      _xyz      = 0.0;
+      _clk      = 0.0;
+      _clkValid = false;
     }
     ~t_sp3Sat() {}
     t_prn        _prn;
     ColumnVector _xyz;
     double       _clk;
+    bool         _clkValid;
   };
 
   class t_sp3Epoch {

@@ -215,7 +215,7 @@ void t_sp3Comp::compare() const {
               epochOK        = true;
               epo->_dr[sat1->_prn]  = sat1->_xyz - sat2->_xyz;
               epo->_xyz[sat1->_prn] = sat1->_xyz;
-              if (true) {  //// TODO: check whether clocks set in SP3 files
+              if (sat1->_clkValid && sat2->_clkValid) {
                 epo->_dc[sat1->_prn] = sat1->_clk - sat2->_clk;
                 clkSats.insert(sat1->_prn);
               }
