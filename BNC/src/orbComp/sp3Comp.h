@@ -25,7 +25,11 @@
 #ifndef SP3COMP_H
 #define SP3COMP_H
 
+#include <map>
 #include <QtCore>
+#include <newmat.h>
+#include "bnctime.h"
+#include "t_prn.h"
 
 class t_sp3Comp : public QThread {
 Q_OBJECT
@@ -45,6 +49,33 @@ Q_OBJECT
   virtual void run();
  
  private:
+  class t_epoch {
+   public:
+    bncTime                  _tt;
+    std::map<t_prn, ColumnVector> _dr;
+    std::map<t_prn, ColumnVector> _xyz;
+    std::map<t_prn, double>       _dc;
+  };
+
+  class t_stat {
+   public:
+    t_stat() {
+      _rao.ReSize(3); 
+      _rao    = 0.0;
+      _dc     = 0.0;
+      _dcRed  = 0.0;
+      _offset = 0.0;
+      _nr     = 0;
+      _nc     = 0;
+    }
+    ColumnVector _rao;
+    double       _dc;
+    double       _dcRed;
+    double       _offset;
+    int          _nr;
+    int          _nc;
+  };
+
   QStringList  _sp3FileNames;
   QString      _logFileName;
   QFile*       _logFile;
