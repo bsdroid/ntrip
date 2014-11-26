@@ -94,6 +94,19 @@ void t_sp3Comp::run() {
     return;
   }
 
+  try {
+    compare();
+  }
+  catch (const string& error) {
+    *_log << "ERROR: " << error.c_str() << endl;
+    emit finished();
+    return;
+  }
+  catch (const char* error) {
+    *_log << "ERROR: " << error << endl;
+    emit finished();
+    return;
+  }
 
   // Exit (thread)
   // -------------
@@ -211,13 +224,17 @@ void t_sp3Comp::compare() const {
         }
         if (epochOK) {
           epochs.push_back(epo);
+          cout << "OK: " << string(epo->_tt) << endl;
         }
         else {
           delete epo;
         }
+        break;
       }
     }
   }
+
+  cout << "NUMEPO: " << epochs.size() << endl;
 
   // Transform xyz into radial, along-track, and out-of-plane
   // --------------------------------------------------------
