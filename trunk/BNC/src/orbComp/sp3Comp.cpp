@@ -50,9 +50,12 @@ using namespace std;
 ////////////////////////////////////////////////////////////////////////////
 t_sp3Comp::t_sp3Comp(QObject* parent) : QThread(parent) {
 
-//  bncSettings settings;
-//
-//  _logFileName    = settings.value("reqcOutLogFile").toString(); expandEnvVar(_logFileName);
+  bncSettings settings;
+  _sp3FileNames = settings.value("sp3CompFile").toStringList();
+  for (int ii = 0; ii < _sp3FileNames.size(); ii++) {
+    expandEnvVar(_sp3FileNames[ii]);
+  }
+  _logFileName  = settings.value("sp3CompOutLogFile").toString(); expandEnvVar(_logFileName);
 }
 
 // Destructor
