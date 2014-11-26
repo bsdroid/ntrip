@@ -177,7 +177,7 @@ const bncSP3::t_sp3Epoch* bncSP3::nextEpoch() {
 
     getline(_stream, _lastLine);
     if (_stream.eof() || _lastLine.find("EOF") == 0) {
-      throw "t_sp3File: end of file";
+      delete _currEpoch; _currEpoch = 0;
       break;
     }
     if (_lastLine[0] == '*') {
