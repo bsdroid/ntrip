@@ -104,85 +104,84 @@ void t_sp3Comp::run() {
   }
 }
 
-//// Satellite Index in clkSats set
-//////////////////////////////////////////////////////////////////////////////////
-//int satIndex(const set<GPSS::t_prn>& clkSats, const GPSS::t_prn& prn) {
-//  int ret = 0;
-//  for (set<GPSS::t_prn>::const_iterator it = clkSats.begin(); it != clkSats.end(); it++) {
-//    if ( *it == prn) {
-//      return ret;
-//    }
-//    ++ret;
-//  }
-//  cerr << "satellite not found in used Sats " << prn << endl;
-//  exit(1);
-//}
-//
-//// Estimate Clock Offsets
-//////////////////////////////////////////////////////////////////////////////////
-//void processClocks(const set<GPSS::t_prn>& clkSats, vector<t_epoch*>& epochs,
-//                   map<string, t_stat>& stat) {
-//
-//  if (clkSats.size() == 0) {
-//    return;
-//  }
-//
-//  int nPar = epochs.size() + clkSats.size();
-//  SymmetricMatrix NN(nPar); NN = 0.0;
-//  ColumnVector    bb(nPar); bb = 0.0;
-//
-//  // Create Matrix A'A and vector b
-//  // ------------------------------
-//  for (unsigned ie = 0; ie < epochs.size(); ie++) {
-//    const GPSS::t_gpstime&          tt = epochs[ie]->_tt;
-//    const map<GPSS::t_prn, double>& dc = epochs[ie]->_dc;
-//    Matrix       AA(dc.size(), nPar); AA = 0.0;
-//    ColumnVector ll(dc.size());       ll = 0.0;
-//    map<GPSS::t_prn, double>::const_iterator it; int ii;
-//    for (it = dc.begin(), ii = 0; it != dc.end(); it++, ii++) {
-//      const GPSS::t_prn& prn = it->first;
-//      int index = epochs.size() + satIndex(clkSats, prn);
-//      AA[ii][ie]    = 1.0; // epoch-specfic offset (common for all satellites)
-//      AA[ii][index] = 1.0; // satellite-specific offset (common for all epochs)
-//      ll[ii]        = it->second;
-//    }
-//    SymmetricMatrix dN; dN << AA.t() * AA;
-//    NN += dN;
-//    bb += AA.t() * ll;
-//  }
-//
-//  // Regularize NN
-//  // -------------
-//  RowVector HH(nPar); 
-//  HH.columns(1, epochs.size())      = 0.0;
-//  HH.columns(epochs.size()+1, nPar) = 1.0;
-//  SymmetricMatrix dN; dN << HH.t() * HH;
-//  NN += dN;
-// 
-//  // Estimate Parameters
-//  // -------------------
-//  ColumnVector xx = NN.i() * bb;
-//
-//  // Compute clock residuals
-//  // -----------------------
-//  for (unsigned ie = 0; ie < epochs.size(); ie++) {
-//    const GPSS::t_gpstime&  tt     = epochs[ie]->_tt;
-//    map<GPSS::t_prn, double>& dc = epochs[ie]->_dc;
-//    for (map<GPSS::t_prn, double>::iterator it = dc.begin(); it != dc.end(); it++) {
-//      const GPSS::t_prn& prn = it->first;
-//      int  index = epochs.size() + satIndex(clkSats, prn);
-//      dc[prn]           = it->second - xx[ie] - xx[index];
-//      stat[prn]._offset = xx[index];
-//    }
-//  }
-//}
-//
+// Satellite Index in clkSats set
+////////////////////////////////////////////////////////////////////////////////
+int t_sp3Comp::satIndex(const set<t_prn>& clkSats, const t_prn& prn) const {
+  int ret = 0;
+  for (set<t_prn>::const_iterator it = clkSats.begin(); it != clkSats.end(); it++) {
+    if ( *it == prn) {
+      return ret;
+    }
+    ++ret;
+  }
+  throw "satellite not found " + prn.toString();
+}
+
+// Estimate Clock Offsets
+////////////////////////////////////////////////////////////////////////////////
+void t_sp3Comp::processClocks(const set<t_prn>& clkSats, vector<t_epoch*>& epochs,
+                              map<string, t_stat>& stat) const {
+
+  if (clkSats.size() == 0) {
+    return;
+  }
+
+  int nPar = epochs.size() + clkSats.size();
+  SymmetricMatrix NN(nPar); NN = 0.0;
+  ColumnVector    bb(nPar); bb = 0.0;
+
+  // Create Matrix A'A and vector b
+  // ------------------------------
+  for (unsigned ie = 0; ie < epochs.size(); ie++) {
+    ///    const bncTime&          tt = epochs[ie]->_tt;
+    const map<t_prn, double>& dc = epochs[ie]->_dc;
+    Matrix       AA(dc.size(), nPar); AA = 0.0;
+    ColumnVector ll(dc.size());       ll = 0.0;
+    map<t_prn, double>::const_iterator it; int ii;
+    for (it = dc.begin(), ii = 0; it != dc.end(); it++, ii++) {
+      const t_prn& prn = it->first;
+      int index = epochs.size() + satIndex(clkSats, prn);
+      AA[ii][ie]    = 1.0; // epoch-specfic offset (common for all satellites)
+      AA[ii][index] = 1.0; // satellite-specific offset (common for all epochs)
+      ll[ii]        = it->second;
+    }
+    SymmetricMatrix dN; dN << AA.t() * AA;
+    NN += dN;
+    bb += AA.t() * ll;
+  }
+
+  // Regularize NN
+  // -------------
+  RowVector HH(nPar); 
+  HH.columns(1, epochs.size())      = 0.0;
+  HH.columns(epochs.size()+1, nPar) = 1.0;
+  SymmetricMatrix dN; dN << HH.t() * HH;
+  NN += dN;
+ 
+  // Estimate Parameters
+  // -------------------
+  ColumnVector xx = NN.i() * bb;
+
+  // Compute clock residuals
+  // -----------------------
+  for (unsigned ie = 0; ie < epochs.size(); ie++) {
+    // const bncTime&  tt     = epochs[ie]->_tt;
+    map<t_prn, double>& dc = epochs[ie]->_dc;
+    for (map<t_prn, double>::iterator it = dc.begin(); it != dc.end(); it++) {
+      const t_prn& prn = it->first;
+      int  index = epochs.size() + satIndex(clkSats, prn);
+      dc[prn]                      = it->second - xx[ie] - xx[index];
+      stat[prn.toString()]._offset = xx[index];
+    }
+  }
+}
+
 //// Program
 //////////////////////////////////////////////////////////////////////////////////
 //int main(int argc, char* argv[]) {
 //
-//  GPSS::t_sysout* sysout = new GPSS::t_sysout("", 0, false);
-//  GPSS::rtnet_core_log  = sysout->getSysoutCore();
+//  t_sysout* sysout = new t_sysout("", 0, false);
+//  rtnet_core_log  = sysout->getSysoutCore();
 //
 //  // Parse Input Options
 //  // -------------------
@@ -195,26 +194,26 @@ void t_sp3Comp::run() {
 //
 //  // Synchronize reading of two sp3 files
 //  // ------------------------------------
-//  vector<GPSS::t_prn> prnList;
-//  for (unsigned prn = 1; prn <= GPSS::t_prn::MAXPRN; prn++) {
-//    prnList.push_back(GPSS::t_prn(prn));
+//  vector<t_prn> prnList;
+//  for (unsigned prn = 1; prn <= t_prn::MAXPRN; prn++) {
+//    prnList.push_back(t_prn(prn));
 //  }
-//  GPSS::t_sp3 in1(prnList); if (in1.assignFile(OPT["sp3File1"].c_str())) return 1;
-//  GPSS::t_sp3 in2(prnList); if (in2.assignFile(OPT["sp3File2"].c_str())) return 1;
+//  t_sp3 in1(prnList); if (in1.assignFile(OPT["sp3File1"].c_str())) return 1;
+//  t_sp3 in2(prnList); if (in2.assignFile(OPT["sp3File2"].c_str())) return 1;
 //
 //  vector<t_epoch*> epochs;
-//  set<GPSS::t_prn> clkSats;
+//  set<t_prn> clkSats;
 //  while (true) {
 //    in1.readNextEpoch();
-//    GPSS::t_gpstime tt = in1.etime();
+//    bncTime tt = in1.etime();
 //    if (!tt.valid()) {
 //      break;
 //    }
 //    if (in2.readEpoch(tt) == t_irc::success) {
 //      t_epoch* epo = new t_epoch; epo->_tt = tt;
 //      bool epochOK = false;
-//      for (unsigned iPrn = 1; iPrn <= GPSS::t_prn::MAXPRN; iPrn++) {
-//        GPSS::t_prn prn(iPrn);
+//      for (unsigned iPrn = 1; iPrn <= t_prn::MAXPRN; iPrn++) {
+//        t_prn prn(iPrn);
 //        ColumnVector xyz1(3), xyz2(3);
 //        ColumnVector vel1(3), vel2(3);
 //        double       clk1, clk2;
@@ -260,17 +259,17 @@ void t_sp3Comp::run() {
 //      epoch2 = epochs[ie-1];
 //    }
 //    double dt = epoch->_tt - epoch2->_tt;
-//    map<GPSS::t_prn, ColumnVector>& dr   = epoch->_dr;
-//    map<GPSS::t_prn, ColumnVector>& xyz  = epoch->_xyz;
-//    map<GPSS::t_prn, ColumnVector>& xyz2 = epoch2->_xyz;
-//    for (map<GPSS::t_prn, ColumnVector>::const_iterator it = dr.begin(); it != dr.end(); it++) {
-//      const GPSS::t_prn&  prn = it->first;
+//    map<t_prn, ColumnVector>& dr   = epoch->_dr;
+//    map<t_prn, ColumnVector>& xyz  = epoch->_xyz;
+//    map<t_prn, ColumnVector>& xyz2 = epoch2->_xyz;
+//    for (map<t_prn, ColumnVector>::const_iterator it = dr.begin(); it != dr.end(); it++) {
+//      const t_prn&  prn = it->first;
 //      if (xyz2.find(prn) != xyz2.end()) {
 //        const ColumnVector  dx = dr[prn];
 //        const ColumnVector& x1 = xyz[prn];
 //        const ColumnVector& x2 = xyz2[prn];
 //        ColumnVector vel = (x1 - x2) / dt;
-//        GPSS::t_astro::XYZ_to_RSW(x1, vel, dx, dr[prn]);
+//        t_astro::XYZ_to_RSW(x1, vel, dx, dr[prn]);
 //      }
 //      else {
 //        cerr << "not found: " << prn << endl;
@@ -293,10 +292,10 @@ void t_sp3Comp::run() {
 //           "\n! ----------------------------------------------------------------\n";
 //  for (unsigned ii = 0; ii < epochs.size(); ii++) {
 //    const t_epoch* epo = epochs[ii];
-//    const map<GPSS::t_prn, ColumnVector>& dr = epochs[ii]->_dr;
-//    const map<GPSS::t_prn, double>&       dc = epochs[ii]->_dc;
-//    for (map<GPSS::t_prn, ColumnVector>::const_iterator it = dr.begin(); it != dr.end(); it++) {
-//      const GPSS::t_prn&  prn = it->first;
+//    const map<t_prn, ColumnVector>& dr = epochs[ii]->_dr;
+//    const map<t_prn, double>&       dc = epochs[ii]->_dc;
+//    for (map<t_prn, ColumnVector>::const_iterator it = dr.begin(); it != dr.end(); it++) {
+//      const t_prn&  prn = it->first;
 //      const ColumnVector& rao = it->second;
 //      cout << setprecision(6) << epo->_tt.mjddec() << ' ' << prn << ' '
 //           << setw(7) << setprecision(4) << rao[0] << ' '
