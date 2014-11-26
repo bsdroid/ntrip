@@ -189,7 +189,14 @@ const bncSP3::t_sp3Epoch* bncSP3::nextEpoch() {
     in >> sp3Sat->_prn >> sp3Sat->_xyz(1) >> sp3Sat->_xyz(2) >> sp3Sat->_xyz(3) >> sp3Sat->_clk; 
 
     sp3Sat->_xyz *= 1.e3;
-    sp3Sat->_clk *= t_CST::c * 1.e-6;
+    if (sp3Sat->_clk == 999999.999999) {
+      sp3Sat->_clkValid = false;
+      sp3Sat->_clk      = 0.0;
+    }
+    else {
+      sp3Sat->_clkValid = true;
+      sp3Sat->_clk *= t_CST::c * 1.e-6;
+    }
 
     _currEpoch->_sp3Sat.push_back(sp3Sat);
   }
