@@ -52,6 +52,7 @@
 #include "upload/bncephuploadcaster.h"
 #include "rinex/reqcedit.h"
 #include "rinex/reqcanalyze.h"
+#include "orbComp/sp3Comp.h"
 
 using namespace std;
 
@@ -153,6 +154,15 @@ int main(int argc, char* argv[]) {
     bncWin->show();
   }
 
+  // Post-Processing PPP 
+  // -------------------
+  else if (settings.value("PPP/dataSource").toString() == "RINEX Files") {
+    bncCaster* caster = new bncCaster();
+    BNC_CORE->setCaster(caster);
+    BNC_CORE->setMode(t_bncCore::batchPostProcessing);
+    BNC_CORE->startPPP();
+  }
+
   // Post-Processing reqc edit
   // -------------------------
   else if (settings.value("reqcAction").toString() == "Edit/Concatenate") {
@@ -169,13 +179,12 @@ int main(int argc, char* argv[]) {
     reqcAnalyze->start();
   }
 
-  // Post-Processing PPP 
-  // -------------------
-  else if (settings.value("PPP/dataSource").toString() == "RINEX Files") {
-    bncCaster* caster = new bncCaster();
-    BNC_CORE->setCaster(caster);
+  // SP3 Files Comparison
+  // --------------------
+  else if (!settings.value("sp3CompFile").toString().isEmpty()) {
     BNC_CORE->setMode(t_bncCore::batchPostProcessing);
-    BNC_CORE->startPPP();
+    t_sp3Comp* sp3Comp = new t_sp3Comp(0);
+    sp3Comp->start();
   }
 
   // Non-Interactive (data gathering)
