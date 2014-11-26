@@ -86,7 +86,7 @@ void t_sp3Comp::run() {
   }
 
   for (int ii = 0; ii < _sp3FileNames.size(); ii++) {
-    *_log << "SP3 File " << ii+1 << ": " << _sp3FileNames[ii] << endl;
+    *_log << "! SP3 File " << ii+1 << ": " << _sp3FileNames[ii] << endl;
   }
   if (_sp3FileNames.size() != 2) {
     *_log << "ERROR: sp3Comp requires two input SP3 files" << endl;
@@ -288,7 +288,7 @@ void t_sp3Comp::compare(ostringstream& out) const {
     for (map<t_prn, ColumnVector>::const_iterator it = dr.begin(); it != dr.end(); it++) {
       const t_prn&  prn = it->first;
       const ColumnVector& rao = it->second;
-      out << setprecision(6) << epo->_tt.mjddec() << ' ' << prn << ' '
+      out << setprecision(6) << epo->_tt.mjddec() << ' ' << prn.toString() << ' '
           << setw(7) << setprecision(4) << rao[0] << ' '
           << setw(7) << setprecision(4) << rao[1] << ' '
           << setw(7) << setprecision(4) << rao[2] << "    ";
