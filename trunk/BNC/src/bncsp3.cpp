@@ -164,20 +164,18 @@ const bncSP3::t_sp3Epoch* bncSP3::nextEpoch() {
 
   delete _prevEpoch; _prevEpoch = _currEpoch; _currEpoch = 0;
 
+  if (_lastLine[0] == '*') {
+    _currEpoch = new t_sp3Epoch();
+    istringstream in(_lastLine.substr(1).c_str());
+    int    YY, MM, DD, hh, mm;
+    double ss;
+    in >> YY >> MM >> DD >> hh >> mm >> ss;
+    _currEpoch->_tt.set(YY, MM, DD, hh, mm, ss);
+  }
+
   while (true) {
-
-    if (!_currEpoch) {
-      _currEpoch = new t_sp3Epoch();
-      istringstream in(_lastLine.substr(1).c_str());
-      int    YY, MM, DD, hh, mm;
-      double ss;
-      in >> YY >> MM >> DD >> hh >> mm >> ss;
-      _currEpoch->_tt.set(YY, MM, DD, hh, mm, ss);
-    }
-
     getline(_stream, _lastLine);
     if (_stream.eof() || _lastLine.find("EOF") == 0) {
-      delete _currEpoch; _currEpoch = 0;
       break;
     }
     if (_lastLine[0] == '*') {
