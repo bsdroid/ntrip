@@ -226,7 +226,6 @@ void t_sp3Comp::compare(ostringstream& out) const {
         }
         if (epochOK) {
           epochs.push_back(epo);
-          cout << "OK: " << string(epo->_tt) << endl;
         }
         else {
           delete epo;
@@ -235,8 +234,6 @@ void t_sp3Comp::compare(ostringstream& out) const {
       }
     }
   }
-
-  cout << "NUMEPO: " << epochs.size() << endl;
 
   // Transform xyz into radial, along-track, and out-of-plane
   // --------------------------------------------------------
