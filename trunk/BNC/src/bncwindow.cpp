@@ -1679,6 +1679,9 @@ void bncWindow::saveOptions() {
   settings.setValue("reqcPlotDir",    _reqcPlotDirLineEdit->text());
   settings.setValue("reqcSkyPlotSystems", _reqcSkyPlotSystems->currentText());
   settings.setValue("reqcLogSummaryOnly", _reqcLogSummaryOnly->checkState());
+// SP3 Comparison
+  settings.setValue("sp3CompFile",       _sp3CompFileChooser->fileName());
+  settings.setValue("sp3CompOutLogFile", _sp3CompLogLineEdit->text());
 // Combine Corrections
   if (!combineStreams.isEmpty()) {
     settings.setValue("combineStreams", combineStreams);
