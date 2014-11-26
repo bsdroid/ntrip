@@ -45,8 +45,10 @@ Q_OBJECT
   virtual void run();
  
  private:
-  QStringList _sp3FileNames;
-  QString     _logFileName;
+  QStringList  _sp3FileNames;
+  QString      _logFileName;
+  QFile*       _logFile;
+  QTextStream* _log;
 };
 
 #endif

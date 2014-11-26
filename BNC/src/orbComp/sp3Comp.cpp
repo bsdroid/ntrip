@@ -55,12 +55,16 @@ t_sp3Comp::t_sp3Comp(QObject* parent) : QThread(parent) {
   for (int ii = 0; ii < _sp3FileNames.size(); ii++) {
     expandEnvVar(_sp3FileNames[ii]);
   }
-  _logFileName  = settings.value("sp3CompOutLogFile").toString(); expandEnvVar(_logFileName);
+  _logFileName = settings.value("sp3CompOutLogFile").toString(); expandEnvVar(_logFileName);
+  _logFile     = 0;
+  _log         = 0;
 }
 
 // Destructor
 ////////////////////////////////////////////////////////////////////////////
 t_sp3Comp::~t_sp3Comp() {
+  delete _log;
+  delete _logFile;
 }
 
 //  
@@ -69,13 +73,23 @@ void t_sp3Comp::run() {
  
   // Open Log File
   // -------------
-//  _logFile = new QFile(_logFileName);
-//  if (_logFile->open(QIODevice::WriteOnly | QIODevice::Text)) {
-//    _log = new QTextStream();
-//    _log->setDevice(_logFile);
-//  }
+  _logFile = new QFile(_logFileName);
+  if (_logFile->open(QIODevice::WriteOnly | QIODevice::Text)) {
+    _log = new QTextStream();
+    _log->setDevice(_logFile);
+  }
+  if (_log) {
+    return;
+  }
 
-  qDebug() << "sp3Comp::run";
+  for (int ii = 0; ii < _sp3FileNames.size(); ii++) {
+    *_log << _sp3FileNames[ii];
+  }
+  if (_sp3FileNames.size() != 2) {
+    *_log << "ERROR: sp3Comp requires two input SP3 files" << endl;
+    return;
+  }
+
 
   // Exit (thread)
   // -------------
