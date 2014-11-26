@@ -39,10 +39,12 @@
  * -----------------------------------------------------------------------*/
 
 #include <iostream>
+#include <iomanip>
 #include "sp3Comp.h"
 #include "bnccore.h"
 #include "bncsettings.h"
 #include "bncutils.h"
+#include "bncsp3.h"
 
 using namespace std;
 
@@ -174,189 +176,159 @@ void t_sp3Comp::processClocks(const set<t_prn>& clkSats, vector<t_epoch*>& epoch
   }
 }
 
-//// Program
-//////////////////////////////////////////////////////////////////////////////////
-//int main(int argc, char* argv[]) {
-//
-//  t_sysout* sysout = new t_sysout("", 0, false);
-//  rtnet_core_log  = sysout->getSysoutCore();
-//
-//  // Parse Input Options
-//  // -------------------
-//  map<string, string> OPT;
-//  parseCmdLine(argc, argv, OPT);
-//  if (OPT.find("sp3File1") == OPT.end() || OPT.find("sp3File2") == OPT.end()) {
-//    cerr << "usage: sp3comp --sp3File1 <fileName> --sp3File2 <fileName> " << endl;
-//    return 1;
-//  }
-//
-//  // Synchronize reading of two sp3 files
-//  // ------------------------------------
-//  vector<t_prn> prnList;
-//  for (unsigned prn = 1; prn <= t_prn::MAXPRN; prn++) {
-//    prnList.push_back(t_prn(prn));
-//  }
-//  t_sp3 in1(prnList); if (in1.assignFile(OPT["sp3File1"].c_str())) return 1;
-//  t_sp3 in2(prnList); if (in2.assignFile(OPT["sp3File2"].c_str())) return 1;
-//
-//  vector<t_epoch*> epochs;
-//  set<t_prn> clkSats;
-//  while (true) {
-//    in1.readNextEpoch();
-//    bncTime tt = in1.etime();
-//    if (!tt.valid()) {
-//      break;
-//    }
-//    if (in2.readEpoch(tt) == t_irc::success) {
-//      t_epoch* epo = new t_epoch; epo->_tt = tt;
-//      bool epochOK = false;
-//      for (unsigned iPrn = 1; iPrn <= t_prn::MAXPRN; iPrn++) {
-//        t_prn prn(iPrn);
-//        ColumnVector xyz1(3), xyz2(3);
-//        ColumnVector vel1(3), vel2(3);
-//        double       clk1, clk2;
-//        bool         posSet1, posSet2;
-//        bool         clkSet1, clkSet2;
-//        bool         velSet1, velSet2;
-//        if (in1.position(prn, xyz1[0], xyz1[1], xyz1[2], posSet1, clk1, clkSet1,
-//                         vel1[0], vel1[1], vel1[2], velSet1) == 0 &&
-//            in2.position(prn, xyz2[0], xyz2[1], xyz2[2], posSet2, clk2, clkSet2,
-//                         vel1[0], vel1[1], vel1[2], velSet1) == 0) {
-//          if (posSet1 && posSet2) {
-//            epochOK       = true;
-//            epo->_dr[prn]  = xyz1 - xyz2;
-//            epo->_xyz[prn] = xyz1;
-//            if (clkSet1 && clkSet2) {
-//              epo->_dc[prn] = (clk1 - clk2) * t_genConst::c;
-//              clkSats.insert(prn);
-//            }
-//          }
-//        }
-//      }
-//      if (epochOK) {
-//        epochs.push_back(epo);
-//      }
-//      else {
-//        delete epo;
-//      }
-//    }
-//    if (in1.finished()) {
-//      break;
-//    }
-//  }
-//
-//  // Transform xyz into radial, along-track, and out-of-plane
-//  // --------------------------------------------------------
-//  for (unsigned ie = 0; ie < epochs.size(); ie++) {
-//    t_epoch* epoch  = epochs[ie];
-//    t_epoch* epoch2 = 0;
-//    if (ie == 0 && epochs.size() > 1) {
-//      epoch2 = epochs[ie+1];
-//    }
-//    else {
-//      epoch2 = epochs[ie-1];
-//    }
-//    double dt = epoch->_tt - epoch2->_tt;
-//    map<t_prn, ColumnVector>& dr   = epoch->_dr;
-//    map<t_prn, ColumnVector>& xyz  = epoch->_xyz;
-//    map<t_prn, ColumnVector>& xyz2 = epoch2->_xyz;
-//    for (map<t_prn, ColumnVector>::const_iterator it = dr.begin(); it != dr.end(); it++) {
-//      const t_prn&  prn = it->first;
-//      if (xyz2.find(prn) != xyz2.end()) {
-//        const ColumnVector  dx = dr[prn];
-//        const ColumnVector& x1 = xyz[prn];
-//        const ColumnVector& x2 = xyz2[prn];
-//        ColumnVector vel = (x1 - x2) / dt;
-//        t_astro::XYZ_to_RSW(x1, vel, dx, dr[prn]);
-//      }
-//      else {
-//        cerr << "not found: " << prn << endl;
-//      }
-//    }
-//  }
-//
-//  map<string, t_stat> stat;
-//
-//  // Estimate Clock Offsets
-//  // ----------------------
-//  processClocks(clkSats, epochs, stat);
-//
-//  // Print Residuals
-//  // ---------------
-//  const string all = "ZZZ";
-//
-//  cout.setf(ios::fixed);
-//  cout << "!\n!  MJD       PRN  radial   along   out        clk    clkRed   iPRN"
-//           "\n! ----------------------------------------------------------------\n";
-//  for (unsigned ii = 0; ii < epochs.size(); ii++) {
-//    const t_epoch* epo = epochs[ii];
-//    const map<t_prn, ColumnVector>& dr = epochs[ii]->_dr;
-//    const map<t_prn, double>&       dc = epochs[ii]->_dc;
-//    for (map<t_prn, ColumnVector>::const_iterator it = dr.begin(); it != dr.end(); it++) {
-//      const t_prn&  prn = it->first;
-//      const ColumnVector& rao = it->second;
-//      cout << setprecision(6) << epo->_tt.mjddec() << ' ' << prn << ' '
-//           << setw(7) << setprecision(4) << rao[0] << ' '
-//           << setw(7) << setprecision(4) << rao[1] << ' '
-//           << setw(7) << setprecision(4) << rao[2] << "    ";
-//      stat[prn]._rao += SP(rao, rao); // Schur product
-//      stat[prn]._nr  += 1;
-//      stat[all]._rao += SP(rao, rao);
-//      stat[all]._nr  += 1;
-//      if (dc.find(prn) != dc.end()) {
-//        double clkRes    = dc.find(prn)->second;
-//        double clkResRed = clkRes - it->second[0]; // clock minus radial component
-//        cout << setw(7) << setprecision(4) << clkRes << ' '
-//             << setw(7) << setprecision(4) << clkResRed;
-//        stat[prn]._dc    += clkRes * clkRes;
-//        stat[prn]._dcRed += clkResRed * clkResRed;
-//        stat[prn]._nc    += 1;
-//        stat[all]._dc    += clkRes * clkRes;
-//        stat[all]._dcRed += clkResRed * clkResRed;
-//        stat[all]._nc    += 1;
-//      }
-//      else {
-//        cout << "  .       .    ";
-//      }
-//      cout << "    " << setw(2) << int(prn) << endl;
-//    }
-//    delete epo;
-//  }
-//
-//  // Print Summary
-//  // -------------
-//  cout << "!\n! RMS:\n";
-//  for (map<string, t_stat>::iterator it = stat.begin(); it != stat.end(); it++) {
-//    const string& prn  = it->first;
-//    t_stat&       stat = it->second;
-//    if (stat._nr > 0) {
-//      stat._rao[0] = sqrt(stat._rao[0] / stat._nr);
-//      stat._rao[1] = sqrt(stat._rao[1] / stat._nr);
-//      stat._rao[2] = sqrt(stat._rao[2] / stat._nr);
-//      if (prn == all) {
-//        cout << "!\n!          Total ";
-//      }
-//      else {
-//        cout << "!            " << prn << ' ';
-//      }
-//      cout << setw(7) << setprecision(4) << stat._rao[0] << ' '
-//           << setw(7) << setprecision(4) << stat._rao[1] << ' '
-//           << setw(7) << setprecision(4) << stat._rao[2] << "    ";
-//      if (stat._nc > 0) {
-//        stat._dc    = sqrt(stat._dc / stat._nc);
-//        stat._dcRed = sqrt(stat._dcRed / stat._nc);
-//        cout << setw(7) << setprecision(4) << stat._dc << ' '
-//             << setw(7) << setprecision(4) << stat._dcRed;
-//        if (prn != all) {
-//          cout << "    offset " << setw(7) << setprecision(4) << stat._offset;
-//        }
-//      }
-//      else {
-//        cout << "  .       .    ";
-//      }
-//      cout << endl;
-//    }
-//  }
-//
-//  return 0;
-//}
+// Main Routine
+////////////////////////////////////////////////////////////////////////////////
+void t_sp3Comp::compare() const {
+
+  // Synchronize reading of two sp3 files
+  // ------------------------------------
+  bncSP3 in1(_sp3FileNames[0]);
+  bncSP3 in2(_sp3FileNames[1]);
+
+  vector<t_epoch*> epochs;
+  set<t_prn>       clkSats;
+  while (in1.nextEpoch()) {
+    bncTime tt = in1.currEpoch()->_tt;
+    while (in2.nextEpoch()) {
+      if (tt == in2.currEpoch()->_tt) {
+        t_epoch* epo = new t_epoch; epo->_tt = tt;
+
+        bool epochOK = false;
+        for (int i1 = 0; i1 < in1.currEpoch()->_sp3Sat.size(); i1++) {
+          bncSP3::t_sp3Sat* sat1 = in1.currEpoch()->_sp3Sat[i1];
+          for (int i2 = 0; i2 < in2.currEpoch()->_sp3Sat.size(); i2++) {
+            bncSP3::t_sp3Sat* sat2 = in2.currEpoch()->_sp3Sat[i2];
+            if (sat1->_prn == sat2->_prn) {
+              epochOK        = true;
+              epo->_dr[sat1->_prn]  = sat1->_xyz - sat2->_xyz;
+              epo->_xyz[sat1->_prn] = sat1->_xyz;
+              if (true) {  //// TODO: check whether clocks set in SP3 files
+                epo->_dc[sat1->_prn] = (sat1->_clk - sat2->_clk) * t_CST::c;
+                clkSats.insert(sat1->_prn);
+              }
+            }
+          }
+        }
+        if (epochOK) {
+          epochs.push_back(epo);
+        }
+        else {
+          delete epo;
+        }
+      }
+    }
+  }
+
+  // Transform xyz into radial, along-track, and out-of-plane
+  // --------------------------------------------------------
+  for (unsigned ie = 0; ie < epochs.size(); ie++) {
+    t_epoch* epoch  = epochs[ie];
+    t_epoch* epoch2 = 0;
+    if (ie == 0 && epochs.size() > 1) {
+      epoch2 = epochs[ie+1];
+    }
+    else {
+      epoch2 = epochs[ie-1];
+    }
+    double dt = epoch->_tt - epoch2->_tt;
+    map<t_prn, ColumnVector>& dr   = epoch->_dr;
+    map<t_prn, ColumnVector>& xyz  = epoch->_xyz;
+    map<t_prn, ColumnVector>& xyz2 = epoch2->_xyz;
+    for (map<t_prn, ColumnVector>::const_iterator it = dr.begin(); it != dr.end(); it++) {
+      const t_prn&  prn = it->first;
+      if (xyz2.find(prn) != xyz2.end()) {
+        const ColumnVector  dx = dr[prn];
+        const ColumnVector& x1 = xyz[prn];
+        const ColumnVector& x2 = xyz2[prn];
+        ColumnVector vel = (x1 - x2) / dt;
+        XYZ_to_RSW(x1, vel, dx, dr[prn]);
+      }
+      else {
+        cerr << "not found: " << prn << endl;
+      }
+    }
+  }
+
+  map<string, t_stat> stat;
+
+  // Estimate Clock Offsets
+  // ----------------------
+  processClocks(clkSats, epochs, stat);
+
+  // Print Residuals
+  // ---------------
+  const string all = "ZZZ";
+
+  cout.setf(ios::fixed);
+  cout << "!\n!  MJD       PRN  radial   along   out        clk    clkRed   iPRN"
+           "\n! ----------------------------------------------------------------\n";
+  for (unsigned ii = 0; ii < epochs.size(); ii++) {
+    const t_epoch* epo = epochs[ii];
+    const map<t_prn, ColumnVector>& dr = epochs[ii]->_dr;
+    const map<t_prn, double>&       dc = epochs[ii]->_dc;
+    for (map<t_prn, ColumnVector>::const_iterator it = dr.begin(); it != dr.end(); it++) {
+      const t_prn&  prn = it->first;
+      const ColumnVector& rao = it->second;
+      cout << setprecision(6) << epo->_tt.mjddec() << ' ' << prn << ' '
+           << setw(7) << setprecision(4) << rao[0] << ' '
+           << setw(7) << setprecision(4) << rao[1] << ' '
+           << setw(7) << setprecision(4) << rao[2] << "    ";
+      stat[prn.toString()]._rao += SP(rao, rao); // Schur product
+      stat[prn.toString()]._nr  += 1;
+      stat[all]._rao            += SP(rao, rao);
+      stat[all]._nr             += 1;
+      if (dc.find(prn) != dc.end()) {
+        double clkRes    = dc.find(prn)->second;
+        double clkResRed = clkRes - it->second[0]; // clock minus radial component
+        cout << setw(7) << setprecision(4) << clkRes << ' '
+             << setw(7) << setprecision(4) << clkResRed;
+        stat[prn.toString()]._dc    += clkRes * clkRes;
+        stat[prn.toString()]._dcRed += clkResRed * clkResRed;
+        stat[prn.toString()]._nc    += 1;
+        stat[all]._dc               += clkRes * clkRes;
+        stat[all]._dcRed            += clkResRed * clkResRed;
+        stat[all]._nc               += 1;
+      }
+      else {
+        cout << "  .       .    ";
+      }
+      cout << "    " << setw(2) << int(prn) << endl;
+    }
+    delete epo;
+  }
+
+  // Print Summary
+  // -------------
+  cout << "!\n! RMS:\n";
+  for (map<string, t_stat>::iterator it = stat.begin(); it != stat.end(); it++) {
+    const string& prn  = it->first;
+    t_stat&       stat = it->second;
+    if (stat._nr > 0) {
+      stat._rao[0] = sqrt(stat._rao[0] / stat._nr);
+      stat._rao[1] = sqrt(stat._rao[1] / stat._nr);
+      stat._rao[2] = sqrt(stat._rao[2] / stat._nr);
+      if (prn == all) {
+        cout << "!\n!          Total ";
+      }
+      else {
+        cout << "!            " << prn << ' ';
+      }
+      cout << setw(7) << setprecision(4) << stat._rao[0] << ' '
+           << setw(7) << setprecision(4) << stat._rao[1] << ' '
+           << setw(7) << setprecision(4) << stat._rao[2] << "    ";
+      if (stat._nc > 0) {
+        stat._dc    = sqrt(stat._dc / stat._nc);
+        stat._dcRed = sqrt(stat._dcRed / stat._nc);
+        cout << setw(7) << setprecision(4) << stat._dc << ' '
+             << setw(7) << setprecision(4) << stat._dcRed;
+        if (prn != all) {
+          cout << "    offset " << setw(7) << setprecision(4) << stat._offset;
+        }
+      }
+      else {
+        cout << "  .       .    ";
+      }
+      cout << endl;
+    }
+  }
+}

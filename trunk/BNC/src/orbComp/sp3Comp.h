@@ -82,6 +82,7 @@ Q_OBJECT
   int  satIndex(const std::set<t_prn>& clkSats, const t_prn& prn) const;
   void processClocks(const std::set<t_prn>& clkSats, std::vector<t_epoch*>& epochs,
                      std::map<std::string, t_stat>& stat) const;
+  void compare() const;
 
   QStringList  _sp3FileNames;
   QString      _logFileName;
