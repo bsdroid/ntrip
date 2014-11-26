@@ -95,7 +95,9 @@ void t_sp3Comp::run() {
   }
 
   try {
-    compare();
+    ostringstream msg;
+    compare(msg);
+    *_log << msg.str().c_str();
   }
   catch (const string& error) {
     *_log << "ERROR: " << error.c_str() << endl;
@@ -191,7 +193,7 @@ void t_sp3Comp::processClocks(const set<t_prn>& clkSats, vector<t_epoch*>& epoch
 
 // Main Routine
 ////////////////////////////////////////////////////////////////////////////////
-void t_sp3Comp::compare() const {
+void t_sp3Comp::compare(ostringstream& out) const {
 
   // Synchronize reading of two sp3 files
   // ------------------------------------
@@ -261,7 +263,7 @@ void t_sp3Comp::compare() const {
         XYZ_to_RSW(x1, vel, dx, dr[prn]);
       }
       else {
-        cerr << "not found: " << prn << endl;
+        throw "not found: " + prn.toString();
       }
     }
   }
@@ -276,8 +278,8 @@ void t_sp3Comp::compare() const {
   // ---------------
   const string all = "ZZZ";
 
-  cout.setf(ios::fixed);
-  cout << "!\n!  MJD       PRN  radial   along   out        clk    clkRed   iPRN"
+  out.setf(ios::fixed);
+  out << "!\n!  MJD       PRN  radial   along   out        clk    clkRed   iPRN"
            "\n! ----------------------------------------------------------------\n";
   for (unsigned ii = 0; ii < epochs.size(); ii++) {
     const t_epoch* epo = epochs[ii];
@@ -286,10 +288,10 @@ void t_sp3Comp::compare() const {
     for (map<t_prn, ColumnVector>::const_iterator it = dr.begin(); it != dr.end(); it++) {
       const t_prn&  prn = it->first;
       const ColumnVector& rao = it->second;
-      cout << setprecision(6) << epo->_tt.mjddec() << ' ' << prn << ' '
-           << setw(7) << setprecision(4) << rao[0] << ' '
-           << setw(7) << setprecision(4) << rao[1] << ' '
-           << setw(7) << setprecision(4) << rao[2] << "    ";
+      out << setprecision(6) << epo->_tt.mjddec() << ' ' << prn << ' '
+          << setw(7) << setprecision(4) << rao[0] << ' '
+          << setw(7) << setprecision(4) << rao[1] << ' '
+          << setw(7) << setprecision(4) << rao[2] << "    ";
       stat[prn.toString()]._rao += SP(rao, rao); // Schur product
       stat[prn.toString()]._nr  += 1;
       stat[all]._rao            += SP(rao, rao);
@@ -297,8 +299,8 @@ void t_sp3Comp::compare() const {
       if (dc.find(prn) != dc.end()) {
         double clkRes    = dc.find(prn)->second;
         double clkResRed = clkRes - it->second[0]; // clock minus radial component
-        cout << setw(7) << setprecision(4) << clkRes << ' '
-             << setw(7) << setprecision(4) << clkResRed;
+        out << setw(7) << setprecision(4) << clkRes << ' '
+            << setw(7) << setprecision(4) << clkResRed;
         stat[prn.toString()]._dc    += clkRes * clkRes;
         stat[prn.toString()]._dcRed += clkResRed * clkResRed;
         stat[prn.toString()]._nc    += 1;
@@ -307,16 +309,16 @@ void t_sp3Comp::compare() const {
         stat[all]._nc               += 1;
       }
       else {
-        cout << "  .       .    ";
+        out << "  .       .    ";
       }
-      cout << "    " << setw(2) << int(prn) << endl;
+      out << "    " << setw(2) << int(prn) << endl;
     }
     delete epo;
   }
 
   // Print Summary
   // -------------
-  cout << "!\n! RMS:\n";
+  out << "!\n! RMS:\n";
   for (map<string, t_stat>::iterator it = stat.begin(); it != stat.end(); it++) {
     const string& prn  = it->first;
     t_stat&       stat = it->second;
@@ -325,27 +327,27 @@ void t_sp3Comp::compare() const {
       stat._rao[1] = sqrt(stat._rao[1] / stat._nr);
       stat._rao[2] = sqrt(stat._rao[2] / stat._nr);
       if (prn == all) {
-        cout << "!\n!          Total ";
+        out << "!\n!          Total ";
       }
       else {
-        cout << "!            " << prn << ' ';
+        out << "!            " << prn << ' ';
       }
-      cout << setw(7) << setprecision(4) << stat._rao[0] << ' '
-           << setw(7) << setprecision(4) << stat._rao[1] << ' '
-           << setw(7) << setprecision(4) << stat._rao[2] << "    ";
+      out << setw(7) << setprecision(4) << stat._rao[0] << ' '
+          << setw(7) << setprecision(4) << stat._rao[1] << ' '
+          << setw(7) << setprecision(4) << stat._rao[2] << "    ";
       if (stat._nc > 0) {
         stat._dc    = sqrt(stat._dc / stat._nc);
         stat._dcRed = sqrt(stat._dcRed / stat._nc);
-        cout << setw(7) << setprecision(4) << stat._dc << ' '
-             << setw(7) << setprecision(4) << stat._dcRed;
+        out << setw(7) << setprecision(4) << stat._dc << ' '
+            << setw(7) << setprecision(4) << stat._dcRed;
         if (prn != all) {
-          cout << "    offset " << setw(7) << setprecision(4) << stat._offset;
+          out << "    offset " << setw(7) << setprecision(4) << stat._offset;
         }
       }
       else {
-        cout << "  .       .    ";
+        out << "  .       .    ";
       }
-      cout << endl;
+      out << endl;
     }
   }
 }
