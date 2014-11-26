@@ -84,7 +84,7 @@ void t_sp3Comp::run() {
   }
 
   for (int ii = 0; ii < _sp3FileNames.size(); ii++) {
-    *_log << _sp3FileNames[ii];
+    *_log << "SP3 File " << ii+1 << ": " << _sp3FileNames[ii] << endl;
   }
   if (_sp3FileNames.size() != 2) {
     *_log << "ERROR: sp3Comp requires two input SP3 files" << endl;
