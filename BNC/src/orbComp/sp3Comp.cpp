@@ -78,7 +78,8 @@ void t_sp3Comp::run() {
     _log = new QTextStream();
     _log->setDevice(_logFile);
   }
-  if (_log) {
+  if (!_log) {
+    emit finished();
     return;
   }
 
@@ -87,6 +88,7 @@ void t_sp3Comp::run() {
   }
   if (_sp3FileNames.size() != 2) {
     *_log << "ERROR: sp3Comp requires two input SP3 files" << endl;
+    emit finished();
     return;
   }
 
