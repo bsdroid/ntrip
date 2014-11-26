@@ -133,7 +133,6 @@ void t_sp3Comp::processClocks(const set<t_prn>& clkSats, vector<t_epoch*>& epoch
   // Create Matrix A'A and vector b
   // ------------------------------
   for (unsigned ie = 0; ie < epochs.size(); ie++) {
-    ///    const bncTime&          tt = epochs[ie]->_tt;
     const map<t_prn, double>& dc = epochs[ie]->_dc;
     Matrix       AA(dc.size(), nPar); AA = 0.0;
     ColumnVector ll(dc.size());       ll = 0.0;
@@ -165,7 +164,6 @@ void t_sp3Comp::processClocks(const set<t_prn>& clkSats, vector<t_epoch*>& epoch
   // Compute clock residuals
   // -----------------------
   for (unsigned ie = 0; ie < epochs.size(); ie++) {
-    // const bncTime&  tt     = epochs[ie]->_tt;
     map<t_prn, double>& dc = epochs[ie]->_dc;
     for (map<t_prn, double>::iterator it = dc.begin(); it != dc.end(); it++) {
       const t_prn& prn = it->first;
