@@ -255,7 +255,9 @@ void t_sp3Comp::compare(ostringstream& out) const {
         XYZ_to_RSW(x1, vel, dx, dr[prn]);
       }
       else {
-        throw "not found: " + prn.toString();
+        epoch->_dr.erase(prn);
+        epoch->_xyz.erase(prn);
+        epoch->_dc.erase(prn);
       }
     }
   }
