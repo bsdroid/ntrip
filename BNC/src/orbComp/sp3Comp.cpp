@@ -81,8 +81,7 @@ void t_sp3Comp::run() {
     _log->setDevice(_logFile);
   }
   if (!_log) {
-    emit finished();
-    return;
+    goto end;
   }
 
   for (int ii = 0; ii < _sp3FileNames.size(); ii++) {
@@ -90,8 +89,7 @@ void t_sp3Comp::run() {
   }
   if (_sp3FileNames.size() != 2) {
     *_log << "ERROR: sp3Comp requires two input SP3 files" << endl;
-    emit finished();
-    return;
+    goto end;
   }
 
   try {
@@ -101,17 +99,14 @@ void t_sp3Comp::run() {
   }
   catch (const string& error) {
     *_log << "ERROR: " << error.c_str() << endl;
-    emit finished();
-    return;
   }
   catch (const char* error) {
     *_log << "ERROR: " << error << endl;
-    emit finished();
-    return;
   }
 
   // Exit (thread)
   // -------------
+ end:
   if (BNC_CORE->mode() != t_bncCore::interactive) {
     qApp->exit(0);
   }
