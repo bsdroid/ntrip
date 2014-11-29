@@ -55,7 +55,7 @@ Q_OBJECT
  private:
   class t_epoch {
    public:
-    bncTime                  _tt;
+    bncTime                       _tt;
     std::map<t_prn, ColumnVector> _dr;
     std::map<t_prn, ColumnVector> _xyz;
     std::map<t_prn, double>       _dc;
