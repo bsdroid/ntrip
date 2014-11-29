@@ -335,7 +335,7 @@ void t_sp3Comp::compare(ostringstream& out) const {
         out << setw(7) << setprecision(4) << stat._dc << ' '
             << setw(7) << setprecision(4) << stat._dcRed;
         if (prn != all) {
-          out << "    offset " << setw(7) << setprecision(4) << stat._offset;
+          out << "    offset " << setw(9) << setprecision(4) << stat._offset;
         }
       }
       else {
