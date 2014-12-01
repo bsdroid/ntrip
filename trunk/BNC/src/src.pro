@@ -1,8 +1,8 @@
 
 TARGET = ../bnc
 
-CONFIG -= release
-CONFIG += debug
+CONFIG -= debug
+CONFIG += release
 
 include(src.pri)
 
