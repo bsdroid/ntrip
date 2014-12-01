@@ -208,41 +208,46 @@ void t_sp3Comp::compare(ostringstream& out) const {
 
   // Synchronize reading of two sp3 files
   // ------------------------------------
-  bncSP3 in1(_sp3FileNames[0]);
-  bncSP3 in2(_sp3FileNames[1]);
+  bncSP3 in1(_sp3FileNames[0]); in1.nextEpoch();
+  bncSP3 in2(_sp3FileNames[1]); in2.nextEpoch();
 
   vector<t_epoch*> epochs;
   set<t_prn>       clkSats;
-  while (in1.nextEpoch()) {
-    bncTime tt = in1.currEpoch()->_tt;
-    while (in2.nextEpoch()) {
-      if (tt == in2.currEpoch()->_tt) {
-        t_epoch* epo = new t_epoch; epo->_tt = tt;
-
-        bool epochOK = false;
-        for (int i1 = 0; i1 < in1.currEpoch()->_sp3Sat.size(); i1++) {
-          bncSP3::t_sp3Sat* sat1 = in1.currEpoch()->_sp3Sat[i1];
-          for (int i2 = 0; i2 < in2.currEpoch()->_sp3Sat.size(); i2++) {
-            bncSP3::t_sp3Sat* sat2 = in2.currEpoch()->_sp3Sat[i2];
-            if (sat1->_prn == sat2->_prn) {
-              epochOK        = true;
-              epo->_dr[sat1->_prn]  = sat1->_xyz - sat2->_xyz;
-              epo->_xyz[sat1->_prn] = sat1->_xyz;
-              if (sat1->_clkValid && sat2->_clkValid) {
-                epo->_dc[sat1->_prn] = sat1->_clk - sat2->_clk;
-                clkSats.insert(sat1->_prn);
-              }
+  while (in1.currEpoch() && in2.currEpoch()) {
+    bncTime t1 = in1.currEpoch()->_tt;
+    bncTime t2 = in2.currEpoch()->_tt;
+    if      (t1 < t2) {
+      in1.nextEpoch();
+    }
+    else if (t1 > t2) {
+      in2.nextEpoch();
+    }
+    else if (t1 == t2) {
+      t_epoch* epo = new t_epoch; epo->_tt = t1;
+      bool epochOK = false;
+      for (int i1 = 0; i1 < in1.currEpoch()->_sp3Sat.size(); i1++) {
+        bncSP3::t_sp3Sat* sat1 = in1.currEpoch()->_sp3Sat[i1];
+        for (int i2 = 0; i2 < in2.currEpoch()->_sp3Sat.size(); i2++) {
+          bncSP3::t_sp3Sat* sat2 = in2.currEpoch()->_sp3Sat[i2];
+          if (sat1->_prn == sat2->_prn) {
+            epochOK        = true;
+            epo->_dr[sat1->_prn]  = sat1->_xyz - sat2->_xyz;
+            epo->_xyz[sat1->_prn] = sat1->_xyz;
+            if (sat1->_clkValid && sat2->_clkValid) {
+              epo->_dc[sat1->_prn] = sat1->_clk - sat2->_clk;
+              clkSats.insert(sat1->_prn);
             }
           }
         }
-        if (epochOK) {
-          epochs.push_back(epo);
-        }
-        else {
-          delete epo;
-        }
-        break;
       }
+      if (epochOK) {
+        epochs.push_back(epo);
+      }
+      else {
+        delete epo;
+      }
+      in1.nextEpoch();
+      in2.nextEpoch();
     }
   }
 
