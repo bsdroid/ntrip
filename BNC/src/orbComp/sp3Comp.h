@@ -81,7 +81,7 @@ Q_OBJECT
   };
 
   int  satIndex(const std::set<t_prn>& clkSats, const t_prn& prn) const;
-  void processClocks(const std::set<t_prn>& clkSats, std::vector<t_epoch*>& epochs,
+  void processClocks(const std::set<t_prn>& clkSats, const std::vector<t_epoch*>& epochsIn,
                      std::map<std::string, t_stat>& stat) const;
   void compare(std::ostringstream& out) const;
 
