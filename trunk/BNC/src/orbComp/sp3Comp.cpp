@@ -137,10 +137,20 @@ int t_sp3Comp::satIndex(const set<t_prn>& clkSats, const t_prn& prn) const {
 
 // Estimate Clock Offsets
 ////////////////////////////////////////////////////////////////////////////////
-void t_sp3Comp::processClocks(const set<t_prn>& clkSats, vector<t_epoch*>& epochs,
+void t_sp3Comp::processClocks(const set<t_prn>& clkSats, const vector<t_epoch*>& epochsIn,
                               map<string, t_stat>& stat) const {
 
   if (clkSats.size() == 0) {
+    return;
+  }
+
+  vector<t_epoch*> epochs;
+  for (unsigned ii = 0; ii < epochsIn.size(); ii++) {
+    if (epochsIn[ii]->_dc.size() > 0) {
+      epochs.push_back(epochsIn[ii]);
+    }
+  }
+  if (epochs.size() == 0) {
     return;
   }
 
