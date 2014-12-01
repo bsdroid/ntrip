@@ -103,6 +103,12 @@ void t_sp3Comp::run() {
   catch (const char* error) {
     *_log << "ERROR: " << error << endl;
   }
+  catch (Exception& exc) {
+    *_log << "ERROR: " << exc.what() << endl;
+  }
+  catch (...) {
+    *_log << "ERROR: " << "unknown exception" << endl;
+  }
 
   // Exit (thread)
   // -------------
