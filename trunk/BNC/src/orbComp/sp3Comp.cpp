@@ -248,10 +248,13 @@ void t_sp3Comp::compare(ostringstream& out) const {
 
   // Transform xyz into radial, along-track, and out-of-plane
   // --------------------------------------------------------
+  if (epochs.size() < 2) {
+    throw "t_sp3Comp: not enought common epochs";
+  }
   for (unsigned ie = 0; ie < epochs.size(); ie++) {
     t_epoch* epoch  = epochs[ie];
     t_epoch* epoch2 = 0;
-    if (ie == 0 && epochs.size() > 1) {
+    if (ie == 0) {
       epoch2 = epochs[ie+1];
     }
     else {
