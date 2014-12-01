@@ -187,7 +187,16 @@ void t_sp3Comp::processClocks(const set<t_prn>& clkSats, const vector<t_epoch*>&
  
   // Estimate Parameters
   // -------------------
-  ColumnVector xx = NN.i() * bb;
+  ColumnVector xx;
+  try {
+    xx = NN.i() * bb;
+  }
+  catch (Exception& exc) {
+    for (int ii = 1; ii <= NN.Nrows(); ii++) {
+      NN(ii,ii) += 1e-4;
+    }
+    xx = NN.i() * bb;
+  }
 
   // Compute clock residuals
   // -----------------------
