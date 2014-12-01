@@ -187,16 +187,7 @@ void t_sp3Comp::processClocks(const set<t_prn>& clkSats, const vector<t_epoch*>&
  
   // Estimate Parameters
   // -------------------
-  ColumnVector xx;
-  try {
-    xx = NN.i() * bb;
-  }
-  catch (Exception& exc) {
-    for (int ii = 1; ii <= NN.Nrows(); ii++) {
-      NN(ii,ii) += 1e-4;
-    }
-    xx = NN.i() * bb;
-  }
+  ColumnVector xx = NN.i() * bb;
 
   // Compute clock residuals
   // -----------------------
@@ -221,7 +212,6 @@ void t_sp3Comp::compare(ostringstream& out) const {
   bncSP3 in2(_sp3FileNames[1]); in2.nextEpoch();
 
   vector<t_epoch*> epochs;
-  set<t_prn>       clkSats;
   while (in1.currEpoch() && in2.currEpoch()) {
     bncTime t1 = in1.currEpoch()->_tt;
     bncTime t2 = in2.currEpoch()->_tt;
@@ -244,7 +234,6 @@ void t_sp3Comp::compare(ostringstream& out) const {
             epo->_xyz[sat1->_prn] = sat1->_xyz;
             if (sat1->_clkValid && sat2->_clkValid) {
               epo->_dc[sat1->_prn] = sat1->_clk - sat2->_clk;
-              clkSats.insert(sat1->_prn);
             }
           }
         }
@@ -265,6 +254,9 @@ void t_sp3Comp::compare(ostringstream& out) const {
   if (epochs.size() < 2) {
     throw "t_sp3Comp: not enought common epochs";
   }
+
+  set<t_prn> clkSats;
+
   for (unsigned ie = 0; ie < epochs.size(); ie++) {
     t_epoch* epoch  = epochs[ie];
     t_epoch* epoch2 = 0;
@@ -286,6 +278,9 @@ void t_sp3Comp::compare(ostringstream& out) const {
         const ColumnVector& x2 = xyz2[prn];
         ColumnVector vel = (x1 - x2) / dt;
         XYZ_to_RSW(x1, vel, dx, dr[prn]);
+        if (epoch->_dc.find(prn) != epoch->_dc.end()) {
+          clkSats.insert(prn);
+        }
       }
       else {
         epoch->_dr.erase(prn);
