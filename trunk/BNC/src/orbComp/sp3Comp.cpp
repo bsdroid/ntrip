@@ -252,7 +252,7 @@ void t_sp3Comp::compare(ostringstream& out) const {
   // Transform xyz into radial, along-track, and out-of-plane
   // --------------------------------------------------------
   if (epochs.size() < 2) {
-    throw "t_sp3Comp: not enought common epochs";
+    throw "t_sp3Comp: not enough common epochs";
   }
 
   set<t_prn> clkSats;
