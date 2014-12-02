@@ -937,7 +937,10 @@ The following is a list of available key names for '<u>R</u>INEX <u>E</u>diting 
 
 <p><a name="sp3comp"><h4>3.7. SP3 Comparison</h4></p>
 <p>
-BNC allows to compare files in SP3 format carrying GNSS satellite orbit and clock data.
+BNC allows to compare the contents of two files carrying GNSS orbit and clock data. Files have to be provided in SP3 format. They basically contain a list of records over a certain period of time in constant intervals. Each record presents a time tag, the X,Y,Z position of the satellite's Center of Mass at that time and the corresponding satellite clock observation. Both SP3 files may contain some records for different epochs. However, BNC only compares records for identical epochs. It does not carry out orbit interpolations. It may also be that a specific GNSS system or a specific satellite is only supported by one of the SP3 files.
+</p>
+<p>
+To compare satellite clocks provided by the two files BNC first converts coordinate differences dX,dY,dZ into along track, out-of-plane and radial compoments. It then corrects the clock differences by the radial component. RMS values of clock differences are calculated after introducing an offset per epoch for all satellites plus an offset per satellite for all epochs.
 </p>
 
 <p><a name="sp3input"><h4>3.7.1 Input SP3 Files - optional</h4></p>
