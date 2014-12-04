@@ -79,7 +79,16 @@ void t_ephGPS::set(const gpsephemeris* ee) {
 
   _receptDateTime = currentDateAndTimeGPS();
 
-  _prn.set('G', ee->satellite);
+  if      (PRN_GPS_START <= ee->satellite && ee->satellite <= PRN_GPS_END) {
+    _prn.set('G', ee->satellite);
+  }
+  else if (PRN_QZSS_START <= ee->satellite && ee->satellite <= PRN_QZSS_END) {
+    _prn.set('J', ee->satellite - PRN_QZSS_START + 1);
+  }
+  else {
+    _ok = false;
+    return;
+  }
 
   _TOC.set(ee->GPSweek, ee->TOC);
   _clock_bias      = ee->clock_bias;
