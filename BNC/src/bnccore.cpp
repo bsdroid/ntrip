@@ -83,6 +83,9 @@ t_bncCore::t_bncCore() {
   for (int ii = PRN_GPS_START; ii <= PRN_GPS_END; ii++) {
     _gpsEph[ii-PRN_GPS_START] = 0;
   }
+  for (int ii = PRN_QZSS_START; ii <= PRN_QZSS_END; ii++) {
+    _qzssEph[ii-PRN_QZSS_START] = 0;
+  }
   for (int ii = PRN_GLONASS_START; ii <= PRN_GLONASS_END; ii++) {
     _glonassEph[ii-PRN_GLONASS_START] = 0;
   }
@@ -142,6 +145,9 @@ t_bncCore::~t_bncCore() {
   }
   for (int ii = PRN_GPS_START; ii <= PRN_GPS_END; ii++) {
     delete _gpsEph[ii-PRN_GPS_START];
+  }
+  for (int ii = PRN_QZSS_START; ii <= PRN_QZSS_END; ii++) {
+    delete _qzssEph[ii-PRN_QZSS_START];
   }
   for (int ii = PRN_GLONASS_START; ii <= PRN_GLONASS_END; ii++) {
     delete _glonassEph[ii-PRN_GLONASS_START];
@@ -222,9 +228,14 @@ void t_bncCore::slotNewGPSEph(gpsephemeris* gpseph) {
   printEphHeader();
 
   gpsephemeris** ee = &_gpsEph[gpseph->satellite-1];
+  if      (PRN_GPS_START <= gpseph->satellite && gpseph->satellite <= PRN_GPS_END) {
+    ee = &_gpsEph[gpseph->satellite  - PRN_GPS_START];
+  }
+  else if (PRN_QZSS_START <= gpseph->satellite && gpseph->satellite <= PRN_QZSS_END) {
+    ee = &_qzssEph[gpseph->satellite - PRN_QZSS_START];
+  }
 
-  if ( *ee != 0 && 
-       gpseph->GPSweek == (*ee)->GPSweek && gpseph->TOC == (*ee)->TOC ) {
+  if ( *ee != 0 && gpseph->GPSweek == (*ee)->GPSweek && gpseph->TOC == (*ee)->TOC ) {
     checkEphemeris(*ee, gpseph);
   }
 
@@ -378,6 +389,10 @@ void t_bncCore::printEphHeader() {
     for (int ii = PRN_GPS_START; ii <= PRN_GPS_END; ii++) {
       delete _gpsEph[ii-PRN_GPS_START];
       _gpsEph[ii-PRN_GPS_START] = 0;
+    }
+    for (int ii = PRN_QZSS_START; ii <= PRN_QZSS_END; ii++) {
+      delete _qzssEph[ii-PRN_QZSS_START];
+      _qzssEph[ii-PRN_QZSS_START] = 0;
     }
     for (int ii = PRN_GLONASS_START; ii <= PRN_GLONASS_END; ii++) {
       delete _glonassEph[ii-PRN_GLONASS_START];
