@@ -94,7 +94,12 @@ int t_ephEncoder::RTCM3(const t_ephGPS& eph, unsigned char *buffer) {
   }
 
   GPSADDBITS(12, 1019)
-  GPSADDBITS(6,eph._prn.number())
+  if (eph._prn.system() == 'J') {
+    GPSADDBITS(6,eph._prn.number() + PRN_QZSS_START - 1)
+  }
+  else {
+    GPSADDBITS(6,eph._prn.number())
+  }
   GPSADDBITS(10, eph._TOC.gpsw())
   GPSADDBITS(4, eph._ura)
   GPSADDBITS(2,eph._L2Codes)
