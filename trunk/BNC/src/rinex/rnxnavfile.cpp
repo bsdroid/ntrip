@@ -181,6 +181,12 @@ void t_rnxNavFile::read(QTextStream* stream) {
       }
       eph = new t_ephGal(version(), lines);
     }
+    else if (prn[0] == 'J') {
+      for (int ii = 1; ii < 8; ii++) {
+        lines << stream->readLine();
+      }
+      eph = new t_ephGPS(version(), lines);
+    }
     if (eph && eph->ok()) {
       _ephs.push_back(eph);
     }

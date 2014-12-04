@@ -572,8 +572,11 @@ t_ephGPS::t_ephGPS(float rnxVersion, const QStringList& lines) {
       
       QString prnStr;
       in >> prnStr >> year >> month >> day >> hour >> min >> sec;
-      if (prnStr.at(0) == 'G') {
+      if      (prnStr.at(0) == 'G') {
         _prn.set('G', prnStr.mid(1).toInt());
+      }
+      else if (prnStr.at(0) == 'J') {
+        _prn.set('J', prnStr.mid(1).toInt());
       }
       else {
         _prn.set('G', prnStr.toInt());
