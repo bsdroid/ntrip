@@ -127,6 +127,7 @@ friend class bncSettings;
   QFile*                 _ephFileGalileo;
   QTextStream*           _ephStreamGalileo;
   gpsephemeris*          _gpsEph[PRN_GPS_END - PRN_GPS_START + 1];
+  gpsephemeris*          _qzssEph[PRN_QZSS_END - PRN_QZSS_START + 1];
   glonassephemeris*      _glonassEph[PRN_GLONASS_END - PRN_GLONASS_START + 1];
   galileoephemeris*      _galileoEph[PRN_GALILEO_END - PRN_GALILEO_START + 1];
   QString                _userName;

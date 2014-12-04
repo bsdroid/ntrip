@@ -392,6 +392,13 @@ t_irc RTCM3Decoder::Decode(char* buffer, int bufLen, vector<string>& errmsg) {
             decoded = true;
             emit newGalileoEph(new galileoephemeris(parser.ephemerisGALILEO));
           }
+
+          // QZSS Ephemeris
+          // --------------
+          else if (rr == 1044) {
+            decoded = true;
+            emit newGPSEph(new gpsephemeris(parser.ephemerisGPS));
+          }
         }
       }
     }
