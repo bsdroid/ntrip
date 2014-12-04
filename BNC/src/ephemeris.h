@@ -18,7 +18,7 @@ class t_clkCorr;
 
 class t_eph {
  public:
-  enum e_type {unknown, GPS, GLONASS, Galileo};
+  enum e_type {unknown, GPS, QZSS, GLONASS, Galileo};
 
   t_eph();
   virtual ~t_eph() {};
@@ -57,7 +57,7 @@ class t_ephGPS : public t_eph {
   t_ephGPS(float rnxVersion, const QStringList& lines);
   virtual ~t_ephGPS() {}
 
-  virtual e_type type() const {return t_eph::GPS;}
+  virtual e_type type() const {return (_prn.system() == 'J' ? t_eph::QZSS : t_eph::GPS); }
   virtual QString toString(double version) const;
   virtual int  IOD() const { return static_cast<int>(_IODC); }
   void set(const gpsephemeris* ee);
