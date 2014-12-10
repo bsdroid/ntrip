@@ -27,6 +27,7 @@
 
 #include <QtGui>
 #include <QtWebKit>
+#include <QNetworkProxy>
 #include "bnctime.h"
 
 class bncMapWin : public QDialog {
