@@ -48,6 +48,7 @@ Q_OBJECT
   void newMessage(QByteArray msg,bool showOnScreen);
   void newGPSEph(gpsephemeris* gpseph);
   void newGlonassEph(glonassephemeris* glonasseph, const QString& staID);
+  void newSBASEph(sbasephemeris* sbaseph);
   void newGalileoEph(galileoephemeris* galileoeph);
 
  private:
