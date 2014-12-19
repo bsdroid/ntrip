@@ -78,6 +78,7 @@ friend class bncSettings;
   void slotNewGPSEph(gpsephemeris* gpseph);
   void slotNewGlonassEph(glonassephemeris* glonasseph, const QString& staID);
   void slotNewGalileoEph(galileoephemeris* galileoeph);
+  void slotNewSBASEph(sbasephemeris* sbaseph);
   void slotNewOrbCorrections(QList<t_orbCorr> orbCorr);
   void slotNewClkCorrections(QList<t_clkCorr> clkCorr);
   void slotQuit();

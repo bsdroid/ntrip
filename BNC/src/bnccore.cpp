@@ -807,3 +807,11 @@ void t_bncCore::stopPPP() {
   _pppMain->stop();
   emit stopRinexPPP();
 }
+
+// New SBAS Ephemeris
+////////////////////////////////////////////////////////////////////////////
+void t_bncCore::slotNewSBASEph(sbasephemeris* sbaseph) {
+  QMutexLocker locker(&_mutex);
+
+  qDebug() << "t_bncCore::slotNewSBASEph";
+}

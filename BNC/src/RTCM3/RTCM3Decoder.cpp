@@ -79,6 +79,8 @@ RTCM3Decoder::RTCM3Decoder(const QString& staID, bncRawFile* rawFile) :
           BNC_CORE, SLOT(slotNewGlonassEph(glonassephemeris*, const QString&)));
   connect(this, SIGNAL(newGalileoEph(galileoephemeris*)), 
           BNC_CORE, SLOT(slotNewGalileoEph(galileoephemeris*)));
+  connect(this, SIGNAL(newSBASEph(sbasephemeris*)), 
+          BNC_CORE, SLOT(slotNewSBASEph(sbasephemeris*)));
 
   // Mode can be either observations or corrections
   // ----------------------------------------------
@@ -380,8 +382,8 @@ t_irc RTCM3Decoder::Decode(char* buffer, int bufLen, vector<string>& errmsg) {
     
           // GLONASS Ephemeris
           // -----------------
-          else if (rr == 1020 && parser.ephemerisGLONASS.almanac_number >= 1
-          && parser.ephemerisGLONASS.almanac_number <= PRN_GLONASS_NUM) {
+          else if (rr == 1020 && parser.ephemerisGLONASS.almanac_number >= 1 &&
+                                 parser.ephemerisGLONASS.almanac_number <= PRN_GLONASS_NUM) {
             decoded = true;
             emit newGlonassEph(new glonassephemeris(parser.ephemerisGLONASS), _staID);
           }
@@ -398,6 +400,13 @@ t_irc RTCM3Decoder::Decode(char* buffer, int bufLen, vector<string>& errmsg) {
           else if (rr == 1044) {
             decoded = true;
             emit newGPSEph(new gpsephemeris(parser.ephemerisGPS));
+          }
+
+          // SBAS Ephemeris
+          // --------------
+          else if (rr == 1043) {
+            decoded = true;
+            emit newSBASEph(new sbasephemeris(parser.ephemerisSBAS));
           }
         }
       }
