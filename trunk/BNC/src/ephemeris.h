@@ -213,11 +213,7 @@ class t_ephSBAS : public t_eph {
   virtual QString toString(double version) const;
 
  private:
-  virtual t_irc        position(int GPSweek, double GPSweeks, double* xc, double* vv) const;
-  static ColumnVector  sbas_deriv(double /* tt */, const ColumnVector& xv, double* acc);
-
-  mutable bncTime      _tt;  // time 
-  mutable ColumnVector _xv;  // status vector (position, velocity) at time _tt
+  virtual t_irc position(int GPSweek, double GPSweeks, double* xc, double* vv) const;
 
   int    _IODN;
   int    _TOW;            // not used (set to  0.9999e9)
