@@ -18,7 +18,7 @@ class t_clkCorr;
 
 class t_eph {
  public:
-  enum e_type {unknown, GPS, QZSS, GLONASS, Galileo};
+  enum e_type {unknown, GPS, QZSS, GLONASS, Galileo, SBAS};
 
   t_eph();
   virtual ~t_eph() {};
@@ -198,6 +198,45 @@ class t_ephGal : public t_eph {
   double _TOT;               // [s]
 
   int    _flags;
+};
+
+class t_ephSBAS : public t_eph {
+ friend class t_ephEncoder;
+ public:
+  t_ephSBAS() { _xv.ReSize(6); }
+  t_ephSBAS(float rnxVersion, const QStringList& lines);
+  virtual ~t_ephSBAS() {}
+
+  void            set(const sbasephemeris* ee);
+  virtual e_type  type() const {return t_eph::SBAS;}
+  virtual int     IOD() const {return _IODN;}
+  virtual QString toString(double version) const;
+
+ private:
+  virtual t_irc        position(int GPSweek, double GPSweeks, double* xc, double* vv) const;
+  static ColumnVector  sbas_deriv(double /* tt */, const ColumnVector& xv, double* acc);
+
+  mutable bncTime      _tt;  // time 
+  mutable ColumnVector _xv;  // status vector (position, velocity) at time _tt
+
+  int    _IODN;
+  int    _TOW;            // not used (set to  0.9999e9)
+  double _agf0;           // [s]    clock correction
+  double _agf1;           // [s/s]  clock correction drift
+
+  double _x_pos;          // [km]     
+  double _x_velocity;     // [km/s]   
+  double _x_acceleration; // [km/s^2] 
+
+  double _y_pos;          // [km]     
+  double _y_velocity;     // [km/s]   
+  double _y_acceleration; // [km/s^2] 
+
+  double _z_pos;          // [km]     
+  double _z_velocity;     // [km/s]   
+  double _z_acceleration; // [km/s^2] 
+
+  int    _ura;
 };
 
 #endif
