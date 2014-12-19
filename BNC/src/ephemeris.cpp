@@ -1155,6 +1155,36 @@ t_irc t_ephSBAS::position(int GPSweek, double GPSweeks, double* xc, double* vv) 
 
 // RINEX Format String
 //////////////////////////////////////////////////////////////////////////////
-QString t_ephSBAS::toString(double /* version */) const {
-  return "not yet impemented\n";
+QString t_ephSBAS::toString(double version) const {
+
+  QString rnxStr = rinexDateStr(_TOC, _prn, version);
+
+  QTextStream out(&rnxStr);
+
+  out << QString("%1%2%3\n")
+    .arg(_agf0,        19, 'e', 12)
+    .arg(_agf1,        19, 'e', 12)
+    .arg(double(_TOW), 19, 'e', 12);
+
+  QString fmt = version < 3.0 ? "   %1%2%3%4\n" : "    %1%2%3%4\n";
+
+  out << QString(fmt)
+    .arg(1.e-3*_x_pos,          19, 'e', 12)
+    .arg(1.e-3*_x_velocity,     19, 'e', 12)
+    .arg(1.e-3*_x_acceleration, 19, 'e', 12)
+    .arg(0.0,                   19, 'e', 12);
+
+  out << QString(fmt)
+    .arg(1.e-3*_y_pos,          19, 'e', 12)
+    .arg(1.e-3*_y_velocity,     19, 'e', 12)
+    .arg(1.e-3*_y_acceleration, 19, 'e', 12)
+    .arg(double(_ura),          19, 'e', 12);
+
+  out << QString(fmt)
+    .arg(1.e-3*_z_pos,          19, 'e', 12)
+    .arg(1.e-3*_z_velocity,     19, 'e', 12)
+    .arg(1.e-3*_z_acceleration, 19, 'e', 12)
+    .arg(double(_IODN),         19, 'e', 12);
+
+  return rnxStr;
 }
