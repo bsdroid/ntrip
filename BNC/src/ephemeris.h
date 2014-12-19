@@ -220,17 +220,17 @@ class t_ephSBAS : public t_eph {
   double _agf0;           // [s]    clock correction
   double _agf1;           // [s/s]  clock correction drift
 
-  double _x_pos;          // [km]     
-  double _x_velocity;     // [km/s]   
-  double _x_acceleration; // [km/s^2] 
+  double _x_pos;          // [m]     
+  double _x_velocity;     // [m/s]   
+  double _x_acceleration; // [m/s^2] 
 
-  double _y_pos;          // [km]     
-  double _y_velocity;     // [km/s]   
-  double _y_acceleration; // [km/s^2] 
+  double _y_pos;          // [m]     
+  double _y_velocity;     // [m/s]   
+  double _y_acceleration; // [m/s^2] 
 
-  double _z_pos;          // [km]     
-  double _z_velocity;     // [km/s]   
-  double _z_acceleration; // [km/s^2] 
+  double _z_pos;          // [m]     
+  double _z_velocity;     // [m/s]   
+  double _z_acceleration; // [m/s^2] 
 
   int    _ura;
 };
