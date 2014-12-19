@@ -203,7 +203,7 @@ class t_ephGal : public t_eph {
 class t_ephSBAS : public t_eph {
  friend class t_ephEncoder;
  public:
-  t_ephSBAS() { _xv.ReSize(6); }
+  t_ephSBAS() {}
   t_ephSBAS(float rnxVersion, const QStringList& lines);
   virtual ~t_ephSBAS() {}
 
