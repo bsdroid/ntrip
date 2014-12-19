@@ -1099,3 +1099,22 @@ QString t_ephGal::toString(double version) const {
   return rnxStr;
 }
 
+// Constructor
+//////////////////////////////////////////////////////////////////////////////
+t_ephSBAS::t_ephSBAS(float rnxVersion, const QStringList& lines) {
+}
+
+// Set SBAS Satellite Position
+////////////////////////////////////////////////////////////////////////////
+void t_ephSBAS::set(const sbasephemeris* ee) {
+}
+
+// Compute SBAS Satellite Position (virtual)
+////////////////////////////////////////////////////////////////////////////
+t_irc t_ephSBAS::position(int GPSweek, double GPSweeks, double* xc, double* vv) const {
+}
+
+// RINEX Format String
+//////////////////////////////////////////////////////////////////////////////
+QString t_ephSBAS::toString(double version) const {
+}
