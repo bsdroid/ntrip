@@ -92,6 +92,9 @@ t_bncCore::t_bncCore() {
   for (int ii = PRN_GALILEO_START; ii <= PRN_GALILEO_END; ii++) {
     _galileoEph[ii-PRN_GALILEO_START] = 0;
   }
+  for (int ii = PRN_SBAS_START; ii <= PRN_SBAS_END; ii++) {
+    _sbasEph[ii-PRN_SBAS_START] = 0;
+  }
 
   // Eph file(s)
   // -----------
@@ -102,6 +105,8 @@ t_bncCore::t_bncCore() {
   _ephStreamGlonass = 0;
   _ephFileGalileo   = 0;
   _ephStreamGalileo = 0;
+  _ephFileSBAS      = 0;
+  _ephStreamSBAS    = 0;
 
   _port    = 0;
   _server  = 0;
@@ -154,6 +159,9 @@ t_bncCore::~t_bncCore() {
   }
   for (int ii = PRN_GALILEO_START; ii <= PRN_GALILEO_END; ii++) {
     delete _galileoEph[ii-PRN_GALILEO_START];
+  }
+  for (int ii = PRN_SBAS_START; ii <= PRN_SBAS_END; ii++) {
+    delete _sbasEph[ii-PRN_SBAS_START];
   }
 
   delete _dateAndTimeGPS;
@@ -402,13 +410,16 @@ void t_bncCore::printEphHeader() {
       delete _galileoEph[ii-PRN_GALILEO_START];
       _galileoEph[ii-PRN_GALILEO_START] = 0;
     }
+    for (int ii = PRN_SBAS_START; ii <= PRN_SBAS_END; ii++) {
+      delete _sbasEph[ii-PRN_SBAS_START];
+      _sbasEph[ii-PRN_SBAS_START] = 0;
+    }
 
     delete _ephStreamGPS;
     delete _ephFileGPS;
 
     QFlags<QIODevice::OpenModeFlag> appendFlagGPS;
     QFlags<QIODevice::OpenModeFlag> appendFlagGlonass;
-    QFlags<QIODevice::OpenModeFlag> appendFlagGalileo;
 
     if ( Qt::CheckState(settings.value("rnxAppend").toInt()) == Qt::Checked &&
          QFile::exists(ephFileNameGPS) ) {
@@ -425,6 +436,8 @@ void t_bncCore::printEphHeader() {
       _ephStreamGlonass = _ephStreamGPS;
       _ephFileGalileo   = _ephFileGPS;
       _ephStreamGalileo = _ephStreamGPS;
+      _ephFileSBAS      = _ephFileGPS;
+      _ephStreamSBAS    = _ephStreamGPS;
     }
     else if (_rinexVers == 2) {
       QString ephFileNameGlonass = _ephPath + "BRDC" +
@@ -813,5 +826,51 @@ void t_bncCore::stopPPP() {
 void t_bncCore::slotNewSBASEph(sbasephemeris* sbaseph) {
   QMutexLocker locker(&_mutex);
 
-  qDebug() << "t_bncCore::slotNewSBASEph";
+  // Check wrong Ephemerides
+  // -----------------------
+  if (sbaseph->x_pos == 0.0 && 
+      sbaseph->y_pos == 0.0 && 
+      sbaseph->z_pos == 0.0) {
+    delete sbaseph;
+    return;
+  } 
+
+  sbasephemeris copy_sbaseph = *sbaseph;
+  emit newEphSBAS(copy_sbaseph);
+
+  printEphHeader();
+
+  sbasephemeris** ee = &_sbasEph[sbaseph->satellite - PRN_SBAS_START];
+
+  bool replace = false;
+  if (*ee != 0) {
+    bncTime oldTime((*ee)->GPSweek_TOE,   double((*ee)->TOE));
+    bncTime newTime(sbaseph->GPSweek_TOE, double(sbaseph->TOE));
+    if (newTime > oldTime) {
+      replace = true;
+    }
+  }
+
+  if ( *ee == 0 || replace) {
+    delete *ee;
+    *ee = sbaseph;
+    printSBASEph(sbaseph, true);
+  }
+  else {
+    printSBASEph(sbaseph, false);
+    delete sbaseph;
+  }
+}
+
+// Print One SBAS Ephemeris
+////////////////////////////////////////////////////////////////////////////
+void t_bncCore::printSBASEph(sbasephemeris* ep, bool printFile) {
+
+  t_ephSBAS eph;
+  eph.set(ep);
+
+  QString strV2 = eph.toString(t_rnxNavFile::defaultRnxNavVersion2);
+  QString strV3 = eph.toString(t_rnxObsHeader::defaultRnxObsVersion3);
+
+  printOutput(printFile, _ephStreamSBAS, strV2, strV3);
 }
