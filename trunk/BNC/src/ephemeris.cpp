@@ -1101,20 +1101,60 @@ QString t_ephGal::toString(double version) const {
 
 // Constructor
 //////////////////////////////////////////////////////////////////////////////
-t_ephSBAS::t_ephSBAS(float rnxVersion, const QStringList& lines) {
+t_ephSBAS::t_ephSBAS(float /* rnxVersion */, const QStringList& /* lines */) {
+  qDebug() << "not yet implemented";
 }
 
 // Set SBAS Satellite Position
 ////////////////////////////////////////////////////////////////////////////
 void t_ephSBAS::set(const sbasephemeris* ee) {
+
+  _prn.set('S', ee->satellite - PRN_SBAS_START + 1);
+  _TOC.set(ee->GPSweek_TOE, double(ee->TOE));
+
+  _IODN           = ee->IODN;
+  _TOW            = ee->TOW;            
+
+  _agf0           = ee->agf0;           
+  _agf1           = ee->agf1;           
+                                
+  _x_pos          = ee->x_pos          * 1.e3;          
+  _x_velocity     = ee->x_velocity     * 1.e3;     
+  _x_acceleration = ee->x_acceleration * 1.e3; 
+                                
+  _y_pos          = ee->y_pos          * 1.e3;          
+  _y_velocity     = ee->y_velocity     * 1.e3;     
+  _y_acceleration = ee->y_acceleration * 1.e3; 
+                                
+  _z_pos          = ee->z_pos          * 1.e3;          
+  _z_velocity     = ee->z_velocity     * 1.e3;     
+  _z_acceleration = ee->z_acceleration * 1.e3; 
+
+  _ura            = ee->URA;
 }
 
 // Compute SBAS Satellite Position (virtual)
 ////////////////////////////////////////////////////////////////////////////
 t_irc t_ephSBAS::position(int GPSweek, double GPSweeks, double* xc, double* vv) const {
+
+  bncTime tt(GPSweek, GPSweeks);
+  double  dt = tt - _TOC;
+
+  xc[0] = _x_pos + _x_velocity * dt + _x_acceleration * dt * dt / 2.0; 
+  xc[1] = _y_pos + _y_velocity * dt + _y_acceleration * dt * dt / 2.0; 
+  xc[2] = _z_pos + _z_velocity * dt + _z_acceleration * dt * dt / 2.0; 
+
+  vv[0] = _x_velocity + _x_acceleration * dt;
+  vv[1] = _y_velocity + _y_acceleration * dt;
+  vv[2] = _z_velocity + _z_acceleration * dt;
+
+  xc[3] = _agf0 + _agf1 * dt;
+
+  return success;
 }
 
 // RINEX Format String
 //////////////////////////////////////////////////////////////////////////////
-QString t_ephSBAS::toString(double version) const {
+QString t_ephSBAS::toString(double /* version */) const {
+  return "not yet impemented\n";
 }
