@@ -1109,7 +1109,7 @@ t_ephSBAS::t_ephSBAS(float /* rnxVersion */, const QStringList& /* lines */) {
 ////////////////////////////////////////////////////////////////////////////
 void t_ephSBAS::set(const sbasephemeris* ee) {
 
-  _prn.set('S', ee->satellite - PRN_SBAS_START + 1);
+  _prn.set('S', ee->satellite - PRN_SBAS_START + 20);
   _TOC.set(ee->GPSweek_TOE, double(ee->TOE));
 
   _IODN           = ee->IODN;
@@ -1118,17 +1118,17 @@ void t_ephSBAS::set(const sbasephemeris* ee) {
   _agf0           = ee->agf0;           
   _agf1           = ee->agf1;           
                                 
-  _x_pos          = ee->x_pos          * 1.e3;          
-  _x_velocity     = ee->x_velocity     * 1.e3;     
-  _x_acceleration = ee->x_acceleration * 1.e3; 
+  _x_pos          = ee->x_pos;          
+  _x_velocity     = ee->x_velocity;     
+  _x_acceleration = ee->x_acceleration; 
                                 
-  _y_pos          = ee->y_pos          * 1.e3;          
-  _y_velocity     = ee->y_velocity     * 1.e3;     
-  _y_acceleration = ee->y_acceleration * 1.e3; 
+  _y_pos          = ee->y_pos;          
+  _y_velocity     = ee->y_velocity;     
+  _y_acceleration = ee->y_acceleration; 
                                 
-  _z_pos          = ee->z_pos          * 1.e3;          
-  _z_velocity     = ee->z_velocity     * 1.e3;     
-  _z_acceleration = ee->z_acceleration * 1.e3; 
+  _z_pos          = ee->z_pos;          
+  _z_velocity     = ee->z_velocity;     
+  _z_acceleration = ee->z_acceleration; 
 
   _ura            = ee->URA;
 }
