@@ -77,87 +77,66 @@ bncEphUser::~bncEphUser() {
 // 
 ////////////////////////////////////////////////////////////////////////////
 void bncEphUser::slotNewEphGPS(gpsephemeris gpseph) {
-  QMutexLocker locker(&_mutex);
-  t_ephGPS* eNew = new t_ephGPS(); eNew->set(&gpseph);
-  newEphHlp(eNew);
+  t_ephGPS* newEph = new t_ephGPS(); newEph->set(&gpseph);
+  if (putNewEph(newEph) != success) {
+    delete newEph;
+  }
 }
 
 // 
 ////////////////////////////////////////////////////////////////////////////
 void bncEphUser::slotNewEphGlonass(glonassephemeris gloeph) {
-  QMutexLocker locker(&_mutex);
-  t_ephGlo* eNew = new t_ephGlo(); eNew->set(&gloeph);
-  newEphHlp(eNew);
+  t_ephGlo* newEph = new t_ephGlo(); newEph->set(&gloeph);
+  if (putNewEph(newEph) != success) {
+    delete newEph;
+  }
 }
 
 // 
 ////////////////////////////////////////////////////////////////////////////
 void bncEphUser::slotNewEphGalileo(galileoephemeris galeph) {
-  QMutexLocker locker(&_mutex);
-  t_ephGal* eNew = new t_ephGal(); eNew->set(&galeph);
-  newEphHlp(eNew);
+  t_ephGal* newEph = new t_ephGal(); newEph->set(&galeph);
+  if (putNewEph(newEph) != success) {
+    delete newEph;
+  }
 }
 
 // 
 ////////////////////////////////////////////////////////////////////////////
 void bncEphUser::slotNewEphSBAS(sbasephemeris sbaseph) {
-  QMutexLocker locker(&_mutex);
-  t_ephSBAS* eNew = new t_ephSBAS(); eNew->set(&sbaseph);
-  newEphHlp(eNew);
-}
-
-// 
-////////////////////////////////////////////////////////////////////////////
-void bncEphUser::newEphHlp(t_eph* eNew) {
-  QString prn(eNew->prn().toString().c_str());
-  if (_eph.contains(prn)) {
-    if (eNew->isNewerThan(_eph.value(prn)->last)) {
-      delete _eph.value(prn)->prev;
-      _eph.value(prn)->prev = _eph.value(prn)->last;
-      _eph.value(prn)->last = eNew;
-      ephBufferChanged();
-    }
-    else {
-      delete eNew;
-    }
-  }
-  else {
-    _eph.insert(prn, new t_ephPair(eNew));
-    ephBufferChanged();
+  t_ephSBAS* newEph = new t_ephSBAS(); newEph->set(&sbaseph);
+  if (putNewEph(newEph) != success) {
+    delete newEph;
   }
 }
 
 // 
 ////////////////////////////////////////////////////////////////////////////
 t_irc bncEphUser::putNewEph(t_eph* newEph) {
-
   QMutexLocker locker(&_mutex);
-
-  if (!newEph) {
-    return failure;
-  }
-
-  QString prn(newEph->prn().toString().c_str());
 
   t_irc irc = failure;
 
+  if (!newEph) {
+    return irc;
+  }
+
+  QString prn(newEph->prn().toString().c_str());
   if (_eph.contains(prn)) {
-    t_eph* eLast = _eph.value(prn)->last;
-    if (newEph->isNewerThan(eLast)) {
+    if (newEph->isNewerThan(_eph.value(prn)->last)) {
       delete _eph.value(prn)->prev;
       _eph.value(prn)->prev = _eph.value(prn)->last;
       _eph.value(prn)->last = newEph;
+      ephBufferChanged();
       irc = success;
     }
   }
   else {
     _eph.insert(prn, new t_ephPair(newEph));
+    ephBufferChanged();
     irc = success;
   }
 
-  if (irc == success) {
-    ephBufferChanged();
-  }
-
-  return irc;
+  return irc
 }
+

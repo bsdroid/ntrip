@@ -66,16 +66,13 @@ class bncEphUser : public QObject {
     }
   }
 
-  t_irc putNewEph(t_eph* eph);
+  t_irc putNewEph(t_eph* newEph);
 
  public slots:
   void slotNewEphGPS(gpsephemeris gpseph);
   void slotNewEphGlonass(glonassephemeris gloeph);
   void slotNewEphGalileo(galileoephemeris galeph);
   void slotNewEphSBAS(sbasephemeris sbaseph);
-
- private:
-  void newEphHlp(t_eph* eNew);
 
  protected:
   virtual void ephBufferChanged() {}
