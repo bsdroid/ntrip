@@ -187,6 +187,12 @@ void t_rnxNavFile::read(QTextStream* stream) {
       }
       eph = new t_ephGPS(version(), lines);
     }
+    else if (prn[0] == 'S') {
+      for (int ii = 1; ii < 4; ii++) {
+        lines << stream->readLine();
+      }
+      eph = new t_ephSBAS(version(), lines);
+    }
     if (eph && eph->ok()) {
       _ephs.push_back(eph);
     }
