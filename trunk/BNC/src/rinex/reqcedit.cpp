@@ -517,6 +517,9 @@ void t_reqcEdit::appendEphemerides(const QString& fileName,
       else if (eph->type() == t_eph::QZSS) {
         ephs.append(new t_ephGPS(*dynamic_cast<t_ephGPS*>(eph)));
       }
+      else if (eph->type() == t_eph::SBAS) {
+        ephs.append(new t_ephSBAS(*dynamic_cast<t_ephSBAS*>(eph)));
+      }
     }
   }
 }
