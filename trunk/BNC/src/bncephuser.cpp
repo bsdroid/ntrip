@@ -58,6 +58,9 @@ bncEphUser::bncEphUser(bool connectSlots) {
     
     connect(BNC_CORE, SIGNAL(newEphGalileo(galileoephemeris)),
             this, SLOT(slotNewEphGalileo(galileoephemeris)), Qt::DirectConnection);
+
+    connect(BNC_CORE, SIGNAL(newEphSBAS(sbasephemeris)),
+            this, SLOT(slotNewEphSBAS(sbasephemeris)), Qt::DirectConnection);
   }
 }
 
@@ -183,5 +186,30 @@ t_irc bncEphUser::putNewEph(t_eph* newEph) {
   }
 
   return irc;
+}
+
+// 
+////////////////////////////////////////////////////////////////////////////
+void bncEphUser::slotNewEphSBAS(sbasephemeris sbaseph) {
+  QMutexLocker locker(&_mutex);
+
+  t_ephSBAS* eNew = new t_ephSBAS(); eNew->set(&sbaseph);
+  QString    prn  = QString(eNew->prn().toString().c_str());
+
+  if (_eph.contains(prn)) {
+    if (eNew->isNewerThan(_eph.value(prn)->last)) {
+      delete _eph.value(prn)->prev;
+      _eph.value(prn)->prev = _eph.value(prn)->last;
+      _eph.value(prn)->last = eNew;
+    }
+    else {
+      delete eNew;
+      return;
+    }
+  }
+  else {
+    _eph.insert(prn, new t_ephPair(eNew));
+  }
+  ephBufferChanged();
 }
 

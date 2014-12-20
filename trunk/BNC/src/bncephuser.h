@@ -72,6 +72,7 @@ class bncEphUser : public QObject {
   void slotNewEphGPS(gpsephemeris gpseph);
   void slotNewEphGlonass(glonassephemeris gloeph);
   void slotNewEphGalileo(galileoephemeris galeph);
+  void slotNewEphSBAS(sbasephemeris sbaseph);
 
  protected:
   virtual void ephBufferChanged() {}
