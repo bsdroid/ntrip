@@ -1101,8 +1101,101 @@ QString t_ephGal::toString(double version) const {
 
 // Constructor
 //////////////////////////////////////////////////////////////////////////////
-t_ephSBAS::t_ephSBAS(float /* rnxVersion */, const QStringList& /* lines */) {
-  qDebug() << "not yet implemented";
+t_ephSBAS::t_ephSBAS(float rnxVersion, const QStringList& lines) {
+
+  const int nLines = 4;
+
+  _ok = false;
+
+  if (lines.size() != nLines) {
+    return;
+  }
+
+  // RINEX Format
+  // ------------
+  int fieldLen = 19;
+
+  int pos[4];
+  pos[0] = (rnxVersion <= 2.12) ?  3 :  4;
+  pos[1] = pos[0] + fieldLen;
+  pos[2] = pos[1] + fieldLen;
+  pos[3] = pos[2] + fieldLen;
+
+  // Read four lines
+  // ---------------
+  for (int iLine = 0; iLine < nLines; iLine++) {
+    QString line = lines[iLine];
+
+    if      ( iLine == 0 ) {
+      QTextStream in(line.left(pos[1]).toAscii());
+
+      int    year, month, day, hour, min;
+      double sec;
+      
+      QString prnStr;
+      in >> prnStr >> year >> month >> day >> hour >> min >> sec;
+      if (prnStr.at(0) == 'S') {
+        _prn.set('S', prnStr.mid(1).toInt());
+      }
+      else {
+        _prn.set('S', prnStr.toInt());
+      }
+
+      if      (year <  80) {
+        year += 2000;
+      }
+      else if (year < 100) {
+        year += 1900;
+      }
+
+      _TOC.set(year, month, day, hour, min, sec);
+
+      if ( readDbl(line, pos[1], fieldLen, _agf0 ) ||
+           readDbl(line, pos[2], fieldLen, _agf1 ) ||
+           readDbl(line, pos[3], fieldLen, _TOW  ) ) {
+        return;
+      }
+    }
+
+    else if      ( iLine == 1 ) {
+      if ( readDbl(line, pos[0], fieldLen, _x_pos         ) ||
+           readDbl(line, pos[1], fieldLen, _x_velocity    ) ||
+           readDbl(line, pos[2], fieldLen, _x_acceleration) ||
+           readDbl(line, pos[3], fieldLen, _health        ) ) {
+        return;
+      }
+    }
+
+    else if ( iLine == 2 ) {
+      if ( readDbl(line, pos[0], fieldLen, _y_pos           ) ||
+           readDbl(line, pos[1], fieldLen, _y_velocity      ) ||
+           readDbl(line, pos[2], fieldLen, _y_acceleration  ) ||
+           readDbl(line, pos[3], fieldLen, _ura             ) ) {
+        return;
+      }
+    }
+
+    else if ( iLine == 3 ) {
+      if ( readDbl(line, pos[0], fieldLen, _z_pos         )  ||
+           readDbl(line, pos[1], fieldLen, _z_velocity    )  ||
+           readDbl(line, pos[2], fieldLen, _z_acceleration)  ||
+           readDbl(line, pos[3], fieldLen, _IODN          ) ) {
+        return;
+      }
+    }
+  }
+
+  _x_pos          *= 1.e3; 
+  _y_pos          *= 1.e3; 
+  _z_pos          *= 1.e3; 
+  _x_velocity     *= 1.e3; 
+  _y_velocity     *= 1.e3; 
+  _z_velocity     *= 1.e3; 
+  _x_acceleration *= 1.e3; 
+  _y_acceleration *= 1.e3; 
+  _z_acceleration *= 1.e3; 
+
+  _ok = true;
 }
 
 // Set SBAS Satellite Position
@@ -1131,6 +1224,9 @@ void t_ephSBAS::set(const sbasephemeris* ee) {
   _z_acceleration = ee->z_acceleration; 
 
   _ura            = ee->URA;
+
+  _ok     = true;
+  _health = 0;
 }
 
 // Compute SBAS Satellite Position (virtual)
@@ -1162,9 +1258,9 @@ QString t_ephSBAS::toString(double version) const {
   QTextStream out(&rnxStr);
 
   out << QString("%1%2%3\n")
-    .arg(_agf0,        19, 'e', 12)
-    .arg(_agf1,        19, 'e', 12)
-    .arg(double(_TOW), 19, 'e', 12);
+    .arg(_agf0, 19, 'e', 12)
+    .arg(_agf1, 19, 'e', 12)
+    .arg(_TOW,  19, 'e', 12);
 
   QString fmt = version < 3.0 ? "   %1%2%3%4\n" : "    %1%2%3%4\n";
 
@@ -1172,19 +1268,19 @@ QString t_ephSBAS::toString(double version) const {
     .arg(1.e-3*_x_pos,          19, 'e', 12)
     .arg(1.e-3*_x_velocity,     19, 'e', 12)
     .arg(1.e-3*_x_acceleration, 19, 'e', 12)
-    .arg(0.0,                   19, 'e', 12);
+    .arg(_health,               19, 'e', 12);
 
   out << QString(fmt)
     .arg(1.e-3*_y_pos,          19, 'e', 12)
     .arg(1.e-3*_y_velocity,     19, 'e', 12)
     .arg(1.e-3*_y_acceleration, 19, 'e', 12)
-    .arg(double(_ura),          19, 'e', 12);
+    .arg(_ura,                  19, 'e', 12);
 
   out << QString(fmt)
     .arg(1.e-3*_z_pos,          19, 'e', 12)
     .arg(1.e-3*_z_velocity,     19, 'e', 12)
     .arg(1.e-3*_z_acceleration, 19, 'e', 12)
-    .arg(double(_IODN),         19, 'e', 12);
+    .arg(_IODN,                 19, 'e', 12);
 
   return rnxStr;
 }
