@@ -74,6 +74,9 @@ class bncEphUser : public QObject {
   void slotNewEphGalileo(galileoephemeris galeph);
   void slotNewEphSBAS(sbasephemeris sbaseph);
 
+ private:
+  void newEphHlp(t_eph* eNew);
+
  protected:
   virtual void ephBufferChanged() {}
   QMutex                    _mutex;
