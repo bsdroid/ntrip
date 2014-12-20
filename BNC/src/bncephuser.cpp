@@ -78,41 +78,40 @@ bncEphUser::~bncEphUser() {
 ////////////////////////////////////////////////////////////////////////////
 void bncEphUser::slotNewEphGPS(gpsephemeris gpseph) {
   QMutexLocker locker(&_mutex);
-
   t_ephGPS* eNew = new t_ephGPS(); eNew->set(&gpseph);
-
-  QString prn(eNew->prn().toString().c_str());
-
-  if (_eph.contains(prn)) {
-    t_ephGPS* eLast = static_cast<t_ephGPS*>(_eph.value(prn)->last);
-    if (eNew->isNewerThan(eLast)) {
-      delete _eph.value(prn)->prev;
-      _eph.value(prn)->prev = _eph.value(prn)->last;
-      _eph.value(prn)->last = eNew;
-      ephBufferChanged();
-    }
-    else {
-      delete eNew;
-    }
-  }
-  else {
-    _eph.insert(prn, new t_ephPair(eNew));
-    ephBufferChanged();
-  }
+  newEphHlp(eNew);
 }
 
 // 
 ////////////////////////////////////////////////////////////////////////////
 void bncEphUser::slotNewEphGlonass(glonassephemeris gloeph) {
   QMutexLocker locker(&_mutex);
-
   t_ephGlo* eNew = new t_ephGlo(); eNew->set(&gloeph);
+  newEphHlp(eNew);
+}
 
+// 
+////////////////////////////////////////////////////////////////////////////
+void bncEphUser::slotNewEphGalileo(galileoephemeris galeph) {
+  QMutexLocker locker(&_mutex);
+  t_ephGal* eNew = new t_ephGal(); eNew->set(&galeph);
+  newEphHlp(eNew);
+}
+
+// 
+////////////////////////////////////////////////////////////////////////////
+void bncEphUser::slotNewEphSBAS(sbasephemeris sbaseph) {
+  QMutexLocker locker(&_mutex);
+  t_ephSBAS* eNew = new t_ephSBAS(); eNew->set(&sbaseph);
+  newEphHlp(eNew);
+}
+
+// 
+////////////////////////////////////////////////////////////////////////////
+void bncEphUser::newEphHlp(t_eph* eNew) {
   QString prn(eNew->prn().toString().c_str());
-
   if (_eph.contains(prn)) {
-    t_ephGlo* eLast = static_cast<t_ephGlo*>(_eph.value(prn)->last);
-    if (eNew->isNewerThan(eLast)) {
+    if (eNew->isNewerThan(_eph.value(prn)->last)) {
       delete _eph.value(prn)->prev;
       _eph.value(prn)->prev = _eph.value(prn)->last;
       _eph.value(prn)->last = eNew;
@@ -126,31 +125,6 @@ void bncEphUser::slotNewEphGlonass(glonassephemeris gloeph) {
     _eph.insert(prn, new t_ephPair(eNew));
     ephBufferChanged();
   }
-}
-
-// 
-////////////////////////////////////////////////////////////////////////////
-void bncEphUser::slotNewEphGalileo(galileoephemeris galeph) {
-  QMutexLocker locker(&_mutex);
-
-  QString prn = QString("E%1").arg(galeph.satellite, 2, 10, QChar('0'));
-
-  if (_eph.contains(prn)) {
-    t_ephGal* eLast = static_cast<t_ephGal*>(_eph.value(prn)->last);
-    bncTime toc(galeph.Week, galeph.TOC);
-    if (eLast->TOC() < toc) {
-      delete static_cast<t_ephGal*>(_eph.value(prn)->prev);
-      _eph.value(prn)->prev = _eph.value(prn)->last;
-      _eph.value(prn)->last = new t_ephGal();
-      static_cast<t_ephGal*>(_eph.value(prn)->last)->set(&galeph);
-    }
-  }
-  else {
-    t_ephGal* eLast = new t_ephGal();
-    eLast->set(&galeph);
-    _eph.insert(prn, new t_ephPair(eLast));
-  }
-  ephBufferChanged();
 }
 
 // 
@@ -187,29 +161,3 @@ t_irc bncEphUser::putNewEph(t_eph* newEph) {
 
   return irc;
 }
-
-// 
-////////////////////////////////////////////////////////////////////////////
-void bncEphUser::slotNewEphSBAS(sbasephemeris sbaseph) {
-  QMutexLocker locker(&_mutex);
-
-  t_ephSBAS* eNew = new t_ephSBAS(); eNew->set(&sbaseph);
-  QString    prn  = QString(eNew->prn().toString().c_str());
-
-  if (_eph.contains(prn)) {
-    if (eNew->isNewerThan(_eph.value(prn)->last)) {
-      delete _eph.value(prn)->prev;
-      _eph.value(prn)->prev = _eph.value(prn)->last;
-      _eph.value(prn)->last = eNew;
-    }
-    else {
-      delete eNew;
-      return;
-    }
-  }
-  else {
-    _eph.insert(prn, new t_ephPair(eNew));
-  }
-  ephBufferChanged();
-}
-
