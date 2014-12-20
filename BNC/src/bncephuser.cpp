@@ -137,6 +137,6 @@ t_irc bncEphUser::putNewEph(t_eph* newEph) {
     irc = success;
   }
 
-  return irc
+  return irc;
 }
 
