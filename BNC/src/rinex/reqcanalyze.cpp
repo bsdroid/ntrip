@@ -190,7 +190,7 @@ void t_reqcAnalyze::analyzeFile(t_rnxObsFile* obsFile) {
 ////////////////////////////////////////////////////////////////////////////
 double t_reqcAnalyze::cmpDOP(const ColumnVector& xyzSta) const {
 
-  if (xyzSta.size() != 3) {
+  if ( xyzSta.size() != 3 || (xyzSta[0] == 0.0 && xyzSta[1] == 0.0 && xyzSta[2] == 0.0) ) {
     return 0.0;
   }
 
@@ -280,7 +280,8 @@ void t_reqcAnalyze::setQcObs(const bncTime& epoTime, const ColumnVector& xyzSta,
   if (eph) {
     ColumnVector xc(4);
     ColumnVector vv(3);
-    if (xyzSta.size() && eph->getCrd(epoTime, xc, vv, false) == success) {
+    if ( xyzSta.size() == 3 && (xyzSta[0] != 0.0 || xyzSta[1] != 0.0 || xyzSta[2] != 0.0) &&
+         eph->getCrd(epoTime, xc, vv, false) == success) {
       double rho, eleSat, azSat;
       topos(xyzSta(1), xyzSta(2), xyzSta(3), xc(1), xc(2), xc(3), rho, eleSat, azSat);
       qcSat._eleSet = true;
