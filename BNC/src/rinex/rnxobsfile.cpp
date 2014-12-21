@@ -1060,7 +1060,7 @@ void t_rnxObsFile::writeEpochV3(QTextStream* stream, const t_rnxObsHeader& heade
         itObs.next();
         const QString&  type   = itObs.key();
         const t_rnxObs& rnxObs = itObs.value();
-        if (typeV3 == type2to3(sys, type)) {
+        if (typeV3 == type2to3(sys, type) || typeV3 == type2to3(sys, type).left(2)) {
           found = true;
           if (rnxObs.value == 0.0) {
             *stream << QString().leftJustified(16);
