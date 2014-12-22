@@ -13,6 +13,7 @@
 #include "bncutils.h"
 #include "satObs.h"
 #include "pppInclude.h"
+#include "pppModel.h"
 
 using namespace std;
 
@@ -1284,3 +1285,333 @@ QString t_ephSBAS::toString(double version) const {
 
   return rnxStr;
 }
+
+// Constructor
+//////////////////////////////////////////////////////////////////////////////
+t_ephCompass::t_ephCompass(float rnxVersion, const QStringList& lines) {
+
+  const int nLines = 8;
+
+  _ok = false;
+
+  if (lines.size() != nLines) {
+    return;
+  }
+
+  // RINEX Format
+  // ------------
+  int fieldLen = 19;
+
+  int pos[4];
+  pos[0] = (rnxVersion <= 2.12) ?  3 :  4;
+  pos[1] = pos[0] + fieldLen;
+  pos[2] = pos[1] + fieldLen;
+  pos[3] = pos[2] + fieldLen;
+
+  double TOTs;
+  double TOEs;
+  double TOEw;
+
+  // Read eight lines
+  // ----------------
+  for (int iLine = 0; iLine < nLines; iLine++) {
+    QString line = lines[iLine];
+
+    if      ( iLine == 0 ) {
+      QTextStream in(line.left(pos[1]).toAscii());
+
+      int    year, month, day, hour, min;
+      double sec;
+      
+      QString prnStr;
+      in >> prnStr >> year >> month >> day >> hour >> min >> sec;
+      if (prnStr.at(0) == 'C') {
+        _prn.set('C', prnStr.mid(1).toInt());
+      }
+      else {
+        _prn.set('C', prnStr.toInt());
+      }
+
+      if      (year <  80) {
+        year += 2000;
+      }
+      else if (year < 100) {
+        year += 1900;
+      }
+
+      _TOC_bdt.set(year, month, day, hour, min, sec);
+
+      if ( readDbl(line, pos[1], fieldLen, _clock_bias     ) ||
+           readDbl(line, pos[2], fieldLen, _clock_drift    ) ||
+           readDbl(line, pos[3], fieldLen, _clock_driftrate) ) {
+        return;
+      }
+    }
+
+    else if      ( iLine == 1 ) {
+      double aode;
+      if ( readDbl(line, pos[0], fieldLen, aode    ) ||
+           readDbl(line, pos[1], fieldLen, _Crs    ) ||
+           readDbl(line, pos[2], fieldLen, _Delta_n) ||
+           readDbl(line, pos[3], fieldLen, _M0     ) ) {
+        return;
+      }
+      _AODE = int(aode);
+    }
+
+    else if ( iLine == 2 ) {
+      if ( readDbl(line, pos[0], fieldLen, _Cuc   ) ||
+           readDbl(line, pos[1], fieldLen, _e     ) ||
+           readDbl(line, pos[2], fieldLen, _Cus   ) ||
+           readDbl(line, pos[3], fieldLen, _sqrt_A) ) {
+        return;
+      }
+    }
+
+    else if ( iLine == 3 ) {
+      if ( readDbl(line, pos[0], fieldLen, TOEs   )  ||
+           readDbl(line, pos[1], fieldLen, _Cic   )  ||
+           readDbl(line, pos[2], fieldLen, _OMEGA0)  ||
+           readDbl(line, pos[3], fieldLen, _Cis   ) ) {
+        return;
+      }
+    }
+
+    else if ( iLine == 4 ) {
+      if ( readDbl(line, pos[0], fieldLen, _i0      ) ||
+           readDbl(line, pos[1], fieldLen, _Crc     ) ||
+           readDbl(line, pos[2], fieldLen, _omega   ) ||
+           readDbl(line, pos[3], fieldLen, _OMEGADOT) ) {
+        return;
+      }
+    }
+
+    else if ( iLine == 5 ) {
+      if ( readDbl(line, pos[0], fieldLen, _IDOT    ) ||
+           readDbl(line, pos[2], fieldLen, TOEw)    ) {
+        return;
+      }
+    }
+
+    else if ( iLine == 6 ) {
+      double SatH1;
+      if ( readDbl(line, pos[1], fieldLen, SatH1) ||
+           readDbl(line, pos[2], fieldLen, _TGD1) ||
+           readDbl(line, pos[3], fieldLen, _TGD2) ) {
+        return;
+      }
+      _SatH1 = int(SatH1);
+    }
+
+    else if ( iLine == 7 ) {
+      double aodc;
+      if ( readDbl(line, pos[0], fieldLen, TOTs) ||
+           readDbl(line, pos[1], fieldLen, aodc) ) {
+        return;
+      }
+      if (TOTs == 0.9999e9) {  // 0.9999e9 means not known (RINEX standard)
+        TOTs = TOEs;
+      }
+      _AODC = int(aodc);
+    }
+  }
+
+  TOEw += 1356;  // BDT -> GPS week number
+  _TOE_bdt.set(TOEw, TOEs);
+
+  // GPS->BDT
+  // --------
+  _TOC = _TOC_bdt + 14.0;
+  _TOE = _TOE_bdt + 14.0;
+
+  // remark: actually should be computed from second_tot
+  //         but it seems to be unreliable in RINEX files
+  _TOT = _TOC;
+
+  _ok = true;
+}
+
+// Constructor
+//////////////////////////////////////////////////////////////////////////////
+t_irc t_ephCompass::position(int GPSweek, double GPSweeks, double* xc, double* vv) const {
+
+  static const double gmCompass    = 398.6004418e12;
+  static const double omegaCompass = 7292115.0000e-11;
+
+  xc[0] = xc[1] = xc[2] = xc[3] = 0.0;
+  vv[0] = vv[1] = vv[2] = 0.0;
+
+  bncTime tt(GPSweek, GPSweeks);
+
+  if (_sqrt_A == 0) {
+    return failure;
+  }
+  double a0 = _sqrt_A * _sqrt_A;
+
+  double n0 = sqrt(gmCompass/(a0*a0*a0));
+  double tk = tt - _TOE;
+  double n  = n0 + _Delta_n;
+  double M  = _M0 + n*tk;
+  double E  = M;
+  double E_last;
+  int    nLoop = 0;
+  do {
+    E_last = E;
+    E = M + _e*sin(E);
+
+    if (++nLoop == 100) {
+      return failure;
+    }
+  } while ( fabs(E-E_last)*a0 > 0.001 );
+
+  double v      = atan2(sqrt(1-_e*_e) * sin(E), cos(E) - _e);
+  double u0     = v + _omega;
+  double sin2u0 = sin(2*u0);
+  double cos2u0 = cos(2*u0);
+  double r      = a0*(1 - _e*cos(E)) + _Crc*cos2u0 + _Crs*sin2u0;
+  double i      = _i0 + _IDOT*tk     + _Cic*cos2u0 + _Cis*sin2u0;
+  double u      = u0                 + _Cuc*cos2u0 + _Cus*sin2u0;
+  double xp     = r*cos(u);
+  double yp     = r*sin(u);
+  double toesec = (_TOE.gpssec() - 14.0);
+
+  double sinom = 0;
+  double cosom = 0;
+  double sini  = 0;
+  double cosi  = 0;
+  
+  const double iMaxGEO = 10.0 / 180.0 * M_PI;
+
+  // MEO/IGSO satellite
+  // ------------------
+  if (_i0 > iMaxGEO) {
+    double OM = _OMEGA0 + (_OMEGADOT - omegaCompass)*tk - omegaCompass*toesec;
+
+    sinom = sin(OM);
+    cosom = cos(OM);
+    sini  = sin(i);
+    cosi  = cos(i);
+
+    xc[0] = xp*cosom - yp*cosi*sinom;
+    xc[1] = xp*sinom + yp*cosi*cosom;
+    xc[2] = yp*sini;                 
+  }
+
+  // GEO satellite
+  // -------------
+  else {
+    double OM    = _OMEGA0 + _OMEGADOT*tk - omegaCompass*toesec;
+    double ll    = omegaCompass*tk;
+
+    sinom = sin(OM);
+    cosom = cos(OM);
+    sini  = sin(i);
+    cosi  = cos(i);
+
+    double xx = xp*cosom - yp*cosi*sinom;
+    double yy = xp*sinom + yp*cosi*cosom;
+    double zz = yp*sini;                 
+
+    Matrix R1 = BNC_PPP::t_astro::rotX(-5.0 / 180.0 * M_PI);
+    Matrix R2 = BNC_PPP::t_astro::rotZ(ll);
+
+    ColumnVector X1(3); X1 << xx << yy << zz;
+    ColumnVector X2 = R2*R1*X1;
+
+    xc[0] = X2(1);
+    xc[1] = X2(2);
+    xc[2] = X2(3);
+  }
+  
+  double tc = tt - _TOC;
+  xc[3] = _clock_bias + _clock_drift*tc + _clock_driftrate*tc*tc 
+          - 4.442807633e-10 * _e * sqrt(a0) *sin(E);
+
+  // Velocity
+  // --------
+  double tanv2 = tan(v/2);
+  double dEdM  = 1 / (1 - _e*cos(E));
+  double dotv  = sqrt((1.0 + _e)/(1.0 - _e)) / cos(E/2)/cos(E/2) 
+                 / (1 + tanv2*tanv2) * dEdM * n;
+  double dotu  = dotv + (-_Cuc*sin2u0 + _Cus*cos2u0)*2*dotv;
+  double dotom = _OMEGADOT - t_CST::omega;
+  double doti  = _IDOT + (-_Cic*sin2u0 + _Cis*cos2u0)*2*dotv;
+  double dotr  = a0 * _e*sin(E) * dEdM * n 
+                + (-_Crc*sin2u0 + _Crs*cos2u0)*2*dotv;
+  double dotx  = dotr*cos(u) - r*sin(u)*dotu;
+  double doty  = dotr*sin(u) + r*cos(u)*dotu;
+
+  vv[0]  = cosom  *dotx  - cosi*sinom   *doty   // dX / dr
+        - xp*sinom*dotom - yp*cosi*cosom*dotom   // dX / dOMEGA
+                         + yp*sini*sinom*doti;   // dX / di
+  
+  vv[1]  = sinom  *dotx  + cosi*cosom   *doty
+        + xp*cosom*dotom - yp*cosi*sinom*dotom
+                         - yp*sini*cosom*doti;
+
+  vv[2]  = sini   *doty  + yp*cosi      *doti;
+
+  // dotC  = _clock_drift + _clock_driftrate*tc 
+  //       - 4.442807633e-10*_e*sqrt(a0)*cos(E) * dEdM * n;
+
+  return success;
+}
+
+// RINEX Format String
+//////////////////////////////////////////////////////////////////////////////
+QString t_ephCompass::toString(double version) const {
+
+  QString rnxStr = rinexDateStr(_TOC_bdt, _prn, version);
+
+  QTextStream out(&rnxStr);
+
+  out << QString("%1%2%3\n")
+    .arg(_clock_bias,      19, 'e', 12)
+    .arg(_clock_drift,     19, 'e', 12)
+    .arg(_clock_driftrate, 19, 'e', 12);
+
+  QString fmt = version < 3.0 ? "   %1%2%3%4\n" : "    %1%2%3%4\n";
+
+  out << QString(fmt)
+    .arg(double(_AODE), 19, 'e', 12)
+    .arg(_Crs,          19, 'e', 12)
+    .arg(_Delta_n,      19, 'e', 12)
+    .arg(_M0,           19, 'e', 12);
+
+  out << QString(fmt)
+    .arg(_Cuc,    19, 'e', 12)
+    .arg(_e,      19, 'e', 12)
+    .arg(_Cus,    19, 'e', 12)
+    .arg(_sqrt_A, 19, 'e', 12);
+
+  out << QString(fmt)
+    .arg(_TOE_bdt.gpssec(), 19, 'e', 12)
+    .arg(_Cic,              19, 'e', 12)
+    .arg(_OMEGA0,           19, 'e', 12)
+    .arg(_Cis,              19, 'e', 12);
+
+  out << QString(fmt)
+    .arg(_i0,       19, 'e', 12)
+    .arg(_Crc,      19, 'e', 12)
+    .arg(_omega,    19, 'e', 12)
+    .arg(_OMEGADOT, 19, 'e', 12);
+
+  out << QString(fmt)
+    .arg(_IDOT,                   19, 'e', 12)
+    .arg(0.0,                     19, 'e', 12)
+    .arg(double(_TOE_bdt.gpsw()), 19, 'e', 12)
+    .arg(0.0,                     19, 'e', 12);
+
+  out << QString(fmt)
+    .arg(0.0,            19, 'e', 12)
+    .arg(double(_SatH1), 19, 'e', 12)
+    .arg(_TGD1,          19, 'e', 12)
+    .arg(_TGD2,          19, 'e', 12);
+
+  out << QString(fmt)
+    .arg(_TOE_bdt.gpssec(), 19, 'e', 12)
+    .arg(double(_AODC),     19, QChar(' '));
+
+  return rnxStr;
+}
+

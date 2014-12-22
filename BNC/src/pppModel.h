@@ -12,15 +12,14 @@ class t_astro {
  public:
   static ColumnVector Sun(double Mjd_TT);
   static ColumnVector Moon(double Mjd_TT);
+  static Matrix rotX(double Angle);
+  static Matrix rotY(double Angle);
+  static Matrix rotZ(double Angle);
 
  private:
   static const double RHO_DEG;
   static const double RHO_SEC;
   static const double MJD_J2000;
-
-  static Matrix rotX(double Angle);
-  static Matrix rotY(double Angle);
-  static Matrix rotZ(double Angle);
 
   static double GMST(double Mjd_UT1);
   static Matrix NutMatrix(double Mjd_TT);
