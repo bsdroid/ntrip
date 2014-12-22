@@ -729,14 +729,22 @@ void t_reqcAnalyze::slotDspAvailPlot(const QString& fileName, const QByteArray& 
         data._eleDeg << qcSat._eleDeg;
       }
 
+      char frqChar1 = '1';
+      char frqChar2 = '2';
+      if      (prn.system() == 'E' || prn.system() == 'S') {
+        frqChar2 = '5';
+      }
+      else if (prn.system() == 'C') {
+        frqChar2 = '7';
+      }
       QString frqType1;
       QString frqType2;
       for (int iFrq = 0; iFrq < qcSat._qcFrq.size(); iFrq++) {
         const t_qcFrq& qcFrq = qcSat._qcFrq[iFrq];
-        if (qcFrq._rnxType2ch[0] == '1' && frqType1.isEmpty()) {
+        if (qcFrq._rnxType2ch[0] == frqChar1 && frqType1.isEmpty()) {
           frqType1 = qcFrq._rnxType2ch;
         }
-        if (qcFrq._rnxType2ch[0] == '2' && frqType2.isEmpty()) {
+        if (qcFrq._rnxType2ch[0] == frqChar2 && frqType2.isEmpty()) {
           frqType2 = qcFrq._rnxType2ch;
         }
         if      (qcFrq._rnxType2ch == frqType1) {
