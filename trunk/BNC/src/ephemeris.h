@@ -18,7 +18,7 @@ class t_clkCorr;
 
 class t_eph {
  public:
-  enum e_type {unknown, GPS, QZSS, GLONASS, Galileo, SBAS};
+  enum e_type {unknown, GPS, QZSS, GLONASS, Galileo, SBAS, Compass};
 
   t_eph();
   virtual ~t_eph() {};
@@ -234,6 +234,50 @@ class t_ephSBAS : public t_eph {
 
   double _ura;
   double _health;
+};
+
+class t_ephCompass : public t_eph {
+ friend class t_ephEncoder;
+ public:
+  t_ephCompass() {}
+  t_ephCompass(float rnxVersion, const QStringList& lines);
+  virtual ~t_ephCompass() {}
+
+  // void set(const compassephemeris* ee);
+  virtual e_type  type() const {return t_eph::Compass;}
+  virtual int     IOD() const {return _AODC;}
+  virtual QString toString(double version) const;
+
+ private:
+  virtual t_irc position(int GPSweek, double GPSweeks, double* xc, double* vv) const;
+
+  bncTime _TOT;
+  bncTime _TOE;
+  bncTime _TOC_bdt;
+  bncTime _TOE_bdt;
+  int     _AODE;
+  int     _AODC;
+  double  _clock_bias;       //  [s]    
+  double  _clock_drift;      //  [s/s]  
+  double  _clock_driftrate;  //  [s/s^2]
+  double  _Crs;              //  [m]    
+  double  _Delta_n;          //  [rad/s]
+  double  _M0;               //  [rad]  
+  double  _Cuc;              //  [rad]  
+  double  _e;                //         
+  double  _Cus;              //  [rad]  
+  double  _sqrt_A;           //  [m^0.5]
+  double  _Cic;              //  [rad]  
+  double  _OMEGA0;           //  [rad]  
+  double  _Cis;              //  [rad]  
+  double  _i0;               //  [rad]  
+  double  _Crc;              //  [m]    
+  double  _omega;            //  [rad]  
+  double  _OMEGADOT;         //  [rad/s]
+  double  _IDOT;             //  [rad/s]
+  double  _TGD1;             //  [s]    
+  double  _TGD2;             //  [s]    
+  int     _SatH1;            // 
 };
 
 #endif
