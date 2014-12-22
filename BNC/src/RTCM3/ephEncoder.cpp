@@ -320,3 +320,12 @@ int t_ephEncoder::RTCM3(const t_ephGal& eph, unsigned char *buffer) {
   return size;
 }
 
+int t_ephEncoder::RTCM3(const t_ephSBAS& /* eph */, unsigned char* /* buffer */) {
+
+  return 0;
+}
+
+int t_ephEncoder::RTCM3(const t_ephCompass& /* eph */, unsigned char* /* buffer */) {
+
+  return 0;
+}
