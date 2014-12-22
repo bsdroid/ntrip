@@ -252,7 +252,7 @@ t_irc t_pppFilter::cmpBancroft(t_epoData* epoData) {
 
   Tracer tracer("t_pppFilter::cmpBancroft");
 
-  if (epoData->sizeSys('G') < OPT->_minObs) {
+  if (int(epoData->sizeSys('G')) < OPT->_minObs) {
     LOG << "t_pppFilter::cmpBancroft: not enough data\n";
     return failure;
   }
@@ -337,7 +337,8 @@ double t_pppFilter::cmpValue(t_satData* satData, bool phase) {
   double phaseCenter = 0.0;
   if (_antex) { 
     bool found;
-    phaseCenter = _antex->pco(QString(OPT->_antNameRover.c_str()), satData->eleSat, found);
+    phaseCenter = _antex->rcvCorr(OPT->_antNameRover, t_frequency::G1, 
+                                  satData->eleSat, satData->azSat, found);
     if (!found) {
       LOG << "ANTEX: antenna >" << OPT->_antNameRover << "< not found\n";
     }
