@@ -197,7 +197,7 @@ void t_rnxNavFile::read(QTextStream* stream) {
       for (int ii = 1; ii < 8; ii++) {
         lines << stream->readLine();
       }
-      ///      eph = new t_ephCompass(version(), lines);
+      eph = new t_ephCompass(version(), lines);
     }
     if (eph && eph->ok()) {
       _ephs.push_back(eph);
