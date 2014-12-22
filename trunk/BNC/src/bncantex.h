@@ -36,15 +36,14 @@ class bncAntex {
   bncAntex(const char* fileName);
   bncAntex();
   ~bncAntex();
-  t_irc readFile(const QString& fileName);  
-  void print() const;
-  double pco(const QString& antName, double eleSat, bool& found) const;
-  double rcvCorr(const std::string& antName, double eleSat, bool& found) const;
+  t_irc  readFile(const QString& fileName);  
+  void   print() const;
+  double rcvCorr(const std::string& antName, t_frequency::type frqType,
+                 double eleSat, double azSat, bool& found) const;
   t_irc  satCoMcorrection(const QString& prn, double Mjd, 
                           const ColumnVector& xSat, ColumnVector& dx);
 
  private:
-
   class t_frqMap {
    public:
     double       neu[3];
@@ -53,22 +52,21 @@ class bncAntex {
 
   class t_antMap {
    public:
-    t_antMap() {
-      frqMapL1 = 0;
-      frqMapL2 = 0;
-    }
+    t_antMap() {}
     ~t_antMap() {
-      delete frqMapL1;
-      delete frqMapL2;
+      QMapIterator<t_frequency::type, t_frqMap*> it(frqMap);
+      while (it.hasNext()) {
+        it.next();
+        delete it.value();
+      }
     }
-    QString   antName;
-    double       zen1;
-    double       zen2;
-    double       dZen;
-    t_frqMap* frqMapL1;
-    t_frqMap* frqMapL2;
-    bncTime   validFrom;
-    bncTime   validTo;
+    QString                            antName;
+    double                             zen1;
+    double                             zen2;
+    double                             dZen;
+    QMap<t_frequency::type, t_frqMap*> frqMap;
+    bncTime                            validFrom;
+    bncTime                            validTo;
   };
 
   QMap<QString, t_antMap*> _maps;

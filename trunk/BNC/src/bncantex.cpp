@@ -70,23 +70,20 @@ bncAntex::~bncAntex() {
 // Print 
 ////////////////////////////////////////////////////////////////////////////
 void bncAntex::print() const {
-  QMapIterator<QString, t_antMap*> it(_maps);
-  while (it.hasNext()) {
-    it.next();
-    t_antMap* map = it.value();
+  QMapIterator<QString, t_antMap*> itAnt(_maps);
+  while (itAnt.hasNext()) {
+    itAnt.next();
+    t_antMap* map = itAnt.value();
     cout << map->antName.toAscii().data() << endl;
     cout << "    " << map->zen1 << " " << map->zen2 << " " << map->dZen << endl;
-    if (map->frqMapL1) {
-      cout << "    " << map->frqMapL1->neu[0] << " "
-                     << map->frqMapL1->neu[1] << " "
-                     << map->frqMapL1->neu[2] << endl;
-      cout << "    " << map->frqMapL1->pattern.t();
-    }
-    if (map->frqMapL2) {
-      cout << "    " << map->frqMapL2->neu[0] << " "
-                     << map->frqMapL2->neu[1] << " "
-                     << map->frqMapL2->neu[2] << endl;
-      cout << "    " << map->frqMapL2->pattern.t();
+    QMapIterator<t_frequency::type, t_frqMap*> itFrq(map->frqMap);
+    while (itFrq.hasNext()) {
+      itFrq.next();
+      const t_frqMap* frqMap = itFrq.value();
+      cout << "    " << frqMap->neu[0] << " "
+                     << frqMap->neu[1] << " "
+                     << frqMap->neu[2] << endl;
+      cout << "    " << frqMap->pattern.t();
     }
     cout << endl;
   }
@@ -170,13 +167,24 @@ t_irc bncAntex::readFile(const QString& fileName) {
       // ----------------
       else if (line.indexOf("END OF FREQUENCY") == 60) {
         if (newFrqMap) {
-          if      (line.indexOf("G01") == 3 || line.indexOf("R01") == 3) {
-            delete newAntMap->frqMapL1;
-            newAntMap->frqMapL1 = newFrqMap;
+          t_frequency::type frqType = t_frequency::dummy;
+          if      (line.indexOf("G01") == 3) {
+            frqType = t_frequency::G1;
           }
-          else if (line.indexOf("G02") == 3 || line.indexOf("R02") == 3) {
-            delete newAntMap->frqMapL2;
-            newAntMap->frqMapL2 = newFrqMap;
+          else if (line.indexOf("G02") == 3) {
+            frqType = t_frequency::G2;
+          }
+          else if (line.indexOf("R01") == 3) {
+            frqType = t_frequency::R1;
+          }
+          else if (line.indexOf("R02") == 3) {
+            frqType = t_frequency::R2;
+          }
+          if (frqType != t_frequency::dummy) {
+            if (newAntMap->frqMap.find(frqType) != newAntMap->frqMap.end()) {
+              delete newAntMap->frqMap[frqType];
+            }
+            newAntMap->frqMap[frqType] = newFrqMap;
           }
           else {
             delete newFrqMap;
@@ -225,63 +233,86 @@ t_irc bncAntex::readFile(const QString& fileName) {
 t_irc bncAntex::satCoMcorrection(const QString& prn, double Mjd, 
                                  const ColumnVector& xSat, ColumnVector& dx) {
 
+  t_frequency::type frqType = t_frequency::dummy;
+  if      (prn[0] == 'G') {
+    frqType = t_frequency::G1;
+  }
+  else if (prn[0] == 'R') {
+    frqType = t_frequency::R1;
+  }
+
   QMap<QString, t_antMap*>::const_iterator it = _maps.find(prn);
   if (it != _maps.end()) {
     t_antMap* map = it.value();
-    double* neu = map->frqMapL1->neu;
+    if (map->frqMap.find(frqType) != map->frqMap.end()) {
 
-    // Unit Vectors sz, sy, sx
-    // -----------------------
-    ColumnVector sz = -xSat;
-    sz /= sqrt(DotProduct(sz,sz));
+      double* neu = map->frqMap[frqType]->neu;
 
-    ColumnVector xSun = BNC_PPP::t_astro::Sun(Mjd);
-    xSun /= sqrt(DotProduct(xSun,xSun));
+      // Unit Vectors sz, sy, sx
+      // -----------------------
+      ColumnVector sz = -xSat;
+      sz /= sqrt(DotProduct(sz,sz));
+
+      ColumnVector xSun = BNC_PPP::t_astro::Sun(Mjd);
+      xSun /= sqrt(DotProduct(xSun,xSun));
   
-    ColumnVector sy = crossproduct(sz, xSun);
-    sy /= sqrt(DotProduct(sy,sy));
+      ColumnVector sy = crossproduct(sz, xSun);
+      sy /= sqrt(DotProduct(sy,sy));
   
-    ColumnVector sx = crossproduct(sy, sz);
+      ColumnVector sx = crossproduct(sy, sz);
 
-    dx[0] = sx[0] * neu[0] + sy[0] * neu[1] + sz[0] * neu[2];
-    dx[1] = sx[1] * neu[0] + sy[1] * neu[1] + sz[1] * neu[2];
-    dx[2] = sx[2] * neu[0] + sy[2] * neu[1] + sz[2] * neu[2];
+      dx[0] = sx[0] * neu[0] + sy[0] * neu[1] + sz[0] * neu[2];
+      dx[1] = sx[1] * neu[0] + sy[1] * neu[1] + sz[1] * neu[2];
+      dx[2] = sx[2] * neu[0] + sy[2] * neu[1] + sz[2] * neu[2];
 
-    return success;
-  }
-  else {
-    return failure;
-  }
-}
-
-// Phase Center Offset (Receiver Antenna and GPS only)
-////////////////////////////////////////////////////////////////////////////
-double bncAntex::pco(const QString& antName, double eleSat, bool& found) const {
-
-  static const double f1 = t_CST::freq(t_frequency::G1, 0);
-  static const double f2 = t_CST::freq(t_frequency::G2, 0);
-  static const double c1 =   f1 * f1 / (f1 * f1 - f2 * f2);
-  static const double c2 = - f2 * f2 / (f1 * f1 - f2 * f2);
-
-  QMap<QString, t_antMap*>::const_iterator it = _maps.find(antName);
-  if (it != _maps.end()) {
-    found = true;
-    t_antMap* map = it.value();
-    if (map->frqMapL1 && map->frqMapL2) {
-      double corr1 = -map->frqMapL1->neu[2] * sin(eleSat);
-      double corr2 = -map->frqMapL2->neu[2] * sin(eleSat);
-      return c1 * corr1 + c2 * corr2;
+      return success;
     }
   }
-  else {
-    found = false;
-  }
 
-  return 0.0;
+  return failure;
 }
 
 // 
 ////////////////////////////////////////////////////////////////////////////
-double bncAntex::rcvCorr(const std::string& antName, double eleSat, bool& found) const {
-  return pco(QString(antName.c_str()), eleSat, found);
+double bncAntex::rcvCorr(const string& antName, t_frequency::type frqType,
+                         double eleSat, double /* azSat */, bool& found) const {
+
+  if (antName.find("NULLANTENNA") != string::npos) {
+    found = true;
+    return 0.0;
+  }
+
+  QString antNameQ = antName.c_str();
+
+  if (_maps.find(antNameQ) == _maps.end()) {
+    found = false;
+    return 0.0;
+  }
+
+  t_antMap* map = _maps[antNameQ];
+
+  if (map->frqMap.find(frqType) == map->frqMap.end()) {
+    found = false;
+    return 0.0;
+  }
+
+  t_frqMap* frqMap = map->frqMap[frqType];
+
+  double var = 0.0;
+  if (frqMap->pattern.ncols() > 0) {
+    double zenDiff = 999.999;
+    double zenSat  = 90.0 - eleSat * 180.0 / M_PI;
+    unsigned iZen = 0;
+    for (double zen = map->zen1; zen <= map->zen2; zen += map->dZen) {
+      iZen += 1;
+      double newZenDiff = fabs(zen - zenSat);
+      if (newZenDiff < zenDiff) {
+        zenDiff = newZenDiff;
+        var = frqMap->pattern(iZen);
+      }
+    }
+  }
+
+  found = true;
+  return var - frqMap->neu[2] * sin(eleSat);
 }
