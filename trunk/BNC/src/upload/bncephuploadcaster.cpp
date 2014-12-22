@@ -67,9 +67,11 @@ void bncEphUploadCaster::ephBufferChanged() {
       t_eph* eph = it.value()->last;
       unsigned char Array[80];
       int size = 0;
-      t_ephGPS* ephGPS = dynamic_cast<t_ephGPS*>(eph);
-      t_ephGlo* ephGlo = dynamic_cast<t_ephGlo*>(eph);
-      t_ephGal* ephGal = dynamic_cast<t_ephGal*>(eph);
+      t_ephGPS*     ephGPS     = dynamic_cast<t_ephGPS*>(eph);
+      t_ephGlo*     ephGlo     = dynamic_cast<t_ephGlo*>(eph);
+      t_ephGal*     ephGal     = dynamic_cast<t_ephGal*>(eph);
+      t_ephSBAS*    ephSBAS    = dynamic_cast<t_ephSBAS*>(eph);
+      t_ephCompass* ephCompass = dynamic_cast<t_ephCompass*>(eph);
       if (ephGPS) {
         size = t_ephEncoder::RTCM3(*ephGPS, Array);
       }
@@ -78,6 +80,12 @@ void bncEphUploadCaster::ephBufferChanged() {
       }
       else if (ephGal) {
         size = t_ephEncoder::RTCM3(*ephGal, Array);
+      }
+      else if (ephSBAS) {
+        size = t_ephEncoder::RTCM3(*ephSBAS, Array);
+      }
+      else if (ephCompass) {
+        size = t_ephEncoder::RTCM3(*ephCompass, Array);
       }
       if (size > 0) {
         outBuffer += QByteArray((char*) Array, size);
