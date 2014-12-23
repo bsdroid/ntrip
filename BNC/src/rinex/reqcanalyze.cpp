@@ -694,14 +694,14 @@ void t_reqcAnalyze::slotDspSkyPlot(const QString& fileName, const QString& title
     QVector<QWidget*> plots;
     if (data1) {
       QwtText title(title1); 
-      QFont font = title.font(); font.setPointSize(font.pointSize()*0.8); title.setFont(font);
+      QFont font = title.font(); font.setPointSize(font.pointSize()-1); title.setFont(font);
       t_polarPlot* plot1 = new t_polarPlot(title, scaleInterval, BNC_CORE->mainWindow());
       plot1->addCurve(data1);
       plots << plot1;
     }
     if (data2) {
       QwtText title(title2);
-      QFont font = title.font(); font.setPointSize(font.pointSize()*0.8); title.setFont(font);
+      QFont font = title.font(); font.setPointSize(font.pointSize()-1); title.setFont(font);
       t_polarPlot* plot2 = new t_polarPlot(title, scaleInterval, BNC_CORE->mainWindow());
       plot2->addCurve(data2);
       plots << plot2;
