@@ -134,7 +134,6 @@ void bncSettings::reRead() {
     setValue_p("reqcOutNavFile",      "");
     setValue_p("reqcOutLogFile",      "");
     setValue_p("reqcPlotDir",         "");
-    setValue_p("reqcSkyPlotSystems",  "ALL");
     setValue_p("reqcRnxVersion",      "");
     setValue_p("reqcSampling",        "");
     setValue_p("reqcStartDateTime",   "");
