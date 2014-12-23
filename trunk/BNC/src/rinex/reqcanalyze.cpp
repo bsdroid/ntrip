@@ -519,19 +519,29 @@ void t_reqcAnalyze::analyzeMultipath() {
 void t_reqcAnalyze::preparePlotData(const t_rnxObsFile* obsFile) {
 
   bncSettings settings;
-  QString reqSkyPlotSystems = settings.value("reqcSkyPlotSystems").toString();
+
+  QStringList signalsOpt = settings.value("reqcSkyPlotSignals").toString().split(" ", QString::SkipEmptyParts);
+  QMap<char, QVector<QString> > signalsMap;
+  for (int ii = 0; ii < signalsOpt.size(); ii++) {
+    QStringList hlp = signalsOpt.at(ii).split(QRegExp("[:&]"), QString::SkipEmptyParts);
+    qDebug() << hlp;
+  }
+
+
   bool plotGPS  = false;
   bool plotGlo  = false;
   bool plotGal  = false;
   bool plotQZSS = false;
   bool plotSBAS = false;
   bool plotBDS  = false;
-  QString mp1Title = reqSkyPlotSystems + ": MP";
-  QString mp2Title = reqSkyPlotSystems + ": MP";
-  QString snr1Title = reqSkyPlotSystems + ": SNR";
-  QString snr2Title = reqSkyPlotSystems + ": SNR";
+  QString mp1Title  = ": MP";
+  QString mp2Title  = ": MP";
+  QString snr1Title = ": SNR";
+  QString snr2Title = ": SNR";
   char freq1 = '1';
   char freq2 = '2';
+
+  QString reqSkyPlotSystems = "ALL";
   if      (reqSkyPlotSystems == "GPS") {
     plotGPS = true;
   }
