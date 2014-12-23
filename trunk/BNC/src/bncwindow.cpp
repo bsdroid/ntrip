@@ -1008,19 +1008,16 @@ bncWindow::bncWindow() {
   _reqcPlotDirLineEdit->setMinimumWidth(15*ww);
   _reqcPlotDirLineEdit->setMaximumWidth(15*ww);
 
-  _reqcSkyPlotSystems = new QComboBox();
-  _reqcSkyPlotSystems->setEditable(false);
-  _reqcSkyPlotSystems->addItems(QString(",ALL,GPS,GLONASS,Galileo,QZSS,SBAS,BDS").split(","));
-  ik = _reqcSkyPlotSystems->findText(settings.value("reqcSkyPlotSystems").toString());
-  if (ik != -1) {
-    _reqcSkyPlotSystems->setCurrentIndex(ik);
+  QString reqcSkyPlotSignals;
+  if (settings.contains("reqcSkyPlotSignals")) {
+    reqcSkyPlotSignals = settings.value("reqcSkyPlotSignals").toString();
   }
-  connect(_reqcSkyPlotSystems, SIGNAL(currentIndexChanged(const QString &)),
+  else {
+    reqcSkyPlotSignals = "G:1&2 R:1&2 J:1&2 E:1&7 C:1&6";
+  }
+  _reqcSkyPlotSignals = new QLineEdit(reqcSkyPlotSignals);
+  connect(_reqcSkyPlotSignals, SIGNAL(textChanged(const QString &)), 
           this, SLOT(slotBncTextChanged()));
-
-  _reqcSkyPlotSignals = new QLineEdit(settings.value("reqcSkyPlotSignals").toString());
-  _reqcSkyPlotSignals->setMinimumWidth(15*ww);
-  _reqcSkyPlotSignals->setMaximumWidth(15*ww);
 
   _reqcLogSummaryOnly = new QCheckBox();
   _reqcLogSummaryOnly->setCheckState(Qt::CheckState(settings.value("reqcLogSummaryOnly").toInt()));
@@ -1050,14 +1047,11 @@ bncWindow::bncWindow() {
   reqcLayout->addWidget(new QLabel("summary only"),              ir, 3, Qt::AlignRight);
   reqcLayout->addWidget(_reqcLogSummaryOnly,                     ir, 4, Qt::AlignLeft);
   ++ir;
+  reqcLayout->addWidget(new QLabel("Sky plots for signals"),     ir, 0, Qt::AlignLeft);
+  reqcLayout->addWidget(_reqcSkyPlotSignals,                     ir, 1, 1, 2);
+  ++ir;
   reqcLayout->addWidget(new QLabel("Directory for plots"),       ir, 0, Qt::AlignLeft);
   reqcLayout->addWidget(_reqcPlotDirLineEdit,                    ir, 1, Qt::AlignRight);
-  ++ir;
-  reqcLayout->addWidget(new QLabel("Sky plots:"),                ir, 0, Qt::AlignLeft);
-  reqcLayout->addWidget(_reqcSkyPlotSystems,                     ir, 1, Qt::AlignRight);
-  reqcLayout->addWidget(new QLabel("Systems"),                   ir, 2, Qt::AlignLeft);
-  reqcLayout->addWidget(_reqcSkyPlotSignals,                     ir, 3, Qt::AlignRight);
-  reqcLayout->addWidget(new QLabel("Signals"),                   ir, 4, Qt::AlignLeft);
   ++ir;
   reqcLayout->addWidget(new QLabel(""), ir, 1);
   reqcLayout->setRowStretch(ir, 999);
@@ -1684,7 +1678,6 @@ void bncWindow::saveOptions() {
   settings.setValue("reqcOutNavFile", _reqcOutNavLineEdit->text());
   settings.setValue("reqcOutLogFile", _reqcOutLogLineEdit->text());
   settings.setValue("reqcPlotDir",    _reqcPlotDirLineEdit->text());
-  settings.setValue("reqcSkyPlotSystems", _reqcSkyPlotSystems->currentText());
   settings.setValue("reqcSkyPlotSignals", _reqcSkyPlotSignals->text());
   settings.setValue("reqcLogSummaryOnly", _reqcLogSummaryOnly->checkState());
 // SP3 Comparison
@@ -2219,20 +2212,19 @@ void bncWindow::slotBncTextChanged(){
 
   // QC
   // --
-  if (sender() == 0 || sender() == _reqcActionComboBox || sender() == _reqcSkyPlotSystems) {
+  if (sender() == 0 || sender() == _reqcActionComboBox || sender() == _reqcSkyPlotSignals) {
     enable = !_reqcActionComboBox->currentText().isEmpty();
-    bool enable10 = _reqcActionComboBox->currentText() == "Edit/Concatenate";
-    bool enablePlot = !_reqcSkyPlotSystems->currentText().isEmpty();
-    enableWidget(enable &&  enable10, _reqcEditOptionButton);
-    enableWidget(enable,              _reqcObsFileChooser);
-    enableWidget(enable,              _reqcNavFileChooser);
-    enableWidget(enable &&  enable10, _reqcOutObsLineEdit);
-    enableWidget(enable &&  enable10, _reqcOutNavLineEdit);
-    enableWidget(enable,              _reqcOutLogLineEdit);
+    bool enable10   = _reqcActionComboBox->currentText() == "Edit/Concatenate";
+    bool enablePlot = !_reqcSkyPlotSignals->text().isEmpty();
+    enableWidget(enable,                            _reqcObsFileChooser);
+    enableWidget(enable,                            _reqcNavFileChooser);
+    enableWidget(enable,                            _reqcOutLogLineEdit);
+    enableWidget(enable &&  enable10,               _reqcEditOptionButton);
+    enableWidget(enable &&  enable10,               _reqcOutObsLineEdit);
+    enableWidget(enable &&  enable10,               _reqcOutNavLineEdit);
+    enableWidget(enable && !enable10,               _reqcLogSummaryOnly);
+    enableWidget(enable && !enable10,               _reqcSkyPlotSignals);
     enableWidget(enable && !enable10 && enablePlot, _reqcPlotDirLineEdit);
-    enableWidget(enable && !enable10 && enablePlot, _reqcSkyPlotSignals);
-    enableWidget(enable && !enable10, _reqcSkyPlotSystems);
-    enableWidget(enable && !enable10, _reqcLogSummaryOnly);
   }
 
   enableStartStop();

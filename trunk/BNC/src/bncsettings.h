@@ -11,7 +11,8 @@ class bncSettings {
                  const QVariant& defaultValue = QVariant()) const;
   void setValue(const QString &key, const QVariant& value);
   void remove(const QString& key );
-  void reRead();
+  bool contains(const QString& key) const;
+  void reRead(); 
   void sync();
  private:
   void setValue_p(const QString &key, const QVariant& value);
