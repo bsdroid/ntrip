@@ -110,7 +110,7 @@ bncWindow::bncWindow() {
   
   static const QStringList labels = QString("account, Streams:   resource loader / mountpoint, decoder, lat, long, nmea, ntrip, bytes").split(",");
 
-  setMinimumSize(90*ww, 70*ww);
+  setMinimumSize(100*ww, 70*ww);
 
   setWindowTitle(tr("BKG Ntrip Client (BNC) Version " BNCVERSION));
 
@@ -1018,6 +1018,8 @@ bncWindow::bncWindow() {
   connect(_reqcSkyPlotSystems, SIGNAL(currentIndexChanged(const QString &)),
           this, SLOT(slotBncTextChanged()));
 
+  _reqcSkyPlotSignals = new QLineEdit(settings.value("reqcSkyPlotSignals").toString());
+
   _reqcLogSummaryOnly = new QCheckBox();
   _reqcLogSummaryOnly->setCheckState(Qt::CheckState(settings.value("reqcLogSummaryOnly").toInt()));
 
@@ -1049,8 +1051,11 @@ bncWindow::bncWindow() {
   reqcLayout->addWidget(new QLabel("Directory for plots"),       ir, 0, Qt::AlignLeft);
   reqcLayout->addWidget(_reqcPlotDirLineEdit,                    ir, 1, Qt::AlignRight);
   ++ir;
-  reqcLayout->addWidget(new QLabel("Sky plots for"),             ir, 0, Qt::AlignLeft);
+  reqcLayout->addWidget(new QLabel("Sky plots:"),                ir, 0, Qt::AlignLeft);
   reqcLayout->addWidget(_reqcSkyPlotSystems,                     ir, 1, Qt::AlignRight);
+  reqcLayout->addWidget(new QLabel("Systems"),                   ir, 2, Qt::AlignLeft);
+  reqcLayout->addWidget(_reqcSkyPlotSignals,                     ir, 3, Qt::AlignRight);
+  reqcLayout->addWidget(new QLabel("Signals"),                   ir, 4, Qt::AlignLeft);
   ++ir;
   reqcLayout->addWidget(new QLabel(""), ir, 1);
   reqcLayout->setRowStretch(ir, 999);
