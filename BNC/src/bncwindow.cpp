@@ -1019,6 +1019,8 @@ bncWindow::bncWindow() {
           this, SLOT(slotBncTextChanged()));
 
   _reqcSkyPlotSignals = new QLineEdit(settings.value("reqcSkyPlotSignals").toString());
+  _reqcSkyPlotSignals->setMinimumWidth(15*ww);
+  _reqcSkyPlotSignals->setMaximumWidth(15*ww);
 
   _reqcLogSummaryOnly = new QCheckBox();
   _reqcLogSummaryOnly->setCheckState(Qt::CheckState(settings.value("reqcLogSummaryOnly").toInt()));
