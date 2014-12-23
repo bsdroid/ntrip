@@ -518,8 +518,12 @@ void t_reqcAnalyze::analyzeMultipath() {
 ////////////////////////////////////////////////////////////////////////////
 void t_reqcAnalyze::preparePlotData(const t_rnxObsFile* obsFile) {
 
-  bncSettings settings;
+  QString mp1Title  = "Multipath\n";
+  QString mp2Title  = "Multipath\n";
+  QString snr1Title = "Signal-to-Noise Ratio\n";
+  QString snr2Title = "Signal-to-Noise Ratio\n";
 
+  bncSettings settings;
   QStringList signalsOpt = settings.value("reqcSkyPlotSignals").toString().split(" ", QString::SkipEmptyParts);
   QMap<char, QVector<QString> > signalsMap;
   for (int ii = 0; ii < signalsOpt.size(); ii++) {
@@ -527,11 +531,17 @@ void t_reqcAnalyze::preparePlotData(const t_rnxObsFile* obsFile) {
     if (hlp.size() > 1 && hlp[0].length() == 1) {
       for (int jj = 1; jj < hlp.size(); jj++) {
         signalsMap[hlp[0].toAscii().constData()[0]] << hlp[jj];
+        if      (jj == 1) {
+          mp1Title  += hlp[0] + ":" + hlp[jj] + " ";
+          snr1Title += hlp[0] + ":" + hlp[jj] + " ";
+        }
+        else if (jj == 2) {
+          mp2Title  += hlp[0] + ":" + hlp[jj] + " ";
+          snr2Title += hlp[0] + ":" + hlp[jj] + " ";
+        }
       }
     }
   }
-
-  qDebug() << signalsMap;
 
 
   bool plotGPS  = false;
@@ -540,10 +550,6 @@ void t_reqcAnalyze::preparePlotData(const t_rnxObsFile* obsFile) {
   bool plotQZSS = false;
   bool plotSBAS = false;
   bool plotBDS  = false;
-  QString mp1Title  = ": MP";
-  QString mp2Title  = ": MP";
-  QString snr1Title = ": SNR";
-  QString snr2Title = ": SNR";
   char freq1 = '1';
   char freq2 = '2';
 
@@ -580,11 +586,6 @@ void t_reqcAnalyze::preparePlotData(const t_rnxObsFile* obsFile) {
   else {
 	  return;
   }
-  mp1Title += freq1;
-  mp2Title += freq2;
-  snr1Title += freq1;
-  snr2Title += freq2;
-
   QVector<t_polarPoint*>* dataMP1  = new QVector<t_polarPoint*>;
   QVector<t_polarPoint*>* dataMP2  = new QVector<t_polarPoint*>;
   QVector<t_polarPoint*>* dataSNR1 = new QVector<t_polarPoint*>;
@@ -692,14 +693,16 @@ void t_reqcAnalyze::slotDspSkyPlot(const QString& fileName, const QString& title
 
     QVector<QWidget*> plots;
     if (data1) {
-      t_polarPlot* plot1 = new t_polarPlot(QwtText(title1), scaleInterval,
-                                          BNC_CORE->mainWindow());
+      QwtText title(title1); 
+      QFont font = title.font(); font.setPointSize(font.pointSize()*0.8); title.setFont(font);
+      t_polarPlot* plot1 = new t_polarPlot(title, scaleInterval, BNC_CORE->mainWindow());
       plot1->addCurve(data1);
       plots << plot1;
     }
     if (data2) {
-      t_polarPlot* plot2 = new t_polarPlot(QwtText(title2), scaleInterval,
-                                           BNC_CORE->mainWindow());
+      QwtText title(title2);
+      QFont font = title.font(); font.setPointSize(font.pointSize()*0.8); title.setFont(font);
+      t_polarPlot* plot2 = new t_polarPlot(title, scaleInterval, BNC_CORE->mainWindow());
       plot2->addCurve(data2);
       plots << plot2;
     }
