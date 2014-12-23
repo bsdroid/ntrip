@@ -221,6 +221,13 @@ void bncSettings::remove(const QString& key ) {
 
 // 
 ////////////////////////////////////////////////////////////////////////////
+bool bncSettings::contains(const QString& key) const {
+  QMutexLocker locker(&_mutex);
+  return BNC_CORE->_settings.contains(key);
+}
+
+// 
+////////////////////////////////////////////////////////////////////////////
 void bncSettings::sync() {
   QMutexLocker locker(&_mutex);
   QSettings settings(BNC_CORE->confFileName(), QSettings::IniFormat);
