@@ -1685,6 +1685,7 @@ void bncWindow::saveOptions() {
   settings.setValue("reqcOutLogFile", _reqcOutLogLineEdit->text());
   settings.setValue("reqcPlotDir",    _reqcPlotDirLineEdit->text());
   settings.setValue("reqcSkyPlotSystems", _reqcSkyPlotSystems->currentText());
+  settings.setValue("reqcSkyPlotSignals", _reqcSkyPlotSignals->text());
   settings.setValue("reqcLogSummaryOnly", _reqcLogSummaryOnly->checkState());
 // SP3 Comparison
   settings.setValue("sp3CompFile",       _sp3CompFileChooser->fileName());
@@ -2229,6 +2230,7 @@ void bncWindow::slotBncTextChanged(){
     enableWidget(enable &&  enable10, _reqcOutNavLineEdit);
     enableWidget(enable,              _reqcOutLogLineEdit);
     enableWidget(enable && !enable10 && enablePlot, _reqcPlotDirLineEdit);
+    enableWidget(enable && !enable10 && enablePlot, _reqcSkyPlotSignals);
     enableWidget(enable && !enable10, _reqcSkyPlotSystems);
     enableWidget(enable && !enable10, _reqcLogSummaryOnly);
   }
