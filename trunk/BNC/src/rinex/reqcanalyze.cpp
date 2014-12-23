@@ -524,8 +524,14 @@ void t_reqcAnalyze::preparePlotData(const t_rnxObsFile* obsFile) {
   QMap<char, QVector<QString> > signalsMap;
   for (int ii = 0; ii < signalsOpt.size(); ii++) {
     QStringList hlp = signalsOpt.at(ii).split(QRegExp("[:&]"), QString::SkipEmptyParts);
-    qDebug() << hlp;
+    if (hlp.size() > 1 && hlp[0].length() == 1) {
+      for (int jj = 1; jj < hlp.size(); jj++) {
+        signalsMap[hlp[0].toAscii().constData()[0]] << hlp[jj];
+      }
+    }
   }
+
+  qDebug() << signalsMap;
 
 
   bool plotGPS  = false;
