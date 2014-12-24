@@ -69,6 +69,11 @@ t_sp3Comp::t_sp3Comp(QObject* parent) : QThread(parent) {
   _logFileName = settings.value("sp3CompOutLogFile").toString(); expandEnvVar(_logFileName);
   _logFile     = 0;
   _log         = 0;
+
+  //// beg test
+  // _excludeSats.insert(t_prn('R', 7));
+  // _excludeSats.insert(t_prn('R', 8));
+  //// end test
 }
 
 // Destructor
@@ -409,7 +414,7 @@ void t_sp3Comp::compare(ostringstream& out) const {
 // 
 ////////////////////////////////////////////////////////////////////////////
 bool t_sp3Comp::excludeSat(const t_prn& prn) const {
-  if (prn == t_prn('R', 7)) {
+  if (_excludeSats.find(prn) != _excludeSats.end()) {
     return true;
   }
   else {
