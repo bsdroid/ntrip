@@ -300,12 +300,16 @@ void t_sp3Comp::compare(ostringstream& out) const {
 
   // Estimate Clock Offsets
   // ----------------------
-  string systems = "GR";
+  string systems;
+  for (set<t_prn>::const_iterator it = clkSatsAll.begin(); it != clkSatsAll.end(); it++) {
+    if (systems.find(it->system()) == string::npos) {
+      systems += it->system();
+    }
+  }
   for (unsigned iSys = 0; iSys < systems.size(); iSys++) {
     char system = systems[iSys];
     set<t_prn> clkSats;
-    set<t_prn>::const_iterator it;
-    for (it = clkSatsAll.begin(); it != clkSatsAll.end(); it++) {
+    for (set<t_prn>::const_iterator it = clkSatsAll.begin(); it != clkSatsAll.end(); it++) {
       if (it->system() == system) {
         clkSats.insert(*it);
       }
