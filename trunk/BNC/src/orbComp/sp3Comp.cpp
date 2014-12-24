@@ -48,6 +48,15 @@
 
 using namespace std;
 
+bool excludeSat(const t_prn& prn) {
+  if (prn.system() == 'R') {
+    return true;
+  }
+  else {
+    return false;
+  }
+}
+
 // Constructor
 ////////////////////////////////////////////////////////////////////////////
 t_sp3Comp::t_sp3Comp(QObject* parent) : QThread(parent) {
@@ -310,7 +319,7 @@ void t_sp3Comp::compare(ostringstream& out) const {
     char system = systems[iSys];
     set<t_prn> clkSats;
     for (set<t_prn>::const_iterator it = clkSatsAll.begin(); it != clkSatsAll.end(); it++) {
-      if (it->system() == system) {
+      if (it->system() == system && !excludeSat(*it)) {
         clkSats.insert(*it);
       }
     }
@@ -330,31 +339,33 @@ void t_sp3Comp::compare(ostringstream& out) const {
     const map<t_prn, double>&       dc = epochs[ii]->_dc;
     for (map<t_prn, ColumnVector>::const_iterator it = dr.begin(); it != dr.end(); it++) {
       const t_prn&  prn = it->first;
-      const ColumnVector& rao = it->second;
-      out << setprecision(6) << epo->_tt.mjddec() << ' ' << prn.toString() << ' '
-          << setw(7) << setprecision(4) << rao[0] << ' '
-          << setw(7) << setprecision(4) << rao[1] << ' '
-          << setw(7) << setprecision(4) << rao[2] << "    ";
-      stat[prn.toString()]._rao += SP(rao, rao); // Schur product
-      stat[prn.toString()]._nr  += 1;
-      stat[all]._rao            += SP(rao, rao);
-      stat[all]._nr             += 1;
-      if (dc.find(prn) != dc.end()) {
-        double clkRes    = dc.find(prn)->second;
-        double clkResRed = clkRes - it->second[0]; // clock minus radial component
-        out << setw(7) << setprecision(4) << clkRes << ' '
-            << setw(7) << setprecision(4) << clkResRed;
-        stat[prn.toString()]._dc    += clkRes * clkRes;
-        stat[prn.toString()]._dcRed += clkResRed * clkResRed;
-        stat[prn.toString()]._nc    += 1;
-        stat[all]._dc               += clkRes * clkRes;
-        stat[all]._dcRed            += clkResRed * clkResRed;
-        stat[all]._nc               += 1;
+      if (!excludeSat(prn)) {
+        const ColumnVector& rao = it->second;
+        out << setprecision(6) << epo->_tt.mjddec() << ' ' << prn.toString() << ' '
+            << setw(7) << setprecision(4) << rao[0] << ' '
+            << setw(7) << setprecision(4) << rao[1] << ' '
+            << setw(7) << setprecision(4) << rao[2] << "    ";
+        stat[prn.toString()]._rao += SP(rao, rao); // Schur product
+        stat[prn.toString()]._nr  += 1;
+        stat[all]._rao            += SP(rao, rao);
+        stat[all]._nr             += 1;
+        if (dc.find(prn) != dc.end()) {
+          double clkRes    = dc.find(prn)->second;
+          double clkResRed = clkRes - it->second[0]; // clock minus radial component
+          out << setw(7) << setprecision(4) << clkRes << ' '
+              << setw(7) << setprecision(4) << clkResRed;
+          stat[prn.toString()]._dc    += clkRes * clkRes;
+          stat[prn.toString()]._dcRed += clkResRed * clkResRed;
+          stat[prn.toString()]._nc    += 1;
+          stat[all]._dc               += clkRes * clkRes;
+          stat[all]._dcRed            += clkResRed * clkResRed;
+          stat[all]._nc               += 1;
+        }
+        else {
+          out << "  .       .    ";
+        }
+        out << "    " << setw(2) << int(prn) << endl;
       }
-      else {
-        out << "  .       .    ";
-      }
-      out << "    " << setw(2) << int(prn) << endl;
     }
     delete epo;
   }
