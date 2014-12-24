@@ -132,7 +132,7 @@ int t_sp3Comp::satIndex(const set<t_prn>& clkSats, const t_prn& prn) const {
     }
     ++ret;
   }
-  throw "satellite not found " + prn.toString();
+  return -1;
 }
 
 // Estimate Clock Offsets
@@ -164,13 +164,17 @@ void t_sp3Comp::processClocks(const set<t_prn>& clkSats, const vector<t_epoch*>&
     const map<t_prn, double>& dc = epochs[ie]->_dc;
     Matrix       AA(dc.size(), nPar); AA = 0.0;
     ColumnVector ll(dc.size());       ll = 0.0;
-    map<t_prn, double>::const_iterator it; int ii;
-    for (it = dc.begin(), ii = 0; it != dc.end(); it++, ii++) {
+    map<t_prn, double>::const_iterator it; 
+    int ii = -1;
+    for (it = dc.begin(); it != dc.end(); it++) {
       const t_prn& prn = it->first;
-      int index = epochs.size() + satIndex(clkSats, prn);
-      AA[ii][ie]    = 1.0; // epoch-specfic offset (common for all satellites)
-      AA[ii][index] = 1.0; // satellite-specific offset (common for all epochs)
-      ll[ii]        = it->second;
+      if (satIndex(clkSats, prn) != -1) {
+        ++ii;
+        int index = epochs.size() + satIndex(clkSats, prn);
+        AA[ii][ie]    = 1.0; // epoch-specfic offset (common for all satellites)
+        AA[ii][index] = 1.0; // satellite-specific offset (common for all epochs)
+        ll[ii]        = it->second;
+      }
     }
     SymmetricMatrix dN; dN << AA.t() * AA;
     NN += dN;
@@ -195,9 +199,11 @@ void t_sp3Comp::processClocks(const set<t_prn>& clkSats, const vector<t_epoch*>&
     map<t_prn, double>& dc = epochs[ie]->_dc;
     for (map<t_prn, double>::iterator it = dc.begin(); it != dc.end(); it++) {
       const t_prn& prn = it->first;
-      int  index = epochs.size() + satIndex(clkSats, prn);
-      dc[prn]                      = it->second - xx[ie] - xx[index];
-      stat[prn.toString()]._offset = xx[index];
+      if (satIndex(clkSats, prn) != -1) {
+        int  index = epochs.size() + satIndex(clkSats, prn);
+        dc[prn]                      = it->second - xx[ie] - xx[index];
+        stat[prn.toString()]._offset = xx[index];
+      }
     }
   }
 }
@@ -255,7 +261,7 @@ void t_sp3Comp::compare(ostringstream& out) const {
     throw "t_sp3Comp: not enough common epochs";
   }
 
-  set<t_prn> clkSats;
+  set<t_prn> clkSatsAll;
 
   for (unsigned ie = 0; ie < epochs.size(); ie++) {
     t_epoch* epoch  = epochs[ie];
@@ -279,7 +285,7 @@ void t_sp3Comp::compare(ostringstream& out) const {
         ColumnVector vel = (x1 - x2) / dt;
         XYZ_to_RSW(x1, vel, dx, dr[prn]);
         if (epoch->_dc.find(prn) != epoch->_dc.end()) {
-          clkSats.insert(prn);
+          clkSatsAll.insert(prn);
         }
       }
       else {
@@ -294,7 +300,18 @@ void t_sp3Comp::compare(ostringstream& out) const {
 
   // Estimate Clock Offsets
   // ----------------------
-  processClocks(clkSats, epochs, stat);
+  string systems = "GR";
+  for (unsigned iSys = 0; iSys < systems.size(); iSys++) {
+    char system = systems[iSys];
+    set<t_prn> clkSats;
+    set<t_prn>::const_iterator it;
+    for (it = clkSatsAll.begin(); it != clkSatsAll.end(); it++) {
+      if (it->system() == system) {
+        clkSats.insert(*it);
+      }
+    }
+    processClocks(clkSats, epochs, stat);
+  }
 
   // Print Residuals
   // ---------------
