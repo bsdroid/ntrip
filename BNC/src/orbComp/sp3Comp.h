@@ -84,11 +84,13 @@ Q_OBJECT
   void processClocks(const std::set<t_prn>& clkSats, const std::vector<t_epoch*>& epochsIn,
                      std::map<std::string, t_stat>& stat) const;
   void compare(std::ostringstream& out) const;
+  bool excludeSat(const t_prn& prn) const;
 
-  QStringList  _sp3FileNames;
-  QString      _logFileName;
-  QFile*       _logFile;
-  QTextStream* _log;
+  QStringList     _sp3FileNames;
+  QString         _logFileName;
+  QFile*          _logFile;
+  QTextStream*    _log;
+  std::set<t_prn> _excludeSats;
 };
 
 #endif

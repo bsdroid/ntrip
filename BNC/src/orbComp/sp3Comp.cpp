@@ -49,7 +49,7 @@
 using namespace std;
 
 bool excludeSat(const t_prn& prn) {
-  if (prn.system() == 'R') {
+  if (prn == t_prn('R', 7)) {
     return true;
   }
   else {
@@ -405,3 +405,15 @@ void t_sp3Comp::compare(ostringstream& out) const {
     }
   }
 }
+
+// 
+////////////////////////////////////////////////////////////////////////////
+bool t_sp3Comp::excludeSat(const t_prn& prn) const {
+  if (prn == t_prn('R', 7)) {
+    return true;
+  }
+  else {
+    return false;
+  }
+}
+
