@@ -1008,14 +1008,7 @@ bncWindow::bncWindow() {
   _reqcPlotDirLineEdit->setMinimumWidth(15*ww);
   _reqcPlotDirLineEdit->setMaximumWidth(15*ww);
 
-  QString reqcSkyPlotSignals;
-  if (settings.contains("reqcSkyPlotSignals")) {
-    reqcSkyPlotSignals = settings.value("reqcSkyPlotSignals").toString();
-  }
-  else {
-    reqcSkyPlotSignals = "G:1&2 R:1&2 J:1&2 E:1&7 C:1&6";
-  }
-  _reqcSkyPlotSignals = new QLineEdit(reqcSkyPlotSignals);
+  _reqcSkyPlotSignals = new QLineEdit(settings.value("reqcSkyPlotSignals").toString());
   connect(_reqcSkyPlotSignals, SIGNAL(textChanged(const QString &)), 
           this, SLOT(slotBncTextChanged()));
 
