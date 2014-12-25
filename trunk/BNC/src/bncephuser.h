@@ -40,7 +40,8 @@ class bncEphUser : public QObject {
  Q_OBJECT
 
  public:
-  bncEphUser(bool connectSlots = true);
+  bncEphUser();
+  bncEphUser(bool connectSlots);
   virtual ~bncEphUser();
 
   class t_ephPair {
@@ -69,10 +70,10 @@ class bncEphUser : public QObject {
   t_irc putNewEph(t_eph* newEph);
 
  public slots:
-  void slotNewEphGPS(gpsephemeris gpseph);
-  void slotNewEphGlonass(glonassephemeris gloeph);
-  void slotNewEphGalileo(galileoephemeris galeph);
-  void slotNewEphSBAS(sbasephemeris sbaseph);
+  void slotNewGPSEph(t_ephGPS);
+  void slotNewGlonassEph(t_ephGlo);
+  void slotNewGalileoEph(t_ephGal);
+  void slotNewSBASEph(t_ephSBAS);
 
  protected:
   virtual void ephBufferChanged() {}

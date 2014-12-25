@@ -78,24 +78,6 @@ t_bncCore::t_bncCore() {
   _bncComb     = 0;
 #endif
 
-  // Lists of Ephemeris
-  // ------------------
-  for (int ii = PRN_GPS_START; ii <= PRN_GPS_END; ii++) {
-    _gpsEph[ii-PRN_GPS_START] = 0;
-  }
-  for (int ii = PRN_QZSS_START; ii <= PRN_QZSS_END; ii++) {
-    _qzssEph[ii-PRN_QZSS_START] = 0;
-  }
-  for (int ii = PRN_GLONASS_START; ii <= PRN_GLONASS_END; ii++) {
-    _glonassEph[ii-PRN_GLONASS_START] = 0;
-  }
-  for (int ii = PRN_GALILEO_START; ii <= PRN_GALILEO_END; ii++) {
-    _galileoEph[ii-PRN_GALILEO_START] = 0;
-  }
-  for (int ii = PRN_SBAS_START; ii <= PRN_SBAS_END; ii++) {
-    _sbasEph[ii-PRN_SBAS_START] = 0;
-  }
-
   // Eph file(s)
   // -----------
   _rinexVers        = 0;
@@ -131,6 +113,11 @@ t_bncCore::t_bncCore() {
   _pppMain = new BNC_PPP::t_pppMain();
   qRegisterMetaType< QVector<double> >("QVector<double>");
   qRegisterMetaType<bncTime>("bncTime");
+  qRegisterMetaType<t_ephGPS>("t_ephGPS");
+  qRegisterMetaType<t_ephGlo>("t_ephGlo");
+  qRegisterMetaType<t_ephGal>("t_ephGal");
+  qRegisterMetaType<t_ephSBAS>("t_ephSBAS");
+  qRegisterMetaType<t_ephCompass>("t_ephCompass");
 }
 
 // Destructor
@@ -147,21 +134,6 @@ t_bncCore::~t_bncCore() {
   if (_rinexVers == 2) {
     delete _ephStreamGlonass;
     delete _ephFileGlonass;
-  }
-  for (int ii = PRN_GPS_START; ii <= PRN_GPS_END; ii++) {
-    delete _gpsEph[ii-PRN_GPS_START];
-  }
-  for (int ii = PRN_QZSS_START; ii <= PRN_QZSS_END; ii++) {
-    delete _qzssEph[ii-PRN_QZSS_START];
-  }
-  for (int ii = PRN_GLONASS_START; ii <= PRN_GLONASS_END; ii++) {
-    delete _glonassEph[ii-PRN_GLONASS_START];
-  }
-  for (int ii = PRN_GALILEO_START; ii <= PRN_GALILEO_END; ii++) {
-    delete _galileoEph[ii-PRN_GALILEO_START];
-  }
-  for (int ii = PRN_SBAS_START; ii <= PRN_SBAS_END; ii++) {
-    delete _sbasEph[ii-PRN_SBAS_START];
   }
 
   delete _dateAndTimeGPS;
@@ -226,120 +198,76 @@ void t_bncCore::messagePrivate(const QByteArray& msg) {
 
 // New GPS Ephemeris 
 ////////////////////////////////////////////////////////////////////////////
-void t_bncCore::slotNewGPSEph(gpsephemeris* gpseph) {
+void t_bncCore::slotNewGPSEph(t_ephGPS eph) {
 
   QMutexLocker locker(&_mutex);
 
-  gpsephemeris copy_gpseph = *gpseph;
-  emit newEphGPS(copy_gpseph);
+  emit newGPSEph(eph);
 
   printEphHeader();
 
-  gpsephemeris** ee = &_gpsEph[gpseph->satellite-1];
-  if      (PRN_GPS_START <= gpseph->satellite && gpseph->satellite <= PRN_GPS_END) {
-    ee = &_gpsEph[gpseph->satellite  - PRN_GPS_START];
-  }
-  else if (PRN_QZSS_START <= gpseph->satellite && gpseph->satellite <= PRN_QZSS_END) {
-    ee = &_qzssEph[gpseph->satellite - PRN_QZSS_START];
-  }
-
-  if ( *ee != 0 && gpseph->GPSweek == (*ee)->GPSweek && gpseph->TOC == (*ee)->TOC ) {
-    checkEphemeris(*ee, gpseph);
-  }
-
-  if ( *ee == 0                         || 
-       gpseph->GPSweek > (*ee)->GPSweek ||
-       (gpseph->GPSweek == (*ee)->GPSweek && gpseph->TOC > (*ee)->TOC) ) {
-    delete *ee;
-    *ee = gpseph;
-    printGPSEph(gpseph, true);
+  if (_ephUser.putNewEph(&eph) == success) {
+    printEph(eph, true);
   }
   else {
-    printGPSEph(gpseph, false);
-    delete gpseph;
+    printEph(eph, false);
   }
 }
     
 // New Glonass Ephemeris
 ////////////////////////////////////////////////////////////////////////////
-void t_bncCore::slotNewGlonassEph(glonassephemeris* glonasseph, const QString& staID) {
+void t_bncCore::slotNewGlonassEph(t_ephGlo eph) {
 
   QMutexLocker locker(&_mutex);
 
-  // Check wrong Ephemerides
-  // -----------------------
-  if (glonasseph->x_pos == 0.0 && 
-      glonasseph->y_pos == 0.0 && 
-      glonasseph->z_pos == 0.0) {
-    delete glonasseph;
-    return;
-  } 
-
-  glonassephemeris copy_glonasseph = *glonasseph;
-  emit newEphGlonass(copy_glonasseph);
+  emit newGlonassEph(eph);
 
   printEphHeader();
 
-  glonassephemeris** ee = &_glonassEph[glonasseph->almanac_number-1];
-
-  int wwOld, towOld, wwNew, towNew;
-  if (*ee != 0) {
-    wwOld  = (*ee)->GPSWeek;
-    towOld = (*ee)->GPSTOW; 
-    updatetime(&wwOld, &towOld, (*ee)->tb*1000, 0);  // Moscow -> GPS
-
-    wwNew  = glonasseph->GPSWeek;
-    towNew = glonasseph->GPSTOW; 
-    updatetime(&wwNew, &towNew, glonasseph->tb*1000, 0); // Moscow -> GPS
-  }
-
-  if ( *ee == 0      || 
-       wwNew > wwOld ||
-       (wwNew == wwOld && towNew > towOld) ) {
-    delete *ee;
-    *ee = glonasseph;
-    printGlonassEph(glonasseph, true, staID);
+  if (_ephUser.putNewEph(&eph) == success) {
+    printEph(eph, true);
   }
   else {
-    printGlonassEph(glonasseph, false, staID);
-    delete glonasseph;
+    printEph(eph, false);
   }
 }
 
 // New Galileo Ephemeris
 ////////////////////////////////////////////////////////////////////////////
-void t_bncCore::slotNewGalileoEph(galileoephemeris* galileoeph) {
+void t_bncCore::slotNewGalileoEph(t_ephGal eph) {
 
   QMutexLocker locker(&_mutex);
 
-  galileoephemeris copy_galileoeph = *galileoeph;
-  emit newEphGalileo(copy_galileoeph);
+  emit newGalileoEph(eph);
 
   printEphHeader();
 
-  int galIndex = galileoeph->satellite;
-  /* GIOVE */
-  if(galIndex == 51) galIndex = 1;
-  else if(galIndex == 52) galIndex = 16;
-  if (galIndex < 0 || galIndex > PRN_GALILEO_END - PRN_GALILEO_START) {
-    emit( newMessage("Wrong Galileo Satellite Number", true) );
-    exit(1);
-  }
-
-  galileoephemeris** ee = &_galileoEph[galIndex];
-
-  if ( *ee == 0                       || 
-       galileoeph->Week > (*ee)->Week ||
-       (galileoeph->Week == (*ee)->Week && galileoeph->TOC > (*ee)->TOC) ) {
-    delete *ee;
-    *ee = galileoeph;
-    printGalileoEph(galileoeph, true);
+  if (_ephUser.putNewEph(&eph) == success) {
+    printEph(eph, true);
   }
   else {
-    printGalileoEph(galileoeph, false);
-    delete galileoeph;
+    printEph(eph, false);
   }
 }
+
+// New SBAS Ephemeris
+////////////////////////////////////////////////////////////////////////////
+void t_bncCore::slotNewSBASEph(t_ephSBAS eph) {
+
+  QMutexLocker locker(&_mutex);
+
+  emit newSBASEph(eph);
+
+  printEphHeader();
+
+  if (_ephUser.putNewEph(&eph) == success) {
+    printEph(eph, true);
+  }
+  else {
+    printEph(eph, false);
+  }
+}
+
 
 // Print Header of the output File(s)
 ////////////////////////////////////////////////////////////////////////////
@@ -392,27 +320,6 @@ void t_bncCore::printEphHeader() {
     }
     else {
       _ephFileNameGPS = ephFileNameGPS;
-    }
-
-    for (int ii = PRN_GPS_START; ii <= PRN_GPS_END; ii++) {
-      delete _gpsEph[ii-PRN_GPS_START];
-      _gpsEph[ii-PRN_GPS_START] = 0;
-    }
-    for (int ii = PRN_QZSS_START; ii <= PRN_QZSS_END; ii++) {
-      delete _qzssEph[ii-PRN_QZSS_START];
-      _qzssEph[ii-PRN_QZSS_START] = 0;
-    }
-    for (int ii = PRN_GLONASS_START; ii <= PRN_GLONASS_END; ii++) {
-      delete _glonassEph[ii-PRN_GLONASS_START];
-      _glonassEph[ii-PRN_GLONASS_START] = 0;
-    }
-    for (int ii = PRN_GALILEO_START; ii <= PRN_GALILEO_END; ii++) {
-      delete _galileoEph[ii-PRN_GALILEO_START];
-      _galileoEph[ii-PRN_GALILEO_START] = 0;
-    }
-    for (int ii = PRN_SBAS_START; ii <= PRN_SBAS_END; ii++) {
-      delete _sbasEph[ii-PRN_SBAS_START];
-      _sbasEph[ii-PRN_SBAS_START] = 0;
     }
 
     delete _ephStreamGPS;
@@ -522,48 +429,14 @@ void t_bncCore::printEphHeader() {
   }
 }
 
-// Print One GPS Ephemeris
+// Print One Ephemeris
 ////////////////////////////////////////////////////////////////////////////
-void t_bncCore::printGPSEph(gpsephemeris* ep, bool printFile) {
-
-  t_ephGPS eph;
-  eph.set(ep);
+void t_bncCore::printEph(const t_eph& eph, bool printFile) {
 
   QString strV2 = eph.toString(t_rnxNavFile::defaultRnxNavVersion2);
   QString strV3 = eph.toString(t_rnxObsHeader::defaultRnxObsVersion3);
-
-  printOutput(printFile, _ephStreamGPS, strV2, strV3);
-}
-
-// Print One Glonass Ephemeris
-////////////////////////////////////////////////////////////////////////////
-void t_bncCore::printGlonassEph(glonassephemeris* ep, bool printFile, const QString& /* staID */) {
-
-  t_ephGlo eph;
-  eph.set(ep);
-
-  QString strV2 = eph.toString(t_rnxNavFile::defaultRnxNavVersion2);
-  QString strV3 = eph.toString(t_rnxObsHeader::defaultRnxObsVersion3);
-
-  //// beg test Dirk
-  // QString hlp = strV2;
-  // cout << hlp.replace('\n', ' ').toAscii().data() << ' ' << staID.toAscii().data() << endl;
-  //// end test Dirk
 
   printOutput(printFile, _ephStreamGlonass, strV2, strV3);
-}
-
-// Print One Galileo Ephemeris
-////////////////////////////////////////////////////////////////////////////
-void t_bncCore::printGalileoEph(galileoephemeris* ep, bool printFile) {
-
-  t_ephGal eph;
-  eph.set(ep);
-
-  QString strV2 = eph.toString(t_rnxNavFile::defaultRnxNavVersion2);
-  QString strV3 = eph.toString(t_rnxObsHeader::defaultRnxObsVersion3);
-
-  printOutput(printFile, _ephStreamGalileo, strV2, strV3);
 }
 
 // Output
@@ -763,19 +636,6 @@ void t_bncCore::stopCombination() {
 #endif
 }
 
-// Check Ephemeris Consistency
-////////////////////////////////////////////////////////////////////////////
-void t_bncCore::checkEphemeris(gpsephemeris* oldEph, gpsephemeris* newEph) {
-  if (oldEph->clock_bias      != newEph->clock_bias      ||
-      oldEph->clock_drift     != newEph->clock_drift     ||
-      oldEph->clock_driftrate != newEph->clock_driftrate) {
-    QString msg = currentDateAndTimeGPS().toString(Qt::ISODate) +
-                  QString(" %1 EPH DIFFERS\n").arg(oldEph->satellite);
-    messagePrivate(msg.toAscii());
-  }
-}
-
-
 //
 ////////////////////////////////////////////////////////////////////////////
 bool t_bncCore::dateAndTimeGPSSet() const {
@@ -821,56 +681,3 @@ void t_bncCore::stopPPP() {
   emit stopRinexPPP();
 }
 
-// New SBAS Ephemeris
-////////////////////////////////////////////////////////////////////////////
-void t_bncCore::slotNewSBASEph(sbasephemeris* sbaseph) {
-  QMutexLocker locker(&_mutex);
-
-  // Check wrong Ephemerides
-  // -----------------------
-  if (sbaseph->x_pos == 0.0 && 
-      sbaseph->y_pos == 0.0 && 
-      sbaseph->z_pos == 0.0) {
-    delete sbaseph;
-    return;
-  } 
-
-  sbasephemeris copy_sbaseph = *sbaseph;
-  emit newEphSBAS(copy_sbaseph);
-
-  printEphHeader();
-
-  sbasephemeris** ee = &_sbasEph[sbaseph->satellite - PRN_SBAS_START];
-
-  bool replace = false;
-  if (*ee != 0) {
-    bncTime oldTime((*ee)->GPSweek_TOE,   double((*ee)->TOE));
-    bncTime newTime(sbaseph->GPSweek_TOE, double(sbaseph->TOE));
-    if (newTime > oldTime) {
-      replace = true;
-    }
-  }
-
-  if ( *ee == 0 || replace) {
-    delete *ee;
-    *ee = sbaseph;
-    printSBASEph(sbaseph, true);
-  }
-  else {
-    printSBASEph(sbaseph, false);
-    delete sbaseph;
-  }
-}
-
-// Print One SBAS Ephemeris
-////////////////////////////////////////////////////////////////////////////
-void t_bncCore::printSBASEph(sbasephemeris* ep, bool printFile) {
-
-  t_ephSBAS eph;
-  eph.set(ep);
-
-  QString strV2 = eph.toString(t_rnxNavFile::defaultRnxNavVersion2);
-  QString strV3 = eph.toString(t_rnxObsHeader::defaultRnxObsVersion3);
-
-  printOutput(printFile, _ephStreamSBAS, strV2, strV3);
-}

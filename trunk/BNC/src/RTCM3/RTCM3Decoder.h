@@ -31,6 +31,7 @@
 #include "GPSDecoder.h"
 #include "RTCM3coDecoder.h"
 #include "bncrawfile.h"
+#include "ephemeris.h"
 
 extern "C" {
 #include "rtcm3torinex.h"
@@ -46,10 +47,10 @@ Q_OBJECT
 
  signals:
   void newMessage(QByteArray msg,bool showOnScreen);
-  void newGPSEph(gpsephemeris* gpseph);
-  void newGlonassEph(glonassephemeris* glonasseph, const QString& staID);
-  void newSBASEph(sbasephemeris* sbaseph);
-  void newGalileoEph(galileoephemeris* galileoeph);
+  void newGPSEph(t_ephGPS eph);
+  void newGlonassEph(t_ephGlo eph);
+  void newSBASEph(t_ephSBAS eph);
+  void newGalileoEph(t_ephGal eph);
 
  private:
   enum t_mode{unknown = 0, observations, corrections};
