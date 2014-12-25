@@ -275,10 +275,6 @@ void bncCaster::addGetThread(bncGetThread* getThread, bool noNewThread) {
 
   qRegisterMetaType<t_satObs>("t_satObs");
   qRegisterMetaType< QList<t_satObs> >("QList<t_satObs>");
-  qRegisterMetaType<gpsephemeris>("gpsephemeris");
-  qRegisterMetaType<glonassephemeris>("glonassephemeris");
-  qRegisterMetaType<galileoephemeris>("galileoephemeris");
-  qRegisterMetaType<sbasephemeris>("sbasephemeris");
 
   connect(getThread, SIGNAL(newObs(QByteArray, QList<t_satObs>)),
           this,      SLOT(slotNewObs(QByteArray, QList<t_satObs>)));

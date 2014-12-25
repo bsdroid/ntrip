@@ -73,14 +73,10 @@ RTCM3Decoder::RTCM3Decoder(const QString& staID, bncRawFile* rawFile) :
   bncSettings settings;
   _checkMountPoint = settings.value("miscMount").toString();
 
-  connect(this, SIGNAL(newGPSEph(gpsephemeris*)), 
-          BNC_CORE, SLOT(slotNewGPSEph(gpsephemeris*)));
-  connect(this, SIGNAL(newGlonassEph(glonassephemeris*, const QString&)), 
-          BNC_CORE, SLOT(slotNewGlonassEph(glonassephemeris*, const QString&)));
-  connect(this, SIGNAL(newGalileoEph(galileoephemeris*)), 
-          BNC_CORE, SLOT(slotNewGalileoEph(galileoephemeris*)));
-  connect(this, SIGNAL(newSBASEph(sbasephemeris*)), 
-          BNC_CORE, SLOT(slotNewSBASEph(sbasephemeris*)));
+  connect(this, SIGNAL(newGPSEph(t_ephGPS)),     BNC_CORE, SLOT(slotNewGPSEph(t_ephGPS)));
+  connect(this, SIGNAL(newGlonassEph(t_ephGlo)), BNC_CORE, SLOT(slotNewGlonassEph(t_ephGlo)));
+  connect(this, SIGNAL(newGalileoEph(t_ephGal)), BNC_CORE, SLOT(slotNewGalileoEph(t_ephGal)));
+  connect(this, SIGNAL(newSBASEph(t_ephSBAS)),   BNC_CORE, SLOT(slotNewSBASEph(t_ephSBAS)));
 
   // Mode can be either observations or corrections
   // ----------------------------------------------
@@ -377,7 +373,8 @@ t_irc RTCM3Decoder::Decode(char* buffer, int bufLen, vector<string>& errmsg) {
           // -------------
           else if (rr == 1019) {
             decoded = true;
-            emit newGPSEph(new gpsephemeris(parser.ephemerisGPS));
+            t_ephGPS eph; eph.set(&parser.ephemerisGPS);
+            emit newGPSEph(eph);
           }
     
           // GLONASS Ephemeris
@@ -385,28 +382,32 @@ t_irc RTCM3Decoder::Decode(char* buffer, int bufLen, vector<string>& errmsg) {
           else if (rr == 1020 && parser.ephemerisGLONASS.almanac_number >= 1 &&
                                  parser.ephemerisGLONASS.almanac_number <= PRN_GLONASS_NUM) {
             decoded = true;
-            emit newGlonassEph(new glonassephemeris(parser.ephemerisGLONASS), _staID);
+            t_ephGlo eph; eph.set(&parser.ephemerisGLONASS);
+            emit newGlonassEph(eph);
           }
 
           // Galileo Ephemeris
           // -----------------
           else if (rr == 1045 || rr == 1046) {
             decoded = true;
-            emit newGalileoEph(new galileoephemeris(parser.ephemerisGALILEO));
+            t_ephGal eph; eph.set(&parser.ephemerisGALILEO);
+            emit newGalileoEph(eph);
           }
 
           // QZSS Ephemeris
           // --------------
           else if (rr == 1044) {
             decoded = true;
-            emit newGPSEph(new gpsephemeris(parser.ephemerisGPS));
+            t_ephGPS eph; eph.set(&parser.ephemerisGPS);
+            emit newGPSEph(eph);
           }
 
           // SBAS Ephemeris
           // --------------
           else if (rr == 1043) {
             decoded = true;
-            emit newSBASEph(new sbasephemeris(parser.ephemerisSBAS));
+            t_ephSBAS eph; eph.set(&parser.ephemerisSBAS);
+            emit newSBASEph(eph);
           }
         }
       }

@@ -30,7 +30,7 @@
 #include "bnctime.h"
 #include "bnccaster.h"
 #include "bncrawfile.h"
-#include "RTCM3/RTCM3Decoder.h"
+#include "bncephuser.h"
 
 class bncComb;
 class bncTableItem;
@@ -75,20 +75,20 @@ friend class bncSettings;
 
  public slots:
   void slotMessage(QByteArray msg, bool showOnScreen);
-  void slotNewGPSEph(gpsephemeris* gpseph);
-  void slotNewGlonassEph(glonassephemeris* glonasseph, const QString& staID);
-  void slotNewGalileoEph(galileoephemeris* galileoeph);
-  void slotNewSBASEph(sbasephemeris* sbaseph);
+  void slotNewGPSEph(t_ephGPS);
+  void slotNewGlonassEph(t_ephGlo);
+  void slotNewGalileoEph(t_ephGal);
+  void slotNewSBASEph(t_ephSBAS);
   void slotNewOrbCorrections(QList<t_orbCorr> orbCorr);
   void slotNewClkCorrections(QList<t_clkCorr> clkCorr);
   void slotQuit();
 
  signals:
   void newMessage(QByteArray msg, bool showOnScreen);
-  void newEphGPS(gpsephemeris gpseph);
-  void newEphGlonass(glonassephemeris glonasseph);
-  void newEphGalileo(galileoephemeris galileoeph);
-  void newEphSBAS(sbasephemeris sbaseph);
+  void newGPSEph(t_ephGPS eph);
+  void newGlonassEph(t_ephGlo eph);
+  void newSBASEph(t_ephSBAS eph);
+  void newGalileoEph(t_ephGal eph);
   void newOrbCorrections(QList<t_orbCorr> orbCorr);
   void newClkCorrections(QList<t_clkCorr> clkCorr);
   void providerIDChanged(QString);
@@ -105,14 +105,10 @@ friend class bncSettings;
 
  private:
   void printEphHeader();
-  void printGPSEph(gpsephemeris* ep, bool printFile);
-  void printGlonassEph(glonassephemeris* ep, bool printFile, const QString& staID);
-  void printGalileoEph(galileoephemeris* ep, bool printFile);
-  void printSBASEph(sbasephemeris* ep, bool printFile);
+  void printEph(const t_eph& eph, bool printFile);
   void printOutput(bool printFile, QTextStream* stream, 
                    const QString& strV2, const QString& strV3);
   void messagePrivate(const QByteArray& msg);
-  void checkEphemeris(gpsephemeris* oldEph, gpsephemeris* newEph);
 
   QSettings::SettingsMap _settings;
   QFile*                 _logFile;
@@ -131,11 +127,6 @@ friend class bncSettings;
   QTextStream*           _ephStreamGalileo;
   QFile*                 _ephFileSBAS;
   QTextStream*           _ephStreamSBAS;
-  gpsephemeris*          _gpsEph[PRN_GPS_END - PRN_GPS_START + 1];
-  gpsephemeris*          _qzssEph[PRN_QZSS_END - PRN_QZSS_START + 1];
-  glonassephemeris*      _glonassEph[PRN_GLONASS_END - PRN_GLONASS_START + 1];
-  galileoephemeris*      _galileoEph[PRN_GALILEO_END - PRN_GALILEO_START + 1];
-  sbasephemeris*         _sbasEph[PRN_SBAS_END - PRN_SBAS_START + 1];
   QString                _userName;
   QString                _pgmName;
   int                    _port;
@@ -158,6 +149,7 @@ friend class bncSettings;
   QDateTime*             _dateAndTimeGPS;
   mutable QMutex         _mutexDateAndTimeGPS;
   BNC_PPP::t_pppMain*    _pppMain;
+  bncEphUser             _ephUser;
 };
 
 #define BNC_CORE (t_bncCore::instance())

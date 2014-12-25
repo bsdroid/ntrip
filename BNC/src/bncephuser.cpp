@@ -47,20 +47,24 @@ using namespace std;
 
 // Constructor
 ////////////////////////////////////////////////////////////////////////////
+bncEphUser::bncEphUser() {
+}
+
+// Constructor
+////////////////////////////////////////////////////////////////////////////
 bncEphUser::bncEphUser(bool connectSlots) {
-
   if (connectSlots) {
-    connect(BNC_CORE, SIGNAL(newEphGPS(gpsephemeris)),
-            this, SLOT(slotNewEphGPS(gpsephemeris)), Qt::DirectConnection);
-    
-    connect(BNC_CORE, SIGNAL(newEphGlonass(glonassephemeris)),
-            this, SLOT(slotNewEphGlonass(glonassephemeris)), Qt::DirectConnection);
-    
-    connect(BNC_CORE, SIGNAL(newEphGalileo(galileoephemeris)),
-            this, SLOT(slotNewEphGalileo(galileoephemeris)), Qt::DirectConnection);
+    connect(BNC_CORE, SIGNAL(newEphGPS(t_ephGPS)),
+            this, SLOT(slotNewEphGPS(t_ephGPS)), Qt::DirectConnection);
+  
+    connect(BNC_CORE, SIGNAL(newEphGlonass(t_ephGlo)),
+            this, SLOT(slotNewEphGlonass(t_ephGlo)), Qt::DirectConnection);
+  
+    connect(BNC_CORE, SIGNAL(newEphGalileo(t_ephGal)),
+            this, SLOT(slotNewEphGalileo(t_ephGal)), Qt::DirectConnection);
 
-    connect(BNC_CORE, SIGNAL(newEphSBAS(sbasephemeris)),
-            this, SLOT(slotNewEphSBAS(sbasephemeris)), Qt::DirectConnection);
+    connect(BNC_CORE, SIGNAL(newEphSBAS(t_ephSBAS)),
+            this, SLOT(slotNewEphSBAS(t_ephSBAS)), Qt::DirectConnection);
   }
 }
 
@@ -74,40 +78,28 @@ bncEphUser::~bncEphUser() {
   }
 }
 
-// 
+// New GPS Ephemeris 
 ////////////////////////////////////////////////////////////////////////////
-void bncEphUser::slotNewEphGPS(gpsephemeris gpseph) {
-  t_ephGPS* newEph = new t_ephGPS(); newEph->set(&gpseph);
-  if (putNewEph(newEph) != success) {
-    delete newEph;
-  }
+void bncEphUser::slotNewGPSEph(t_ephGPS eph) {
+  putNewEph(&eph);
+}
+    
+// New Glonass Ephemeris
+////////////////////////////////////////////////////////////////////////////
+void bncEphUser::slotNewGlonassEph(t_ephGlo eph) {
+  putNewEph(&eph);
 }
 
-// 
+// New Galileo Ephemeris
 ////////////////////////////////////////////////////////////////////////////
-void bncEphUser::slotNewEphGlonass(glonassephemeris gloeph) {
-  t_ephGlo* newEph = new t_ephGlo(); newEph->set(&gloeph);
-  if (putNewEph(newEph) != success) {
-    delete newEph;
-  }
+void bncEphUser::slotNewGalileoEph(t_ephGal eph) {
+  putNewEph(&eph);
 }
 
-// 
+// New SBAS Ephemeris
 ////////////////////////////////////////////////////////////////////////////
-void bncEphUser::slotNewEphGalileo(galileoephemeris galeph) {
-  t_ephGal* newEph = new t_ephGal(); newEph->set(&galeph);
-  if (putNewEph(newEph) != success) {
-    delete newEph;
-  }
-}
-
-// 
-////////////////////////////////////////////////////////////////////////////
-void bncEphUser::slotNewEphSBAS(sbasephemeris sbaseph) {
-  t_ephSBAS* newEph = new t_ephSBAS(); newEph->set(&sbaseph);
-  if (putNewEph(newEph) != success) {
-    delete newEph;
-  }
+void bncEphUser::slotNewSBASEph(t_ephSBAS eph) {
+  putNewEph(&eph);
 }
 
 // 
@@ -117,7 +109,7 @@ t_irc bncEphUser::putNewEph(t_eph* newEph) {
 
   t_irc irc = failure;
 
-  if (!newEph) {
+  if (newEph == 0) {
     return irc;
   }
 
