@@ -34,9 +34,9 @@ class t_pppRun : public QObject {
   void finishedRnxPPP();
 
  public slots:
-  void slotNewEphGPS(t_ephGPS);
-  void slotNewEphGlonass(t_ephGlo);
-  void slotNewEphGalileo(t_ephGal);
+  void slotNewGPSEph(t_ephGPS);
+  void slotNewGlonassEph(t_ephGlo);
+  void slotNewGalileoEph(t_ephGal);
   void slotNewOrbCorrections(QList<t_orbCorr> orbCorr);
   void slotNewClkCorrections(QList<t_clkCorr> clkCorr);
   void slotNewObs(QByteArray staID, QList<t_satObs> obsList);
