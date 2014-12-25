@@ -1072,6 +1072,10 @@ bncWindow::bncWindow() {
   _sp3CompFileChooser->setMinimumWidth(15*ww);
   _sp3CompFileChooser->setMaximumWidth(15*ww);
 
+  _sp3CompExclude = new QLineEdit(settings.value("sp3CompExclude").toString());
+  _sp3CompExclude->setMinimumWidth(15*ww);
+  _sp3CompExclude->setMaximumWidth(15*ww);
+
   _sp3CompLogLineEdit = new QLineEdit(settings.value("sp3CompOutLogFile").toString());
   _sp3CompLogLineEdit->setWhatsThis(tr("Specify the full path to a logfile."));
   _sp3CompLogLineEdit->setMinimumWidth(15*ww);
@@ -1082,6 +1086,9 @@ bncWindow::bncWindow() {
   ++ir;
   sp3CompLayout->addWidget(new QLabel("Input SP3 files (full path)"),  ir, 0, Qt::AlignLeft);
   sp3CompLayout->addWidget(_sp3CompFileChooser,                        ir, 1, Qt::AlignRight);
+  ++ir;
+  sp3CompLayout->addWidget(new QLabel("Exclude Satellites"),           ir, 0, Qt::AlignLeft);
+  sp3CompLayout->addWidget(_sp3CompExclude,                            ir, 1, Qt::AlignRight);
   ++ir;
   sp3CompLayout->addWidget(new QLabel("Log File"),                     ir, 0, Qt::AlignLeft);
   sp3CompLayout->addWidget(_sp3CompLogLineEdit,                        ir, 1, Qt::AlignRight);
@@ -1682,6 +1689,7 @@ void bncWindow::saveOptions() {
   settings.setValue("reqcLogSummaryOnly", _reqcLogSummaryOnly->checkState());
 // SP3 Comparison
   settings.setValue("sp3CompFile",       _sp3CompFileChooser->fileName());
+  settings.setValue("sp3CompExclude",    _sp3CompExclude->text());
   settings.setValue("sp3CompOutLogFile", _sp3CompLogLineEdit->text());
 // Combine Corrections
   if (!combineStreams.isEmpty()) {
