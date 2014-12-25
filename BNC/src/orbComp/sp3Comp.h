@@ -86,11 +86,11 @@ Q_OBJECT
   void compare(std::ostringstream& out) const;
   bool excludeSat(const t_prn& prn) const;
 
-  QStringList     _sp3FileNames;
-  QString         _logFileName;
-  QFile*          _logFile;
-  QTextStream*    _log;
-  std::set<t_prn> _excludeSats;
+  QStringList  _sp3FileNames;
+  QString      _logFileName;
+  QFile*       _logFile;
+  QTextStream* _log;
+  QStringList  _excludeSats;
 };
 
 #endif

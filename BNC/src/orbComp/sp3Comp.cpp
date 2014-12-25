@@ -48,15 +48,6 @@
 
 using namespace std;
 
-bool excludeSat(const t_prn& prn) {
-  if (prn == t_prn('R', 7)) {
-    return true;
-  }
-  else {
-    return false;
-  }
-}
-
 // Constructor
 ////////////////////////////////////////////////////////////////////////////
 t_sp3Comp::t_sp3Comp(QObject* parent) : QThread(parent) {
@@ -70,30 +61,7 @@ t_sp3Comp::t_sp3Comp(QObject* parent) : QThread(parent) {
   _logFile     = 0;
   _log         = 0;
 
-  //// beg test
-  _excludeSats.insert(t_prn('R',  2));
-  _excludeSats.insert(t_prn('R',  3));
-  _excludeSats.insert(t_prn('R',  4));
-  _excludeSats.insert(t_prn('R',  5));
-  _excludeSats.insert(t_prn('R',  6));
-  _excludeSats.insert(t_prn('R',  7));
-  _excludeSats.insert(t_prn('R',  9));
-  _excludeSats.insert(t_prn('R', 10));
-  _excludeSats.insert(t_prn('R', 11));
-  _excludeSats.insert(t_prn('R', 12));
-  _excludeSats.insert(t_prn('R', 13));
-  _excludeSats.insert(t_prn('R', 14));
-  _excludeSats.insert(t_prn('R', 15));
-  _excludeSats.insert(t_prn('R', 16));
-  _excludeSats.insert(t_prn('R', 17));
-  _excludeSats.insert(t_prn('R', 18));
-  _excludeSats.insert(t_prn('R', 19));
-  _excludeSats.insert(t_prn('R', 20));
-  _excludeSats.insert(t_prn('R', 21));
-  _excludeSats.insert(t_prn('R', 22));
-  _excludeSats.insert(t_prn('R', 23));
-  _excludeSats.insert(t_prn('R', 24));
-  //// end test
+  _excludeSats = settings.value("sp3CompExclude").toString().split(QRegExp("[ ,]"), QString::SkipEmptyParts);
 }
 
 // Destructor
@@ -434,11 +402,13 @@ void t_sp3Comp::compare(ostringstream& out) const {
 // 
 ////////////////////////////////////////////////////////////////////////////
 bool t_sp3Comp::excludeSat(const t_prn& prn) const {
-  if (_excludeSats.find(prn) != _excludeSats.end()) {
-    return true;
+  QStringListIterator it(_excludeSats);
+  while (it.hasNext()) {
+    string prnStr = it.next().toAscii().data();
+    if (prnStr == prn.toString() || prnStr == prn.toString().substr(0,1)) {
+      return true;
+    }
   }
-  else {
-    return false;
-  }
+  return false;
 }
 
