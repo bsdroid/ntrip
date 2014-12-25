@@ -54,17 +54,17 @@ bncEphUser::bncEphUser() {
 ////////////////////////////////////////////////////////////////////////////
 bncEphUser::bncEphUser(bool connectSlots) {
   if (connectSlots) {
-    connect(BNC_CORE, SIGNAL(newEphGPS(t_ephGPS)),
-            this, SLOT(slotNewEphGPS(t_ephGPS)), Qt::DirectConnection);
+    connect(BNC_CORE, SIGNAL(newGPSEph(t_ephGPS)),
+            this, SLOT(slotNewGPSEph(t_ephGPS)), Qt::DirectConnection);
   
-    connect(BNC_CORE, SIGNAL(newEphGlonass(t_ephGlo)),
-            this, SLOT(slotNewEphGlonass(t_ephGlo)), Qt::DirectConnection);
+    connect(BNC_CORE, SIGNAL(newGlonassEph(t_ephGlo)),
+            this, SLOT(slotNewGlonassEph(t_ephGlo)), Qt::DirectConnection);
   
-    connect(BNC_CORE, SIGNAL(newEphGalileo(t_ephGal)),
-            this, SLOT(slotNewEphGalileo(t_ephGal)), Qt::DirectConnection);
+    connect(BNC_CORE, SIGNAL(newGalileoEph(t_ephGal)),
+            this, SLOT(slotNewGalileoEph(t_ephGal)), Qt::DirectConnection);
 
-    connect(BNC_CORE, SIGNAL(newEphSBAS(t_ephSBAS)),
-            this, SLOT(slotNewEphSBAS(t_ephSBAS)), Qt::DirectConnection);
+    connect(BNC_CORE, SIGNAL(newSBASEph(t_ephSBAS)),
+            this, SLOT(slotNewSBASEph(t_ephSBAS)), Qt::DirectConnection);
   }
 }
 
