@@ -524,7 +524,13 @@ void t_reqcAnalyze::preparePlotData(const t_rnxObsFile* obsFile) {
   QString sn2Title = "Signal-to-Noise Ratio\n";
 
   bncSettings settings;
-  QStringList signalsOpt = settings.value("reqcSkyPlotSignals").toString().split(" ", QString::SkipEmptyParts);
+  
+  QString reqcSkyPlotSignals = settings.value("reqcSkyPlotSignals").toString();
+  if (reqcSkyPlotSignals.isEmpty()) {
+    reqcSkyPlotSignals = "G:1&2 R:1&2 J:1&2 E:1&7 C:1&6";
+  }
+
+  QStringList signalsOpt = reqcSkyPlotSignals.split(" ", QString::SkipEmptyParts);
   QMap<char, QString> signalTypes1;
   QMap<char, QString> signalTypes2;
   for (int ii = 0; ii < signalsOpt.size(); ii++) {
