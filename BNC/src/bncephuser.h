@@ -67,7 +67,7 @@ class bncEphUser : public QObject {
     }
   }
 
-  t_irc putNewEph(t_eph* newEph);
+  t_irc putNewEph(const t_eph* newEph);
 
  public slots:
   void slotNewGPSEph(t_ephGPS);

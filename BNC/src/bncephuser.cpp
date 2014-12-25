@@ -104,31 +104,58 @@ void bncEphUser::slotNewSBASEph(t_ephSBAS eph) {
 
 // 
 ////////////////////////////////////////////////////////////////////////////
-t_irc bncEphUser::putNewEph(t_eph* newEph) {
+t_irc bncEphUser::putNewEph(const t_eph* eph) {
+
   QMutexLocker locker(&_mutex);
 
-  t_irc irc = failure;
+  if (eph == 0) {
+    return failure;
+  }
 
-  if (newEph == 0) {
-    return irc;
+  const t_ephGPS*     ephGPS     = dynamic_cast<const t_ephGPS*>(eph);
+  const t_ephGlo*     ephGlo     = dynamic_cast<const t_ephGlo*>(eph);
+  const t_ephGal*     ephGal     = dynamic_cast<const t_ephGal*>(eph);
+  const t_ephSBAS*    ephSBAS    = dynamic_cast<const t_ephSBAS*>(eph);
+  const t_ephCompass* ephCompass = dynamic_cast<const t_ephCompass*>(eph);
+
+  t_eph* newEph = 0;
+
+  if      (ephGPS) {
+    newEph = new t_ephGPS(*ephGPS);
+  }
+  else if (ephGlo) {
+    newEph = new t_ephGlo(*ephGlo);
+  }
+  else if (ephGal) {
+    newEph = new t_ephGal(*ephGal);
+  }
+  else if (ephSBAS) {
+    newEph = new t_ephSBAS(*ephSBAS);
+  }
+  else if (ephCompass) {
+    newEph = new t_ephCompass(*ephCompass);
+  }
+  else {
+    return failure;
   }
 
   QString prn(newEph->prn().toString().c_str());
+
   if (_eph.contains(prn)) {
     if (newEph->isNewerThan(_eph.value(prn)->last)) {
       delete _eph.value(prn)->prev;
       _eph.value(prn)->prev = _eph.value(prn)->last;
       _eph.value(prn)->last = newEph;
       ephBufferChanged();
-      irc = success;
+      return success;
     }
   }
   else {
     _eph.insert(prn, new t_ephPair(newEph));
     ephBufferChanged();
-    irc = success;
+    return success;
   }
 
-  return irc;
+  return failure;
 }
 
