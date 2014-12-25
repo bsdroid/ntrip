@@ -71,8 +71,28 @@ t_sp3Comp::t_sp3Comp(QObject* parent) : QThread(parent) {
   _log         = 0;
 
   //// beg test
-  // _excludeSats.insert(t_prn('R', 7));
-  // _excludeSats.insert(t_prn('R', 8));
+  _excludeSats.insert(t_prn('R',  2));
+  _excludeSats.insert(t_prn('R',  3));
+  _excludeSats.insert(t_prn('R',  4));
+  _excludeSats.insert(t_prn('R',  5));
+  _excludeSats.insert(t_prn('R',  6));
+  _excludeSats.insert(t_prn('R',  7));
+  _excludeSats.insert(t_prn('R',  9));
+  _excludeSats.insert(t_prn('R', 10));
+  _excludeSats.insert(t_prn('R', 11));
+  _excludeSats.insert(t_prn('R', 12));
+  _excludeSats.insert(t_prn('R', 13));
+  _excludeSats.insert(t_prn('R', 14));
+  _excludeSats.insert(t_prn('R', 15));
+  _excludeSats.insert(t_prn('R', 16));
+  _excludeSats.insert(t_prn('R', 17));
+  _excludeSats.insert(t_prn('R', 18));
+  _excludeSats.insert(t_prn('R', 19));
+  _excludeSats.insert(t_prn('R', 20));
+  _excludeSats.insert(t_prn('R', 21));
+  _excludeSats.insert(t_prn('R', 22));
+  _excludeSats.insert(t_prn('R', 23));
+  _excludeSats.insert(t_prn('R', 24));
   //// end test
 }
 

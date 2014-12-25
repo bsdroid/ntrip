@@ -151,6 +151,7 @@ class bncWindow : public QMainWindow {
     QCheckBox*     _reqcLogSummaryOnly;
 
     qtFileChooser* _sp3CompFileChooser;
+    QLineEdit*     _sp3CompExclude;
     QLineEdit*     _sp3CompLogLineEdit;
 
     QCheckBox* _rnxV3CheckBox;
