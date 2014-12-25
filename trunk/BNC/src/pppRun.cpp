@@ -87,14 +87,14 @@ t_pppRun::t_pppRun(const t_pppOptions* opt) {
     connect(BNC_CORE->caster(), SIGNAL(newObs(QByteArray, QList<t_satObs>)),
             this, SLOT(slotNewObs(QByteArray, QList<t_satObs>)),conType);
 
-    connect(BNC_CORE, SIGNAL(newEphGPS(t_ephGPS)),
-            this, SLOT(slotNewEphGPS(t_ephGPS)),conType);
+    connect(BNC_CORE, SIGNAL(newGPSEph(t_ephGPS)),
+            this, SLOT(slotNewGPSEph(t_ephGPS)),conType);
   
-    connect(BNC_CORE, SIGNAL(newEphGlonass(t_ephGlo)),
-            this, SLOT(slotNewEphGlonass(t_ephGlo)),conType);
+    connect(BNC_CORE, SIGNAL(newGlonassEph(t_ephGlo)),
+            this, SLOT(slotNewGlonassEph(t_ephGlo)),conType);
   
-    connect(BNC_CORE, SIGNAL(newEphGalileo(t_ephGal)),
-            this, SLOT(slotNewEphGalileo(t_ephGal)),conType);
+    connect(BNC_CORE, SIGNAL(newGalileoEph(t_ephGal)),
+            this, SLOT(slotNewGalileoEph(t_ephGal)),conType);
 
     connect(BNC_CORE, SIGNAL(newOrbCorrections(QList<t_orbCorr>)),
             this, SLOT(slotNewOrbCorrections(QList<t_orbCorr>)),conType);
@@ -156,21 +156,21 @@ t_pppRun::~t_pppRun() {
 
 // 
 ////////////////////////////////////////////////////////////////////////////
-void t_pppRun::slotNewEphGPS(t_ephGPS eph) {
+void t_pppRun::slotNewGPSEph(t_ephGPS eph) {
   QMutexLocker locker(&_mutex);
   _pppClient->putEphemeris(&eph);
 }
 
 // 
 ////////////////////////////////////////////////////////////////////////////
-void t_pppRun::slotNewEphGlonass(t_ephGlo eph) {
+void t_pppRun::slotNewGlonassEph(t_ephGlo eph) {
   QMutexLocker locker(&_mutex);
   _pppClient->putEphemeris(&eph);
 }
   
 // 
 ////////////////////////////////////////////////////////////////////////////
-void t_pppRun::slotNewEphGalileo(t_ephGal eph) {
+void t_pppRun::slotNewGalileoEph(t_ephGal eph) {
   QMutexLocker locker(&_mutex);
   _pppClient->putEphemeris(&eph);
 }
