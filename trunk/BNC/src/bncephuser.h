@@ -48,14 +48,14 @@ class bncEphUser : public QObject {
 
   t_irc putNewEph(const t_eph* newEph, bool check);
 
-  const t_eph* ephLast(const QString& prn) {
+  t_eph* ephLast(const QString& prn) {
     if (_eph.contains(prn)) {
       return _eph[prn].back();
     }
     return 0;
   }
 
-  const t_eph* ephPrev(const QString& prn) {
+  t_eph* ephPrev(const QString& prn) {
     if (_eph.contains(prn)) {
       unsigned nn = _eph[prn].size();
       if (nn > 1) {

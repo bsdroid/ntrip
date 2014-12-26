@@ -165,9 +165,9 @@ void t_pppClient::putNewObs(t_satData* satData) {
 
       int channel = 0;
       if (satData->system() == 'R') {
-        const bncEphUser::t_ephPair* ephPair = _ephUser->ephPair(satData->prn);
-        if (ephPair) {
-          channel = ephPair->last->slotNum();
+        const t_eph* eph = _ephUser->ephLast(satData->prn);
+        if (eph) {
+          channel = eph->slotNum();
         }
         else {
           delete satData;
@@ -220,16 +220,13 @@ void t_pppClient::putNewObs(t_satData* satData) {
 void t_pppClient::putOrbCorrections(const std::vector<t_orbCorr*>& corr) {
   for (unsigned ii = 0; ii < corr.size(); ii++) {
     QString prn = QString(corr[ii]->_prn.toString().c_str());
-    const bncEphUser::t_ephPair* ephPair = _ephUser->ephPair(prn);
-    if (ephPair) {
-      t_eph* eLast = ephPair->last;
-      t_eph* ePrev = ephPair->prev;
-      if      (eLast && eLast->IOD() == corr[ii]->_iod) {
-        eLast->setOrbCorr(corr[ii]);
-      }
-      else if (ePrev && ePrev->IOD() == corr[ii]->_iod) {
-        ePrev->setOrbCorr(corr[ii]);
-      }
+    t_eph* eLast = _ephUser->ephLast(prn);
+    t_eph* ePrev = _ephUser->ephPrev(prn);
+    if      (eLast && eLast->IOD() == corr[ii]->_iod) {
+      eLast->setOrbCorr(corr[ii]);
+    }
+    else if (ePrev && ePrev->IOD() == corr[ii]->_iod) {
+      ePrev->setOrbCorr(corr[ii]);
     }
   }
 }
@@ -239,16 +236,13 @@ void t_pppClient::putOrbCorrections(const std::vector<t_orbCorr*>& corr) {
 void t_pppClient::putClkCorrections(const std::vector<t_clkCorr*>& corr) {
   for (unsigned ii = 0; ii < corr.size(); ii++) {
     QString prn = QString(corr[ii]->_prn.toString().c_str());
-    const bncEphUser::t_ephPair* ephPair = _ephUser->ephPair(prn);
-    if (ephPair) {
-      t_eph* eLast = ephPair->last;
-      t_eph* ePrev = ephPair->prev;
-      if      (eLast && eLast->IOD() == corr[ii]->_iod) {
-        eLast->setClkCorr(corr[ii]);
-      }
-      else if (ePrev && ePrev->IOD() == corr[ii]->_iod) {
-        ePrev->setClkCorr(corr[ii]);
-      }
+    t_eph* eLast = _ephUser->ephLast(prn);
+    t_eph* ePrev = _ephUser->ephPrev(prn);
+    if      (eLast && eLast->IOD() == corr[ii]->_iod) {
+      eLast->setClkCorr(corr[ii]);
+    }
+    else if (ePrev && ePrev->IOD() == corr[ii]->_iod) {
+      ePrev->setClkCorr(corr[ii]);
     }
   }
 }
@@ -265,13 +259,13 @@ void t_pppClient::putEphemeris(const t_eph* eph) {
   const t_ephGlo* ephGlo = dynamic_cast<const t_ephGlo*>(eph);
   const t_ephGal* ephGal = dynamic_cast<const t_ephGal*>(eph);
   if      (ephGPS) {
-    _ephUser->putNewEph(new t_ephGPS(*ephGPS));
+    _ephUser->putNewEph(new t_ephGPS(*ephGPS), false);
   }
   else if (ephGlo) {
-    _ephUser->putNewEph(new t_ephGlo(*ephGlo));
+    _ephUser->putNewEph(new t_ephGlo(*ephGlo), false);
   }
   else if (ephGal) {
-    _ephUser->putNewEph(new t_ephGal(*ephGal));
+    _ephUser->putNewEph(new t_ephGal(*ephGal), false);
   }
 }
 
@@ -280,16 +274,13 @@ void t_pppClient::putEphemeris(const t_eph* eph) {
 t_irc t_pppClient::getSatPos(const bncTime& tt, const QString& prn, 
                               ColumnVector& xc, ColumnVector& vv) {
 
-  const bncEphUser::t_ephPair* ephPair = _ephUser->ephPair(prn);
-  if (ephPair) {
-    t_eph* eLast = ephPair->last;
-    t_eph* ePrev = ephPair->prev;
-    if      (eLast && eLast->getCrd(tt, xc, vv, _opt->useOrbClkCorr()) == success) {
-      return success;
-    }
-    else if (ePrev && ePrev->getCrd(tt, xc, vv, _opt->useOrbClkCorr()) == success) {
-      return success;
-    }
+  t_eph* eLast = _ephUser->ephLast(prn);
+  t_eph* ePrev = _ephUser->ephPrev(prn);
+  if      (eLast && eLast->getCrd(tt, xc, vv, _opt->useOrbClkCorr()) == success) {
+    return success;
+  }
+  else if (ePrev && ePrev->getCrd(tt, xc, vv, _opt->useOrbClkCorr()) == success) {
+    return success;
   }
   return failure;
 }
