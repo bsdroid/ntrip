@@ -108,6 +108,9 @@ void t_sp3Comp::run() {
   catch (Exception& exc) {
     *_log << "ERROR: " << exc.what() << endl;
   }
+  catch (std::exception& exc) {
+    *_log << "ERROR: " << exc.what() << endl;
+  }
   catch (QString error) {
     *_log << "ERROR: " << error << endl;
   }
