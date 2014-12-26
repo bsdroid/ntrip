@@ -62,30 +62,30 @@ class bncCaster : public QObject {
    void slotGetThreadFinished(QByteArray staID);
 
  private:
-   void dumpEpochs(long minTime, long maxTime);
+   void dumpEpochs(const bncTime& maxTime);
    static int myWrite(QTcpSocket* sock, const char* buf, int bufLen);
    void reopenOutFile();
 
-   QFile*                     _outFile;
-   QTextStream*               _out;
-   QMultiMap<long, t_satObs>* _epochs;
-   long                       _lastDumpSec;
-   QTcpServer*                _server;
-   QTcpServer*                _uServer;
-   QTcpServer*                _nmeaServer;
-   QList<QTcpSocket*>*        _sockets;
-   QList<QTcpSocket*>*        _uSockets;
-   QList<QTcpSocket*>*        _nmeaSockets;
-   QList<QByteArray>          _staIDs;
-   QList<bncGetThread*>       _threads;
-   int                        _samplingRate;
-   long                       _waitTime;
-   QMutex                     _mutex;
-   int                        _confInterval;
-   QString                    _miscMount;
-   int                        _miscPort;
-   QTcpServer*                _miscServer;
-   QList<QTcpSocket*>*        _miscSockets;
+   QFile*                          _outFile;
+   QTextStream*                    _out;
+   QMap<bncTime, QList<t_satObs> > _epochs;
+   bncTime                         _lastDumpTime;
+   QTcpServer*                     _server;
+   QTcpServer*                     _uServer;
+   QTcpServer*                     _nmeaServer;
+   QList<QTcpSocket*>*             _sockets;
+   QList<QTcpSocket*>*             _uSockets;
+   QList<QTcpSocket*>*             _nmeaSockets;
+   QList<QByteArray>               _staIDs;
+   QList<bncGetThread*>            _threads;
+   int                             _samplingRate;
+   double                          _waitTime;
+   QMutex                          _mutex;
+   int                             _confInterval;
+   QString                         _miscMount;
+   int                             _miscPort;
+   QTcpServer*                     _miscServer;
+   QList<QTcpSocket*>*             _miscSockets;
 };
 
 #endif
