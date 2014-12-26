@@ -46,7 +46,7 @@ class bncEphUser : public QObject {
   bncEphUser(bool connectSlots);
   virtual ~bncEphUser();
 
-  t_irc putNewEph(const t_eph* newEph);
+  t_irc putNewEph(const t_eph* newEph, bool check);
 
   const t_eph* ephLast(const QString& prn) {
     if (_eph.contains(prn)) {
