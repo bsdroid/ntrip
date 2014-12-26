@@ -198,7 +198,7 @@ int main(int argc, char* argv[]) {
     bncCaster* caster = new bncCaster();
     
     BNC_CORE->setCaster(caster);
-    BNC_CORE->setPort(settings.value("outEphPort").toInt());
+    BNC_CORE->setPortEph(settings.value("outEphPort").toInt());
     BNC_CORE->setPortCorr(settings.value("corrPort").toInt());
     BNC_CORE->initCombination();
     

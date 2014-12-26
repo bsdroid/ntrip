@@ -50,7 +50,7 @@ friend class bncSettings;
   e_mode            mode() const {return _mode;}
   void              setGUIenabled(bool GUIenabled) {_GUIenabled = GUIenabled;}
   void              setMode(e_mode mode) {_mode = mode;}
-  void              setPort(int port);
+  void              setPortEph(int port);
   void              setPortCorr(int port);
   void              setCaster(bncCaster* caster) {_caster = caster;}
   const bncCaster*  caster() const {return _caster;}
@@ -100,14 +100,14 @@ friend class bncSettings;
   void stopRinexPPP();
     
  private slots:
-  void slotNewConnection();
+  void slotNewConnectionEph();
   void slotNewConnectionCorr();
 
  private:
   void printEphHeader();
   void printEph(const t_eph& eph, bool printFile);
-  void printOutput(bool printFile, QTextStream* stream, 
-                   const QString& strV2, const QString& strV3);
+  void printOutputEph(bool printFile, QTextStream* stream, 
+                      const QString& strV2, const QString& strV3);
   void messagePrivate(const QByteArray& msg);
 
   QSettings::SettingsMap _settings;
@@ -129,9 +129,9 @@ friend class bncSettings;
   QTextStream*           _ephStreamSBAS;
   QString                _userName;
   QString                _pgmName;
-  int                    _port;
-  QTcpServer*            _server;
-  QList<QTcpSocket*>*    _sockets;
+  int                    _portEph;
+  QTcpServer*            _serverEph;
+  QList<QTcpSocket*>*    _socketsEph;
   int                    _portCorr;
   QTcpServer*            _serverCorr;
   QList<QTcpSocket*>*    _socketsCorr;

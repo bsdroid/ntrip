@@ -90,9 +90,9 @@ t_bncCore::t_bncCore() : _ephUser(false) {
   _ephFileSBAS      = 0;
   _ephStreamSBAS    = 0;
 
-  _port    = 0;
-  _server  = 0;
-  _sockets = 0;
+  _portEph    = 0;
+  _serverEph  = 0;
+  _socketsEph = 0;
 
   _portCorr    = 0;
   _serverCorr  = 0;
@@ -127,8 +127,8 @@ t_bncCore::~t_bncCore() {
   delete _logFile;
   delete _ephStreamGPS;
   delete _ephFileGPS;
-  delete _server;
-  delete _sockets;
+  delete _serverEph;
+  delete _socketsEph;
   delete _serverCorr;
   delete _socketsCorr;
   if (_rinexVers == 2) {
@@ -436,13 +436,13 @@ void t_bncCore::printEph(const t_eph& eph, bool printFile) {
   QString strV2 = eph.toString(t_rnxNavFile::defaultRnxNavVersion2);
   QString strV3 = eph.toString(t_rnxObsHeader::defaultRnxObsVersion3);
 
-  printOutput(printFile, _ephStreamGlonass, strV2, strV3);
+  printOutputEph(printFile, _ephStreamGlonass, strV2, strV3);
 }
 
 // Output
 ////////////////////////////////////////////////////////////////////////////
-void t_bncCore::printOutput(bool printFile, QTextStream* stream,
-                         const QString& strV2, const QString& strV3) {
+void t_bncCore::printOutputEph(bool printFile, QTextStream* stream,
+                               const QString& strV2, const QString& strV3) {
 
   // Output into file
   // ----------------
@@ -458,8 +458,8 @@ void t_bncCore::printOutput(bool printFile, QTextStream* stream,
 
   // Output into the socket
   // ----------------------
-  if (_sockets) {
-    QMutableListIterator<QTcpSocket*> is(*_sockets);
+  if (_socketsEph) {
+    QMutableListIterator<QTcpSocket*> is(*_socketsEph);
     while (is.hasNext()) {
       QTcpSocket* sock = is.next();
       if (sock->state() == QAbstractSocket::ConnectedState) {
@@ -478,17 +478,17 @@ void t_bncCore::printOutput(bool printFile, QTextStream* stream,
 
 // Set Port Number
 ////////////////////////////////////////////////////////////////////////////
-void t_bncCore::setPort(int port) {
-  _port = port;
-  if (_port != 0) {
-    delete _server;
-    _server = new QTcpServer;
-    if ( !_server->listen(QHostAddress::Any, _port) ) {
+void t_bncCore::setPortEph(int port) {
+  _portEph = port;
+  if (_portEph != 0) {
+    delete _serverEph;
+    _serverEph = new QTcpServer;
+    if ( !_serverEph->listen(QHostAddress::Any, _portEph) ) {
       slotMessage("t_bncCore: Cannot listen on ephemeris port", true);
     }
-    connect(_server, SIGNAL(newConnection()), this, SLOT(slotNewConnection()));
-    delete _sockets;
-    _sockets = new QList<QTcpSocket*>;
+    connect(_serverEph, SIGNAL(newConnection()), this, SLOT(slotNewConnectionEph()));
+    delete _socketsEph;
+    _socketsEph = new QList<QTcpSocket*>;
   }
 }
 
@@ -510,8 +510,8 @@ void t_bncCore::setPortCorr(int port) {
 
 // New Connection
 ////////////////////////////////////////////////////////////////////////////
-void t_bncCore::slotNewConnection() {
-  _sockets->push_back( _server->nextPendingConnection() );
+void t_bncCore::slotNewConnectionEph() {
+  _socketsEph->push_back( _serverEph->nextPendingConnection() );
 }
 
 // New Connection
