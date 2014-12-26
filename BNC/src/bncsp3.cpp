@@ -173,9 +173,10 @@ const bncSP3::t_sp3Epoch* bncSP3::nextEpoch() {
     _currEpoch->_tt.set(YY, MM, DD, hh, mm, ss);
   }
 
-  while (true) {
+  while (_stream.good()) {
     getline(_stream, _lastLine);
     if (_stream.eof() || _lastLine.find("EOF") == 0) {
+      _stream.close();
       break;
     }
     if (_lastLine[0] == '*') {
