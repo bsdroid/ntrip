@@ -54,7 +54,7 @@ using namespace rtcm2;
 // Constructor
 // 
 
-RTCM2Decoder::RTCM2Decoder(const std::string& ID) {
+RTCM2Decoder::RTCM2Decoder(const std::string& ID) : bncEphUser(true) {
   _ID = ID;
 }
 

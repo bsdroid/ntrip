@@ -24,7 +24,7 @@ using namespace std;
 
 // Constructor
 ////////////////////////////////////////////////////////////////////////////
-bncEphUploadCaster::bncEphUploadCaster() {
+bncEphUploadCaster::bncEphUploadCaster() : bncEphUser(true) {
   bncSettings settings;
 
   QString mountpoint = settings.value("uploadEphMountpoint").toString();

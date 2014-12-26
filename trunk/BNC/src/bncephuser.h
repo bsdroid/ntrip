@@ -40,7 +40,6 @@ class bncEphUser : public QObject {
  Q_OBJECT
 
  public:
-  bncEphUser();
   bncEphUser(bool connectSlots);
   virtual ~bncEphUser();
 
