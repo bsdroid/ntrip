@@ -52,10 +52,11 @@ class bncMapWin : public QDialog {
  private:
   void loadHtmlPage();
   void gotoLocation(double lat, double lon);
-  QWebView* _webView;
-  QLabel*   _statusLabel;
-  double    _currLat;
-  double    _currLon;
+  QWebView*  _webView;
+  QLabel*    _statusLabel;
+  double     _currLat;
+  double     _currLon;
+  QByteArray _staID;
 };
 
 #endif
