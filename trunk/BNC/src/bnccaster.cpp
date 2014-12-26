@@ -220,7 +220,7 @@ void bncCaster::slotNewObs(const QByteArray staID, QList<t_satObs> obsList) {
         bncSettings settings;
         if ( !settings.value("outFile").toString().isEmpty() || 
              !settings.value("outPort").toString().isEmpty() ) { 
-          emit( newMessage(QString("%1: Old epoch %2 (%3) thrown away")
+          emit( newMessage(QString("%1: Old epoch %2 thrown away")
           		   .arg(staID.data()).arg(string(obs._time).c_str())
         		   .toAscii(), true) );
         }
