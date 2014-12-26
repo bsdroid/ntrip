@@ -67,7 +67,7 @@ t_bncCore* t_bncCore::instance() {
 
 // Constructor
 ////////////////////////////////////////////////////////////////////////////
-t_bncCore::t_bncCore() {
+t_bncCore::t_bncCore() : _ephUser(false) {
   _GUIenabled  = true;
   _logFileFlag = 0;
   _logFile     = 0;

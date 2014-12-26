@@ -59,7 +59,7 @@ bncRtnetUploadCaster::bncRtnetUploadCaster(const QString& mountpoint,
 
   // Member that receives the ephemeris
   // ----------------------------------
-  _ephUser = new bncEphUser();
+  _ephUser = new bncEphUser(true);
 
   bncSettings settings;
   QString     intr  = settings.value("uploadIntr").toString();
