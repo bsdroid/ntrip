@@ -28,7 +28,7 @@ class bncRtnetUploadCaster : public bncUploadCaster {
  protected:
   virtual ~bncRtnetUploadCaster();
  private:
-  void processSatellite(t_eph* eph, int GPSweek, 
+  void processSatellite(const t_eph* eph, int GPSweek, 
                         double GPSweeks, const QString& prn, 
                         const ColumnVector& rtnAPC,
                         double rtnClk,
@@ -64,7 +64,7 @@ class bncRtnetUploadCaster : public bncUploadCaster {
   double         _t0;
   bncClockRinex* _rnx;
   bncSP3*        _sp3;
-  QMap<QString, t_eph*>* _usedEph;
+  QMap<QString, const t_eph*>* _usedEph;
 };
 
 #endif
