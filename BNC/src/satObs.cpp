@@ -38,7 +38,7 @@ void t_clkCorr::reset() {
 string t_clkCorr::toLine() const {
   ostringstream str;
   str.setf(ios::showpoint | ios::fixed);
-  str << "C " << _staID << ' ' << _time.gpsw() << ' ' << setprecision(2) << _time.gpssec() << ' '
+  str << "C " << _time.gpsw() << ' ' << setprecision(2) << _time.gpssec() << ' '
       << _prn.toString() << ' ' << setw(3) << _iod << ' '
       << setw(10) << setprecision(4) << _dClk       * t_CST::c << ' '
       << setw(10) << setprecision(4) << _dotDClk    * t_CST::c << ' '
@@ -76,7 +76,7 @@ void t_orbCorr::reset() {
 string t_orbCorr::toLine() const {
   ostringstream str;
   str.setf(ios::showpoint | ios::fixed);
-  str << "O " << _staID << ' ' << _time.gpsw() << ' ' << setprecision(2) << _time.gpssec() << ' '
+  str << "O " << _time.gpsw() << ' ' << setprecision(2) << _time.gpssec() << ' '
       << _prn.toString() << ' ' << setw(3) << _iod << ' '
       << setw(10) << setprecision(4) << _xr[0]     << ' '
       << setw(10) << setprecision(4) << _xr[1]     << ' '
