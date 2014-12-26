@@ -111,11 +111,11 @@ bncCaster::bncCaster() {
     _nmeaSockets = 0;
   }
 
-  _epochs = new QMultiMap<long, t_satObs>;
-
   _samplingRate = settings.value("binSampl").toInt();
-  _waitTime     = settings.value("waitTime").toInt();
-  _lastDumpSec  = 0; 
+  _waitTime     = settings.value("waitTime").toDouble();
+  if (_waitTime <= 0.0) {
+    _waitTime = 0.01;
+  }
   _confInterval = -1;
 
   // Miscellaneous output port
@@ -155,7 +155,6 @@ bncCaster::~bncCaster() {
   delete _uSockets;
   delete _nmeaServer;
   delete _nmeaSockets;
-  delete _epochs;
   delete _miscServer;
   delete _miscSockets;
 }
@@ -174,9 +173,6 @@ void bncCaster::slotNewObs(const QByteArray staID, QList<t_satObs> obsList) {
     ++index;
     t_satObs& obs = it.next();
 
-    long iSec    = long(floor(obs._time.gpssec()+0.5));
-    long newTime = obs._time.gpsw() * 7*24*3600 + iSec;
-    
     // Rename the Station
     // ------------------
     obs._staID = staID.data();
@@ -211,25 +207,21 @@ void bncCaster::slotNewObs(const QByteArray staID, QList<t_satObs> obsList) {
       }
     }
     
-    // First time, set the _lastDumpSec immediately
-    // --------------------------------------------
-    if (_lastDumpSec == 0) {
-      _lastDumpSec = newTime - 1;
+    // First time: set the _lastDumpTime
+    // ---------------------------------
+    if (!_lastDumpTime.valid()) {
+      _lastDumpTime = obs._time - 1.0;
     }
     
     // An old observation - throw it away
     // ----------------------------------
-    if (newTime <= _lastDumpSec) {
+    if (obs._time <= _lastDumpTime) {
       if (index == 1) {
         bncSettings settings;
         if ( !settings.value("outFile").toString().isEmpty() || 
              !settings.value("outPort").toString().isEmpty() ) { 
-    
-          QTime enomtime = QTime(0,0,0).addSecs(iSec);
-    
           emit( newMessage(QString("%1: Old epoch %2 (%3) thrown away")
-          		   .arg(staID.data()).arg(iSec)
-        		   .arg(enomtime.toString("HH:mm:ss"))
+          		   .arg(staID.data()).arg(string(obs._time).c_str())
         		   .toAscii(), true) );
         }
       }
@@ -238,13 +230,13 @@ void bncCaster::slotNewObs(const QByteArray staID, QList<t_satObs> obsList) {
     
     // Save the observation
     // --------------------
-    _epochs->insert(newTime, obs);
+    _epochs[obs._time].push_back(obs);
 
     // Dump Epochs
     // -----------
-    if (newTime - _waitTime > _lastDumpSec) {
-      dumpEpochs(_lastDumpSec + 1, newTime - _waitTime);
-      _lastDumpSec = newTime - _waitTime;
+    if (obs._time - _waitTime > _lastDumpTime) {
+      dumpEpochs(obs._time - _waitTime);
+      _lastDumpTime = obs._time - _waitTime;
     }
   }
 }
@@ -323,62 +315,65 @@ void bncCaster::slotGetThreadFinished(QByteArray staID) {
 
 // Dump Complete Epochs
 ////////////////////////////////////////////////////////////////////////////
-void bncCaster::dumpEpochs(long minTime, long maxTime) {
+void bncCaster::dumpEpochs(const bncTime& maxTime) {
 
-  for (long sec = minTime; sec <= maxTime; sec++) {
-
-    if ( (_out || _sockets) && 
-         (_samplingRate == 0 || sec % _samplingRate == 0) ) {
-
-      QList<t_satObs> allObs = _epochs->values(sec);
+  QMutableMapIterator<bncTime, QList<t_satObs> > itEpo(_epochs);
+  while (itEpo.hasNext()) {
+    itEpo.next();
+    const bncTime& epoTime = itEpo.key();
+    if (epoTime <= maxTime) {
+      const QList<t_satObs>& allObs = itEpo.value();
+      int sec = int(nint(epoTime.gpssec()));
+      if ( (_out || _sockets) && (_samplingRate == 0 || sec % _samplingRate == 0) ) {
       
-      QListIterator<t_satObs> it(allObs);
-      bool firstObs = true;
-      while (it.hasNext()) {
-        const t_satObs& obs = it.next();
-
-        ostringstream oStr;
-        oStr.setf(ios::showpoint | ios::fixed);
-        if (firstObs) { 
-          firstObs = false;
-          oStr << "> " << obs._time.gpsw() << ' ' 
-               << setprecision(7) << obs._time.gpssec() << endl;;
-        }
-        oStr << obs._staID << ' ' << bncRinex::asciiSatLine(obs) << endl;
-        if (!it.hasNext()) { 
-          oStr << endl;
-        }
-        string hlpStr = oStr.str();
-
-        // Output into the File
-        // --------------------
-        if (_out) {
-          *_out << hlpStr.c_str();
-          _out->flush();
-        }
-
-        // Output into the socket
-        // ----------------------
-        if (_sockets) {
-          QMutableListIterator<QTcpSocket*> is(*_sockets);
-          while (is.hasNext()) {
-            QTcpSocket* sock = is.next();
-            if (sock->state() == QAbstractSocket::ConnectedState) {
-              int numBytes = hlpStr.length(); 
-              if (myWrite(sock, hlpStr.c_str(), numBytes) != numBytes) {
+        QListIterator<t_satObs> it(allObs);
+        bool firstObs = true;
+        while (it.hasNext()) {
+          const t_satObs& obs = it.next();
+        
+          ostringstream oStr;
+          oStr.setf(ios::showpoint | ios::fixed);
+          if (firstObs) { 
+            firstObs = false;
+            oStr << "> " << obs._time.gpsw() << ' ' 
+                 << setprecision(7) << obs._time.gpssec() << endl;;
+          }
+          oStr << obs._staID << ' ' << bncRinex::asciiSatLine(obs) << endl;
+          if (!it.hasNext()) { 
+            oStr << endl;
+          }
+          string hlpStr = oStr.str();
+        
+          // Output into the File
+          // --------------------
+          if (_out) {
+            *_out << hlpStr.c_str();
+            _out->flush();
+          }
+        
+          // Output into the socket
+          // ----------------------
+          if (_sockets) {
+            QMutableListIterator<QTcpSocket*> is(*_sockets);
+            while (is.hasNext()) {
+              QTcpSocket* sock = is.next();
+              if (sock->state() == QAbstractSocket::ConnectedState) {
+                int numBytes = hlpStr.length(); 
+                if (myWrite(sock, hlpStr.c_str(), numBytes) != numBytes) {
+                  delete sock;
+                  is.remove();
+                }
+              }
+              else if (sock->state() != QAbstractSocket::ConnectingState) {
                 delete sock;
                 is.remove();
               }
             }
-            else if (sock->state() != QAbstractSocket::ConnectingState) {
-              delete sock;
-              is.remove();
-            }
           }
         }
       }
+      _epochs.remove(epoTime);
     }
-    _epochs->remove(sec);
   }
 }
 
