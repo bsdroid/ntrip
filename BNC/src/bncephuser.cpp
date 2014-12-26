@@ -79,30 +79,30 @@ bncEphUser::~bncEphUser() {
 // New GPS Ephemeris 
 ////////////////////////////////////////////////////////////////////////////
 void bncEphUser::slotNewGPSEph(t_ephGPS eph) {
-  putNewEph(&eph);
+  putNewEph(&eph, false);
 }
     
 // New Glonass Ephemeris
 ////////////////////////////////////////////////////////////////////////////
 void bncEphUser::slotNewGlonassEph(t_ephGlo eph) {
-  putNewEph(&eph);
+  putNewEph(&eph, false);
 }
 
 // New Galileo Ephemeris
 ////////////////////////////////////////////////////////////////////////////
 void bncEphUser::slotNewGalileoEph(t_ephGal eph) {
-  putNewEph(&eph);
+  putNewEph(&eph, false);
 }
 
 // New SBAS Ephemeris
 ////////////////////////////////////////////////////////////////////////////
 void bncEphUser::slotNewSBASEph(t_ephSBAS eph) {
-  putNewEph(&eph);
+  putNewEph(&eph, false);
 }
 
 // 
 ////////////////////////////////////////////////////////////////////////////
-t_irc bncEphUser::putNewEph(const t_eph* eph) {
+t_irc bncEphUser::putNewEph(const t_eph* eph, bool check) {
 
   QMutexLocker locker(&_mutex);
 

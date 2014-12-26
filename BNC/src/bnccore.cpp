@@ -206,7 +206,7 @@ void t_bncCore::slotNewGPSEph(t_ephGPS eph) {
 
   printEphHeader();
 
-  if (_ephUser.putNewEph(&eph) == success) {
+  if (_ephUser.putNewEph(&eph, true) == success) {
     printEph(eph, true);
   }
   else {
@@ -224,7 +224,7 @@ void t_bncCore::slotNewGlonassEph(t_ephGlo eph) {
 
   printEphHeader();
 
-  if (_ephUser.putNewEph(&eph) == success) {
+  if (_ephUser.putNewEph(&eph, true) == success) {
     printEph(eph, true);
   }
   else {
@@ -242,7 +242,7 @@ void t_bncCore::slotNewGalileoEph(t_ephGal eph) {
 
   printEphHeader();
 
-  if (_ephUser.putNewEph(&eph) == success) {
+  if (_ephUser.putNewEph(&eph, true) == success) {
     printEph(eph, true);
   }
   else {
@@ -260,7 +260,7 @@ void t_bncCore::slotNewSBASEph(t_ephSBAS eph) {
 
   printEphHeader();
 
-  if (_ephUser.putNewEph(&eph) == success) {
+  if (_ephUser.putNewEph(&eph, true) == success) {
     printEph(eph, true);
   }
   else {
