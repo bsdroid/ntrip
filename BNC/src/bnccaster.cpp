@@ -66,11 +66,11 @@ bncCaster::bncCaster() {
   _out     = 0;
   reopenOutFile();
 
-  _port = settings.value("outPort").toInt();
+  int port = settings.value("outPort").toInt();
 
-  if (_port != 0) {
+  if (port != 0) {
     _server = new QTcpServer;
-    if ( !_server->listen(QHostAddress::Any, _port) ) {
+    if ( !_server->listen(QHostAddress::Any, port) ) {
       emit newMessage("bncCaster: Cannot listen on sync port", true);
     }
     connect(_server, SIGNAL(newConnection()), this, SLOT(slotNewConnection()));

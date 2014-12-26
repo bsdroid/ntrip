@@ -67,7 +67,6 @@ class bncCaster : public QObject {
    void reopenOutFile();
 
    QFile*                     _outFile;
-   int                        _port;
    QTextStream*               _out;
    QMultiMap<long, t_satObs>* _epochs;
    long                       _lastDumpSec;
