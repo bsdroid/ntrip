@@ -291,8 +291,6 @@ void RTCM2Decoder::translateCorr2Obs(vector<string>& errmsg) {
       prn = sys + QString("%1").arg(corr->PRN - 200, 2, 10, QChar('0'));
     }
 
-    const t_ephPair* ePair = ephPair(prn); 
-
     double L1 = 0;
     double L2 = 0;
     double P1 = 0;
@@ -353,13 +351,11 @@ void RTCM2Decoder::translateCorr2Obs(vector<string>& errmsg) {
       }
 
       // Select corresponding ephemerides
-      if (ePair) {
-        if      (ePair->last && ePair->last->IOD() == IODcorr) {
-          eph = ePair->last;
-        }
-        else if (ePair->prev && ePair->prev->IOD() == IODcorr) {
-          eph = ePair->prev;
-        }
+      if      (ephLast(prn) && ephLast(prn)->IOD() == IODcorr) {
+        eph = ephLast(prn);
+      }
+      else if (ephPrev(prn) && ephPrev(prn)->IOD() == IODcorr) {
+        eph = ephPrev(prn);
       }
 
       if ( eph ) {

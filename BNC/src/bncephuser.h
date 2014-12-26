@@ -39,9 +39,34 @@ extern "C" {
 class bncEphUser : public QObject {
  Q_OBJECT
 
+ public slots:
+  void slotNewGPSEph(t_ephGPS);
+  void slotNewGlonassEph(t_ephGlo);
+  void slotNewGalileoEph(t_ephGal);
+  void slotNewSBASEph(t_ephSBAS);
+
  public:
   bncEphUser(bool connectSlots);
   virtual ~bncEphUser();
+
+  t_irc putNewEph(const t_eph* newEph);
+
+  const t_eph* ephLast(const QString& prn) {
+    if (_eph.contains(prn)) {
+      return _eph[prn]->last;
+    }
+    return 0;
+  }
+
+  const t_eph* ephPrev(const QString& prn) {
+    if (_eph.contains(prn)) {
+      return _eph[prn]->prev;
+    }
+    return 0;
+  }
+
+ protected:
+  virtual void ephBufferChanged() {}
 
   class t_ephPair {
    public:
@@ -57,25 +82,6 @@ class bncEphUser : public QObject {
     t_eph* prev;
   };
 
-  const t_ephPair* ephPair(const QString& prn) {
-    if (_eph.contains(prn)) {
-      return _eph[prn];
-    }
-    else {
-      return 0;
-    }
-  }
-
-  t_irc putNewEph(const t_eph* newEph);
-
- public slots:
-  void slotNewGPSEph(t_ephGPS);
-  void slotNewGlonassEph(t_ephGlo);
-  void slotNewGalileoEph(t_ephGal);
-  void slotNewSBASEph(t_ephSBAS);
-
- protected:
-  virtual void ephBufferChanged() {}
   QMutex                    _mutex;
   QMap<QString, t_ephPair*> _eph;
 };

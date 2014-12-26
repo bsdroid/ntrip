@@ -72,7 +72,7 @@ bncRtnetUploadCaster::bncRtnetUploadCaster(const QString& mountpoint,
     _usedEph = 0;
   }
   else {
-    _usedEph = new QMap<QString, t_eph*>;
+    _usedEph = new QMap<QString, const t_eph*>;
   }
 
   // RINEX writer
@@ -347,18 +347,18 @@ void bncRtnetUploadCaster::decodeRtnetStream(char* buffer, int bufLen) {
 
     in >> prn;
 
-    t_eph* eph = 0;
-    const bncEphUser::t_ephPair* ephPair = _ephUser->ephPair(prn);
-    if (ephPair) {
+    const t_eph* ephLast = _ephUser->ephLast(prn);
+    const t_eph* ephPrev = _ephUser->ephPrev(prn);
+    const t_eph* eph     = ephLast;
 
-      eph = ephPair->last;
+    if (eph) {
 
       // Use previous ephemeris if the last one is too recent
       // ----------------------------------------------------
       const int MINAGE = 60; // seconds
-      if (ephPair->prev && eph->receptDateTime().isValid() &&
+      if (ephPrev && eph->receptDateTime().isValid() &&
           eph->receptDateTime().secsTo(currentDateAndTimeGPS()) < MINAGE) {
-        eph = ephPair->prev;
+        eph = ephPrev;
       }
 
       // Make sure the clock messages refer to same IOD as orbit messages
@@ -370,12 +370,12 @@ void bncRtnetUploadCaster::decodeRtnetStream(char* buffer, int bufLen) {
         else {
           eph = 0;
           if (_usedEph->contains(prn)) {
-            t_eph* usedEph = _usedEph->value(prn);
-            if      (usedEph == ephPair->last) {
-              eph = ephPair->last;
+            const t_eph* usedEph = _usedEph->value(prn);
+            if      (usedEph == ephLast) {
+              eph = ephLast;
             }
-            else if (usedEph == ephPair->prev) {
-              eph = ephPair->prev;
+            else if (usedEph == ephPrev) {
+              eph = ephPrev;
             }
           }
         }
@@ -637,7 +637,7 @@ void bncRtnetUploadCaster::decodeRtnetStream(char* buffer, int bufLen) {
 
 //
 ////////////////////////////////////////////////////////////////////////////
-void bncRtnetUploadCaster::processSatellite(t_eph* eph, int GPSweek,
+void bncRtnetUploadCaster::processSatellite(const t_eph* eph, int GPSweek,
                                             double GPSweeks, const QString& prn,
                                             const ColumnVector& rtnAPC,
                                             double rtnClk,
