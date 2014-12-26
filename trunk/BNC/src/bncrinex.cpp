@@ -386,7 +386,7 @@ void bncRinex::deepCopy(t_satObs obs) {
 
 // Write One Epoch into the RINEX File
 ////////////////////////////////////////////////////////////////////////////
-void bncRinex::dumpEpoch(const QByteArray& format, long maxTime) {
+void bncRinex::dumpEpoch(const QByteArray& format, const bncTime& maxTime) {
 
   // Select observations older than maxTime
   // --------------------------------------
@@ -394,7 +394,7 @@ void bncRinex::dumpEpoch(const QByteArray& format, long maxTime) {
   QMutableListIterator<t_satObs> mIt(_obs);
   while (mIt.hasNext()) {
     t_satObs obs = mIt.next();
-    if (obs._time.gpsw() * 7*24*3600 + obs._time.gpssec() < maxTime - 0.05) {
+    if (obs._time < maxTime) {
       obsList.push_back(obs);
       mIt.remove();
     }
