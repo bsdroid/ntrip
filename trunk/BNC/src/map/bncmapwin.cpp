@@ -58,9 +58,13 @@ bncMapWin::bncMapWin(QWidget* parent) : QDialog(parent) {
   _webView = new QWebView(this);
   connect(_webView, SIGNAL(loadFinished(bool)), this, SLOT(slotInitMap(bool)));
 
+  // Plot Required Station
+  // ---------------------
+  bncSettings settings;
+  _staID = settings.value("PPP/plotCoordinates").toByteArray();
+
   // Proxy Settings
   // --------------
-  bncSettings settings;
   QString proxyHost = settings.value("proxyHost").toString();
   int     proxyPort = settings.value("proxyPort").toInt();
   if (!proxyHost.isEmpty()) {
@@ -163,7 +167,10 @@ void bncMapWin::gotoLocation(double lat, double lon) {
 
 // 
 ////////////////////////////////////////////////////////////////////////////
-void bncMapWin::slotNewPosition(QByteArray /* staID */, bncTime /* time */, QVector<double> xx) {
+void bncMapWin::slotNewPosition(QByteArray staID, bncTime /* time */, QVector<double> xx) {
+  if (!_staID.isEmpty() && _staID != staID) {
+    return;
+  }
   double ell[3];
   xyz2ell(xx.data(), ell);
   gotoLocation(ell[0]*180.0/M_PI, ell[1]*180.0/M_PI);
