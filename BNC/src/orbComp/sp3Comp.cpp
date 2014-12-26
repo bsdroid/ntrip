@@ -53,7 +53,7 @@ using namespace std;
 t_sp3Comp::t_sp3Comp(QObject* parent) : QThread(parent) {
 
   bncSettings settings;
-  _sp3FileNames = settings.value("sp3CompFile").toString().split(',', QString::SkipEmptyParts);
+  _sp3FileNames = settings.value("sp3CompFile").toString().split(QRegExp("[ ,]"), QString::SkipEmptyParts);
   for (int ii = 0; ii < _sp3FileNames.size(); ii++) {
     expandEnvVar(_sp3FileNames[ii]);
   }
