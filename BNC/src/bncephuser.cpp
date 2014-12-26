@@ -66,10 +66,13 @@ bncEphUser::bncEphUser(bool connectSlots) {
 // Destructor
 ////////////////////////////////////////////////////////////////////////////
 bncEphUser::~bncEphUser() {
-  QMapIterator<QString, t_ephPair*> it(_eph);
+  QMapIterator<QString, deque<t_eph*> > it(_eph);
   while (it.hasNext()) {
     it.next();
-    delete it.value();
+    const deque<t_eph*>& qq = it.value();
+    for (unsigned ii = 0; ii < qq.size(); ii++) {
+      delete qq[ii];
+    }
   }
 }
 
@@ -136,21 +139,20 @@ t_irc bncEphUser::putNewEph(const t_eph* eph) {
 
   QString prn(newEph->prn().toString().c_str());
 
-  if (_eph.contains(prn)) {
-    if (newEph->isNewerThan(_eph.value(prn)->last)) {
-      delete _eph.value(prn)->prev;
-      _eph.value(prn)->prev = _eph.value(prn)->last;
-      _eph.value(prn)->last = newEph;
-      ephBufferChanged();
-      return success;
+  const t_eph* ephOld = ephLast(prn);
+
+  if (ephOld == 0 || newEph->isNewerThan(ephOld)) {
+    deque<t_eph*>& qq = _eph[prn];
+    qq.push_back(newEph);
+    if (qq.size() > _maxQueueSize) {
+      delete qq.front();
+      qq.pop_front();
     }
-  }
-  else {
-    _eph.insert(prn, new t_ephPair(newEph));
     ephBufferChanged();
     return success;
   }
-
-  return failure;
+  else {
+    return failure;
+  }
 }
 

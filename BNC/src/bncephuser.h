@@ -25,16 +25,13 @@
 #ifndef BNCEPHUSER_H
 #define BNCEPHUSER_H
 
+#include <deque>
 #include <QtCore>
 #include <newmat.h>
 
 #include "bncconst.h"
 #include "bnctime.h"
 #include "ephemeris.h"
-
-extern "C" {
-#  include "clock_orbit_rtcm.h"
-}
 
 class bncEphUser : public QObject {
  Q_OBJECT
@@ -53,37 +50,30 @@ class bncEphUser : public QObject {
 
   const t_eph* ephLast(const QString& prn) {
     if (_eph.contains(prn)) {
-      return _eph[prn]->last;
+      return _eph[prn].back();
     }
     return 0;
   }
 
   const t_eph* ephPrev(const QString& prn) {
     if (_eph.contains(prn)) {
-      return _eph[prn]->prev;
+      unsigned nn = _eph[prn].size();
+      if (nn > 1) {
+        return _eph[prn].at(nn-2);
+      }
     }
     return 0;
   }
 
+  const QList<QString> prnList() {return _eph.keys();}
+
  protected:
   virtual void ephBufferChanged() {}
 
-  class t_ephPair {
-   public:
-    t_ephPair(t_eph* lastEph) {
-      last = lastEph;
-      prev = 0;
-    }
-    ~t_ephPair() {
-      delete last;
-      delete prev;
-    }
-    t_eph* last;
-    t_eph* prev;
-  };
-
-  QMutex                    _mutex;
-  QMap<QString, t_ephPair*> _eph;
+ private:
+  QMutex                             _mutex;
+  static const unsigned              _maxQueueSize = 5;
+  QMap<QString, std::deque<t_eph*> > _eph;
 };
 
 #endif
