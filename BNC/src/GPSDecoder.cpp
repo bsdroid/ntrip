@@ -80,11 +80,10 @@ void GPSDecoder::initRinex(const QByteArray& staID, const QUrl& mountPoint,
 void GPSDecoder::dumpRinexEpoch(const t_satObs& obs, const QByteArray& format) {
   if (_rnx) {
     long iSec    = long(floor(obs._time.gpssec()+0.5));
-    long obsTime = obs._time.gpsw() * 7*24*3600 + iSec;
     if (_rnx->samplingRate() == 0 || iSec % _rnx->samplingRate() == 0) {
       _rnx->deepCopy(obs);
     }
-    _rnx->dumpEpoch(format, obsTime);
+    _rnx->dumpEpoch(format, obs._time);
   }
 } 
 

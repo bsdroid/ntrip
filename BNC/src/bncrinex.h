@@ -41,7 +41,7 @@ class bncRinex {
 
    int  samplingRate() const {return _samplingRate;}
    void deepCopy(t_satObs obs);
-   void dumpEpoch(const QByteArray& format, long maxTime);
+   void dumpEpoch(const QByteArray& format, const bncTime& maxTime);
    void setReconnectFlag(bool flag){_reconnectFlag = flag;}
 
    static QString nextEpochStr(const QDateTime& datTim,
