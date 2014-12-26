@@ -1783,7 +1783,7 @@ void bncWindow::startRealTime() {
   _caster = new bncCaster();
 
   BNC_CORE->setCaster(_caster);
-  BNC_CORE->setPort(_outEphPortLineEdit->text().toInt());
+  BNC_CORE->setPortEph(_outEphPortLineEdit->text().toInt());
   BNC_CORE->setPortCorr(_corrPortLineEdit->text().toInt());
   BNC_CORE->initCombination();
 
