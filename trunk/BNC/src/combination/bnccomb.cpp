@@ -126,7 +126,7 @@ QString bncComb::cmbParam::toString() const {
 
 // Constructor
 ////////////////////////////////////////////////////////////////////////////
-bncComb::bncComb() : bncEphUser(true) {
+bncComb::bncComb() : _ephUser(true) {
 
   bncSettings settings;
 
@@ -381,20 +381,20 @@ void bncComb::slotNewClkCorrections(QList<t_clkCorr> clkCorrections) {
 
     // Check the Ephemeris
     //--------------------
-    if (_eph.find(prn) == _eph.end()) {
+    const t_eph* ephLast = _ephUser.ephLast(prn);
+    const t_eph* ephPrev = _ephUser.ephPrev(prn);
+    if (ephLast == 0) {
       emit newMessage("bncComb: eph not found "  + prn.toAscii(), true);
       delete newCorr;
       continue;
     }
     else {
-      t_eph* lastEph = _eph[prn]->last;
-      t_eph* prevEph = _eph[prn]->prev;
-      if      (lastEph && lastEph->IOD() == newCorr->_iod) {
-        newCorr->_eph = lastEph;
+      if      (ephLast->IOD() == newCorr->_iod) {
+        newCorr->_eph = ephLast;
       }
-      else if (lastEph && prevEph && prevEph->IOD() == newCorr->_iod) {
-        newCorr->_eph = prevEph;
-        switchToLastEph(lastEph, newCorr);
+      else if (ephPrev && ephPrev->IOD() == newCorr->_iod) {
+        newCorr->_eph = ephPrev;
+        switchToLastEph(ephLast, newCorr);
       }
       else {
         emit newMessage("bncComb: eph not found "  + prn.toAscii() + 
@@ -1050,7 +1050,11 @@ t_irc bncComb::checkOrbits(QTextStream& out) {
   while (im.hasNext()) {
     cmbCorr* corr = im.next();
     QString  prn  = corr->_prn;
-    if      (_eph.find(prn) == _eph.end()) {
+
+    const t_eph* ephLast = _ephUser.ephLast(prn);
+    const t_eph* ephPrev = _ephUser.ephPrev(prn);
+
+    if      (ephLast == 0) {
       out << "checkOrbit: missing eph (not found) " << corr->_prn << endl;
       delete corr;
       im.remove();
@@ -1061,8 +1065,8 @@ t_irc bncComb::checkOrbits(QTextStream& out) {
       im.remove();
     }
     else {
-      if ( corr->_eph == _eph[prn]->last || corr->_eph == _eph[prn]->prev ) {
-        switchToLastEph(_eph[prn]->last, corr);
+      if ( corr->_eph == ephLast || corr->_eph == ephPrev ) {
+        switchToLastEph(ephLast, corr);
       }
       else {
         out << "checkOrbit: missing eph (deleted) " << corr->_prn << endl;

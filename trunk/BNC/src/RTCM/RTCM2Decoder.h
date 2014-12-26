@@ -35,7 +35,7 @@
 #include "ephemeris.h"
 #include "bncephuser.h"
 
-class RTCM2Decoder: public bncEphUser, public GPSDecoder {
+class RTCM2Decoder: public GPSDecoder {
 
   public:
     RTCM2Decoder(const std::string& ID);
@@ -56,20 +56,21 @@ class RTCM2Decoder: public bncEphUser, public GPSDecoder {
 
     void translateCorr2Obs(std::vector<std::string>& errmsg);
 
-    std::string            _ID;
-
-    std::string            _buffer;
-    rtcm2::RTCM2packet     _PP;
+    QMutex             _mutex;
+    std::string        _ID;
+    std::string        _buffer;
+    rtcm2::RTCM2packet _PP;
 
     // for messages 18, 19 decoding
-    rtcm2::RTCM2_Obs       _ObsBlock;
+    rtcm2::RTCM2_Obs   _ObsBlock;
 
     // for messages 20, 21 decoding
-    rtcm2::RTCM2_03           _msg03;
-    rtcm2::RTCM2_22           _msg22;
-    rtcm2::RTCM2_23           _msg23;
-    rtcm2::RTCM2_24           _msg24;
-    rtcm2::RTCM2_2021         _msg2021;
+    rtcm2::RTCM2_03    _msg03;
+    rtcm2::RTCM2_22    _msg22;
+    rtcm2::RTCM2_23    _msg23;
+    rtcm2::RTCM2_24    _msg24;
+    rtcm2::RTCM2_2021  _msg2021;
+    bncEphUser         _ephUser;        
 };
 
 #endif  // include blocker

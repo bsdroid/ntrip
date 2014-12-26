@@ -54,7 +54,7 @@ using namespace rtcm2;
 // Constructor
 // 
 
-RTCM2Decoder::RTCM2Decoder(const std::string& ID) : bncEphUser(true) {
+RTCM2Decoder::RTCM2Decoder(const std::string& ID) : _ephUser(true) {
   _ID = ID;
 }
 
@@ -351,11 +351,13 @@ void RTCM2Decoder::translateCorr2Obs(vector<string>& errmsg) {
       }
 
       // Select corresponding ephemerides
-      if      (ephLast(prn) && ephLast(prn)->IOD() == IODcorr) {
-        eph = ephLast(prn);
+      const t_eph* ephLast = _ephUser.ephLast(prn);
+      const t_eph* ephPrev = _ephUser.ephPrev(prn);
+      if      (ephLast && ephLast->IOD() == IODcorr) {
+        eph = ephLast;
       }
-      else if (ephPrev(prn) && ephPrev(prn)->IOD() == IODcorr) {
-        eph = ephPrev(prn);
+      else if (ephPrev && ephPrev->IOD() == IODcorr) {
+        eph = ephPrev;
       }
 
       if ( eph ) {

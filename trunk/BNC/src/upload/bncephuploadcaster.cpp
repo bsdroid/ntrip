@@ -60,18 +60,20 @@ bncEphUploadCaster::~bncEphUploadCaster() {
 void bncEphUploadCaster::ephBufferChanged() {
   if (_ephUploadCaster) {
     QByteArray outBuffer;
-    QMapIterator<QString, t_ephPair*> it(_eph);
-    while (it.hasNext()) {
-      it.next();
 
-      t_eph* eph = it.value()->last;
+    QListIterator<QString> it(prnList());
+    while (it.hasNext()) {
+      const t_eph* eph = ephLast(it.next());
+
+      const t_ephGPS*     ephGPS     = dynamic_cast<const t_ephGPS*>(eph);
+      const t_ephGlo*     ephGlo     = dynamic_cast<const t_ephGlo*>(eph);
+      const t_ephGal*     ephGal     = dynamic_cast<const t_ephGal*>(eph);
+      const t_ephSBAS*    ephSBAS    = dynamic_cast<const t_ephSBAS*>(eph);
+      const t_ephCompass* ephCompass = dynamic_cast<const t_ephCompass*>(eph);
+
       unsigned char Array[80];
       int size = 0;
-      t_ephGPS*     ephGPS     = dynamic_cast<t_ephGPS*>(eph);
-      t_ephGlo*     ephGlo     = dynamic_cast<t_ephGlo*>(eph);
-      t_ephGal*     ephGal     = dynamic_cast<t_ephGal*>(eph);
-      t_ephSBAS*    ephSBAS    = dynamic_cast<t_ephSBAS*>(eph);
-      t_ephCompass* ephCompass = dynamic_cast<t_ephCompass*>(eph);
+
       if (ephGPS) {
         size = t_ephEncoder::RTCM3(*ephGPS, Array);
       }

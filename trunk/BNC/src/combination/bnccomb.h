@@ -11,7 +11,7 @@ class bncRtnetDecoder;
 class bncSP3;
 class bncAntex;
 
-class bncComb : public bncEphUser  {
+class bncComb : public QObject {
  Q_OBJECT
  public:
   bncComb();
@@ -107,6 +107,7 @@ class bncComb : public bncEphUser  {
   t_irc checkOrbits(QTextStream& out);
   QVector<cmbCorr*>& corrs() {return _buffer[_resTime].corrs;}
 
+  QMutex                                 _mutex;
   QList<cmbAC*>                          _ACs;
   bncTime                                _resTime;
   QVector<cmbParam*>                     _params;
@@ -122,6 +123,7 @@ class bncComb : public bncEphUser  {
   bool                                   _useGlonass;
   int                                    _cmbSampl;
   QMap<QString, QMap<t_prn, t_orbCorr> > _orbCorrections;
+  bncEphUser                             _ephUser;
 };
 
 #endif
