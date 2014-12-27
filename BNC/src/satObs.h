@@ -60,10 +60,9 @@ class t_satObs {
 
 class t_orbCorr {
  public:
-  t_orbCorr() {reset();}
+  t_orbCorr();
   static void writeEpoch(std::ostream* out, const QList<t_orbCorr>& corrList);
   static void readEpoch(const QStringList& lines, QList<t_orbCorr>& corrList);
-  void reset();
   std::string    _staID;
   t_prn          _prn;
   unsigned short _iod;
@@ -75,10 +74,9 @@ class t_orbCorr {
 
 class t_clkCorr {
  public:
-  t_clkCorr() {reset();}
+  t_clkCorr();
   static void writeEpoch(std::ostream* out, const QList<t_clkCorr>& corrList);
   static void readEpoch(const QStringList& lines, QList<t_clkCorr>& corrList);
-  void reset();
   std::string    _staID;
   t_prn          _prn;
   unsigned short _iod;
