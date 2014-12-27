@@ -64,8 +64,24 @@ void t_orbCorr::writeEpoch(std::ostream* out, const QList<t_orbCorr>& corrList) 
   if (!out || corrList.size() == 0) {
     return;
   }
-  *out << "ORB CORRECTIONS: " << corrList.size() << endl;
-
+  out->setf(ios::fixed);
+  bncTime epoTime;
+  QListIterator<t_orbCorr> it(corrList);
+  while (it.hasNext()) {
+    const t_orbCorr& corr = it.next();
+    if (!epoTime.valid()) {
+      epoTime = corr._time;
+      *out << "> ORBIT " << epoTime.datestr(' ') << ' ' << epoTime.timestr(1,' ') << "    "
+           << corrList.size() << ' ' << corr._staID << endl;
+    }
+    *out << corr._prn.toString() << ' ' << setw(3) << corr._iod << ' '
+         << setw(10) << setprecision(4) << corr._xr[0]     << ' '
+         << setw(10) << setprecision(4) << corr._xr[1]     << ' '
+         << setw(10) << setprecision(4) << corr._xr[2]     << "    "
+         << setw(10) << setprecision(4) << corr._dotXr[0]  << ' '
+         << setw(10) << setprecision(4) << corr._dotXr[1]  << ' '
+         << setw(10) << setprecision(4) << corr._dotXr[2]  << endl;
+  }
   out->flush();
 }
 
