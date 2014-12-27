@@ -317,7 +317,6 @@ void RTCM3coDecoder::sendResults() {
       clkCorr._dClk       = _clkOrb.Sat[ii].Clock.DeltaA0 / t_CST::c;
       clkCorr._dotDClk    = _clkOrb.Sat[ii].Clock.DeltaA1 / t_CST::c;
       clkCorr._dotDotDClk = _clkOrb.Sat[ii].Clock.DeltaA2 / t_CST::c;
-      clkCorr._clkPartial = 0.0;
 
       if (_IODs.contains(clkCorr._prn.toString())) {
         clkCorr._iod = _IODs[clkCorr._prn.toString()];
