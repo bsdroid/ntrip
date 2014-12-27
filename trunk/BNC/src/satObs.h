@@ -90,7 +90,6 @@ class t_clkCorr {
   double         _dClk;
   double         _dotDClk;
   double         _dotDotDClk;
-  double         _clkPartial;
 };
 
 class t_frqBias {

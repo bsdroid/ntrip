@@ -15,7 +15,6 @@ void t_clkCorr::reset() {
   _dClk       = 0.0;
   _dotDClk    = 0.0;
   _dotDotDClk = 0.0;
-  _clkPartial = 0.0;
 }
 
 // 
