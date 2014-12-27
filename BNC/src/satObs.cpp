@@ -21,7 +21,12 @@ void t_clkCorr::reset() {
 // 
 ////////////////////////////////////////////////////////////////////////////
 void t_clkCorr::writeEpoch(std::ostream* out, const QList<t_clkCorr>& corrList) {
+  if (!out || corrList.size() == 0) {
+    return;
+  }
   *out << "CLOCK CORRECTIONS: " << corrList.size() << endl;
+
+  out->flush();
 }
 
 // 
@@ -43,7 +48,12 @@ void t_orbCorr::reset() {
 // 
 ////////////////////////////////////////////////////////////////////////////
 void t_orbCorr::writeEpoch(std::ostream* out, const QList<t_orbCorr>& corrList) {
+  if (!out || corrList.size() == 0) {
+    return;
+  }
   *out << "ORB CORRECTIONS: " << corrList.size() << endl;
+
+  out->flush();
 }
 
 // 
