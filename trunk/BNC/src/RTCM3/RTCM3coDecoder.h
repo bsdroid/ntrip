@@ -49,6 +49,8 @@ Q_OBJECT
   void providerIDChanged(QString staID);
 
  private:
+  void reset();
+  void setEpochTime();
   void sendResults();
   void reopen();
   void checkProviderID();

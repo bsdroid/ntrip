@@ -86,10 +86,7 @@ RTCM3coDecoder::RTCM3coDecoder(const QString& staID) {
   connect(this, SIGNAL(newMessage(QByteArray,bool)),
           BNC_CORE, SLOT(slotMessage(const QByteArray,bool)));
 
-  memset(&_clkOrb,    0, sizeof(_clkOrb));
-  memset(&_codeBias,  0, sizeof(_codeBias));
-  memset(&_phaseBias, 0, sizeof(_phaseBias));
-  memset(&_vTEC,      0, sizeof(_vTEC));
+  reset();
 
   _providerID[0] = -1;
   _providerID[1] = -1;
@@ -100,6 +97,15 @@ RTCM3coDecoder::RTCM3coDecoder(const QString& staID) {
 ////////////////////////////////////////////////////////////////////////////
 RTCM3coDecoder::~RTCM3coDecoder() {
   delete _out;
+}
+
+// 
+////////////////////////////////////////////////////////////////////////////
+void RTCM3coDecoder::reset() {
+  memset(&_clkOrb,    0, sizeof(_clkOrb));
+  memset(&_codeBias,  0, sizeof(_codeBias));
+  memset(&_phaseBias, 0, sizeof(_phaseBias));
+  memset(&_vTEC,      0, sizeof(_vTEC));
 }
 
 // Reopen Output File
@@ -170,86 +176,28 @@ t_irc RTCM3coDecoder::Decode(char* buffer, int bufLen, vector<string>& errmsg) {
     }
 
     else if (irc < 0) {    // error  - skip 1 byte and retry
-      memset(&_clkOrb,    0, sizeof(_clkOrb));
-      memset(&_codeBias,  0, sizeof(_codeBias));
-      memset(&_phaseBias, 0, sizeof(_phaseBias));
-      memset(&_vTEC,      0, sizeof(_vTEC));
+      reset();
       _buffer = _buffer.mid(bytesused ? bytesused : 1);
     }
 
     else {                 // OK or MESSAGEFOLLOWS
       _buffer = _buffer.mid(bytesused);
 
-      if ( (irc == GCOBR_OK || irc == GCOBR_MESSAGEFOLLOWS ) &&
-           (_clkOrb.NumberOfSat[CLOCKORBIT_SATGPS]   > 0 || _clkOrb.NumberOfSat[CLOCKORBIT_SATGLONASS]   > 0 ||
-            _codeBias.NumberOfSat[CLOCKORBIT_SATGPS] > 0 || _codeBias.NumberOfSat[CLOCKORBIT_SATGLONASS] > 0) ) {
+      if (irc == GCOBR_OK || irc == GCOBR_MESSAGEFOLLOWS ) {
 
-        reopen();
-
-        // Guess GPS week and sec using system time
-        // ----------------------------------------
-        int    GPSweek;
-        double GPSweeksHlp;
-        currentGPSWeeks(GPSweek, GPSweeksHlp);
-
-        // Correction Epoch from GPSEpochTime
-        // ----------------------------------
-        if (_clkOrb.NumberOfSat[CLOCKORBIT_SATGPS] > 0 || _codeBias.NumberOfSat[CLOCKORBIT_SATGPS] > 0) {
-          int GPSEpochTime = (_clkOrb.NumberOfSat[CLOCKORBIT_SATGPS] > 0) ?
-                             _clkOrb.EpochTime[CLOCKORBIT_SATGPS] : _codeBias.EpochTime[CLOCKORBIT_SATGPS];
-          if      (GPSweeksHlp > GPSEpochTime + 86400.0) {
-            GPSweek += 1;
-          }
-          else if (GPSweeksHlp < GPSEpochTime - 86400.0) {
-            GPSweek -= 1;
-          }
-          _lastTime.set(GPSweek, double(GPSEpochTime));
+        setEpochTime(); // sets _lastTime
+ 
+        if (_lastTime.valid()) { 
+          reopen();
+          checkProviderID();
+          sendResults();
+          retCode = success;
+        }
+        else {
+          retCode = failure;
         }
 
-        // Correction Epoch from Glonass Epoch
-        // -----------------------------------
-        else if (_clkOrb.NumberOfSat[CLOCKORBIT_SATGLONASS] > 0 || _codeBias.NumberOfSat[CLOCKORBIT_SATGLONASS] > 0){
-          int GLONASSEpochTime = (_clkOrb.NumberOfSat[CLOCKORBIT_SATGLONASS] > 0) ?
-                              _clkOrb.EpochTime[CLOCKORBIT_SATGLONASS] : _codeBias.EpochTime[CLOCKORBIT_SATGLONASS];
-
-          // Second of day (GPS time) from Glonass Epoch
-          // -------------------------------------------
-          QDate date = dateAndTimeFromGPSweek(GPSweek, GPSweeksHlp).date();
-          int leapSecond = gnumleap(date.year(), date.month(), date.day());
-          int GPSDaySec  = GLONASSEpochTime - 3 * 3600 + leapSecond;
-
-          int weekDay      = int(GPSweeksHlp/86400.0);
-          int GPSDaySecHlp = int(GPSweeksHlp) - weekDay * 86400;
-
-          // Handle the difference between system clock and correction epoch
-          // ---------------------------------------------------------------
-          if      (GPSDaySec < GPSDaySecHlp - 3600) {
-            weekDay += 1;
-            if (weekDay > 6) {
-              weekDay = 0;
-              GPSweek += 1;
-            }
-          }
-          else if (GPSDaySec > GPSDaySecHlp + 3600) {
-            weekDay -= 1;
-            if (weekDay < 0) {
-              weekDay = 6;
-              GPSweek -= 1;
-            }
-          }
-          _lastTime.set(GPSweek, weekDay * 86400.0 + GPSDaySec);
-        }
-
-        checkProviderID();
-
-        sendResults();
-
-        retCode = success;
-
-        memset(&_clkOrb,    0, sizeof(_clkOrb));
-        memset(&_codeBias,  0, sizeof(_codeBias));
-        memset(&_phaseBias, 0, sizeof(_phaseBias));
-        memset(&_vTEC,      0, sizeof(_vTEC));
+        reset();
       }
     }
   }
@@ -403,5 +351,58 @@ void RTCM3coDecoder::checkProviderID() {
   if (alreadySet && different) {
     emit newMessage("RTCM3coDecoder: Provider Changed " + _staID.toAscii() + "\n", true);
     emit providerIDChanged(_staID);
+  }
+}
+
+
+//
+////////////////////////////////////////////////////////////////////////////
+void RTCM3coDecoder::setEpochTime() {
+
+  _lastTime.reset();
+
+  int epoSecGPS = -1;
+  int epoSecGlo = -1;
+  if      (_clkOrb.NumberOfSat[CLOCKORBIT_SATGPS] > 0) {
+    epoSecGPS = _clkOrb.EpochTime[CLOCKORBIT_SATGPS]; // 0 .. 604799 s  
+  }
+  else if (_codeBias.NumberOfSat[CLOCKORBIT_SATGPS] > 0) {
+    epoSecGPS = _clkOrb.EpochTime[CLOCKORBIT_SATGPS]; // 0 .. 604799 s  
+  }
+  else if (_clkOrb.NumberOfSat[CLOCKORBIT_SATGLONASS] > 0) {
+    epoSecGlo = _codeBias.EpochTime[CLOCKORBIT_SATGLONASS]; // 0 .. 86399 s (86400 for leap second)
+  }
+  else if (_codeBias.NumberOfSat[CLOCKORBIT_SATGLONASS] > 0) {
+    epoSecGlo = _codeBias.EpochTime[CLOCKORBIT_SATGLONASS]; // 0 .. 86399 s (86400 for leap second)
+  }
+
+  // Retrieve current time
+  // ---------------------
+  int    currentWeek = 0;
+  double currentSec  = 0.0;
+  currentGPSWeeks(currentWeek, currentSec);
+  bncTime currentTime(currentWeek, currentSec);
+
+  // Set _lastTime close to currentTime
+  // ----------------------------------
+  if      (epoSecGPS != -1) {
+    _lastTime.set(currentWeek, epoSecGPS);
+    while (_lastTime < currentTime - 7 * 86400.0) {
+      _lastTime = _lastTime + 7 * 86400.0;
+    }
+    while (_lastTime > currentTime + 7 * 86400.0) {
+      _lastTime = _lastTime - 7 * 86400.0;
+    }
+  }
+  else if (epoSecGlo != -1) {
+    QDate date = dateAndTimeFromGPSweek(currentTime.gpsw(), currentTime.gpssec()).date();
+    epoSecGlo = epoSecGlo - 3 * 3600 + gnumleap(date.year(), date.month(), date.day());
+    _lastTime.set(currentWeek, epoSecGlo);
+    while (_lastTime < currentTime - 86400.0) {
+      _lastTime = _lastTime + 86400.0;
+    }
+    while (_lastTime > currentTime + 86400.0) {
+      _lastTime = _lastTime - 86400.0;
+    }
   }
 }
