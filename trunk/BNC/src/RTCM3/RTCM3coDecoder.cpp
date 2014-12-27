@@ -362,9 +362,7 @@ void RTCM3coDecoder::sendResults() {
     itOrb.next();
     if (itOrb.key() < _lastTime) {
       emit newOrbCorrections(itOrb.value());
-      if (_out) {
-        t_orbCorr::writeEpoch(_out, itOrb.value());
-      }
+      t_orbCorr::writeEpoch(_out, itOrb.value());
       itOrb.remove();
     } 
   }
@@ -373,15 +371,9 @@ void RTCM3coDecoder::sendResults() {
     itClk.next();
     if (itClk.key() < _lastTime) {
       emit newClkCorrections(itClk.value());
-      if (_out) {
-        t_clkCorr::writeEpoch(_out, itClk.value());
-      }
+      t_clkCorr::writeEpoch(_out, itClk.value());
       itClk.remove();
     } 
-  }
-
-  if (_out) {
-    _out->flush();
   }
 }
 
