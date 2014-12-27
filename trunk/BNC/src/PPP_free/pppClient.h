@@ -45,7 +45,7 @@ class t_pppClient : public interface_pppClient {
   void                putEphemeris(const t_eph* eph);                  
   void                putOrbCorrections(const std::vector<t_orbCorr*>& corr); 
   void                putClkCorrections(const std::vector<t_clkCorr*>& corr); 
-  void                putBiases(const std::vector<t_satCodeBias*>& satCodeBias);   
+  void                putCodeBiases(const std::vector<t_satCodeBias*>& satCodeBias);   
   std::ostringstream& log() {return *_log;}
   const t_pppOptions* opt() const {return _opt;}
 

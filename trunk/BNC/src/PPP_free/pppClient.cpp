@@ -249,7 +249,7 @@ void t_pppClient::putClkCorrections(const std::vector<t_clkCorr*>& corr) {
 
 // 
 //////////////////////////////////////////////////////////////////////////////
-void t_pppClient::putBiases(const std::vector<t_satBias*>& /* satBias */) {
+void t_pppClient::putCodeBiases(const std::vector<t_satCodeBias*>& /* satCodeBias */) {
 }
 
 // 
