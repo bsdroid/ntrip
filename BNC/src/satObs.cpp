@@ -31,7 +31,7 @@ void t_clkCorr::writeEpoch(std::ostream* out, const QList<t_clkCorr>& corrList) 
     const t_clkCorr& corr = it.next();
     if (!epoTime.valid()) {
       epoTime = corr._time;
-      *out << "> CLOCK " << epoTime.datestr(' ') << ' ' << epoTime.timestr(1,' ') << ' '
+      *out << "> CLOCK " << epoTime.datestr(' ') << ' ' << epoTime.timestr(1,' ') << "    "
            << corrList.size() << ' ' << corr._staID << endl;
     }
     *out << corr._prn.toString() << ' ' << setw(3) << corr._iod << ' '
