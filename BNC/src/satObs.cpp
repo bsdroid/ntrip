@@ -43,7 +43,7 @@ void t_clkCorr::writeEpoch(std::ostream* out, const QList<t_clkCorr>& corrList) 
 
 // 
 ////////////////////////////////////////////////////////////////////////////
-void t_clkCorr::readEpoch(std::istream* in, QList<t_clkCorr>& corrList) {
+void t_clkCorr::readEpoch(const QStringList& lines, QList<t_clkCorr>& corrList) {
 }
 
 // 
@@ -86,5 +86,5 @@ void t_orbCorr::writeEpoch(std::ostream* out, const QList<t_orbCorr>& corrList) 
 
 // 
 ////////////////////////////////////////////////////////////////////////////
-void t_orbCorr::readEpoch(std::istream* in, QList<t_orbCorr>& corrList) {
+void t_orbCorr::readEpoch(const QStringList& lines, QList<t_orbCorr>& corrList) {
 }
