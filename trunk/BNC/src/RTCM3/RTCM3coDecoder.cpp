@@ -333,7 +333,7 @@ void RTCM3coDecoder::sendResults() {
 
   // Code Biases
   // -----------
-  QList<t_satBias> satBiases;
+  QList<t_satCodeBias> satCodeBiases;
   for (unsigned ii = 0; ii < CLOCKORBIT_NUMGPS + _codeBias.NumberOfSat[CLOCKORBIT_SATGLONASS]; ii++) {
     char sysCh = ' ';
     if      (ii < _codeBias.NumberOfSat[CLOCKORBIT_SATGPS]) {
@@ -345,11 +345,9 @@ void RTCM3coDecoder::sendResults() {
     else {
       continue;
     }
-    t_satBias satBias;
-    satBias._prn.set(sysCh, _codeBias.Sat[ii].ID);
-    satBias._time      = _lastTime;
-    satBias._nx        = 0;
-    satBias._jumpCount = 0;
+    t_satCodeBias satCodeBias;
+    satCodeBias._prn.set(sysCh, _codeBias.Sat[ii].ID);
+    satCodeBias._time      = _lastTime;
     for (unsigned jj = 0; jj < _codeBias.Sat[ii].NumberOfCodeBiases; jj++) {
     }
   }

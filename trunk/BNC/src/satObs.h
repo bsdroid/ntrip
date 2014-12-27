@@ -92,29 +92,21 @@ class t_clkCorr {
   double         _dotDotDClk;
 };
 
-class t_frqBias {
+class t_frqCodeBias {
  public:
-  t_frqBias() {
-    _code       = 0.0;          
-    _codeValid  = false;     
-    _phase      = 0.0;         
-    _phaseValid = false;    
+  t_frqCodeBias() {
+    _value = 0.0;          
   }
   std::string _rnxType2ch;
-  double      _code;          
-  bool        _codeValid;     
-  double      _phase;         
-  bool        _phaseValid;    
+  double      _value;
 };
 
-class t_satBias {
+class t_satCodeBias {
  public:
-  std::string            _staID;
-  t_prn                  _prn;
-  bncTime                _time;
-  int                    _nx;
-  int                    _jumpCount;
-  std::vector<t_frqBias> _bias;
+  std::string                _staID;
+  t_prn                      _prn;
+  bncTime                    _time;
+  std::vector<t_frqCodeBias> _bias;
 };
 
 #endif
