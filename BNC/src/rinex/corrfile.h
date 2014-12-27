@@ -25,6 +25,7 @@
 #ifndef CORRFILE_H
 #define CORRFILE_H
 
+#include <fstream>
 #include <QtCore>
 #include "bncconst.h"
 #include "bnctime.h"
@@ -45,12 +46,9 @@ class t_corrFile : public QObject {
 
  private:
   bool stopRead(const bncTime& tt);
-  QFile*             _file;
-  QTextStream*       _stream;
+  std::fstream       _stream;
   QList<t_orbCorr>   _orbCorr;
   QList<t_clkCorr>   _clkCorr;
-  t_orbCorr*         _lastOrbCorr;
-  t_clkCorr*         _lastClkCorr;
   QMap<QString, int> _corrIODs;
 };
 

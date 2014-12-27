@@ -261,11 +261,11 @@ t_irc RTCM3coDecoder::Decode(char* buffer, int bufLen, vector<string>& errmsg) {
 ////////////////////////////////////////////////////////////////////////////
 void RTCM3coDecoder::sendResults() {
 
-  QList<t_orbCorr> orbCorrections;
-  QList<t_clkCorr> clkCorrections;
+  QList<t_orbCorr>& orbCorrections = _orbCorrections[_lastTime];
+  QList<t_clkCorr>& clkCorrections = _clkCorrections[_lastTime];
 
-  // Loop over all satellites (GPS and Glonass)
-  // ------------------------------------------
+  // Orbit and clock corrections of all satellites
+  // ---------------------------------------------
   for (unsigned ii = 0; ii < CLOCKORBIT_NUMGPS + _clkOrb.NumberOfSat[CLOCKORBIT_SATGLONASS]; ii++) {
     char sysCh = ' ';
     if      (ii < _clkOrb.NumberOfSat[CLOCKORBIT_SATGPS]) {
@@ -303,6 +303,8 @@ void RTCM3coDecoder::sendResults() {
       _IODs[orbCorr._prn.toString()] = _clkOrb.Sat[ii].IOD;
     }
 
+    // Clock Corrections
+    // -----------------
     if ( _clkOrb.messageType == COTYPE_GPSCOMBINED     ||
          _clkOrb.messageType == COTYPE_GLONASSCOMBINED ||
          _clkOrb.messageType == COTYPE_GPSCLOCK        ||
@@ -330,8 +332,8 @@ void RTCM3coDecoder::sendResults() {
     }
   }
 
-  // Loop over all satellites (GPS and Glonass)
-  // ------------------------------------------
+  // Code Biases
+  // -----------
   QList<t_satBias> satBiases;
   for (unsigned ii = 0; ii < CLOCKORBIT_NUMGPS + _codeBias.NumberOfSat[CLOCKORBIT_SATGLONASS]; ii++) {
     char sysCh = ' ';
@@ -353,23 +355,32 @@ void RTCM3coDecoder::sendResults() {
     }
   }
 
-  if (orbCorrections.size() > 0) {
-    emit newOrbCorrections(orbCorrections);
+  // Dump all older epochs
+  // ---------------------
+  QMutableMapIterator<bncTime, QList<t_orbCorr> > itOrb(_orbCorrections);
+  while (itOrb.hasNext()) {
+    itOrb.next();
+    if (itOrb.key() < _lastTime) {
+      emit newOrbCorrections(itOrb.value());
+      if (_out) {
+        t_orbCorr::writeEpoch(_out, itOrb.value());
+      }
+      itOrb.remove();
+    } 
   }
-  if (clkCorrections.size() > 0) {
-    emit newClkCorrections(clkCorrections);
+  QMutableMapIterator<bncTime, QList<t_clkCorr> > itClk(_clkCorrections);
+  while (itClk.hasNext()) {
+    itClk.next();
+    if (itClk.key() < _lastTime) {
+      emit newClkCorrections(itClk.value());
+      if (_out) {
+        t_clkCorr::writeEpoch(_out, itClk.value());
+      }
+      itClk.remove();
+    } 
   }
+
   if (_out) {
-    QListIterator<t_orbCorr> itOrb(orbCorrections);
-    while (itOrb.hasNext()) {
-      const t_orbCorr& orbCorr = itOrb.next();
-      *_out << orbCorr.toLine();
-    }
-    QListIterator<t_clkCorr> itClk(clkCorrections);
-    while (itClk.hasNext()) {
-      const t_clkCorr& clkCorr = itClk.next();
-      *_out << clkCorr.toLine();
-    }
     _out->flush();
   }
 }

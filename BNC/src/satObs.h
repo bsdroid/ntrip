@@ -5,6 +5,8 @@
 #include <vector>
 #include <newmat.h>
 
+#include <QtCore>
+
 #include "bncconst.h"
 #include "bnctime.h"
 #include "t_prn.h"
@@ -59,11 +61,11 @@ class t_satObs {
 class t_orbCorr {
  public:
   t_orbCorr() {reset();}
-  t_orbCorr(const std::string& line);
+  static void writeEpoch(std::ostream* out, const QList<t_orbCorr>& corrList);
+  static void readEpoch(std::istream* in, QList<t_orbCorr>& corrList);
   void           reset();
   t_prn          prn() const {return _prn;}
   unsigned short IOD() const {return _iod;}
-  std::string    toLine() const;
   std::string    _staID;
   t_prn          _prn;
   unsigned short _iod;
@@ -76,11 +78,11 @@ class t_orbCorr {
 class t_clkCorr {
  public:
   t_clkCorr() {reset();}
-  t_clkCorr(const std::string& line);
+  static void writeEpoch(std::ostream* out, const QList<t_clkCorr>& corrList);
+  static void readEpoch(std::istream* in, QList<t_clkCorr>& corrList);
   void           reset();
   t_prn          prn() const {return _prn;}
   unsigned short IOD() const {return _iod;}
-  std::string    toLine() const;
   std::string    _staID;
   t_prn          _prn;
   unsigned short _iod;

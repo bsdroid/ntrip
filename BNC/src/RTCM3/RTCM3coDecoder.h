@@ -43,9 +43,8 @@ Q_OBJECT
   virtual int   corrGPSEpochTime() const {return int(_lastTime.gpssec());}
 
  signals:
-  void newOrbCorrections(QList<t_orbCorr> orbCorr);
-  void newClkCorrections(QList<t_clkCorr> clkCorr);
-  void newBiases(QList<t_satBias> biases);
+  void newOrbCorrections(QList<t_orbCorr>);
+  void newClkCorrections(QList<t_clkCorr>);
   void newMessage(QByteArray msg, bool showOnScreen);
   void providerIDChanged(QString staID);
 
@@ -65,6 +64,8 @@ Q_OBJECT
   int            _providerID[3];
   bncTime        _lastTime;
   QMap<std::string, unsigned short> _IODs;
+  QMap<bncTime, QList<t_orbCorr> >  _orbCorrections;
+  QMap<bncTime, QList<t_clkCorr> >  _clkCorrections;
 };
 
 #endif
