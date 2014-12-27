@@ -115,7 +115,7 @@ class interface_pppClient {
   virtual void putEphemeris(const t_eph* eph) = 0;                  
   virtual void putOrbCorrections(const std::vector<t_orbCorr*>& corr) = 0; 
   virtual void putClkCorrections(const std::vector<t_clkCorr*>& corr) = 0; 
-  virtual void putBiases(const std::vector<t_satCodeBias*>& satCodeBias) = 0;
+  virtual void putCodeBiases(const std::vector<t_satCodeBias*>& satCodeBias) = 0;
 };   
 
 } // namespace BNC_PPP
