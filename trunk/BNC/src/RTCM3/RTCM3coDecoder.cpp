@@ -367,10 +367,10 @@ void RTCM3coDecoder::setEpochTime() {
     epoSecGPS = _clkOrb.EpochTime[CLOCKORBIT_SATGPS]; // 0 .. 604799 s  
   }
   else if (_codeBias.NumberOfSat[CLOCKORBIT_SATGPS] > 0) {
-    epoSecGPS = _clkOrb.EpochTime[CLOCKORBIT_SATGPS]; // 0 .. 604799 s  
+    epoSecGPS = _codeBias.EpochTime[CLOCKORBIT_SATGPS]; // 0 .. 604799 s  
   }
   else if (_clkOrb.NumberOfSat[CLOCKORBIT_SATGLONASS] > 0) {
-    epoSecGlo = _codeBias.EpochTime[CLOCKORBIT_SATGLONASS]; // 0 .. 86399 s (86400 for leap second)
+    epoSecGlo = _clkOrb.EpochTime[CLOCKORBIT_SATGLONASS]; // 0 .. 86399 s (86400 for leap second)
   }
   else if (_codeBias.NumberOfSat[CLOCKORBIT_SATGLONASS] > 0) {
     epoSecGlo = _codeBias.EpochTime[CLOCKORBIT_SATGLONASS]; // 0 .. 86399 s (86400 for leap second)
@@ -387,22 +387,19 @@ void RTCM3coDecoder::setEpochTime() {
   // ----------------------------------
   if      (epoSecGPS != -1) {
     _lastTime.set(currentWeek, epoSecGPS);
-    while (_lastTime < currentTime - 7 * 86400.0) {
-      _lastTime = _lastTime + 7 * 86400.0;
-    }
-    while (_lastTime > currentTime + 7 * 86400.0) {
-      _lastTime = _lastTime - 7 * 86400.0;
-    }
   }
   else if (epoSecGlo != -1) {
     QDate date = dateAndTimeFromGPSweek(currentTime.gpsw(), currentTime.gpssec()).date();
     epoSecGlo = epoSecGlo - 3 * 3600 + gnumleap(date.year(), date.month(), date.day());
     _lastTime.set(currentWeek, epoSecGlo);
-    while (_lastTime < currentTime - 86400.0) {
-      _lastTime = _lastTime + 86400.0;
+  }
+
+  if (_lastTime.valid()) {
+    while (_lastTime < currentTime - 86400.0/2) {
+      _lastTime = _lastTime + 86400.0/2;
     }
-    while (_lastTime > currentTime + 86400.0) {
-      _lastTime = _lastTime - 86400.0;
+    while (_lastTime > currentTime + 86400.0/2) {
+      _lastTime = _lastTime - 86400.0/2;
     }
   }
 }
