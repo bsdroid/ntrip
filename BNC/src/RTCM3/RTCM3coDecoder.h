@@ -58,8 +58,10 @@ Q_OBJECT
   QString        _fileNameSkl;
   QString        _fileName;
   QByteArray     _buffer;
-  ClockOrbit     _co;
-  CodeBias       _bias;
+  ClockOrbit     _clkOrb;
+  CodeBias       _codeBias;
+  PhaseBias      _phaseBias;
+  VTEC           _vTEC;
   int            _providerID[3];
   bncTime        _lastTime;
   QMap<std::string, unsigned short> _IODs;

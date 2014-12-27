@@ -86,8 +86,10 @@ RTCM3coDecoder::RTCM3coDecoder(const QString& staID) {
   connect(this, SIGNAL(newMessage(QByteArray,bool)),
           BNC_CORE, SLOT(slotMessage(const QByteArray,bool)));
 
-  memset(&_co, 0, sizeof(_co));
-  memset(&_bias, 0, sizeof(_bias));
+  memset(&_clkOrb,    0, sizeof(_clkOrb));
+  memset(&_codeBias,  0, sizeof(_codeBias));
+  memset(&_phaseBias, 0, sizeof(_phaseBias));
+  memset(&_vTEC,      0, sizeof(_vTEC));
 
   _providerID[0] = -1;
   _providerID[1] = -1;
@@ -146,30 +148,41 @@ t_irc RTCM3coDecoder::Decode(char* buffer, int bufLen, vector<string>& errmsg) {
 
   while(_buffer.size()) {
 
-    int bytesused = 0;
-    struct ClockOrbit co_sav;
-    memcpy(&co_sav, &_co, sizeof(co_sav)); // save state
+    struct ClockOrbit clkOrbSav;
+    struct CodeBias   codeBiasSav;
+    struct PhaseBias  phaseBiasSav;
+    struct VTEC       vTECSav;
+    memcpy(&clkOrbSav,    &_clkOrb,    sizeof(clkOrbSav)); // save state
+    memcpy(&codeBiasSav,  &_codeBias,  sizeof(codeBiasSav));
+    memcpy(&phaseBiasSav, &_phaseBias, sizeof(phaseBiasSav));
+    memcpy(&vTECSav,      &_vTEC,      sizeof(vTECSav));
 
-    GCOB_RETURN irc = GetSSR(&_co, &_bias, 0, 0, _buffer.data(),
-                                        _buffer.size(), &bytesused);
+    int bytesused = 0;
+    GCOB_RETURN irc = GetSSR(&_clkOrb, &_codeBias, &_vTEC, &_phaseBias, 
+                             _buffer.data(), _buffer.size(), &bytesused);
 
     if      (irc <= -30) { // not enough data - restore state and exit loop
-      memcpy(&_co, &co_sav, sizeof(co_sav));
+      memcpy(&_clkOrb,    &clkOrbSav,    sizeof(clkOrbSav));
+      memcpy(&_codeBias,  &codeBiasSav,  sizeof(codeBiasSav));
+      memcpy(&_phaseBias, &phaseBiasSav, sizeof(phaseBiasSav));
+      memcpy(&_vTEC,      &vTECSav,      sizeof(vTECSav));
       break;
     }
 
     else if (irc < 0) {    // error  - skip 1 byte and retry
-      memset(&_co, 0, sizeof(_co));
-      memset(&_bias, 0, sizeof(_bias));
+      memset(&_clkOrb,    0, sizeof(_clkOrb));
+      memset(&_codeBias,  0, sizeof(_codeBias));
+      memset(&_phaseBias, 0, sizeof(_phaseBias));
+      memset(&_vTEC,      0, sizeof(_vTEC));
       _buffer = _buffer.mid(bytesused ? bytesused : 1);
     }
 
     else {                 // OK or MESSAGEFOLLOWS
       _buffer = _buffer.mid(bytesused);
 
-      if ( (irc == GCOBR_OK          || irc == GCOBR_MESSAGEFOLLOWS ) &&
-           (_co.NumberOfSat[CLOCKORBIT_SATGPS]   > 0 || _co.NumberOfSat[CLOCKORBIT_SATGLONASS]   > 0 ||
-            _bias.NumberOfSat[CLOCKORBIT_SATGPS] > 0 || _bias.NumberOfSat[CLOCKORBIT_SATGLONASS] > 0) ) {
+      if ( (irc == GCOBR_OK || irc == GCOBR_MESSAGEFOLLOWS ) &&
+           (_clkOrb.NumberOfSat[CLOCKORBIT_SATGPS]   > 0 || _clkOrb.NumberOfSat[CLOCKORBIT_SATGLONASS]   > 0 ||
+            _codeBias.NumberOfSat[CLOCKORBIT_SATGPS] > 0 || _codeBias.NumberOfSat[CLOCKORBIT_SATGLONASS] > 0) ) {
 
         reopen();
 
@@ -181,9 +194,9 @@ t_irc RTCM3coDecoder::Decode(char* buffer, int bufLen, vector<string>& errmsg) {
 
         // Correction Epoch from GPSEpochTime
         // ----------------------------------
-        if (_co.NumberOfSat[CLOCKORBIT_SATGPS] > 0 || _bias.NumberOfSat[CLOCKORBIT_SATGPS] > 0) {
-          int GPSEpochTime = (_co.NumberOfSat[CLOCKORBIT_SATGPS] > 0) ?
-                             _co.EpochTime[CLOCKORBIT_SATGPS] : _bias.EpochTime[CLOCKORBIT_SATGPS];
+        if (_clkOrb.NumberOfSat[CLOCKORBIT_SATGPS] > 0 || _codeBias.NumberOfSat[CLOCKORBIT_SATGPS] > 0) {
+          int GPSEpochTime = (_clkOrb.NumberOfSat[CLOCKORBIT_SATGPS] > 0) ?
+                             _clkOrb.EpochTime[CLOCKORBIT_SATGPS] : _codeBias.EpochTime[CLOCKORBIT_SATGPS];
           if      (GPSweeksHlp > GPSEpochTime + 86400.0) {
             GPSweek += 1;
           }
@@ -195,9 +208,9 @@ t_irc RTCM3coDecoder::Decode(char* buffer, int bufLen, vector<string>& errmsg) {
 
         // Correction Epoch from Glonass Epoch
         // -----------------------------------
-        else if (_co.NumberOfSat[CLOCKORBIT_SATGLONASS] > 0 || _bias.NumberOfSat[CLOCKORBIT_SATGLONASS] > 0){
-          int GLONASSEpochTime = (_co.NumberOfSat[CLOCKORBIT_SATGLONASS] > 0) ?
-                              _co.EpochTime[CLOCKORBIT_SATGLONASS] : _bias.EpochTime[CLOCKORBIT_SATGLONASS];
+        else if (_clkOrb.NumberOfSat[CLOCKORBIT_SATGLONASS] > 0 || _codeBias.NumberOfSat[CLOCKORBIT_SATGLONASS] > 0){
+          int GLONASSEpochTime = (_clkOrb.NumberOfSat[CLOCKORBIT_SATGLONASS] > 0) ?
+                              _clkOrb.EpochTime[CLOCKORBIT_SATGLONASS] : _codeBias.EpochTime[CLOCKORBIT_SATGLONASS];
 
           // Second of day (GPS time) from Glonass Epoch
           // -------------------------------------------
@@ -233,8 +246,10 @@ t_irc RTCM3coDecoder::Decode(char* buffer, int bufLen, vector<string>& errmsg) {
 
         retCode = success;
 
-        memset(&_co, 0, sizeof(_co));
-        memset(&_bias, 0, sizeof(_bias));
+        memset(&_clkOrb,    0, sizeof(_clkOrb));
+        memset(&_codeBias,  0, sizeof(_codeBias));
+        memset(&_phaseBias, 0, sizeof(_phaseBias));
+        memset(&_vTEC,      0, sizeof(_vTEC));
       }
     }
   }
@@ -251,9 +266,9 @@ void RTCM3coDecoder::sendResults() {
 
   // Loop over all satellites (GPS and Glonass)
   // ------------------------------------------
-  for (unsigned ii = 0; ii < CLOCKORBIT_NUMGPS + _co.NumberOfSat[CLOCKORBIT_SATGLONASS]; ii++) {
+  for (unsigned ii = 0; ii < CLOCKORBIT_NUMGPS + _clkOrb.NumberOfSat[CLOCKORBIT_SATGLONASS]; ii++) {
     char sysCh = ' ';
-    if      (ii < _co.NumberOfSat[CLOCKORBIT_SATGPS]) {
+    if      (ii < _clkOrb.NumberOfSat[CLOCKORBIT_SATGPS]) {
       sysCh = 'G';
     }
     else if (ii >= CLOCKORBIT_NUMGPS) {
@@ -265,41 +280,41 @@ void RTCM3coDecoder::sendResults() {
 
     // Orbit correction
     // ----------------
-    if ( _co.messageType == COTYPE_GPSCOMBINED     ||
-         _co.messageType == COTYPE_GLONASSCOMBINED ||
-         _co.messageType == COTYPE_GPSORBIT        ||
-         _co.messageType == COTYPE_GLONASSORBIT    ) {
+    if ( _clkOrb.messageType == COTYPE_GPSCOMBINED     ||
+         _clkOrb.messageType == COTYPE_GLONASSCOMBINED ||
+         _clkOrb.messageType == COTYPE_GPSORBIT        ||
+         _clkOrb.messageType == COTYPE_GLONASSORBIT    ) {
 
       t_orbCorr orbCorr;
-      orbCorr._prn.set(sysCh, _co.Sat[ii].ID);
+      orbCorr._prn.set(sysCh, _clkOrb.Sat[ii].ID);
       orbCorr._staID    = _staID.toAscii().data();
-      orbCorr._iod      = _co.Sat[ii].IOD;
+      orbCorr._iod      = _clkOrb.Sat[ii].IOD;
       orbCorr._time     = _lastTime;
       orbCorr._system   = 'R';
-      orbCorr._xr[0]    = _co.Sat[ii].Orbit.DeltaRadial;
-      orbCorr._xr[1]    = _co.Sat[ii].Orbit.DeltaAlongTrack;
-      orbCorr._xr[2]    = _co.Sat[ii].Orbit.DeltaCrossTrack;
-      orbCorr._dotXr[0] = _co.Sat[ii].Orbit.DotDeltaRadial;
-      orbCorr._dotXr[1] = _co.Sat[ii].Orbit.DotDeltaAlongTrack;
-      orbCorr._dotXr[2] = _co.Sat[ii].Orbit.DotDeltaCrossTrack;
+      orbCorr._xr[0]    = _clkOrb.Sat[ii].Orbit.DeltaRadial;
+      orbCorr._xr[1]    = _clkOrb.Sat[ii].Orbit.DeltaAlongTrack;
+      orbCorr._xr[2]    = _clkOrb.Sat[ii].Orbit.DeltaCrossTrack;
+      orbCorr._dotXr[0] = _clkOrb.Sat[ii].Orbit.DotDeltaRadial;
+      orbCorr._dotXr[1] = _clkOrb.Sat[ii].Orbit.DotDeltaAlongTrack;
+      orbCorr._dotXr[2] = _clkOrb.Sat[ii].Orbit.DotDeltaCrossTrack;
 
       orbCorrections.push_back(orbCorr);
 
-      _IODs[orbCorr._prn.toString()] = _co.Sat[ii].IOD;
+      _IODs[orbCorr._prn.toString()] = _clkOrb.Sat[ii].IOD;
     }
 
-    if ( _co.messageType == COTYPE_GPSCOMBINED     ||
-         _co.messageType == COTYPE_GLONASSCOMBINED ||
-         _co.messageType == COTYPE_GPSCLOCK        ||
-         _co.messageType == COTYPE_GLONASSCLOCK    ) {
+    if ( _clkOrb.messageType == COTYPE_GPSCOMBINED     ||
+         _clkOrb.messageType == COTYPE_GLONASSCOMBINED ||
+         _clkOrb.messageType == COTYPE_GPSCLOCK        ||
+         _clkOrb.messageType == COTYPE_GLONASSCLOCK    ) {
 
       t_clkCorr clkCorr;
-      clkCorr._prn.set(sysCh, _co.Sat[ii].ID);
+      clkCorr._prn.set(sysCh, _clkOrb.Sat[ii].ID);
       clkCorr._staID      = _staID.toAscii().data();
       clkCorr._time       = _lastTime;
-      clkCorr._dClk       = _co.Sat[ii].Clock.DeltaA0 / t_CST::c;
-      clkCorr._dotDClk    = _co.Sat[ii].Clock.DeltaA1 / t_CST::c;
-      clkCorr._dotDotDClk = _co.Sat[ii].Clock.DeltaA2 / t_CST::c;
+      clkCorr._dClk       = _clkOrb.Sat[ii].Clock.DeltaA0 / t_CST::c;
+      clkCorr._dotDClk    = _clkOrb.Sat[ii].Clock.DeltaA1 / t_CST::c;
+      clkCorr._dotDotDClk = _clkOrb.Sat[ii].Clock.DeltaA2 / t_CST::c;
       clkCorr._clkPartial = 0.0;
 
       if (_IODs.contains(clkCorr._prn.toString())) {
@@ -310,17 +325,17 @@ void RTCM3coDecoder::sendResults() {
 
     // High-Resolution Clocks
     // ----------------------
-    if ( _co.messageType == COTYPE_GPSHR     ||
-         _co.messageType == COTYPE_GLONASSHR ) {
+    if ( _clkOrb.messageType == COTYPE_GPSHR     ||
+         _clkOrb.messageType == COTYPE_GLONASSHR ) {
     }
   }
 
   // Loop over all satellites (GPS and Glonass)
   // ------------------------------------------
   QList<t_satBias> satBiases;
-  for (unsigned ii = 0; ii < CLOCKORBIT_NUMGPS + _bias.NumberOfSat[CLOCKORBIT_SATGLONASS]; ii++) {
+  for (unsigned ii = 0; ii < CLOCKORBIT_NUMGPS + _codeBias.NumberOfSat[CLOCKORBIT_SATGLONASS]; ii++) {
     char sysCh = ' ';
-    if      (ii < _bias.NumberOfSat[CLOCKORBIT_SATGPS]) {
+    if      (ii < _codeBias.NumberOfSat[CLOCKORBIT_SATGPS]) {
       sysCh = 'G';
     }
     else if (ii >= CLOCKORBIT_NUMGPS) {
@@ -330,11 +345,11 @@ void RTCM3coDecoder::sendResults() {
       continue;
     }
     t_satBias satBias;
-    satBias._prn.set(sysCh, _bias.Sat[ii].ID);
+    satBias._prn.set(sysCh, _codeBias.Sat[ii].ID);
     satBias._time      = _lastTime;
     satBias._nx        = 0;
     satBias._jumpCount = 0;
-    for (unsigned jj = 0; jj < _bias.Sat[ii].NumberOfCodeBiases; jj++) {
+    for (unsigned jj = 0; jj < _codeBias.Sat[ii].NumberOfCodeBiases; jj++) {
     }
   }
 
@@ -363,14 +378,14 @@ void RTCM3coDecoder::sendResults() {
 ////////////////////////////////////////////////////////////////////////////
 void RTCM3coDecoder::checkProviderID() {
 
-  if (_co.SSRProviderID == 0 && _co.SSRSolutionID == 0 && _co.SSRIOD == 0) {
+  if (_clkOrb.SSRProviderID == 0 && _clkOrb.SSRSolutionID == 0 && _clkOrb.SSRIOD == 0) {
     return;
   }
 
   int newProviderID[3];
-  newProviderID[0] = _co.SSRProviderID;
-  newProviderID[1] = _co.SSRSolutionID;
-  newProviderID[2] = _co.SSRIOD;
+  newProviderID[0] = _clkOrb.SSRProviderID;
+  newProviderID[1] = _clkOrb.SSRSolutionID;
+  newProviderID[2] = _clkOrb.SSRIOD;
 
   bool alreadySet = false;
   bool different  = false;
