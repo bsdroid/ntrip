@@ -39,6 +39,7 @@
  * -----------------------------------------------------------------------*/
 
 #include <iostream>
+#include <sstream>
 #include <QMessageBox>
 #include <cmath>
 
