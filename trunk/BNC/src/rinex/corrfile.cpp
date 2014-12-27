@@ -49,19 +49,12 @@ using namespace std;
 ////////////////////////////////////////////////////////////////////////////
 t_corrFile::t_corrFile(QString fileName) {
   expandEnvVar(fileName);
-  _file   = new QFile(fileName);
-  _file->open(QIODevice::ReadOnly | QIODevice::Text);
-  _stream = new QTextStream();
-  _stream->setDevice(_file);
-  _lastOrbCorr = 0;
-  _lastClkCorr = 0;
+  _stream.open(fileName.toAscii().data());
 }
 
 // Destructor
 ////////////////////////////////////////////////////////////////////////////
 t_corrFile::~t_corrFile() {
-  delete _stream;
-  delete _file;
 }
 
 // Read till a given time
@@ -71,17 +64,7 @@ void t_corrFile::syncRead(const bncTime& tt) {
   _orbCorr.clear();
   _clkCorr.clear();
 
-  while (!stopRead(tt) && _stream->status() == QTextStream::Ok && !_stream->atEnd()) {
-    QString line = _stream->readLine().trimmed();
-    if (line.isEmpty() || line[0] == '!') {
-      continue;
-    }
-    if      (line[0] == 'O') {
-      delete _lastOrbCorr; _lastOrbCorr = new t_orbCorr(line.toAscii().data());
-    }
-    else if (line[0] == 'C') {
-      delete _lastClkCorr; _lastClkCorr = new t_clkCorr(line.toAscii().data());
-    }
+  while (!stopRead(tt) && _stream.good()) {
     if (stopRead(tt)) {
       break;
     }
@@ -100,25 +83,5 @@ void t_corrFile::syncRead(const bncTime& tt) {
 // Read till a given time
 ////////////////////////////////////////////////////////////////////////////
 bool t_corrFile::stopRead(const bncTime& tt) {
-  if (_lastOrbCorr) {
-    if (_lastOrbCorr->_time > tt) {
-      return true;
-    }
-    else {
-      _orbCorr.push_back(*_lastOrbCorr);
-      _corrIODs[QString(_lastOrbCorr->_prn.toString().c_str())] = _lastOrbCorr->_iod;
-      delete _lastOrbCorr; _lastOrbCorr = 0;
-    }
-  }
-  if (_lastClkCorr) {
-    if (_lastClkCorr->_time > tt) {
-      return true;
-    }
-    else {
-      _clkCorr.push_back(*_lastClkCorr);
-      _corrIODs[QString(_lastClkCorr->_prn.toString().c_str())] = _lastClkCorr->_iod;
-      delete _lastClkCorr; _lastClkCorr = 0;
-    }
-  }
-  return false;
+  return true;
 }

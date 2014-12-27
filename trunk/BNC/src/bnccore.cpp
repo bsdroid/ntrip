@@ -533,22 +533,20 @@ void t_bncCore::slotNewOrbCorrections(QList<t_orbCorr> orbCorrections) {
   QMutexLocker locker(&_mutex);
   emit newOrbCorrections(orbCorrections);
   if (_socketsCorr) {
-    QListIterator<t_orbCorr> it(orbCorrections);
-    while (it.hasNext()) {
-      const t_orbCorr& corr = it.next();
-      QMutableListIterator<QTcpSocket*> is(*_socketsCorr);
-      while (is.hasNext()) {
-        QTcpSocket* sock = is.next();
-        if (sock->state() == QAbstractSocket::ConnectedState) {
-          if (sock->write(corr.toLine().c_str()) == -1) {
-            delete sock;
-            is.remove();
-          }
-        }
-        else if (sock->state() != QAbstractSocket::ConnectingState) {
+    ostringstream out;
+    t_orbCorr::writeEpoch(&out, orbCorrections);   
+    QMutableListIterator<QTcpSocket*> is(*_socketsCorr);
+    while (is.hasNext()) {
+      QTcpSocket* sock = is.next();
+      if (sock->state() == QAbstractSocket::ConnectedState) {
+        if (sock->write(out.str().c_str()) == -1) {
           delete sock;
           is.remove();
         }
+      }
+      else if (sock->state() != QAbstractSocket::ConnectingState) {
+        delete sock;
+        is.remove();
       }
     }
   }
@@ -560,22 +558,20 @@ void t_bncCore::slotNewClkCorrections(QList<t_clkCorr> clkCorrections) {
   QMutexLocker locker(&_mutex);
   emit newClkCorrections(clkCorrections);
   if (_socketsCorr) {
-    QListIterator<t_clkCorr> it(clkCorrections);
-    while (it.hasNext()) {
-      const t_clkCorr& corr = it.next();
-      QMutableListIterator<QTcpSocket*> is(*_socketsCorr);
-      while (is.hasNext()) {
-        QTcpSocket* sock = is.next();
-        if (sock->state() == QAbstractSocket::ConnectedState) {
-          if (sock->write(corr.toLine().c_str()) == -1) {
-            delete sock;
-            is.remove();
-          }
-        }
-        else if (sock->state() != QAbstractSocket::ConnectingState) {
+    ostringstream out;
+    t_clkCorr::writeEpoch(&out, clkCorrections);   
+    QMutableListIterator<QTcpSocket*> is(*_socketsCorr);
+    while (is.hasNext()) {
+      QTcpSocket* sock = is.next();
+      if (sock->state() == QAbstractSocket::ConnectedState) {
+        if (sock->write(out.str().c_str()) == -1) {
           delete sock;
           is.remove();
         }
+      }
+      else if (sock->state() != QAbstractSocket::ConnectingState) {
+        delete sock;
+        is.remove();
       }
     }
   }
