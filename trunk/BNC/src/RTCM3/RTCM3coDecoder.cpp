@@ -218,7 +218,7 @@ void RTCM3coDecoder::sendResults() {
   QList<t_clkCorr>&      clkCorrections = _clkCorrections[_lastTime];
   QList<t_satCodeBias>&  codeBiases     = _codeBiases[_lastTime];
   QList<t_satPhaseBias>& phaseBiases    = _phaseBiases[_lastTime];
-  t_vTec&                vTec           = _vTec[_lastTime];
+  t_vTec&                vTec           = _vTecMap[_lastTime];
 
   // Orbit and clock corrections of all satellites
   // ---------------------------------------------

@@ -76,7 +76,7 @@ Q_OBJECT
   QMap<t_prn, t_clkCorr>                _lastClkCorrections;
   QMap<bncTime, QList<t_satCodeBias> >  _codeBiases;
   QMap<bncTime, QList<t_satPhaseBias> > _phaseBiases;
-  QMap<bncTime, t_vTec>                 _vTec;
+  QMap<bncTime, t_vTec>                 _vTecMap;
 };
 
 #endif
