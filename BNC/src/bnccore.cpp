@@ -112,13 +112,19 @@ t_bncCore::t_bncCore() : _ephUser(false) {
   _mainWindow     = 0;
 
   _pppMain = new BNC_PPP::t_pppMain();
-  qRegisterMetaType< QVector<double> >("QVector<double>");
-  qRegisterMetaType<bncTime>("bncTime");
-  qRegisterMetaType<t_ephGPS>("t_ephGPS");
-  qRegisterMetaType<t_ephGlo>("t_ephGlo");
-  qRegisterMetaType<t_ephGal>("t_ephGal");
-  qRegisterMetaType<t_ephSBAS>("t_ephSBAS");
-  qRegisterMetaType<t_ephCompass>("t_ephCompass");
+  qRegisterMetaType< QVector<double> >      ("QVector<double>");
+  qRegisterMetaType<bncTime>                ("bncTime");
+  qRegisterMetaType<t_ephGPS>               ("t_ephGPS");
+  qRegisterMetaType<t_ephGlo>               ("t_ephGlo");
+  qRegisterMetaType<t_ephGal>               ("t_ephGal");
+  qRegisterMetaType<t_ephSBAS>              ("t_ephSBAS");
+  qRegisterMetaType<t_ephCompass>           ("t_ephCompass");
+  qRegisterMetaType<QList<t_orbCorr> >      ("QList<t_orbCorr>");
+  qRegisterMetaType<QList<t_clkCorr> >      ("QList<t_clkCorr>");
+  qRegisterMetaType<QList<t_satCodeBias> >  ("QList<t_satCodeBias>");
+  qRegisterMetaType<QList<t_satPhaseBias> > ("QList<t_satPhaseBias>");
+  qRegisterMetaType<t_vTec>                 ("t_vTec");
+
 }
 
 // Destructor
