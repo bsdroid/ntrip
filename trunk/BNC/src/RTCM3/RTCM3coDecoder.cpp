@@ -345,13 +345,18 @@ void RTCM3coDecoder::sendResults() {
     }
     t_satPhaseBias satPhaseBias;
     satPhaseBias._prn.set(sysCh, _phaseBias.Sat[ii].ID);
-    satPhaseBias._staID = _staID.toAscii().data();
-    satPhaseBias._time  = _lastTime;
+    satPhaseBias._staID      = _staID.toAscii().data();
+    satPhaseBias._time       = _lastTime;
+    satPhaseBias._yawDeg     = _phaseBias.Sat[ii].YawAngle * 180.0 / M_PI;
+    satPhaseBias._yawDegRate = _phaseBias.Sat[ii].YawRate * 180.0 / M_PI;
     for (unsigned jj = 0; jj < _phaseBias.Sat[ii].NumberOfPhaseBiases; jj++) {
       const PhaseBias::PhaseBiasSat::PhaseBiasEntry& biasEntry = _phaseBias.Sat[ii].Biases[jj];
       t_frqPhaseBias frqPhaseBias;
-      frqPhaseBias._rnxType2ch = codeTypeToRnxType(sysCh, biasEntry.Type);
-      frqPhaseBias._value      = biasEntry.Bias;
+      frqPhaseBias._rnxType2ch           = codeTypeToRnxType(sysCh, biasEntry.Type);
+      frqPhaseBias._value                = biasEntry.Bias;
+      frqPhaseBias._fixIndicator         = biasEntry.SignalIntegerIndicator;
+      frqPhaseBias._fixWideLaneIndicator = biasEntry.SignalsWideLaneIntegerIndicator;
+      frqPhaseBias._jumpCounter          = biasEntry.SignalDiscontinuityCounter;
       if (!frqPhaseBias._rnxType2ch.empty()) {
         satPhaseBias._bias.push_back(frqPhaseBias);
       }
