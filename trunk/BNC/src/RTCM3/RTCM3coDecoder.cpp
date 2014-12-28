@@ -70,15 +70,20 @@ RTCM3coDecoder::RTCM3coDecoder(const QString& staID) {
   }
   _out = 0;
 
-  qRegisterMetaType< QList<t_orbCorr> >("QList<t_orbCorr>");
-  qRegisterMetaType< QList<t_clkCorr> >("QList<t_clkCorr>");
-  qRegisterMetaType< QList<t_satCodeBias> >("QList<t_satCodeBias>");
-
   connect(this, SIGNAL(newOrbCorrections(QList<t_orbCorr>)),
           BNC_CORE, SLOT(slotNewOrbCorrections(QList<t_orbCorr>)));
 
   connect(this, SIGNAL(newClkCorrections(QList<t_clkCorr>)),
           BNC_CORE, SLOT(slotNewClkCorrections(QList<t_clkCorr>)));
+
+  connect(this, SIGNAL(newCodeBiases(QList<t_satCodeBias>)),
+          BNC_CORE, SLOT(slotNewCodeBiases(QList<t_satCodeBias>)));
+
+  connect(this, SIGNAL(newPhaseBiases(QList<t_satPhaseBias>)),
+          BNC_CORE, SLOT(slotNewPhaseBiases(QList<t_satPhaseBias>)));
+
+  connect(this, SIGNAL(newTec(t_vTec)),
+          BNC_CORE, SLOT(slotNewTec(t_vTec)));
 
   connect(this, SIGNAL(providerIDChanged(QString)),
           BNC_CORE, SIGNAL(providerIDChanged(QString)));
