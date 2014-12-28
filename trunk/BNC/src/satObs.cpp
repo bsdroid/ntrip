@@ -167,9 +167,10 @@ void t_vTec::write(std::ostream* out, const t_vTec& vTec) {
        << vTec._layers.size() << ' ' << vTec._staID << endl;
   for (unsigned ii = 0; ii < vTec._layers.size(); ii++) {
     const t_vTecLayer& layer = vTec._layers[ii];
-    *out << setw(2) << ii+1 << ' '
-         << setw(2) << layer._C.Nrows() << ' '    
-         << setw(2) << layer._C.Ncols() << ' '    
+    *out << setw(2)  << ii+1 << ' '
+         << setw(2)  << layer._C.Nrows() << ' '    
+         << setw(2)  << layer._C.Ncols() << ' '    
+         << setw(10) << setprecision(1) << layer._height << endl  
          << setw(10) << setprecision(4) << layer._C 
          << setw(10) << setprecision(4) << layer._S;
   }
