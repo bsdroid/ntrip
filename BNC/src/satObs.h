@@ -97,6 +97,8 @@ class t_frqCodeBias {
 
 class t_satCodeBias {
  public:
+  static void writeEpoch(std::ostream* out, const QList<t_satCodeBias>& biasList);
+  static void readEpoch(const QStringList& lines, QList<t_satCodeBias>& biasList);
   std::string                _staID;
   t_prn                      _prn;
   bncTime                    _time;
