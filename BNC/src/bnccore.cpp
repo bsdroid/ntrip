@@ -586,6 +586,18 @@ void t_bncCore::slotNewCodeBiases(QList<t_satCodeBias> codeBiases) {
 
 // 
 ////////////////////////////////////////////////////////////////////////////
+void t_bncCore::slotNewPhaseBiases(QList<t_satPhaseBias> phaseBiases) {
+
+}
+
+// 
+////////////////////////////////////////////////////////////////////////////
+void t_bncCore::slotNewTec(t_vTec vTec) {
+
+}
+
+// 
+////////////////////////////////////////////////////////////////////////////
 void t_bncCore::setConfFileName(const QString& confFileName) {
   if (confFileName.isEmpty()) {
     _confFileName = QDir::homePath() + QDir::separator() 
