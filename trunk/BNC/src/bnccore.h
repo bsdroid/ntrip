@@ -81,6 +81,7 @@ friend class bncSettings;
   void slotNewSBASEph(t_ephSBAS);
   void slotNewOrbCorrections(QList<t_orbCorr> orbCorr);
   void slotNewClkCorrections(QList<t_clkCorr> clkCorr);
+  void slotNewCodeBiases(QList<t_satCodeBias> codeBiases);
   void slotQuit();
 
  signals:
@@ -91,6 +92,7 @@ friend class bncSettings;
   void newGalileoEph(t_ephGal eph);
   void newOrbCorrections(QList<t_orbCorr> orbCorr);
   void newClkCorrections(QList<t_clkCorr> clkCorr);
+  void newCodeBiases(QList<t_satCodeBias> codeBiases);
   void providerIDChanged(QString);
   void newPosition(QByteArray staID, bncTime time, QVector<double> xx);
   void newNMEAstr(QByteArray staID, QByteArray str);
