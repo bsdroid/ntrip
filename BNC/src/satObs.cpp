@@ -88,6 +88,24 @@ void t_orbCorr::readEpoch(const QStringList& lines, QList<t_orbCorr>& corrList) 
 // 
 ////////////////////////////////////////////////////////////////////////////
 void t_satCodeBias::writeEpoch(std::ostream* out, const QList<t_satCodeBias>& biasList) {
+  if (!out || biasList.size() == 0) {
+    return;
+  }
+  out->setf(ios::fixed);
+  bncTime epoTime;
+  QListIterator<t_satCodeBias> it(biasList);
+  while (it.hasNext()) {
+    const t_satCodeBias& satCodeBias = it.next();
+    if (!epoTime.valid()) {
+      epoTime = satCodeBias._time;
+      *out << "> CODE_BIAS " << epoTime.datestr(' ') << ' ' << epoTime.timestr(1,' ') << "    "
+           << biasList.size() << ' ' << satCodeBias._staID << endl;
+    }
+    *out << satCodeBias._prn.toString() << ' ';
+
+    *out << endl;
+  }
+  out->flush();
 }
 
 // 
