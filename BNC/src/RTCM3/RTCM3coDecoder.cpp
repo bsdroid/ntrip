@@ -70,9 +70,9 @@ RTCM3coDecoder::RTCM3coDecoder(const QString& staID) {
   }
   _out = 0;
 
-  qRegisterMetaType<bncTime>("bncTime");
   qRegisterMetaType< QList<t_orbCorr> >("QList<t_orbCorr>");
   qRegisterMetaType< QList<t_clkCorr> >("QList<t_clkCorr>");
+  qRegisterMetaType< QList<t_satCodeBias> >("QList<t_satCodeBias>");
 
   connect(this, SIGNAL(newOrbCorrections(QList<t_orbCorr>)),
           BNC_CORE, SLOT(slotNewOrbCorrections(QList<t_orbCorr>)));
@@ -316,7 +316,9 @@ void RTCM3coDecoder::sendResults() {
       t_frqCodeBias frqCodeBias;
       frqCodeBias._rnxType2ch = codeTypeToRnxType(sysCh, biasEntry.Type);
       frqCodeBias._value      = biasEntry.Bias;
-      satCodeBias._bias.push_back(frqCodeBias);
+      if (!frqCodeBias._rnxType2ch.empty()) {
+        satCodeBias._bias.push_back(frqCodeBias);
+      }
     }
     codeBiases.push_back(satCodeBias);
   }
@@ -339,6 +341,15 @@ void RTCM3coDecoder::sendResults() {
       emit newClkCorrections(itClk.value());
       t_clkCorr::writeEpoch(_out, itClk.value());
       itClk.remove();
+    } 
+  }
+  QMutableMapIterator<bncTime, QList<t_satCodeBias> > itCB(_codeBiases);
+  while (itCB.hasNext()) {
+    itCB.next();
+    if (itCB.key() < _lastTime) {
+      emit newCodeBiases(itCB.value());
+      //      t_satCodeBias::writeEpoch(_out, itCB.value());
+      itCB.remove();
     } 
   }
 }
