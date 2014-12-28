@@ -248,7 +248,7 @@ void RTCM3coDecoder::sendResults() {
 
       orbCorrections.push_back(orbCorr);
 
-      _IODs[orbCorr._prn.toString()] = _clkOrb.Sat[ii].IOD;
+      _IODs[orbCorr._prn] = _clkOrb.Sat[ii].IOD;
     }
 
     // Clock Corrections
@@ -266,8 +266,10 @@ void RTCM3coDecoder::sendResults() {
       clkCorr._dotDClk    = _clkOrb.Sat[ii].Clock.DeltaA1 / t_CST::c;
       clkCorr._dotDotDClk = _clkOrb.Sat[ii].Clock.DeltaA2 / t_CST::c;
 
-      if (_IODs.contains(clkCorr._prn.toString())) {
-        clkCorr._iod = _IODs[clkCorr._prn.toString()];
+      _lastClkCorrections[clkCorr._prn] = clkCorr;
+
+      if (_IODs.contains(clkCorr._prn)) {
+        clkCorr._iod = _IODs[clkCorr._prn];
         clkCorrections.push_back(clkCorr);
       }
     }
@@ -276,6 +278,18 @@ void RTCM3coDecoder::sendResults() {
     // ----------------------
     if ( _clkOrb.messageType == COTYPE_GPSHR     ||
          _clkOrb.messageType == COTYPE_GLONASSHR ) {
+
+      t_prn prn(sysCh, _clkOrb.Sat[ii].ID);
+      if (_lastClkCorrections.contains(prn)) {
+        t_clkCorr clkCorr;
+        clkCorr        = _lastClkCorrections[prn];
+        clkCorr._time  = _lastTime;
+        clkCorr._dClk  +=_clkOrb.Sat[ii].hrclock / t_CST::c;
+        if (_IODs.contains(clkCorr._prn)) {
+          clkCorr._iod = _IODs[clkCorr._prn];
+          clkCorrections.push_back(clkCorr);
+        }
+      }
     }
   }
 
