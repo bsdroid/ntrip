@@ -105,4 +105,35 @@ class t_satCodeBias {
   std::vector<t_frqCodeBias> _bias;
 };
 
+class t_frqPhaseBias {
+ public:
+  t_frqPhaseBias() {
+    _value                = 0.0;          
+    _fixIndicator         = 0;
+    _fixWideLaneIndicator = 0;
+    _jumpCounter          = 0;
+  }
+  std::string _rnxType2ch;
+  double      _value;
+  int         _fixIndicator;
+  int         _fixWideLaneIndicator;
+  int         _jumpCounter;
+};
+
+class t_satPhaseBias {
+ public:
+  t_satPhaseBias() {
+    _yawDeg     = 0.0;
+    _yawDegRate = 0.0;
+  }
+  static void writeEpoch(std::ostream* out, const QList<t_satPhaseBias>& biasList);
+  static void readEpoch(const QStringList& lines, QList<t_satPhaseBias>& biasList);
+  std::string                 _staID;
+  t_prn                       _prn;
+  bncTime                     _time;
+  double                      _yawDeg;
+  double                      _yawDegRate;
+  std::vector<t_frqPhaseBias> _bias;
+};
+
 #endif

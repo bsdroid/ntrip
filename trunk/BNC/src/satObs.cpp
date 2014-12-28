@@ -116,3 +116,14 @@ void t_satCodeBias::writeEpoch(std::ostream* out, const QList<t_satCodeBias>& bi
 ////////////////////////////////////////////////////////////////////////////
 void t_satCodeBias::readEpoch(const QStringList& lines, QList<t_satCodeBias>& biasList) {
 }
+
+// 
+////////////////////////////////////////////////////////////////////////////
+void t_satPhaseBias::writeEpoch(std::ostream* out, const QList<t_satPhaseBias>& biasList) {
+
+}
+  
+// 
+////////////////////////////////////////////////////////////////////////////
+void t_satPhaseBias::readEpoch(const QStringList& lines, QList<t_satPhaseBias>& biasList) {
+}
