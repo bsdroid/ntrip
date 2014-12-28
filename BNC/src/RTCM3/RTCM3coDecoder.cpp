@@ -364,16 +364,25 @@ void RTCM3coDecoder::setEpochTime() {
   int epoSecGPS = -1;
   int epoSecGlo = -1;
   if      (_clkOrb.NumberOfSat[CLOCKORBIT_SATGPS] > 0) {
-    epoSecGPS = _clkOrb.EpochTime[CLOCKORBIT_SATGPS]; // 0 .. 604799 s  
+    epoSecGPS = _clkOrb.EpochTime[CLOCKORBIT_SATGPS];        // 0 .. 604799 s  
   }
   else if (_codeBias.NumberOfSat[CLOCKORBIT_SATGPS] > 0) {
-    epoSecGPS = _codeBias.EpochTime[CLOCKORBIT_SATGPS]; // 0 .. 604799 s  
+    epoSecGPS = _codeBias.EpochTime[CLOCKORBIT_SATGPS];      // 0 .. 604799 s  
+  }
+  else if (_phaseBias.NumberOfSat[CLOCKORBIT_SATGPS] > 0) {
+    epoSecGPS = _phaseBias.EpochTime[CLOCKORBIT_SATGPS];     // 0 .. 604799 s  
+  }
+  else if (_vTEC.NumLayers > 0) {
+    epoSecGPS = _vTEC.EpochTime;                             // 0 .. 604799 s  
   }
   else if (_clkOrb.NumberOfSat[CLOCKORBIT_SATGLONASS] > 0) {
-    epoSecGlo = _clkOrb.EpochTime[CLOCKORBIT_SATGLONASS]; // 0 .. 86399 s (86400 for leap second)
+    epoSecGlo = _clkOrb.EpochTime[CLOCKORBIT_SATGLONASS];    // 0 .. 86399 s
   }
   else if (_codeBias.NumberOfSat[CLOCKORBIT_SATGLONASS] > 0) {
-    epoSecGlo = _codeBias.EpochTime[CLOCKORBIT_SATGLONASS]; // 0 .. 86399 s (86400 for leap second)
+    epoSecGlo = _codeBias.EpochTime[CLOCKORBIT_SATGLONASS];  // 0 .. 86399 s
+  }
+  else if (_phaseBias.NumberOfSat[CLOCKORBIT_SATGLONASS] > 0) {
+    epoSecGlo = _phaseBias.EpochTime[CLOCKORBIT_SATGLONASS]; // 0 .. 86399 s
   }
 
   // Retrieve current time
