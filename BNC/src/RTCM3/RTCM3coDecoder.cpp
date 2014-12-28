@@ -439,85 +439,85 @@ void RTCM3coDecoder::setEpochTime() {
 string RTCM3coDecoder::codeTypeToRnxType(char system, CodeType type) const {
   if      (system == 'G') {
     switch (type) {
-    case CODETYPEGPS_L1_CA:         return "";
-    case CODETYPEGPS_L1_P:          return "";
-    case CODETYPEGPS_L1_Z:          return "";
-    case CODETYPEGPS_L2_CA:         return "";
-    case CODETYPEGPS_SEMI_CODELESS: return "";
-    case CODETYPEGPS_L2_CM:         return "";
-    case CODETYPEGPS_L2_CL:         return "";
-    case CODETYPEGPS_L2_CML:        return "";
-    case CODETYPEGPS_L2_P:          return "";
-    case CODETYPEGPS_L2_Z:          return "";
-    case CODETYPEGPS_L5_I:          return "";
-    case CODETYPEGPS_L5_Q:          return "";
+    case CODETYPEGPS_L1_CA:         return "1C";
+    case CODETYPEGPS_L1_P:          return "1P";
+    case CODETYPEGPS_L1_Z:          return "1W";
+    case CODETYPEGPS_L2_CA:         return "2C";
+    case CODETYPEGPS_SEMI_CODELESS: return "?N"; // which carrier ?
+    case CODETYPEGPS_L2_CM:         return "2S";
+    case CODETYPEGPS_L2_CL:         return "2L";
+    case CODETYPEGPS_L2_CML:        return "2X";
+    case CODETYPEGPS_L2_P:          return "2P";
+    case CODETYPEGPS_L2_Z:          return "2W";
+    case CODETYPEGPS_L5_I:          return "5I";
+    case CODETYPEGPS_L5_Q:          return "5Q";
     default: return "";                 
     }
   }
   else if (system == 'R') {
     switch (type) {
-    case CODETYPEGLONASS_L1_CA:     return "";
-    case CODETYPEGLONASS_L1_P:      return "";
-    case CODETYPEGLONASS_L2_CA:     return "";
-    case CODETYPEGLONASS_L2_P:      return "";
+    case CODETYPEGLONASS_L1_CA:     return "1C";
+    case CODETYPEGLONASS_L1_P:      return "1P";
+    case CODETYPEGLONASS_L2_CA:     return "2C";
+    case CODETYPEGLONASS_L2_P:      return "2P";
     default: return "";                 
     }
   }
   else if (system == 'E') {
     switch (type) {
-    case CODETYPEGALILEO_E1_A:      return "";
-    case CODETYPEGALILEO_E1_B:      return "";
-    case CODETYPEGALILEO_E1_C:      return "";
-    case CODETYPEGALILEO_E5A_I:     return "";
-    case CODETYPEGALILEO_E5A_Q:     return "";
-    case CODETYPEGALILEO_E5B_I:     return "";
-    case CODETYPEGALILEO_E5B_Q:     return "";
-    case CODETYPEGALILEO_E5_I:      return "";
-    case CODETYPEGALILEO_E5_Q:      return "";
-    case CODETYPEGALILEO_E6_A:      return "";
-    case CODETYPEGALILEO_E6_B:      return "";
-    case CODETYPEGALILEO_E6_C:      return "";
+    case CODETYPEGALILEO_E1_A:      return "1A";
+    case CODETYPEGALILEO_E1_B:      return "1B";
+    case CODETYPEGALILEO_E1_C:      return "1C";
+    case CODETYPEGALILEO_E5A_I:     return "5I";
+    case CODETYPEGALILEO_E5A_Q:     return "5Q";
+    case CODETYPEGALILEO_E5B_I:     return "7I";
+    case CODETYPEGALILEO_E5B_Q:     return "7Q";
+    case CODETYPEGALILEO_E5_I:      return "8I";
+    case CODETYPEGALILEO_E5_Q:      return "8Q";
+    case CODETYPEGALILEO_E6_A:      return "6A";
+    case CODETYPEGALILEO_E6_B:      return "6B";
+    case CODETYPEGALILEO_E6_C:      return "6C";
     default: return "";                 
     }
   }
   else if (system == 'J') {
     switch (type) {
-    case CODETYPEQZSS_L1_CA:        return "";
-    case CODETYPEQZSS_L1C_D:        return "";
-    case CODETYPEQZSS_L1C_P:        return "";
-    case CODETYPEQZSS_L2_CM:        return "";
-    case CODETYPEQZSS_L2_CL:        return "";
-    case CODETYPEQZSS_L2_CML:       return "";
-    case CODETYPEQZSS_L5_I:         return "";
-    case CODETYPEQZSS_L5_Q:         return "";
-    case CODETYPEQZSS_L5_IQ:        return "";
-    case CODETYPEQZSS_LEX_S:        return "";
-    case CODETYPEQZSS_LEX_L:        return "";
-    case CODETYPEQZSS_LEX_SL:       return "";
-    case CODETYPEQZSS_L1C_DP:       return "";
+    case CODETYPEQZSS_L1_CA:        return "1C";
+    case CODETYPEQZSS_L1C_D:        return "1S";
+    case CODETYPEQZSS_L1C_P:        return "1L";
+    case CODETYPEQZSS_L1C_DP:       return "1X";
+    case CODETYPEQZSS_L2_CM:        return "2S";
+    case CODETYPEQZSS_L2_CL:        return "2L";
+    case CODETYPEQZSS_L2_CML:       return "2X";
+    case CODETYPEQZSS_L5_I:         return "5I";
+    case CODETYPEQZSS_L5_Q:         return "5Q";
+    case CODETYPEQZSS_L5_IQ:        return "5X";
+    case CODETYPEQZSS_LEX_S:        return "6S";
+    case CODETYPEQZSS_LEX_L:        return "6L";
+    case CODETYPEQZSS_LEX_SL:       return "6X";
     default: return "";                 
     }
   }
   else if (system == 'S') {
     switch (type) {
-    case CODETYPE_SBAS_L1_CA:       return "";
-    case CODETYPE_SBAS_L5_I:        return "";
-    case CODETYPE_SBAS_L5_Q:        return "";
-    case CODETYPE_SBAS_L5_IQ:       return "";
+    case CODETYPE_SBAS_L1_CA:       return "1C";
+    case CODETYPE_SBAS_L5_I:        return "5I";
+    case CODETYPE_SBAS_L5_Q:        return "5Q";
+    case CODETYPE_SBAS_L5_IQ:       return "5X";
     default: return "";                 
     }
   }
   else if (system == 'C') {
     switch (type) {
-    case CODETYPE_BDS_B1_I:         return "";
-    case CODETYPE_BDS_B1_Q:         return "";
-    case CODETYPE_BDS_B1_IQ:        return "";
-    case CODETYPE_BDS_B3_I:         return "";
-    case CODETYPE_BDS_B3_Q:         return "";
-    case CODETYPE_BDS_B3_IQ:        return "";
-    case CODETYPE_BDS_B2_I:         return "";
-    case CODETYPE_BDS_B2_Q:         return "";
-    case CODETYPE_BDS_B2_IQ:        return "";
+    case CODETYPE_BDS_B1_I:         return "1I";
+    case CODETYPE_BDS_B1_Q:         return "1Q";
+    case CODETYPE_BDS_B1_IQ:        return "1X";
+    case CODETYPE_BDS_B2_I:         return "7I";
+    case CODETYPE_BDS_B2_Q:         return "7Q";
+    case CODETYPE_BDS_B2_IQ:        return "7X";
+    case CODETYPE_BDS_B3_I:         return "6I";
+    case CODETYPE_BDS_B3_Q:         return "6Q";
+    case CODETYPE_BDS_B3_IQ:        return "6X";
     default: return "";                 
     }
   }
