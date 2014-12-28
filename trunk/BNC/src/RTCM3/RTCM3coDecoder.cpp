@@ -364,6 +364,12 @@ void RTCM3coDecoder::sendResults() {
     phaseBiases.push_back(satPhaseBias);
   }
 
+  // Ionospheric Model
+  // -----------------
+  if (_vTEC.NumLayers > 0) {
+
+  }
+
   // Dump all older epochs
   // ---------------------
   QMutableMapIterator<bncTime, QList<t_orbCorr> > itOrb(_orbCorrections);
@@ -400,6 +406,15 @@ void RTCM3coDecoder::sendResults() {
       emit newPhaseBiases(itPB.value());
       t_satPhaseBias::writeEpoch(_out, itPB.value());
       itPB.remove();
+    } 
+  }
+  QMutableMapIterator<bncTime, t_vTec> itTec(_vTecMap);
+  while (itTec.hasNext()) {
+    itTec.next();
+    if (itTec.key() < _lastTime) {
+      emit newTec(itTec.value());
+      t_vTec::write(_out, itTec.value());
+      itTec.remove();
     } 
   }
 }
