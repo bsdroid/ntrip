@@ -45,6 +45,7 @@ Q_OBJECT
  signals:
   void newOrbCorrections(QList<t_orbCorr>);
   void newClkCorrections(QList<t_clkCorr>);
+  void newCodeBiases(QList<t_satCodeBias>);
   void newMessage(QByteArray msg, bool showOnScreen);
   void providerIDChanged(QString staID);
 
