@@ -395,11 +395,12 @@ void RTCM3coDecoder::setEpochTime() {
   }
 
   if (_lastTime.valid()) {
-    while (_lastTime < currentTime - 86400.0/2) {
-      _lastTime = _lastTime + 86400.0/2;
+    double maxDiff = 12 * 3600.0;
+    while (_lastTime < currentTime - maxDiff) {
+      _lastTime = _lastTime + maxDiff;
     }
-    while (_lastTime > currentTime + 86400.0/2) {
-      _lastTime = _lastTime - 86400.0/2;
+    while (_lastTime > currentTime + maxDiff) {
+      _lastTime = _lastTime - maxDiff;
     }
   }
 }
