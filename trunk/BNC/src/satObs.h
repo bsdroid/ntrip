@@ -136,4 +136,20 @@ class t_satPhaseBias {
   std::vector<t_frqPhaseBias> _bias;
 };
 
+class t_vTecLayer {
+ public:
+  double _height;
+  Matrix _C;
+  Matrix _S;
+};
+
+class t_vTec {
+ public:
+  static void write(std::ostream* out, const t_vTec& vTec);
+  static void read(const QStringList& lines, t_vTec& vTec);
+  std::string              _staID;
+  bncTime                  _time;
+  std::vector<t_vTecLayer> _layers;
+};
+
 #endif
