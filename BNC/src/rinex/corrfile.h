@@ -43,13 +43,15 @@ class t_corrFile : public QObject {
  signals:
   void newOrbCorrections(QList<t_orbCorr>);
   void newClkCorrections(QList<t_clkCorr>);
+  void newCodeBiases(QList<t_satCodeBias>);
 
  private:
   bool stopRead(const bncTime& tt);
-  std::fstream       _stream;
-  QList<t_orbCorr>   _orbCorr;
-  QList<t_clkCorr>   _clkCorr;
-  QMap<QString, int> _corrIODs;
+  std::fstream         _stream;
+  QList<t_orbCorr>     _orbCorr;
+  QList<t_clkCorr>     _clkCorr;
+  QList<t_satCodeBias> _codeBiases;
+  QMap<QString, int>   _corrIODs;
 };
 
 #endif

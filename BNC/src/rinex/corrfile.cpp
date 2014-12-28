@@ -63,6 +63,7 @@ void t_corrFile::syncRead(const bncTime& tt) {
 
   _orbCorr.clear();
   _clkCorr.clear();
+  _codeBiases.clear();
 
   while (!stopRead(tt) && _stream.good()) {
     if (stopRead(tt)) {
@@ -77,6 +78,10 @@ void t_corrFile::syncRead(const bncTime& tt) {
   if (_clkCorr.size() > 0) {
     emit newClkCorrections(_clkCorr);
     _clkCorr.clear();
+  }
+  if (_codeBiases.size() > 0) {
+    emit newCodeBiases(_codeBiases);
+    _codeBiases.clear();
   }
 }
 
