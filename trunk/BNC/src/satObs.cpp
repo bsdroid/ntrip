@@ -133,11 +133,16 @@ void t_satPhaseBias::writeEpoch(std::ostream* out, const QList<t_satPhaseBias>& 
       *out << "> PHASE_BIAS " << epoTime.datestr(' ') << ' ' << epoTime.timestr(1,' ') << "    "
            << biasList.size() << ' ' << satPhaseBias._staID << endl;
     }
-    *out << satPhaseBias._prn.toString();
+    *out << satPhaseBias._prn.toString() << ' '
+         << setw(12) << setprecision(8) << satPhaseBias._yawDeg << ' '
+         << setw(12) << setprecision(8) << satPhaseBias._yawDegRate << "    ";
     for (unsigned ii = 0; ii < satPhaseBias._bias.size(); ii++) {
       const t_frqPhaseBias& frqPhaseBias = satPhaseBias._bias[ii];
       *out << "   " << frqPhaseBias._rnxType2ch << ' '
-           << setw(10) << setprecision(4) << frqPhaseBias._value;
+           << setw(10) << setprecision(4) << frqPhaseBias._value << ' '
+           << setw(3) << frqPhaseBias._fixIndicator << ' '
+           << setw(3) << frqPhaseBias._fixWideLaneIndicator << ' '
+           << setw(3) << frqPhaseBias._jumpCounter;
     }
     *out << endl;
   }
