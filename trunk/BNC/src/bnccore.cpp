@@ -580,6 +580,12 @@ void t_bncCore::slotNewClkCorrections(QList<t_clkCorr> clkCorrections) {
 
 // 
 ////////////////////////////////////////////////////////////////////////////
+void t_bncCore::slotNewCodeBiases(QList<t_satCodeBias> codeBiases) {
+
+}
+
+// 
+////////////////////////////////////////////////////////////////////////////
 void t_bncCore::setConfFileName(const QString& confFileName) {
   if (confFileName.isEmpty()) {
     _confFileName = QDir::homePath() + QDir::separator() 
