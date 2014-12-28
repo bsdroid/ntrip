@@ -101,8 +101,12 @@ void t_satCodeBias::writeEpoch(std::ostream* out, const QList<t_satCodeBias>& bi
       *out << "> CODE_BIAS " << epoTime.datestr(' ') << ' ' << epoTime.timestr(1,' ') << "    "
            << biasList.size() << ' ' << satCodeBias._staID << endl;
     }
-    *out << satCodeBias._prn.toString() << ' ';
-
+    *out << satCodeBias._prn.toString();
+    for (unsigned ii = 0; ii < satCodeBias._bias.size(); ii++) {
+      const t_frqCodeBias& frqCodeBias = satCodeBias._bias[ii];
+      *out << "   " << frqCodeBias._rnxType2ch << ' '
+           << setw(10) << setprecision(4) << frqCodeBias._value;
+    }
     *out << endl;
   }
   out->flush();
