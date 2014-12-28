@@ -385,6 +385,24 @@ void RTCM3coDecoder::sendResults() {
     }
   }
 
+  // Remove Empty Lists
+  // ------------------
+  if (orbCorrections.size() == 0) {
+    _orbCorrections.remove(_lastTime);
+  }
+  if (clkCorrections.size() == 0) {
+    _clkCorrections.remove(_lastTime);
+  }
+  if (codeBiases.size() == 0) {
+    _codeBiases.remove(_lastTime);
+  }
+  if (phaseBiases.size() == 0) {
+    _phaseBiases.remove(_lastTime);
+  }
+  if (vTec._layers.size() == 0) {
+    _vTecMap.remove(_lastTime);
+  }
+
   // Dump all older epochs
   // ---------------------
   QMutableMapIterator<bncTime, QList<t_orbCorr> > itOrb(_orbCorrections);
