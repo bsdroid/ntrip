@@ -120,7 +120,28 @@ void t_satCodeBias::readEpoch(const QStringList& lines, QList<t_satCodeBias>& bi
 // 
 ////////////////////////////////////////////////////////////////////////////
 void t_satPhaseBias::writeEpoch(std::ostream* out, const QList<t_satPhaseBias>& biasList) {
-
+  if (!out || biasList.size() == 0) {
+    return;
+  }
+  out->setf(ios::fixed);
+  bncTime epoTime;
+  QListIterator<t_satPhaseBias> it(biasList);
+  while (it.hasNext()) {
+    const t_satPhaseBias& satPhaseBias = it.next();
+    if (!epoTime.valid()) {
+      epoTime = satPhaseBias._time;
+      *out << "> PHASE_BIAS " << epoTime.datestr(' ') << ' ' << epoTime.timestr(1,' ') << "    "
+           << biasList.size() << ' ' << satPhaseBias._staID << endl;
+    }
+    *out << satPhaseBias._prn.toString();
+    for (unsigned ii = 0; ii < satPhaseBias._bias.size(); ii++) {
+      const t_frqPhaseBias& frqPhaseBias = satPhaseBias._bias[ii];
+      *out << "   " << frqPhaseBias._rnxType2ch << ' '
+           << setw(10) << setprecision(4) << frqPhaseBias._value;
+    }
+    *out << endl;
+  }
+  out->flush();
 }
   
 // 
@@ -131,7 +152,15 @@ void t_satPhaseBias::readEpoch(const QStringList& lines, QList<t_satPhaseBias>& 
 // 
 ////////////////////////////////////////////////////////////////////////////
 void t_vTec::write(std::ostream* out, const t_vTec& vTec) {
+  if (!out || vTec._layers.size() == 0) {
+    return;
+  }
+  out->setf(ios::fixed);
+  bncTime epoTime = vTec._time;
+  *out << "> VTEC " << epoTime.datestr(' ') << ' ' << epoTime.timestr(1,' ') << "    "
+       << vTec._layers.size() << ' ' << vTec._staID << endl;
 
+  out->flush();
 }
 
 // 
