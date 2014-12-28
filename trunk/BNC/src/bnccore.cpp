@@ -581,19 +581,76 @@ void t_bncCore::slotNewClkCorrections(QList<t_clkCorr> clkCorrections) {
 // 
 ////////////////////////////////////////////////////////////////////////////
 void t_bncCore::slotNewCodeBiases(QList<t_satCodeBias> codeBiases) {
-
+  QMutexLocker locker(&_mutex);
+  emit newCodeBiases(codeBiases);
+  if (_socketsCorr) {
+    ostringstream out;
+    t_satCodeBias::writeEpoch(&out, codeBiases);   
+    QMutableListIterator<QTcpSocket*> is(*_socketsCorr);
+    while (is.hasNext()) {
+      QTcpSocket* sock = is.next();
+      if (sock->state() == QAbstractSocket::ConnectedState) {
+        if (sock->write(out.str().c_str()) == -1) {
+          delete sock;
+          is.remove();
+        }
+      }
+      else if (sock->state() != QAbstractSocket::ConnectingState) {
+        delete sock;
+        is.remove();
+      }
+    }
+  }
 }
 
 // 
 ////////////////////////////////////////////////////////////////////////////
 void t_bncCore::slotNewPhaseBiases(QList<t_satPhaseBias> phaseBiases) {
-
+  QMutexLocker locker(&_mutex);
+  emit newPhaseBiases(phaseBiases);
+  if (_socketsCorr) {
+    ostringstream out;
+    t_satPhaseBias::writeEpoch(&out, phaseBiases);   
+    QMutableListIterator<QTcpSocket*> is(*_socketsCorr);
+    while (is.hasNext()) {
+      QTcpSocket* sock = is.next();
+      if (sock->state() == QAbstractSocket::ConnectedState) {
+        if (sock->write(out.str().c_str()) == -1) {
+          delete sock;
+          is.remove();
+        }
+      }
+      else if (sock->state() != QAbstractSocket::ConnectingState) {
+        delete sock;
+        is.remove();
+      }
+    }
+  }
 }
 
 // 
 ////////////////////////////////////////////////////////////////////////////
 void t_bncCore::slotNewTec(t_vTec vTec) {
-
+  QMutexLocker locker(&_mutex);
+  emit newTec(vTec);
+  if (_socketsCorr) {
+    ostringstream out;
+    t_vTec::write(&out, vTec);   
+    QMutableListIterator<QTcpSocket*> is(*_socketsCorr);
+    while (is.hasNext()) {
+      QTcpSocket* sock = is.next();
+      if (sock->state() == QAbstractSocket::ConnectedState) {
+        if (sock->write(out.str().c_str()) == -1) {
+          delete sock;
+          is.remove();
+        }
+      }
+      else if (sock->state() != QAbstractSocket::ConnectingState) {
+        delete sock;
+        is.remove();
+      }
+    }
+  }
 }
 
 // 
