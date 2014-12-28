@@ -84,3 +84,13 @@ void t_orbCorr::writeEpoch(std::ostream* out, const QList<t_orbCorr>& corrList) 
 ////////////////////////////////////////////////////////////////////////////
 void t_orbCorr::readEpoch(const QStringList& lines, QList<t_orbCorr>& corrList) {
 }
+
+// 
+////////////////////////////////////////////////////////////////////////////
+void t_satCodeBias::writeEpoch(std::ostream* out, const QList<t_satCodeBias>& biasList) {
+}
+
+// 
+////////////////////////////////////////////////////////////////////////////
+void t_satCodeBias::readEpoch(const QStringList& lines, QList<t_satCodeBias>& biasList) {
+}

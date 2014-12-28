@@ -348,7 +348,7 @@ void RTCM3coDecoder::sendResults() {
     itCB.next();
     if (itCB.key() < _lastTime) {
       emit newCodeBiases(itCB.value());
-      //      t_satCodeBias::writeEpoch(_out, itCB.value());
+      t_satCodeBias::writeEpoch(_out, itCB.value());
       itCB.remove();
     } 
   }
