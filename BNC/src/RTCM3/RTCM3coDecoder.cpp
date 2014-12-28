@@ -209,8 +209,9 @@ t_irc RTCM3coDecoder::Decode(char* buffer, int bufLen, vector<string>& errmsg) {
 ////////////////////////////////////////////////////////////////////////////
 void RTCM3coDecoder::sendResults() {
 
-  QList<t_orbCorr>& orbCorrections = _orbCorrections[_lastTime];
-  QList<t_clkCorr>& clkCorrections = _clkCorrections[_lastTime];
+  QList<t_orbCorr>&     orbCorrections = _orbCorrections[_lastTime];
+  QList<t_clkCorr>&     clkCorrections = _clkCorrections[_lastTime];
+  QList<t_satCodeBias>& codeBiases     = _codeBiases[_lastTime];
 
   // Orbit and clock corrections of all satellites
   // ---------------------------------------------
@@ -295,7 +296,6 @@ void RTCM3coDecoder::sendResults() {
 
   // Code Biases
   // -----------
-  QList<t_satCodeBias> satCodeBiases;
   for (unsigned ii = 0; ii < CLOCKORBIT_NUMGPS + _codeBias.NumberOfSat[CLOCKORBIT_SATGLONASS]; ii++) {
     char sysCh = ' ';
     if      (ii < _codeBias.NumberOfSat[CLOCKORBIT_SATGPS]) {
@@ -309,9 +309,16 @@ void RTCM3coDecoder::sendResults() {
     }
     t_satCodeBias satCodeBias;
     satCodeBias._prn.set(sysCh, _codeBias.Sat[ii].ID);
-    satCodeBias._time      = _lastTime;
+    satCodeBias._staID = _staID.toAscii().data();
+    satCodeBias._time  = _lastTime;
     for (unsigned jj = 0; jj < _codeBias.Sat[ii].NumberOfCodeBiases; jj++) {
+      const CodeBias::BiasSat::CodeBiasEntry& biasEntry = _codeBias.Sat[ii].Biases[jj];
+      t_frqCodeBias frqCodeBias;
+      frqCodeBias._rnxType2ch = codeTypeToRnxType(sysCh, biasEntry.Type);
+      frqCodeBias._value      = biasEntry.Bias;
+      satCodeBias._bias.push_back(frqCodeBias);
     }
+    codeBiases.push_back(satCodeBias);
   }
 
   // Dump all older epochs
@@ -367,7 +374,6 @@ void RTCM3coDecoder::checkProviderID() {
     emit providerIDChanged(_staID);
   }
 }
-
 
 //
 ////////////////////////////////////////////////////////////////////////////
@@ -427,3 +433,93 @@ void RTCM3coDecoder::setEpochTime() {
     }
   }
 }
+
+//
+////////////////////////////////////////////////////////////////////////////
+string RTCM3coDecoder::codeTypeToRnxType(char system, CodeType type) const {
+  if      (system == 'G') {
+    switch (type) {
+    case CODETYPEGPS_L1_CA:         return "";
+    case CODETYPEGPS_L1_P:          return "";
+    case CODETYPEGPS_L1_Z:          return "";
+    case CODETYPEGPS_L2_CA:         return "";
+    case CODETYPEGPS_SEMI_CODELESS: return "";
+    case CODETYPEGPS_L2_CM:         return "";
+    case CODETYPEGPS_L2_CL:         return "";
+    case CODETYPEGPS_L2_CML:        return "";
+    case CODETYPEGPS_L2_P:          return "";
+    case CODETYPEGPS_L2_Z:          return "";
+    case CODETYPEGPS_L5_I:          return "";
+    case CODETYPEGPS_L5_Q:          return "";
+    default: return "";                 
+    }
+  }
+  else if (system == 'R') {
+    switch (type) {
+    case CODETYPEGLONASS_L1_CA:     return "";
+    case CODETYPEGLONASS_L1_P:      return "";
+    case CODETYPEGLONASS_L2_CA:     return "";
+    case CODETYPEGLONASS_L2_P:      return "";
+    default: return "";                 
+    }
+  }
+  else if (system == 'E') {
+    switch (type) {
+    case CODETYPEGALILEO_E1_A:      return "";
+    case CODETYPEGALILEO_E1_B:      return "";
+    case CODETYPEGALILEO_E1_C:      return "";
+    case CODETYPEGALILEO_E5A_I:     return "";
+    case CODETYPEGALILEO_E5A_Q:     return "";
+    case CODETYPEGALILEO_E5B_I:     return "";
+    case CODETYPEGALILEO_E5B_Q:     return "";
+    case CODETYPEGALILEO_E5_I:      return "";
+    case CODETYPEGALILEO_E5_Q:      return "";
+    case CODETYPEGALILEO_E6_A:      return "";
+    case CODETYPEGALILEO_E6_B:      return "";
+    case CODETYPEGALILEO_E6_C:      return "";
+    default: return "";                 
+    }
+  }
+  else if (system == 'J') {
+    switch (type) {
+    case CODETYPEQZSS_L1_CA:        return "";
+    case CODETYPEQZSS_L1C_D:        return "";
+    case CODETYPEQZSS_L1C_P:        return "";
+    case CODETYPEQZSS_L2_CM:        return "";
+    case CODETYPEQZSS_L2_CL:        return "";
+    case CODETYPEQZSS_L2_CML:       return "";
+    case CODETYPEQZSS_L5_I:         return "";
+    case CODETYPEQZSS_L5_Q:         return "";
+    case CODETYPEQZSS_L5_IQ:        return "";
+    case CODETYPEQZSS_LEX_S:        return "";
+    case CODETYPEQZSS_LEX_L:        return "";
+    case CODETYPEQZSS_LEX_SL:       return "";
+    case CODETYPEQZSS_L1C_DP:       return "";
+    default: return "";                 
+    }
+  }
+  else if (system == 'S') {
+    switch (type) {
+    case CODETYPE_SBAS_L1_CA:       return "";
+    case CODETYPE_SBAS_L5_I:        return "";
+    case CODETYPE_SBAS_L5_Q:        return "";
+    case CODETYPE_SBAS_L5_IQ:       return "";
+    default: return "";                 
+    }
+  }
+  else if (system == 'C') {
+    switch (type) {
+    case CODETYPE_BDS_B1_I:         return "";
+    case CODETYPE_BDS_B1_Q:         return "";
+    case CODETYPE_BDS_B1_IQ:        return "";
+    case CODETYPE_BDS_B3_I:         return "";
+    case CODETYPE_BDS_B3_Q:         return "";
+    case CODETYPE_BDS_B3_IQ:        return "";
+    case CODETYPE_BDS_B2_I:         return "";
+    case CODETYPE_BDS_B2_Q:         return "";
+    case CODETYPE_BDS_B2_IQ:        return "";
+    default: return "";                 
+    }
+  }
+  return "";
+};
