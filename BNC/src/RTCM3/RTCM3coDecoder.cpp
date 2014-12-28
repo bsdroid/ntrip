@@ -214,9 +214,11 @@ t_irc RTCM3coDecoder::Decode(char* buffer, int bufLen, vector<string>& errmsg) {
 ////////////////////////////////////////////////////////////////////////////
 void RTCM3coDecoder::sendResults() {
 
-  QList<t_orbCorr>&     orbCorrections = _orbCorrections[_lastTime];
-  QList<t_clkCorr>&     clkCorrections = _clkCorrections[_lastTime];
-  QList<t_satCodeBias>& codeBiases     = _codeBiases[_lastTime];
+  QList<t_orbCorr>&      orbCorrections = _orbCorrections[_lastTime];
+  QList<t_clkCorr>&      clkCorrections = _clkCorrections[_lastTime];
+  QList<t_satCodeBias>&  codeBiases     = _codeBiases[_lastTime];
+  QList<t_satPhaseBias>& phaseBiases    = _phaseBiases[_lastTime];
+  t_vTec&                vTec           = _vTec[_lastTime];
 
   // Orbit and clock corrections of all satellites
   // ---------------------------------------------
@@ -328,6 +330,35 @@ void RTCM3coDecoder::sendResults() {
     codeBiases.push_back(satCodeBias);
   }
 
+  // Phase Biases
+  // -----------
+  for (unsigned ii = 0; ii < CLOCKORBIT_NUMGPS + _phaseBias.NumberOfSat[CLOCKORBIT_SATGLONASS]; ii++) {
+    char sysCh = ' ';
+    if      (ii < _phaseBias.NumberOfSat[CLOCKORBIT_SATGPS]) {
+      sysCh = 'G';
+    }
+    else if (ii >= CLOCKORBIT_NUMGPS) {
+      sysCh = 'R';
+    }
+    else {
+      continue;
+    }
+    t_satPhaseBias satPhaseBias;
+    satPhaseBias._prn.set(sysCh, _phaseBias.Sat[ii].ID);
+    satPhaseBias._staID = _staID.toAscii().data();
+    satPhaseBias._time  = _lastTime;
+    for (unsigned jj = 0; jj < _phaseBias.Sat[ii].NumberOfPhaseBiases; jj++) {
+      const PhaseBias::PhaseBiasSat::PhaseBiasEntry& biasEntry = _phaseBias.Sat[ii].Biases[jj];
+      t_frqPhaseBias frqPhaseBias;
+      frqPhaseBias._rnxType2ch = codeTypeToRnxType(sysCh, biasEntry.Type);
+      frqPhaseBias._value      = biasEntry.Bias;
+      if (!frqPhaseBias._rnxType2ch.empty()) {
+        satPhaseBias._bias.push_back(frqPhaseBias);
+      }
+    }
+    phaseBiases.push_back(satPhaseBias);
+  }
+
   // Dump all older epochs
   // ---------------------
   QMutableMapIterator<bncTime, QList<t_orbCorr> > itOrb(_orbCorrections);
@@ -355,6 +386,15 @@ void RTCM3coDecoder::sendResults() {
       emit newCodeBiases(itCB.value());
       t_satCodeBias::writeEpoch(_out, itCB.value());
       itCB.remove();
+    } 
+  }
+  QMutableMapIterator<bncTime, QList<t_satPhaseBias> > itPB(_phaseBiases);
+  while (itPB.hasNext()) {
+    itPB.next();
+    if (itPB.key() < _lastTime) {
+      emit newPhaseBiases(itPB.value());
+      t_satPhaseBias::writeEpoch(_out, itPB.value());
+      itPB.remove();
     } 
   }
 }
