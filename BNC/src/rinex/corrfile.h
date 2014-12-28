@@ -44,14 +44,13 @@ class t_corrFile : public QObject {
   void newOrbCorrections(QList<t_orbCorr>);
   void newClkCorrections(QList<t_clkCorr>);
   void newCodeBiases(QList<t_satCodeBias>);
+  void newPhaseBiases(QList<t_satPhaseBias>);
+  void newTec(t_vTec);
 
  private:
   bool stopRead(const bncTime& tt);
-  std::fstream         _stream;
-  QList<t_orbCorr>     _orbCorr;
-  QList<t_clkCorr>     _clkCorr;
-  QList<t_satCodeBias> _codeBiases;
-  QMap<QString, int>   _corrIODs;
+  std::fstream       _stream;
+  QMap<QString, int> _corrIODs;
 };
 
 #endif

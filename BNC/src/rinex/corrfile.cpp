@@ -61,9 +61,11 @@ t_corrFile::~t_corrFile() {
 ////////////////////////////////////////////////////////////////////////////
 void t_corrFile::syncRead(const bncTime& tt) {
 
-  _orbCorr.clear();
-  _clkCorr.clear();
-  _codeBiases.clear();
+  QList<t_clkCorr>      clkCorrList;
+  QList<t_orbCorr>      orbCorrList;
+  QList<t_satCodeBias>  satCodeBiasList;
+  QList<t_satPhaseBias> satPhaseBiasList;
+  t_vTec                vTec;
 
   while (!stopRead(tt) && _stream.good()) {
     if (stopRead(tt)) {
@@ -71,17 +73,20 @@ void t_corrFile::syncRead(const bncTime& tt) {
     }
   }
 
-  if (_orbCorr.size() > 0) {
-    emit newOrbCorrections(_orbCorr);
-    _orbCorr.clear();
+  if (orbCorrList.size() > 0) {
+    emit newOrbCorrections(orbCorrList);
   }
-  if (_clkCorr.size() > 0) {
-    emit newClkCorrections(_clkCorr);
-    _clkCorr.clear();
+  if (clkCorrList.size() > 0) {
+    emit newClkCorrections(clkCorrList);
   }
-  if (_codeBiases.size() > 0) {
-    emit newCodeBiases(_codeBiases);
-    _codeBiases.clear();
+  if (satCodeBiasList.size() > 0) {
+    emit newCodeBiases(satCodeBiasList);
+  }
+  if (satPhaseBiasList.size() > 0) {
+    emit newPhaseBiases(satPhaseBiasList);
+  }
+  if (vTec._layers.size() > 0) {
+    emit newTec(vTec);
   }
 }
 

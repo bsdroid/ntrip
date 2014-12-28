@@ -46,6 +46,8 @@ Q_OBJECT
   void newOrbCorrections(QList<t_orbCorr>);
   void newClkCorrections(QList<t_clkCorr>);
   void newCodeBiases(QList<t_satCodeBias>);
+  void newPhaseBiases(QList<t_satPhaseBias>);
+  void newTec(t_vTec);
   void newMessage(QByteArray msg, bool showOnScreen);
   void providerIDChanged(QString staID);
 
@@ -57,22 +59,24 @@ Q_OBJECT
   void checkProviderID();
   std::string codeTypeToRnxType(char system, CodeType type) const;
 
-  std::ofstream*                       _out;
-  QString                              _staID;
-  QString                              _fileNameSkl;
-  QString                              _fileName;
-  QByteArray                           _buffer;
-  ClockOrbit                           _clkOrb;
-  CodeBias                             _codeBias;
-  PhaseBias                            _phaseBias;
-  VTEC                                 _vTEC;
-  int                                  _providerID[3];
-  bncTime                              _lastTime;
-  QMap<t_prn, unsigned short>          _IODs;
-  QMap<bncTime, QList<t_orbCorr> >     _orbCorrections;
-  QMap<bncTime, QList<t_clkCorr> >     _clkCorrections;
-  QMap<t_prn, t_clkCorr>               _lastClkCorrections;
-  QMap<bncTime, QList<t_satCodeBias> > _codeBiases;
+  std::ofstream*                        _out;
+  QString                               _staID;
+  QString                               _fileNameSkl;
+  QString                               _fileName;
+  QByteArray                            _buffer;
+  ClockOrbit                            _clkOrb;
+  CodeBias                              _codeBias;
+  PhaseBias                             _phaseBias;
+  VTEC                                  _vTEC;
+  int                                   _providerID[3];
+  bncTime                               _lastTime;
+  QMap<t_prn, unsigned short>           _IODs;
+  QMap<bncTime, QList<t_orbCorr> >      _orbCorrections;
+  QMap<bncTime, QList<t_clkCorr> >      _clkCorrections;
+  QMap<t_prn, t_clkCorr>                _lastClkCorrections;
+  QMap<bncTime, QList<t_satCodeBias> >  _codeBiases;
+  QMap<bncTime, QList<t_satPhaseBias> > _phaseBiases;
+  QMap<bncTime, QList<t_vTec> >         _vTec;
 };
 
 #endif
