@@ -59,6 +59,10 @@ void t_clkCorr::readEpoch(const string& epoLine, istream& inStream, QList<t_clkC
     
     in >> corr._prn >> corr._iod >> corr._dClk >> corr._dotDClk >> corr._dotDotDClk;
 
+    corr._dClk       /= t_CST::c;
+    corr._dotDClk    /= t_CST::c;
+    corr._dotDotDClk /= t_CST::c;
+
     corrList.push_back(corr);
   }
 }
