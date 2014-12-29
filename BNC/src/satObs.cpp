@@ -184,7 +184,8 @@ void t_vTec::read(const string& epoLine, std::istream& in, t_vTec& vTec) {
 
 // 
 ////////////////////////////////////////////////////////////////////////////
-t_corrSSR::e_type t_corrSSR::readEpoLine(const string& line, bncTime& epoTime) {
+t_corrSSR::e_type t_corrSSR::readEpoLine(const string& line, bncTime& epoTime, 
+                                         int& numEntries, string& staID) {
 
   istringstream inLine(line.c_str());
 
@@ -193,7 +194,8 @@ t_corrSSR::e_type t_corrSSR::readEpoLine(const string& line, bncTime& epoTime) {
   int    year, month, day, hour, min;
   double sec;
 
-  inLine >> epoChar >> typeString >> year >> month >> day >> hour >> min >> sec;
+  inLine >> epoChar >> typeString 
+         >> year >> month >> day >> hour >> min >> sec >> numEntries >> staID;
 
   if (epoChar == '>') {
     epoTime.set(year, month, day, hour, min, sec);
