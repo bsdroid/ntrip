@@ -43,6 +43,12 @@ void t_clkCorr::writeEpoch(std::ostream* out, const QList<t_clkCorr>& corrList) 
 // 
 ////////////////////////////////////////////////////////////////////////////
 void t_clkCorr::readEpoch(const string& epoLine, std::istream& in, QList<t_clkCorr>& corrList) {
+  bncTime epoTime;
+  int     numCorr;
+  string  staID;
+  if (t_corrSSR::readEpoLine(epoLine, epoTime, numCorr, staID) != t_corrSSR::clkCorr) {
+    return;
+  }
 }
 
 // Constructor
