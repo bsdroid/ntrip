@@ -93,6 +93,11 @@ void t_corrFile::syncRead(const bncTime& tt) {
     else if (corrType == t_corrSSR::orbCorr) {
       QList<t_orbCorr> orbCorrList;
       t_orbCorr::readEpoch(_lastLine, _stream, orbCorrList);
+      QListIterator<t_orbCorr> it(orbCorrList);
+      while (it.hasNext()) {
+        const t_orbCorr& corr = it.next();
+        _corrIODs[QString(corr._prn.toString().c_str())] = corr._iod;
+      }
       emit newOrbCorrections(orbCorrList);
     }
     else if (corrType == t_corrSSR::codeBias) {
