@@ -290,7 +290,16 @@ void t_vTec::read(const string& epoLine, istream& inStream, t_vTec& vTec) {
     layer._C.ReSize(maxDeg, maxOrd);
     layer._S.ReSize(maxDeg, maxOrd);
 
-    ////    inStream >> layer._C >> layer._S;
+    for (int iDeg = 0; iDeg < maxDeg; iDeg++) {
+      for (int iOrd = 0; iOrd < maxOrd; iOrd++) {
+        inStream >> layer._C[iDeg][iOrd];
+      }
+    }
+    for (int iDeg = 0; iDeg < maxDeg; iDeg++) {
+      for (int iOrd = 0; iOrd < maxOrd; iOrd++) {
+        inStream >> layer._S[iDeg][iOrd];
+      }
+    }
 
     vTec._layers.push_back(layer);
   }
