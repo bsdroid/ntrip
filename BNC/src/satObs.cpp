@@ -49,6 +49,17 @@ void t_clkCorr::readEpoch(const string& epoLine, std::istream& in, QList<t_clkCo
   if (t_corrSSR::readEpoLine(epoLine, epoTime, numCorr, staID) != t_corrSSR::clkCorr) {
     return;
   }
+  for (int ii = 0; ii < numCorr; ii++) {
+    t_clkCorr clkCorr;
+
+    string line;
+    getline(in, line);
+    istringstream in(line.c_str());
+    
+    in >> clkCorr._prn >> clkCorr._iod >> clkCorr._dClk >> clkCorr._dotDClk >> clkCorr._dotDotDClk;
+
+    corrList.push_back(clkCorr);
+  }
 }
 
 // Constructor
