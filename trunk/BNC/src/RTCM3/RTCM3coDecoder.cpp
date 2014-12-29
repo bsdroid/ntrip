@@ -214,12 +214,6 @@ t_irc RTCM3coDecoder::Decode(char* buffer, int bufLen, vector<string>& errmsg) {
 ////////////////////////////////////////////////////////////////////////////
 void RTCM3coDecoder::sendResults() {
 
-  QList<t_orbCorr>&      orbCorrections = _orbCorrections[_lastTime];
-  QList<t_clkCorr>&      clkCorrections = _clkCorrections[_lastTime];
-  QList<t_satCodeBias>&  codeBiases     = _codeBiases[_lastTime];
-  QList<t_satPhaseBias>& phaseBiases    = _phaseBiases[_lastTime];
-  t_vTec&                vTec           = _vTecMap[_lastTime];
-
   // Orbit and clock corrections of all satellites
   // ---------------------------------------------
   for (unsigned ii = 0; ii < CLOCKORBIT_NUMGPS + _clkOrb.NumberOfSat[CLOCKORBIT_SATGLONASS]; ii++) {
@@ -254,7 +248,7 @@ void RTCM3coDecoder::sendResults() {
       orbCorr._dotXr[1] = _clkOrb.Sat[ii].Orbit.DotDeltaAlongTrack;
       orbCorr._dotXr[2] = _clkOrb.Sat[ii].Orbit.DotDeltaCrossTrack;
 
-      orbCorrections.push_back(orbCorr);
+      _orbCorrections[_lastTime].push_back(orbCorr);
 
       _IODs[orbCorr._prn] = _clkOrb.Sat[ii].IOD;
     }
@@ -278,7 +272,7 @@ void RTCM3coDecoder::sendResults() {
 
       if (_IODs.contains(clkCorr._prn)) {
         clkCorr._iod = _IODs[clkCorr._prn];
-        clkCorrections.push_back(clkCorr);
+        _clkCorrections[_lastTime].push_back(clkCorr);
       }
     }
 
@@ -295,7 +289,7 @@ void RTCM3coDecoder::sendResults() {
         clkCorr._dClk  +=_clkOrb.Sat[ii].hrclock / t_CST::c;
         if (_IODs.contains(clkCorr._prn)) {
           clkCorr._iod = _IODs[clkCorr._prn];
-          clkCorrections.push_back(clkCorr);
+          _clkCorrections[_lastTime].push_back(clkCorr);
         }
       }
     }
@@ -327,7 +321,7 @@ void RTCM3coDecoder::sendResults() {
         satCodeBias._bias.push_back(frqCodeBias);
       }
     }
-    codeBiases.push_back(satCodeBias);
+    _codeBiases[_lastTime].push_back(satCodeBias);
   }
 
   // Phase Biases
@@ -361,14 +355,14 @@ void RTCM3coDecoder::sendResults() {
         satPhaseBias._bias.push_back(frqPhaseBias);
       }
     }
-    phaseBiases.push_back(satPhaseBias);
+    _phaseBiases[_lastTime].push_back(satPhaseBias);
   }
 
   // Ionospheric Model
   // -----------------
   if (_vTEC.NumLayers > 0) {
-    vTec._time  = _lastTime;
-    vTec._staID = _staID.toAscii().data();
+    _vTecMap[_lastTime]._time  = _lastTime;
+    _vTecMap[_lastTime]._staID = _staID.toAscii().data();
     for (unsigned ii = 0; ii < _vTEC.NumLayers; ii++) {
       const VTEC::IonoLayers& ionoLayer = _vTEC.Layers[ii];
       t_vTecLayer layer;
@@ -381,26 +375,8 @@ void RTCM3coDecoder::sendResults() {
           layer._S[iDeg][iOrd] = ionoLayer.Sinus[iDeg][iOrd];
         }
       }
-      vTec._layers.push_back(layer);
+      _vTecMap[_lastTime]._layers.push_back(layer);
     }
-  }
-
-  // Remove Empty Lists
-  // ------------------
-  if (orbCorrections.size() == 0) {
-    _orbCorrections.remove(_lastTime);
-  }
-  if (clkCorrections.size() == 0) {
-    _clkCorrections.remove(_lastTime);
-  }
-  if (codeBiases.size() == 0) {
-    _codeBiases.remove(_lastTime);
-  }
-  if (phaseBiases.size() == 0) {
-    _phaseBiases.remove(_lastTime);
-  }
-  if (vTec._layers.size() == 0) {
-    _vTecMap.remove(_lastTime);
   }
 
   // Dump all older epochs
