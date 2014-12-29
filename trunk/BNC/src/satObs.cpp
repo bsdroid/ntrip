@@ -214,6 +214,33 @@ void t_satPhaseBias::writeEpoch(std::ostream* out, const QList<t_satPhaseBias>& 
 // 
 ////////////////////////////////////////////////////////////////////////////
 void t_satPhaseBias::readEpoch(const string& epoLine, std::istream& in, QList<t_satPhaseBias>& biasList) {
+  bncTime epoTime;
+  int     numSat;
+  string  staID;
+  if (t_corrSSR::readEpoLine(epoLine, epoTime, numSat, staID) != t_corrSSR::phaseBias) {
+    return;
+  }
+  for (int ii = 0; ii < numSat; ii++) {
+    t_satPhaseBias satPhaseBias;
+
+    string line;
+    getline(in, line);
+    istringstream in(line.c_str());
+    
+    in >> satPhaseBias._prn >> satPhaseBias._yawDeg >> satPhaseBias._yawDegRate;
+
+    while (in.good()) {
+      t_frqPhaseBias frqPhaseBias;
+      in >> frqPhaseBias._rnxType2ch >> frqPhaseBias._value
+         >> frqPhaseBias._fixIndicator >> frqPhaseBias._fixWideLaneIndicator
+         >> frqPhaseBias._jumpCounter;
+      if (!frqPhaseBias._rnxType2ch.empty()) {
+        satPhaseBias._bias.push_back(frqPhaseBias);
+      }
+    }
+
+    biasList.push_back(satPhaseBias);
+  }
 }
 
 // 
