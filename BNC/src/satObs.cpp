@@ -186,4 +186,33 @@ void t_vTec::read(const string& epoLine, std::istream& in, t_vTec& vTec) {
 ////////////////////////////////////////////////////////////////////////////
 t_corrSSR::e_type t_corrSSR::readEpoLine(const string& line, bncTime& epoTime) {
 
+  istringstream inLine(line.c_str());
+
+  char   epoChar;
+  string typeString;
+  int    year, month, day, hour, min;
+  double sec;
+
+  inLine >> epoChar >> typeString >> year >> month >> day >> hour >> min >> sec;
+
+  if (epoChar == '>') {
+    epoTime.set(year, month, day, hour, min, sec);
+    if      (typeString == "CLOCK") {
+      return clkCorr;
+    }
+    else if (typeString == "ORBIT") {
+      return orbCorr;
+    }
+    else if (typeString == "CODE_BIAS") {
+      return codeBias;
+    }
+    else if (typeString == "PHASE_BIAS") {
+      return phaseBias;
+    }
+    else if (typeString == "VTEC") {
+      return vTec;
+    }
+  }
+
+  return unknown;
 }
