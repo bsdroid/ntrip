@@ -18,7 +18,7 @@ t_clkCorr::t_clkCorr() {
 
 // 
 ////////////////////////////////////////////////////////////////////////////
-void t_clkCorr::writeEpoch(std::ostream* out, const QList<t_clkCorr>& corrList) {
+void t_clkCorr::writeEpoch(ostream* out, const QList<t_clkCorr>& corrList) {
   if (!out || corrList.size() == 0) {
     return;
   }
@@ -42,7 +42,7 @@ void t_clkCorr::writeEpoch(std::ostream* out, const QList<t_clkCorr>& corrList) 
 
 // 
 ////////////////////////////////////////////////////////////////////////////
-void t_clkCorr::readEpoch(const string& epoLine, std::istream& in, QList<t_clkCorr>& corrList) {
+void t_clkCorr::readEpoch(const string& epoLine, istream& inStream, QList<t_clkCorr>& corrList) {
   bncTime epoTime;
   int     numCorr;
   string  staID;
@@ -53,7 +53,7 @@ void t_clkCorr::readEpoch(const string& epoLine, std::istream& in, QList<t_clkCo
     t_clkCorr corr;
 
     string line;
-    getline(in, line);
+    getline(inStream, line);
     istringstream in(line.c_str());
     
     in >> corr._prn >> corr._iod >> corr._dClk >> corr._dotDClk >> corr._dotDotDClk;
@@ -73,7 +73,7 @@ t_orbCorr::t_orbCorr() {
 
 // 
 ////////////////////////////////////////////////////////////////////////////
-void t_orbCorr::writeEpoch(std::ostream* out, const QList<t_orbCorr>& corrList) {
+void t_orbCorr::writeEpoch(ostream* out, const QList<t_orbCorr>& corrList) {
   if (!out || corrList.size() == 0) {
     return;
   }
@@ -100,7 +100,7 @@ void t_orbCorr::writeEpoch(std::ostream* out, const QList<t_orbCorr>& corrList) 
 
 // 
 ////////////////////////////////////////////////////////////////////////////
-void t_orbCorr::readEpoch(const string& epoLine, std::istream& in, QList<t_orbCorr>& corrList) {
+void t_orbCorr::readEpoch(const string& epoLine, istream& inStream, QList<t_orbCorr>& corrList) {
   bncTime epoTime;
   int     numCorr;
   string  staID;
@@ -111,7 +111,7 @@ void t_orbCorr::readEpoch(const string& epoLine, std::istream& in, QList<t_orbCo
     t_orbCorr corr;
 
     string line;
-    getline(in, line);
+    getline(inStream, line);
     istringstream in(line.c_str());
     
     in >> corr._prn      >> corr._iod 
@@ -124,7 +124,7 @@ void t_orbCorr::readEpoch(const string& epoLine, std::istream& in, QList<t_orbCo
 
 // 
 ////////////////////////////////////////////////////////////////////////////
-void t_satCodeBias::writeEpoch(std::ostream* out, const QList<t_satCodeBias>& biasList) {
+void t_satCodeBias::writeEpoch(ostream* out, const QList<t_satCodeBias>& biasList) {
   if (!out || biasList.size() == 0) {
     return;
   }
@@ -151,7 +151,7 @@ void t_satCodeBias::writeEpoch(std::ostream* out, const QList<t_satCodeBias>& bi
 
 // 
 ////////////////////////////////////////////////////////////////////////////
-void t_satCodeBias::readEpoch(const string& epoLine, std::istream& in, QList<t_satCodeBias>& biasList) {
+void t_satCodeBias::readEpoch(const string& epoLine, istream& inStream, QList<t_satCodeBias>& biasList) {
   bncTime epoTime;
   int     numSat;
   string  staID;
@@ -162,7 +162,7 @@ void t_satCodeBias::readEpoch(const string& epoLine, std::istream& in, QList<t_s
     t_satCodeBias satCodeBias;
 
     string line;
-    getline(in, line);
+    getline(inStream, line);
     istringstream in(line.c_str());
     
     in >> satCodeBias._prn;
@@ -181,7 +181,7 @@ void t_satCodeBias::readEpoch(const string& epoLine, std::istream& in, QList<t_s
 
 // 
 ////////////////////////////////////////////////////////////////////////////
-void t_satPhaseBias::writeEpoch(std::ostream* out, const QList<t_satPhaseBias>& biasList) {
+void t_satPhaseBias::writeEpoch(ostream* out, const QList<t_satPhaseBias>& biasList) {
   if (!out || biasList.size() == 0) {
     return;
   }
@@ -213,7 +213,7 @@ void t_satPhaseBias::writeEpoch(std::ostream* out, const QList<t_satPhaseBias>& 
   
 // 
 ////////////////////////////////////////////////////////////////////////////
-void t_satPhaseBias::readEpoch(const string& epoLine, std::istream& in, QList<t_satPhaseBias>& biasList) {
+void t_satPhaseBias::readEpoch(const string& epoLine, istream& inStream, QList<t_satPhaseBias>& biasList) {
   bncTime epoTime;
   int     numSat;
   string  staID;
@@ -224,7 +224,7 @@ void t_satPhaseBias::readEpoch(const string& epoLine, std::istream& in, QList<t_
     t_satPhaseBias satPhaseBias;
 
     string line;
-    getline(in, line);
+    getline(inStream, line);
     istringstream in(line.c_str());
     
     in >> satPhaseBias._prn >> satPhaseBias._yawDeg >> satPhaseBias._yawDegRate;
@@ -245,7 +245,7 @@ void t_satPhaseBias::readEpoch(const string& epoLine, std::istream& in, QList<t_
 
 // 
 ////////////////////////////////////////////////////////////////////////////
-void t_vTec::write(std::ostream* out, const t_vTec& vTec) {
+void t_vTec::write(ostream* out, const t_vTec& vTec) {
   if (!out || vTec._layers.size() == 0) {
     return;
   }
@@ -267,7 +267,33 @@ void t_vTec::write(std::ostream* out, const t_vTec& vTec) {
 
 // 
 ////////////////////////////////////////////////////////////////////////////
-void t_vTec::read(const string& epoLine, std::istream& in, t_vTec& vTec) {
+void t_vTec::read(const string& epoLine, istream& inStream, t_vTec& vTec) {
+  bncTime epoTime;
+  int     numLayers;
+  string  staID;
+  if (t_corrSSR::readEpoLine(epoLine, epoTime, numLayers, staID) != t_corrSSR::vTec) {
+    return;
+  }
+  if (numLayers <= 0) {
+    return;
+  }
+  for (int ii = 0; ii < numLayers; ii++) {
+    t_vTecLayer layer;
+
+    string line;
+    getline(inStream, line);
+    istringstream in(line.c_str());
+
+    int dummy, maxDeg, maxOrd;
+    in >> dummy >> maxDeg >> maxOrd;
+
+    layer._C.ReSize(maxDeg, maxOrd);
+    layer._S.ReSize(maxDeg, maxOrd);
+
+    ////    inStream >> layer._C >> layer._S;
+
+    vTec._layers.push_back(layer);
+  }
 }
 
 // 
