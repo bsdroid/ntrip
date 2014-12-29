@@ -152,6 +152,31 @@ void t_satCodeBias::writeEpoch(std::ostream* out, const QList<t_satCodeBias>& bi
 // 
 ////////////////////////////////////////////////////////////////////////////
 void t_satCodeBias::readEpoch(const string& epoLine, std::istream& in, QList<t_satCodeBias>& biasList) {
+  bncTime epoTime;
+  int     numSat;
+  string  staID;
+  if (t_corrSSR::readEpoLine(epoLine, epoTime, numSat, staID) != t_corrSSR::codeBias) {
+    return;
+  }
+  for (int ii = 0; ii < numSat; ii++) {
+    t_satCodeBias satCodeBias;
+
+    string line;
+    getline(in, line);
+    istringstream in(line.c_str());
+    
+    in >> satCodeBias._prn;
+
+    while (in.good()) {
+      t_frqCodeBias frqCodeBias;
+      in >> frqCodeBias._rnxType2ch >> frqCodeBias._value;
+      if (!frqCodeBias._rnxType2ch.empty()) {
+        satCodeBias._bias.push_back(frqCodeBias);
+      }
+    }
+
+    biasList.push_back(satCodeBias);
+  }
 }
 
 // 
