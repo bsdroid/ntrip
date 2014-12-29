@@ -51,7 +51,8 @@ void t_clkCorr::readEpoch(const string& epoLine, istream& inStream, QList<t_clkC
   }
   for (int ii = 0; ii < numCorr; ii++) {
     t_clkCorr corr;
-    corr._time = epoTime;
+    corr._time  = epoTime;
+    corr._staID = staID;
 
     string line;
     getline(inStream, line);
@@ -114,7 +115,8 @@ void t_orbCorr::readEpoch(const string& epoLine, istream& inStream, QList<t_orbC
   }
   for (int ii = 0; ii < numCorr; ii++) {
     t_orbCorr corr;
-    corr._time = epoTime;
+    corr._time  = epoTime;
+    corr._staID = staID;
 
     string line;
     getline(inStream, line);
@@ -166,7 +168,8 @@ void t_satCodeBias::readEpoch(const string& epoLine, istream& inStream, QList<t_
   }
   for (int ii = 0; ii < numSat; ii++) {
     t_satCodeBias satCodeBias;
-    satCodeBias._time = epoTime;
+    satCodeBias._time  = epoTime;
+    satCodeBias._staID = staID;
 
     string line;
     getline(inStream, line);
@@ -229,7 +232,8 @@ void t_satPhaseBias::readEpoch(const string& epoLine, istream& inStream, QList<t
   }
   for (int ii = 0; ii < numSat; ii++) {
     t_satPhaseBias satPhaseBias;
-    satPhaseBias._time = epoTime;
+    satPhaseBias._time  = epoTime;
+    satPhaseBias._staID = staID;
 
     string line;
     getline(inStream, line);
@@ -285,7 +289,8 @@ void t_vTec::read(const string& epoLine, istream& inStream, t_vTec& vTec) {
   if (numLayers <= 0) {
     return;
   }
-  vTec._time = epoTime;
+  vTec._time  = epoTime;
+  vTec._staID = staID;
   for (int ii = 0; ii < numLayers; ii++) {
     t_vTecLayer layer;
 
