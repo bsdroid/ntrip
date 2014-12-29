@@ -299,7 +299,7 @@ void t_vTec::read(const string& epoLine, istream& inStream, t_vTec& vTec) {
     istringstream in(line.c_str());
 
     int dummy, maxDeg, maxOrd;
-    in >> dummy >> maxDeg >> maxOrd;
+    in >> dummy >> maxDeg >> maxOrd >> layer._height;
 
     layer._C.ReSize(maxDeg, maxOrd);
     layer._S.ReSize(maxDeg, maxOrd);
