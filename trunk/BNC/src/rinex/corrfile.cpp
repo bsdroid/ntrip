@@ -110,5 +110,7 @@ void t_corrFile::syncRead(const bncTime& tt) {
       t_vTec::read(_lastLine, _stream, vTec);
       emit newTec(vTec);
     }
+
+    _lastLine.clear();
   }
 }
