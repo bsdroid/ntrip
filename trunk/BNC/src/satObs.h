@@ -62,7 +62,7 @@ class t_orbCorr {
  public:
   t_orbCorr();
   static void writeEpoch(std::ostream* out, const QList<t_orbCorr>& corrList);
-  static void readEpoch(const QStringList& lines, QList<t_orbCorr>& corrList);
+  static void readEpoch(const std::string epoLine, std::istream& in, QList<t_orbCorr>& corrList);
   std::string    _staID;
   t_prn          _prn;
   unsigned short _iod;
@@ -76,7 +76,7 @@ class t_clkCorr {
  public:
   t_clkCorr();
   static void writeEpoch(std::ostream* out, const QList<t_clkCorr>& corrList);
-  static void readEpoch(const QStringList& lines, QList<t_clkCorr>& corrList);
+  static void readEpoch(const std::string epoLine, std::istream& in, QList<t_clkCorr>& corrList);
   std::string    _staID;
   t_prn          _prn;
   unsigned short _iod;
@@ -98,7 +98,7 @@ class t_frqCodeBias {
 class t_satCodeBias {
  public:
   static void writeEpoch(std::ostream* out, const QList<t_satCodeBias>& biasList);
-  static void readEpoch(const QStringList& lines, QList<t_satCodeBias>& biasList);
+  static void readEpoch(const std::string epoLine, std::istream& in, QList<t_satCodeBias>& biasList);
   std::string                _staID;
   t_prn                      _prn;
   bncTime                    _time;
@@ -127,7 +127,7 @@ class t_satPhaseBias {
     _yawDegRate = 0.0;
   }
   static void writeEpoch(std::ostream* out, const QList<t_satPhaseBias>& biasList);
-  static void readEpoch(const QStringList& lines, QList<t_satPhaseBias>& biasList);
+  static void readEpoch(const std::string epoLine, std::istream& in, QList<t_satPhaseBias>& biasList);
   std::string                 _staID;
   t_prn                       _prn;
   bncTime                     _time;
@@ -146,10 +146,16 @@ class t_vTecLayer {
 class t_vTec {
  public:
   static void write(std::ostream* out, const t_vTec& vTec);
-  static void read(const QStringList& lines, t_vTec& vTec);
+  static void read(const std::string epoLine, std::istream& in, t_vTec& vTec);
   std::string              _staID;
   bncTime                  _time;
   std::vector<t_vTecLayer> _layers;
+};
+
+class t_corrSSR {
+ public:
+  enum e_type {clkCorr, orbCorr, codeBias, phaseBias, vTec, unknown};
+  static e_type readEpoLine(const std::string line, bncTime& epoTime);
 };
 
 #endif

@@ -61,37 +61,52 @@ t_corrFile::~t_corrFile() {
 ////////////////////////////////////////////////////////////////////////////
 void t_corrFile::syncRead(const bncTime& tt) {
 
-  QList<t_clkCorr>      clkCorrList;
-  QList<t_orbCorr>      orbCorrList;
-  QList<t_satCodeBias>  satCodeBiasList;
-  QList<t_satPhaseBias> satPhaseBiasList;
-  t_vTec                vTec;
+  while (_stream.good() && (!_lastEpoTime.valid() || _lastEpoTime <= tt)) {
 
-  while (!stopRead(tt) && _stream.good()) {
-    if (stopRead(tt)) {
+    if (_lastLine.empty()) {
+      getline(_stream, _lastLine); stripWhiteSpace(_lastLine);
+      if      (!_stream.good()) {
+        throw "t_corrFile: end of file";
+      }
+      else if (_lastLine.empty() || _lastLine[0] == '!') {
+        continue;
+      }
+      else if (_lastLine[0] != '>') {
+        throw "t_corrFile: error";
+      }
+    }
+
+    t_corrSSR::e_type corrType = t_corrSSR::readEpoLine(_lastLine, _lastEpoTime);
+    if      (corrType == t_corrSSR::unknown) {
+      throw "t_corrFile: unknown line " + _lastLine;
+    }
+    else if (_lastEpoTime > tt) {
       break;
     }
+    else if (corrType == t_corrSSR::clkCorr) {
+      QList<t_clkCorr> clkCorrList;
+      t_clkCorr::readEpoch(_lastLine, _stream, clkCorrList);
+      emit newClkCorrections(clkCorrList);
+    }
+    else if (corrType == t_corrSSR::orbCorr) {
+      QList<t_orbCorr> orbCorrList;
+      t_orbCorr::readEpoch(_lastLine, _stream, orbCorrList);
+      emit newOrbCorrections(orbCorrList);
+    }
+    else if (corrType == t_corrSSR::codeBias) {
+      QList<t_satCodeBias> satCodeBiasList;
+      t_satCodeBias::readEpoch(_lastLine, _stream, satCodeBiasList);
+      emit newCodeBiases(satCodeBiasList);
+    }
+    else if (corrType == t_corrSSR::phaseBias) {
+      QList<t_satPhaseBias> satPhaseBiasList;
+      t_satPhaseBias::readEpoch(_lastLine, _stream, satPhaseBiasList);
+      emit newPhaseBiases(satPhaseBiasList);
+    }
+    else if (corrType == t_corrSSR::vTec) {
+      t_vTec vTec;
+      t_vTec::read(_lastLine, _stream, vTec);
+      emit newTec(vTec);
+    }
   }
-
-  if (orbCorrList.size() > 0) {
-    emit newOrbCorrections(orbCorrList);
-  }
-  if (clkCorrList.size() > 0) {
-    emit newClkCorrections(clkCorrList);
-  }
-  if (satCodeBiasList.size() > 0) {
-    emit newCodeBiases(satCodeBiasList);
-  }
-  if (satPhaseBiasList.size() > 0) {
-    emit newPhaseBiases(satPhaseBiasList);
-  }
-  if (vTec._layers.size() > 0) {
-    emit newTec(vTec);
-  }
-}
-
-// Read till a given time
-////////////////////////////////////////////////////////////////////////////
-bool t_corrFile::stopRead(const bncTime& tt) {
-  return true;
 }
