@@ -42,7 +42,7 @@ void t_clkCorr::writeEpoch(std::ostream* out, const QList<t_clkCorr>& corrList) 
 
 // 
 ////////////////////////////////////////////////////////////////////////////
-void t_clkCorr::readEpoch(const string epoLine, std::istream& in, QList<t_clkCorr>& corrList) {
+void t_clkCorr::readEpoch(const string& epoLine, std::istream& in, QList<t_clkCorr>& corrList) {
 }
 
 // Constructor
@@ -83,7 +83,7 @@ void t_orbCorr::writeEpoch(std::ostream* out, const QList<t_orbCorr>& corrList) 
 
 // 
 ////////////////////////////////////////////////////////////////////////////
-void t_orbCorr::readEpoch(const string epoLine, std::istream& in, QList<t_orbCorr>& corrList) {
+void t_orbCorr::readEpoch(const string& epoLine, std::istream& in, QList<t_orbCorr>& corrList) {
 }
 
 // 
@@ -115,7 +115,7 @@ void t_satCodeBias::writeEpoch(std::ostream* out, const QList<t_satCodeBias>& bi
 
 // 
 ////////////////////////////////////////////////////////////////////////////
-void t_satCodeBias::readEpoch(const string epoLine, std::istream& in, QList<t_satCodeBias>& biasList) {
+void t_satCodeBias::readEpoch(const string& epoLine, std::istream& in, QList<t_satCodeBias>& biasList) {
 }
 
 // 
@@ -152,7 +152,7 @@ void t_satPhaseBias::writeEpoch(std::ostream* out, const QList<t_satPhaseBias>& 
   
 // 
 ////////////////////////////////////////////////////////////////////////////
-void t_satPhaseBias::readEpoch(const string epoLine, std::istream& in, QList<t_satPhaseBias>& biasList) {
+void t_satPhaseBias::readEpoch(const string& epoLine, std::istream& in, QList<t_satPhaseBias>& biasList) {
 }
 
 // 
@@ -179,11 +179,11 @@ void t_vTec::write(std::ostream* out, const t_vTec& vTec) {
 
 // 
 ////////////////////////////////////////////////////////////////////////////
-void t_vTec::read(const string epoLine, std::istream& in, t_vTec& vTec) {
+void t_vTec::read(const string& epoLine, std::istream& in, t_vTec& vTec) {
 }
 
 // 
 ////////////////////////////////////////////////////////////////////////////
-t_corrSSR::e_type t_corrSSR::readEpoLine(const string line, bncTime& epoTime) {
+t_corrSSR::e_type t_corrSSR::readEpoLine(const string& line, bncTime& epoTime) {
 
 }
