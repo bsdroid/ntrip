@@ -380,7 +380,21 @@ void t_pppRun::processFiles() {
     // Get Corrections
     // ---------------
     if (_corrFile) {
-      _corrFile->syncRead(epo->tt);
+      try {
+        _corrFile->syncRead(epo->tt);
+      }
+      catch (const char* msg) {
+        emit newMessage(QByteArray(msg), true);
+        break;
+      }
+      catch (const string& msg) {
+        emit newMessage(QByteArray(msg.c_str()), true);
+        break;
+      }
+      catch (...) {
+        emit newMessage("unknown exceptions in corrFile", true);
+        break;
+      }
     }
 
     // Get Ephemerides
