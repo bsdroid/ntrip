@@ -50,15 +50,15 @@ void t_clkCorr::readEpoch(const string& epoLine, std::istream& in, QList<t_clkCo
     return;
   }
   for (int ii = 0; ii < numCorr; ii++) {
-    t_clkCorr clkCorr;
+    t_clkCorr corr;
 
     string line;
     getline(in, line);
     istringstream in(line.c_str());
     
-    in >> clkCorr._prn >> clkCorr._iod >> clkCorr._dClk >> clkCorr._dotDClk >> clkCorr._dotDotDClk;
+    in >> corr._prn >> corr._iod >> corr._dClk >> corr._dotDClk >> corr._dotDotDClk;
 
-    corrList.push_back(clkCorr);
+    corrList.push_back(corr);
   }
 }
 
@@ -101,6 +101,25 @@ void t_orbCorr::writeEpoch(std::ostream* out, const QList<t_orbCorr>& corrList) 
 // 
 ////////////////////////////////////////////////////////////////////////////
 void t_orbCorr::readEpoch(const string& epoLine, std::istream& in, QList<t_orbCorr>& corrList) {
+  bncTime epoTime;
+  int     numCorr;
+  string  staID;
+  if (t_corrSSR::readEpoLine(epoLine, epoTime, numCorr, staID) != t_corrSSR::orbCorr) {
+    return;
+  }
+  for (int ii = 0; ii < numCorr; ii++) {
+    t_orbCorr corr;
+
+    string line;
+    getline(in, line);
+    istringstream in(line.c_str());
+    
+    in >> corr._prn      >> corr._iod 
+       >> corr._xr[0]    >> corr._xr[1]    >> corr._xr[2]   
+       >> corr._dotXr[0] >> corr._dotXr[1] >> corr._dotXr[2];
+
+    corrList.push_back(corr);
+  }
 }
 
 // 
