@@ -154,7 +154,14 @@ void t_sp3Comp::processClocks(const set<t_prn>& clkSats, const vector<t_epoch*>&
 
   vector<t_epoch*> epochs;
   for (unsigned ii = 0; ii < epochsIn.size(); ii++) {
-    if (epochsIn[ii]->_dc.size() > 0) {
+    unsigned numSatOK = 0;
+    std::map<t_prn, double>::const_iterator it;
+    for (it = epochsIn[ii]->_dc.begin(); it != epochsIn[ii]->_dc.end(); it++) {
+      if (satIndex(clkSats, it->first) != -1) {
+        numSatOK += 1;
+      }
+    }
+    if (numSatOK > 0) {
       epochs.push_back(epochsIn[ii]);
     }
   }
