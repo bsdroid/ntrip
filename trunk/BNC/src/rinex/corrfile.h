@@ -48,7 +48,7 @@ class t_corrFile : public QObject {
   void newTec(t_vTec);
 
  private:
-  std::fstream       _stream;
+  std::ifstream      _stream;
   std::string        _lastLine;
   bncTime            _lastEpoTime;
   QMap<QString, int> _corrIODs;
