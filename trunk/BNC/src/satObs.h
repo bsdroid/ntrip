@@ -155,7 +155,8 @@ class t_vTec {
 class t_corrSSR {
  public:
   enum e_type {clkCorr, orbCorr, codeBias, phaseBias, vTec, unknown};
-  static e_type readEpoLine(const std::string& line, bncTime& epoTime);
+  static e_type readEpoLine(const std::string& line, bncTime& epoTime,
+                            int& numEntries, std::string& staID);
 };
 
 #endif
