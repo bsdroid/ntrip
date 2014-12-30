@@ -110,11 +110,12 @@ friend class bncSettings;
   void slotNewConnectionCorr();
 
  private:
-  void printEphHeader();
-  void printEph(const t_eph& eph, bool printFile);
-  void printOutputEph(bool printFile, QTextStream* stream, 
-                      const QString& strV2, const QString& strV3);
-  void messagePrivate(const QByteArray& msg);
+  t_irc checkPrintEph(t_eph* eph);
+  void  printEphHeader();
+  void  printEph(const t_eph& eph, bool printFile);
+  void  printOutputEph(bool printFile, QTextStream* stream, 
+                       const QString& strV2, const QString& strV3);
+  void  messagePrivate(const QByteArray& msg);
 
   QSettings::SettingsMap _settings;
   QFile*                 _logFile;
