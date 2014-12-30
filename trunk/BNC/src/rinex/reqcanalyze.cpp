@@ -1031,14 +1031,15 @@ void t_reqcAnalyze::checkEphemerides() {
         ++numOK;
       }
     }
-    *_log << "   ! OK: " << numOK << " BAD: " << numBad << endl;
+    *_log << "    ! OK: " << numOK << " BAD: " << numBad << endl;
     if (numBad > 0) {
-      *_log << "   ! List of bad ephemerides:" << endl;
+      *_log << "        ! List of bad ephemerides:" << endl;
       for (unsigned ii = 0; ii < rnxNavFile.ephs().size(); ii++) {
         t_eph* eph = rnxNavFile.ephs()[ii];
         if (eph->checkState() == t_eph::bad) {
-          *_log << "   ! " << eph->prn().toString().c_str() << ' '
-                << string(eph->TOC()).c_str() << endl;
+          *_log << "        ! " << eph->prn().toString().c_str() << ' '
+                << eph->TOC().datestr(' ').c_str() << ' '
+                << eph->TOC().timestr(1, ' ').c_str() << endl;
         }
       }
     }
