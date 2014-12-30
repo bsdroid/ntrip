@@ -203,68 +203,49 @@ void t_bncCore::messagePrivate(const QByteArray& msg) {
   }
 }
 
+// 
+////////////////////////////////////////////////////////////////////////////
+t_irc t_bncCore::checkPrintEph(t_eph* eph) {
+  QMutexLocker locker(&_mutex);
+  t_irc ircPut = _ephUser.putNewEph(eph, true);
+  if (eph->checkState() == t_eph::bad) {
+    return failure;
+  }
+  printEphHeader();
+  printEph(*eph, (ircPut == success));
+  return success;
+}
+
 // New GPS Ephemeris 
 ////////////////////////////////////////////////////////////////////////////
 void t_bncCore::slotNewGPSEph(t_ephGPS eph) {
-  QMutexLocker locker(&_mutex);
-
-  t_irc irc = _ephUser.putNewEph(&eph, true);
-  if (eph.checkState() == t_eph::bad) {
-    return;
+  if (checkPrintEph(&eph) == success) {
+    emit newGPSEph(eph);
   }
-
-  emit newGPSEph(eph);
-
-  printEphHeader();
-  printEph(eph, (irc == success));
 }
     
 // New Glonass Ephemeris
 ////////////////////////////////////////////////////////////////////////////
 void t_bncCore::slotNewGlonassEph(t_ephGlo eph) {
-  QMutexLocker locker(&_mutex);
-
-  t_irc irc = _ephUser.putNewEph(&eph, true);
-  if (eph.checkState() == t_eph::bad) {
-    return;
+  if (checkPrintEph(&eph) == success) {
+    emit newGlonassEph(eph);
   }
-
-  emit newGlonassEph(eph);
-
-  printEphHeader();
-  printEph(eph, (irc == success));
 }
 
 // New Galileo Ephemeris
 ////////////////////////////////////////////////////////////////////////////
 void t_bncCore::slotNewGalileoEph(t_ephGal eph) {
-  QMutexLocker locker(&_mutex);
-
-  t_irc irc = _ephUser.putNewEph(&eph, true);
-  if (eph.checkState() == t_eph::bad) {
-    return;
+  if (checkPrintEph(&eph) == success) {
+    emit newGalileoEph(eph);
   }
-
-  emit newGalileoEph(eph);
-
-  printEphHeader();
-  printEph(eph, (irc == success));
 }
 
 // New SBAS Ephemeris
 ////////////////////////////////////////////////////////////////////////////
 void t_bncCore::slotNewSBASEph(t_ephSBAS eph) {
-  QMutexLocker locker(&_mutex);
-
-  t_irc irc = _ephUser.putNewEph(&eph, true);
-  if (eph.checkState() == t_eph::bad) {
-    return;
+  if (checkPrintEph(&eph) == success) {
+    emit newSBASEph(eph);
   }
-
-  emit newSBASEph(eph);
-
-  printEphHeader();
-  printEph(eph, (irc == success));
 }
 
 

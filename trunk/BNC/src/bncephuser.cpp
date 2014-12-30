@@ -184,4 +184,5 @@ void bncEphUser::checkEphemeris(t_eph* eph) {
     eph->setCheckState(t_eph::bad);
     return;
   }
+
 }
