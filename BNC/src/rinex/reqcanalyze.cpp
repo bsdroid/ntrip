@@ -1041,7 +1041,7 @@ void t_reqcAnalyze::checkEphemerides() {
           *_log << "  Bad Ephemeris   : " << navFi.fileName() << ' '
                 << eph->prn().toString().c_str()      << ' '
                 << eph->TOC().datestr(' ').c_str()    << ' '
-                << eph->TOC().timestr(1, ' ').c_str() << endl;
+                << eph->TOC().timestr(0, ' ').c_str() << endl;
         }
       }
     }
