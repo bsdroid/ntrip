@@ -1046,4 +1046,6 @@ void t_reqcAnalyze::checkEphemerides() {
       }
     }
   }
+
+  *_log << endl;
 }
