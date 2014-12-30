@@ -71,6 +71,7 @@ class bncEphUser : public QObject {
   virtual void ephBufferChanged() {}
 
  private:
+  void checkEphemeris(const t_eph* eph);
   QMutex                             _mutex;
   static const unsigned              _maxQueueSize = 5;
   QMap<QString, std::deque<t_eph*> > _eph;

@@ -199,7 +199,7 @@ void t_rnxNavFile::read(QTextStream* stream) {
       }
       eph = new t_ephCompass(version(), lines);
     }
-    if (eph && eph->ok()) {
+    if (eph && eph->checkState() != t_eph::bad) {
       _ephs.push_back(eph);
     }
     else {

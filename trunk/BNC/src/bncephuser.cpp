@@ -110,6 +110,10 @@ t_irc bncEphUser::putNewEph(const t_eph* eph, bool check) {
     return failure;
   }
 
+  if (check) {
+    checkEphemeris(eph);
+  }
+
   const t_ephGPS*     ephGPS     = dynamic_cast<const t_ephGPS*>(eph);
   const t_ephGlo*     ephGlo     = dynamic_cast<const t_ephGlo*>(eph);
   const t_ephGal*     ephGal     = dynamic_cast<const t_ephGal*>(eph);
@@ -156,3 +160,8 @@ t_irc bncEphUser::putNewEph(const t_eph* eph, bool check) {
   }
 }
 
+// 
+////////////////////////////////////////////////////////////////////////////
+void bncEphUser::checkEphemeris(const t_eph* eph) {
+
+}

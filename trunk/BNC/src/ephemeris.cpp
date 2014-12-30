@@ -20,9 +20,9 @@ using namespace std;
 // Constructor
 ////////////////////////////////////////////////////////////////////////////
 t_eph::t_eph() {
-  _ok      = false;
-  _orbCorr = 0;
-  _clkCorr = 0;
+  _checkState = unchecked;
+  _orbCorr    = 0;
+  _clkCorr    = 0;
 }
 
 // 
@@ -42,6 +42,11 @@ void t_eph::setClkCorr(const t_clkCorr* clkCorr) {
 // 
 ////////////////////////////////////////////////////////////////////////////
 t_irc t_eph::getCrd(const bncTime& tt, ColumnVector& xc, ColumnVector& vv, bool useCorr) const {
+
+  if (_checkState == bad) {
+    return failure;
+  }
+
   xc.ReSize(4);
   vv.ReSize(3);
   if (position(tt.gpsw(), tt.gpssec(), xc.data(), vv.data()) != success) {
@@ -87,7 +92,7 @@ void t_ephGPS::set(const gpsephemeris* ee) {
     _prn.set('J', ee->satellite - PRN_QZSS_START + 1);
   }
   else {
-    _ok = false;
+    _checkState = bad;
     return;
   }
 
@@ -133,13 +138,15 @@ void t_ephGPS::set(const gpsephemeris* ee) {
 
   _TOT         = 0.9999e9;
   _fitInterval = 0.0;
-
-  _ok       = true;
 }
 
 // Compute GPS Satellite Position (virtual)
 ////////////////////////////////////////////////////////////////////////////
 t_irc t_ephGPS::position(int GPSweek, double GPSweeks, double* xc, double* vv) const {
+
+  if (_checkState == bad) {
+    return failure;
+  }
 
   static const double omegaEarth = 7292115.1467e-11;
   static const double gmGRS      = 398.6005e12;
@@ -259,6 +266,10 @@ ColumnVector t_ephGlo::glo_deriv(double /* tt */, const ColumnVector& xv,
 // Compute Glonass Satellite Position (virtual)
 ////////////////////////////////////////////////////////////////////////////
 t_irc t_ephGlo::position(int GPSweek, double GPSweeks, double* xc, double* vv) const {
+
+  if (_checkState == bad) {
+    return failure;
+  }
 
   static const double nominalStep = 10.0;
 
@@ -401,8 +412,6 @@ void t_ephGlo::set(const glonassephemeris* ee) {
   _xv(4) = _x_velocity * 1.e3; 
   _xv(5) = _y_velocity * 1.e3; 
   _xv(6) = _z_velocity * 1.e3; 
-
-  _ok = true;
 }
 
 // Set Galileo Satellite Position
@@ -451,13 +460,15 @@ void t_ephGal::set(const galileoephemeris* ee) {
   _TOT      = 0.9999e9;
 
   _flags    = ee->flags;
-
-  _ok = true;
 }
 
 // Compute Galileo Satellite Position (virtual)
 ////////////////////////////////////////////////////////////////////////////
 t_irc t_ephGal::position(int GPSweek, double GPSweeks, double* xc, double* vv) const {
+
+  if (_checkState == bad) {
+    return failure;
+  }
 
   static const double omegaEarth = 7292115.1467e-11;
   static const double gmWGS = 398.60044e12;
@@ -544,9 +555,8 @@ t_ephGPS::t_ephGPS(float rnxVersion, const QStringList& lines) {
 
   const int nLines = 8;
 
-  _ok = false;
-
   if (lines.size() != nLines) {
+    _checkState = bad;
     return;
   }
 
@@ -595,6 +605,7 @@ t_ephGPS::t_ephGPS(float rnxVersion, const QStringList& lines) {
       if ( readDbl(line, pos[1], fieldLen, _clock_bias     ) ||
            readDbl(line, pos[2], fieldLen, _clock_drift    ) ||
            readDbl(line, pos[3], fieldLen, _clock_driftrate) ) {
+        _checkState = bad;
         return;
       }
     }
@@ -604,6 +615,7 @@ t_ephGPS::t_ephGPS(float rnxVersion, const QStringList& lines) {
            readDbl(line, pos[1], fieldLen, _Crs    ) ||
            readDbl(line, pos[2], fieldLen, _Delta_n) ||
            readDbl(line, pos[3], fieldLen, _M0     ) ) {
+        _checkState = bad;
         return;
       }
     }
@@ -613,6 +625,7 @@ t_ephGPS::t_ephGPS(float rnxVersion, const QStringList& lines) {
            readDbl(line, pos[1], fieldLen, _e     ) ||
            readDbl(line, pos[2], fieldLen, _Cus   ) ||
            readDbl(line, pos[3], fieldLen, _sqrt_A) ) {
+        _checkState = bad;
         return;
       }
     }
@@ -622,6 +635,7 @@ t_ephGPS::t_ephGPS(float rnxVersion, const QStringList& lines) {
            readDbl(line, pos[1], fieldLen, _Cic   )  ||
            readDbl(line, pos[2], fieldLen, _OMEGA0)  ||
            readDbl(line, pos[3], fieldLen, _Cis   ) ) {
+        _checkState = bad;
         return;
       }
     }
@@ -631,6 +645,7 @@ t_ephGPS::t_ephGPS(float rnxVersion, const QStringList& lines) {
            readDbl(line, pos[1], fieldLen, _Crc     ) ||
            readDbl(line, pos[2], fieldLen, _omega   ) ||
            readDbl(line, pos[3], fieldLen, _OMEGADOT) ) {
+        _checkState = bad;
         return;
       }
     }
@@ -640,6 +655,7 @@ t_ephGPS::t_ephGPS(float rnxVersion, const QStringList& lines) {
            readDbl(line, pos[1], fieldLen, _L2Codes) ||
            readDbl(line, pos[2], fieldLen, _TOEweek  ) ||
            readDbl(line, pos[3], fieldLen, _L2PFlag) ) {
+        _checkState = bad;
         return;
       }
     }
@@ -649,19 +665,19 @@ t_ephGPS::t_ephGPS(float rnxVersion, const QStringList& lines) {
            readDbl(line, pos[1], fieldLen, _health) ||
            readDbl(line, pos[2], fieldLen, _TGD   ) ||
            readDbl(line, pos[3], fieldLen, _IODC  ) ) {
+        _checkState = bad;
         return;
       }
     }
 
     else if ( iLine == 7 ) {
       if ( readDbl(line, pos[0], fieldLen, _TOT) ) {
+        _checkState = bad;
         return;
       }
       readDbl(line, pos[1], fieldLen, _fitInterval); // _fitInterval optional
     }
   }
-
-  _ok = true;
 }
 
 // Constructor
@@ -670,9 +686,8 @@ t_ephGlo::t_ephGlo(float rnxVersion, const QStringList& lines) {
 
   const int nLines = 4;
 
-  _ok = false;
-
   if (lines.size() != nLines) {
+    _checkState = bad;
     return;
   }
 
@@ -721,6 +736,7 @@ t_ephGlo::t_ephGlo(float rnxVersion, const QStringList& lines) {
       if ( readDbl(line, pos[1], fieldLen, _tau  ) ||
            readDbl(line, pos[2], fieldLen, _gamma) ||
            readDbl(line, pos[3], fieldLen, _tki  ) ) {
+        _checkState = bad;
         return;
       }
 
@@ -732,6 +748,7 @@ t_ephGlo::t_ephGlo(float rnxVersion, const QStringList& lines) {
            readDbl(line, pos[1], fieldLen, _x_velocity    ) ||
            readDbl(line, pos[2], fieldLen, _x_acceleration) ||
            readDbl(line, pos[3], fieldLen, _health        ) ) {
+        _checkState = bad;
         return;
       }
     }
@@ -741,6 +758,7 @@ t_ephGlo::t_ephGlo(float rnxVersion, const QStringList& lines) {
            readDbl(line, pos[1], fieldLen, _y_velocity      ) ||
            readDbl(line, pos[2], fieldLen, _y_acceleration  ) ||
            readDbl(line, pos[3], fieldLen, _frequency_number) ) {
+        _checkState = bad;
         return;
       }
     }
@@ -750,6 +768,7 @@ t_ephGlo::t_ephGlo(float rnxVersion, const QStringList& lines) {
            readDbl(line, pos[1], fieldLen, _z_velocity    )  ||
            readDbl(line, pos[2], fieldLen, _z_acceleration)  ||
            readDbl(line, pos[3], fieldLen, _E             ) ) {
+        _checkState = bad;
         return;
       }
     }
@@ -765,8 +784,6 @@ t_ephGlo::t_ephGlo(float rnxVersion, const QStringList& lines) {
   _xv(4) = _x_velocity * 1.e3; 
   _xv(5) = _y_velocity * 1.e3; 
   _xv(6) = _z_velocity * 1.e3; 
-
-  _ok = true;
 }
 
 // Constructor
@@ -775,9 +792,8 @@ t_ephGal::t_ephGal(float rnxVersion, const QStringList& lines) {
 
   const int nLines = 8;
 
-  _ok = false;
-
   if (lines.size() != nLines) {
+    _checkState = bad;
     return;
   }
 
@@ -823,6 +839,7 @@ t_ephGal::t_ephGal(float rnxVersion, const QStringList& lines) {
       if ( readDbl(line, pos[1], fieldLen, _clock_bias     ) ||
            readDbl(line, pos[2], fieldLen, _clock_drift    ) ||
            readDbl(line, pos[3], fieldLen, _clock_driftrate) ) {
+        _checkState = bad;
         return;
       }
     }
@@ -832,6 +849,7 @@ t_ephGal::t_ephGal(float rnxVersion, const QStringList& lines) {
            readDbl(line, pos[1], fieldLen, _Crs    ) ||
            readDbl(line, pos[2], fieldLen, _Delta_n) ||
            readDbl(line, pos[3], fieldLen, _M0     ) ) {
+        _checkState = bad;
         return;
       }
     }
@@ -841,6 +859,7 @@ t_ephGal::t_ephGal(float rnxVersion, const QStringList& lines) {
            readDbl(line, pos[1], fieldLen, _e     ) ||
            readDbl(line, pos[2], fieldLen, _Cus   ) ||
            readDbl(line, pos[3], fieldLen, _sqrt_A) ) {
+        _checkState = bad;
         return;
       }
     }
@@ -850,6 +869,7 @@ t_ephGal::t_ephGal(float rnxVersion, const QStringList& lines) {
            readDbl(line, pos[1], fieldLen, _Cic   )  ||
            readDbl(line, pos[2], fieldLen, _OMEGA0)  ||
            readDbl(line, pos[3], fieldLen, _Cis   ) ) {
+        _checkState = bad;
         return;
       }
     }
@@ -859,6 +879,7 @@ t_ephGal::t_ephGal(float rnxVersion, const QStringList& lines) {
            readDbl(line, pos[1], fieldLen, _Crc     ) ||
            readDbl(line, pos[2], fieldLen, _omega   ) ||
            readDbl(line, pos[3], fieldLen, _OMEGADOT) ) {
+        _checkState = bad;
         return;
       }
     }
@@ -866,6 +887,7 @@ t_ephGal::t_ephGal(float rnxVersion, const QStringList& lines) {
     else if ( iLine == 5 ) {
       if ( readDbl(line, pos[0], fieldLen, _IDOT    ) ||
            readDbl(line, pos[2], fieldLen, _TOEweek) ) {
+        _checkState = bad;
         return;
       }
     }
@@ -875,18 +897,18 @@ t_ephGal::t_ephGal(float rnxVersion, const QStringList& lines) {
            readDbl(line, pos[1], fieldLen, _E5aHS   ) ||
            readDbl(line, pos[2], fieldLen, _BGD_1_5A) ||
            readDbl(line, pos[3], fieldLen, _BGD_1_5B) ) {
+        _checkState = bad;
         return;
       }
     }
 
     else if ( iLine == 7 ) {
       if ( readDbl(line, pos[0], fieldLen, _TOT) ) {
+        _checkState = bad;
         return;
       }
     }
   }
-
-  _ok = true;
 }
 
 // 
@@ -1106,9 +1128,8 @@ t_ephSBAS::t_ephSBAS(float rnxVersion, const QStringList& lines) {
 
   const int nLines = 4;
 
-  _ok = false;
-
   if (lines.size() != nLines) {
+    _checkState = bad;
     return;
   }
 
@@ -1154,6 +1175,7 @@ t_ephSBAS::t_ephSBAS(float rnxVersion, const QStringList& lines) {
       if ( readDbl(line, pos[1], fieldLen, _agf0 ) ||
            readDbl(line, pos[2], fieldLen, _agf1 ) ||
            readDbl(line, pos[3], fieldLen, _TOW  ) ) {
+        _checkState = bad;
         return;
       }
     }
@@ -1163,6 +1185,7 @@ t_ephSBAS::t_ephSBAS(float rnxVersion, const QStringList& lines) {
            readDbl(line, pos[1], fieldLen, _x_velocity    ) ||
            readDbl(line, pos[2], fieldLen, _x_acceleration) ||
            readDbl(line, pos[3], fieldLen, _health        ) ) {
+        _checkState = bad;
         return;
       }
     }
@@ -1172,6 +1195,7 @@ t_ephSBAS::t_ephSBAS(float rnxVersion, const QStringList& lines) {
            readDbl(line, pos[1], fieldLen, _y_velocity      ) ||
            readDbl(line, pos[2], fieldLen, _y_acceleration  ) ||
            readDbl(line, pos[3], fieldLen, _ura             ) ) {
+        _checkState = bad;
         return;
       }
     }
@@ -1181,6 +1205,7 @@ t_ephSBAS::t_ephSBAS(float rnxVersion, const QStringList& lines) {
            readDbl(line, pos[1], fieldLen, _z_velocity    )  ||
            readDbl(line, pos[2], fieldLen, _z_acceleration)  ||
            readDbl(line, pos[3], fieldLen, _IODN          ) ) {
+        _checkState = bad;
         return;
       }
     }
@@ -1195,8 +1220,6 @@ t_ephSBAS::t_ephSBAS(float rnxVersion, const QStringList& lines) {
   _x_acceleration *= 1.e3; 
   _y_acceleration *= 1.e3; 
   _z_acceleration *= 1.e3; 
-
-  _ok = true;
 }
 
 // Set SBAS Satellite Position
@@ -1226,13 +1249,16 @@ void t_ephSBAS::set(const sbasephemeris* ee) {
 
   _ura            = ee->URA;
 
-  _ok     = true;
   _health = 0;
 }
 
 // Compute SBAS Satellite Position (virtual)
 ////////////////////////////////////////////////////////////////////////////
 t_irc t_ephSBAS::position(int GPSweek, double GPSweeks, double* xc, double* vv) const {
+
+  if (_checkState == bad) {
+    return failure;
+  }
 
   bncTime tt(GPSweek, GPSweeks);
   double  dt = tt - _TOC;
@@ -1292,9 +1318,8 @@ t_ephCompass::t_ephCompass(float rnxVersion, const QStringList& lines) {
 
   const int nLines = 8;
 
-  _ok = false;
-
   if (lines.size() != nLines) {
+    _checkState = bad;
     return;
   }
 
@@ -1344,6 +1369,7 @@ t_ephCompass::t_ephCompass(float rnxVersion, const QStringList& lines) {
       if ( readDbl(line, pos[1], fieldLen, _clock_bias     ) ||
            readDbl(line, pos[2], fieldLen, _clock_drift    ) ||
            readDbl(line, pos[3], fieldLen, _clock_driftrate) ) {
+        _checkState = bad;
         return;
       }
     }
@@ -1354,6 +1380,7 @@ t_ephCompass::t_ephCompass(float rnxVersion, const QStringList& lines) {
            readDbl(line, pos[1], fieldLen, _Crs    ) ||
            readDbl(line, pos[2], fieldLen, _Delta_n) ||
            readDbl(line, pos[3], fieldLen, _M0     ) ) {
+        _checkState = bad;
         return;
       }
       _AODE = int(aode);
@@ -1364,6 +1391,7 @@ t_ephCompass::t_ephCompass(float rnxVersion, const QStringList& lines) {
            readDbl(line, pos[1], fieldLen, _e     ) ||
            readDbl(line, pos[2], fieldLen, _Cus   ) ||
            readDbl(line, pos[3], fieldLen, _sqrt_A) ) {
+        _checkState = bad;
         return;
       }
     }
@@ -1373,6 +1401,7 @@ t_ephCompass::t_ephCompass(float rnxVersion, const QStringList& lines) {
            readDbl(line, pos[1], fieldLen, _Cic   )  ||
            readDbl(line, pos[2], fieldLen, _OMEGA0)  ||
            readDbl(line, pos[3], fieldLen, _Cis   ) ) {
+        _checkState = bad;
         return;
       }
     }
@@ -1382,6 +1411,7 @@ t_ephCompass::t_ephCompass(float rnxVersion, const QStringList& lines) {
            readDbl(line, pos[1], fieldLen, _Crc     ) ||
            readDbl(line, pos[2], fieldLen, _omega   ) ||
            readDbl(line, pos[3], fieldLen, _OMEGADOT) ) {
+        _checkState = bad;
         return;
       }
     }
@@ -1389,6 +1419,7 @@ t_ephCompass::t_ephCompass(float rnxVersion, const QStringList& lines) {
     else if ( iLine == 5 ) {
       if ( readDbl(line, pos[0], fieldLen, _IDOT    ) ||
            readDbl(line, pos[2], fieldLen, TOEw)    ) {
+        _checkState = bad;
         return;
       }
     }
@@ -1398,6 +1429,7 @@ t_ephCompass::t_ephCompass(float rnxVersion, const QStringList& lines) {
       if ( readDbl(line, pos[1], fieldLen, SatH1) ||
            readDbl(line, pos[2], fieldLen, _TGD1) ||
            readDbl(line, pos[3], fieldLen, _TGD2) ) {
+        _checkState = bad;
         return;
       }
       _SatH1 = int(SatH1);
@@ -1407,6 +1439,7 @@ t_ephCompass::t_ephCompass(float rnxVersion, const QStringList& lines) {
       double aodc;
       if ( readDbl(line, pos[0], fieldLen, TOTs) ||
            readDbl(line, pos[1], fieldLen, aodc) ) {
+        _checkState = bad;
         return;
       }
       if (TOTs == 0.9999e9) {  // 0.9999e9 means not known (RINEX standard)
@@ -1427,13 +1460,15 @@ t_ephCompass::t_ephCompass(float rnxVersion, const QStringList& lines) {
   // remark: actually should be computed from second_tot
   //         but it seems to be unreliable in RINEX files
   _TOT = _TOC;
-
-  _ok = true;
 }
 
 // Constructor
 //////////////////////////////////////////////////////////////////////////////
 t_irc t_ephCompass::position(int GPSweek, double GPSweeks, double* xc, double* vv) const {
+
+  if (_checkState == bad) {
+    return failure;
+  }
 
   static const double gmCompass    = 398.6004418e12;
   static const double omegaCompass = 7292115.0000e-11;
