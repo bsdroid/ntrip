@@ -172,7 +172,6 @@ void bncEphUser::checkEphemeris(t_eph* eph) {
   // ----------------------------------------------
   ColumnVector xc(4);
   ColumnVector vv(3);
-
   if (eph->getCrd(eph->TOC(), xc, vv, false) != success) {
     eph->setCheckState(t_eph::bad);
     return;
@@ -180,9 +179,36 @@ void bncEphUser::checkEphemeris(t_eph* eph) {
 
   double rr = xc.Rows(1,3).norm_Frobenius();
 
-  if (rr < 2.e7 || rr > 4.e7) {
+  const double MINDIST = 2.e7;
+  const double MAXDIST = 4.e7;
+  if (rr < MINDIST || rr > MAXDIST) {
     eph->setCheckState(t_eph::bad);
     return;
   }
 
+  // Check consistency with older ephemerides
+  // ----------------------------------------
+  const double MAXDIFF = 100.0;
+  QString      prn     = QString(eph->prn().toString().c_str());
+  t_eph*       ephL    = ephLast(prn);
+  if (ephL) {
+    ColumnVector xcL(4);
+    ColumnVector vvL(3);
+    ephL->getCrd(eph->TOC(), xcL, vvL, false);
+
+    double dt   = eph->TOC() - ephL->TOC();
+    double diff = (xc.Rows(1,3) - xcL.Rows(1,3)).norm_Frobenius();
+
+    if (diff < MAXDIFF) {
+      if (dt != 0.0) {
+        eph->setCheckState(t_eph::ok);
+        ephL->setCheckState(t_eph::ok);
+      }
+    }
+    else {
+      if (ephL->checkState() == t_eph::ok) {
+        eph->setCheckState(t_eph::bad);
+      }
+    }
+  }
 }

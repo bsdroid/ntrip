@@ -19,7 +19,7 @@ class t_clkCorr;
 class t_eph {
  public:
   enum e_type {unknown, GPS, QZSS, GLONASS, Galileo, SBAS, Compass};
-  enum e_checkState {unchecked, ok, suspicious, bad};
+  enum e_checkState {unchecked, ok, bad};
 
   t_eph();
   virtual ~t_eph() {};
