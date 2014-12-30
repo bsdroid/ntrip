@@ -52,6 +52,7 @@
 #include "availplot.h"
 #include "eleplot.h"
 #include "dopplot.h"
+#include "bncephuser.h"
 
 using namespace std;
 
@@ -1014,7 +1015,33 @@ void t_reqcAnalyze::printReport(const t_rnxObsFile* obsFile) {
 void t_reqcAnalyze::checkEphemerides() {
   QStringListIterator it(_navFileNames);
   while (it.hasNext()) {
-    QString fileName = it.next();
+    const QString& fileName = it.next();
     *_log << "! Ephemeris Check: " << fileName << endl;
+    unsigned numOK  = 0;
+    unsigned numBad = 0;
+    bncEphUser ephUser(false);
+    t_rnxNavFile rnxNavFile(fileName, t_rnxNavFile::input);
+    for (unsigned ii = 0; ii < rnxNavFile.ephs().size(); ii++) {
+      t_eph* eph = rnxNavFile.ephs()[ii];
+      ephUser.putNewEph(eph, true);
+      if (eph->checkState() == t_eph::bad) {
+        ++numBad;
+      }
+      else {
+        ++numOK;
+      }
+    }
+    *_log << "   ! OK: " << numOK << " BAD: " << numBad << endl;
+    if (numBad > 0) {
+      *_log << "   ! List of bad ephemerides:" << endl;
+      for (unsigned ii = 0; ii < rnxNavFile.ephs().size(); ii++) {
+        t_eph* eph = rnxNavFile.ephs()[ii];
+        if (eph->checkState() == t_eph::bad) {
+          *_log << "   ! " << eph->prn().toString().c_str() << ' '
+                << string(eph->TOC()).c_str() << endl;
+        }
+      }
+    }
   }
+  *_log << endl;
 }
