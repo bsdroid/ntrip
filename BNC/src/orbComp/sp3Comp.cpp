@@ -305,7 +305,6 @@ void t_sp3Comp::compare(ostringstream& out) const {
       }
       else {
         epoch->_dr.erase(prn);
-        epoch->_xyz.erase(prn);
         epoch->_dc.erase(prn);
       }
     }
