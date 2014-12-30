@@ -209,6 +209,7 @@ t_irc t_bncCore::checkPrintEph(t_eph* eph) {
   QMutexLocker locker(&_mutex);
   t_irc ircPut = _ephUser.putNewEph(eph, true);
   if (eph->checkState() == t_eph::bad) {
+    messagePrivate("WRONG EPHEMERIS\n" + eph->toString(3.0).toAscii());
     return failure;
   }
   printEphHeader();
