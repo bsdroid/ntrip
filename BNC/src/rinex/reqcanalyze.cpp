@@ -107,6 +107,10 @@ void t_reqcAnalyze::run() {
     _log->setDevice(_logFile);
   }
 
+  // Check Ephemerides
+  // -----------------
+  checkEphemerides();
+
   // Initialize RINEX Observation Files
   // ----------------------------------
   t_reqcEdit::initRnxObsFiles(_obsFileNames, _rnxObsFiles, _log);
@@ -1003,4 +1007,14 @@ void t_reqcAnalyze::printReport(const t_rnxObsFile* obsFile) {
     }
   }
   _log->flush();
+}
+
+//
+////////////////////////////////////////////////////////////////////////////
+void t_reqcAnalyze::checkEphemerides() {
+  QStringListIterator it(_navFileNames);
+  while (it.hasNext()) {
+    QString fileName = it.next();
+    *_log << "! Ephemeris Check: " << fileName << endl;
+  }
 }

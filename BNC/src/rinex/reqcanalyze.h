@@ -161,6 +161,8 @@ Q_OBJECT
   void   slotDspAvailPlot(const QString& fileName, const QByteArray& title);
 
  private:
+  void   checkEphemerides();
+
   void   analyzeFile(t_rnxObsFile* obsFile);
 
   void   updateQcSat(const t_qcSat& qcSat, t_qcSatSum& qcSatSum);
