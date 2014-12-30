@@ -180,7 +180,7 @@ void bncEphUser::checkEphemeris(t_eph* eph) {
   double rr = xc.Rows(1,3).norm_Frobenius();
 
   const double MINDIST = 2.e7;
-  const double MAXDIST = 4.e7;
+  const double MAXDIST = 6.e7;
   if (rr < MINDIST || rr > MAXDIST) {
     eph->setCheckState(t_eph::bad);
     return;
@@ -188,7 +188,7 @@ void bncEphUser::checkEphemeris(t_eph* eph) {
 
   // Check consistency with older ephemerides
   // ----------------------------------------
-  const double MAXDIFF = 100.0;
+  const double MAXDIFF = 1000.0;
   QString      prn     = QString(eph->prn().toString().c_str());
   t_eph*       ephL    = ephLast(prn);
   if (ephL) {
