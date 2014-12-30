@@ -40,7 +40,6 @@
 
 #include <iostream>
 #include <iomanip>
-#include <sstream>
 #include <qwt_plot_renderer.h>
 
 #include "reqcanalyze.h"
@@ -101,6 +100,8 @@ t_reqcAnalyze::~t_reqcAnalyze() {
 ////////////////////////////////////////////////////////////////////////////
 void t_reqcAnalyze::run() {
 
+  static const double QC_FORMAT_VERSION = 1.0;
+
   // Open Log File
   // -------------
   _logFile = new QFile(_logFileName);
@@ -108,6 +109,7 @@ void t_reqcAnalyze::run() {
     _log = new QTextStream();
     _log->setDevice(_logFile);
   }
+  *_log << "QC Format Version : " << QString("%1").arg(QC_FORMAT_VERSION,3,'f',1)  << endl << endl;
 
   // Check Ephemerides
   // -----------------
@@ -120,27 +122,6 @@ void t_reqcAnalyze::run() {
   // Read Ephemerides
   // ----------------
   t_reqcEdit::readEphemerides(_navFileNames, _ephs);
-
-  QString navFileName;
-  QStringListIterator namIt(_navFileNames);
-  bool firstName = true;
-  while (namIt.hasNext()) {
-    QFileInfo navFi(namIt.next());
-    if (firstName) {
-      firstName = false;
-      navFileName += navFi.fileName();
-    }
-    else {
-      navFileName += ", " + navFi.fileName();
-    }
-  }
-
-  static const double QC_FORMAT_VERSION = 1.0;
-
-  *_log << "QC Format Version : " << QString("%1").arg(QC_FORMAT_VERSION,3,'f',1)  << endl << endl
-        << "Navigation File(s): " << navFileName                                   << endl;
-
-  *_log << _ephMsg.c_str() << endl;
 
   // Loop over all RINEX Files
   // -------------------------
@@ -1018,7 +999,21 @@ void t_reqcAnalyze::printReport(const t_rnxObsFile* obsFile) {
 ////////////////////////////////////////////////////////////////////////////
 void t_reqcAnalyze::checkEphemerides() {
 
-  ostringstream out;
+  QString navFileName;
+  QStringListIterator namIt(_navFileNames);
+  bool firstName = true;
+  while (namIt.hasNext()) {
+    QFileInfo navFi(namIt.next());
+    if (firstName) {
+      firstName = false;
+      navFileName += navFi.fileName();
+    }
+    else {
+      navFileName += ", " + navFi.fileName();
+    }
+  }
+
+  *_log << "Navigation File(s): " << navFileName                                   << endl;
 
   QStringListIterator it(_navFileNames);
   while (it.hasNext()) {
@@ -1037,19 +1032,18 @@ void t_reqcAnalyze::checkEphemerides() {
         ++numOK;
       }
     }
-    out << "Ephemeris         : " << numOK << " OK   " << numBad << " BAD" << endl;
+    *_log << "Ephemeris         : " << numOK << " OK   " << numBad << " BAD" << endl;
     if (numBad > 0) {
       for (unsigned ii = 0; ii < rnxNavFile.ephs().size(); ii++) {
         t_eph* eph = rnxNavFile.ephs()[ii];
         if (eph->checkState() == t_eph::bad) {
-          out << "  Bad Ephemeris   : " << fileName.toAscii().data() << ' '
-              << eph->prn().toString() << ' '
-              << eph->TOC().datestr(' ') << ' '
-              << eph->TOC().timestr(1, ' ') << endl;
+          QFileInfo navFi(fileName);
+          *_log << "  Bad Ephemeris   : " << navFi.fileName() << ' '
+                << eph->prn().toString() << ' '
+                << eph->TOC().datestr(' ').c_str() << ' '
+                << eph->TOC().timestr(1, ' ').c_str() << endl;
         }
       }
     }
   }
-
-  _ephMsg = out.str();
 }

@@ -25,7 +25,6 @@
 #ifndef REQCANALYZE_H
 #define REQCANALYZE_H
 
-#include <string>
 #include <QtCore>
 #include "rnxobsfile.h"
 #include "rnxnavfile.h"
@@ -188,7 +187,6 @@ Q_OBJECT
   QVector<t_eph*>         _ephs;
   t_rnxObsFile::t_rnxEpo* _currEpo;
   t_qcFile                _qcFile;
-  std::string             _ephMsg;
 };
 
 #endif
