@@ -19,6 +19,7 @@ class t_clkCorr;
 class t_eph {
  public:
   enum e_type {unknown, GPS, QZSS, GLONASS, Galileo, SBAS, Compass};
+  enum e_checkState {unchecked, ok, suspicious, bad};
 
   t_eph();
   virtual ~t_eph() {};
@@ -27,9 +28,9 @@ class t_eph {
   virtual QString toString(double version) const = 0;
   virtual int     IOD() const = 0;
   virtual int     slotNum() const {return 0;}
-  bool    ok() const {return _ok;}
   bncTime TOC() const {return _TOC;}
   bool    isNewerThan(const t_eph* eph) const {return earlierTime(eph, this);}
+  e_checkState checkState() const {return _checkState;}
   t_prn   prn() const {return _prn;}
   t_irc   getCrd(const bncTime& tt, ColumnVector& xc, ColumnVector& vv, bool useCorr) const;
   void    setOrbCorr(const t_orbCorr* orbCorr);
@@ -41,12 +42,12 @@ class t_eph {
 
  protected:  
   virtual t_irc position(int GPSweek, double GPSweeks, double* xc, double* vv) const = 0;
-  t_prn      _prn;
-  bncTime    _TOC;
-  QDateTime  _receptDateTime;
-  bool       _ok;
-  t_orbCorr* _orbCorr;
-  t_clkCorr* _clkCorr;
+  t_prn        _prn;
+  bncTime      _TOC;
+  QDateTime    _receptDateTime;
+  e_checkState _checkState;
+  t_orbCorr*   _orbCorr;
+  t_clkCorr*   _clkCorr;
 };
 
 
