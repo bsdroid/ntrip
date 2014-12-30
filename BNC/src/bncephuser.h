@@ -46,7 +46,7 @@ class bncEphUser : public QObject {
   bncEphUser(bool connectSlots);
   virtual ~bncEphUser();
 
-  t_irc putNewEph(const t_eph* newEph, bool check);
+  t_irc putNewEph(t_eph* newEph, bool check);
 
   t_eph* ephLast(const QString& prn) {
     if (_eph.contains(prn)) {
@@ -71,7 +71,7 @@ class bncEphUser : public QObject {
   virtual void ephBufferChanged() {}
 
  private:
-  void checkEphemeris(const t_eph* eph);
+  void checkEphemeris(t_eph* eph);
   QMutex                             _mutex;
   static const unsigned              _maxQueueSize = 5;
   QMap<QString, std::deque<t_eph*> > _eph;
