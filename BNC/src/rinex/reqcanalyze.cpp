@@ -40,6 +40,7 @@
 
 #include <iostream>
 #include <iomanip>
+#include <sstream>
 #include <qwt_plot_renderer.h>
 
 #include "reqcanalyze.h"
@@ -818,8 +819,12 @@ void t_reqcAnalyze::printReport(const t_rnxObsFile* obsFile) {
   // Summary
   // -------
   *_log << "QC Format Version : " << QString("%1").arg(QC_FORMAT_VERSION,3,'f',1)  << endl << endl
-        << "Observation File  : " << obsFileName                                   << endl
-        << "Navigation File(s): " << navFileName                                   << endl
+        << "Navigation File(s): " << navFileName                                   << endl;
+  if (!_ephMsg.empty()) {
+    *_log << _ephMsg.c_str();
+    _ephMsg.clear();
+  }
+  *_log << "Observation File  : " << obsFileName                                   << endl
         << "RINEX Version     : " << QString("%1").arg(obsFile->version(),4,'f',2) << endl
         << "Marker Name       : " << _qcFile._markerName                           << endl
         << "Marker Number     : " << obsFile->markerNumber()                       << endl
@@ -1013,10 +1018,12 @@ void t_reqcAnalyze::printReport(const t_rnxObsFile* obsFile) {
 //
 ////////////////////////////////////////////////////////////////////////////
 void t_reqcAnalyze::checkEphemerides() {
+
+  ostringstream out;
+
   QStringListIterator it(_navFileNames);
   while (it.hasNext()) {
     const QString& fileName = it.next();
-    *_log << "! Ephemeris Check: " << fileName << endl;
     unsigned numOK  = 0;
     unsigned numBad = 0;
     bncEphUser ephUser(false);
@@ -1031,18 +1038,19 @@ void t_reqcAnalyze::checkEphemerides() {
         ++numOK;
       }
     }
-    *_log << "    ! OK: " << numOK << " BAD: " << numBad << endl;
+    out << "Ephemeris                  : " << numOK << " OK   " << numBad << " BAD" << endl;
     if (numBad > 0) {
-      *_log << "        ! List of bad ephemerides:" << endl;
       for (unsigned ii = 0; ii < rnxNavFile.ephs().size(); ii++) {
         t_eph* eph = rnxNavFile.ephs()[ii];
         if (eph->checkState() == t_eph::bad) {
-          *_log << "        ! " << eph->prn().toString().c_str() << ' '
-                << eph->TOC().datestr(' ').c_str() << ' '
-                << eph->TOC().timestr(1, ' ').c_str() << endl;
+          out << "  Bad Ephemeris                  : " << fileName.toAscii().data() << ' '
+              << eph->prn().toString() << ' '
+              << eph->TOC().datestr(' ') << ' '
+              << eph->TOC().timestr(1, ' ') << endl;
         }
       }
     }
   }
-  *_log << endl;
+
+  _ephMsg = out.str();
 }
