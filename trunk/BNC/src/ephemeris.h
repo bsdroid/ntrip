@@ -31,6 +31,7 @@ class t_eph {
   bncTime TOC() const {return _TOC;}
   bool    isNewerThan(const t_eph* eph) const {return earlierTime(eph, this);}
   e_checkState checkState() const {return _checkState;}
+  void    setCheckState(e_checkState checkState) {_checkState = checkState;}
   t_prn   prn() const {return _prn;}
   t_irc   getCrd(const bncTime& tt, ColumnVector& xc, ColumnVector& vv, bool useCorr) const;
   void    setOrbCorr(const t_orbCorr* orbCorr);

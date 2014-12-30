@@ -102,7 +102,7 @@ void bncEphUser::slotNewSBASEph(t_ephSBAS eph) {
 
 // 
 ////////////////////////////////////////////////////////////////////////////
-t_irc bncEphUser::putNewEph(const t_eph* eph, bool check) {
+t_irc bncEphUser::putNewEph(t_eph* eph, bool check) {
 
   QMutexLocker locker(&_mutex);
 
@@ -162,6 +162,26 @@ t_irc bncEphUser::putNewEph(const t_eph* eph, bool check) {
 
 // 
 ////////////////////////////////////////////////////////////////////////////
-void bncEphUser::checkEphemeris(const t_eph* eph) {
+void bncEphUser::checkEphemeris(t_eph* eph) {
 
+  if (!eph || eph->checkState() == t_eph::ok || eph->checkState() == t_eph::bad) {
+    return;
+  }
+
+  // Simple Check - check satellite radial distance
+  // ----------------------------------------------
+  ColumnVector xc(4);
+  ColumnVector vv(3);
+
+  if (eph->getCrd(eph->TOC(), xc, vv, false) != success) {
+    eph->setCheckState(t_eph::bad);
+    return;
+  }
+
+  double rr = xc.Rows(1,3).norm_Frobenius();
+
+  if (rr < 2.e7 || rr > 4.e7) {
+    eph->setCheckState(t_eph::bad);
+    return;
+  }
 }

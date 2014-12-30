@@ -206,73 +206,65 @@ void t_bncCore::messagePrivate(const QByteArray& msg) {
 // New GPS Ephemeris 
 ////////////////////////////////////////////////////////////////////////////
 void t_bncCore::slotNewGPSEph(t_ephGPS eph) {
-
   QMutexLocker locker(&_mutex);
+
+  t_irc irc = _ephUser.putNewEph(&eph, true);
+  if (eph.checkState() == t_eph::bad) {
+    return;
+  }
 
   emit newGPSEph(eph);
 
   printEphHeader();
-
-  if (_ephUser.putNewEph(&eph, true) == success) {
-    printEph(eph, true);
-  }
-  else {
-    printEph(eph, false);
-  }
+  printEph(eph, (irc == success));
 }
     
 // New Glonass Ephemeris
 ////////////////////////////////////////////////////////////////////////////
 void t_bncCore::slotNewGlonassEph(t_ephGlo eph) {
-
   QMutexLocker locker(&_mutex);
+
+  t_irc irc = _ephUser.putNewEph(&eph, true);
+  if (eph.checkState() == t_eph::bad) {
+    return;
+  }
 
   emit newGlonassEph(eph);
 
   printEphHeader();
-
-  if (_ephUser.putNewEph(&eph, true) == success) {
-    printEph(eph, true);
-  }
-  else {
-    printEph(eph, false);
-  }
+  printEph(eph, (irc == success));
 }
 
 // New Galileo Ephemeris
 ////////////////////////////////////////////////////////////////////////////
 void t_bncCore::slotNewGalileoEph(t_ephGal eph) {
-
   QMutexLocker locker(&_mutex);
+
+  t_irc irc = _ephUser.putNewEph(&eph, true);
+  if (eph.checkState() == t_eph::bad) {
+    return;
+  }
 
   emit newGalileoEph(eph);
 
   printEphHeader();
-
-  if (_ephUser.putNewEph(&eph, true) == success) {
-    printEph(eph, true);
-  }
-  else {
-    printEph(eph, false);
-  }
+  printEph(eph, (irc == success));
 }
 
 // New SBAS Ephemeris
 ////////////////////////////////////////////////////////////////////////////
 void t_bncCore::slotNewSBASEph(t_ephSBAS eph) {
-
   QMutexLocker locker(&_mutex);
+
+  t_irc irc = _ephUser.putNewEph(&eph, true);
+  if (eph.checkState() == t_eph::bad) {
+    return;
+  }
 
   emit newSBASEph(eph);
 
   printEphHeader();
-
-  if (_ephUser.putNewEph(&eph, true) == success) {
-    printEph(eph, true);
-  }
-  else {
-    printEph(eph, false);
-  }
+  printEph(eph, (irc == success));
 }
 
 
