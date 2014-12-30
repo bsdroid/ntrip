@@ -121,6 +121,27 @@ void t_reqcAnalyze::run() {
   // ----------------
   t_reqcEdit::readEphemerides(_navFileNames, _ephs);
 
+  QString navFileName;
+  QStringListIterator namIt(_navFileNames);
+  bool firstName = true;
+  while (namIt.hasNext()) {
+    QFileInfo navFi(namIt.next());
+    if (firstName) {
+      firstName = false;
+      navFileName += navFi.fileName();
+    }
+    else {
+      navFileName += ", " + navFi.fileName();
+    }
+  }
+
+  static const double QC_FORMAT_VERSION = 1.0;
+
+  *_log << "QC Format Version : " << QString("%1").arg(QC_FORMAT_VERSION,3,'f',1)  << endl << endl
+        << "Navigation File(s): " << navFileName                                   << endl;
+
+  *_log << _ephMsg.c_str() << endl;
+
   // Loop over all RINEX Files
   // -------------------------
   for (int ii = 0; ii < _rnxObsFiles.size(); ii++) {
@@ -793,8 +814,6 @@ void t_reqcAnalyze::slotDspAvailPlot(const QString& fileName, const QByteArray& 
 ////////////////////////////////////////////////////////////////////////////
 void t_reqcAnalyze::printReport(const t_rnxObsFile* obsFile) {
 
-  static const double QC_FORMAT_VERSION = 1.0;
-
   if (!_log) {
     return;
   }
@@ -802,28 +821,8 @@ void t_reqcAnalyze::printReport(const t_rnxObsFile* obsFile) {
   QFileInfo obsFi(obsFile->fileName());
   QString obsFileName = obsFi.fileName();
 
-  QString navFileName;
-  QStringListIterator namIt(_navFileNames);
-  bool firstName = true;
-  while (namIt.hasNext()) {
-    QFileInfo navFi(namIt.next());
-    if (firstName) {
-      firstName = false;
-      navFileName += navFi.fileName();
-    }
-    else {
-      navFileName += ", " + navFi.fileName();
-    }
-  }
-
   // Summary
   // -------
-  *_log << "QC Format Version : " << QString("%1").arg(QC_FORMAT_VERSION,3,'f',1)  << endl << endl
-        << "Navigation File(s): " << navFileName                                   << endl;
-  if (!_ephMsg.empty()) {
-    *_log << _ephMsg.c_str();
-    _ephMsg.clear();
-  }
   *_log << "Observation File  : " << obsFileName                                   << endl
         << "RINEX Version     : " << QString("%1").arg(obsFile->version(),4,'f',2) << endl
         << "Marker Name       : " << _qcFile._markerName                           << endl
@@ -1038,12 +1037,12 @@ void t_reqcAnalyze::checkEphemerides() {
         ++numOK;
       }
     }
-    out << "Ephemeris                  : " << numOK << " OK   " << numBad << " BAD" << endl;
+    out << "Ephemeris         : " << numOK << " OK   " << numBad << " BAD" << endl;
     if (numBad > 0) {
       for (unsigned ii = 0; ii < rnxNavFile.ephs().size(); ii++) {
         t_eph* eph = rnxNavFile.ephs()[ii];
         if (eph->checkState() == t_eph::bad) {
-          out << "  Bad Ephemeris                  : " << fileName.toAscii().data() << ' '
+          out << "  Bad Ephemeris   : " << fileName.toAscii().data() << ' '
               << eph->prn().toString() << ' '
               << eph->TOC().datestr(' ') << ' '
               << eph->TOC().timestr(1, ' ') << endl;
