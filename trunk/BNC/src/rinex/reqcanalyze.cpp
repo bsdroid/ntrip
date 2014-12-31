@@ -1039,9 +1039,7 @@ void t_reqcAnalyze::checkEphemerides() {
         if (eph->checkState() == t_eph::bad) {
           QFileInfo navFi(fileName);
           *_log << "  Bad Ephemeris   : " << navFi.fileName() << ' '
-                << eph->prn().toString().c_str()      << ' '
-                << eph->TOC().datestr(' ').c_str()    << ' '
-                << eph->TOC().timestr(0, ' ').c_str() << endl;
+                << eph->toString(3.0).left(24) << endl;
         }
       }
     }
