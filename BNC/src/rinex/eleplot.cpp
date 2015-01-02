@@ -95,7 +95,7 @@ t_elePlot::t_elePlot(QWidget* parent, const QMap<t_prn, t_plotData>& plotDataMap
       if (plotData._mjdX24.size()) {
         const QVector<double>& xData = plotData._mjdX24;
         const QVector<double>& yData = plotData._eleDeg;
-        QColor color = QColor::fromHsv((iC-1)*(359.0/numCurves), 255, 255);
+        QColor color = QColor::fromHsv(int((iC-1)*(359.0/numCurves)), 255, 255);
         QwtSymbol symbol(QwtSymbol::Rect, QBrush(color), QPen(color), QSize(1,1));
         addCurve(prn, symbol, xData, yData);
       }
