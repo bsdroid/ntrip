@@ -1201,12 +1201,14 @@ t_ephSBAS::t_ephSBAS(float rnxVersion, const QStringList& lines) {
     }
 
     else if ( iLine == 3 ) {
+      double iodn;
       if ( readDbl(line, pos[0], fieldLen, _z_pos         )  ||
            readDbl(line, pos[1], fieldLen, _z_velocity    )  ||
            readDbl(line, pos[2], fieldLen, _z_acceleration)  ||
-           readDbl(line, pos[3], fieldLen, _IODN          ) ) {
+           readDbl(line, pos[3], fieldLen, iodn           ) ) {
         _checkState = bad;
         return;
+        _IODN = int(iodn);
       }
     }
   }
@@ -1307,7 +1309,7 @@ QString t_ephSBAS::toString(double version) const {
     .arg(1.e-3*_z_pos,          19, 'e', 12)
     .arg(1.e-3*_z_velocity,     19, 'e', 12)
     .arg(1.e-3*_z_acceleration, 19, 'e', 12)
-    .arg(_IODN,                 19, 'e', 12);
+    .arg(double(_IODN),         19, 'e', 12);
 
   return rnxStr;
 }
