@@ -1452,7 +1452,7 @@ t_ephCompass::t_ephCompass(float rnxVersion, const QStringList& lines) {
   }
 
   TOEw += 1356;  // BDT -> GPS week number
-  _TOE_bdt.set(TOEw, TOEs);
+  _TOE_bdt.set(int(TOEw), TOEs);
 
   // GPS->BDT
   // --------
@@ -1647,7 +1647,7 @@ QString t_ephCompass::toString(double version) const {
 
   out << QString(fmt)
     .arg(_TOE_bdt.gpssec(), 19, 'e', 12)
-    .arg(double(_AODC),     19, QChar(' '));
+    .arg(double(_AODC),     19, 'e', 12);
 
   return rnxStr;
 }

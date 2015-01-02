@@ -76,7 +76,7 @@ t_dopPlot::t_dopPlot(QWidget* parent, const t_plotData& plotData)
 
   QwtText textPDOP("PDOP");
   QFont   fontPDOP = textPDOP.font();
-  fontPDOP.setPointSize(fontPDOP.pointSize()*0.8);
+  fontPDOP.setPointSize(int(fontPDOP.pointSize()*0.8));
   textPDOP.setFont(fontPDOP);
   textPDOP.setColor(Qt::red);
   setAxisTitle(QwtPlot::yRight, textPDOP);
@@ -84,7 +84,7 @@ t_dopPlot::t_dopPlot(QWidget* parent, const t_plotData& plotData)
 
   QwtText textNumSat("# Sat");
   QFont   fontNumSat = textNumSat.font();
-  fontNumSat.setPointSize(fontNumSat.pointSize()*0.8);
+  fontNumSat.setPointSize(int(fontNumSat.pointSize()*0.8));
   textNumSat.setFont(fontNumSat);
   textNumSat.setColor(Qt::blue);
   setAxisTitle(QwtPlot::yLeft,  textNumSat);

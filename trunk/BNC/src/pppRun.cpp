@@ -374,7 +374,7 @@ void t_pppRun::processFiles() {
 
     if (_speed < 100) {
       double sleepTime = 2.0 / _speed;
-      t_pppThread::msleep(sleepTime*1.e3);
+      t_pppThread::msleep(int(sleepTime*1.e3));
     }
 
     // Get Corrections

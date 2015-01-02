@@ -140,7 +140,7 @@ void t_bncMap::slotNewPoint(const QString& name, double latDeg, double lonDeg) {
   }
   QwtText text(name.left(4));
   QFont   font = text.font();
-  font.setPointSize(font.pointSize()*0.8);
+  font.setPointSize(int(font.pointSize()*0.8));
   text.setFont(font);
   marker->setLabel(text);
   marker->setSymbol(symbol);
