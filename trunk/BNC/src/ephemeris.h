@@ -217,7 +217,7 @@ class t_ephSBAS : public t_eph {
  private:
   virtual t_irc position(int GPSweek, double GPSweeks, double* xc, double* vv) const;
 
-  double _IODN;
+  int    _IODN;
   double _TOW;            // not used (set to  0.9999e9)
   double _agf0;           // [s]    clock correction
   double _agf1;           // [s/s]  clock correction drift
