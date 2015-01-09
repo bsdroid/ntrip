@@ -1040,7 +1040,7 @@ bncWindow::bncWindow() {
   reqcLayout->addWidget(new QLabel("summary only"),              ir, 3, Qt::AlignRight);
   reqcLayout->addWidget(_reqcLogSummaryOnly,                     ir, 4, Qt::AlignLeft);
   ++ir;
-  reqcLayout->addWidget(new QLabel("Sky plots for signals"),     ir, 0, Qt::AlignLeft);
+  reqcLayout->addWidget(new QLabel("Plots for signals"),         ir, 0, Qt::AlignLeft);
   reqcLayout->addWidget(_reqcSkyPlotSignals,                     ir, 1, 1, 2);
   ++ir;
   reqcLayout->addWidget(new QLabel("Directory for plots"),       ir, 0, Qt::AlignLeft);
