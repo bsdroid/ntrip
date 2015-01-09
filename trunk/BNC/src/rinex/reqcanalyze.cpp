@@ -62,12 +62,15 @@ t_reqcAnalyze::t_reqcAnalyze(QObject* parent) : QThread(parent) {
 
   bncSettings settings;
 
-  _logFileName  = settings.value("reqcOutLogFile").toString(); expandEnvVar(_logFileName);
-  _logFile      = 0;
-  _log          = 0;
-  _currEpo      = 0;
-  _obsFileNames = settings.value("reqcObsFile").toString().split(",", QString::SkipEmptyParts);
-  _navFileNames = settings.value("reqcNavFile").toString().split(",", QString::SkipEmptyParts);
+  _logFileName     = settings.value("reqcOutLogFile").toString(); expandEnvVar(_logFileName);
+  _logFile         = 0;
+  _log             = 0;
+  _currEpo         = 0;
+  _obsFileNames    = settings.value("reqcObsFile").toString().split(",", QString::SkipEmptyParts);
+  _navFileNames    = settings.value("reqcNavFile").toString().split(",", QString::SkipEmptyParts);
+  _reqcPlotSignals = settings.value("reqcSkyPlotSignals").toString();
+  if (_reqcPlotSignals.isEmpty()) {_reqcPlotSignals = "G:1&2 R:1&2 J:1&2 E:1&5 S:1&5 C:2&7";}
+  analyzePlotSignals(_signalTypes);
 
   connect(this, SIGNAL(dspSkyPlot(const QString&, const QString&, QVector<t_polarPoint*>*,
                                   const QString&, QVector<t_polarPoint*>*,
@@ -137,6 +140,24 @@ void t_reqcAnalyze::run() {
 
 //
 ////////////////////////////////////////////////////////////////////////////
+void t_reqcAnalyze::analyzePlotSignals(QMap<char, QVector<QString> >& signalTypes) {
+
+  QStringList signalsOpt = _reqcPlotSignals.split(" ", QString::SkipEmptyParts);
+
+  for (int ii = 0; ii < signalsOpt.size(); ii++) {
+    QStringList hlp = signalsOpt.at(ii).split(QRegExp("[:&]"), QString::SkipEmptyParts);
+    if (hlp.size() > 1 && hlp[0].length() == 1) {
+      char system = hlp[0].toAscii().constData()[0];
+      signalTypes[system].append(hlp[1]);
+      if (hlp.size() > 2) {
+        signalTypes[system].append(hlp[2]);
+      }
+    }
+  }
+}
+
+//
+////////////////////////////////////////////////////////////////////////////
 void t_reqcAnalyze::analyzeFile(t_rnxObsFile* obsFile) {
 
   _qcFile.clear();
@@ -169,6 +190,9 @@ void t_reqcAnalyze::analyzeFile(t_rnxObsFile* obsFile) {
       // ------------------------
       for (unsigned iObs = 0; iObs < _currEpo->rnxSat.size(); iObs++) {
         const t_rnxObsFile::t_rnxSat& rnxSat = _currEpo->rnxSat[iObs];
+        if (_signalTypes.find(rnxSat.prn.system()) == _signalTypes.end()) {
+          continue;
+        }
         t_satObs satObs;
         t_rnxObsFile::setObsFromRnx(obsFile, _currEpo, rnxSat, satObs);
         t_qcSat& qcSat = qcEpo._qcSat[satObs._prn];
@@ -215,6 +239,10 @@ double t_reqcAnalyze::cmpDOP(const ColumnVector& xyzSta) const {
 
     const t_rnxObsFile::t_rnxSat& rnxSat = _currEpo->rnxSat[iSat];
     const t_prn& prn = rnxSat.prn;
+
+    if (_signalTypes.find(prn.system()) == _signalTypes.end()) {
+      continue;
+    }
 
     t_eph* eph = 0;
     for (int ie = 0; ie < _ephs.size(); ie++) {
@@ -531,29 +559,12 @@ void t_reqcAnalyze::preparePlotData(const t_rnxObsFile* obsFile) {
   QString sn1Title = "Signal-to-Noise Ratio\n";
   QString sn2Title = "Signal-to-Noise Ratio\n";
 
-  bncSettings settings;
-  
-  QString reqcSkyPlotSignals = settings.value("reqcSkyPlotSignals").toString();
-  if (reqcSkyPlotSignals.isEmpty()) {
-    reqcSkyPlotSignals = "G:1&2 R:1&2 J:1&2 E:1&7 C:1&6";
-  }
-
-  QStringList signalsOpt = reqcSkyPlotSignals.split(" ", QString::SkipEmptyParts);
-  QMap<char, QString> signalTypes1;
-  QMap<char, QString> signalTypes2;
-  for (int ii = 0; ii < signalsOpt.size(); ii++) {
-    QStringList hlp = signalsOpt.at(ii).split(QRegExp("[:&]"), QString::SkipEmptyParts);
-    if (hlp.size() > 1 && hlp[0].length() == 1) {
-      char system = hlp[0].toAscii().constData()[0];    
-      signalTypes1[system] = hlp[1];
-      mp1Title += hlp[0] + ":" + hlp[1] + " ";
-      sn1Title += hlp[0] + ":" + hlp[1] + " ";
-      if (hlp.size() > 2) {
-        signalTypes2[system] = hlp[2];
-        mp2Title += hlp[0] + ":" + hlp[2] + " ";
-        sn2Title += hlp[0] + ":" + hlp[2] + " ";
-      }
-    }
+  for(QMap<char, QVector<QString> >::iterator it = _signalTypes.begin();
+      it != _signalTypes.end(); it++) {
+    mp1Title += QString(it.key()) + ":" + it.value()[0] + " ";
+    sn1Title += QString(it.key()) + ":" + it.value()[0] + " ";
+    mp2Title += QString(it.key()) + ":" + it.value()[1] + " ";
+    sn2Title += QString(it.key()) + ":" + it.value()[1] + " ";
   }
 
   QVector<t_polarPoint*>* dataMP1  = new QVector<t_polarPoint*>;
@@ -578,13 +589,12 @@ void t_reqcAnalyze::preparePlotData(const t_rnxObsFile* obsFile) {
           const t_qcFrq& qcFrq = qcSat._qcFrq[iFrq];
 
           for (int ii = 0; ii < 2; ii++) {
-            const QMap<char, QString>& signalTypes = (ii == 0 ? signalTypes1 : signalTypes2);
             if (frqType[ii].isEmpty()) {
-              QMapIterator<char, QString> it(signalTypes);
+              QMapIterator<char, QVector<QString> > it(_signalTypes);
               while (it.hasNext()) {
                 it.next();
                 if (it.key() == prn.system()) {
-                  if (it.value() == qcFrq._rnxType2ch || it.value() == qcFrq._rnxType2ch.left(1)) {
+                  if (it.value()[ii] == qcFrq._rnxType2ch || it.value()[ii] == qcFrq._rnxType2ch.left(1)) {
                     frqType[ii] = qcFrq._rnxType2ch;
                     break;
                   }
@@ -714,6 +724,7 @@ void t_reqcAnalyze::slotDspAvailPlot(const QString& fileName, const QByteArray& 
       it.next();
       const t_prn&   prn   = it.key();
       const t_qcSat& qcSat = it.value();
+
       t_plotData&    data  = plotDataMap[prn];
 
       if (qcSat._eleSet) {
@@ -721,14 +732,9 @@ void t_reqcAnalyze::slotDspAvailPlot(const QString& fileName, const QByteArray& 
         data._eleDeg << qcSat._eleDeg;
       }
 
-      char frqChar1 = '1';
-      char frqChar2 = '2';
-      if      (prn.system() == 'E' || prn.system() == 'S') {
-        frqChar2 = '5';
-      }
-      else if (prn.system() == 'C') {
-        frqChar2 = '7';
-      }
+      char frqChar1 = _signalTypes[prn.system()][0][0].toAscii();
+      char frqChar2 = _signalTypes[prn.system()][1][0].toAscii();
+
       QString frqType1;
       QString frqType2;
       for (int iFrq = 0; iFrq < qcSat._qcFrq.size(); iFrq++) {

@@ -163,6 +163,8 @@ Q_OBJECT
  private:
   void   checkEphemerides();
 
+  void   analyzePlotSignals(QMap<char, QVector<QString> >& signalTypes);
+
   void   analyzeFile(t_rnxObsFile* obsFile);
 
   void   updateQcSat(const t_qcSat& qcSat, t_qcSatSum& qcSatSum);
@@ -178,15 +180,17 @@ Q_OBJECT
 
   void   printReport(const t_rnxObsFile* obsFile);
 
-  QString                 _logFileName;
-  QFile*                  _logFile;
-  QTextStream*            _log;
-  QStringList             _obsFileNames;
-  QVector<t_rnxObsFile*>  _rnxObsFiles;
-  QStringList             _navFileNames;
-  QVector<t_eph*>         _ephs;
-  t_rnxObsFile::t_rnxEpo* _currEpo;
-  t_qcFile                _qcFile;
+  QString                       _logFileName;
+  QFile*                        _logFile;
+  QTextStream*                  _log;
+  QStringList                   _obsFileNames;
+  QVector<t_rnxObsFile*>        _rnxObsFiles;
+  QStringList                   _navFileNames;
+  QString                       _reqcPlotSignals;
+  QMap<char, QVector<QString> > _signalTypes;
+  QVector<t_eph*>               _ephs;
+  t_rnxObsFile::t_rnxEpo*       _currEpo;
+  t_qcFile                      _qcFile;
 };
 
 #endif
