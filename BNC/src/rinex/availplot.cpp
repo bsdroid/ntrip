@@ -63,7 +63,7 @@ class t_scaleDrawPrn : public QwtScaleDraw {
  public:
   t_scaleDrawPrn() {}
   virtual QwtText label(double iPrn) const {
-    return _yLabels[iPrn];
+    return _yLabels[int(iPrn)];
   }
   QMap<int, QString> _yLabels;
 };
