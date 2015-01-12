@@ -159,7 +159,7 @@ t_irc RTCM3Decoder::Decode(char* buffer, int bufLen, vector<string>& errmsg) {
 
           // RTCMv3 message types
           // --------------------
-          _typeList.push_back(rr);
+          _typeList.push_back(parser.blocktype);
 
           // RTCMv3 antenna descriptor
           // -------------------------
