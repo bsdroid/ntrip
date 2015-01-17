@@ -121,6 +121,7 @@ void t_sp3Comp::run() {
   // Exit (thread)
   // -------------
  end:
+  _log->flush();
   if (BNC_CORE->mode() != t_bncCore::interactive) {
     qApp->exit(0);
   }
