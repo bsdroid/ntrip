@@ -305,8 +305,14 @@ void t_sp3Comp::compare(ostringstream& out) const {
         }
       }
       else {
-        epoch->_dr.erase(prn);
-        epoch->_dc.erase(prn);
+        if (epoch) {
+          if (epoch->_dr.find(prn) != epoch->_dr.end()) {
+            epoch->_dr.erase(prn);
+          }
+          if (epoch->_dc.find(prn) != epoch->_dc.end()) {
+            epoch->_dc.erase(prn);
+          }
+        }
       }
     }
   }
