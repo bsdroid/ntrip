@@ -29,7 +29,8 @@ void t_clkCorr::writeEpoch(ostream* out, const QList<t_clkCorr>& corrList) {
     const t_clkCorr& corr = it.next();
     if (!epoTime.valid()) {
       epoTime = corr._time;
-      *out << "> CLOCK " << epoTime.datestr(' ') << ' ' << epoTime.timestr(1,' ') << "    "
+      *out << "> CLOCK " << epoTime.datestr(' ') << ' ' << epoTime.timestr(1,' ') << " "
+          <<  corr._updateInt <<  " "
            << corrList.size() << ' ' << corr._staID << endl;
     }
     *out << corr._prn.toString() << ' ' << setw(3) << corr._iod << ' '
@@ -43,16 +44,18 @@ void t_clkCorr::writeEpoch(ostream* out, const QList<t_clkCorr>& corrList) {
 // 
 ////////////////////////////////////////////////////////////////////////////
 void t_clkCorr::readEpoch(const string& epoLine, istream& inStream, QList<t_clkCorr>& corrList) {
-  bncTime epoTime;
-  int     numCorr;
-  string  staID;
-  if (t_corrSSR::readEpoLine(epoLine, epoTime, numCorr, staID) != t_corrSSR::clkCorr) {
+  bncTime      epoTime;
+  unsigned int updateInt;
+  int          numCorr;
+  string       staID;
+  if (t_corrSSR::readEpoLine(epoLine, epoTime, updateInt, numCorr, staID) != t_corrSSR::clkCorr) {
     return;
   }
   for (int ii = 0; ii < numCorr; ii++) {
     t_clkCorr corr;
-    corr._time  = epoTime;
-    corr._staID = staID;
+    corr._time      = epoTime;
+    corr._updateInt = updateInt;
+    corr._staID     = staID;
 
     string line;
     getline(inStream, line);
@@ -90,7 +93,8 @@ void t_orbCorr::writeEpoch(ostream* out, const QList<t_orbCorr>& corrList) {
     const t_orbCorr& corr = it.next();
     if (!epoTime.valid()) {
       epoTime = corr._time;
-      *out << "> ORBIT " << epoTime.datestr(' ') << ' ' << epoTime.timestr(1,' ') << "    "
+      *out << "> ORBIT " << epoTime.datestr(' ') << ' ' << epoTime.timestr(1,' ') << " "
+           << corr._updateInt <<  " "
            << corrList.size() << ' ' << corr._staID << endl;
     }
     *out << corr._prn.toString() << ' ' << setw(3) << corr._iod << ' '
@@ -107,16 +111,18 @@ void t_orbCorr::writeEpoch(ostream* out, const QList<t_orbCorr>& corrList) {
 // 
 ////////////////////////////////////////////////////////////////////////////
 void t_orbCorr::readEpoch(const string& epoLine, istream& inStream, QList<t_orbCorr>& corrList) {
-  bncTime epoTime;
-  int     numCorr;
-  string  staID;
-  if (t_corrSSR::readEpoLine(epoLine, epoTime, numCorr, staID) != t_corrSSR::orbCorr) {
+  bncTime      epoTime;
+  unsigned int updateInt;
+  int          numCorr;
+  string       staID;
+  if (t_corrSSR::readEpoLine(epoLine, epoTime, updateInt, numCorr, staID) != t_corrSSR::orbCorr) {
     return;
   }
   for (int ii = 0; ii < numCorr; ii++) {
     t_orbCorr corr;
-    corr._time  = epoTime;
-    corr._staID = staID;
+    corr._time      = epoTime;
+    corr._updateInt = updateInt;
+    corr._staID     = staID;
 
     string line;
     getline(inStream, line);
@@ -143,7 +149,8 @@ void t_satCodeBias::writeEpoch(ostream* out, const QList<t_satCodeBias>& biasLis
     const t_satCodeBias& satCodeBias = it.next();
     if (!epoTime.valid()) {
       epoTime = satCodeBias._time;
-      *out << "> CODE_BIAS " << epoTime.datestr(' ') << ' ' << epoTime.timestr(1,' ') << "    "
+      *out << "> CODE_BIAS " << epoTime.datestr(' ') << ' ' << epoTime.timestr(1,' ') << " "
+           << satCodeBias._updateInt <<  " "
            << biasList.size() << ' ' << satCodeBias._staID << endl;
     }
     *out << satCodeBias._prn.toString();
@@ -160,16 +167,18 @@ void t_satCodeBias::writeEpoch(ostream* out, const QList<t_satCodeBias>& biasLis
 // 
 ////////////////////////////////////////////////////////////////////////////
 void t_satCodeBias::readEpoch(const string& epoLine, istream& inStream, QList<t_satCodeBias>& biasList) {
-  bncTime epoTime;
-  int     numSat;
-  string  staID;
-  if (t_corrSSR::readEpoLine(epoLine, epoTime, numSat, staID) != t_corrSSR::codeBias) {
+  bncTime      epoTime;
+  unsigned int updateInt;
+  int          numSat;
+  string       staID;
+  if (t_corrSSR::readEpoLine(epoLine, epoTime, updateInt, numSat, staID) != t_corrSSR::codeBias) {
     return;
   }
   for (int ii = 0; ii < numSat; ii++) {
     t_satCodeBias satCodeBias;
-    satCodeBias._time  = epoTime;
-    satCodeBias._staID = staID;
+    satCodeBias._time      = epoTime;
+    satCodeBias._updateInt = updateInt;
+    satCodeBias._staID     = staID;
 
     string line;
     getline(inStream, line);
@@ -202,7 +211,8 @@ void t_satPhaseBias::writeEpoch(ostream* out, const QList<t_satPhaseBias>& biasL
     const t_satPhaseBias& satPhaseBias = it.next();
     if (!epoTime.valid()) {
       epoTime = satPhaseBias._time;
-      *out << "> PHASE_BIAS " << epoTime.datestr(' ') << ' ' << epoTime.timestr(1,' ') << "    "
+      *out << "> PHASE_BIAS " << epoTime.datestr(' ') << ' ' << epoTime.timestr(1,' ') << " "
+           << satPhaseBias._updateInt <<  " "
            << biasList.size() << ' ' << satPhaseBias._staID << endl;
     }
     *out << satPhaseBias._prn.toString() << ' '
@@ -224,16 +234,18 @@ void t_satPhaseBias::writeEpoch(ostream* out, const QList<t_satPhaseBias>& biasL
 // 
 ////////////////////////////////////////////////////////////////////////////
 void t_satPhaseBias::readEpoch(const string& epoLine, istream& inStream, QList<t_satPhaseBias>& biasList) {
-  bncTime epoTime;
-  int     numSat;
-  string  staID;
-  if (t_corrSSR::readEpoLine(epoLine, epoTime, numSat, staID) != t_corrSSR::phaseBias) {
+  bncTime      epoTime;
+  unsigned int updateInt;
+  int          numSat;
+  string       staID;
+  if (t_corrSSR::readEpoLine(epoLine, epoTime, updateInt, numSat, staID) != t_corrSSR::phaseBias) {
     return;
   }
   for (int ii = 0; ii < numSat; ii++) {
     t_satPhaseBias satPhaseBias;
-    satPhaseBias._time  = epoTime;
-    satPhaseBias._staID = staID;
+    satPhaseBias._time      = epoTime;
+    satPhaseBias._updateInt = updateInt;
+    satPhaseBias._staID     = staID;
 
     string line;
     getline(inStream, line);
@@ -263,7 +275,8 @@ void t_vTec::write(ostream* out, const t_vTec& vTec) {
   }
   out->setf(ios::fixed);
   bncTime epoTime = vTec._time;
-  *out << "> VTEC " << epoTime.datestr(' ') << ' ' << epoTime.timestr(1,' ') << "    "
+  *out << "> VTEC " << epoTime.datestr(' ') << ' ' << epoTime.timestr(1,' ') << " "
+       << vTec._updateInt <<  " "
        << vTec._layers.size() << ' ' << vTec._staID << endl;
   for (unsigned ii = 0; ii < vTec._layers.size(); ii++) {
     const t_vTecLayer& layer = vTec._layers[ii];
@@ -280,17 +293,19 @@ void t_vTec::write(ostream* out, const t_vTec& vTec) {
 // 
 ////////////////////////////////////////////////////////////////////////////
 void t_vTec::read(const string& epoLine, istream& inStream, t_vTec& vTec) {
-  bncTime epoTime;
-  int     numLayers;
-  string  staID;
-  if (t_corrSSR::readEpoLine(epoLine, epoTime, numLayers, staID) != t_corrSSR::vTec) {
+  bncTime      epoTime;
+  unsigned int updateInt;
+  int          numLayers;
+  string       staID;
+  if (t_corrSSR::readEpoLine(epoLine, epoTime, updateInt, numLayers, staID) != t_corrSSR::vTec) {
     return;
   }
   if (numLayers <= 0) {
     return;
   }
-  vTec._time  = epoTime;
-  vTec._staID = staID;
+  vTec._time      = epoTime;
+  vTec._updateInt = updateInt;
+  vTec._staID     = staID;
   for (int ii = 0; ii < numLayers; ii++) {
     t_vTecLayer layer;
 
@@ -322,7 +337,8 @@ void t_vTec::read(const string& epoLine, istream& inStream, t_vTec& vTec) {
 // 
 ////////////////////////////////////////////////////////////////////////////
 t_corrSSR::e_type t_corrSSR::readEpoLine(const string& line, bncTime& epoTime, 
-                                         int& numEntries, string& staID) {
+                                         unsigned int& updateInt, int& numEntries,
+                                         string& staID) {
 
   istringstream inLine(line.c_str());
 
@@ -332,7 +348,7 @@ t_corrSSR::e_type t_corrSSR::readEpoLine(const string& line, bncTime& epoTime,
   double sec;
 
   inLine >> epoChar >> typeString 
-         >> year >> month >> day >> hour >> min >> sec >> numEntries >> staID;
+         >> year >> month >> day >> hour >> min >> sec >> updateInt >> numEntries >> staID;
 
   if (epoChar == '>') {
     epoTime.set(year, month, day, hour, min, sec);

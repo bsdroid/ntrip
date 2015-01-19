@@ -46,7 +46,10 @@ t_irc t_eph::getCrd(const bncTime& tt, ColumnVector& xc, ColumnVector& vv, bool 
   if (_checkState == bad) {
     return failure;
   }
-
+  const QVector<int> updateInt = QVector<int>()  << 1 << 2 << 5 << 10 << 15 << 30
+                                                 << 60 << 120 << 240 << 300 << 600
+                                                 << 900 << 1800 << 3600 << 7200
+                                                 << 10800;
   xc.ReSize(4);
   vv.ReSize(3);
   if (position(tt.gpsw(), tt.gpssec(), xc.data(), vv.data()) != success) {
@@ -54,8 +57,10 @@ t_irc t_eph::getCrd(const bncTime& tt, ColumnVector& xc, ColumnVector& vv, bool 
   }
   if (useCorr) {
     if (_orbCorr && _clkCorr) {
-
       double dtO = tt - _orbCorr->_time;
+      if (_orbCorr->_updateInt) {
+        dtO -= (0.5 * updateInt[_orbCorr->_updateInt]);
+      }
       ColumnVector dx(3);
       dx[0] = _orbCorr->_xr[0] + _orbCorr->_dotXr[0] * dtO;
       dx[1] = _orbCorr->_xr[1] + _orbCorr->_dotXr[1] * dtO;
@@ -70,6 +75,9 @@ t_irc t_eph::getCrd(const bncTime& tt, ColumnVector& xc, ColumnVector& vv, bool 
       xc[2] -= dx[2];
 
       double dtC = tt - _clkCorr->_time;
+      if (_clkCorr->_updateInt) {
+        dtC -= (0.5 * updateInt[_clkCorr->_updateInt]);
+      }
       xc[3] += _clkCorr->_dClk + _clkCorr->_dotDClk * dtC + _clkCorr->_dotDotDClk * dtC * dtC;
     }
     else {

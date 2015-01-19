@@ -67,6 +67,7 @@ class t_orbCorr {
   t_prn          _prn;
   unsigned short _iod;
   bncTime        _time;
+  unsigned int   _updateInt;
   char           _system;
   ColumnVector   _xr;
   ColumnVector   _dotXr; 
@@ -81,6 +82,7 @@ class t_clkCorr {
   t_prn          _prn;
   unsigned short _iod;
   bncTime        _time;
+  unsigned int   _updateInt;
   double         _dClk;
   double         _dotDClk;
   double         _dotDotDClk;
@@ -102,6 +104,7 @@ class t_satCodeBias {
   std::string                _staID;
   t_prn                      _prn;
   bncTime                    _time;
+  unsigned int               _updateInt;
   std::vector<t_frqCodeBias> _bias;
 };
 
@@ -131,6 +134,7 @@ class t_satPhaseBias {
   std::string                 _staID;
   t_prn                       _prn;
   bncTime                     _time;
+  unsigned int                _updateInt;
   double                      _yawDeg;
   double                      _yawDegRate;
   std::vector<t_frqPhaseBias> _bias;
@@ -149,6 +153,7 @@ class t_vTec {
   static void read(const std::string& epoLine, std::istream& in, t_vTec& vTec);
   std::string              _staID;
   bncTime                  _time;
+  unsigned int            _updateInt;
   std::vector<t_vTecLayer> _layers;
 };
 
@@ -156,7 +161,7 @@ class t_corrSSR {
  public:
   enum e_type {clkCorr, orbCorr, codeBias, phaseBias, vTec, unknown};
   static e_type readEpoLine(const std::string& line, bncTime& epoTime,
-                            int& numEntries, std::string& staID);
+                            unsigned int& updateInt, int& numEntries, std::string& staID);
 };
 
 #endif
