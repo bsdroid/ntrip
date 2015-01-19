@@ -53,7 +53,7 @@ Q_OBJECT
 
  private:
   void reset();
-  void setEpochTime();
+  void setReferenceTime();
   void sendResults();
   void reopen();
   void checkProviderID();

@@ -190,7 +190,7 @@ t_irc RTCM3coDecoder::Decode(char* buffer, int bufLen, vector<string>& errmsg) {
 
       if (irc == GCOBR_OK || irc == GCOBR_MESSAGEFOLLOWS ) {
 
-        setEpochTime(); // sets _lastTime
+        setReferenceTime(); // sets _lastTime
  
         if (_lastTime.valid()) { 
           reopen();
@@ -462,32 +462,57 @@ void RTCM3coDecoder::checkProviderID() {
 
 //
 ////////////////////////////////////////////////////////////////////////////
-void RTCM3coDecoder::setEpochTime() {
+void RTCM3coDecoder::setReferenceTime() {
 
   _lastTime.reset();
 
-  int epoSecGPS = -1;
-  int epoSecGlo = -1;
+  const QVector<int> updateInt = QVector<int>()  << 1 << 2 << 5 << 10 << 15 << 30
+                                                 << 60 << 120 << 240 << 300 << 600
+                                                 << 900 << 1800 << 3600 << 7200
+                                                 << 10800;
+  double epoSecGPS = -1.0;
+  double epoSecGlo = -1.0;
   if      (_clkOrb.NumberOfSat[CLOCKORBIT_SATGPS] > 0) {
-    epoSecGPS = _clkOrb.EpochTime[CLOCKORBIT_SATGPS];        // 0 .. 604799 s  
+    epoSecGPS = _clkOrb.EpochTime[CLOCKORBIT_SATGPS];        // 0 .. 604799 s
+    if (_clkOrb.UpdateInterval) {
+      epoSecGPS += 0.5 * updateInt[_clkOrb.UpdateInterval];
+    }
   }
   else if (_codeBias.NumberOfSat[CLOCKORBIT_SATGPS] > 0) {
     epoSecGPS = _codeBias.EpochTime[CLOCKORBIT_SATGPS];      // 0 .. 604799 s  
+    if (_codeBias.UpdateInterval) {
+      epoSecGPS += 0.5 * updateInt[_codeBias.UpdateInterval];
+    }
   }
   else if (_phaseBias.NumberOfSat[CLOCKORBIT_SATGPS] > 0) {
     epoSecGPS = _phaseBias.EpochTime[CLOCKORBIT_SATGPS];     // 0 .. 604799 s  
+    if (_phaseBias.UpdateInterval) {
+      epoSecGPS += 0.5 * updateInt[_phaseBias.UpdateInterval];
+    }
   }
   else if (_vTEC.NumLayers > 0) {
     epoSecGPS = _vTEC.EpochTime;                             // 0 .. 604799 s  
+    if (_vTEC.UpdateInterval) {
+      epoSecGPS += 0.5 * updateInt[_vTEC.UpdateInterval];
+    }
   }
   else if (_clkOrb.NumberOfSat[CLOCKORBIT_SATGLONASS] > 0) {
     epoSecGlo = _clkOrb.EpochTime[CLOCKORBIT_SATGLONASS];    // 0 .. 86399 s
+    if (_clkOrb.UpdateInterval) {
+      epoSecGlo += 0.5 * updateInt[_clkOrb.UpdateInterval];
+    }
   }
   else if (_codeBias.NumberOfSat[CLOCKORBIT_SATGLONASS] > 0) {
     epoSecGlo = _codeBias.EpochTime[CLOCKORBIT_SATGLONASS];  // 0 .. 86399 s
+    if (_codeBias.UpdateInterval) {
+      epoSecGlo += 0.5 * updateInt[_codeBias.UpdateInterval];
+    }
   }
   else if (_phaseBias.NumberOfSat[CLOCKORBIT_SATGLONASS] > 0) {
     epoSecGlo = _phaseBias.EpochTime[CLOCKORBIT_SATGLONASS]; // 0 .. 86399 s
+    if (_phaseBias.UpdateInterval) {
+      epoSecGlo += 0.5 * updateInt[_phaseBias.UpdateInterval];
+    }
   }
 
   // Retrieve current time
