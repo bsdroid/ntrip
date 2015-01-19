@@ -357,8 +357,8 @@ void t_reqcAnalyze::setQcObs(const bncTime& epoTime, const ColumnVector& xyzSta,
     // Compute the Multipath Linear Combination
     // ----------------------------------------
     if (frqObs->_codeValid) {
-      t_frequency::type fA;
-      t_frequency::type fB;
+      t_frequency::type fA = t_frequency::dummy;
+      t_frequency::type fB = t_frequency::dummy;
       if      (satObs._prn.system() == 'G') {
         if      (frqObs->_rnxType2ch[0] == '1') {
           fA = t_frequency::G1;
