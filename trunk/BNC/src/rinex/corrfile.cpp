@@ -76,9 +76,10 @@ void t_corrFile::syncRead(const bncTime& tt) {
       }
     }
 
-    int    numEntries;
-    string staID;
-    t_corrSSR::e_type corrType = t_corrSSR::readEpoLine(_lastLine, _lastEpoTime, numEntries, staID);
+    int          numEntries;
+    unsigned int updateInt;
+    string       staID;
+    t_corrSSR::e_type corrType = t_corrSSR::readEpoLine(_lastLine, _lastEpoTime, updateInt, numEntries, staID);
     if      (corrType == t_corrSSR::unknown) {
       throw "t_corrFile: unknown line " + _lastLine;
     }
