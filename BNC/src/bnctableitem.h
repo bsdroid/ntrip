@@ -28,8 +28,7 @@
 #include <QtCore>
 #include <QtGui>
 
-struct Observation;
-struct bncGetThread;
+class bncGetThread;
 
 class bncTableItem : public QObject, public QTableWidgetItem {
   Q_OBJECT
