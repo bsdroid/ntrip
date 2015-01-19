@@ -176,8 +176,8 @@ static int ValueToURA(double val)
 
 static const enum ClockOrbitType corbase[CLOCKORBIT_SATNUM] =
 {
-  COBBASE_GPS, COBBASE_GLONASS, COBBASE_GALILEO, COBBASE_QZSS, COBBASE_SBAS,
-  COBBASE_BDS
+  (int) COBBASE_GPS, (int) COBBASE_GLONASS, (int) COBBASE_GALILEO,
+  (int) COBBASE_QZSS, (int) COBBASE_SBAS, (int) COBBASE_BDS
 };
 static const enum COR_OFFSETS satoffset[CLOCKORBIT_SATNUM+1] =
 {
