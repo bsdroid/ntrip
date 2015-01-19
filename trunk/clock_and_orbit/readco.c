@@ -3,6 +3,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
+#include <unistd.h>
 #include <math.h>
 
 struct ClockOrbit coIn;
@@ -17,20 +18,20 @@ int messageTypeCo[6] = { 1060, 1066, 1243, 1249, 1255, 1261 };
 int messageTypeCb[6] = { 1059, 1065, 1242, 1248, 1254, 1260 };
 
 void printClockOrbit(const char* filename, struct ClockOrbit* clockOrb,
-        char* flag, int ind, char satSys, int offsetGnss);
+        const char* flag, int ind, char satSys, int offsetGnss);
 void printClockOrbitDiff(const char* filename, struct ClockOrbit* clockOrb1,
-        struct ClockOrbit* clockOrb2, char* flag, int ind, char satSys, int offsetGnss);
+        struct ClockOrbit* clockOrb2, const char* flag, int ind, char satSys, int offsetGnss);
 void printCodeBias(const char* filename, struct CodeBias* codeBias,
-        char* flag,int ind, char satSys, int offsetGnss);
+        const char* flag,int ind, char satSys, int offsetGnss);
 void printCodeBiasDiff(const char* filename, struct CodeBias* codeBias1,
-        struct CodeBias* codeBias2, char* flag, int ind, char satSys,
+        struct CodeBias* codeBias2, const char* flag, int ind, char satSys,
         int offsetGnss);
 
 int main(void) {
-    enum COR_SATSYSTEM sys;
-    char* inputFile = "ssr1_cocb_data/CLK801330.14C";
+    SATSYS sys;
+    const char * inputFile = "ssr1_cocb_data/CLK801330.14C";
     for (sys = GPS; sys <= BDS; ++sys) {
-        char *outFilenameRaw, *outFilenameDbg;
+        const char *outFilenameRaw, *outFilenameDbg;
         enum COR_SATSYSTEM CLOCKORBIT_SATGNSS = sys;
         enum COR_OFFSETS CLOCKORBIT_OFFSETGNSS;
         lasttow_co = -1.0;
@@ -83,9 +84,9 @@ int main(void) {
             int MT = 0, messageType = 0, ui = 0, week = 0, prn = 0, iode = 0, ncb = 0;
             double cbValue[3] = { 0.0 }, clock_a0 = 0.0, clock_a1 = 0.0, clock_a2 = 0.0, d_radial = 0.0;
             double d_along = 0.0, d_outofplane = 0.0, dd_radial = 0.0, dd_along = 0.0, dd_outofplane = 0.0;
-            enum CodeType cbType[3] = { 0 };
+            int cbType[3] = { 0 };
             static double tow_co, tow_cb;
-            int num = sscanf(buffer, "%d ", &messageType);
+            sscanf(buffer, "%d ", &messageType);
             if (messageType == messageTypeCo[GPS]) {
                 sscanf(buffer,
                         "%d %d %d %lf %c%d %d %lf %lf %lf %lf %lf %lf %lf %lf %lf\n",
@@ -269,13 +270,13 @@ int main(void) {
             }
         }
         free(buffer);
-        close(asciiSsr);
+        fclose(asciiSsr);
     }
     return 0;
 }
 
 void printClockOrbit(const char* filename, struct ClockOrbit* clockOrb,
-        char* flag, int ind, char satSys, int offsetGnss) {
+        const char* flag, int ind, char satSys, int offsetGnss) {
     int i = 0;
     FILE *filestream = fopen(filename, "ab+");
     if (!clockOrb->NumberOfSat[ind])
@@ -305,7 +306,7 @@ void printClockOrbit(const char* filename, struct ClockOrbit* clockOrb,
 }
 
 void printClockOrbitDiff(const char* filename, struct ClockOrbit* clockOrb1,
-        struct ClockOrbit* clockOrb2, char* flag, int ind, char satSys,
+        struct ClockOrbit* clockOrb2, const char* flag, int ind, char satSys,
         int offsetGnss) {
     int i = 0;
     FILE *filestream = fopen(filename, "ab+");
@@ -348,7 +349,7 @@ void printClockOrbitDiff(const char* filename, struct ClockOrbit* clockOrb1,
     fclose(filestream);
 }
 
-void printCodeBias(const char* filename, struct CodeBias* codeBias, char* flag,
+void printCodeBias(const char* filename, struct CodeBias* codeBias, const char* flag,
         int ind, char satSys, int offsetGnss) {
     int i = 0;
     FILE *filestream = fopen(filename, "ab+");
@@ -374,7 +375,7 @@ void printCodeBias(const char* filename, struct CodeBias* codeBias, char* flag,
 }
 
 void printCodeBiasDiff(const char* filename, struct CodeBias* codeBias1,
-        struct CodeBias* codeBias2, char* flag, int ind, char satSys,
+        struct CodeBias* codeBias2, const char* flag, int ind, char satSys,
         int offsetGnss) {
     int i = 0;
     FILE *filestream = fopen(filename, "ab+");
