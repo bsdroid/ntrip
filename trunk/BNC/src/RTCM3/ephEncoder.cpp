@@ -307,7 +307,7 @@ int t_ephEncoder::RTCM3(const t_ephGal& eph, unsigned char *buffer) {
   ////  eph._TOEsec = 0.9999E9;
   GALILEOADDBITS(20, eph._TOEsec)
 
-  GALILEOADDBITS(inav ? 1 : 3, 0)
+  GALILEOADDBITS((inav ? 1 : 3), 0)
 
   startbuffer[0]=0xD3;
   startbuffer[1]=(size >> 8);
