@@ -63,10 +63,15 @@ bncRtnetUploadCaster::bncRtnetUploadCaster(const QString& mountpoint,
 
   bncSettings settings;
   QString     intr  = settings.value("uploadIntr").toString();
-
+  QStringList help  = settings.value("combineStreams").toStringList();
+  if (help.size() > 1) { // combination stream upload
+    _samplRtcmClkCorr  = settings.value("cmbSampl").toInt();
+  } else { // single stream upload or sp3 file generation
+    _samplRtcmClkCorr  = 5; // default
+  }
   _samplRtcmEphCorr  = settings.value("uploadSamplRtcmEphCorr").toDouble();
-  int samplClkRnx = settings.value("uploadSamplClkRnx").toInt();
-  int samplSp3    = settings.value("uploadSamplSp3").toInt() * 60;
+  int samplClkRnx    = settings.value("uploadSamplClkRnx").toInt();
+  int samplSp3       = settings.value("uploadSamplSp3").toInt() * 60;
 
   if (_samplRtcmEphCorr == 0.0) {
     _usedEph = 0;
@@ -304,32 +309,12 @@ void bncRtnetUploadCaster::decodeRtnetStream(char* buffer, int bufLen) {
   // -----------------------
   int clkUpdInd = 2;         // 5 sec
   int ephUpdInd = clkUpdInd; // default
-  if      (_samplRtcmEphCorr ==  10.0) {
-    ephUpdInd = 3;
+
+  if (_samplRtcmEphCorr != 5) {
+    ephUpdInd = determineUpdateInd(_samplRtcmEphCorr);
   }
-  else if (_samplRtcmEphCorr ==  15.0) {
-    ephUpdInd = 4;
-  }
-  else if (_samplRtcmEphCorr ==  30.0) {
-    ephUpdInd = 5;
-  }
-  else if (_samplRtcmEphCorr ==  60.0) {
-    ephUpdInd = 6;
-  }
-  else if (_samplRtcmEphCorr == 120.0) {
-    ephUpdInd = 7;
-  }
-  else if (_samplRtcmEphCorr == 240.0) {
-    ephUpdInd = 8;
-  }
-  else if (_samplRtcmEphCorr == 300.0) {
-    ephUpdInd = 9;
-  }
-  else if (_samplRtcmEphCorr == 600.0) {
-    ephUpdInd = 10;
-  }
-  else if (_samplRtcmEphCorr == 900.0) {
-    ephUpdInd = 11;
+  if (_samplRtcmClkCorr != 5) {
+    clkUpdInd = determineUpdateInd(_samplRtcmClkCorr);
   }
 
   co.UpdateInterval   = clkUpdInd;
@@ -789,3 +774,46 @@ void bncRtnetUploadCaster::crdTrafo(int GPSWeek, ColumnVector& xyz,
   xyz = sc * rMat * xyz + dx;
 }
 
+int bncRtnetUploadCaster::determineUpdateInd(double samplingRate) {
+
+  if (samplingRate == 10.0) {
+    return 3;
+  }
+  else if (samplingRate == 15.0) {
+    return 4;
+  }
+  else if (samplingRate == 30.0) {
+    return 5;
+  }
+  else if (samplingRate == 60.0) {
+    return 6;
+  }
+  else if (samplingRate == 120.0) {
+    return 7;
+  }
+  else if (samplingRate == 240.0) {
+    return 8;
+  }
+  else if (samplingRate == 300.0) {
+    return 9;
+  }
+  else if (samplingRate == 600.0) {
+    return 10;
+  }
+  else if (samplingRate == 900.0) {
+    return 11;
+  }
+  else if (samplingRate == 1800.0) {
+    return 12;
+  }
+  else if (samplingRate == 3600.0) {
+    return 13;
+  }
+  else if (samplingRate == 7200.0) {
+    return 14;
+  }
+  else if (samplingRate == 10800.0) {
+    return 15;
+  }
+  return 2;// default
+}
