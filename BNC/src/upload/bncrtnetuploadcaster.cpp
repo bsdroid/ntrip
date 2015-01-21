@@ -63,13 +63,13 @@ bncRtnetUploadCaster::bncRtnetUploadCaster(const QString& mountpoint,
 
   bncSettings settings;
   QString     intr  = settings.value("uploadIntr").toString();
-  QStringList help  = settings.value("combineStreams").toStringList();
-  if (help.size() > 1) { // combination stream upload
+  QStringList hlp  = settings.value("combineStreams").toStringList();
+  _samplRtcmEphCorr = settings.value("uploadSamplRtcmEphCorr").toDouble();
+  if (hlp.size() > 1) { // combination stream upload
     _samplRtcmClkCorr  = settings.value("cmbSampl").toInt();
   } else { // single stream upload or sp3 file generation
     _samplRtcmClkCorr  = 5; // default
   }
-  _samplRtcmEphCorr  = settings.value("uploadSamplRtcmEphCorr").toDouble();
   int samplClkRnx    = settings.value("uploadSamplClkRnx").toInt();
   int samplSp3       = settings.value("uploadSamplSp3").toInt() * 60;
 
@@ -310,11 +310,14 @@ void bncRtnetUploadCaster::decodeRtnetStream(char* buffer, int bufLen) {
   int clkUpdInd = 2;         // 5 sec
   int ephUpdInd = clkUpdInd; // default
 
-  if (_samplRtcmEphCorr != 5) {
-    ephUpdInd = determineUpdateInd(_samplRtcmEphCorr);
+  if (_samplRtcmClkCorr > 5.0 && _samplRtcmEphCorr <= 5.0) { // combined orb and clock
+    ephUpdInd = determineUpdateInd(_samplRtcmClkCorr);
   }
-  if (_samplRtcmClkCorr != 5) {
+  if (_samplRtcmClkCorr > 5.0) {
     clkUpdInd = determineUpdateInd(_samplRtcmClkCorr);
+  }
+  if (_samplRtcmEphCorr > 5.0) {
+    ephUpdInd = determineUpdateInd(_samplRtcmEphCorr);
   }
 
   co.UpdateInterval   = clkUpdInd;
