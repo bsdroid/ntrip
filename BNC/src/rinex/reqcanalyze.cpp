@@ -359,64 +359,20 @@ void t_reqcAnalyze::setQcObs(const bncTime& epoTime, const ColumnVector& xyzSta,
     if (frqObs->_codeValid) {
       t_frequency::type fA = t_frequency::dummy;
       t_frequency::type fB = t_frequency::dummy;
-      if      (satObs._prn.system() == 'G') {
-        if      (frqObs->_rnxType2ch[0] == '1') {
-          fA = t_frequency::G1;
-          fB = t_frequency::G2;
+      char sys             = satObs._prn.system();
+      std::string frqType1, frqType2;
+      if (_signalTypes.find(sys) != _signalTypes.end()) {
+        frqType1.push_back(sys);
+        frqType1.push_back(_signalTypes[sys][0][0].toAscii());
+        frqType2.push_back(sys);
+        frqType2.push_back(_signalTypes[sys][1][0].toAscii());
+        if      (frqObs->_rnxType2ch[0] == frqType1[1]) {
+          fA = t_frequency::toInt(frqType1);
+          fB = t_frequency::toInt(frqType2);
         }
-        else if (frqObs->_rnxType2ch[0] == '2') {
-          fA = t_frequency::G2;
-          fB = t_frequency::G1;
-        }
-      }
-      else if (satObs._prn.system() == 'R') {
-        if      (frqObs->_rnxType2ch[0] == '1') {
-          fA = t_frequency::R1;
-          fB = t_frequency::R2;
-        }
-        else if (frqObs->_rnxType2ch[0] == '2') {
-          fA = t_frequency::R2;
-          fB = t_frequency::R1;
-        }
-      }
-      else if (satObs._prn.system() == 'E') {
-        if      (frqObs->_rnxType2ch[0] == '1') {
-          fA = t_frequency::E1;
-          fB = t_frequency::E5;
-        }
-        else if (frqObs->_rnxType2ch[0] == '5') {
-          fA = t_frequency::E5;
-          fB = t_frequency::E1;
-        }
-      }
-      else if (satObs._prn.system() == 'J') {
-        if      (frqObs->_rnxType2ch[0] == '1') {
-          fA = t_frequency::J1;
-          fB = t_frequency::J2;
-        }
-        else if (frqObs->_rnxType2ch[0] == '2') {
-          fA = t_frequency::J2;
-          fB = t_frequency::J1;
-        }
-      }
-      else if (satObs._prn.system() == 'S') {
-        if      (frqObs->_rnxType2ch[0] == '1') {
-          fA = t_frequency::S1;
-          fB = t_frequency::S5;
-        }
-        else if (frqObs->_rnxType2ch[0] == '5') {
-          fA = t_frequency::S5;
-          fB = t_frequency::S1;
-        }
-      }
-      else if (satObs._prn.system() == 'C') {
-        if      (frqObs->_rnxType2ch[0] == '1') {
-          fA = t_frequency::C1;
-          fB = t_frequency::C7;
-        }
-        else if (frqObs->_rnxType2ch[0] == '7') {
-          fA = t_frequency::C7;
-          fB = t_frequency::C1;
+        else if (frqObs->_rnxType2ch[0] == frqType2[1]) {
+          fA = t_frequency::toInt(frqType2);
+          fB = t_frequency::toInt(frqType1);
         }
       }
       if (fA != t_frequency::dummy && fB != t_frequency::dummy) {

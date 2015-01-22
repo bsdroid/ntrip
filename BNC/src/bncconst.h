@@ -70,6 +70,28 @@ class t_frequency {
     else if (tt == C6) return "C6";
     return std::string();
   }
+  static enum type toInt(std::string s) {
+    if      (s == "G1") return G1;
+    else if (s == "G2") return G2;
+    else if (s == "G5") return G5;
+    else if (s == "R1") return R1;
+    else if (s == "R2") return R2;
+    else if (s == "E1") return E1;
+    else if (s == "E5") return E5;
+    else if (s == "E6") return E6;
+    else if (s == "E7") return E7;
+    else if (s == "E8") return E8;
+    else if (s == "J1") return J1;
+    else if (s == "J2") return J2;
+    else if (s == "J5") return J5;
+    else if (s == "J6") return J6;
+    else if (s == "S1") return S1;
+    else if (s == "S5") return S5;
+    else if (s == "C1") return C1;
+    else if (s == "C7") return C7;
+    else if (s == "C6") return C6;
+    return type();
+  }
 };
 
 class t_CST {
