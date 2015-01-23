@@ -188,6 +188,7 @@ Q_OBJECT
   QStringList                   _navFileNames;
   QString                       _reqcPlotSignals;
   QMap<char, QVector<QString> > _signalTypes;
+  QStringList                   _defaultSignalTypes;
   QVector<t_eph*>               _ephs;
   t_rnxObsFile::t_rnxEpo*       _currEpo;
   t_qcFile                      _qcFile;
