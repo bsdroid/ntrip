@@ -237,7 +237,7 @@ void RTCM3coDecoder::sendResults() {
 
       t_orbCorr orbCorr;
       orbCorr._prn.set(sysCh, _clkOrb.Sat[ii].ID);
-      orbCorr._staID     = _staID.toAscii().data();
+      orbCorr._staID     = _staID.toStdString();
       orbCorr._iod       = _clkOrb.Sat[ii].IOD;
       orbCorr._time      = _lastTime;
       orbCorr._updateInt = _clkOrb.UpdateInterval;
@@ -263,7 +263,7 @@ void RTCM3coDecoder::sendResults() {
 
       t_clkCorr clkCorr;
       clkCorr._prn.set(sysCh, _clkOrb.Sat[ii].ID);
-      clkCorr._staID      = _staID.toAscii().data();
+      clkCorr._staID      = _staID.toStdString();
       clkCorr._time       = _lastTime;
       clkCorr._updateInt  = _clkOrb.UpdateInterval;
       clkCorr._dClk       = _clkOrb.Sat[ii].Clock.DeltaA0 / t_CST::c;
@@ -313,7 +313,7 @@ void RTCM3coDecoder::sendResults() {
     }
     t_satCodeBias satCodeBias;
     satCodeBias._prn.set(sysCh, _codeBias.Sat[ii].ID);
-    satCodeBias._staID     = _staID.toAscii().data();
+    satCodeBias._staID     = _staID.toStdString();
     satCodeBias._time      = _lastTime;
     satCodeBias._updateInt = _codeBias.UpdateInterval;
     for (unsigned jj = 0; jj < _codeBias.Sat[ii].NumberOfCodeBiases; jj++) {
@@ -343,7 +343,7 @@ void RTCM3coDecoder::sendResults() {
     }
     t_satPhaseBias satPhaseBias;
     satPhaseBias._prn.set(sysCh, _phaseBias.Sat[ii].ID);
-    satPhaseBias._staID      = _staID.toAscii().data();
+    satPhaseBias._staID      = _staID.toStdString();
     satPhaseBias._time       = _lastTime;
     satPhaseBias._updateInt  = _phaseBias.UpdateInterval;
     satPhaseBias._yawDeg     = _phaseBias.Sat[ii].YawAngle * 180.0 / M_PI;
@@ -368,7 +368,7 @@ void RTCM3coDecoder::sendResults() {
   if (_vTEC.NumLayers > 0) {
     _vTecMap[_lastTime]._time  = _lastTime;
     _vTecMap[_lastTime]._updateInt =  _vTEC.UpdateInterval;
-    _vTecMap[_lastTime]._staID = _staID.toAscii().data();
+    _vTecMap[_lastTime]._staID = _staID.toStdString();
     for (unsigned ii = 0; ii < _vTEC.NumLayers; ii++) {
       const VTEC::IonoLayers& ionoLayer = _vTEC.Layers[ii];
       t_vTecLayer layer;
