@@ -4,7 +4,7 @@
 
 #define BNCVERSION "2.12"
 
-#define BNCPGMNAME "BNC BNCVERSION"
+#define BNCPGMNAME "BNC " BNCVERSION
 
 #if   defined(Q_OS_LINUX)
 #  define BNC_OS "LINUX"
