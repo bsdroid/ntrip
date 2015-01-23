@@ -69,7 +69,10 @@ t_reqcAnalyze::t_reqcAnalyze(QObject* parent) : QThread(parent) {
   _obsFileNames    = settings.value("reqcObsFile").toString().split(",", QString::SkipEmptyParts);
   _navFileNames    = settings.value("reqcNavFile").toString().split(",", QString::SkipEmptyParts);
   _reqcPlotSignals = settings.value("reqcSkyPlotSignals").toString();
-  if (_reqcPlotSignals.isEmpty()) {_reqcPlotSignals = "G:1&2 R:1&2 J:1&2 E:1&5 S:1&5 C:1&7";}
+  _defaultSignalTypes << "G:1&2" << "R:1&2" << "J:1&2" << "E:1&5" << "S:1&5" << "C:1&7";
+  if (_reqcPlotSignals.isEmpty()) {
+    _reqcPlotSignals = _defaultSignalTypes.join(" ");
+  }
   analyzePlotSignals(_signalTypes);
 
   connect(this, SIGNAL(dspSkyPlot(const QString&, const QString&, QVector<t_polarPoint*>*,
@@ -145,12 +148,30 @@ void t_reqcAnalyze::analyzePlotSignals(QMap<char, QVector<QString> >& signalType
   QStringList signalsOpt = _reqcPlotSignals.split(" ", QString::SkipEmptyParts);
 
   for (int ii = 0; ii < signalsOpt.size(); ii++) {
-    QStringList hlp = signalsOpt.at(ii).split(QRegExp("[:&]"), QString::SkipEmptyParts);
-    if (hlp.size() > 1 && hlp[0].length() == 1) {
-      char system = hlp[0].toAscii().constData()[0];
-      signalTypes[system].append(hlp[1]);
-      if (hlp.size() > 2) {
-        signalTypes[system].append(hlp[2]);
+    QStringList input = signalsOpt.at(ii).split(QRegExp("[:&]"), QString::SkipEmptyParts);
+    if (input.size() > 1 && input[0].length() == 1) {
+      char system = input[0].toAscii().constData()[0];
+      QStringList sysValid       = _defaultSignalTypes.filter(QString(system));
+      QStringList defaultSignals = sysValid.at(0).split(QRegExp("[:&]"));
+      if (sysValid.isEmpty()) {continue;}
+      if (input[1][0].isDigit()) {
+        signalTypes[system].append(input[1]);
+      }
+      else {
+        signalTypes[system].append(defaultSignals[1]);
+      }
+      if (input.size() > 2) {
+        if (input[2][0].isDigit()) {
+          signalTypes[system].append(input[2]);
+        }
+        else {
+          signalTypes[system].append(defaultSignals[2]);
+        }
+      } else {
+        signalTypes[system].append(defaultSignals[2]);
+        if (signalTypes[system][0] == signalTypes[system][1]) {
+          signalTypes[system][0] = defaultSignals[1];
+        }
       }
     }
   }
@@ -517,10 +538,10 @@ void t_reqcAnalyze::preparePlotData(const t_rnxObsFile* obsFile) {
 
   for(QMap<char, QVector<QString> >::iterator it = _signalTypes.begin();
       it != _signalTypes.end(); it++) {
-    mp1Title += QString(it.key()) + ":" + it.value()[0] + " ";
-    sn1Title += QString(it.key()) + ":" + it.value()[0] + " ";
-    mp2Title += QString(it.key()) + ":" + it.value()[1] + " ";
-    sn2Title += QString(it.key()) + ":" + it.value()[1] + " ";
+      mp1Title += QString(it.key()) + ":" + it.value()[0] + " ";
+      sn1Title += QString(it.key()) + ":" + it.value()[0] + " ";
+      mp2Title += QString(it.key()) + ":" + it.value()[1] + " ";
+      sn2Title += QString(it.key()) + ":" + it.value()[1] + " ";
   }
 
   QVector<t_polarPoint*>* dataMP1  = new QVector<t_polarPoint*>;
