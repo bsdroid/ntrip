@@ -156,7 +156,6 @@ t_irc bncEphUser::putNewEph(t_eph* eph, bool check) {
     return success;
   }
   else {
-    delete newEph;
     return failure;
   }
 }
