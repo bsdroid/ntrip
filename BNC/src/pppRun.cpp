@@ -127,7 +127,7 @@ t_pppRun::t_pppRun(const t_pppOptions* opt) {
   }
   else {
     if (logFileSkl.indexOf("${STATION}") == -1) {
-      logFileSkl = roverName + "_" + logFileSkl;
+      logFileSkl = logFileSkl + "_" + roverName;
     }
     else {
       logFileSkl.replace("${STATION}", roverName);
