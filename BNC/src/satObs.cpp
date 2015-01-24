@@ -153,7 +153,7 @@ void t_satCodeBias::writeEpoch(ostream* out, const QList<t_satCodeBias>& biasLis
            << satCodeBias._updateInt <<  " "
            << biasList.size() << ' ' << satCodeBias._staID << endl;
     }
-    *out << satCodeBias._prn.toString();
+    *out << satCodeBias._prn.toString() << "   " << setw(2) << satCodeBias._bias.size();
     for (unsigned ii = 0; ii < satCodeBias._bias.size(); ii++) {
       const t_frqCodeBias& frqCodeBias = satCodeBias._bias[ii];
       *out << "   " << frqCodeBias._rnxType2ch << ' '
@@ -184,7 +184,8 @@ void t_satCodeBias::readEpoch(const string& epoLine, istream& inStream, QList<t_
     getline(inStream, line);
     istringstream in(line.c_str());
     
-    in >> satCodeBias._prn;
+    int numBias;
+    in >> satCodeBias._prn >> numBias;
 
     while (in.good()) {
       t_frqCodeBias frqCodeBias;
@@ -217,7 +218,8 @@ void t_satPhaseBias::writeEpoch(ostream* out, const QList<t_satPhaseBias>& biasL
     }
     *out << satPhaseBias._prn.toString() << ' '
          << setw(12) << setprecision(8) << satPhaseBias._yawDeg << ' '
-         << setw(12) << setprecision(8) << satPhaseBias._yawDegRate << "    ";
+         << setw(12) << setprecision(8) << satPhaseBias._yawDegRate << "   "
+         << setw(2) << satPhaseBias._bias.size();
     for (unsigned ii = 0; ii < satPhaseBias._bias.size(); ii++) {
       const t_frqPhaseBias& frqPhaseBias = satPhaseBias._bias[ii];
       *out << "   " << frqPhaseBias._rnxType2ch << ' '
@@ -251,7 +253,8 @@ void t_satPhaseBias::readEpoch(const string& epoLine, istream& inStream, QList<t
     getline(inStream, line);
     istringstream in(line.c_str());
     
-    in >> satPhaseBias._prn >> satPhaseBias._yawDeg >> satPhaseBias._yawDegRate;
+    int numBias;
+    in >> satPhaseBias._prn >> satPhaseBias._yawDeg >> satPhaseBias._yawDegRate >> numBias;
 
     while (in.good()) {
       t_frqPhaseBias frqPhaseBias;
