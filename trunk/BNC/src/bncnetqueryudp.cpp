@@ -135,7 +135,7 @@ void bncNetQueryUdp::startRequest(const QUrl& url, const QByteArray& gga) {
     QByteArray reqStr = "GET " + _url.path().toAscii() + " HTTP/1.1\r\n"
                       + "Host: " + _url.host().toAscii() + "\r\n"
                       + "Ntrip-Version: Ntrip/2.0\r\n"
-                      + "User-Agent: NTRIP BNC/" BNCVERSION "\r\n";
+                      + "User-Agent: NTRIP BNC/" BNCVERSION " (" BNC_OS ")\r\n";
     if (!gga.isEmpty()) {
       reqStr += "Ntrip-GGA: " + gga + "\r\n";
     }
