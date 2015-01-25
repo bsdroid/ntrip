@@ -147,7 +147,7 @@ void bncNetQueryRtp::startRequest(const QUrl& url, const QByteArray& gga) {
            + "CSeq: " + QString("%1").arg(++_CSeq).toAscii() + "\r\n"
            + "Ntrip-Version: Ntrip/2.0\r\n"
            + "Ntrip-Component: Ntripclient\r\n"
-           + "User-Agent: NTRIP BNC/" BNCVERSION "\r\n"
+           + "User-Agent: NTRIP BNC/" BNCVERSION " (" BNC_OS ")\r\n"
            + "Transport: RTP/GNSS;unicast;client_port=" + clientPort + "\r\n"
            + userAndPwd;
     if (!gga.isEmpty()) {
