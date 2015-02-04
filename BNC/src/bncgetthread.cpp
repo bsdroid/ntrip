@@ -647,7 +647,6 @@ void bncGetThread::scanRTCM() {
   if ( Qt::CheckState(settings.value("scanRTCM").toInt()) == Qt::Checked ) {
 
     if ( _miscMount == _staID || _miscMount == "ALL" ) {
-
       // RTCM message types
       // ------------------
       for (int ii = 0; ii < decoder()->_typeList.size(); ii++) {
@@ -662,16 +661,44 @@ void bncGetThread::scanRTCM() {
         QVector<QString>& rnxTypes = _rnxTypes[obs._prn.system()];
         bool allFound = true;
         for (unsigned iFrq = 0; iFrq < obs._obs.size(); iFrq++) {
-          QString rnxStr(obs._obs[iFrq]->_rnxType2ch.c_str());
-          if (rnxTypes.indexOf(rnxStr) == -1) {
-            allFound = false;
-            rnxTypes << rnxStr;
+          if (obs._obs[iFrq]->_codeValid) {
+            QString rnxStr('C');
+            rnxStr.append(obs._obs[iFrq]->_rnxType2ch.c_str());
+            if (rnxTypes.indexOf(rnxStr) == -1) {
+              rnxTypes.push_back(rnxStr);
+              allFound = false;
+            }
+          }
+          if (obs._obs[iFrq]->_phaseValid) {
+            QString rnxStr('L');
+            rnxStr.append(obs._obs[iFrq]->_rnxType2ch.c_str());
+            if (rnxTypes.indexOf(rnxStr) == -1) {
+              rnxTypes.push_back(rnxStr);
+              allFound = false;
+            }
+          }
+          if (obs._obs[iFrq]->_dopplerValid){
+            QString rnxStr('D');
+            rnxStr.append(obs._obs[iFrq]->_rnxType2ch.c_str());
+            if (rnxTypes.indexOf(rnxStr) == -1) {
+              rnxTypes.push_back(rnxStr);
+              allFound = false;
+            }
+          }
+          if (obs._obs[iFrq]->_snrValid){
+            QString rnxStr('S');
+            rnxStr.append(obs._obs[iFrq]->_rnxType2ch.c_str());
+            if (rnxTypes.indexOf(rnxStr) == -1) {
+              rnxTypes.push_back(rnxStr);
+              allFound = false;
+            }
           }
         }
         if (!allFound) {
           QString msg; 
           QTextStream str(&msg);
-          str << obs._prn.system() << "    " << rnxTypes.size() << "  ";
+          QString s;
+          str << obs._prn.system() << "    " << s.sprintf("%2d", rnxTypes.size()) << "  ";
           for (int iType = 0; iType < rnxTypes.size(); iType++) {
             str << " " << rnxTypes[iType];
           }
