@@ -664,6 +664,11 @@ void bncGetThread::scanRTCM() {
           if (obs._obs[iFrq]->_codeValid) {
             QString rnxStr('C');
             rnxStr.append(obs._obs[iFrq]->_rnxType2ch.c_str());
+            if (_format.indexOf("RTCM_2") != -1 ||
+                _format.indexOf("RTCM2") != -1 ||
+                _format.indexOf("RTCM 2") != -1 ) {
+              rnxStr = t_rnxObsFile::type3to2(obs._prn.system(), rnxStr);
+            }
             if (rnxTypes.indexOf(rnxStr) == -1) {
               rnxTypes.push_back(rnxStr);
               allFound = false;
@@ -672,6 +677,11 @@ void bncGetThread::scanRTCM() {
           if (obs._obs[iFrq]->_phaseValid) {
             QString rnxStr('L');
             rnxStr.append(obs._obs[iFrq]->_rnxType2ch.c_str());
+            if (_format.indexOf("RTCM_2") != -1 ||
+                _format.indexOf("RTCM2") != -1 ||
+                _format.indexOf("RTCM 2") != -1 ) {
+              rnxStr = t_rnxObsFile::type3to2(obs._prn.system(), rnxStr);
+            }
             if (rnxTypes.indexOf(rnxStr) == -1) {
               rnxTypes.push_back(rnxStr);
               allFound = false;
@@ -680,6 +690,11 @@ void bncGetThread::scanRTCM() {
           if (obs._obs[iFrq]->_dopplerValid){
             QString rnxStr('D');
             rnxStr.append(obs._obs[iFrq]->_rnxType2ch.c_str());
+            if (_format.indexOf("RTCM_2") != -1 ||
+                _format.indexOf("RTCM2") != -1 ||
+                _format.indexOf("RTCM 2") != -1 ) {
+              rnxStr = t_rnxObsFile::type3to2(obs._prn.system(), rnxStr);
+            }
             if (rnxTypes.indexOf(rnxStr) == -1) {
               rnxTypes.push_back(rnxStr);
               allFound = false;
@@ -688,6 +703,11 @@ void bncGetThread::scanRTCM() {
           if (obs._obs[iFrq]->_snrValid){
             QString rnxStr('S');
             rnxStr.append(obs._obs[iFrq]->_rnxType2ch.c_str());
+            if (_format.indexOf("RTCM_2") != -1 ||
+                _format.indexOf("RTCM2") != -1 ||
+                _format.indexOf("RTCM 2") != -1 ) {
+              rnxStr = t_rnxObsFile::type3to2(obs._prn.system(), rnxStr);
+            }
             if (rnxTypes.indexOf(rnxStr) == -1) {
               rnxTypes.push_back(rnxStr);
               allFound = false;

@@ -35,6 +35,7 @@
 #include "bnctime.h"
 #include "bncrawfile.h"
 #include "satObs.h"
+#include "rinex/rnxobsfile.h"
 
 class GPSDecoder;
 class QextSerialPort;
