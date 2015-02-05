@@ -540,6 +540,9 @@ S    8 C1  L1  D1  S1  C5  L5  D5  S5                       SYS / # / OBS TYPES
 </pre>
 
 <p>
+Please note that RTCM Version 3 messages 1084 for GLONASS observations don't contain the channel numbers. Hence these messages can only be converted to RINEX when you pull in addition another stream which includes them. It could be a stream carrying 1087 GLONASS observation messages or 1020 GLONASS ephemeris messages.
+</p>
+<p>
 The screenshot below shows an example setup of BNC when converting streams to RINEX. Streams are coming from various NTRIP Broadcasters as well as from a serial communication link. Specifying a decoder string 'ZERO' means to not convert the affected stream contents but save its contents as received.
 </p>
 <p><img src="IMG/screenshot16.png"/></p>
