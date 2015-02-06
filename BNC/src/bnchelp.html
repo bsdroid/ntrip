@@ -540,7 +540,7 @@ S    8 C1  L1  D1  S1  C5  L5  D5  S5                       SYS / # / OBS TYPES
 </pre>
 
 <p>
-Please note that RTCM Version 3 messages 1084 for GLONASS observations don't contain the channel numbers. Hence these messages can only be converted to RINEX when you pull in addition another stream which includes them. It could be a stream carrying 1087 GLONASS observation messages or 1020 GLONASS ephemeris messages.
+Please note that RTCM Version 3 messages 1084 for GLONASS observations don't contain the channel numbers. However, these messages can only be converted to RINEX when you add messages which include the channel numbers. This could be done though an additional stream carrying 1087 GLONASS observation messages or an additional stream carrying 1020 GLONASS ephemeris messages. You could also consider setting up a streams which contains both, the 1084 and the 1020 messages.
 </p>
 <p>
 The screenshot below shows an example setup of BNC when converting streams to RINEX. Streams are coming from various NTRIP Broadcasters as well as from a serial communication link. Specifying a decoder string 'ZERO' means to not convert the affected stream contents but save its contents as received.
@@ -1541,7 +1541,7 @@ Note that in RTCM Version 2 the message types 18 and 19 carry only the observabl
 </p>
 
 <p>
-Please note further that RTCM Version 3 message types 1084 for GLONASS don't contain GLONASS channel numbers. Hence observations from these messages can only be decoded when you pull in addition another stream which includes the channels. It could be a stream carrying 1087 GLONASS observation messages or 1020 GLONASS ephemeris messages.
+Please note further that RTCM Version 3 message types 1084 for GLONASS don't contain GLONASS channel numbers. Observations from these messages can only be decoded when you include 1020 GLONASS ephemeris messages to your stream which contain the channels. You could also consider adding a second stream carrying 1087 GLONASS observation messages or 1020 GLONASS ephemeris messages as both contain the GLONASS channel numbers.
 </p>
 <p>
 
