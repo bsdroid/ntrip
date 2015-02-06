@@ -1539,6 +1539,10 @@ In case of RTCM Version 3 MSM streams the output includes
 <p>
 Note that in RTCM Version 2 the message types 18 and 19 carry only the observables of one frequency. Hence it needs two type 18 and 19 messages per epoch to transport the observations from dual frequency receivers.
 </p>
+
+<p>
+Please note further that RTCM Version 3 message types 1084 for GLONASS don't contain GLONASS channel numbers. Hence observations from these messages can only be decoded when you pull in addition another stream which includes the channels. It could be a stream carrying 1087 GLONASS observation messages or 1020 GLONASS ephemeris messages.
+</p>
 <p>
 
 <p>Logged time stamps refer to message reception time and allow understanding repetition rates. Enter 'ALL' if you want to log this information from all configured streams. Beware that the size of the logfile can rapidly increase depending on the number of incoming RTCM streams.
