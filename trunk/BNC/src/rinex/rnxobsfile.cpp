@@ -1055,38 +1055,41 @@ void t_rnxObsFile::writeEpochV3(QTextStream* stream, const t_rnxObsHeader& heade
 
     *stream << rnxSat.prn.toString().c_str();
 
+    const t_rnxObs* hlp[header.nTypes(sys)];
     for (int iTypeV3 = 0; iTypeV3 < header.nTypes(sys); iTypeV3++) {
+      hlp[iTypeV3] = 0;
       QString typeV3 = header.obsType(sys, iTypeV3);
-      bool    found  = false;
       QMapIterator<QString, t_rnxObs> itObs(rnxSat.obs);
       while (itObs.hasNext()) {
         itObs.next();
         const QString&  type   = itObs.key();
         const t_rnxObs& rnxObs = itObs.value();
-        if (typeV3 == type2to3(sys, type) || typeV3 == type2to3(sys, type).left(2)) {
-          found = true;
-          if (rnxObs.value == 0.0) {
-            *stream << QString().leftJustified(16);
-          }
-          else {
-            *stream << QString("%1").arg(rnxObs.value, 14, 'f', 3);
-            if (rnxObs.lli != 0.0) {
-              *stream << QString("%1").arg(rnxObs.lli,1);
-            }
-            else {
-              *stream << ' ';
-            }
-            if (rnxObs.snr != 0.0) {
-              *stream << QString("%1").arg(rnxObs.snr,1);
-            }
-            else {
-              *stream << ' ';
-            }
-          }
+        if ( typeV3 == type2to3(sys, type) || 
+             (typeV3 == type2to3(sys, type).left(2) && rnxObs.value != 0.0) ) {
+          hlp[iTypeV3] = &itObs.value();
         }
       }
-      if (!found) {
+    }
+
+    for (int iTypeV3 = 0; iTypeV3 < header.nTypes(sys); iTypeV3++) {
+      const t_rnxObs* rnxObs = hlp[iTypeV3];
+      if (rnxObs == 0) {
         *stream << QString().leftJustified(16);
+      }
+      else {
+        *stream << QString("%1").arg(rnxObs->value, 14, 'f', 3);
+        if (rnxObs->lli != 0.0) {
+          *stream << QString("%1").arg(rnxObs->lli,1);
+        }
+        else {
+          *stream << ' ';
+        }
+        if (rnxObs->snr != 0.0) {
+          *stream << QString("%1").arg(rnxObs->snr,1);
+        }
+        else {
+          *stream << ' ';
+        }
       }
     }
     *stream << endl;
