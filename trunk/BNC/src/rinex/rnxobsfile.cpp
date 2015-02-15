@@ -1060,12 +1060,26 @@ void t_rnxObsFile::writeEpochV3(QTextStream* stream, const t_rnxObsHeader& heade
       hlp[iTypeV3] = 0;
       QString typeV3 = header.obsType(sys, iTypeV3);
       QMapIterator<QString, t_rnxObs> itObs(rnxSat.obs);
+
+      // Exact match
+      // -----------
       while (itObs.hasNext()) {
         itObs.next();
         const QString&  type   = itObs.key();
         const t_rnxObs& rnxObs = itObs.value();
-        if ( typeV3 == type2to3(sys, type) || 
-             (typeV3 == type2to3(sys, type).left(2) && rnxObs.value != 0.0) ) {
+        if (typeV3 == type2to3(sys, type) && rnxObs.value != 0.0) {
+          hlp[iTypeV3] = &itObs.value();
+        }
+      }
+
+      // Non-Exact match
+      // ---------------
+      itObs.toFront();
+      while (itObs.hasNext()) {
+        itObs.next();
+        const QString&  type   = itObs.key();
+        const t_rnxObs& rnxObs = itObs.value();
+        if (hlp[iTypeV3] == 0 && typeV3 == type2to3(sys, type).left(2) && rnxObs.value != 0.0) {
           hlp[iTypeV3] = &itObs.value();
         }
       }
