@@ -1050,10 +1050,9 @@ void t_rnxObsFile::writeEpochV3(QTextStream* stream, const t_rnxObsHeader& heade
   *stream << dateStr << QString("%1%2\n").arg(flag, 3).arg(epo->rnxSat.size(), 3);
 
   for (unsigned iSat = 0; iSat < epo->rnxSat.size(); iSat++) {
-    const t_rnxSat& rnxSat = epo->rnxSat[iSat];
-    char            sys    = rnxSat.prn.system();
-
-    *stream << rnxSat.prn.toString().c_str();
+    const t_rnxSat& rnxSat   = epo->rnxSat[iSat];
+    char            sys      = rnxSat.prn.system();
+    bool            sysFound = false;
 
     const t_rnxObs* hlp[header.nTypes(sys)];
     for (int iTypeV3 = 0; iTypeV3 < header.nTypes(sys); iTypeV3++) {
@@ -1069,6 +1068,7 @@ void t_rnxObsFile::writeEpochV3(QTextStream* stream, const t_rnxObsHeader& heade
         const t_rnxObs& rnxObs = itObs.value();
         if (typeV3 == type2to3(sys, type) && rnxObs.value != 0.0) {
           hlp[iTypeV3] = &itObs.value();
+          sysFound     = true; 
         }
       }
 
@@ -1081,9 +1081,16 @@ void t_rnxObsFile::writeEpochV3(QTextStream* stream, const t_rnxObsHeader& heade
         const t_rnxObs& rnxObs = itObs.value();
         if (hlp[iTypeV3] == 0 && typeV3 == type2to3(sys, type).left(2) && rnxObs.value != 0.0) {
           hlp[iTypeV3] = &itObs.value();
+          sysFound     = true; 
         }
       }
     }
+
+    if (!sysFound) {
+      continue;
+    }
+
+    *stream << rnxSat.prn.toString().c_str();
 
     for (int iTypeV3 = 0; iTypeV3 < header.nTypes(sys); iTypeV3++) {
       const t_rnxObs* rnxObs = hlp[iTypeV3];
