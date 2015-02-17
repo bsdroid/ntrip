@@ -1,13 +1,9 @@
 
 TEMPLATE             = lib
 CONFIG              += plugin debug
-TARGET               = $$qtLibraryTarget(gnsscenter_monitor)
 QT                  += svg
-INCLUDEPATH         += ../qwt ../main
+TARGET               = $$qtLibraryTarget(gnsscenter_monitor)
 DESTDIR              = ../plugins
-QMAKE_LIBDIR        += ../qwt $(HOME)/Software/thrift/lib
-LIBS                 = -lqwt -lthrift
-INCLUDEPATH         += $(HOME)/Software/thrift/include/thrift
 DEFINES             += HAVE_INTTYPES_H HAVE_NETINET_IN_H
 
 debug:OBJECTS_DIR   = .obj/debug
@@ -15,8 +11,14 @@ debug:MOC_DIR       = .moc/debug
 release:OBJECTS_DIR = .obj/release
 release:MOC_DIR     = .moc/release
 
+THRIFT_ROOT = $(HOME)/Software/thrift
+
+INCLUDEPATH         += ../main ../qwt $$THRIFT_ROOT/include
+QMAKE_LIBDIR        += ../qwt $$THRIFT_ROOT/lib
+LIBS                 = -lqwt -lthrift
+
 thrift.target   = gen-cpp
-thrift.commands = "thrift -r -gen cpp $(THRIFT_DIR)/rtnet.thrift"
+thrift.commands = "$$THRIFT_ROOT/bin/thrift -r -gen cpp $(THRIFT_DIR)/rtnet.thrift"
 thrift.depends  = $(THRIFT_DIR)/rtnet.thrift $(THRIFT_DIR)/rtnet_data.thrift
 
 PRE_TARGETDEPS      += gen-cpp
