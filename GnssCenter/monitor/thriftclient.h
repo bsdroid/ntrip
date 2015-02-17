@@ -8,9 +8,9 @@
 #include <QThread>
 #include <QMutex>
 
-#include <transport/TSocket.h>
-#include <transport/TBufferTransports.h>
-#include <protocol/TBinaryProtocol.h>
+#include <thrift/transport/TSocket.h>
+#include <thrift/transport/TBufferTransports.h>
+#include <thrift/protocol/TBinaryProtocol.h>
 
 #include "gen-cpp/RtnetData.h"
 
