@@ -11,15 +11,16 @@ debug:MOC_DIR       = .moc/debug
 release:OBJECTS_DIR = .obj/release
 release:MOC_DIR     = .moc/release
 
-THRIFT_ROOT = $(HOME)/Software/thrift
+THRIFT_ROOT  = $(HOME)/Software/thrift
+THRIFT_RTNET = $(HOME)/gpss_src/thrift
 
 INCLUDEPATH         += ../main ../qwt $$THRIFT_ROOT/include
 QMAKE_LIBDIR        += ../qwt $$THRIFT_ROOT/lib
 LIBS                 = -lqwt -lthrift
 
 thrift.target   = gen-cpp
-thrift.commands = "$$THRIFT_ROOT/bin/thrift -r -gen cpp $(THRIFT_DIR)/rtnet.thrift"
-thrift.depends  = $(THRIFT_DIR)/rtnet.thrift $(THRIFT_DIR)/rtnet_data.thrift
+thrift.commands = "$$THRIFT_ROOT/bin/thrift -r -gen cpp $$THRIFT_RTNET/rtnet.thrift"
+thrift.depends  = $$THRIFT_RTNET/rtnet.thrift $$THRIFT_RTNET/rtnet_data.thrift
 
 PRE_TARGETDEPS      += gen-cpp
 QMAKE_EXTRA_TARGETS += thrift
