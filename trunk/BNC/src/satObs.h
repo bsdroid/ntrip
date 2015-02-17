@@ -51,7 +51,7 @@ class t_satObs {
       _obs.push_back(new t_frqObs(*old._obs[ii]));
     }
   }
-  ~t_satObs() {while(!_obs.empty()) {_obs.pop_back();}}
+  ~t_satObs() {for (unsigned ii = 0; ii < _obs.size(); ii++) delete _obs[ii];}
 
   std::string            _staID;
   t_prn                  _prn;
@@ -127,6 +127,7 @@ class t_frqPhaseBias {
 class t_satPhaseBias {
  public:
   t_satPhaseBias() {
+    _updateInt  = 0;
     _yawDeg     = 0.0;
     _yawDegRate = 0.0;
   }
