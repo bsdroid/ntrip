@@ -285,7 +285,8 @@ This chapter describes how to set the BNC program options. It explains the top m
 &nbsp; &nbsp; &nbsp; 3.6.7 <a href=#reqccommand>Command Line, No Window</a><br>
 3.7. <a href=#sp3comp>SP3 Comparison</a><br>
 &nbsp; &nbsp; &nbsp; 3.7.1 <a href=#sp3input>Input SP3 Files</a><br>
-&nbsp; &nbsp; &nbsp; 3.7.2 <a href=#sp3log>Logfile</a><br>
+&nbsp; &nbsp; &nbsp; 3.7.2 <a href=#sp3exclude>Exclude Satellites</a><br>
+&nbsp; &nbsp; &nbsp; 3.7.3 <a href=#sp3log>Logfile</a><br>
 3.8. <a href=#correct>Broadcast Corrections</a><br>
 &nbsp; &nbsp; &nbsp; 3.8.1. <a href=#corrdir>Directory, ASCII</a><br>
 &nbsp; &nbsp; &nbsp; 3.8.2. <a href=#corrint>Interval</a><br>
@@ -946,21 +947,107 @@ The following is a list of available key names for '<u>R</u>INEX <u>E</u>diting 
 
 <p><a name="sp3comp"><h4>3.7. SP3 Comparison</h4></p>
 <p>
-BNC allows to compare the contents of two files carrying GNSS orbit and clock data. Files have to be provided in SP3 format. They basically contain a list of records over a certain period of time in constant intervals. Each record presents a time tag, the X,Y,Z position of the satellite's Center of Mass at that time and the corresponding satellite clock observation. Both SP3 files may contain some records for different epochs. However, BNC only compares records for identical epochs. It does not carry out orbit interpolations. It may also be that a specific GNSS system or a specific satellite is only supported by one of the SP3 files.
+BNC allows to compare the contents of two files containing GNSS orbit and clock data in SP3 format. Such SP3 ASCII file basically contains a list of records over a certain period of time. Each record carries a time tag, the X,Y,Z position of the satellite's Center of Mass at that time and the corresponding satellite clock value. Both SP3 files may contain some records for different epochs. If so BNC only compares records for identical epochs. BNC accepts that a specific GNSS system or a specific satellite is only available in one of the SP3 files. Note that BNC does not carry out orbit interpolations when comparing SP3 files. 
 </p>
 <p>
-To compare satellite clocks provided by the two files BNC first converts coordinate differences dX,dY,dZ into along track, out-of-plane and radial compoments. It then corrects the clock differences by the radial component. RMS values of clock differences are calculated after introducing an offset per epoch for all satellites plus an offset per satellite for all epochs.
+To compare satellite clocks provided by the two files BNC first converts coordinate differences dX,dY,dZ into along track, out-of-plane and radial compoments. It then corrects the clock differences for the radial components of the coordinate differences. RMS values of clock differences are finally calculated after introducing an offset 'per epoch for all satellites' plus an offset 'per satellite for all epochs'.
 </p>
 
 <p><a name="sp3input"><h4>3.7.1 Input SP3 Files - optional</h4></p>
 <p>
-Specify the path for two SP3 files separated by a comma.
+Specify the full path of two SP3 files separated by a comma.
 </p>
 
-<p><a name="sp3log"><h4>3.7.2 Logfile - mandatory if 'Input SP3 Files' is set</h4></p>
+<p><a name="sp3exclude"><h4>3.7.2 Exclude Satellites - optional if 'Input SP3 Files' is set</h4></p>
 <p>
-Specify a logfile to save results of the SP3 file comparison.
+You may want to exclude one or more satellites in your SP3 files from the comparison. Or you may like to exclude all satellites of a specific GNSS system from the comparison. The following are example strings to be entered for excluding satellites from the comparison.
+<ul>
+<li>G05,G31 (excluding GPS satellites with PRN 5 and 31)</li>
+<li>G (exclucing all GPS satellites)</li>
+<li>R (excluding all GLONASS satellites)</li>
+<li>R12,R24 (excluding GLONASS satellites with slot number 12 and 24)</li>
+<li>G04,G31,R (excluding GPS satellites with PRN 31 and 4 as well as all GLONASS satellites)</li>
+</ul>
 </p>
+<p>
+Default is an empty option field, meaning that no satellite will be excluded from the comparison.
+</p>
+
+<p><a name="sp3log"><h4>3.7.3 Logfile - mandatory if 'Input SP3 Files' is set</h4></p>
+<p>
+Specify a logfile name to save results of the SP3 file comparison.
+</p>
+<p>
+Below you find an example for a SP3 Comparsion logfile. In its firt part it uses the following abbreviations:
+</p>
+<table>
+<tr><td>'MJD' &nbsp;</td><td>Modified Julian Date</td></tr>
+<tr><td>'PRN' &nbsp;</td><td>System specification and satellite PRN</td></tr>
+<tr><td>'radial' &nbsp;</td><td>Radial component of orbit coordinate difference</td></tr>
+<tr><td>'along' &nbsp;</td><td>Along track component of orbit coordinate difference</td></tr>
+<tr><td>'out' &nbsp;</td><td>Out-of-plane component of orbit coordinate difference</td></tr>
+<tr><td>'clk' &nbsp;</td><td>Clock difference</td></tr>
+<tr><td>'clkRed' &nbsp;</td><td>Clock difference reduced by radial component of orbit coordinate difference</td></tr>
+<tr><td>'iPRN' &nbsp;</td><td>BNC internal sequence number</td></tr>
+</table>
+<p>
+The second part following string 'RMS[m]' provides a summary of the comparison using the following abbreviations:
+</p>
+<table>
+<tr><td>'PRN' &nbsp;</td><td>System specification and satellite PRN</td></tr>
+<tr><td>'radial' &nbsp;</td><td>RMS of radial component of orbit coordinate differences</td></tr>
+<tr><td>'along' &nbsp;</td><td>RMS of along track component of orbit coordinate differences</td></tr>
+<tr><td>'out' &nbsp;</td><td>RMS of out-of-plane component of orbit coordinate differences</td></tr>
+<tr><td>'nOrb' &nbsp;</td><td>Number of epochs used in in orbit comparision</td></tr>
+<tr><td>'clk' &nbsp;</td><td>RMS of clock differences</td></tr>
+<tr><td>'clkRed' &nbsp;</td><td>RMS of clock differences after reduction of radial orbit differences</td></tr>
+<tr><td>'nClk' &nbsp;</td><td>Number of epochs use in clock comparisons</td></tr>
+<tr><td>'Offset' &nbsp;</td><td>Clock offsets</td></tr>
+</table>
+
+<pre>
+
+! SP3 File 1: esr18283.sp3
+! SP3 File 2: rt218283.sp3
+!
+!  MJD       PRN  radial   along   out        clk    clkRed   iPRN
+! ----------------------------------------------------------------
+57043.000000 G01 -0.0001 -0.0318 -0.0354     0.0266  0.0267     1
+57043.000000 G02 -0.0062 -0.0198  0.0111     0.0082  0.0143     2
+57043.000000 G03  0.0052  0.0060  0.0032     0.0386  0.0334     3
+57043.000000 G04 -0.0049 -0.0193 -0.0071    -0.1696 -0.1648     4
+57043.000000 G05  0.0027  0.0154  0.0275     0.0345  0.0318     5
+57043.000000 G06  0.0247 -0.0398 -0.0111     0.0483  0.0236     6
+57043.000000 G07 -0.0052  0.2854 -0.0975    -0.0940 -0.0888     7
+57043.000000 G08 -0.0247  0.0937 -0.0184    -0.1563 -0.1316     8
+57043.000000 G09  0.0152  0.0583  0.0086    -0.0144 -0.0296     9
+...
+...
+...
+!
+! RMS[m]
+!
+!  MJD       PRN  radial   along   out     nOrb    clk   clkRed   nClk    Offset
+! -----------------------------------------------------------------------------
+!            G01  0.0151  0.0377  0.0196     96  0.0157  0.0154     96    0.0152
+!            G02  0.0083  0.0278  0.0228     96  0.0097  0.0124     96   -0.0626
+!            G03  0.0105  0.0311  0.0307     96  0.0352  0.0309     96    0.0898
+!            G04  0.0113  0.0334  0.0154     94  0.0725  0.0707     94   -0.5087
+!            G05  0.0103  0.0319  0.0299     96  0.0417  0.0403     96    0.1185
+!            G06  0.0182  0.0509  0.0302     96  0.0218  0.0166     96    0.0040
+!            G07  0.0337  0.1632  0.0463     96  0.0483  0.0435     96    0.3031
+!            G08  0.0228  0.0741  0.0321     88  0.0616  0.0561     88   -0.2232
+...
+...
+...
+!            R20  0.0637  0.2115  0.1131     96  0.1580  0.1345     96    0.7371
+!            R21  0.0475  0.1657  0.0880     96  0.1123  0.0840     96   -0.4133
+!            R22  0.0125  0.1249  0.0646     96  0.0414  0.0444     96   -0.7375
+!            R23  0.0435  0.1503  0.0573     96  0.0987  0.1099     96    0.6620
+!            R24  0.0278  0.2026  0.1186     96  0.1446  0.1303     96   -1.1470
+!
+!          Total  0.0262  0.0938  0.0492   5268  0.0620  0.0561   5268
+</pre>
 
 <p><a name="correct"><h4>3.8. Broadcast Corrections</h4></p>
 <p>
