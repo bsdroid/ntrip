@@ -10,6 +10,7 @@ using namespace std;
 // Constructor
 ////////////////////////////////////////////////////////////////////////////
 t_clkCorr::t_clkCorr() {
+  _updateInt  = 0;
   _iod        = 0;
   _dClk       = 0.0;
   _dotDClk    = 0.0;
@@ -74,8 +75,9 @@ void t_clkCorr::readEpoch(const string& epoLine, istream& inStream, QList<t_clkC
 // Constructor
 ////////////////////////////////////////////////////////////////////////////
 t_orbCorr::t_orbCorr() {
-  _iod    = 0;
-  _system = 'R';
+  _updateInt = 0;
+  _iod       = 0;
+  _system    = 'R';
   _xr.ReSize(3);    _xr    = 0.0;
   _dotXr.ReSize(3); _dotXr = 0.0;
 }
