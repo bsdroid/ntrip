@@ -60,6 +60,9 @@ bncEphUser::bncEphUser(bool connectSlots) {
 
     connect(BNC_CORE, SIGNAL(newSBASEph(t_ephSBAS)),
             this, SLOT(slotNewSBASEph(t_ephSBAS)), Qt::DirectConnection);
+
+    connect(BNC_CORE, SIGNAL(newCompassEph(t_ephCompass)),
+            this, SLOT(slotNewCompassEph(t_ephCompass)), Qt::DirectConnection);
   }
 }
 
@@ -97,6 +100,12 @@ void bncEphUser::slotNewGalileoEph(t_ephGal eph) {
 // New SBAS Ephemeris
 ////////////////////////////////////////////////////////////////////////////
 void bncEphUser::slotNewSBASEph(t_ephSBAS eph) {
+  putNewEph(&eph, false);
+}
+
+// New Compass Ephemeris
+////////////////////////////////////////////////////////////////////////////
+void bncEphUser::slotNewCompassEph(t_ephCompass eph) {
   putNewEph(&eph, false);
 }
 

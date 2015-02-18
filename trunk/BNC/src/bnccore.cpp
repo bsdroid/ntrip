@@ -249,6 +249,13 @@ void t_bncCore::slotNewSBASEph(t_ephSBAS eph) {
   }
 }
 
+// New Compass Ephemeris
+////////////////////////////////////////////////////////////////////////////
+void t_bncCore::slotNewCompassEph(t_ephCompass eph) {
+  if (checkPrintEph(&eph) == success) {
+    emit newCompassEph(eph);
+  }
+}
 
 // Print Header of the output File(s)
 ////////////////////////////////////////////////////////////////////////////
