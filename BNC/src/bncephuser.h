@@ -41,6 +41,7 @@ class bncEphUser : public QObject {
   void slotNewGlonassEph(t_ephGlo);
   void slotNewGalileoEph(t_ephGal);
   void slotNewSBASEph(t_ephSBAS);
+  void slotNewCompassEph(t_ephCompass);
 
  public:
   bncEphUser(bool connectSlots);

@@ -77,6 +77,7 @@ RTCM3Decoder::RTCM3Decoder(const QString& staID, bncRawFile* rawFile) :
   connect(this, SIGNAL(newGlonassEph(t_ephGlo)), BNC_CORE, SLOT(slotNewGlonassEph(t_ephGlo)));
   connect(this, SIGNAL(newGalileoEph(t_ephGal)), BNC_CORE, SLOT(slotNewGalileoEph(t_ephGal)));
   connect(this, SIGNAL(newSBASEph(t_ephSBAS)),   BNC_CORE, SLOT(slotNewSBASEph(t_ephSBAS)));
+  connect(this, SIGNAL(newCompassEph(t_ephCompass)), BNC_CORE, SLOT(slotNewCompassEph(t_ephCompass)));
 
   // Mode can be either observations or corrections
   // ----------------------------------------------
@@ -408,6 +409,14 @@ t_irc RTCM3Decoder::Decode(char* buffer, int bufLen, vector<string>& errmsg) {
             decoded = true;
             t_ephSBAS eph; eph.set(&parser.ephemerisSBAS);
             emit newSBASEph(eph);
+          }
+
+          // COMPASS Ephemeris
+          // -----------------
+          else if (rr == 63) {
+            decoded = true;
+//            t_ephCompass eph; eph.set(&parser.ephemerisCompass);
+//            emit newCompassEph(eph);
           }
         }
       }
