@@ -1,4 +1,3 @@
-// Part of BNC, a utility for retrieving decoding and
 // converting GNSS data streams from NTRIP broadcasters.
 //
 // Copyright (C) 2007
@@ -61,8 +60,8 @@ bncEphUser::bncEphUser(bool connectSlots) {
     connect(BNC_CORE, SIGNAL(newSBASEph(t_ephSBAS)),
             this, SLOT(slotNewSBASEph(t_ephSBAS)), Qt::DirectConnection);
 
-    connect(BNC_CORE, SIGNAL(newCompassEph(t_ephCompass)),
-            this, SLOT(slotNewCompassEph(t_ephCompass)), Qt::DirectConnection);
+    connect(BNC_CORE, SIGNAL(newBDSEph(t_ephBDS)),
+            this, SLOT(slotNewBDSEph(t_ephBDS)), Qt::DirectConnection);
   }
 }
 
@@ -103,9 +102,9 @@ void bncEphUser::slotNewSBASEph(t_ephSBAS eph) {
   putNewEph(&eph, false);
 }
 
-// New Compass Ephemeris
+// New BDS Ephemeris
 ////////////////////////////////////////////////////////////////////////////
-void bncEphUser::slotNewCompassEph(t_ephCompass eph) {
+void bncEphUser::slotNewBDSEph(t_ephBDS eph) {
   putNewEph(&eph, false);
 }
 
@@ -127,7 +126,7 @@ t_irc bncEphUser::putNewEph(t_eph* eph, bool check) {
   const t_ephGlo*     ephGlo     = dynamic_cast<const t_ephGlo*>(eph);
   const t_ephGal*     ephGal     = dynamic_cast<const t_ephGal*>(eph);
   const t_ephSBAS*    ephSBAS    = dynamic_cast<const t_ephSBAS*>(eph);
-  const t_ephCompass* ephCompass = dynamic_cast<const t_ephCompass*>(eph);
+  const t_ephBDS*     ephBDS     = dynamic_cast<const t_ephBDS*>(eph);
 
   t_eph* newEph = 0;
 
@@ -143,8 +142,8 @@ t_irc bncEphUser::putNewEph(t_eph* eph, bool check) {
   else if (ephSBAS) {
     newEph = new t_ephSBAS(*ephSBAS);
   }
-  else if (ephCompass) {
-    newEph = new t_ephCompass(*ephCompass);
+  else if (ephBDS) {
+    newEph = new t_ephBDS(*ephBDS);
   }
   else {
     return failure;

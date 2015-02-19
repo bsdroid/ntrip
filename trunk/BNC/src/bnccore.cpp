@@ -118,7 +118,7 @@ t_bncCore::t_bncCore() : _ephUser(false) {
   qRegisterMetaType<t_ephGlo>               ("t_ephGlo");
   qRegisterMetaType<t_ephGal>               ("t_ephGal");
   qRegisterMetaType<t_ephSBAS>              ("t_ephSBAS");
-  qRegisterMetaType<t_ephCompass>           ("t_ephCompass");
+  qRegisterMetaType<t_ephBDS>               ("t_ephBDS");
   qRegisterMetaType<QList<t_orbCorr> >      ("QList<t_orbCorr>");
   qRegisterMetaType<QList<t_clkCorr> >      ("QList<t_clkCorr>");
   qRegisterMetaType<QList<t_satCodeBias> >  ("QList<t_satCodeBias>");
@@ -249,11 +249,11 @@ void t_bncCore::slotNewSBASEph(t_ephSBAS eph) {
   }
 }
 
-// New Compass Ephemeris
+// New BDS Ephemeris
 ////////////////////////////////////////////////////////////////////////////
-void t_bncCore::slotNewCompassEph(t_ephCompass eph) {
+void t_bncCore::slotNewBDSEph(t_ephBDS eph) {
   if (checkPrintEph(&eph) == success) {
-    emit newCompassEph(eph);
+    emit newBDSEph(eph);
   }
 }
 

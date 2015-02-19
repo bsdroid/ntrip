@@ -51,7 +51,7 @@ Q_OBJECT
   void newGlonassEph(t_ephGlo eph);
   void newSBASEph(t_ephSBAS eph);
   void newGalileoEph(t_ephGal eph);
-  void newCompassEph(t_ephCompass eph);
+  void newBDSEph(t_ephBDS eph);
 
  private:
   enum t_mode{unknown = 0, observations, corrections};
