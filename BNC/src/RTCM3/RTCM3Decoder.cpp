@@ -77,7 +77,7 @@ RTCM3Decoder::RTCM3Decoder(const QString& staID, bncRawFile* rawFile) :
   connect(this, SIGNAL(newGlonassEph(t_ephGlo)), BNC_CORE, SLOT(slotNewGlonassEph(t_ephGlo)));
   connect(this, SIGNAL(newGalileoEph(t_ephGal)), BNC_CORE, SLOT(slotNewGalileoEph(t_ephGal)));
   connect(this, SIGNAL(newSBASEph(t_ephSBAS)),   BNC_CORE, SLOT(slotNewSBASEph(t_ephSBAS)));
-  connect(this, SIGNAL(newCompassEph(t_ephCompass)), BNC_CORE, SLOT(slotNewCompassEph(t_ephCompass)));
+  connect(this, SIGNAL(newBDSEph(t_ephBDS)),     BNC_CORE, SLOT(slotNewBDSEph(t_ephBDS)));
 
   // Mode can be either observations or corrections
   // ----------------------------------------------
@@ -261,10 +261,10 @@ t_irc RTCM3Decoder::Decode(char* buffer, int bufLen, vector<string>& errmsg) {
                 obs._prn.set('J', satID - PRN_QZSS_START + 1);
               }
 
-              // COMPASS
+              // BDS
               // -------------
-              else if (satID >= PRN_COMPASS_START && satID <= PRN_COMPASS_END) {
-                obs._prn.set('C', satID - PRN_COMPASS_START + 1);
+              else if (satID >= PRN_BDS_START && satID <= PRN_BDS_END) {
+                obs._prn.set('C', satID - PRN_BDS_START + 1);
               }
 
               // Unknown System
@@ -411,12 +411,12 @@ t_irc RTCM3Decoder::Decode(char* buffer, int bufLen, vector<string>& errmsg) {
             emit newSBASEph(eph);
           }
 
-          // COMPASS Ephemeris
+          // BDS Ephemeris
           // -----------------
-          else if (rr == 63) {
+          else if (rr == RTCM3ID_BDS) {
             decoded = true;
-//            t_ephCompass eph; eph.set(&parser.ephemerisCompass);
-//            emit newCompassEph(eph);
+            t_ephBDS eph; eph.set(&parser.ephemerisBDS);
+            emit newBDSEph(eph);
           }
         }
       }
