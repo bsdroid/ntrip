@@ -11,10 +11,10 @@ debug:MOC_DIR       = .moc/debug
 release:OBJECTS_DIR = .obj/release
 release:MOC_DIR     = .moc/release
 
-THRIFT_ROOT  = $(HOME)/Software/thrift
+THRIFT_ROOT  = /usr/local
 THRIFT_RTNET = $(HOME)/gpss_src/thrift
 
-INCLUDEPATH         += ../main ../qwt $$THRIFT_ROOT/include
+INCLUDEPATH         += ../main ../qwt $$THRIFT_ROOT/include/thrift
 QMAKE_LIBDIR        += ../qwt $$THRIFT_ROOT/lib
 LIBS                 = -lqwt -lthrift
 
