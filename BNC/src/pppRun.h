@@ -71,6 +71,7 @@ class t_pppRun : public QObject {
   bool                   _stopFlag;
   bncoutf*               _logFile;
   bncoutf*               _nmeaFile;
+  bncoutf*               _snxtroFile;
 };
 
 }

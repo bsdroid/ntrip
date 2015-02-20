@@ -194,6 +194,7 @@ void t_pppWidgets::readOptions() {
   _logFile    ->setText(settings.value(_logFile    ->objectName()).toString());
   _nmeaFile   ->setText(settings.value(_nmeaFile   ->objectName()).toString());
   _nmeaPort   ->setText(settings.value(_nmeaPort   ->objectName()).toString());
+  _snxtroFile ->setText(settings.value(_snxtroFile ->objectName()).toString());
   _sigmaC1    ->setText(settings.value(_sigmaC1    ->objectName()).toString());
   _sigmaL1    ->setText(settings.value(_sigmaL1    ->objectName()).toString());
   _maxResC1   ->setText(settings.value(_maxResC1   ->objectName()).toString());
@@ -260,6 +261,7 @@ void t_pppWidgets::saveOptions() {
   settings.setValue(_logFile     ->objectName(), _logFile     ->text());
   settings.setValue(_nmeaFile    ->objectName(), _nmeaFile    ->text());
   settings.setValue(_nmeaPort    ->objectName(), _nmeaPort    ->text());
+  settings.setValue(_snxtroFile  ->objectName(), _snxtroFile  ->text());
   settings.setValue(_lcGPS       ->objectName(), _lcGPS       ->currentText());
   settings.setValue(_lcGLONASS   ->objectName(), _lcGLONASS   ->currentText());
   settings.setValue(_lcGalileo   ->objectName(), _lcGalileo   ->currentText());
