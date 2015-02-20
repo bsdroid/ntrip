@@ -238,14 +238,14 @@ class t_ephSBAS : public t_eph {
   double _health;
 };
 
-class t_ephCompass : public t_eph {
+class t_ephBDS : public t_eph {
  friend class t_ephEncoder;
  public:
-  t_ephCompass() {}
-  t_ephCompass(float rnxVersion, const QStringList& lines);
-  virtual ~t_ephCompass() {}
+ t_ephBDS() {}
+ t_ephBDS(float rnxVersion, const QStringList& lines);
+  virtual ~t_ephBDS() {}
 
-  // void set(const compassephemeris* ee);
+  void set(const bdsephemeris* ee);
   virtual e_type  type() const {return t_eph::Compass;}
   virtual int     IOD() const {return _AODC;}
   virtual QString toString(double version) const;

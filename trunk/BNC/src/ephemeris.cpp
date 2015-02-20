@@ -1324,7 +1324,7 @@ QString t_ephSBAS::toString(double version) const {
 
 // Constructor
 //////////////////////////////////////////////////////////////////////////////
-t_ephCompass::t_ephCompass(float rnxVersion, const QStringList& lines) {
+t_ephBDS::t_ephBDS(float rnxVersion, const QStringList& lines) {
 
   const int nLines = 8;
 
@@ -1474,7 +1474,7 @@ t_ephCompass::t_ephCompass(float rnxVersion, const QStringList& lines) {
 
 // Constructor
 //////////////////////////////////////////////////////////////////////////////
-t_irc t_ephCompass::position(int GPSweek, double GPSweeks, double* xc, double* vv) const {
+t_irc t_ephBDS::position(int GPSweek, double GPSweeks, double* xc, double* vv) const {
 
   if (_checkState == bad) {
     return failure;
@@ -1604,7 +1604,7 @@ t_irc t_ephCompass::position(int GPSweek, double GPSweeks, double* xc, double* v
 
 // RINEX Format String
 //////////////////////////////////////////////////////////////////////////////
-QString t_ephCompass::toString(double version) const {
+QString t_ephBDS::toString(double version) const {
 
   QString rnxStr = rinexDateStr(_TOC_bdt, _prn, version);
 
