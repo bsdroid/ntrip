@@ -1485,6 +1485,10 @@ void t_ephBDS::set(const bdsephemeris* ee) {
 
   _TOC_bdt.set(ee->BDSweek, ee->TOC);
   _TOC             = _TOC_bdt + 14.0;
+
+  _AODE            = ee->AODE;
+  _AODC            = ee->AODC;
+
   _clock_bias      = ee->clock_bias;
   _clock_drift     = ee->clock_drift;
   _clock_driftrate = ee->clock_driftrate;
@@ -1511,8 +1515,7 @@ void t_ephBDS::set(const bdsephemeris* ee) {
   _TGD1     = ee->TGD_B1_B3;
   _TGD2     = ee->TGD_B2_B3;
 
-  _AODE     = ee->AODE;
-  _AODC     = ee->AODC;
+  _SatH1    = BDSEPHF_SATH1;
 
 }
 
