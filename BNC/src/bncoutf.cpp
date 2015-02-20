@@ -107,12 +107,17 @@ QString bncoutf::resolveFileName(int GPSweek, const QDateTime& datTim) {
   if (dayOfWeek == 7) {
     dayOfWeek = 0;
   }
+  int dayOfYear = datTim.date().dayOfYear();
+
+  QString yyyy     = QString::number(datTim.date().year());
+  QString doy      = QString("%1%2").arg(dayOfYear,3,10, QLatin1Char('0')).arg(0);
   QString gpswd    = QString("%1%2").arg(GPSweek).arg(dayOfWeek);
   QString epoStr   = epochStr(datTim, _intr);
   QString baseName = _sklBaseName; 
   baseName.replace("${GPSWD}", gpswd);
-  baseName.replace("${DATE}",  datTim.date().toString(Qt::ISODate));
-
+  baseName.replace("${DATE}" , datTim.date().toString(Qt::ISODate));
+  baseName.replace("${DOY}"  , doy);
+  _extension.replace("${YY}" , yyyy.right(2));
   return _path + baseName + epoStr + _extension;
 }
 
