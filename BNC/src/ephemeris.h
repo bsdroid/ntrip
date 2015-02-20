@@ -18,7 +18,7 @@ class t_clkCorr;
 
 class t_eph {
  public:
-  enum e_type {unknown, GPS, QZSS, GLONASS, Galileo, SBAS, Compass};
+  enum e_type {unknown, GPS, QZSS, GLONASS, Galileo, SBAS, BDS};
   enum e_checkState {unchecked, ok, bad};
 
   t_eph();
@@ -246,7 +246,7 @@ class t_ephBDS : public t_eph {
   virtual ~t_ephBDS() {}
 
   void set(const bdsephemeris* ee);
-  virtual e_type  type() const {return t_eph::Compass;}
+  virtual e_type  type() const {return t_eph::BDS;}
   virtual int     IOD() const {return _AODC;}
   virtual QString toString(double version) const;
 

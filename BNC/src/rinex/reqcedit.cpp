@@ -520,7 +520,7 @@ void t_reqcEdit::appendEphemerides(const QString& fileName,
       else if (eph->type() == t_eph::SBAS) {
         ephs.append(new t_ephSBAS(*dynamic_cast<t_ephSBAS*>(eph)));
       }
-      else if (eph->type() == t_eph::Compass) {
+      else if (eph->type() == t_eph::BDS) {
         ephs.append(new t_ephBDS(*dynamic_cast<t_ephBDS*>(eph)));
       }
     }
