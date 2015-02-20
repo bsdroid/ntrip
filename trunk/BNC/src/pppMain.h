@@ -21,6 +21,7 @@ class t_pppMain {
   QList<t_pppThread*>  _pppThreads;
   QString  _logFile;
   QString  _nmeaFile;
+  QString  _snxtroFile;
   int      _nmeaPort;
   bool     _running;
   bool     _realTime;

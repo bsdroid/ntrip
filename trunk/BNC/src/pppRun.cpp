@@ -148,13 +148,30 @@ t_pppRun::t_pppRun(const t_pppOptions* opt) {
     }
     _nmeaFile = new bncoutf(nmeaFileSkl, "1 day", 0);
   }
+
+  QString snxtroFileSkl = settings.value("PPP/snxtroFile").toString();
+  if (snxtroFileSkl.isEmpty()) {
+    _snxtroFile = 0;
+  }
+  else {
+    if (snxtroFileSkl.indexOf("${STATION}") == -1) {
+      snxtroFileSkl = snxtroFileSkl + "_" + roverName;
+    }
+    else {
+      snxtroFileSkl.replace("${STATION}", roverName);
+    }
+    _snxtroFile = new bncoutf(snxtroFileSkl, "1 day", 0);
+  }
 }
+
+
 
 // Destructor
 ////////////////////////////////////////////////////////////////////////////
 t_pppRun::~t_pppRun() {
   delete _logFile;
   delete _nmeaFile;
+  delete _snxtroFile;
 }
 
 // 
@@ -273,6 +290,10 @@ void t_pppRun::slotNewObs(QByteArray staID, QList<t_satObs> obsList) {
       }
       emit newNMEAstr(staID, rmcStr.toAscii());
       emit newNMEAstr(staID, ggaStr.toAscii());
+    }
+
+    if (_snxtroFile && output._epoTime.valid()) {
+     // _snxtroFile->write(output._epoTime.gpsw(), output._epoTime.gpssec(),QString("TEST"));
     }
 
     emit newMessage(QByteArray(log.str().c_str()), true);
