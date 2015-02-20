@@ -1524,8 +1524,8 @@ t_irc t_ephBDS::position(int GPSweek, double GPSweeks, double* xc, double* vv) c
     return failure;
   }
 
-  static const double gmCompass    = 398.6004418e12;
-  static const double omegaCompass = 7292115.0000e-11;
+  static const double gmBDS    = 398.6004418e12;
+  static const double omegaBDS = 7292115.0000e-11;
 
   xc[0] = xc[1] = xc[2] = xc[3] = 0.0;
   vv[0] = vv[1] = vv[2] = 0.0;
@@ -1537,7 +1537,7 @@ t_irc t_ephBDS::position(int GPSweek, double GPSweeks, double* xc, double* vv) c
   }
   double a0 = _sqrt_A * _sqrt_A;
 
-  double n0 = sqrt(gmCompass/(a0*a0*a0));
+  double n0 = sqrt(gmBDS/(a0*a0*a0));
   double tk = tt - _TOE;
   double n  = n0 + _Delta_n;
   double M  = _M0 + n*tk;
@@ -1574,7 +1574,7 @@ t_irc t_ephBDS::position(int GPSweek, double GPSweeks, double* xc, double* vv) c
   // MEO/IGSO satellite
   // ------------------
   if (_i0 > iMaxGEO) {
-    double OM = _OMEGA0 + (_OMEGADOT - omegaCompass)*tk - omegaCompass*toesec;
+    double OM = _OMEGA0 + (_OMEGADOT - omegaBDS)*tk - omegaBDS*toesec;
 
     sinom = sin(OM);
     cosom = cos(OM);
@@ -1589,8 +1589,8 @@ t_irc t_ephBDS::position(int GPSweek, double GPSweeks, double* xc, double* vv) c
   // GEO satellite
   // -------------
   else {
-    double OM    = _OMEGA0 + _OMEGADOT*tk - omegaCompass*toesec;
-    double ll    = omegaCompass*tk;
+    double OM    = _OMEGA0 + _OMEGADOT*tk - omegaBDS*toesec;
+    double ll    = omegaBDS*tk;
 
     sinom = sin(OM);
     cosom = cos(OM);
