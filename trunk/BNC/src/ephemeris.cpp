@@ -1472,7 +1472,51 @@ t_ephBDS::t_ephBDS(float rnxVersion, const QStringList& lines) {
   _TOT = _TOC;
 }
 
-// Constructor
+// Set BDS Satellite Position
+////////////////////////////////////////////////////////////////////////////
+void t_ephBDS::set(const bdsephemeris* ee) {
+
+  _receptDateTime = currentDateAndTimeGPS();
+
+  _prn.set('C', ee->satellite);
+
+  _TOE_bdt.set(ee->BDSweek, ee->TOE);
+  _TOE             = _TOE_bdt + 14.0;
+
+  _TOC_bdt.set(ee->BDSweek, ee->TOC);
+  _TOC             = _TOC_bdt + 14.0;
+  _clock_bias      = ee->clock_bias;
+  _clock_drift     = ee->clock_drift;
+  _clock_driftrate = ee->clock_driftrate;
+
+  _Crs      = ee->Crs;
+  _Delta_n  = ee->Delta_n;
+  _M0       = ee->M0;
+
+  _Cuc      = ee->Cuc;
+  _e        = ee->e;
+  _Cus      = ee->Cus;
+  _sqrt_A   = ee->sqrt_A;
+
+  _Cic      = ee->Cic;
+  _OMEGA0   = ee->OMEGA0;
+  _Cis      = ee->Cis;
+
+  _i0       = ee->i0;
+  _Crc      = ee->Crc;
+  _omega    = ee->omega;
+  _OMEGADOT = ee->OMEGADOT;
+  _IDOT     = ee->IDOT;
+
+  _TGD1     = ee->TGD_B1_B3;
+  _TGD2     = ee->TGD_B2_B3;
+
+  _AODE     = ee->AODE;
+  _AODC     = ee->AODC;
+
+}
+
+// Compute BDS Satellite Position (virtual)
 //////////////////////////////////////////////////////////////////////////////
 t_irc t_ephBDS::position(int GPSweek, double GPSweeks, double* xc, double* vv) const {
 
