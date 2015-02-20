@@ -46,6 +46,8 @@ class t_pppWidgets : public QObject {
   QLineEdit*     _logFile;
   QLineEdit*     _nmeaFile;
   QLineEdit*     _nmeaPort;
+  QLineEdit*     _snxtroFile;
+  QSpinBox*      _snxtroSampl;
   QTableWidget*  _staTable;
   QComboBox*     _lcGPS;
   QComboBox*     _lcGLONASS;

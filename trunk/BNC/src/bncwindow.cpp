@@ -850,10 +850,16 @@ bncWindow::bncWindow() {
   ++ir;
   pppLayout1->addWidget(new QLabel("ANTEX"),              ir, 0, Qt::AlignLeft);
   pppLayout1->addWidget(_pppWidgets._antexFile,           ir, 1, 1, 2);
+
   pppLayout1->addWidget(new QLabel("NMEA File"),          ir, 4, Qt::AlignLeft);
   pppLayout1->addWidget(_pppWidgets._nmeaFile,            ir, 5);
   pppLayout1->addWidget(new QLabel("Port"),               ir, 6, Qt::AlignLeft);
   pppLayout1->addWidget(_pppWidgets._nmeaPort,            ir, 7); _pppWidgets._nmeaPort->setMaximumWidth(8*ww);
+  ++ir;
+  pppLayout1->addWidget(new QLabel("SNX TRO File"),       ir, 4, Qt::AlignLeft);
+  pppLayout1->addWidget(_pppWidgets._snxtroFile,          ir, 5);
+  pppLayout1->addWidget(new QLabel("Sampling"),           ir, 6, Qt::AlignLeft);
+  pppLayout1->addWidget(_pppWidgets._snxtroSampl,         ir, 7);
 
   pppLayout1->addItem(new QSpacerItem(4*ww, 0),           ir, 8);
 

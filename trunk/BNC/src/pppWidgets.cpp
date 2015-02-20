@@ -60,7 +60,9 @@ t_pppWidgets::t_pppWidgets() {
   _antexFile    = new qtFileChooser(); _antexFile   ->setObjectName("PPP/antexFile");    _widgets << _antexFile;   
   _logFile      = new QLineEdit();     _logFile     ->setObjectName("PPP/logFile");      _widgets << _logFile;     
   _nmeaFile     = new QLineEdit();     _nmeaFile    ->setObjectName("PPP/nmeaFile");     _widgets << _nmeaFile;    
-  _nmeaPort     = new QLineEdit();     _nmeaPort    ->setObjectName("PPP/nmeaPort");     _widgets << _nmeaPort;    
+  _nmeaPort     = new QLineEdit();     _nmeaPort    ->setObjectName("PPP/nmeaPort");     _widgets << _nmeaPort;
+  _snxtroFile   = new QLineEdit();     _snxtroFile  ->setObjectName("PPP/snxtroFile");   _widgets << _snxtroFile;
+  _snxtroSampl  = new QSpinBox();      _snxtroSampl ->setObjectName("PPP/snxtroSampl");  _widgets << _snxtroSampl;
   _staTable     = new QTableWidget();  _staTable    ->setObjectName("PPP/staTable");     _widgets << _staTable;    
   _lcGPS        = new QComboBox();     _lcGPS       ->setObjectName("PPP/lcGPS");        _widgets << _lcGPS;       
   _lcGLONASS    = new QComboBox();     _lcGLONASS   ->setObjectName("PPP/lcGLONASS");    _widgets << _lcGLONASS;   
@@ -99,6 +101,11 @@ t_pppWidgets::t_pppWidgets() {
 
   _lcGalileo->setEditable(false);
   _lcGalileo->addItems(QString("no,P3,L3,P3&L3").split(","));
+
+  _snxtroSampl->setMinimum(0);
+  _snxtroSampl->setMaximum(300);
+  _snxtroSampl->setSingleStep(30);
+  _snxtroSampl->setSuffix(" sec");
 
   _minObs->setMinimum(4);
   _minObs->setMaximum(6);
