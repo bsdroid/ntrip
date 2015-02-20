@@ -1,4 +1,3 @@
-#include <math.h>
 #include <sstream>
 #include <iostream>
 #include <iomanip>
@@ -1515,7 +1514,7 @@ void t_ephBDS::set(const bdsephemeris* ee) {
   _TGD1     = ee->TGD_B1_B3;
   _TGD2     = ee->TGD_B2_B3;
 
-  _SatH1    = BDSEPHF_SATH1;
+  _SatH1    = ee->flags & BDSEPHF_SATH1;
 
 }
 
