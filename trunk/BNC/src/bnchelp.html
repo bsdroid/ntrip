@@ -947,7 +947,7 @@ The following is a list of available key names for '<u>R</u>INEX <u>E</u>diting 
 
 <p><a name="sp3comp"><h4>3.7. SP3 Comparison</h4></p>
 <p>
-BNC allows to compare the contents of two files containing GNSS orbit and clock data in SP3 format. SP3 ASCII files basically contains a list of records over a certain period of time. Each record carries a time tag, the X,Y,Z position of the satellite's Center of Mass at that time and the corresponding satellite clock value. Both SP3 files may contain some records for different epochs. If so then BNC only compares records for identical epochs. BNC accepts that a specific GNSS system or a specific satellite is only available in one of the SP3 files. Note that BNC does not interpolate orbits when comparing SP3 files. 
+BNC allows to compare the contents of two files containing GNSS orbit and clock data in SP3 format. SP3 ASCII files basically contain a list of records over a certain period of time. Each record carries a time tag, the X,Y,Z position of the satellite's Center of Mass at that time and the corresponding satellite clock value. Both SP3 files may contain some records for different epochs. If so then BNC only compares records for identical epochs. BNC accepts that a specific GNSS system or a specific satellite is only available in one of the SP3 files. Note that BNC does not interpolate orbits when comparing SP3 files. 
 </p>
 <p>
 To compare satellite clocks provided by the two files BNC first converts coordinate differences dX,dY,dZ into along track, out-of-plane and radial compoments. It then corrects the clock differences for the radial components of the coordinate differences. RMS values of clock differences are finally calculated after introducing at first one offset 'per epoch for all satellites' plus a second offset 'per satellite for all epochs'.
@@ -978,7 +978,7 @@ Default is an empty option field, meaning that no satellite will be excluded fro
 Specify a logfile name to save results of the SP3 file comparison.
 </p>
 <p>
-Below you find an example for a SP3 Comparsion logfile. In its firt part it uses the following abbreviations:
+Below you find an example for a SP3 Comparsion logfile. In its firt part it uses the following abbreviations:<br>
 </p>
 <table>
 <tr><td>'MJD' &nbsp;</td><td>Modified Julian Date</td></tr>
@@ -991,7 +991,7 @@ Below you find an example for a SP3 Comparsion logfile. In its firt part it uses
 <tr><td>'iPRN' &nbsp;</td><td>BNC internal sequence number</td></tr>
 </table>
 <p>
-The second part following string 'RMS' provides a summary of the comparison using the following abbreviations:
+The second part following string 'RMS' provides a summary of the comparison using the following abbreviations:<br>
 </p>
 <table>
 <tr><td>'PRN' &nbsp;</td><td>Satellite specification</td></tr>
