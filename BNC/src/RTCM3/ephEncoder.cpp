@@ -320,12 +320,69 @@ int t_ephEncoder::RTCM3(const t_ephGal& eph, unsigned char *buffer) {
   return size;
 }
 
+// build up RTCM3 for SBAS
+////////////////////////////////////////////////////////////////////////////
 int t_ephEncoder::RTCM3(const t_ephSBAS& /* eph */, unsigned char* /* buffer */) {
 
   return 0;
 }
 
-int t_ephEncoder::RTCM3(const t_ephBDS& /* eph */, unsigned char* /* buffer */) {
+// build up RTCM3 for BDS
+////////////////////////////////////////////////////////////////////////////
+#define BDSTOINT(type, value) static_cast<type>(round(value))
 
-  return 0;
+#define BDSADDBITS(a, b) {bitbuffer = (bitbuffer<<(a)) \
+                       |(BDSTOINT(long long,b)&((1ULL<<a)-1)); \
+                       numbits += (a); \
+                       while(numbits >= 8) { \
+                       buffer[size++] = bitbuffer>>(numbits-8);numbits -= 8;}}
+#define BDSADDBITSFLOAT(a,b,c) {long long i = BDSTOINT(long long,(b)/(c)); \
+                             BDSADDBITS(a,i)};
+
+int t_ephEncoder::RTCM3(const t_ephBDS& eph, unsigned char* buffer) {
+  int size = 0;
+  int numbits = 0;
+  long long bitbuffer = 0;
+  unsigned char *startbuffer = buffer;
+  buffer= buffer+3;
+
+  BDSADDBITS(12, RTCM3ID_BDS)
+  BDSADDBITS(6, eph._prn.number())
+  BDSADDBITS(13, eph._TOC.gpsw())
+  BDSADDBITS(4, 15);// URAI = 15: no accuracy prediction
+  BDSADDBITSFLOAT(14, eph._IDOT, M_PI/static_cast<double>(1<<30)/static_cast<double>(1<<13))
+  BDSADDBITS(5, eph._AODE)
+  BDSADDBITS(17, static_cast<int>(eph._TOC.gpssec())>>3)
+  BDSADDBITSFLOAT(11, eph._clock_driftrate, 1.0/static_cast<double>(1<<30)/static_cast<double>(1<<6))
+  BDSADDBITSFLOAT(22, eph._clock_drift, 1.0/static_cast<double>(1<<30)/static_cast<double>(1<<20))
+  BDSADDBITSFLOAT(24, eph._clock_bias, 1.0/static_cast<double>(1<<30)/static_cast<double>(1<<3))
+  BDSADDBITS(5, eph._AODC)
+  BDSADDBITSFLOAT(18, eph._Crs, 1.0/static_cast<double>(1<<6))
+  BDSADDBITSFLOAT(16, eph._Delta_n, M_PI/static_cast<double>(1<<30)/static_cast<double>(1<<13))
+  BDSADDBITSFLOAT(32, eph._M0, M_PI/static_cast<double>(1<<30)/static_cast<double>(1<<1))
+  BDSADDBITSFLOAT(18, eph._Cuc, 1.0/static_cast<double>(1<<30)/static_cast<double>(1<<1))
+  BDSADDBITSFLOAT(32, eph._e, 1.0/static_cast<double>(1<<30)/static_cast<double>(1<<3))
+  BDSADDBITSFLOAT(18, eph._Cus, 1.0/static_cast<double>(1<<30)/static_cast<double>(1<<1))
+  BDSADDBITSFLOAT(32, eph._sqrt_A, 1.0/static_cast<double>(1<<19))
+  BDSADDBITS(17, static_cast<int>(eph._TOE.gpssec())>>3)
+  BDSADDBITSFLOAT(18, eph._Cic, 1.0/static_cast<double>(1<<30)/static_cast<double>(1<<1))
+  BDSADDBITSFLOAT(32, eph._OMEGA0, M_PI/static_cast<double>(1<<30)/static_cast<double>(1<<1))
+  BDSADDBITSFLOAT(18, eph._Cis, 1.0/static_cast<double>(1<<30)/static_cast<double>(1<<1))
+  BDSADDBITSFLOAT(32, eph._i0, M_PI/static_cast<double>(1<<30)/static_cast<double>(1<<1))
+  BDSADDBITSFLOAT(18, eph._Crc, 1.0/static_cast<double>(1<<8))
+  BDSADDBITSFLOAT(32, eph._omega, M_PI/static_cast<double>(1<<30)/static_cast<double>(1<<1))
+  BDSADDBITSFLOAT(24, eph._OMEGADOT, M_PI/static_cast<double>(1<<30)/static_cast<double>(1<<13))
+  BDSADDBITSFLOAT(10, eph._TGD1, 0.0000000001)
+  BDSADDBITSFLOAT(10, eph._TGD2, 0.0000000001)
+  BDSADDBITS(1, eph._SatH1)
+
+  startbuffer[0]=0xD3;
+  startbuffer[1]=(size >> 8);
+  startbuffer[2]=size;
+  unsigned long i = CRC24(size+3, startbuffer);
+  buffer[size++] = i >> 16;
+  buffer[size++] = i >> 8;
+  buffer[size++] = i;
+  size += 3;
+  return size;
 }
