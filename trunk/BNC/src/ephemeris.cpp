@@ -1477,16 +1477,16 @@ void t_ephBDS::set(const bdsephemeris* ee) {
 
   _receptDateTime = currentDateAndTimeGPS();
 
-  _prn.set('C', ee->satellite);
+  _prn.set('C', ee->satellite - PRN_BDS_START + 1);
 
-  _TOE_bdt.set(ee->BDSweek, ee->TOE);
-  _TOE             = _TOE_bdt + 14.0;
+  _TOE_bdt.set(1356 + ee->BDSweek, ee->TOE);
+  _TOE   = _TOE_bdt + 14.0;
 
-  _TOC_bdt.set(ee->BDSweek, ee->TOC);
-  _TOC             = _TOC_bdt + 14.0;
+  _TOC_bdt.set(1356 + ee->BDSweek, ee->TOC);
+  _TOC   = _TOC_bdt + 14.0;
 
-  _AODE            = ee->AODE;
-  _AODC            = ee->AODC;
+  _AODE  = ee->AODE;
+  _AODC  = ee->AODC;
 
   _clock_bias      = ee->clock_bias;
   _clock_drift     = ee->clock_drift;
@@ -1701,8 +1701,9 @@ QString t_ephBDS::toString(double version) const {
 
   out << QString(fmt)
     .arg(_TOE_bdt.gpssec(), 19, 'e', 12)
-    .arg(double(_AODC),     19, 'e', 12);
-
+    .arg(double(_AODC),     19, 'e', 12)
+    .arg("",                19, QChar(' '))
+    .arg("",                19, QChar(' '));
   return rnxStr;
 }
 
