@@ -379,8 +379,8 @@ void t_sp3Comp::compare(ostringstream& out) const {
   // Print Summary
   // -------------
   out << "!\n! RMS[m]\n";
-  out << "!\n!  MJD       PRN  radial   along   out     nOrb    clk   clkRed   nClk    Offset"
-           "\n! -----------------------------------------------------------------------------\n";
+  out << "!\n!    PRN  radial   along   out     nOrb    clk   clkRed   nClk    Offset"
+           "\n! ----------------------------------------------------------------------\n";
   for (map<string, t_stat>::iterator it = stat.begin(); it != stat.end(); it++) {
     const string& prn  = it->first;
     t_stat&       stat = it->second;
@@ -389,10 +389,10 @@ void t_sp3Comp::compare(ostringstream& out) const {
       stat._rao[1] = sqrt(stat._rao[1] / stat._nr);
       stat._rao[2] = sqrt(stat._rao[2] / stat._nr);
       if (prn == all) {
-        out << "!\n!          Total ";
+        out << "!\n!  Total ";
       }
       else {
-        out << "!            " << prn << ' ';
+        out << "!    " << prn << ' ';
       }
       out << setw(7) << setprecision(4) << stat._rao[0] << ' '
           << setw(7) << setprecision(4) << stat._rao[1] << ' '
