@@ -376,6 +376,7 @@ int t_ephEncoder::RTCM3(const t_ephBDS& eph, unsigned char* buffer) {
   BDSADDBITSFLOAT(10, eph._TGD1, 0.0000000001)
   BDSADDBITSFLOAT(10, eph._TGD2, 0.0000000001)
   BDSADDBITS(1, eph._SatH1)
+  BDSADDBITS(1, 0) /* reserved bit, fill up 8 bits */
 
   startbuffer[0]=0xD3;
   startbuffer[1]=(size >> 8);
