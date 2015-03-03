@@ -353,7 +353,8 @@ int t_ephEncoder::RTCM3(const t_ephBDS& eph, unsigned char* buffer) {
   BDSADDBITSFLOAT(14, eph._IDOT, M_PI/static_cast<double>(1<<30)/static_cast<double>(1<<13))
   BDSADDBITS(5, eph._AODE)
   BDSADDBITS(17, static_cast<int>(eph._TOC_bdt.gpssec())>>3)
-  BDSADDBITSFLOAT(11, eph._clock_driftrate, 1.0/static_cast<double>(1<<30)/static_cast<double>(1<<6))
+  BDSADDBITSFLOAT(11, eph._clock_driftrate, 1.0/static_cast<double>(1<<30)
+      /static_cast<double>(1<<30)/static_cast<double>(1<<6))
   BDSADDBITSFLOAT(22, eph._clock_drift, 1.0/static_cast<double>(1<<30)/static_cast<double>(1<<20))
   BDSADDBITSFLOAT(24, eph._clock_bias, 1.0/static_cast<double>(1<<30)/static_cast<double>(1<<3))
   BDSADDBITS(5, eph._AODC)
@@ -374,6 +375,7 @@ int t_ephEncoder::RTCM3(const t_ephBDS& eph, unsigned char* buffer) {
   BDSADDBITSFLOAT(24, eph._OMEGADOT, M_PI/static_cast<double>(1<<30)/static_cast<double>(1<<13))
   BDSADDBITSFLOAT(10, eph._TGD1, 0.0000000001)
   BDSADDBITSFLOAT(10, eph._TGD2, 0.0000000001)
+  qDebug()<< "value to encode: " << eph._SatH1;
   BDSADDBITS(1, eph._SatH1)
 
   startbuffer[0]=0xD3;
