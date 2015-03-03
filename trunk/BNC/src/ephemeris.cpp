@@ -1514,6 +1514,7 @@ void t_ephBDS::set(const bdsephemeris* ee) {
   _TGD1     = ee->TGD_B1_B3;
   _TGD2     = ee->TGD_B2_B3;
 
+  _URAI     = ee->URAI;
   _SatH1    = ee->flags & BDSEPHF_SATH1;
 
 }
@@ -1693,8 +1694,16 @@ QString t_ephBDS::toString(double version) const {
     .arg(double(_TOE_bdt.gpsw() - 1356.0), 19, 'e', 12)
     .arg(0.0,                              19, 'e', 12);
 
+  double ura = 0.0;
+  if ((_URAI <  6) && (_URAI >= 0)) {
+    ura = ceil(10.0 * pow(2.0, ((double)_URAI/2.0) + 1.0)) / 10.0;
+  }
+  if ((_URAI >= 6) && (_URAI < 15)) {
+    ura = ceil(10.0 * pow(2.0, ((double)_URAI/2.0)      )) / 10.0;
+  }
+
   out << QString(fmt)
-    .arg(0.0,            19, 'e', 12)
+    .arg(ura,            19, 'e', 12)
     .arg(double(_SatH1), 19, 'e', 12)
     .arg(_TGD1,          19, 'e', 12)
     .arg(_TGD2,          19, 'e', 12);

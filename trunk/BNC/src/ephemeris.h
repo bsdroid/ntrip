@@ -259,6 +259,7 @@ class t_ephBDS : public t_eph {
   bncTime _TOE_bdt;
   int     _AODE;
   int     _AODC;
+  int     _URAI;             //  [0..15]
   double  _clock_bias;       //  [s]    
   double  _clock_drift;      //  [s/s]  
   double  _clock_driftrate;  //  [s/s^2]
