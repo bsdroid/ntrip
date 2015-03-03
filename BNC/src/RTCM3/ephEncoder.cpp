@@ -375,7 +375,6 @@ int t_ephEncoder::RTCM3(const t_ephBDS& eph, unsigned char* buffer) {
   BDSADDBITSFLOAT(24, eph._OMEGADOT, M_PI/static_cast<double>(1<<30)/static_cast<double>(1<<13))
   BDSADDBITSFLOAT(10, eph._TGD1, 0.0000000001)
   BDSADDBITSFLOAT(10, eph._TGD2, 0.0000000001)
-  qDebug()<< "value to encode: " << eph._SatH1;
   BDSADDBITS(1, eph._SatH1)
 
   startbuffer[0]=0xD3;
