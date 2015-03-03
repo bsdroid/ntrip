@@ -1688,10 +1688,10 @@ QString t_ephBDS::toString(double version) const {
     .arg(_OMEGADOT, 19, 'e', 12);
 
   out << QString(fmt)
-    .arg(_IDOT,                   19, 'e', 12)
-    .arg(0.0,                     19, 'e', 12)
-    .arg(double(_TOE_bdt.gpsw()), 19, 'e', 12)
-    .arg(0.0,                     19, 'e', 12);
+    .arg(_IDOT,                            19, 'e', 12)
+    .arg(0.0,                              19, 'e', 12)
+    .arg(double(_TOE_bdt.gpsw() - 1356.0), 19, 'e', 12)
+    .arg(0.0,                              19, 'e', 12);
 
   out << QString(fmt)
     .arg(0.0,            19, 'e', 12)
