@@ -687,19 +687,19 @@ As an alternative to initiating file uploads through BNC, you may like to call a
 
 <p><a name="rnxvers2"><h4>3.4.7 Version 2 - optional</h4></p>
 <p>
-GNSS observation data are generally hold available by BNC according to attributes as defined in RINEX Version 3. These attributes describe the tracking mode or channel when generating the observation signals. Capital letters specifying signal generation attributes are A, B, C, D, I, L, M, N, P, Q, S, W, X, Y, and Z, see RINEX Version 3 documentation. Although RINEX Version 3 with its signal generation attributes is the internal processing and default output format of BNC, there are two applications where the program can produce data in RINEX Version 2 format: 
+GNSS observation data are generally hold available within BNC according to attributes as defined in RINEX Version 3. These attributes describe the tracking mode or channel when generating the observation signals. Capital letters specifying signal generation attributes are A, B, C, D, I, L, M, N, P, Q, S, W, X, Y, and Z, see RINEX Version 3 documentation. Although RINEX Version 3 with its signal generation attributes is the internal processing and default output format for BNC, there are two applications where the program is required to produce data in RINEX Version 2 format: 
 <ol type=1>
 <li>When saving the contents of incoming observation streams in RINEX Version 2 files as described in this section.</li>
 <li>When editing or concatenating RINEX 3 files to save them in Version 2 format, see section on 'RINEX Editing & QC'.</li>
 </ol>
-As the Version 2 format ignores signal generation attributes, BNC is forced to map RINEX Version 3 to RINEX Version 2 although this can't be done in one-to-one correspondance. Hence we introduce a 'Signal priority' list of attributes (characters, forming a string) for mapping Version 3 to Version 2.
+As the Version 2 format ignores signal generation attributes, BNC is forced to somehow map RINEX Version 3 to RINEX Version 2 although this can't be done in one-to-one correspondance. Hence we introduce a 'Signal priority' list of attributes (characters, forming a string) for mapping Version 3 to Version 2.
 </p>
 <p>
 The default 'Signal priority' list is an empty option string meaning a priority sequence of 'CWPX_?' attributes when mapping RINEX 3 to RINEX 2. The meaning of this sequence of characters - take it as an example - is as follows:
 <ul>
 <li>Signals with attribute 'C' enjoy the highest priority. If such a Version 3 observation becomes available it is presented as RINEX Version 2 observation if that is the format you wish to see. Observations with other attributes are ignored.</li>
 <li>If no signal with 'C' attribute is available but we have an observation with 'W' attribute, BNC presents that one as RINEX Version 2 observation and ignores all observations with other attributes. The same applies mutatis mutandis to observations with P and X attributes.</li>
-<li>If no signal with 'C', 'W', 'P', or 'X' attribute is availalbe but a signal with undefined (blank, '_') generation attribute exists, BNC presents that one as RINEX Version 2 observation.</li>
+<li>If no signal with 'C', 'W', 'P', or 'X' attribute is availalbe but a signal with undefined generation attribute (blank character, '_') exists, BNC presents that one as RINEX Version 2 observation.</li>
 <li>If no signal with 'C', 'W', 'P', 'X', or '_' generation attribute exists then the question mark '?' tells BNC to present the first of any other appearing signal as RINEX Version 2 observation.</li>
 </ul>
 </p>
