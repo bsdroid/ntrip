@@ -699,7 +699,7 @@ The default 'Signal priority' list is an empty option string meaning a priority 
 <ul>
 <li>Signals with attribute 'C' enjoy the highest priority. If such a Version 3 observation becomes available it is presented as RINEX Version 2 observation if that is the format you wish to see. Observations with other attributes are ignored.</li>
 <li>If no signal with 'C' attribute is available but we have an observation with 'W' attribute, BNC presents that one as RINEX Version 2 observation and ignores all observations with other attributes. The same applies mutatis mutandis to observations with P and X attributes.</li>
-<li>If no signal with 'C', 'W', 'P', or 'X' attribute is availalbe but a signal with undefined generation attribute (blank character, '_') exists, BNC presents that one as RINEX Version 2 observation.</li>
+<li>If no signal with 'C', 'W', 'P', or 'X' attribute is availalbe but a signal with undefined generation attribute (underscore character, '_') exists, BNC presents that one as RINEX Version 2 observation.</li>
 <li>If no signal with 'C', 'W', 'P', 'X', or '_' generation attribute exists then the question mark '?' tells BNC to present the first of any other appearing signal as RINEX Version 2 observation.</li>
 </ul>
 </p>
