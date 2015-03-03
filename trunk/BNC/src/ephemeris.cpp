@@ -1515,7 +1515,7 @@ void t_ephBDS::set(const bdsephemeris* ee) {
   _TGD2     = ee->TGD_B2_B3;
 
   _URAI     = ee->URAI;
-  _SatH1    = ee->flags & BDSEPHF_SATH1;
+  _SatH1    = (ee->flags & BDSEPHF_SATH1) ? 1: 0;
 
 }
 
