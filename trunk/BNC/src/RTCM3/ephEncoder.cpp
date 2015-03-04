@@ -355,6 +355,7 @@ int t_ephEncoder::RTCM3(const t_ephSBAS& eph, unsigned char* buffer) {
   SBASADDBITSFLOAT(10, eph._z_acceleration, 0.0000625)
   SBASADDBITSFLOAT(12, eph._agf0, 1.0/static_cast<double>(1<<30)/static_cast<double>(1<<1))
   SBASADDBITSFLOAT(8, eph._agf1, 1.0/static_cast<double>(1<<30)/static_cast<double>(1<<10))
+  SBASADDBITS(8,0);
 
   startbuffer[0]=0xD3;
   startbuffer[1]=(size >> 8);
