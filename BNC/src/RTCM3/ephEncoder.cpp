@@ -322,9 +322,49 @@ int t_ephEncoder::RTCM3(const t_ephGal& eph, unsigned char *buffer) {
 
 // build up RTCM3 for SBAS
 ////////////////////////////////////////////////////////////////////////////
-int t_ephEncoder::RTCM3(const t_ephSBAS& /* eph */, unsigned char* /* buffer */) {
+#define SBASTOINT(type, value) static_cast<type>(round(value))
 
-  return 0;
+#define SBASADDBITS(a, b) {bitbuffer = (bitbuffer<<(a)) \
+                       |(SBASTOINT(long long,b)&((1ULL<<a)-1)); \
+                       numbits += (a); \
+                       while(numbits >= 8) { \
+                       buffer[size++] = bitbuffer>>(numbits-8);numbits -= 8;}}
+#define SBASADDBITSFLOAT(a,b,c) {long long i = SBASTOINT(long long,(b)/(c)); \
+                             SBASADDBITS(a,i)};
+
+int t_ephEncoder::RTCM3(const t_ephSBAS& eph, unsigned char* buffer) {
+  int size = 0;
+  int numbits = 0;
+  long long bitbuffer = 0;
+  unsigned char *startbuffer = buffer;
+  buffer= buffer+3;
+
+  SBASADDBITS(12, 1043)
+  SBASADDBITS(6, eph._prn.number()-20)
+  SBASADDBITS(8, eph._IODN)
+  SBASADDBITS(13, static_cast<int>(eph._TOC.daysec())>>4)
+  SBASADDBITS(4, eph._ura)
+  SBASADDBITSFLOAT(30, eph._x_pos, 0.08)
+  SBASADDBITSFLOAT(30, eph._y_pos, 0.08)
+  SBASADDBITSFLOAT(25, eph._z_pos, 0.4)
+  SBASADDBITSFLOAT(17, eph._x_velocity, 0.000625)
+  SBASADDBITSFLOAT(17, eph._y_velocity, 0.000625)
+  SBASADDBITSFLOAT(18, eph._z_velocity, 0.004)
+  SBASADDBITSFLOAT(10, eph._x_acceleration, 0.0000125)
+  SBASADDBITSFLOAT(10, eph._y_acceleration, 0.0000125)
+  SBASADDBITSFLOAT(10, eph._z_acceleration, 0.0000625)
+  SBASADDBITSFLOAT(12, eph._agf0, 1.0/static_cast<double>(1<<30)/static_cast<double>(1<<1))
+  SBASADDBITSFLOAT(8, eph._agf1, 1.0/static_cast<double>(1<<30)/static_cast<double>(1<<10))
+
+  startbuffer[0]=0xD3;
+  startbuffer[1]=(size >> 8);
+  startbuffer[2]=size;
+  unsigned long i = CRC24(size+3, startbuffer);
+  buffer[size++] = i >> 16;
+  buffer[size++] = i >> 8;
+  buffer[size++] = i;
+  size += 3;
+  return size;
 }
 
 // build up RTCM3 for BDS
