@@ -46,14 +46,16 @@ class t_satData {
  public:
   t_satData() {
     obsIndex = 0;
-    P1 = 0.0;
-    P2 = 0.0;
-    P5 = 0.0;
-    P3 = 0.0;
-    L1 = 0.0;
-    L2 = 0.0;
-    L5 = 0.0;
-    L3 = 0.0;
+    P1      = 0.0;
+    P2      = 0.0;
+    P5      = 0.0;
+    P3      = 0.0;
+    L1      = 0.0;
+    L2      = 0.0;
+    L5      = 0.0;
+    L3      = 0.0;
+    lkA     = 0.0;
+    lkB     = 0.0;
   }
   ~t_satData() {}
   bncTime      tt;
@@ -74,6 +76,8 @@ class t_satData {
   double       rho;
   bool         slipFlag;
   double       lambda3;
+  double       lkA;
+  double       lkB;
   unsigned     obsIndex;
   char system() const {return prn.toAscii()[0];}
 };

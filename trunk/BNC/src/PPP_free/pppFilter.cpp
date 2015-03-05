@@ -327,18 +327,28 @@ double t_pppFilter::cmpValue(t_satData* satData, bool phase) {
   }
 
   double offset = 0.0;
+  t_frequency::type frqA = t_frequency::G1;
+  t_frequency::type frqB = t_frequency::G2;
   if      (satData->prn[0] == 'R') {
     offset = Glonass_offset();
+    frqA = t_frequency::R1;
+    frqB = t_frequency::R2;
   }
   else if (satData->prn[0] == 'E') {
     offset = Galileo_offset();
+    //frqA = t_frequency::E1; as soon as available
+    //frqB = t_frequency::E5; -"-
   }
 
   double phaseCenter = 0.0;
   if (_antex) { 
     bool found;
-    phaseCenter = _antex->rcvCorr(OPT->_antNameRover, t_frequency::G1, 
-                                  satData->eleSat, satData->azSat, found);
+    phaseCenter = satData->lkA * _antex->rcvCorr(OPT->_antNameRover, frqA,
+                                                 satData->eleSat, satData->azSat,
+                                                 found)
+                + satData->lkB * _antex->rcvCorr(OPT->_antNameRover, frqB,
+                                                 satData->eleSat, satData->azSat,
+                                                 found);
     if (!found) {
       LOG << "ANTEX: antenna >" << OPT->_antNameRover << "< not found\n";
     }
