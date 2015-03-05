@@ -622,10 +622,10 @@ bncWindow::bncWindow() {
   pLayout->addWidget(_proxyHostLineEdit,                                     1, 1, 1,10);
   pLayout->addWidget(new QLabel("Proxy port"),                               2, 0);
   pLayout->addWidget(_proxyPortLineEdit,                                     2, 1);
-  pLayout->addWidget(new QLabel("Path to SSL Certificates"),                 3, 0);
+  pLayout->addWidget(new QLabel("Path to SSL certificates"),                 3, 0);
   pLayout->addWidget(_sslCaCertPathLineEdit,                                 3, 1, 1,10);
   pLayout->addWidget(new QLabel("Default:  " + bncSslConfig::defaultPath()), 3,11, 1,20);
-  pLayout->addWidget(new QLabel("Ignore SSL Authorization Errors"),          4, 0);
+  pLayout->addWidget(new QLabel("Ignore SSL authorization errors"),          4, 0);
   pLayout->addWidget(_ignoreSslErrorsCheckBox,                               4, 1, 1,10);
   pLayout->addWidget(new QLabel(" "),                                        4, 0);
   pLayout->addWidget(new QLabel(" "),                                        5, 0);
@@ -829,10 +829,10 @@ bncWindow::bncWindow() {
   pppLayout1->addWidget(new QLabel("Data Source"),        ir, 0, Qt::AlignLeft);
   pppLayout1->addWidget(_pppWidgets._dataSource,          ir, 1);
   pppLayout1->addItem(new QSpacerItem(4*ww, 0),           ir, 2);
-  pppLayout1->addWidget(new QLabel("RINEX Observations"), ir, 3, Qt::AlignLeft);
+  pppLayout1->addWidget(new QLabel("RINEX observations"), ir, 3, Qt::AlignLeft);
   pppLayout1->addWidget(_pppWidgets._rinexObs,            ir, 4, 1, 2);
   ++ir;
-  pppLayout1->addWidget(new QLabel("RINEX Orbits"),       ir, 3, Qt::AlignLeft);
+  pppLayout1->addWidget(new QLabel("RINEX orbits"),       ir, 3, Qt::AlignLeft);
   pppLayout1->addWidget(_pppWidgets._rinexNav,            ir, 4, 1, 2);
   ++ir;
   pppLayout1->addWidget(new QLabel("Corrections"),        ir, 0, Qt::AlignLeft);
@@ -845,18 +845,18 @@ bncWindow::bncWindow() {
   ++ir;
   pppLayout1->addWidget(new QLabel("Coordinates"),        ir, 0, Qt::AlignLeft);
   pppLayout1->addWidget(_pppWidgets._crdFile,             ir, 1, 1, 2);
-  pppLayout1->addWidget(new QLabel("Log File"),           ir, 4, Qt::AlignLeft);
+  pppLayout1->addWidget(new QLabel("Logfile"),            ir, 4, Qt::AlignLeft);
   pppLayout1->addWidget(_pppWidgets._logFile,             ir, 5);
   ++ir;
   pppLayout1->addWidget(new QLabel("ANTEX"),              ir, 0, Qt::AlignLeft);
   pppLayout1->addWidget(_pppWidgets._antexFile,           ir, 1, 1, 2);
 
-  pppLayout1->addWidget(new QLabel("NMEA File"),          ir, 4, Qt::AlignLeft);
+  pppLayout1->addWidget(new QLabel("NMEA file"),          ir, 4, Qt::AlignLeft);
   pppLayout1->addWidget(_pppWidgets._nmeaFile,            ir, 5);
   pppLayout1->addWidget(new QLabel("Port"),               ir, 6, Qt::AlignLeft);
   pppLayout1->addWidget(_pppWidgets._nmeaPort,            ir, 7); _pppWidgets._nmeaPort->setMaximumWidth(8*ww);
   ++ir;
-  pppLayout1->addWidget(new QLabel("SNX TRO File"),       ir, 4, Qt::AlignLeft);
+  pppLayout1->addWidget(new QLabel("SNX TRO file"),       ir, 4, Qt::AlignLeft);
   pppLayout1->addWidget(_pppWidgets._snxtroFile,          ir, 5);
   pppLayout1->addWidget(new QLabel("Sampling"),           ir, 6, Qt::AlignLeft);
   pppLayout1->addWidget(_pppWidgets._snxtroSampl,         ir, 7);
@@ -1041,7 +1041,7 @@ bncWindow::bncWindow() {
   reqcLayout->addWidget(_reqcOutNavLineEdit,                     ir, 3, Qt::AlignRight);
   reqcLayout->addWidget(new QLabel("Nav"),                       ir, 4, Qt::AlignLeft);
   ++ir;
-  reqcLayout->addWidget(new QLabel("Log File"),                  ir, 0, Qt::AlignLeft);
+  reqcLayout->addWidget(new QLabel("Logfile"),                   ir, 0, Qt::AlignLeft);
   reqcLayout->addWidget(_reqcOutLogLineEdit,                     ir, 1, Qt::AlignRight);
   reqcLayout->addWidget(new QLabel("summary only"),              ir, 3, Qt::AlignRight);
   reqcLayout->addWidget(_reqcLogSummaryOnly,                     ir, 4, Qt::AlignLeft);
@@ -1081,15 +1081,15 @@ bncWindow::bncWindow() {
   _sp3CompLogLineEdit->setMaximumWidth(15*ww);
 
   ir = 0;
-  sp3CompLayout->addWidget(new QLabel("Orbit and Clock Comparison"),   ir, 0, 1, 20);
+  sp3CompLayout->addWidget(new QLabel("Orbit and clock comparison"),   ir, 0, 1, 20);
   ++ir;
   sp3CompLayout->addWidget(new QLabel("Input SP3 files (full path)"),  ir, 0, Qt::AlignLeft);
   sp3CompLayout->addWidget(_sp3CompFileChooser,                        ir, 1, Qt::AlignRight);
   ++ir;
-  sp3CompLayout->addWidget(new QLabel("Exclude Satellites"),           ir, 0, Qt::AlignLeft);
+  sp3CompLayout->addWidget(new QLabel("Exclude satellites"),           ir, 0, Qt::AlignLeft);
   sp3CompLayout->addWidget(_sp3CompExclude,                            ir, 1, Qt::AlignRight);
   ++ir;
-  sp3CompLayout->addWidget(new QLabel("Log File"),                     ir, 0, Qt::AlignLeft);
+  sp3CompLayout->addWidget(new QLabel("Logfile"),                      ir, 0, Qt::AlignLeft);
   sp3CompLayout->addWidget(_sp3CompLogLineEdit,                        ir, 1, Qt::AlignRight);
   ++ir;
   sp3CompLayout->addWidget(new QLabel(""), ir, 1);
@@ -1115,7 +1115,7 @@ bncWindow::bncWindow() {
   cmbLayout->addWidget(new QLabel("Method"),                                2, 6, Qt::AlignRight);
   cmbLayout->addWidget(_cmbMethodComboBox,                                  2, 7, Qt::AlignRight);
   cmbLayout->addWidget(new QLabel("    "),                                  3, 5);
-  cmbLayout->addWidget(new QLabel("Maximal Residuum"),                      3, 6, Qt::AlignRight);
+  cmbLayout->addWidget(new QLabel("Maximal residuum"),                      3, 6, Qt::AlignRight);
   cmbLayout->addWidget(_cmbMaxresLineEdit,                                  3, 7, Qt::AlignRight);
   cmbLayout->addWidget(new QLabel("ANTEX"),                                 3, 9, Qt::AlignRight);
   cmbLayout->addWidget(_cmbAntexFile,                                       3, 10);
@@ -1154,7 +1154,7 @@ bncWindow::bncWindow() {
   QBoxLayout* uploadLayout = new QBoxLayout(QBoxLayout::TopToBottom);
   populateUploadTable();
 
-  uploadLayout->addWidget(new QLabel("Upload RTCMv3 Broadcast Corrections to caster."));
+  uploadLayout->addWidget(new QLabel("Upload RTCM Version 3 Broadcast Corrections to caster."));
   uploadLayout->addWidget(_uploadTable);
   uploadLayout->addLayout(uploadHlpLayout);
 
