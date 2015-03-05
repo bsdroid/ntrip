@@ -186,6 +186,8 @@ void t_pppClient::putNewObs(t_satData* satData) {
       satData->P3      = a1 * satData->P1 + a2 * satData->P2;
       satData->L3      = a1 * satData->L1 + a2 * satData->L2;
       satData->lambda3 = a1 * t_CST::c / f1 + a2 * t_CST::c / f2;
+      satData->lkA     = a1;
+      satData->lkB     = a2;
       _epoData->satData[satData->prn] = satData;
     }
     else {
@@ -207,6 +209,8 @@ void t_pppClient::putNewObs(t_satData* satData) {
       satData->P3      = a1 * satData->P1 + a5 * satData->P5;
       satData->L3      = a1 * satData->L1 + a5 * satData->L5;
       satData->lambda3 = a1 * t_CST::c / f1 + a5 * t_CST::c / f5;
+      satData->lkA     = a1;
+      satData->lkB     = a5;
       _epoData->satData[satData->prn] = satData;
     }
     else {
