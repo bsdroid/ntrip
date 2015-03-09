@@ -936,50 +936,36 @@ bncWindow::bncWindow() {
   pppGroup3->setLayout(pppLayout3);
 
   // ------------------------
-  QVBoxLayout* pppLayout4 = new QVBoxLayout;
-  pppLayout4->addWidget(new QLabel("Precise Point Positioning - Plots"));
-  pppLayout4->addSpacing(ww);
-
-  QHBoxLayout* pppLayout4Hlp1 = new QHBoxLayout;
-  pppLayout4Hlp1->addWidget(new QLabel("PPP Station "));
-  _pppWidgets._plotCoordinates->setMaximumWidth(8*ww);
-  pppLayout4Hlp1->addWidget(_pppWidgets._plotCoordinates);
-  pppLayout4Hlp1->addWidget(new QLabel("Nort-East-Up Time Series"));
-  pppLayout4Hlp1->addStretch();
-  pppLayout4->addLayout(pppLayout4Hlp1);
-  pppLayout4->addSpacing(ww);
-
-  QHBoxLayout* pppLayout4Hlp2 = new QHBoxLayout;
-  pppLayout4Hlp2->addWidget(new QLabel("Track Plot "));
   connect(_pppWidgets._mapWinButton, SIGNAL(clicked()), SLOT(slotMapPPP()));
-  pppLayout4Hlp2->addWidget(_pppWidgets._mapWinButton);
+  _pppWidgets._mapSpeedSlider->setMinimumWidth(28*ww);
 
-  pppLayout4Hlp2->addSpacing(1*ww);
+  QGridLayout* pppLayout4 = new QGridLayout();
+  ir = 0;
+  pppLayout4->addWidget(new QLabel("Precise Point Positioning - Plots"), ir, 0, 1, 50, Qt::AlignLeft);
+  ++ir;
+  pppLayout4->addWidget(new QLabel("PPP Plot"),                          ir, 0, Qt::AlignLeft);
+  pppLayout4->addWidget(_pppWidgets._plotCoordinates,                    ir, 1, Qt::AlignLeft);
+  pppLayout4->addWidget(new QLabel("Station"),                           ir, 2, Qt::AlignLeft);
+  ++ir;
+  pppLayout4->addWidget(new QLabel("Track map"),                         ir, 0, Qt::AlignLeft);
+  pppLayout4->addWidget(_pppWidgets._mapWinButton,                       ir, 1, Qt::AlignLeft);
+  pppLayout4->addWidget(new QLabel("OSM"),                               ir, 2, Qt::AlignLeft);
+  pppLayout4->addWidget(_pppWidgets._useOpenStreetMap,                   ir, 3, Qt::AlignLeft);
+  pppLayout4->addWidget(new QLabel("Google"),                            ir, 3, Qt::AlignRight);
+  pppLayout4->addWidget(_pppWidgets._useGoogleMap,                       ir, 4, Qt::AlignLeft);
+  ++ir;
+  pppLayout4->addWidget(new QLabel("Line properties"),                   ir, 0, Qt::AlignLeft);
+  pppLayout4->addWidget(_pppWidgets._mapWinDotSize,                      ir, 1, Qt::AlignLeft);
+  pppLayout4->addWidget(new QLabel("Size    "),                          ir, 2, Qt::AlignLeft);
+  pppLayout4->addWidget(_pppWidgets._mapWinDotColor,                     ir, 3, Qt::AlignLeft);
+  pppLayout4->addWidget(new QLabel("Color"),                             ir, 4, Qt::AlignLeft);
+  ++ir;
+  pppLayout4->addWidget(new QLabel("Visualization speed"),               ir, 0, Qt::AlignLeft);
+  pppLayout4->addWidget(_pppWidgets._mapSpeedSlider,                     ir, 1, 1, 20, Qt::AlignLeft);
+  ++ir;
+  pppLayout4->addWidget(new QLabel(""),                                  ir, 1);
+  pppLayout4->setRowStretch(ir, 999);
 
-  pppLayout4Hlp2->addWidget(new QLabel("Google"));
-  pppLayout4Hlp2->addWidget(_pppWidgets._useGoogleMap);
-
-  pppLayout4Hlp2->addWidget(new QLabel("OSM"));
-  pppLayout4Hlp2->addWidget(_pppWidgets._useOpenStreetMap);
-
-  pppLayout4Hlp2->addSpacing(3*ww);
-
-  _pppWidgets._mapWinDotSize->setMaximumWidth(5*ww);
-  pppLayout4Hlp2->addWidget(_pppWidgets._mapWinDotSize);
-
-  pppLayout4Hlp2->addSpacing(3*ww);
-
-  pppLayout4Hlp2->addWidget(_pppWidgets._mapWinDotColor);
-
-  pppLayout4Hlp2->addSpacing(3*ww);
-
-  pppLayout4Hlp2->addWidget(new QLabel("Speed"));
-  pppLayout4Hlp2->addWidget(_pppWidgets._mapSpeedSlider);
-
-  pppLayout4Hlp2->addStretch();
-  pppLayout4->addLayout(pppLayout4Hlp2);
-
-  pppLayout4->addStretch();
   pppGroup4->setLayout(pppLayout4);
 
   // Reqc Processing
