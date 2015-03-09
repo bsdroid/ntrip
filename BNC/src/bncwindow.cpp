@@ -617,7 +617,7 @@ bncWindow::bncWindow() {
   pLayout->setColumnMinimumWidth(0,13*ww);
   _proxyPortLineEdit->setMaximumWidth(9*ww);
 
-  pLayout->addWidget(new QLabel("Settings for proxy in protected networks and for SSL authorization, leave boxes blank if none."),0, 0, 1, 50);
+  pLayout->addWidget(new QLabel("Settings for proxy in protected networks and for SSL authorization, leave boxes blank if none."),0, 0, 1, 70);
   pLayout->addWidget(new QLabel("Proxy host"),                               1, 0);
   pLayout->addWidget(_proxyHostLineEdit,                                     1, 1, 1,10);
   pLayout->addWidget(new QLabel("Proxy port"),                               2, 0);
@@ -627,9 +627,9 @@ bncWindow::bncWindow() {
   pLayout->addWidget(new QLabel("Default:  " + bncSslConfig::defaultPath()), 3,11, 1,20);
   pLayout->addWidget(new QLabel("Ignore SSL authorization errors"),          4, 0);
   pLayout->addWidget(_ignoreSslErrorsCheckBox,                               4, 1, 1,10);
-  pLayout->addWidget(new QLabel(" "),                                        4, 0);
-  pLayout->addWidget(new QLabel(" "),                                        5, 0);
-  pLayout->addWidget(new QLabel(" "),                                        6, 0);
+  pLayout->addWidget(new QLabel(""),                                         5, 1);
+  pLayout->setRowStretch(6, 999);
+
   pgroup->setLayout(pLayout);
 
   // General Tab
@@ -649,7 +649,9 @@ bncWindow::bncWindow() {
   gLayout->addWidget(_autoStartCheckBox,                         4, 1);
   gLayout->addWidget(new QLabel("Raw output file (full path)"),  5, 0);
   gLayout->addWidget(_rawOutFileLineEdit,                        5, 1, 1,30);
-  gLayout->addWidget(new QLabel(" "),                            6, 0);
+  gLayout->addWidget(new QLabel(""),                             6, 1);
+  gLayout->setRowStretch(7, 999);
+
   ggroup->setLayout(gLayout);
 
   // RINEX Observations
@@ -675,7 +677,9 @@ bncWindow::bncWindow() {
   oLayout->addWidget(new QLabel("  Signal priority"),              5, 2, 1,15);
   oLayout->addWidget(new QLabel("Version 3"),                      6, 0);
   oLayout->addWidget(_rnxV3CheckBox,                               6, 1);
-  oLayout->addWidget(new QLabel(" "),                              7, 0);
+  oLayout->addWidget(new QLabel(""),                               7, 1);
+  oLayout->setRowStretch(8, 999);
+
   ogroup->setLayout(oLayout);
 
   // RINEX Ephemeris
@@ -685,7 +689,7 @@ bncWindow::bncWindow() {
   _ephIntrComboBox->setMaximumWidth(9*ww);
   _outEphPortLineEdit->setMaximumWidth(9*ww);
 
-  eLayout->addWidget(new QLabel("Saving RINEX ephemeris files and ephemeris output through IP port."),0,0,1,50);
+  eLayout->addWidget(new QLabel("Saving RINEX ephemeris files and ephemeris output through IP port."),0,0,1,70);
   eLayout->addWidget(new QLabel("Directory"),                     1, 0);
   eLayout->addWidget(_ephPathLineEdit,                            1, 1, 1,30);
   eLayout->addWidget(new QLabel("Interval"),                      2, 0);
@@ -694,8 +698,9 @@ bncWindow::bncWindow() {
   eLayout->addWidget(_outEphPortLineEdit,                         3, 1);
   eLayout->addWidget(new QLabel("Version 3"),                     4, 0);
   eLayout->addWidget(_ephV3CheckBox,                              4, 1);
-  eLayout->addWidget(new QLabel(" "),                             5, 0);
-  eLayout->addWidget(new QLabel(" "),                             6, 0);
+  eLayout->addWidget(new QLabel(""),                              5, 1);
+  eLayout->setRowStretch(6, 999);
+
   egroup->setLayout(eLayout);
 
 
@@ -706,16 +711,15 @@ bncWindow::bncWindow() {
   _corrIntrComboBox->setMaximumWidth(9*ww);
   _corrPortLineEdit->setMaximumWidth(9*ww);
 
-  cLayout->addWidget(new QLabel("Saving Broadcast Ephemeris correction files and correction output through IP port."),0,0,1,50);
+  cLayout->addWidget(new QLabel("Saving Broadcast Ephemeris correction files and correction output through IP port."),0,0,1,70);
   cLayout->addWidget(new QLabel("Directory, ASCII"),              1, 0);
   cLayout->addWidget(_corrPathLineEdit,                           1, 1, 1,20);
   cLayout->addWidget(new QLabel("Interval"),                      2, 0);
   cLayout->addWidget(_corrIntrComboBox,                           2, 1);
   cLayout->addWidget(new QLabel("Port"),                          3, 0);
   cLayout->addWidget(_corrPortLineEdit,                           3, 1);
-  cLayout->addWidget(new QLabel(" "),                             4, 0);
-  cLayout->addWidget(new QLabel(" "),                             5, 0);
-  cLayout->addWidget(new QLabel(" "),                             6, 0);
+  cLayout->addWidget(new QLabel(""),                              4, 1);
+  cLayout->setRowStretch(7, 999);
   cgroup->setLayout(cLayout);
 
   // Feed Engine
@@ -738,8 +742,9 @@ bncWindow::bncWindow() {
   sLayout->addWidget(_outFileLineEdit,                            3, 1, 1, 20);
   sLayout->addWidget(new QLabel("Port (unsynchronized)"),         4, 0);
   sLayout->addWidget(_outUPortLineEdit,                           4, 1);
-  sLayout->addWidget(new QLabel(" "),                             5, 0);
-  sLayout->addWidget(new QLabel(" "),                             6, 0);
+  sLayout->addWidget(new QLabel(""),                              5, 1);
+  sLayout->setRowStretch(6, 999);
+
   sgroup->setLayout(sLayout);
 
   // Serial Output
@@ -775,7 +780,8 @@ bncWindow::bncWindow() {
   serLayout->addWidget(_serialFileNMEALineEdit,                   5, 3, 1,15);
   serLayout->addWidget(new QLabel("Height"),                      5,20, Qt::AlignRight);
   serLayout->addWidget(_serialHeightNMEALineEdit,                 5,21, 1,11);
-  serLayout->addWidget(new QLabel(" "),                           6, 0);
+  serLayout->addWidget(new QLabel(""),                            6, 1);
+  serLayout->setRowStretch(7, 999);
 
   sergroup->setLayout(serLayout);
 
@@ -796,8 +802,9 @@ bncWindow::bncWindow() {
   aLayout->addWidget(_adviseRecoSpinBox,                          3, 1);
   aLayout->addWidget(new QLabel("Script (full path)"),            4, 0);
   aLayout->addWidget(_adviseScriptLineEdit,                       4, 1, 1,30);
-  aLayout->addWidget(new QLabel("    "),                          5, 0);
-  aLayout->addWidget(new QLabel("    "),                          6, 0);
+  aLayout->addWidget(new QLabel(""),                              5, 1);
+  aLayout->setRowStretch(6, 999);
+
   agroup->setLayout(aLayout);
 
   // Miscellaneous
@@ -807,7 +814,7 @@ bncWindow::bncWindow() {
   _perfIntrComboBox->setMaximumWidth(9*ww);
   _miscPortLineEdit->setMaximumWidth(9*ww);
 
-  rLayout->addWidget(new QLabel("Log latencies or scan RTCM streams for message types and antenna information or output raw data through TCP/IP port."),0, 0,1,30);
+  rLayout->addWidget(new QLabel("Log latencies or scan RTCM streams for message types and antenna information or output raw data through TCP/IP port."),0, 0,1,80); 
   rLayout->addWidget(new QLabel("Mountpoint"),                    1, 0);
   rLayout->addWidget(_miscMountLineEdit,                          1, 1, 1,7);
   rLayout->addWidget(new QLabel("Log latency"),                   2, 0);
@@ -816,15 +823,16 @@ bncWindow::bncWindow() {
   rLayout->addWidget(_scanRTCMCheckBox,                           3, 1);
   rLayout->addWidget(new QLabel("Port"),                          4, 0);
   rLayout->addWidget(_miscPortLineEdit,                           4, 1);
-  rLayout->addWidget(new QLabel(" "),                             5, 0);
-  rLayout->addWidget(new QLabel(" "),                             6, 0);
+  rLayout->addWidget(new QLabel(""),                              5, 1);
+  rLayout->setRowStretch(6, 999);
+
   rgroup->setLayout(rLayout);
 
   // PPP
   // ---
   QGridLayout* pppLayout1 = new QGridLayout();
   int ir = 0;
-  pppLayout1->addWidget(new QLabel("<b>Precise Point Positioning (Input and Output)</b>"), ir, 0, 1, 7, Qt::AlignLeft);
+  pppLayout1->addWidget(new QLabel("Precise Point Positioning - Input and Output"), ir, 0, 1, 7, Qt::AlignLeft);
   ++ir;     
   pppLayout1->addWidget(new QLabel("Data source"),        ir, 0, Qt::AlignLeft);
   pppLayout1->addWidget(_pppWidgets._dataSource,          ir, 1);
@@ -840,8 +848,8 @@ bncWindow::bncWindow() {
   pppLayout1->addWidget(new QLabel("Corrections"),        ir, 3, Qt::AlignLeft);
   pppLayout1->addWidget(_pppWidgets._corrFile,            ir, 4, 1, 2);
   ++ir;
-  pppLayout1->addWidget(new QLabel("<b>Input</b>"),       ir, 0, Qt::AlignLeft);
-  pppLayout1->addWidget(new QLabel("<b>Output</b>"),      ir, 4, 1, 2, Qt::AlignLeft);
+  pppLayout1->addWidget(new QLabel("Input:"),             ir, 0, Qt::AlignLeft);
+  pppLayout1->addWidget(new QLabel("Output:"),            ir, 4, 1, 2, Qt::AlignLeft);
   ++ir;
   pppLayout1->addWidget(new QLabel("Coordinates"),        ir, 0, Qt::AlignLeft);
   pppLayout1->addWidget(_pppWidgets._crdFile,             ir, 1, 1, 2);
@@ -862,11 +870,16 @@ bncWindow::bncWindow() {
   pppLayout1->addWidget(_pppWidgets._snxtroSampl,         ir, 7);
 
   pppLayout1->addItem(new QSpacerItem(4*ww, 0),           ir, 8);
+  ++ir;
+  pppLayout1->addWidget(new QLabel(""),                   ir, 1);
+  ++ir;
+  pppLayout1->setRowStretch(ir, 999);
+
 
   pppGroup1->setLayout(pppLayout1);
 
   QVBoxLayout* pppLayout2 = new QVBoxLayout();
-  pppLayout2->addWidget(new QLabel("<b>Precise Point Positioning (Processed Stations)</b>"));
+  pppLayout2->addWidget(new QLabel("Precise Point Positioning - Processed Stations"));
   pppLayout2->addWidget(_pppWidgets._staTable, 99);
   QHBoxLayout* pppLayout2sub = new QHBoxLayout();
   pppLayout2sub->addWidget(_pppWidgets._addStaButton);
@@ -879,7 +892,7 @@ bncWindow::bncWindow() {
 
   QGridLayout* pppLayout3 = new QGridLayout();
   ir = 0;
-  pppLayout3->addWidget(new QLabel("<b>Precise Point Positioning (Options)</b>"), ir, 0, 1, 2, Qt::AlignLeft);
+  pppLayout3->addWidget(new QLabel("Precise Point Positioning - Options"), ir, 0, 1, 2, Qt::AlignLeft);
   ++ir;     
   pppLayout3->addWidget(new QLabel("GPS LCs"),              ir, 0, Qt::AlignLeft);
   pppLayout3->addWidget(_pppWidgets._lcGPS,                 ir, 1);
@@ -916,12 +929,15 @@ bncWindow::bncWindow() {
   ++ir;
   pppLayout3->addWidget(new QLabel(""),                     ir, 8);
   pppLayout3->setColumnStretch(8, 999);
+  ++ir;
+  pppLayout3->addWidget(new QLabel(""),                      ir, 1);
+  pppLayout3->setRowStretch(ir, 999);
 
   pppGroup3->setLayout(pppLayout3);
 
   // ------------------------
   QVBoxLayout* pppLayout4 = new QVBoxLayout;
-  pppLayout4->addWidget(new QLabel("<b>Precise Point Positioning (Plots)</b>"));
+  pppLayout4->addWidget(new QLabel("Precise Point Positioning - Plots"));
   pppLayout4->addSpacing(ww);
 
   QHBoxLayout* pppLayout4Hlp1 = new QHBoxLayout;
@@ -934,7 +950,7 @@ bncWindow::bncWindow() {
   pppLayout4->addSpacing(ww);
 
   QHBoxLayout* pppLayout4Hlp2 = new QHBoxLayout;
-  pppLayout4Hlp2->addWidget(new QLabel("Track Plot         "));
+  pppLayout4Hlp2->addWidget(new QLabel("Track Plot "));
   connect(_pppWidgets._mapWinButton, SIGNAL(clicked()), SLOT(slotMapPPP()));
   pppLayout4Hlp2->addWidget(_pppWidgets._mapWinButton);
 
@@ -1022,7 +1038,7 @@ bncWindow::bncWindow() {
   _reqcLogSummaryOnly->setCheckState(Qt::CheckState(settings.value("reqcLogSummaryOnly").toInt()));
 
   ir = 0;
-  reqcLayout->addWidget(new QLabel("RINEX file editing, concatenation and quality check."),ir, 0, 1, 20);
+  reqcLayout->addWidget(new QLabel("RINEX file editing, concatenation and quality check."),ir, 0, 1, 50);
   ++ir;
   reqcLayout->addWidget(new QLabel("Action"),                   ir, 0, Qt::AlignLeft);
   reqcLayout->addWidget(_reqcActionComboBox,                    ir, 1, Qt::AlignLeft);
@@ -1031,19 +1047,19 @@ bncWindow::bncWindow() {
   ++ir;
   reqcLayout->addWidget(new QLabel("Input files (full path)"),  ir, 0, Qt::AlignLeft);
   reqcLayout->addWidget(_reqcObsFileChooser,                    ir, 1, Qt::AlignRight);
-  reqcLayout->addWidget(new QLabel("Obs"),                      ir, 2, Qt::AlignLeft);
+  reqcLayout->addWidget(new QLabel("     Obs"),                 ir, 2, Qt::AlignLeft);
   reqcLayout->addWidget(_reqcNavFileChooser,                    ir, 3, Qt::AlignRight);
-  reqcLayout->addWidget(new QLabel("Nav"),                      ir, 4, Qt::AlignLeft);
+  reqcLayout->addWidget(new QLabel("     Nav"),                 ir, 4, Qt::AlignLeft);
   ++ir;
   reqcLayout->addWidget(new QLabel("Output files (full path)"),  ir, 0, Qt::AlignLeft);
   reqcLayout->addWidget(_reqcOutObsLineEdit,                     ir, 1, Qt::AlignRight);
-  reqcLayout->addWidget(new QLabel("Obs"),                       ir, 2, Qt::AlignLeft);
+  reqcLayout->addWidget(new QLabel("     Obs"),                  ir, 2, Qt::AlignLeft);
   reqcLayout->addWidget(_reqcOutNavLineEdit,                     ir, 3, Qt::AlignRight);
-  reqcLayout->addWidget(new QLabel("Nav"),                       ir, 4, Qt::AlignLeft);
+  reqcLayout->addWidget(new QLabel("     Nav"),                  ir, 4, Qt::AlignLeft);
   ++ir;
   reqcLayout->addWidget(new QLabel("Logfile"),                   ir, 0, Qt::AlignLeft);
   reqcLayout->addWidget(_reqcOutLogLineEdit,                     ir, 1, Qt::AlignRight);
-  reqcLayout->addWidget(new QLabel("summary only"),              ir, 3, Qt::AlignRight);
+  reqcLayout->addWidget(new QLabel("Summary only"),              ir, 3, Qt::AlignRight);
   reqcLayout->addWidget(_reqcLogSummaryOnly,                     ir, 4, Qt::AlignLeft);
   ++ir;
   reqcLayout->addWidget(new QLabel("Plots for signals"),         ir, 0, Qt::AlignLeft);
@@ -1082,7 +1098,7 @@ bncWindow::bncWindow() {
   _sp3CompLogLineEdit->setMaximumWidth(15*ww);
 
   ir = 0;
-  sp3CompLayout->addWidget(new QLabel("Orbit and clock comparison."),  ir, 0, 1, 20);
+  sp3CompLayout->addWidget(new QLabel("Orbit and clock comparison."),  ir, 0, 1, 50);
   ++ir;
   sp3CompLayout->addWidget(new QLabel("Input SP3 files (full path)"),  ir, 0, Qt::AlignLeft);
   sp3CompLayout->addWidget(_sp3CompFileChooser,                        ir, 1, 1, 20);
@@ -1093,7 +1109,8 @@ bncWindow::bncWindow() {
   sp3CompLayout->addWidget(new QLabel("Logfile"),                      ir, 0, Qt::AlignLeft);
   sp3CompLayout->addWidget(_sp3CompLogLineEdit,                        ir, 1, Qt::AlignRight);
   ++ir;
-  sp3CompLayout->addWidget(new QLabel(""), ir, 1);
+  sp3CompLayout->addWidget(new QLabel(""),                             ir, 1);
+  ++ir;
   sp3CompLayout->setRowStretch(ir, 999);
 
   sp3CompLayout->setColumnMinimumWidth(2, 8*ww);
