@@ -156,7 +156,7 @@ latencyChecker::latencyChecker(QByteArray staID) {
   _decodeSucc = QDateTime::currentDateTime();
 
   _decodeStop = QDateTime::currentDateTime();
-
+  
 }
 
 // Destructor
@@ -181,10 +181,9 @@ void latencyChecker::checkReconnect() {
                     + _begDateOut + " " + _begTimeOut).toAscii(), true));
       callScript(("Begin_Outage "
                     + _begDateOut + " " + _begTimeOut).toAscii());
+      _decodeStart = QDateTime::currentDateTime();
     }
-    _decodeStart = QDateTime::currentDateTime();
   }
-
 }
 
 // Perform Corrupt and 'End outage' check
@@ -298,9 +297,9 @@ void latencyChecker::checkOutage(bool decoded) {
       callScript(("End_Outage "
                     + _endDateOut + " " + _endTimeOut + " Begin was "
                     + _begDateOut + " " + _begTimeOut).toAscii());
-    _decodeStop = QDateTime::currentDateTime();
     }
   }
+  _decodeStop = QDateTime::currentDateTime();
 }
 
 // Perform latency checks (observations)
