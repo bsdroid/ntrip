@@ -150,7 +150,7 @@ t_pppWidgets::t_pppWidgets() {
   _useOpenStreetMap->setWhatsThis(tr("<p>Specify Open Street Map as the background for your rover positions."));
   _mapWinDotSize->setWhatsThis(tr("<p>Specify the size of dots showing the rover positions.</p><p>A dot size of '3' may be appropriate. The maximum possible dot size is '10'. An empty option field or a size of '0' would mean that you don't want BNC to show the rover's track on the map.</p>"));
   _mapWinDotColor->setWhatsThis(tr("<p>Specify the color of dots showing the rover track.</p>"));
-  _mapSpeedSlider->setWhatsThis(tr("<p>With BNC in PPP post-processing mode you can specify the speed of computations as appropriate for visualization. Note that you can adjust 'Speed' on-the-fly while BNC is already processing your observations."));
+  _mapSpeedSlider->setWhatsThis(tr("<p>With BNC in PPP post processing mode you can specify the speed of computations as appropriate for visualization. Note that you can adjust 'speed' on-the-fly while BNC is already processing your observations."));
 
   readOptions();
 }
