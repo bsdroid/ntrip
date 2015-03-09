@@ -826,7 +826,7 @@ bncWindow::bncWindow() {
   int ir = 0;
   pppLayout1->addWidget(new QLabel("<b>Precise Point Positioning (Input and Output)</b>"), ir, 0, 1, 7, Qt::AlignLeft);
   ++ir;     
-  pppLayout1->addWidget(new QLabel("Data Source"),        ir, 0, Qt::AlignLeft);
+  pppLayout1->addWidget(new QLabel("Data source"),        ir, 0, Qt::AlignLeft);
   pppLayout1->addWidget(_pppWidgets._dataSource,          ir, 1);
   pppLayout1->addItem(new QSpacerItem(4*ww, 0),           ir, 2);
   pppLayout1->addWidget(new QLabel("RINEX observations"), ir, 3, Qt::AlignLeft);
@@ -1067,13 +1067,14 @@ bncWindow::bncWindow() {
 
   _sp3CompFileChooser = new qtFileChooser(0, qtFileChooser::Files);
   _sp3CompFileChooser->setFileName(settings.value("sp3CompFile").toString());
-  _sp3CompFileChooser->setWhatsThis(tr("Specify the full path to orbits in SP3 format"));
+  _sp3CompFileChooser->setWhatsThis(tr("Specify the full path to two files with orbits and clocks in SP3 format, separate them by comma."));
   _sp3CompFileChooser->setMinimumWidth(15*ww);
-  _sp3CompFileChooser->setMaximumWidth(15*ww);
+  _sp3CompFileChooser->setMaximumWidth(50*ww);
 
   _sp3CompExclude = new QLineEdit(settings.value("sp3CompExclude").toString());
   _sp3CompExclude->setMinimumWidth(15*ww);
   _sp3CompExclude->setMaximumWidth(15*ww);
+  _sp3CompExclude->setWhatsThis(tr("<p>Specify satellites to exclude them from orbit and clock comparision. Example:<p>G04,G31,R</p><p>This excludes GPS satellites RPN 4 and 31 as well as all GLONASS satellites from the comparision.</p><p>Default is an empty option field, meaning that no satellite is excluded from the comparison.</p>"));
 
   _sp3CompLogLineEdit = new QLineEdit(settings.value("sp3CompOutLogFile").toString());
   _sp3CompLogLineEdit->setWhatsThis(tr("Specify the full path to a logfile."));
@@ -1081,10 +1082,10 @@ bncWindow::bncWindow() {
   _sp3CompLogLineEdit->setMaximumWidth(15*ww);
 
   ir = 0;
-  sp3CompLayout->addWidget(new QLabel("Orbit and clock comparison"),   ir, 0, 1, 20);
+  sp3CompLayout->addWidget(new QLabel("Orbit and clock comparison."),  ir, 0, 1, 20);
   ++ir;
   sp3CompLayout->addWidget(new QLabel("Input SP3 files (full path)"),  ir, 0, Qt::AlignLeft);
-  sp3CompLayout->addWidget(_sp3CompFileChooser,                        ir, 1, Qt::AlignRight);
+  sp3CompLayout->addWidget(_sp3CompFileChooser,                        ir, 1, 1, 20);
   ++ir;
   sp3CompLayout->addWidget(new QLabel("Exclude satellites"),           ir, 0, Qt::AlignLeft);
   sp3CompLayout->addWidget(_sp3CompExclude,                            ir, 1, Qt::AlignRight);
