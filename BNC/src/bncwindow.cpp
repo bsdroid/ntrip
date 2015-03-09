@@ -960,7 +960,7 @@ bncWindow::bncWindow() {
   pppLayout4->addWidget(_pppWidgets._mapWinDotColor,                     ir, 3, Qt::AlignLeft);
   pppLayout4->addWidget(new QLabel("Color"),                             ir, 4, Qt::AlignLeft);
   ++ir;
-  pppLayout4->addWidget(new QLabel("Post processing speed"),             ir, 0, Qt::AlignLeft);
+  pppLayout4->addWidget(new QLabel("Post-processing speed"),             ir, 0, Qt::AlignLeft);
   pppLayout4->addWidget(_pppWidgets._mapSpeedSlider,                     ir, 1, 1, 20, Qt::AlignLeft);
   ++ir;
   pppLayout4->addWidget(new QLabel(""),                                  ir, 1);
