@@ -181,7 +181,6 @@ void latencyChecker::checkReconnect() {
                     + _begDateOut + " " + _begTimeOut).toAscii(), true));
       callScript(("Begin_Outage "
                     + _begDateOut + " " + _begTimeOut).toAscii());
-      _decodeStart = QDateTime::currentDateTime();
     }
   }
 }
@@ -277,6 +276,10 @@ void latencyChecker::checkOutage(bool decoded) {
       }
       _checkSeg = false;
     }
+  }
+
+  if ( !_decodeStop.isValid()) {
+    _decodeStart = QDateTime::currentDateTime();
   }
 
   // End outage threshold
