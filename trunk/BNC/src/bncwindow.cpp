@@ -659,22 +659,22 @@ bncWindow::bncWindow() {
   QGridLayout* oLayout = new QGridLayout;
   oLayout->setColumnMinimumWidth(0,14*ww);
   _rnxIntrComboBox->setMaximumWidth(9*ww);
-  _rnxSamplSpinBox->setMaximumWidth(9*ww);
+//_rnxSamplSpinBox->setMaximumWidth(9*ww);
 
   oLayout->addWidget(new QLabel("Saving RINEX observation files."),0, 0, 1,50);
   oLayout->addWidget(new QLabel("Directory"),                      1, 0);
-  oLayout->addWidget(_rnxPathLineEdit,                             1, 1, 1,24);
+  oLayout->addWidget(_rnxPathLineEdit,                             1, 1, 1, 20);
   oLayout->addWidget(new QLabel("Interval"),                       2, 0);
   oLayout->addWidget(_rnxIntrComboBox,                             2, 1);
   oLayout->addWidget(new QLabel("  Sampling"),                     2, 2, Qt::AlignRight);
   oLayout->addWidget(_rnxSamplSpinBox,                             2, 3, Qt::AlignLeft);
   oLayout->addWidget(new QLabel("Skeleton extension"),             3, 0);
-  oLayout->addWidget(_rnxSkelLineEdit,                             3, 1, 1, 1, Qt::AlignLeft);
+  oLayout->addWidget(_rnxSkelLineEdit,                             3, 1, Qt::AlignLeft);
   oLayout->addWidget(new QLabel("Script (full path)"),             4, 0);
-  oLayout->addWidget(_rnxScrpLineEdit,                             4, 1, 1,24);
+  oLayout->addWidget(_rnxScrpLineEdit,                             4, 1, 1, 20);
   oLayout->addWidget(new QLabel("Version 2"),                      5, 0);
-  oLayout->addWidget(_rnxV2Priority,                               5, 1);
-  oLayout->addWidget(new QLabel("  Signal priority"),              5, 2, 1,15);
+  oLayout->addWidget(_rnxV2Priority,                               5, 1, 1, 2);
+  oLayout->addWidget(new QLabel("  Signal priority"),              5, 3);
   oLayout->addWidget(new QLabel("Version 3"),                      6, 0);
   oLayout->addWidget(_rnxV3CheckBox,                               6, 1);
   oLayout->addWidget(new QLabel(""),                               7, 1);
