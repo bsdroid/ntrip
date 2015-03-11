@@ -954,7 +954,7 @@ bncWindow::bncWindow() {
   pppLayout4->addWidget(new QLabel("Google"),                            ir, 3, Qt::AlignRight);
   pppLayout4->addWidget(_pppWidgets._useGoogleMap,                       ir, 4, Qt::AlignLeft);
   ++ir;
-  pppLayout4->addWidget(new QLabel("Line properties"),                   ir, 0, Qt::AlignLeft);
+  pppLayout4->addWidget(new QLabel("Dot-properties"),                    ir, 0, Qt::AlignLeft);
   pppLayout4->addWidget(_pppWidgets._mapWinDotSize,                      ir, 1, Qt::AlignLeft);
   pppLayout4->addWidget(new QLabel("Size    "),                          ir, 2, Qt::AlignLeft);
   pppLayout4->addWidget(_pppWidgets._mapWinDotColor,                     ir, 3, Qt::AlignLeft);
