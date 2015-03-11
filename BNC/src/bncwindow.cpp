@@ -1104,6 +1104,9 @@ bncWindow::bncWindow() {
 
   sp3CompGroup->setLayout(sp3CompLayout);
 
+  connect(_sp3CompFileChooser, SIGNAL(fileNameChanged(const QString &)),
+          this, SLOT(slotBncTextChanged()));
+
   // Combine Corrections
   // -------------------
   QGridLayout* cmbLayout = new QGridLayout;
@@ -2234,6 +2237,14 @@ void bncWindow::slotBncTextChanged(){
     enableWidget(enable && !enable10,               _reqcLogSummaryOnly);
     enableWidget(enable && !enable10,               _reqcSkyPlotSignals);
     enableWidget(enable && !enable10 && enablePlot, _reqcPlotDirLineEdit);
+  }
+
+  // SP3 File Comparison
+  // -------------------
+  if (sender() == 0 || sender() == _sp3CompFileChooser) {
+    enable = !_sp3CompFileChooser->fileName().isEmpty();
+    enableWidget(enable, _sp3CompLogLineEdit);
+    enableWidget(enable, _sp3CompExclude);
   }
 
   enableStartStop();
