@@ -145,12 +145,13 @@ t_pppWidgets::t_pppWidgets() {
   _mapSpeedSlider->setTickInterval(10);
   connect(_mapSpeedSlider, SIGNAL(valueChanged(int)), BNC_CORE, SIGNAL(mapSpeedSliderChanged(int)));
 
-  _mapWinButton->setWhatsThis(tr("<p>You make like to track your rover position using Google Maps or Open Street Map as a background map. Track maps can be produced with BNC in 'Realtime-PPP', 'Realtime-SPP' and 'Post-Processing' mode.</p><p>The 'Open Map' button opens a windows showing a map according to specified options.</p><p>When in 'Post-Processing' mode you should not forget to specify a proxy under the 'Network' tab if that is operated in front of BNC."));
+  _plotCoordinates->setWhatsThis(tr("<p>BNC allows to produce a time series plot of coordinates for one Real-time PPP solution in the 'PPP Plot' section below. Specify the 'Mountpoint' of the stream whose coordinate displacements you would like to see plotted.</p><p>Default is an empty option field, meaning that BNC shall not produce a time series plot of PPP coordinate displacements.</p>"));
+  _mapWinButton->setWhatsThis(tr("<p>You make like to track your rover position using Google Maps or Open Street Map as a background map. Track maps can be produced with BNC in 'Realtime-PPP', 'Realtime-SPP' and 'Post-Processing' mode.</p><p>The 'Open Map' button opens a windows showing a map according to specified options.</p><p>Even in 'Post-Processing' mode you should not forget to specify a proxy under the 'Network' tab if that is operated in front of BNC."));
   _useGoogleMap->setWhatsThis(tr("<p>Specify Google Maps as the background for your rover positions."));
   _useOpenStreetMap->setWhatsThis(tr("<p>Specify Open Street Map as the background for your rover positions."));
   _mapWinDotSize->setWhatsThis(tr("<p>Specify the size of dots showing the rover positions on the track map.</p><p>A dot size of '3' may be appropriate. The maximum possible dot size is '10'. An empty option field or a size of '0' would mean that you don't want BNC to show the rover's track on the map.</p>"));
   _mapWinDotColor->setWhatsThis(tr("<p>Specify the color of dots showing the rover track on the map.</p>"));
-  _mapSpeedSlider->setWhatsThis(tr("<p>With BNC in PPP post-processing mode you can specify the speed of computations as appropriate for visualization. Note that you can adjust 'speed' on-the-fly while BNC is already processing your observations."));
+  _mapSpeedSlider->setWhatsThis(tr("<p>With BNC in PPP post-processing mode you can specify the speed of computations as appropriate for 'Track map' visualization. Note that you can adjust 'speed' on-the-fly while BNC is already processing your observations."));
 
   readOptions();
 }
