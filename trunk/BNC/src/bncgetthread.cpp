@@ -801,6 +801,9 @@ void bncGetThread::slotSerialReadyRead() {
 
       if (_serialNMEA == AUTO_NMEA) {
         int i1 = data.indexOf("$GPGGA");
+        if (i1 == -1) {
+          i1 = data.indexOf("$GNGGA");
+        }
         if (i1 != -1) {
 	  int i2 = data.indexOf("*", i1);
           if (i2 != -1 && data.size() > i2 + 1) {
