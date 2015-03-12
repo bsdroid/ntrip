@@ -689,7 +689,7 @@ bncWindow::bncWindow() {
   _ephIntrComboBox->setMaximumWidth(9*ww);
   _outEphPortLineEdit->setMaximumWidth(9*ww);
 
-  eLayout->addWidget(new QLabel("Saving RINEX ephemeris files and ephemeris output through IP port."),0,0,1,70);
+  eLayout->addWidget(new QLabel("Saving RINEX navigation files and ephemeris output through IP port."),0,0,1,70);
   eLayout->addWidget(new QLabel("Directory"),                     1, 0);
   eLayout->addWidget(_ephPathLineEdit,                            1, 1, 1,30);
   eLayout->addWidget(new QLabel("Interval"),                      2, 0);
@@ -731,17 +731,17 @@ bncWindow::bncWindow() {
   _outUPortLineEdit->setMaximumWidth(9*ww);
 
   sLayout->addWidget(new QLabel("Output decoded observations in ASCII format to feed a real-time GNSS network engine."),0,0,1,50);
-  sLayout->addWidget(new QLabel("Port"),                          1, 0);
-  sLayout->addWidget(_outPortLineEdit,                            1, 1);
-  sLayout->addWidget(new QLabel("Wait for full obs epoch"),       1, 2, Qt::AlignRight);
-  sLayout->addWidget(_waitTimeSpinBox,                            1, 3, Qt::AlignLeft);
-  sLayout->addWidget(new QLabel("Sampling"),                      2, 0);
-  sLayout->addWidget(_binSamplSpinBox,                            2, 1, Qt::AlignLeft);
-  sLayout->addWidget(new QLabel("File (full path)"),              3, 0);
-  sLayout->addWidget(_outFileLineEdit,                            3, 1, 1, 20);
-  sLayout->addWidget(new QLabel("Port (unsynchronized)"),         4, 0);
-  sLayout->addWidget(_outUPortLineEdit,                           4, 1);
-  sLayout->addWidget(new QLabel(""),                              5, 1);
+  sLayout->addWidget(new QLabel("Port"),                            1, 0);
+  sLayout->addWidget(_outPortLineEdit,                              1, 1);
+  sLayout->addWidget(new QLabel("       Wait for full obs epoch"),  1, 2, Qt::AlignRight);
+  sLayout->addWidget(_waitTimeSpinBox,                              1, 3, Qt::AlignLeft);
+  sLayout->addWidget(new QLabel("Sampling"),                        2, 0);
+  sLayout->addWidget(_binSamplSpinBox,                              2, 1, Qt::AlignLeft);
+  sLayout->addWidget(new QLabel("File (full path)"),                3, 0);
+  sLayout->addWidget(_outFileLineEdit,                              3, 1, 1, 20);
+  sLayout->addWidget(new QLabel("Port (unsynchronized)"),           4, 0);
+  sLayout->addWidget(_outUPortLineEdit,                             4, 1);
+  sLayout->addWidget(new QLabel(""),                                5, 1);
   sLayout->setRowStretch(6, 999);
 
   sgroup->setLayout(sLayout);
@@ -800,7 +800,7 @@ bncWindow::bncWindow() {
   aLayout->addWidget(new QLabel("Recovery threshold"),            3, 0);
   aLayout->addWidget(_adviseRecoSpinBox,                          3, 1);
   aLayout->addWidget(new QLabel("Script (full path)"),            4, 0);
-  aLayout->addWidget(_adviseScriptLineEdit,                       4, 1, 1,30);
+  aLayout->addWidget(_adviseScriptLineEdit,                       4, 1, 1,20);
   aLayout->addWidget(new QLabel(""),                              5, 1);
   aLayout->setRowStretch(6, 999);
 
@@ -815,7 +815,7 @@ bncWindow::bncWindow() {
 
   rLayout->addWidget(new QLabel("Log latencies or scan RTCM streams for message types and antenna information or output raw data through TCP/IP port."),0, 0,1,50);
   rLayout->addWidget(new QLabel("Mountpoint"),                    1, 0);
-  rLayout->addWidget(_miscMountLineEdit,                          1, 1, 1,7);
+  rLayout->addWidget(_miscMountLineEdit,                          1, 1, 1, 7);
   rLayout->addWidget(new QLabel("Log latency"),                   2, 0);
   rLayout->addWidget(_perfIntrComboBox,                           2, 1);
   rLayout->addWidget(new QLabel("Scan RTCM"),                     3, 0);
