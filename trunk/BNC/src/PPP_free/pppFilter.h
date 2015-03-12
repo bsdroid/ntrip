@@ -168,6 +168,15 @@ class t_pppFilter {
     }
     return 0.0;
   }
+  double trpStdev() const {
+    for (unsigned ii = 0; ii < _params.size(); ++ii) {
+      t_pppParam* pp = _params[ii];
+      if (pp->type() == t_pppParam::TROPO) {
+        return sqrt(Q()[ii][ii]);
+      }
+    }
+    return 0.0;
+  }
   double Glonass_offset() const {
     for (int ii = 0; ii < _params.size(); ++ii) {
       t_pppParam* pp = _params[ii];

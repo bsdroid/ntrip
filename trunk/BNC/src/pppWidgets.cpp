@@ -212,6 +212,7 @@ void t_pppWidgets::readOptions() {
   _minObs->setValue(settings.value(_minObs->objectName()).toInt());
   _minEle->setValue(settings.value(_minEle->objectName()).toInt());
   _corrWaitTime->setValue(settings.value(_corrWaitTime->objectName()).toInt());
+  _snxtroSampl->setValue(settings.value(_snxtroSampl->objectName()).toInt());
 
   // Table with stations
   // -------------------
@@ -263,6 +264,7 @@ void t_pppWidgets::saveOptions() {
   settings.setValue(_nmeaFile    ->objectName(), _nmeaFile    ->text());
   settings.setValue(_nmeaPort    ->objectName(), _nmeaPort    ->text());
   settings.setValue(_snxtroFile  ->objectName(), _snxtroFile  ->text());
+  settings.setValue(_snxtroSampl ->objectName(), _snxtroSampl ->value());
   settings.setValue(_lcGPS       ->objectName(), _lcGPS       ->currentText());
   settings.setValue(_lcGLONASS   ->objectName(), _lcGLONASS   ->currentText());
   settings.setValue(_lcGalileo   ->objectName(), _lcGalileo   ->currentText());
