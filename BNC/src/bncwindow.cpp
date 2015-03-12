@@ -617,7 +617,7 @@ bncWindow::bncWindow() {
   pLayout->setColumnMinimumWidth(0,13*ww);
   _proxyPortLineEdit->setMaximumWidth(9*ww);
 
-  pLayout->addWidget(new QLabel("Settings for proxy in protected networks and for SSL authorization, leave boxes blank if none."),0, 0, 1, 70);
+  pLayout->addWidget(new QLabel("Settings for proxy in protected networks and for SSL authorization, leave boxes blank if none."),0, 0, 1, 50);
   pLayout->addWidget(new QLabel("Proxy host"),                               1, 0);
   pLayout->addWidget(_proxyHostLineEdit,                                     1, 1, 1,10);
   pLayout->addWidget(new QLabel("Proxy port"),                               2, 0);
@@ -698,8 +698,7 @@ bncWindow::bncWindow() {
   eLayout->addWidget(_outEphPortLineEdit,                         3, 1);
   eLayout->addWidget(new QLabel("Version 3"),                     4, 0);
   eLayout->addWidget(_ephV3CheckBox,                              4, 1);
-  eLayout->addWidget(new QLabel(""),                              5, 1);
-  eLayout->setRowStretch(6, 999);
+  eLayout->setRowStretch(5, 999);
 
   egroup->setLayout(eLayout);
 
@@ -814,7 +813,7 @@ bncWindow::bncWindow() {
   _perfIntrComboBox->setMaximumWidth(9*ww);
   _miscPortLineEdit->setMaximumWidth(9*ww);
 
-  rLayout->addWidget(new QLabel("Log latencies or scan RTCM streams for message types and antenna information or output raw data through TCP/IP port."),0, 0,1,80); 
+  rLayout->addWidget(new QLabel("Log latencies or scan RTCM streams for message types and antenna information or output raw data through TCP/IP port."),0, 0,1,50);
   rLayout->addWidget(new QLabel("Mountpoint"),                    1, 0);
   rLayout->addWidget(_miscMountLineEdit,                          1, 1, 1,7);
   rLayout->addWidget(new QLabel("Log latency"),                   2, 0);
@@ -987,34 +986,22 @@ bncWindow::bncWindow() {
   _reqcObsFileChooser = new qtFileChooser(0, qtFileChooser::Files);
   _reqcObsFileChooser->setFileName(settings.value("reqcObsFile").toString());
   _reqcObsFileChooser->setWhatsThis(tr("Specify the full path to an observation file in RINEX v2 or v3 format."));
-  _reqcObsFileChooser->setMinimumWidth(15*ww);
-  _reqcObsFileChooser->setMaximumWidth(15*ww);
 
   _reqcNavFileChooser = new qtFileChooser(0, qtFileChooser::Files);
   _reqcNavFileChooser->setFileName(settings.value("reqcNavFile").toString());
   _reqcNavFileChooser->setWhatsThis(tr("Specify the full path to a RINEX v2 or v3 navigation file."));
-  _reqcNavFileChooser->setMinimumWidth(15*ww);
-  _reqcNavFileChooser->setMaximumWidth(15*ww);
 
   _reqcOutObsLineEdit = new QLineEdit(settings.value("reqcOutObsFile").toString());
   _reqcOutObsLineEdit->setWhatsThis(tr("Specify the full path to a RINEX observation output file."));
-  _reqcOutObsLineEdit->setMinimumWidth(15*ww);
-  _reqcOutObsLineEdit->setMaximumWidth(15*ww);
 
   _reqcOutNavLineEdit = new QLineEdit(settings.value("reqcOutNavFile").toString());
   _reqcOutNavLineEdit->setWhatsThis(tr("Specify the full path to a RINEX navigation output file."));
-  _reqcOutNavLineEdit->setMinimumWidth(15*ww);
-  _reqcOutNavLineEdit->setMaximumWidth(15*ww);
 
   _reqcOutLogLineEdit = new QLineEdit(settings.value("reqcOutLogFile").toString());
   _reqcOutLogLineEdit->setWhatsThis(tr("Specify the full path to a logfile."));
-  _reqcOutLogLineEdit->setMinimumWidth(15*ww);
-  _reqcOutLogLineEdit->setMaximumWidth(15*ww);
 
   _reqcPlotDirLineEdit = new QLineEdit(settings.value("reqcPlotDir").toString());
   _reqcPlotDirLineEdit->setWhatsThis(tr("Specify the directory name for saving plots."));
-  _reqcPlotDirLineEdit->setMinimumWidth(15*ww);
-  _reqcPlotDirLineEdit->setMaximumWidth(15*ww);
 
   _reqcSkyPlotSignals = new QLineEdit(settings.value("reqcSkyPlotSignals").toString());
   connect(_reqcSkyPlotSignals, SIGNAL(textChanged(const QString &)), 
@@ -1024,37 +1011,39 @@ bncWindow::bncWindow() {
   _reqcLogSummaryOnly->setCheckState(Qt::CheckState(settings.value("reqcLogSummaryOnly").toInt()));
 
   ir = 0;
-  reqcLayout->addWidget(new QLabel("RINEX file editing, concatenation and quality check."),ir, 0, 1, 50);
+  reqcLayout->addWidget(new QLabel("RINEX file editing, concatenation and quality check."),ir, 0, 1, 25);
   ++ir;
-  reqcLayout->addWidget(new QLabel("Action"),                   ir, 0, Qt::AlignLeft);
-  reqcLayout->addWidget(_reqcActionComboBox,                    ir, 1, Qt::AlignLeft);
+  reqcLayout->addWidget(new QLabel("Action"),                    ir, 0);
+  reqcLayout->addWidget(_reqcActionComboBox,                     ir, 1);
   _reqcEditOptionButton = new QPushButton("Set Edit Options");
-  reqcLayout->addWidget(_reqcEditOptionButton,                  ir, 3, Qt::AlignRight);
+  _reqcEditOptionButton->setMinimumWidth(15*ww);
+  _reqcEditOptionButton->setMaximumWidth(15*ww);
+
+  reqcLayout->addWidget(_reqcEditOptionButton,                   ir, 3);
   ++ir;
-  reqcLayout->addWidget(new QLabel("Input files (full path)"),  ir, 0, Qt::AlignLeft);
-  reqcLayout->addWidget(_reqcObsFileChooser,                    ir, 1, Qt::AlignRight);
-  reqcLayout->addWidget(new QLabel("     Obs"),                 ir, 2, Qt::AlignLeft);
-  reqcLayout->addWidget(_reqcNavFileChooser,                    ir, 3, Qt::AlignRight);
-  reqcLayout->addWidget(new QLabel("     Nav"),                 ir, 4, Qt::AlignLeft);
+  reqcLayout->addWidget(new QLabel("Input files (full path)"),   ir, 0);
+  reqcLayout->addWidget(_reqcObsFileChooser,                     ir, 1);
+  reqcLayout->addWidget(new QLabel("  Obs"),                     ir, 2);
+  reqcLayout->addWidget(_reqcNavFileChooser,                     ir, 3);
+  reqcLayout->addWidget(new QLabel("  Nav"),                     ir, 4);
   ++ir;
-  reqcLayout->addWidget(new QLabel("Output files (full path)"),  ir, 0, Qt::AlignLeft);
-  reqcLayout->addWidget(_reqcOutObsLineEdit,                     ir, 1, Qt::AlignRight);
-  reqcLayout->addWidget(new QLabel("     Obs"),                  ir, 2, Qt::AlignLeft);
-  reqcLayout->addWidget(_reqcOutNavLineEdit,                     ir, 3, Qt::AlignRight);
-  reqcLayout->addWidget(new QLabel("     Nav"),                  ir, 4, Qt::AlignLeft);
+  reqcLayout->addWidget(new QLabel("Output files (full path)"),  ir, 0);
+  reqcLayout->addWidget(_reqcOutObsLineEdit,                     ir, 1);
+  reqcLayout->addWidget(new QLabel("  Obs"),                     ir, 2);
+  reqcLayout->addWidget(_reqcOutNavLineEdit,                     ir, 3);
+  reqcLayout->addWidget(new QLabel("  Nav"),                     ir, 4);
   ++ir;
-  reqcLayout->addWidget(new QLabel("Logfile"),                   ir, 0, Qt::AlignLeft);
-  reqcLayout->addWidget(_reqcOutLogLineEdit,                     ir, 1, Qt::AlignRight);
-  reqcLayout->addWidget(new QLabel("Summary only"),              ir, 3, Qt::AlignRight);
-  reqcLayout->addWidget(_reqcLogSummaryOnly,                     ir, 4, Qt::AlignLeft);
+  reqcLayout->addWidget(new QLabel("Logfile"),                   ir, 0);
+  reqcLayout->addWidget(_reqcOutLogLineEdit,                     ir, 1);
+  reqcLayout->addWidget(new QLabel("  Summary only"),            ir, 2);
+  reqcLayout->addWidget(_reqcLogSummaryOnly,                     ir, 3);
   ++ir;
-  reqcLayout->addWidget(new QLabel("Plots for signals"),         ir, 0, Qt::AlignLeft);
-  reqcLayout->addWidget(_reqcSkyPlotSignals,                     ir, 1, 1, 2);
+  reqcLayout->addWidget(new QLabel("Plots for signals"),         ir, 0);
+  reqcLayout->addWidget(_reqcSkyPlotSignals,                     ir, 1);
   ++ir;
-  reqcLayout->addWidget(new QLabel("Directory for plots"),       ir, 0, Qt::AlignLeft);
-  reqcLayout->addWidget(_reqcPlotDirLineEdit,                    ir, 1, Qt::AlignRight);
+  reqcLayout->addWidget(new QLabel("Directory for plots"),       ir, 0);
+  reqcLayout->addWidget(_reqcPlotDirLineEdit,                    ir, 1);
   ++ir;
-  reqcLayout->addWidget(new QLabel(""), ir, 1);
   reqcLayout->setRowStretch(ir, 999);
 
   reqcLayout->setColumnMinimumWidth(2, 8*ww);
@@ -1084,7 +1073,7 @@ bncWindow::bncWindow() {
   _sp3CompLogLineEdit->setMaximumWidth(15*ww);
 
   ir = 0;
-  sp3CompLayout->addWidget(new QLabel("Orbit and clock comparison."),  ir, 0, 1, 50);
+  sp3CompLayout->addWidget(new QLabel("Orbit and clock comparison."),  ir, 0, 1, 40);
   ++ir;
   sp3CompLayout->addWidget(new QLabel("Input SP3 files (full path)"),  ir, 0, Qt::AlignLeft);
   sp3CompLayout->addWidget(_sp3CompFileChooser,                        ir, 1, 1, 20);
