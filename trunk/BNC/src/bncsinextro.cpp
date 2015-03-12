@@ -74,10 +74,12 @@ void bncSinexTro::writeHeader(const QDateTime& datTim) {
 
   _out << "+TROP/DESCRIPTION" << endl;
   _out << "*KEYWORD______________________ VALUE(S)______________" << endl;
-  _out << " SAMPLING INTERVAL                                " << _sampl << endl;
-  _out << " SAMPLING TROP                                    " << _sampl << endl;
-  _out << " ELEVATION CUTOFF ANGLE                           "
-       << setprecision(1) << _opt->_minEle * 180.0/M_PI << endl;
+  _out << " SAMPLING INTERVAL                               "
+       << setw(4) << _sampl << endl;
+  _out << " SAMPLING TROP                                   "
+       << setw(4) << _sampl << endl;
+  _out << " ELEVATION CUTOFF ANGLE                          "
+       << setw(4) <<  int(_opt->_minEle * 180.0/M_PI) << endl;
   _out << " TROP MAPPING FUNCTION         " << "Saastamoinen" << endl;
   _out << " SOLUTION_FIELDS_1             " << "TROTOT STDEV" << endl;
   _out << "-TROP/DESCRIPTION"<< endl << endl;
