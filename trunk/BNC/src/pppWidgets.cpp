@@ -93,6 +93,10 @@ t_pppWidgets::t_pppWidgets() {
   _dataSource->addItems(QString("no,Real-Time Streams,RINEX Files").split(","));
   connect(_dataSource, SIGNAL(currentIndexChanged(const QString&)), this, SLOT(slotEnableWidgets()));
 
+  if (_dataSource->currentText() == "no") {
+    slotEnableWidgets();
+  }
+
   _lcGPS->setEditable(false);
   _lcGPS->addItems(QString("no,P3,L3,P3&L3").split(","));
 
