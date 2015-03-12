@@ -13,6 +13,7 @@ class t_rnxObsFile;
 class t_rnxNavFile;
 class t_corrFile;
 class bncoutf;
+class bncSinexTro;
 
 namespace BNC_PPP {
 
@@ -71,7 +72,7 @@ class t_pppRun : public QObject {
   bool                   _stopFlag;
   bncoutf*               _logFile;
   bncoutf*               _nmeaFile;
-  bncoutf*               _snxtroFile;
+  bncSinexTro*           _snxtroFile;
 };
 
 }

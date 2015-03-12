@@ -30,6 +30,9 @@ class t_output {
   double       _xyzRover[3];  
   double       _covMatrix[6]; 
   double       _neu[3];  
+  double       _trp0;
+  double       _trp;
+  double       _trpStdev;
   int          _numSat;       
   double       _pDop;         
   std::string  _log;          

@@ -52,6 +52,7 @@
 #include "bncephuser.h"
 #include "bncsettings.h"
 #include "bncoutf.h"
+#include "bncsinextro.h"
 #include "rinex/rnxobsfile.h"
 #include "rinex/rnxnavfile.h"
 #include "rinex/corrfile.h"
@@ -158,9 +159,10 @@ t_pppRun::t_pppRun(const t_pppOptions* opt) {
       snxtroFileSkl = snxtroFileSkl + "_" + roverName;
     }
     else {
-      snxtroFileSkl.replace("${STATION}", roverName);
+      snxtroFileSkl.replace("${STATION}", roverName.left(4));
     }
-    _snxtroFile = new bncoutf(snxtroFileSkl, "1 day", 0);
+    int samplSnxTro = settings.value("PPP/snxtroSampl").toInt();
+    _snxtroFile = new bncSinexTro(_opt, snxtroFileSkl, "1 day", samplSnxTro);
   }
 }
 
@@ -271,9 +273,11 @@ void t_pppRun::slotNewObs(QByteArray staID, QList<t_satObs> obsList) {
           << " X = "  << setprecision(4) << output._xyzRover[0]
           << " Y = "  << setprecision(4) << output._xyzRover[1]
           << " Z = "  << setprecision(4) << output._xyzRover[2]
-          << " NEU: " << setprecision(4) << output._neu[0]     
-          << " " << setprecision(4) << output._neu[1]     
-          << " " << setprecision(4) << output._neu[2];
+          << " NEU: " << showpos << setw(8) << setprecision(4) << output._neu[0]
+          << " "      << showpos << setw(8) << setprecision(4) << output._neu[1]
+          << " "      << showpos << setw(8) << setprecision(4) << output._neu[2]
+          << " TRP: " << showpos << setw(8) << setprecision(4) << output._trp0
+          << " "      << showpos << setw(8) << setprecision(4) << output._trp;
     }
 
     if (_logFile && output._epoTime.valid()) {
@@ -293,7 +297,8 @@ void t_pppRun::slotNewObs(QByteArray staID, QList<t_satObs> obsList) {
     }
 
     if (_snxtroFile && output._epoTime.valid()) {
-     // _snxtroFile->write(output._epoTime.gpsw(), output._epoTime.gpssec(),QString("TEST"));
+      _snxtroFile->write(staID, int(output._epoTime.gpsw()), output._epoTime.gpssec(),
+                  output._trp0 + output._trp, output._trpStdev);
     }
 
     emit newMessage(QByteArray(log.str().c_str()), true);
