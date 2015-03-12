@@ -45,8 +45,8 @@ HEADERS = bnchelp.html bncgetthread.h    bncwindow.h   bnctabledlg.h  \
           bncserialport.h bncnetquerys.h bncfigure.h                  \ 
           bncfigurelate.h bncversion.h                                \ 
           bncfigureppp.h bncrawfile.h                                 \ 
-          bncmap.h bncantex.h                                         \
-          bncephuser.h bncoutf.h bncclockrinex.h bncsp3.h             \
+          bncmap.h bncantex.h bncephuser.h                            \
+          bncoutf.h bncclockrinex.h bncsp3.h bncsinextro.h            \
           bncbytescounter.h bncsslconfig.h reqcdlg.h                  \
           upload/bncrtnetdecoder.h upload/bncuploadcaster.h           \
           ephemeris.h t_prn.h satObs.h                                \
@@ -80,8 +80,8 @@ SOURCES =             bncgetthread.cpp  bncwindow.cpp bnctabledlg.cpp \
           bncserialport.cpp bncnetquerys.cpp bncfigure.cpp            \
           bncfigurelate.cpp bnctime.cpp                               \
           bncfigureppp.cpp bncrawfile.cpp                             \
-          bncmap_svg.cpp bncantex.cpp                                 \
-          bncephuser.cpp bncoutf.cpp bncclockrinex.cpp bncsp3.cpp     \
+          bncmap_svg.cpp bncantex.cpp bncephuser.cpp                  \
+          bncoutf.cpp bncclockrinex.cpp bncsp3.cpp bncsinextro.cpp    \
           bncbytescounter.cpp bncsslconfig.cpp reqcdlg.cpp            \
           ephemeris.cpp t_prn.cpp satObs.cpp                          \
           upload/bncrtnetdecoder.cpp upload/bncuploadcaster.cpp       \
