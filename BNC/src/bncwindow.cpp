@@ -563,6 +563,8 @@ bncWindow::bncWindow() {
   setCentralWidget(_canvas);
 
   _aogroup = new QTabWidget();
+  _aogroup->setElideMode(Qt::ElideNone);
+  _aogroup->setUsesScrollButtons(true);
   QWidget* pgroup = new QWidget();
   QWidget* ggroup = new QWidget();
   QWidget* sgroup = new QWidget();
