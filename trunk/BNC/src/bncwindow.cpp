@@ -829,48 +829,49 @@ bncWindow::bncWindow() {
 
   // PPP
   // ---
+  _pppWidgets._nmeaPort->setMaximumWidth(8*ww);
+  _pppWidgets._dataSource->setMaximumWidth(20*ww);
+  _pppWidgets._corrMount->setMaximumWidth(20*ww);
+
   QGridLayout* pppLayout1 = new QGridLayout();
   int ir = 0;
   pppLayout1->addWidget(new QLabel("Precise Point Positioning - Input and Output"), ir, 0, 1, 7, Qt::AlignLeft);
   ++ir;     
-  pppLayout1->addWidget(new QLabel("Data source"),        ir, 0, Qt::AlignLeft);
-  pppLayout1->addWidget(_pppWidgets._dataSource,          ir, 1);
-  pppLayout1->addItem(new QSpacerItem(4*ww, 0),           ir, 2);
-  pppLayout1->addWidget(new QLabel("RINEX observations"), ir, 3, Qt::AlignLeft);
-  pppLayout1->addWidget(_pppWidgets._rinexObs,            ir, 4, 1, 2);
+  pppLayout1->addWidget(new QLabel("Data source"),           ir, 0);
+  pppLayout1->addWidget(_pppWidgets._dataSource,             ir, 1);
+//pppLayout1->addItem(new QSpacerItem(4*ww, 0),              ir, 2);
+  pppLayout1->addWidget(new QLabel("   RINEX observations"), ir, 3);
+  pppLayout1->addWidget(_pppWidgets._rinexObs,               ir, 4);
   ++ir;
-  pppLayout1->addWidget(new QLabel("RINEX orbits"),       ir, 3, Qt::AlignLeft);
-  pppLayout1->addWidget(_pppWidgets._rinexNav,            ir, 4, 1, 2);
+  pppLayout1->addWidget(new QLabel("   RINEX orbits"),       ir, 3);
+  pppLayout1->addWidget(_pppWidgets._rinexNav,               ir, 4);
   ++ir;
-  pppLayout1->addWidget(new QLabel("Corrections"),        ir, 0, Qt::AlignLeft);
-  pppLayout1->addWidget(_pppWidgets._corrMount,           ir, 1);
-  pppLayout1->addWidget(new QLabel("Corrections"),        ir, 3, Qt::AlignLeft);
-  pppLayout1->addWidget(_pppWidgets._corrFile,            ir, 4, 1, 2);
+  pppLayout1->addWidget(new QLabel("Corrections"),           ir, 0);
+  pppLayout1->addWidget(_pppWidgets._corrMount,              ir, 1);
+  pppLayout1->addWidget(new QLabel("   Corrections"),        ir, 3);
+  pppLayout1->addWidget(_pppWidgets._corrFile,               ir, 4);
   ++ir;
-  pppLayout1->addWidget(new QLabel("Input:"),             ir, 0, Qt::AlignLeft);
-  pppLayout1->addWidget(new QLabel("Output:"),            ir, 4, 1, 2, Qt::AlignLeft);
+  pppLayout1->addWidget(new QLabel("Input:"),                ir, 0);
+  pppLayout1->addWidget(new QLabel("   Output:"),            ir, 3);
   ++ir;
-  pppLayout1->addWidget(new QLabel("Coordinates"),        ir, 0, Qt::AlignLeft);
-  pppLayout1->addWidget(_pppWidgets._crdFile,             ir, 1, 1, 2);
-  pppLayout1->addWidget(new QLabel("Logfile"),            ir, 4, Qt::AlignLeft);
-  pppLayout1->addWidget(_pppWidgets._logFile,             ir, 5);
+  pppLayout1->addWidget(new QLabel("Coordinates"),           ir, 0);
+  pppLayout1->addWidget(_pppWidgets._crdFile,                ir, 1);
+  pppLayout1->addWidget(new QLabel("   Logfile"),            ir, 3);
+  pppLayout1->addWidget(_pppWidgets._logFile,                ir, 4);
   ++ir;
-  pppLayout1->addWidget(new QLabel("ANTEX"),              ir, 0, Qt::AlignLeft);
-  pppLayout1->addWidget(_pppWidgets._antexFile,           ir, 1, 1, 2);
+  pppLayout1->addWidget(new QLabel("ANTEX"),                 ir, 0);
+  pppLayout1->addWidget(_pppWidgets._antexFile,              ir, 1);
 
-  pppLayout1->addWidget(new QLabel("NMEA file"),          ir, 4, Qt::AlignLeft);
-  pppLayout1->addWidget(_pppWidgets._nmeaFile,            ir, 5);
-  pppLayout1->addWidget(new QLabel("Port"),               ir, 6, Qt::AlignLeft);
-  pppLayout1->addWidget(_pppWidgets._nmeaPort,            ir, 7); _pppWidgets._nmeaPort->setMaximumWidth(8*ww);
+  pppLayout1->addWidget(new QLabel("   NMEA file"),          ir, 3);
+  pppLayout1->addWidget(_pppWidgets._nmeaFile,               ir, 4);
+  pppLayout1->addWidget(new QLabel("   Port"),               ir, 5);
+  pppLayout1->addWidget(_pppWidgets._nmeaPort,               ir, 6); 
   ++ir;
-  pppLayout1->addWidget(new QLabel("SNX TRO file"),       ir, 4, Qt::AlignLeft);
-  pppLayout1->addWidget(_pppWidgets._snxtroFile,          ir, 5);
-  pppLayout1->addWidget(new QLabel("Sampling"),           ir, 6, Qt::AlignLeft);
-  pppLayout1->addWidget(_pppWidgets._snxtroSampl,         ir, 7);
+  pppLayout1->addWidget(new QLabel("   SNX TRO file"),       ir, 3);
+  pppLayout1->addWidget(_pppWidgets._snxtroFile,             ir, 4);
+  pppLayout1->addWidget(new QLabel("   Sampling"),           ir, 5);
+  pppLayout1->addWidget(_pppWidgets._snxtroSampl,            ir, 6);
 
-  pppLayout1->addItem(new QSpacerItem(4*ww, 0),           ir, 8);
-  ++ir;
-  pppLayout1->addWidget(new QLabel(""),                   ir, 1);
   ++ir;
   pppLayout1->setRowStretch(ir, 999);
 
