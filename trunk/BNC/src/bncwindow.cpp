@@ -453,6 +453,8 @@ bncWindow::bncWindow() {
   if (iRow > 0) {
     enableWidget(true, _cmbMethodComboBox);
     _cmbMaxresLineEdit->setStyleSheet("background-color: white");
+    _cmbAntexFile->setStyleSheet("background-color: white");
+    _cmbSamplSpinBox->setStyleSheet("background-color: white");
     _cmbMaxresLineEdit->setEnabled(true);
     _cmbSamplSpinBox->setEnabled(true);
     _cmbAntexFile->setEnabled(true);
@@ -461,6 +463,8 @@ bncWindow::bncWindow() {
   else {
     enableWidget(false, _cmbMethodComboBox);
     _cmbMaxresLineEdit->setStyleSheet("background-color: lightGray");
+    _cmbAntexFile->setStyleSheet("background-color: lightGray");
+    _cmbSamplSpinBox->setStyleSheet("background-color: lightGray");
     _cmbMaxresLineEdit->setEnabled(false);
     _cmbSamplSpinBox->setEnabled(false);
     _cmbAntexFile->setEnabled(false);
@@ -2177,17 +2181,21 @@ void bncWindow::slotBncTextChanged(){
     if (iRow > 0) {
       enableWidget(true, _cmbMethodComboBox);
       _cmbMaxresLineEdit->setStyleSheet("background-color: white");
+      _cmbAntexFile->setStyleSheet("background-color: white");
+      _cmbSamplSpinBox->setStyleSheet("background-color: white");
       _cmbMaxresLineEdit->setEnabled(true);
-      _cmbSamplSpinBox->setEnabled(true);
       _cmbAntexFile->setEnabled(true);
+      _cmbSamplSpinBox->setEnabled(true);
       _cmbUseGlonass->setEnabled(true);
     } 
     else {
       enableWidget(false, _cmbMethodComboBox);
       _cmbMaxresLineEdit->setStyleSheet("background-color: lightGray");
+      _cmbAntexFile->setStyleSheet("background-color: lightGray");
+      _cmbSamplSpinBox->setStyleSheet("background-color: lightGray");
       _cmbMaxresLineEdit->setEnabled(false);
-      _cmbSamplSpinBox->setEnabled(false);
       _cmbAntexFile->setEnabled(false);
+      _cmbSamplSpinBox->setEnabled(false);
       _cmbUseGlonass->setEnabled(false);
     }
   }
@@ -2268,9 +2276,11 @@ void bncWindow::slotDelCmbRow() {
   if (nRows < 1) {
     enableWidget(false, _cmbMethodComboBox);
     _cmbMaxresLineEdit->setStyleSheet("background-color: lightGray");
+    _cmbAntexFile->setStyleSheet("background-color: lightGray");
+    _cmbSamplSpinBox->setStyleSheet("background-color: lightGray");
     _cmbMaxresLineEdit->setEnabled(false);
-    _cmbSamplSpinBox->setEnabled(false);
     _cmbAntexFile->setEnabled(false);
+    _cmbSamplSpinBox->setEnabled(false);
     _cmbUseGlonass->setEnabled(false);
   }
 }
