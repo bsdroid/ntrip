@@ -642,7 +642,7 @@ bncWindow::bncWindow() {
 
   gLayout->addWidget(new QLabel("General settings for logfile, file handling, configuration on-the-fly, and auto-start."),0, 0, 1, 50);
   gLayout->addWidget(new QLabel("Logfile (full path)"),          1, 0);
-  gLayout->addWidget(_logFileLineEdit,                           1, 1, 1,30);
+  gLayout->addWidget(_logFileLineEdit,                           1, 1, 1,20);
   gLayout->addWidget(new QLabel("Append files"),                 2, 0);
   gLayout->addWidget(_rnxAppendCheckBox,                         2, 1);
   gLayout->addWidget(new QLabel("Reread configuration"),         3, 0);
@@ -650,7 +650,7 @@ bncWindow::bncWindow() {
   gLayout->addWidget(new QLabel("Auto start"),                   4, 0);
   gLayout->addWidget(_autoStartCheckBox,                         4, 1);
   gLayout->addWidget(new QLabel("Raw output file (full path)"),  5, 0);
-  gLayout->addWidget(_rawOutFileLineEdit,                        5, 1, 1,30);
+  gLayout->addWidget(_rawOutFileLineEdit,                        5, 1, 1,20);
   gLayout->addWidget(new QLabel(""),                             6, 1);
   gLayout->setRowStretch(7, 999);
 
@@ -665,7 +665,7 @@ bncWindow::bncWindow() {
 
   oLayout->addWidget(new QLabel("Saving RINEX observation files."),0, 0, 1,50);
   oLayout->addWidget(new QLabel("Directory"),                      1, 0);
-  oLayout->addWidget(_rnxPathLineEdit,                             1, 1, 1, 20);
+  oLayout->addWidget(_rnxPathLineEdit,                             1, 1, 1, 15);
   oLayout->addWidget(new QLabel("Interval"),                       2, 0);
   oLayout->addWidget(_rnxIntrComboBox,                             2, 1);
   oLayout->addWidget(new QLabel("  Sampling"),                     2, 2, Qt::AlignRight);
@@ -673,7 +673,7 @@ bncWindow::bncWindow() {
   oLayout->addWidget(new QLabel("Skeleton extension"),             3, 0);
   oLayout->addWidget(_rnxSkelLineEdit,                             3, 1, Qt::AlignLeft);
   oLayout->addWidget(new QLabel("Script (full path)"),             4, 0);
-  oLayout->addWidget(_rnxScrpLineEdit,                             4, 1, 1, 20);
+  oLayout->addWidget(_rnxScrpLineEdit,                             4, 1, 1, 15);
   oLayout->addWidget(new QLabel("Version 2"),                      5, 0);
   oLayout->addWidget(_rnxV2Priority,                               5, 1, 1, 2);
   oLayout->addWidget(new QLabel("  Signal priority"),              5, 3);
@@ -714,7 +714,7 @@ bncWindow::bncWindow() {
 
   cLayout->addWidget(new QLabel("Saving Broadcast Ephemeris correction files and correction output through IP port."),0,0,1,70);
   cLayout->addWidget(new QLabel("Directory, ASCII"),              1, 0);
-  cLayout->addWidget(_corrPathLineEdit,                           1, 1, 1,20);
+  cLayout->addWidget(_corrPathLineEdit,                           1, 1, 1,30);
   cLayout->addWidget(new QLabel("Interval"),                      2, 0);
   cLayout->addWidget(_corrIntrComboBox,                           2, 1);
   cLayout->addWidget(new QLabel("Port"),                          3, 0);
@@ -740,7 +740,7 @@ bncWindow::bncWindow() {
   sLayout->addWidget(new QLabel("Sampling"),                        2, 0);
   sLayout->addWidget(_binSamplSpinBox,                              2, 1, Qt::AlignLeft);
   sLayout->addWidget(new QLabel("File (full path)"),                3, 0);
-  sLayout->addWidget(_outFileLineEdit,                              3, 1, 1, 20);
+  sLayout->addWidget(_outFileLineEdit,                              3, 1, 1, 10);
   sLayout->addWidget(new QLabel("Port (unsynchronized)"),           4, 0);
   sLayout->addWidget(_outUPortLineEdit,                             4, 1);
   sLayout->addWidget(new QLabel(""),                                5, 1);
@@ -861,7 +861,7 @@ bncWindow::bncWindow() {
   pppLayout1->addWidget(new QLabel("   Logfile"),            ir, 3);
   pppLayout1->addWidget(_pppWidgets._logFile,                ir, 4);
   ++ir;
-  pppLayout1->addWidget(new QLabel("ANTEX"),                 ir, 0);
+  pppLayout1->addWidget(new QLabel("ANTEX file"),            ir, 0);
   pppLayout1->addWidget(_pppWidgets._antexFile,              ir, 1);
 
   pppLayout1->addWidget(new QLabel("   NMEA file"),          ir, 3);
@@ -873,7 +873,8 @@ bncWindow::bncWindow() {
   pppLayout1->addWidget(_pppWidgets._snxtroFile,             ir, 4);
   pppLayout1->addWidget(new QLabel("   Sampling"),           ir, 5);
   pppLayout1->addWidget(_pppWidgets._snxtroSampl,            ir, 6);
-
+  pppLayout1->addWidget(new QLabel(""),                      ir, 7);
+  ++ir;
   ++ir;
   pppLayout1->setRowStretch(ir, 999);
 
@@ -1063,7 +1064,7 @@ bncWindow::bncWindow() {
   _sp3CompFileChooser->setFileName(settings.value("sp3CompFile").toString());
   _sp3CompFileChooser->setWhatsThis(tr("Specify the full path to two files with orbits and clocks in SP3 format, separate them by comma."));
   _sp3CompFileChooser->setMinimumWidth(15*ww);
-  _sp3CompFileChooser->setMaximumWidth(50*ww);
+  _sp3CompFileChooser->setMaximumWidth(40*ww);
 
   _sp3CompExclude = new QLineEdit(settings.value("sp3CompExclude").toString());
   _sp3CompExclude->setMinimumWidth(15*ww);
@@ -1104,26 +1105,21 @@ bncWindow::bncWindow() {
   QGridLayout* cmbLayout = new QGridLayout;
 
   populateCmbTable();
-  cmbLayout->addWidget(_cmbTable,                                           0, 0, 6, 3);
-  cmbLayout->addWidget(new QLabel("    "),                                  0, 5);
-  cmbLayout->addWidget(new QLabel("Combine Broadcast Correction streams."), 0, 6, 1, 10);
-  cmbLayout->addWidget(new QLabel("    "),                                  1, 5);
-  cmbLayout->addWidget(addCmbRowButton,                                     1, 6);
-  cmbLayout->addWidget(delCmbRowButton,                                     1, 7);
-  cmbLayout->addWidget(new QLabel("    "),                                  2, 5);
-  cmbLayout->addWidget(new QLabel("Method"),                                2, 6, Qt::AlignRight);
-  cmbLayout->addWidget(_cmbMethodComboBox,                                  2, 7, Qt::AlignRight);
-  cmbLayout->addWidget(new QLabel("    "),                                  3, 5);
-  cmbLayout->addWidget(new QLabel("Maximal residuum"),                      3, 6, Qt::AlignRight);
-  cmbLayout->addWidget(_cmbMaxresLineEdit,                                  3, 7, Qt::AlignRight);
-  cmbLayout->addWidget(new QLabel("ANTEX"),                                 3, 9, Qt::AlignRight);
-  cmbLayout->addWidget(_cmbAntexFile,                                       3, 10);
-  cmbLayout->addWidget(new QLabel("    "),                                  4, 5);
-  cmbLayout->addWidget(new QLabel("Sampling"),                              4, 6, Qt::AlignRight);
-  cmbLayout->addWidget(_cmbSamplSpinBox,                                    4, 7, Qt::AlignRight);
-  cmbLayout->addWidget(new QLabel("Use Glonass"),                           4, 9, Qt::AlignRight);
-  cmbLayout->addWidget(_cmbUseGlonass,                                      4, 10);
-  cmbLayout->addWidget(new QLabel("    "),                                  5, 0);
+  cmbLayout->addWidget(_cmbTable,                                            0, 0, 7, 3);
+  cmbLayout->addWidget(new QLabel(" Combine Broadcast Correction streams."), 1, 6, 1, 10);
+  cmbLayout->addWidget(addCmbRowButton,                                      2, 6);
+  cmbLayout->addWidget(delCmbRowButton,                                      2, 7);
+  cmbLayout->addWidget(new QLabel("Method"),                                 3, 6, Qt::AlignRight);
+  cmbLayout->addWidget(_cmbMethodComboBox,                                   3, 7, Qt::AlignRight);
+  cmbLayout->addWidget(new QLabel(" Maximal residuum"),                      4, 6, Qt::AlignRight);
+  cmbLayout->addWidget(_cmbMaxresLineEdit,                                   4, 7, Qt::AlignRight);
+  cmbLayout->addWidget(new QLabel("ANTEX file"),                             4, 8, Qt::AlignRight);
+  cmbLayout->addWidget(_cmbAntexFile,                                        4, 9, 1, 7);
+  cmbLayout->addWidget(new QLabel("Sampling"),                               5, 6, Qt::AlignRight);
+  cmbLayout->addWidget(_cmbSamplSpinBox,                                     5, 7, Qt::AlignRight);
+  cmbLayout->addWidget(new QLabel("   Use GLONASS"),                         5, 8, Qt::AlignRight);
+  cmbLayout->addWidget(_cmbUseGlonass,                                       5, 9);
+  cmbLayout->setRowStretch(6, 999);
 
   connect(addCmbRowButton, SIGNAL(clicked()), this, SLOT(slotAddCmbRow()));
   connect(delCmbRowButton, SIGNAL(clicked()), this, SLOT(slotDelCmbRow()));
@@ -1181,8 +1177,7 @@ bncWindow::bncWindow() {
   uploadLayoutEph->addWidget(_uploadEphSampleSpinBox,             3, 1);
   uploadLayoutEph->addWidget(new QLabel("Uploaded"),              4, 0);
   uploadLayoutEph->addWidget(_uploadEphBytesCounter,              4, 1); 
-  uploadLayoutEph->addWidget(new QLabel(" "),                     5, 0);
-  uploadLayoutEph->addWidget(new QLabel(" "),                     6, 0);
+  uploadLayoutEph->setRowStretch(5, 999);
 
   uploadEphgroup->setLayout(uploadLayoutEph);
 
@@ -1280,7 +1275,6 @@ bncWindow::bncWindow() {
   _actMapMountPoints->setWhatsThis(tr("<p> Draw distribution map of stream selection presented in the 'Streams' canvas. Use the mouse to zoom in or out.</p><p>Left button: Draw rectangle to zoom in.<br>Right button: Zoom out.<br>Middle button: Zoom back.</p>")); 
   _actStart->setWhatsThis(tr("<p> Start running BNC.</p>"));
   _actStop->setWhatsThis(tr("<p> Stop running BNC.</p>"));
-// Weber
 
   // Enable/Disable all Widgets
   // --------------------------
