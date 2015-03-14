@@ -778,9 +778,9 @@ bncWindow::bncWindow() {
   serLayout->addWidget(new QLabel("NMEA"),                        5, 0);
   serLayout->addWidget(_serialAutoNMEAComboBox,                   5, 1);
   serLayout->addWidget(new QLabel("   File (full path)"),         5, 2, Qt::AlignRight);
-  serLayout->addWidget(_serialFileNMEALineEdit,                   5, 3, 1,15);
-  serLayout->addWidget(new QLabel("Height"),                      5,20, Qt::AlignRight);
-  serLayout->addWidget(_serialHeightNMEALineEdit,                 5,21, 1,11);
+  serLayout->addWidget(_serialFileNMEALineEdit,                   5, 3, 1,10);
+  serLayout->addWidget(new QLabel("Height"),                      5,14, Qt::AlignRight); // 20
+  serLayout->addWidget(_serialHeightNMEALineEdit,                 5,15, 1,11);
   serLayout->addWidget(new QLabel(""),                            6, 1);
   serLayout->setRowStretch(7, 999);
 
@@ -985,7 +985,7 @@ bncWindow::bncWindow() {
 
   QGridLayout* reqcLayout = new QGridLayout;
   _reqcActionComboBox->setMinimumWidth(15*ww);
-  _reqcActionComboBox->setMaximumWidth(15*ww);
+  _reqcActionComboBox->setMaximumWidth(20*ww);
 
   _reqcObsFileChooser = new qtFileChooser(0, qtFileChooser::Files);
   _reqcObsFileChooser->setFileName(settings.value("reqcObsFile").toString());
@@ -1015,13 +1015,13 @@ bncWindow::bncWindow() {
   _reqcLogSummaryOnly->setCheckState(Qt::CheckState(settings.value("reqcLogSummaryOnly").toInt()));
 
   ir = 0;
-  reqcLayout->addWidget(new QLabel("RINEX file editing, concatenation and quality check."),ir, 0, 1, 25);
+  reqcLayout->addWidget(new QLabel("RINEX file editing, concatenation and quality check."),ir, 0, 1, 12);
   ++ir;
   reqcLayout->addWidget(new QLabel("Action"),                    ir, 0);
   reqcLayout->addWidget(_reqcActionComboBox,                     ir, 1);
   _reqcEditOptionButton = new QPushButton("Set Edit Options");
   _reqcEditOptionButton->setMinimumWidth(15*ww);
-  _reqcEditOptionButton->setMaximumWidth(15*ww);
+  _reqcEditOptionButton->setMaximumWidth(20*ww);
 
   reqcLayout->addWidget(_reqcEditOptionButton,                   ir, 3);
   ++ir;
