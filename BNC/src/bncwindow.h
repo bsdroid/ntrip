@@ -207,14 +207,14 @@ class bncWindow : public QMainWindow {
     QLineEdit*     _cmbMaxresLineEdit;
     QComboBox*     _cmbMethodComboBox;
     QSpinBox*      _cmbSamplSpinBox;
-    qtFileChooser* _cmbAntexFile;
     QCheckBox*     _cmbUseGlonass;
 
-    QTableWidget* _uploadTable;
-    QComboBox*    _uploadIntrComboBox;
-    QSpinBox*     _uploadSamplRtcmEphCorrSpinBox;
-    QSpinBox*     _uploadSamplSp3SpinBox;
-    QSpinBox*     _uploadSamplClkRnxSpinBox;
+    QTableWidget*  _uploadTable;
+    QComboBox*     _uploadIntrComboBox;
+    QSpinBox*      _uploadSamplRtcmEphCorrSpinBox;
+    QSpinBox*      _uploadSamplSp3SpinBox;
+    QSpinBox*      _uploadSamplClkRnxSpinBox;
+    qtFileChooser* _uploadAntexFile;
 
     QLineEdit*       _uploadEphHostLineEdit;
     QLineEdit*       _uploadEphPortLineEdit;
