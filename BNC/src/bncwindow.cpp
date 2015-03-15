@@ -422,8 +422,6 @@ bncWindow::bncWindow() {
   _cmbTable->horizontalHeader()->setDefaultAlignment(Qt::AlignLeft);
   
   _cmbMaxresLineEdit = new QLineEdit(settings.value("cmbMaxres").toString());
-  _cmbAntexFile      = new qtFileChooser(0, qtFileChooser::File);
-  _cmbAntexFile->setFileName(settings.value("cmbAntexFile").toString());
   _cmbUseGlonass     = new QCheckBox();
   _cmbUseGlonass->setCheckState(Qt::CheckState(settings.value("cmbUseGlonass").toInt()));
 
@@ -453,21 +451,17 @@ bncWindow::bncWindow() {
   if (iRow > 0) {
     enableWidget(true, _cmbMethodComboBox);
     _cmbMaxresLineEdit->setStyleSheet("background-color: white");
-    _cmbAntexFile->setStyleSheet("background-color: white");
     _cmbSamplSpinBox->setStyleSheet("background-color: white");
     _cmbMaxresLineEdit->setEnabled(true);
     _cmbSamplSpinBox->setEnabled(true);
-    _cmbAntexFile->setEnabled(true);
     _cmbUseGlonass->setEnabled(true);
   } 
   else {
     enableWidget(false, _cmbMethodComboBox);
     _cmbMaxresLineEdit->setStyleSheet("background-color: lightGray");
-    _cmbAntexFile->setStyleSheet("background-color: lightGray");
     _cmbSamplSpinBox->setStyleSheet("background-color: lightGray");
     _cmbMaxresLineEdit->setEnabled(false);
     _cmbSamplSpinBox->setEnabled(false);
-    _cmbAntexFile->setEnabled(false);
     _cmbUseGlonass->setEnabled(false);
   }
 
@@ -507,6 +501,9 @@ bncWindow::bncWindow() {
     _uploadIntrComboBox->setCurrentIndex(ii);
   }
 
+  _uploadAntexFile      = new qtFileChooser(0, qtFileChooser::File);
+  _uploadAntexFile->setFileName(settings.value("uploadAntexFile").toString());
+
   _uploadSamplRtcmEphCorrSpinBox = new QSpinBox;
   _uploadSamplRtcmEphCorrSpinBox->setMinimum(0);
   _uploadSamplRtcmEphCorrSpinBox->setMaximum(60);
@@ -537,12 +534,14 @@ bncWindow::bncWindow() {
     enableWidget(true, _uploadSamplRtcmEphCorrSpinBox);
     enableWidget(true, _uploadSamplSp3SpinBox);
     enableWidget(true, _uploadSamplClkRnxSpinBox);
+    enableWidget(true, _uploadAntexFile);
   } 
   else {
     enableWidget(false, _uploadIntrComboBox);
     enableWidget(false, _uploadSamplRtcmEphCorrSpinBox);
     enableWidget(false, _uploadSamplSp3SpinBox);
     enableWidget(false, _uploadSamplClkRnxSpinBox);
+    enableWidget(false, _uploadAntexFile);
   }
 
   // Upload RTCM3 Ephemeris
@@ -1109,21 +1108,19 @@ bncWindow::bncWindow() {
   QGridLayout* cmbLayout = new QGridLayout;
 
   populateCmbTable();
-  cmbLayout->addWidget(_cmbTable,                                            0, 0, 7, 3);
+  cmbLayout->addWidget(_cmbTable,                                            0, 0, 8, 3);
   cmbLayout->addWidget(new QLabel(" Combine Broadcast Correction streams."), 1, 6, 1, 10);
   cmbLayout->addWidget(addCmbRowButton,                                      2, 6);
   cmbLayout->addWidget(delCmbRowButton,                                      2, 7);
   cmbLayout->addWidget(new QLabel("Method"),                                 3, 6, Qt::AlignRight);
-  cmbLayout->addWidget(_cmbMethodComboBox,                                   3, 7, Qt::AlignRight);
+  cmbLayout->addWidget(_cmbMethodComboBox,                                   3, 7);
   cmbLayout->addWidget(new QLabel(" Maximal residuum"),                      4, 6, Qt::AlignRight);
   cmbLayout->addWidget(_cmbMaxresLineEdit,                                   4, 7, Qt::AlignRight);
-  cmbLayout->addWidget(new QLabel("ANTEX file"),                             4, 8, Qt::AlignRight);
-  cmbLayout->addWidget(_cmbAntexFile,                                        4, 9, 1, 7);
   cmbLayout->addWidget(new QLabel("Sampling"),                               5, 6, Qt::AlignRight);
-  cmbLayout->addWidget(_cmbSamplSpinBox,                                     5, 7, Qt::AlignRight);
-  cmbLayout->addWidget(new QLabel("   Use GLONASS"),                         5, 8, Qt::AlignRight);
-  cmbLayout->addWidget(_cmbUseGlonass,                                       5, 9);
-  cmbLayout->setRowStretch(6, 999);
+  cmbLayout->addWidget(_cmbSamplSpinBox,                                     5, 7);
+  cmbLayout->addWidget(new QLabel("   Use GLONASS"),                         6, 6, Qt::AlignRight);
+  cmbLayout->addWidget(_cmbUseGlonass,                                       6, 7);
+  cmbLayout->setRowStretch(7, 999);
 
   connect(addCmbRowButton, SIGNAL(clicked()), this, SLOT(slotAddCmbRow()));
   connect(delCmbRowButton, SIGNAL(clicked()), this, SLOT(slotDelCmbRow()));
@@ -1149,6 +1146,9 @@ bncWindow::bncWindow() {
   uploadHlpLayout->addWidget(new QLabel("RNX"),                   0, 8, Qt::AlignRight);
   uploadHlpLayout->addWidget(_uploadSamplClkRnxSpinBox,           0, 9);
   uploadHlpLayout->addWidget(setUploadTrafoButton,                0,10);
+  uploadHlpLayout->addWidget(new QLabel("ANTEX file"),            1, 0, Qt::AlignLeft);
+  uploadHlpLayout->addWidget(_uploadAntexFile,                    1, 1, 1, 4);
+  uploadHlpLayout->setRowStretch(1, 999);
 
   QBoxLayout* uploadLayout = new QBoxLayout(QBoxLayout::TopToBottom);
   populateUploadTable();
@@ -1254,11 +1254,11 @@ bncWindow::bncWindow() {
   _reqcActionComboBox->setWhatsThis(tr("<p>BNC allows to edit or concatenate RINEX v2 or v3 files or to perform a quality check following UNAVCO's famous 'teqc' program.</p>"));
   _reqcEditOptionButton->setWhatsThis(tr("<p>Specify options for editing RINEX v2 or v3 files.</p>"));
   _bncFigurePPP->setWhatsThis(tr("PPP time series of North (red), East (green) and Up (blue) coordinate components are shown in the 'PPP Plot' tab when the corresponting option is selected above. Values are either referred to an XYZ reference coordinate (if specified) or referred to the first estimated set of coordinate compoments. The sliding PPP time series window covers the period of the latest 5 minutes."));
-  _cmbTable->setWhatsThis(tr("<p>BNC allows to process several orbit and clock corrections streams in real-time to produce, encode, upload and save a combination of correctors coming from various providers. Hit the 'Add Row' button, double click on the 'Mountpoint' field to enter a Broadcast Ephemeris corrections mountpoint from the 'Streams' section below and hit Enter. Then double click on the 'AC Name' field to enter your choice of an abbreviation for the Analysis Center (AC) providing the stream. Finally, double click on the 'Weight' field to enter the weight to be applied for this stream in the combination.<ul><li>Note that an appropriate 'Wait for full corr epoch' value needs to be specified for the combination under the 'Broadcast Corrections' tab. A value of 15 seconds would make sense there if the update rate of incoming clock corrections is i.e. 10 seconds.</li><li>Note also that you need to tick 'Use GLONASS' which is part ot the 'PPP (2)' panel in case you want to produce an GPS plus GLONASS combination.</li></ul></p><p>Note further that the orbit information in the final combination stream is just copied from one of the incoming streams. The stream used for providing the orbits may vary over time: if the orbit providing stream has an outage then BNC switches to the next remaining stream for getting hold of the orbit information.</p><p>The combination process requires Broadcast Ephemeris. Besides the orbit and clock corrections stream(s) BNC should therefore pull a stream carrying Broadcast Ephemeris in the form of RTCM Version 3 messages.</p><p>It is possible to specify only one Broadcast Ephemeris corrections stream in the combination table. Instead of combining corrections BNC will then merge them with Broadcast Ephemeris to save results in SP3 and/or Clock RINEX format."));
+  _cmbTable->setWhatsThis(tr("<p>BNC allows to process several orbit and clock corrections streams in real-time to produce, encode, upload and save a combination of correctors coming from various providers. Hit the 'Add Row' button, double click on the 'Mountpoint' field to enter a Broadcast Ephemeris corrections mountpoint from the 'Streams' section below and hit Enter. Then double click on the 'AC Name' field to enter your choice of an abbreviation for the Analysis Center (AC) providing the stream. Finally, double click on the 'Weight' field to enter the weight to be applied for this stream in the combination.</p><p>Note that an appropriate 'Wait for full corr epoch' value needs to be specified for the combination under the 'Broadcast Corrections' tab. A value of 15 seconds would make sense there if the update rate of incoming clock corrections is i.e. 10 seconds.</p><p>Note further that the orbit information in the final combination stream is just copied from one of the incoming streams. The stream used for providing the orbits may vary over time: if the orbit providing stream has an outage then BNC switches to the next remaining stream for getting hold of the orbit information.</p><p>The combination process requires Broadcast Ephemeris. Besides the orbit and clock corrections stream(s) BNC should therefore pull a stream carrying Broadcast Ephemeris in the form of RTCM Version 3 messages.</p><p>It is possible to specify only one Broadcast Ephemeris corrections stream in the combination table. Instead of combining corrections BNC will then merge them with Broadcast Ephemeris to save results in SP3 and/or Clock RINEX format."));
   _cmbMaxresLineEdit->setWhatsThis(tr("<p>BNC combines all incoming clocks according to specified weights. Individual clock estimates that differ by more than 'Maximal Residuum' meters from the average of all clocks will be ignored.<p></p>It is suggested to specify a value of about 0.2 m for the Kalman filter combination approach and a value of about 3.0 meters for the Single-Epoch combination approach.</p><p>Default is a value of '999.0'.</p>"));
   _cmbSamplSpinBox->setWhatsThis(tr("<p>Specify a combination sampling interval for the Clocks. The clock corrections will be produced following that interval. A value of 10 sec may be an appropriate choice.</p>"));
   _cmbMethodComboBox->setWhatsThis(tr("<p>Select a clock combination approach. Options are 'Single-Epoch' and Kalman 'Filter'. It is suggested to use the Kalman filter approach for the purpose of Precise Point Positioning.</p>"));
-  _uploadTable->setWhatsThis(tr("<p>BNC can upload clock and orbit corrections to broadcast ephemeris (Broadcast Corrections) in RTCM Version 3 SSR format. You may have a situation where clocks and orbits come from an external Real-time Network Engine (1) or a situation where clock and orbit corrections are combined within BNC (2).</p><p>(1) BNC identifies a stream as coming from a Real-time Network Engine if its format is specified as 'RTNET' and hence its decoder string in the 'Streams' canvas is 'RTNET'. It encodes and uploads that stream to the specified NTRIP broadcaster</p><p>(2) BNC understands that it is expected to encode and upload combined Broadcast Ephemeris corrections if you specify correction streams in the 'Combine Corrections' stream table.</p><p>Hit the 'Add Row' button, double click on the 'Host' field to enter the IP or URL of an NTRIP broadcaster and hit Enter. Then double click on the 'Port', 'Mount' and 'Password' fields to enter the NTRIP broadcaster IP port (default is 80), the mountpoint and the stream upload password. An empty 'Host' option field means that you don't want to upload corrections.</p><p>Select a target coordinate reference system (e.g. IGS08) for outgoing clock and orbit corrections.</p><p>By default orbit and clock corrections refer to Antenna Phase Center (APC). Tick 'CoM' to refer uploaded corrections to Center of Mass instead of APC.</p><p>Specify a path for saving the generated Broadcast Corrections plus Broadcast Ephemeris as SP3 orbit files. If the specified directory does not exist, BNC will not create SP3 orbit files. The following is a path example for a Linux system:<br>/home/user/BNC${GPSWD}.sp3<br>Note that '${GPSWD}' produces the GPS Week and Day number in the file name.</p><ul><li>As an SP3 file contents should be referred to the satellites Center of Mass (CoM) while correctors are referred to the satellites Antenna Phase Center (APC), an offset has to be applied which is available from an IGS ANTEX file. You should therefore specify the 'ANTEX File' path under tab 'PPP (2)' if you want to save the stream contents in SP3 format. If you don't specify an 'ANTEX File' path there, the SP3 file contents will be referred to the satellites APCs.</li></ul></p><p>Specify a path for saving the generated Broadcast Correction clocks plus Broadcast Ephemeris clocks as Clock RINEX files. If the specified directory does not exist, BNC will not create Clock RINEX files. The following is a path example for a Linux system:<br>/home/user/BNC${GPSWD}.clk<br>Note that '${GPSWD}' produces the GPS Week and Day number in the file name.</p><p>Specify finally an SSR Provider ID number, an SSR Solution ID number and an Issue of Data SSR number.</p><p>In case the 'Combine Corrections' table contains only one Broadcast Corrections stream, BNC will merge that stream with Broadcast Ephemeris to save results in files specified here through SP3 and/or Clock RINEX file path. In such a case you should define only the SP3 and Clock RINEX file path and no further options in the 'Upload Corrections' table.</p>"));
+  _uploadTable->setWhatsThis(tr("<p>BNC can upload clock and orbit corrections to broadcast ephemeris (Broadcast Corrections) in RTCM Version 3 SSR format. You may have a situation where clocks and orbits come from an external Real-time Network Engine (1) or a situation where clock and orbit corrections are combined within BNC (2).</p><p>(1) BNC identifies a stream as coming from a Real-time Network Engine if its format is specified as 'RTNET' and hence its decoder string in the 'Streams' canvas is 'RTNET'. It encodes and uploads that stream to the specified NTRIP broadcaster</p><p>(2) BNC understands that it is expected to encode and upload combined Broadcast Ephemeris corrections if you specify correction streams in the 'Combine Corrections' stream table.</p><p>Hit the 'Add Row' button, double click on the 'Host' field to enter the IP or URL of an NTRIP broadcaster and hit Enter. Then double click on the 'Port', 'Mount' and 'Password' fields to enter the NTRIP broadcaster IP port (default is 80), the mountpoint and the stream upload password. An empty 'Host' option field means that you don't want to upload corrections.</p><p>Select a target coordinate reference system (e.g. IGS08) for outgoing clock and orbit corrections.</p><p>By default orbit and clock corrections refer to Antenna Phase Center (APC). Tick 'CoM' to refer uploaded corrections to Center of Mass instead of APC.</p><p>Specify a path for saving the generated Broadcast Corrections plus Broadcast Ephemeris as SP3 orbit files. If the specified directory does not exist, BNC will not create SP3 orbit files. The following is a path example for a Linux system:<br>/home/user/BNC${GPSWD}.sp3<br>Note that '${GPSWD}' produces the GPS Week and Day number in the file name.</p><p>As SP3 file contents should be referred to the satellites Center of Mass (CoM) while correctors are referred to the satellites Antenna Phase Center (APC), an offset has to be applied which is available from an IGS ANTEX file. You should therefore specify the 'ANTEX file' if you want to save the stream contents in SP3 format. If you don't specify an 'ANTEX file' path, the SP3 file contents will be referred to the satellites APCs.</p><p>Specify a path for saving the generated Broadcast Correction clocks plus Broadcast Ephemeris clocks as Clock RINEX files. If the specified directory does not exist, BNC will not create Clock RINEX files. The following is a path example for a Linux system:<br>/home/user/BNC${GPSWD}.clk<br>Note that '${GPSWD}' produces the GPS Week and Day number in the file name.</p><p>Specify finally an SSR Provider ID number, an SSR Solution ID number and an Issue of Data SSR number.</p><p>In case the 'Combine Corrections' table contains only one Broadcast Corrections stream, BNC will merge that stream with Broadcast Ephemeris to save results in files specified here through SP3 and/or Clock RINEX file path. In such a case you should define only the SP3 and Clock RINEX file path and no further options in the 'Upload Corrections' table.</p>"));
   addCmbRowButton->setWhatsThis(tr("Hit 'Add Row' button to add another line to the mountpoints table."));
   delCmbRowButton->setWhatsThis(tr("Hit 'Delete' button to delete the highlighted line from the mountpoints table."));
   addUploadRowButton->setWhatsThis(tr("Hit 'Add Row' button to add another line to the stream upload table."));
@@ -1695,7 +1695,6 @@ void bncWindow::saveOptions() {
   settings.setValue("cmbMethod",     _cmbMethodComboBox->currentText());
   settings.setValue("cmbMaxres",     _cmbMaxresLineEdit->text());
   settings.setValue("cmbSampl",      _cmbSamplSpinBox->value());
-  settings.setValue("cmbAntexFile",  _cmbAntexFile->fileName());
   settings.setValue("cmbUseGlonass", _cmbUseGlonass->checkState());
 // Upload Corrections
   if (!uploadMountpointsOut.isEmpty()) {
@@ -1708,6 +1707,7 @@ void bncWindow::saveOptions() {
   settings.setValue("uploadSamplRtcmEphCorr", _uploadSamplRtcmEphCorrSpinBox->value());
   settings.setValue("uploadSamplSp3",         _uploadSamplSp3SpinBox->value());
   settings.setValue("uploadSamplClkRnx",      _uploadSamplClkRnxSpinBox->value());
+  settings.setValue("uploadAntexFile",        _uploadAntexFile->fileName());
 // Upload Ephemeris
   settings.setValue("uploadEphHost",      _uploadEphHostLineEdit->text());
   settings.setValue("uploadEphPort",      _uploadEphPortLineEdit->text());
@@ -2181,20 +2181,16 @@ void bncWindow::slotBncTextChanged(){
     if (iRow > 0) {
       enableWidget(true, _cmbMethodComboBox);
       _cmbMaxresLineEdit->setStyleSheet("background-color: white");
-      _cmbAntexFile->setStyleSheet("background-color: white");
       _cmbSamplSpinBox->setStyleSheet("background-color: white");
       _cmbMaxresLineEdit->setEnabled(true);
-      _cmbAntexFile->setEnabled(true);
       _cmbSamplSpinBox->setEnabled(true);
       _cmbUseGlonass->setEnabled(true);
     } 
     else {
       enableWidget(false, _cmbMethodComboBox);
       _cmbMaxresLineEdit->setStyleSheet("background-color: lightGray");
-      _cmbAntexFile->setStyleSheet("background-color: lightGray");
       _cmbSamplSpinBox->setStyleSheet("background-color: lightGray");
       _cmbMaxresLineEdit->setEnabled(false);
-      _cmbAntexFile->setEnabled(false);
       _cmbSamplSpinBox->setEnabled(false);
       _cmbUseGlonass->setEnabled(false);
     }
@@ -2208,12 +2204,14 @@ void bncWindow::slotBncTextChanged(){
     enableWidget(true, _uploadSamplRtcmEphCorrSpinBox);
     enableWidget(true, _uploadSamplClkRnxSpinBox);
     enableWidget(true, _uploadSamplSp3SpinBox);
+    enableWidget(true, _uploadAntexFile);
   } 
   else {
     enableWidget(false, _uploadIntrComboBox);
     enableWidget(false, _uploadSamplRtcmEphCorrSpinBox);
     enableWidget(false, _uploadSamplClkRnxSpinBox);
     enableWidget(false, _uploadSamplSp3SpinBox);
+    enableWidget(false, _uploadAntexFile);
   }
 
   // QC
@@ -2276,10 +2274,8 @@ void bncWindow::slotDelCmbRow() {
   if (nRows < 1) {
     enableWidget(false, _cmbMethodComboBox);
     _cmbMaxresLineEdit->setStyleSheet("background-color: lightGray");
-    _cmbAntexFile->setStyleSheet("background-color: lightGray");
     _cmbSamplSpinBox->setStyleSheet("background-color: lightGray");
     _cmbMaxresLineEdit->setEnabled(false);
-    _cmbAntexFile->setEnabled(false);
     _cmbSamplSpinBox->setEnabled(false);
     _cmbUseGlonass->setEnabled(false);
   }
@@ -2373,6 +2369,7 @@ void bncWindow::slotDelUploadRow() {
     enableWidget(false, _uploadSamplRtcmEphCorrSpinBox);
     enableWidget(false, _uploadSamplSp3SpinBox);
     enableWidget(false, _uploadSamplClkRnxSpinBox);
+    enableWidget(false, _uploadAntexFile);
   }
 }
 
