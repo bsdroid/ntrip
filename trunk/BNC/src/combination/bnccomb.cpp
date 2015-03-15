@@ -232,7 +232,7 @@ bncComb::bncComb() : _ephUser(true) {
   // ANTEX File
   // ----------
   _antex = 0;
-  QString antexFileName = settings.value("cmbAntexFile").toString();
+  QString antexFileName = settings.value("uploadAntexFile").toString();
   if (!antexFileName.isEmpty()) {
     _antex = new bncAntex();
     if (_antex->readFile(antexFileName) != success) {
