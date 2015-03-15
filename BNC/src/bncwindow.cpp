@@ -890,7 +890,7 @@ bncWindow::bncWindow() {
   QHBoxLayout* pppLayout2sub = new QHBoxLayout();
   pppLayout2sub->addWidget(_pppWidgets._addStaButton);
   pppLayout2sub->addWidget(_pppWidgets._delStaButton);
-  pppLayout2sub->addStretch(99);
+  pppLayout2sub->addStretch(99); // weber
  
   pppLayout2->addLayout(pppLayout2sub);
 
@@ -1008,9 +1008,10 @@ bncWindow::bncWindow() {
   _reqcOutLogLineEdit->setWhatsThis(tr("Specify the full path to a logfile."));
 
   _reqcPlotDirLineEdit = new QLineEdit(settings.value("reqcPlotDir").toString());
-  _reqcPlotDirLineEdit->setWhatsThis(tr("Specify the directory name for saving plots."));
+  _reqcPlotDirLineEdit->setWhatsThis(tr("Specify the directory name for saving plots in PNG format."));
 
   _reqcSkyPlotSignals = new QLineEdit(settings.value("reqcSkyPlotSignals").toString());
+  _reqcSkyPlotSignals->setWhatsThis(tr("<p>G:1&2 R:1&2 J:1&2 E:1&7 C:1&6</p><p>G:1C&5X</p><p>C:6I&7I</p>"));
   connect(_reqcSkyPlotSignals, SIGNAL(textChanged(const QString &)), 
           this, SLOT(slotBncTextChanged()));
 
