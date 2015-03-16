@@ -271,7 +271,7 @@ void reqcDlg::slotReqcTextChanged(){
       _reqcV2Priority->setEnabled(true);
     }
     else {
-      _reqcV2Priority->setStyleSheet("background-color: LightGray");
+      _reqcV2Priority->setStyleSheet("background-color: lightGray");
       _reqcV2Priority->setEnabled(false);
     }
   }
