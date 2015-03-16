@@ -1216,7 +1216,22 @@ void t_rnxObsFile::setObsFromRnx(const t_rnxObsFile* rnxObsFile, const t_rnxObsF
 QString t_rnxObsFile::signalPriorities(char sys) {
 
   bncSettings settings;
-  QStringList priorList = settings.value("rnxV2Priority").toString().split(" ", QString::SkipEmptyParts);
+
+  QStringList priorList;
+  QString reqcAction = settings.value("reqcAction").toString();
+
+  // Priorities in Edit/Concatenate (post processing) mode
+  // ---------------------------------------------------
+  if (reqcAction == "Edit/Concatenate") {
+  priorList = settings.value("reqcV2Priority").toString().split(" ", QString::SkipEmptyParts);
+  }
+
+  // Priorities in real-time mode
+  // ----------------------------
+  else {
+  priorList = settings.value("rnxV2Priority").toString().split(" ", QString::SkipEmptyParts);
+  }
+
   if (priorList.empty()) {
     priorList << "CWPX_?";
   }
