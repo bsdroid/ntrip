@@ -1151,7 +1151,7 @@ bncWindow::bncWindow() {
   uploadHlpLayout->addWidget(setUploadTrafoButton,                0,10);
   uploadHlpLayout->addWidget(new QLabel("ANTEX file"),            1, 0, Qt::AlignLeft);
   uploadHlpLayout->addWidget(_uploadAntexFile,                    1, 1, 1, 4);
-  uploadHlpLayout->setRowStretch(1, 999);
+//uploadHlpLayout->setRowStretch(1, 999); // weber
 
   QBoxLayout* uploadLayout = new QBoxLayout(QBoxLayout::TopToBottom);
   populateUploadTable();
