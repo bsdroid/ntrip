@@ -38,6 +38,9 @@ class reqcDlg : public QDialog {
     reqcDlg(QWidget* parent);
     ~reqcDlg();
 
+  public slots:
+    void slotReqcTextChanged();
+
   signals:
 
   private slots:
@@ -55,6 +58,7 @@ class reqcDlg : public QDialog {
    QDateTimeEdit* _reqcStartDateTime;
    QDateTimeEdit* _reqcEndDateTime;
    QLineEdit*     _reqcRunBy;
+   QLineEdit*     _reqcV2Priority;
    QLineEdit*     _reqcUseObsTypes;
    QLineEdit*     _reqcComment;
    QLineEdit*     _reqcOldMarkerName;
