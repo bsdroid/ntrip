@@ -876,8 +876,8 @@ bncWindow::bncWindow() {
   pppLayout1->addWidget(_pppWidgets._snxtroFile,             ir, 4);
   pppLayout1->addWidget(new QLabel("   Sampling"),           ir, 5);
   pppLayout1->addWidget(_pppWidgets._snxtroSampl,            ir, 6);
-  pppLayout1->addWidget(new QLabel(""),                      ir, 7);
   ++ir;
+  pppLayout1->addWidget(new QLabel(""),                      ir, 7);
   ++ir;
   pppLayout1->setRowStretch(ir, 999);
 
@@ -1019,7 +1019,6 @@ bncWindow::bncWindow() {
   _reqcLogSummaryOnly = new QCheckBox();
   _reqcLogSummaryOnly->setCheckState(Qt::CheckState(settings.value("reqcLogSummaryOnly").toInt()));
   _reqcLogSummaryOnly->setWhatsThis(tr("<p>By default BNC produces a detailed 'Logfile' providing all information resulting from editing or analyzing RINEX data. If that is too much information you can limit the logfile contents to a small summary.</p><p>Tick 'Summary only' to suppress a full logfile output and produce a logfile containing only summary information.</p>"));
-// weber
 
   ir = 0;
   reqcLayout->addWidget(new QLabel("RINEX file editing, concatenation and quality check."),ir, 0, 1, 12);
