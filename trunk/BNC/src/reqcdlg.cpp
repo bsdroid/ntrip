@@ -196,7 +196,7 @@ reqcDlg::reqcDlg(QWidget* parent) : QDialog(parent) {
   _reqcNewReceiverName->setWhatsThis(tr("<p>Enter new receiver name in RINEX observation file.</p>"));
   _reqcComment->setWhatsThis(tr("<p>Specifying a comment line text to be added to the emerging new RINEX file header is an option. Any introduction of newline specification '\\n' in this enforces the beginning of a further comment line. The  comment line(s) will be added to the header after the 'PGM / RUN BY / DATE' record.</p><p>Default is an empty option field meaning that no additional comment line is added to the RINEX header.</p>"));
   _reqcRunBy->setWhatsThis(tr("<p>Specify a 'RUN BY' string to be included in the emerging new RINEX file header.</p><p>Default is an empty option field meanig the operator's user ID is used as 'RUN BY' string.</p>"));
-  _reqcV2Priority->setWhatsThis(tr("<p>Specify a priority list of characters defining signal generation attributes as defined in RINEX Version 3. Priorities will be used to map RINEX Version 3 observations to Version 2 in post processing mode. The underscore character '_' stands for undefined attributes. A question mark '?' can be used as wildcard which represents any one character.</p><p>Default is priority list 'CWPX_?'.</p>"));
+  _reqcV2Priority->setWhatsThis(tr("<p>Specify a priority list of characters defining signal generation attributes as defined in RINEX Version 3. Priorities will be used in post processing mode to map RINEX Version 3 observation files to Version 2. The underscore character '_' stands for undefined attributes. A question mark '?' can be used as wildcard which represents any one character.</p><p>Default is priority list 'CWPX_?'.</p>"));
 }
 
 // Destructor
