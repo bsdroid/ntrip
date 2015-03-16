@@ -113,48 +113,57 @@ reqcDlg::reqcDlg(QWidget* parent) : QDialog(parent) {
   _reqcOldReceiverName->setText(settings.value("reqcOldReceiverName").toString());
   _reqcNewReceiverName->setText(settings.value("reqcNewReceiverName").toString());
 
-  QString rnxV2Priority = settings.value("rnxV2Priority").toString();
+  QString hlp = settings.value("reqcV2Priority").toString();
+  if (hlp.isEmpty()) {
+    hlp = "CWPX_?";
+  }
+  _reqcV2Priority = new QLineEdit(hlp);
 
   // Dialog Layout
   // -------------
   QGridLayout* grid = new QGridLayout;
 
   int ir = 0;
-  grid->addWidget(new QLabel("RNX Version"),   ir, 1);
-  grid->addWidget(_reqcRnxVersion,             ir, 2);
-  grid->addWidget(new QLabel("  Sampling"),    ir, 3);
-  grid->addWidget(_reqcSampling,               ir, 4);
+  grid->addWidget(new QLabel("RNX Version"),      ir, 1);
+  grid->addWidget(_reqcRnxVersion,                ir, 2);
+  grid->addWidget(new QLabel("Sampling"),         ir, 3, Qt::AlignRight);
+  grid->addWidget(_reqcSampling,                  ir, 4);
   ++ir;
-  grid->addWidget(new QLabel("Start"),         ir, 1);
-  grid->addWidget(_reqcStartDateTime,          ir, 2);
-  grid->addWidget(new QLabel("  End"),         ir, 3);
-  grid->addWidget(_reqcEndDateTime,            ir, 4);
+  grid->addWidget(new QLabel("Version 2 Signal Priority"), ir, 1);
+  grid->addWidget(_reqcV2Priority,                ir, 2);
   ++ir;
-  grid->addWidget(new QLabel("Run By"),        ir, 0);
-  grid->addWidget(_reqcRunBy,                  ir, 1);
-  grid->addWidget(new QLabel("V2 Priority:"),  ir, 2, Qt::AlignRight);
-  grid->addWidget(new QLabel(rnxV2Priority),   ir, 3, 1, 2);
+  grid->addWidget(new QLabel("Start"),            ir, 1);
+  grid->addWidget(_reqcStartDateTime,             ir, 2);
+  grid->addWidget(new QLabel("End"),              ir, 3, Qt::AlignRight);
+  grid->addWidget(_reqcEndDateTime,               ir, 4);
   ++ir;
-  grid->addWidget(new QLabel("Use Obs. Types"),ir, 0);
-  grid->addWidget(_reqcUseObsTypes,            ir, 1, 1, 4);
+  grid->addWidget(new QLabel("Run By"),           ir, 0);
+  grid->addWidget(_reqcRunBy,                     ir, 1);
   ++ir;
-  grid->addWidget(new QLabel("Comment(s)"),    ir, 0);
-  grid->addWidget(_reqcComment,                ir, 1, 1, 4);
+  grid->addWidget(new QLabel("Use Obs. Types"),   ir, 0);
+  grid->addWidget(_reqcUseObsTypes,               ir, 1, 1, 4);
   ++ir;
-  grid->addWidget(new QLabel("Old"),           ir, 1, 1, 2, Qt::AlignCenter);
-  grid->addWidget(new QLabel("New"),           ir, 3, 1, 2, Qt::AlignCenter);
+  grid->addWidget(new QLabel("Comment(s)"),       ir, 0);
+  grid->addWidget(_reqcComment,                   ir, 1, 1, 4);
   ++ir;
-  grid->addWidget(new QLabel("Marker Name"),   ir, 0);
-  grid->addWidget(_reqcOldMarkerName,          ir, 1, 1, 2);
-  grid->addWidget(_reqcNewMarkerName,          ir, 3, 1, 2);
+  grid->addWidget(new QLabel("Old"),              ir, 1, 1, 2, Qt::AlignCenter);
+  grid->addWidget(new QLabel("New"),              ir, 3, 1, 2, Qt::AlignCenter);
   ++ir;
-  grid->addWidget(new QLabel("Antenna Name"),  ir, 0);
-  grid->addWidget(_reqcOldAntennaName,         ir, 1, 1, 2);
-  grid->addWidget(_reqcNewAntennaName,         ir, 3, 1, 2);
+  grid->addWidget(new QLabel("Marker Name"),      ir, 0);
+  grid->addWidget(_reqcOldMarkerName,             ir, 1, 1, 2);
+  grid->addWidget(_reqcNewMarkerName,             ir, 3, 1, 2);
   ++ir;
-  grid->addWidget(new QLabel("Receiver Name"), ir, 0);
-  grid->addWidget(_reqcOldReceiverName,        ir, 1, 1, 2);
-  grid->addWidget(_reqcNewReceiverName,        ir, 3, 1, 2);
+  grid->addWidget(new QLabel("Antenna Name"),     ir, 0);
+  grid->addWidget(_reqcOldAntennaName,            ir, 1, 1, 2);
+  grid->addWidget(_reqcNewAntennaName,            ir, 3, 1, 2);
+  ++ir;
+  grid->addWidget(new QLabel("Receiver Name"),    ir, 0);
+  grid->addWidget(_reqcOldReceiverName,           ir, 1, 1, 2);
+  grid->addWidget(_reqcNewReceiverName,           ir, 3, 1, 2);
+
+  slotReqcTextChanged();
+  connect(_reqcRnxVersion, SIGNAL(currentIndexChanged(const QString &)),
+          this, SLOT(slotReqcTextChanged()));
 
   _buttonWhatsThis = new QPushButton(tr("Help=Shift+F1"), this);
   connect(_buttonWhatsThis, SIGNAL(clicked()), this, SLOT(slotWhatsThis()));
@@ -238,6 +247,7 @@ void reqcDlg::saveOptions() {
 
   settings.setValue("reqcRnxVersion"     , _reqcRnxVersion->currentText());    
   settings.setValue("reqcSampling"       , _reqcSampling->value());      
+  settings.setValue("reqcV2Priority"     , _reqcV2Priority->text()); 
   settings.setValue("reqcStartDateTime"  , _reqcStartDateTime->dateTime().toString(Qt::ISODate)); 
   settings.setValue("reqcEndDateTime"    , _reqcEndDateTime->dateTime().toString(Qt::ISODate));   
   settings.setValue("reqcRunBy"          , _reqcRunBy->text()); 
@@ -249,4 +259,20 @@ void reqcDlg::saveOptions() {
   settings.setValue("reqcNewAntennaName" , _reqcNewAntennaName->text());
   settings.setValue("reqcOldReceiverName", _reqcOldReceiverName->text());
   settings.setValue("reqcNewReceiverName", _reqcNewReceiverName->text());
+}
+
+//  Reqc Text Changed
+////////////////////////////////////////////////////////////////////////////
+void reqcDlg::slotReqcTextChanged(){
+
+  if (sender() == 0 || sender() == _reqcRnxVersion) {
+    if (_reqcRnxVersion->currentText() == "2") {
+      _reqcV2Priority->setStyleSheet("background-color: white");
+      _reqcV2Priority->setEnabled(true);
+    }
+    else {
+      _reqcV2Priority->setStyleSheet("background-color: LightGray");
+      _reqcV2Priority->setEnabled(false);
+    }
+  }
 }
