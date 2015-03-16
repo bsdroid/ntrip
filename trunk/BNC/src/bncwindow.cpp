@@ -221,6 +221,8 @@ bncWindow::bncWindow() {
 
   connect(_rnxPathLineEdit, SIGNAL(textChanged(const QString &)), 
           this, SLOT(slotBncTextChanged()));
+  connect(_rnxV3CheckBox, SIGNAL(stateChanged(int)),
+          this, SLOT(slotBncTextChanged()));
 
   // RINEX Ephemeris Options
   // -----------------------
@@ -2086,11 +2088,28 @@ void bncWindow::slotBncTextChanged(){
   // ------------------
   if (sender() == 0 || sender() == _rnxPathLineEdit) {
     enable = !_rnxPathLineEdit->text().isEmpty();
+    enableWidget(enable, _rnxIntrComboBox);
     enableWidget(enable, _rnxSamplSpinBox);
     enableWidget(enable, _rnxSkelLineEdit);
     enableWidget(enable, _rnxScrpLineEdit);
     enableWidget(enable, _rnxV3CheckBox);
-    enableWidget(enable, _rnxIntrComboBox);
+    if (!_rnxV3CheckBox->isChecked()) {
+      enableWidget(enable, _rnxV2Priority);
+    }
+    else {
+      enableWidget(false, _rnxV2Priority);
+    }
+  }
+
+  // RINEX Observations, Signal Priority
+  // -----------------------------------
+  if (sender() == 0 || sender() == _rnxV3CheckBox) {
+    if (!_rnxV3CheckBox->isChecked()) {
+      enableWidget(true, _rnxV2Priority);
+    }
+    else {
+      enableWidget(false, _rnxV2Priority);
+    }
   }
 
   // RINEX Ephemeris
