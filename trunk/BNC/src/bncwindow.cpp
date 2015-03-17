@@ -322,7 +322,7 @@ bncWindow::bncWindow() {
     _serialStopBitsComboBox->setCurrentIndex(kk);
   }
   _serialAutoNMEAComboBox  = new QComboBox();
-  _serialAutoNMEAComboBox->addItems(QString("Auto,Manual").split(","));
+  _serialAutoNMEAComboBox->addItems(QString("no,Auto,Manual").split(","));
   kk = _serialAutoNMEAComboBox->findText(settings.value("serialAutoNMEA").toString());
   if (kk != -1) {
     _serialAutoNMEAComboBox->setCurrentIndex(kk);
@@ -2152,7 +2152,7 @@ void bncWindow::slotBncTextChanged(){
    
     bool enable2 = enable && _serialAutoNMEAComboBox->currentText() == "Auto";
     enableWidget(enable2, _serialFileNMEALineEdit);
-    bool enable3 = enable && _serialAutoNMEAComboBox->currentText() != "Auto";
+    bool enable3 = enable && _serialAutoNMEAComboBox->currentText() == "Manual";
     enableWidget(enable3, _serialHeightNMEALineEdit);
   }
 
