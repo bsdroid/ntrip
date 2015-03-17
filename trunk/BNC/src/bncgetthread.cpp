@@ -257,7 +257,7 @@ void bncGetThread::initialize() {
 
     // Manual NMEA
     // -----------
-    else {
+    if (settings.value("serialAutoNMEA").toString() == "Manual") {
       _serialNMEA = MANUAL_NMEA;
     }
   }
@@ -608,8 +608,15 @@ t_irc bncGetThread::tryReconnect() {
     else {
       _query = new bncNetQueryV1();
     }
-    if (_nmea == "yes" && _serialNMEA != AUTO_NMEA) {
-      QByteArray gga = ggaString(_latitude, _longitude, "100.0");
+    if (_nmea == "yes" && _serialNMEA == MANUAL_NMEA) {
+      bncSettings settings;                                                     // weber
+      QString hlp = settings.value("serialHeightNMEA").toString();              // weber
+      if (hlp.isEmpty()) {                                                      // weber
+        hlp = "0.0";                                                            // weber
+      }                                                                         // weber
+      QByteArray _serialHeightNMEA = hlp.toAscii();                             // weber
+      QByteArray gga = ggaString(_latitude, _longitude, _serialHeightNMEA);     // weber 
+//    QByteArray gga = ggaString(_latitude, _longitude, "100.0");               // weber
       _query->startRequest(_mountPoint, gga);
     }
     else {
