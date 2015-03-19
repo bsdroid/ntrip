@@ -159,6 +159,7 @@ class t_pppFilter {
   double y()      const {return _params[1]->xx;}
   double z()      const {return _params[2]->xx;}
   double clk()    const {return _params[3]->xx;}
+  double trp0()   {return delay_saast(M_PI/2.0);}
   double trp() const {
     for (int ii = 0; ii < _params.size(); ++ii) {
       t_pppParam* pp = _params[ii];
@@ -169,9 +170,9 @@ class t_pppFilter {
     return 0.0;
   }
   double trpStdev() const {
-    for (unsigned ii = 0; ii < _params.size(); ++ii) {
+    for (int ii = 0; ii < _params.size(); ++ii) {
       t_pppParam* pp = _params[ii];
-      if (pp->type() == t_pppParam::TROPO) {
+      if (pp->type == t_pppParam::TROPO) {
         return sqrt(Q()[ii][ii]);
       }
     }
