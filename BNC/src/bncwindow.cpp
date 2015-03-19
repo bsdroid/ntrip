@@ -1023,7 +1023,7 @@ bncWindow::bncWindow() {
   _reqcLogSummaryOnly->setWhatsThis(tr("<p>By default BNC produces a detailed 'Logfile' providing all information resulting from editing or analyzing RINEX data. If that is too much information you can limit the logfile contents to a small summary.</p><p>Tick 'Summary only' to suppress a full logfile output and produce a logfile containing only summary information.</p>"));
 
   ir = 0;
-  reqcLayout->addWidget(new QLabel("RINEX file editing, concatenation and quality check."),ir, 0, 1, 12);
+  reqcLayout->addWidget(new QLabel("RINEX file editing, concatenation and quality check."),ir, 0, 1, 8);
   ++ir;
   reqcLayout->addWidget(new QLabel("Action"),                    ir, 0);
   reqcLayout->addWidget(_reqcActionComboBox,                     ir, 1);
@@ -1035,26 +1035,33 @@ bncWindow::bncWindow() {
   ++ir;
   reqcLayout->addWidget(new QLabel("Input files (full path)"),   ir, 0);
   reqcLayout->addWidget(_reqcObsFileChooser,                     ir, 1);
+  _reqcObsFileChooser->setMaximumWidth(40*ww); // weber
   reqcLayout->addWidget(new QLabel("  Obs"),                     ir, 2);
   reqcLayout->addWidget(_reqcNavFileChooser,                     ir, 3);
+  _reqcNavFileChooser->setMaximumWidth(40*ww); // weber
   reqcLayout->addWidget(new QLabel("  Nav"),                     ir, 4);
   ++ir;
   reqcLayout->addWidget(new QLabel("Output files (full path)"),  ir, 0);
   reqcLayout->addWidget(_reqcOutObsLineEdit,                     ir, 1);
+  _reqcOutObsLineEdit->setMaximumWidth(40*ww); // weber
   reqcLayout->addWidget(new QLabel("  Obs"),                     ir, 2);
   reqcLayout->addWidget(_reqcOutNavLineEdit,                     ir, 3);
+  _reqcOutNavLineEdit->setMaximumWidth(40*ww); // weber
   reqcLayout->addWidget(new QLabel("  Nav"),                     ir, 4);
   ++ir;
   reqcLayout->addWidget(new QLabel("Logfile"),                   ir, 0);
   reqcLayout->addWidget(_reqcOutLogLineEdit,                     ir, 1);
+  _reqcOutLogLineEdit->setMaximumWidth(40*ww); // weber
   reqcLayout->addWidget(new QLabel("  Summary only"),            ir, 2);
   reqcLayout->addWidget(_reqcLogSummaryOnly,                     ir, 3);
   ++ir;
   reqcLayout->addWidget(new QLabel("Plots for signals"),         ir, 0);
   reqcLayout->addWidget(_reqcSkyPlotSignals,                     ir, 1);
+  _reqcSkyPlotSignals->setMaximumWidth(40*ww); // weber
   ++ir;
   reqcLayout->addWidget(new QLabel("Directory for plots"),       ir, 0);
   reqcLayout->addWidget(_reqcPlotDirLineEdit,                    ir, 1);
+  _reqcPlotDirLineEdit->setMaximumWidth(40*ww); // weber
   ++ir;
   reqcLayout->setRowStretch(ir, 999);
 
