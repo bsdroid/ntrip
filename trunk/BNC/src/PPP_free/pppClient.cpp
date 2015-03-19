@@ -144,7 +144,7 @@ void t_pppClient::processEpoch(const vector<t_satObs*>& satObs, t_output* output
     output->_neu[2]      = _filter->neu()[2];
     output->_numSat      = _filter->numSat();
     output->_pDop        = _filter->PDOP();
-    output->_trp0        = _filter->delay_saast(M_PI/2.0);
+    output->_trp0        = _filter->trp0();
     output->_trp         = _filter->trp();
   }
   else {
