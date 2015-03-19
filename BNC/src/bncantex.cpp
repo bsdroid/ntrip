@@ -275,7 +275,7 @@ t_irc bncAntex::satCoMcorrection(const QString& prn, double Mjd,
 // 
 ////////////////////////////////////////////////////////////////////////////
 double bncAntex::rcvCorr(const string& antName, t_frequency::type frqType,
-                         double eleSat, double /* azSat */, bool& found) const {
+                         double eleSat, double azSat, bool& found) const {
 
   if (antName.find("NULLANTENNA") != string::npos) {
     found = true;
@@ -314,5 +314,8 @@ double bncAntex::rcvCorr(const string& antName, t_frequency::type frqType,
   }
 
   found = true;
-  return var - frqMap->neu[2] * sin(eleSat);
+  return var - frqMap->neu[0] * cos(azSat)*cos(eleSat)
+             - frqMap->neu[1] * sin(azSat)*cos(eleSat)
+             - frqMap->neu[2] * sin(eleSat);
+
 }
