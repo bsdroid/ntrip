@@ -842,7 +842,7 @@ bncWindow::bncWindow() {
 
   QGridLayout* pppLayout1 = new QGridLayout();
   int ir = 0;
-  pppLayout1->addWidget(new QLabel("Precise Point Positioning - Input and Output"), ir, 0, 1, 7, Qt::AlignLeft);
+  pppLayout1->addWidget(new QLabel("Precise Point Positioning - Input and Output."), ir, 0, 1, 7, Qt::AlignLeft);
   ++ir;     
   pppLayout1->addWidget(new QLabel("Data source"),           ir, 0);
   pppLayout1->addWidget(_pppWidgets._dataSource,             ir, 1);
@@ -868,6 +868,7 @@ bncWindow::bncWindow() {
   ++ir;
   pppLayout1->addWidget(new QLabel("ANTEX file"),            ir, 0);
   pppLayout1->addWidget(_pppWidgets._antexFile,              ir, 1);
+  _pppWidgets._antexFile->setWhatsThis(tr("<p>Observations should be referred to the receiver's Antenna Phase Center (APC) and therefore be corrected for APC offsets and variations. Specify the full path to an IGS 'ANTEX file' which contains APC offsets and variations.</p><p>If you don't specify an 'ANTEX file' observations will not be corrected for APC offsets and variations.</p>"));
 
   pppLayout1->addWidget(new QLabel("   NMEA file"),          ir, 3);
   pppLayout1->addWidget(_pppWidgets._nmeaFile,               ir, 4);
@@ -887,7 +888,7 @@ bncWindow::bncWindow() {
   pppGroup1->setLayout(pppLayout1);
 
   QVBoxLayout* pppLayout2 = new QVBoxLayout();
-  pppLayout2->addWidget(new QLabel("Precise Point Positioning - Processed Stations"));
+  pppLayout2->addWidget(new QLabel("Precise Point Positioning - Processed Stations."));
   pppLayout2->addWidget(_pppWidgets._staTable, 99);
   QHBoxLayout* pppLayout2sub = new QHBoxLayout();
   pppLayout2sub->addWidget(_pppWidgets._addStaButton);
@@ -900,7 +901,7 @@ bncWindow::bncWindow() {
 
   QGridLayout* pppLayout3 = new QGridLayout();
   ir = 0;
-  pppLayout3->addWidget(new QLabel("Precise Point Positioning - Options"), ir, 0, 1, 2, Qt::AlignLeft);
+  pppLayout3->addWidget(new QLabel("Precise Point Positioning - Options."), ir, 0, 1, 2, Qt::AlignLeft);
   ++ir;     
   pppLayout3->addWidget(new QLabel("GPS LCs"),              ir, 0, Qt::AlignLeft);
   pppLayout3->addWidget(_pppWidgets._lcGPS,                 ir, 1);
@@ -949,7 +950,7 @@ bncWindow::bncWindow() {
 
   QGridLayout* pppLayout4 = new QGridLayout();
   ir = 0;
-  pppLayout4->addWidget(new QLabel("Precise Point Positioning - Plots"), ir, 0, 1, 50, Qt::AlignLeft);
+  pppLayout4->addWidget(new QLabel("Precise Point Positioning - Plots."), ir, 0, 1, 50, Qt::AlignLeft);
   ++ir;
   pppLayout4->addWidget(new QLabel("PPP Plot"),                          ir, 0, Qt::AlignLeft);
   pppLayout4->addWidget(_pppWidgets._plotCoordinates,                    ir, 1, Qt::AlignLeft);
