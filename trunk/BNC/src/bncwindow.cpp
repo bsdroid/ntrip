@@ -1035,33 +1035,33 @@ bncWindow::bncWindow() {
   ++ir;
   reqcLayout->addWidget(new QLabel("Input files (full path)"),   ir, 0);
   reqcLayout->addWidget(_reqcObsFileChooser,                     ir, 1);
-  _reqcObsFileChooser->setMaximumWidth(40*ww); // weber
+  _reqcObsFileChooser->setMaximumWidth(40*ww);
   reqcLayout->addWidget(new QLabel("  Obs"),                     ir, 2);
   reqcLayout->addWidget(_reqcNavFileChooser,                     ir, 3);
-  _reqcNavFileChooser->setMaximumWidth(40*ww); // weber
+  _reqcNavFileChooser->setMaximumWidth(40*ww);
   reqcLayout->addWidget(new QLabel("  Nav"),                     ir, 4);
   ++ir;
   reqcLayout->addWidget(new QLabel("Output files (full path)"),  ir, 0);
   reqcLayout->addWidget(_reqcOutObsLineEdit,                     ir, 1);
-  _reqcOutObsLineEdit->setMaximumWidth(40*ww); // weber
+  _reqcOutObsLineEdit->setMaximumWidth(40*ww);
   reqcLayout->addWidget(new QLabel("  Obs"),                     ir, 2);
   reqcLayout->addWidget(_reqcOutNavLineEdit,                     ir, 3);
-  _reqcOutNavLineEdit->setMaximumWidth(40*ww); // weber
+  _reqcOutNavLineEdit->setMaximumWidth(40*ww);
   reqcLayout->addWidget(new QLabel("  Nav"),                     ir, 4);
   ++ir;
   reqcLayout->addWidget(new QLabel("Logfile"),                   ir, 0);
   reqcLayout->addWidget(_reqcOutLogLineEdit,                     ir, 1);
-  _reqcOutLogLineEdit->setMaximumWidth(40*ww); // weber
+  _reqcOutLogLineEdit->setMaximumWidth(40*ww);
   reqcLayout->addWidget(new QLabel("  Summary only"),            ir, 2);
   reqcLayout->addWidget(_reqcLogSummaryOnly,                     ir, 3);
   ++ir;
   reqcLayout->addWidget(new QLabel("Plots for signals"),         ir, 0);
   reqcLayout->addWidget(_reqcSkyPlotSignals,                     ir, 1);
-  _reqcSkyPlotSignals->setMaximumWidth(40*ww); // weber
+  _reqcSkyPlotSignals->setMaximumWidth(40*ww);
   ++ir;
   reqcLayout->addWidget(new QLabel("Directory for plots"),       ir, 0);
   reqcLayout->addWidget(_reqcPlotDirLineEdit,                    ir, 1);
-  _reqcPlotDirLineEdit->setMaximumWidth(40*ww); // weber
+  _reqcPlotDirLineEdit->setMaximumWidth(40*ww);
   ++ir;
   reqcLayout->setRowStretch(ir, 999);
 
@@ -1242,7 +1242,7 @@ bncWindow::bncWindow() {
   _logFileLineEdit->setWhatsThis(tr("<p>Records of BNC's activities are shown in the 'Log' tab on the bottom of this window. They can be saved into a file when a valid path is specified in the 'Logfile (full path)' field.</p><p>The logfile name will automatically be extended by a string '_YYMMDD' carrying the current date."));
   _adviseScriptLineEdit->setWhatsThis(tr("<p>Specify the full path to a script or batch file to handle advisory notes generated in the event of corrupted streams or stream outages. The affected mountpoint and one of the comments 'Begin_Outage', 'End_Outage', 'Begin_Corrupted', or 'End_Corrupted' are passed on to the script as command line parameters.</p><p>The script may have the task to send the advisory notes by email to BNC's operator and/or to the affected stream provider. An empty option field (default) or invalid path means that you don't want to use this option.</p>"));
   _perfIntrComboBox->setWhatsThis(tr("<p>BNC can average latencies per stream over a certain period of GPS time. The resulting mean latencies are recorded in the 'Log' tab at the end of each 'Log latency' interval together with results of a statistical evaluation (approximate number of covered epochs, data gaps).</p><p>Select a 'Log latency' interval or select the empty option field if you do not want BNC to log latencies and statistical information.</p>"));
-  _mountPointsTable->setWhatsThis(tr("<p>Streams selected for retrieval are listed in the 'Streams' section. Clicking on 'Add Stream' button will open a window that allows the user to select data streams from an NTRIP broadcaster according to their mountpoints. To remove a stream from the 'Streams' list, highlight it by clicking on it and hit the 'Delete Stream' button. You can also remove multiple streams by highlighting them using +Shift and +Ctrl.</p><p>BNC automatically allocates one of its internal decoders to a stream based on the stream's 'format' as given in the sourcetable. BNC allows users to change this selection by editing the decoder string. Double click on the 'decoder' field, enter your preferred decoder and then hit Enter. The accepted decoder strings are 'RTCM_2.x', 'RTCM_3.x' and 'RTNET'.</p><p>In case you need to log the raw data as is, BNC allows users to by-pass its decoders and directly save the input in daily log files. To do this specify the decoder string as 'ZERO'.</p><p>BNC can also retrieve streams from virtual reference stations (VRS). VRS streams are indicated by a 'yes' in the 'nmea' column. To initiate these streams, the approximate latitude/longitude rover position is sent to the NTRIP broadcaster. The default values can be change according to your requirement. Double click on 'lat' and 'long' fields, enter the values you wish to send and then hit Enter.</p>"));
+  _mountPointsTable->setWhatsThis(tr("<p>Streams selected for retrieval are listed in the 'Streams' section. Clicking on 'Add Stream' button will open a window that allows the user to select data streams from an NTRIP broadcaster according to their mountpoints. To remove a stream from the 'Streams' list, highlight it by clicking on it and hit the 'Delete Stream' button. You can also remove multiple streams by highlighting them using +Shift and +Ctrl.</p><p>BNC automatically allocates one of its internal decoders to a stream based on the stream's 'format' as given in the sourcetable. BNC allows users to change this selection by editing the decoder string. Double click on the 'decoder' field, enter your preferred decoder and then hit Enter. The accepted decoder strings are 'RTCM_2.x', 'RTCM_3.x' and 'RTNET'.</p><p>In case you need to log the raw data as is, BNC allows users to by-pass its decoders and directly save the input in daily log files. To do this specify the decoder string as 'ZERO'.</p><p>BNC can also retrieve streams from virtual reference stations (VRS). VRS streams are indicated by a 'yes' in the 'nmea' column. To initiate these streams, the approximate latitude/longitude rover position is sent to the NTRIP broadcaster together with an approximation for the height. The default values for latitude and longitude can be change according to your requirement. Double click on 'lat' and 'long' fields, enter the values you wish to send and then hit Enter.</p>"));
   _log->setWhatsThis(tr("Records of BNC's activities are shown in the 'Log' tab. The message log covers the communication status between BNC and the NTRIP broadcaster as well as any problems that occur in the communication link, stream availability, stream delay, stream conversion etc."));
   _bncFigure->setWhatsThis(tr("The bandwidth consumtion per stream is shown in the 'Throughput' tab in bits per second (bps) or kilo bits per second (kbps)."));
   _bncFigureLate->setWhatsThis(tr("The individual latency of observations in each incoming stream is shown in the 'Latency' tab. Streams not carrying observations (i.e. those providing only broadcast ephemeris messages) are not considered here. Note that the calculation of correct latencies requires the clock of the host computer to be properly synchronized."));
@@ -1259,7 +1259,7 @@ bncWindow::bncWindow() {
   _serialDataBitsComboBox->setWhatsThis(tr("<p>Select the number of 'Data bits' for the serial output link.</p><p>Note that your selection must equal the number of data bits configured to the serial connected receiver. Note further that often 8 data bits are used.</p>"));
   _serialStopBitsComboBox->setWhatsThis(tr("<p>Select the number of 'Stop bits' for the serial output link.</p><p>Note that your selection must equal the number of stop bits configured to the serial connected receiver. Note further that often 1 stop bit is used.</p>"));
   _serialFlowControlComboBox->setWhatsThis(tr("<p>Select a 'Flow control' for the serial output link.</p><p>Note that your selection must equal the flow control configured to the serial connected receiver. Select 'OFF' if you don't know better.</p>"));
-  _serialAutoNMEAComboBox->setWhatsThis(tr("<p>The 'NMEA' option supports the so-called 'Virtural Reference Station' (VRS) concept which requires the receiver to send approximate position information to the NTRIP Broadcaster. Select 'no' if you don't want BNC to forward or upload any NMEA message to the NTRIP broadcaster in support of VRS.</p><p>Select 'Auto' to automatically forward NMEA messages of type GPGGA or GNGGA from your serial connected receiver to the NTRIP broadcaster and/or save them in a file.</p><p>Select 'Manual' if you want BNC to produce and upload one initial GPGGA NMEA message to the NTRIP broadcaster because your serial connected receiver doesn't generate these messages.</p>"));
+  _serialAutoNMEAComboBox->setWhatsThis(tr("<p>The 'NMEA' option supports the so-called 'Virtural Reference Station' (VRS) concept which requires the receiver to send approximate position information to the NTRIP Broadcaster. Select 'no' if you don't want BNC to forward or upload any NMEA message to the NTRIP broadcaster in support of VRS.</p><p>Select 'Auto' to automatically forward NMEA messages of type GPGGA or GNGGA from your serial connected receiver to the NTRIP broadcaster and/or save them in a file.</p><p>Select 'Manual' if you want BNC to produce and upload one initial GPGGA NMEA message to the NTRIP broadcaster because your serial connected receiver doesn't generate these messages.</p><p>Note that selecting 'Auto' or 'Manual' works only for VRS streams which show up under the 'Streams' canvas on BNC's main window with 'ntrip' stream attribute set to 'yes'. This attribute is either extracted from the NTRIP broadcaster's sourcetable or introduced by the user through editing the BNC configuration file.</p>"));
   _serialFileNMEALineEdit->setWhatsThis(tr("<p>Specify the full path to a file where NMEA messages coming from your serial connected receiver are saved.</p>"));
   _serialHeightNMEALineEdit->setWhatsThis(tr("<p>Specify an approximate 'Height' above mean sea level in meters for the reference station introduced through 'Mountpoint'. Together with the latitude and longitude from the NTRIP broadcaster sourcetable the height information is used to build one initial GPGGA message to be sent to the NTRIP broadcaster.</p><p>This option is only relevant when option 'NMEA' is set to 'Manual'.</p>"));
   _reqcActionComboBox->setWhatsThis(tr("<p>BNC allows to 'Edit or Concatenate' RINEX v2 or v3 files or to perform a quality check and 'Analyze' the data following UNAVCO's famous 'teqc' program.</p>"));
