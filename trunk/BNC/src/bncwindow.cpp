@@ -995,26 +995,26 @@ bncWindow::bncWindow() {
 
   _reqcObsFileChooser = new qtFileChooser(0, qtFileChooser::Files);
   _reqcObsFileChooser->setFileName(settings.value("reqcObsFile").toString());
-  _reqcObsFileChooser->setWhatsThis(tr("Specify the full path to an observation file in RINEX v2 or v3 format."));
+  _reqcObsFileChooser->setWhatsThis(tr("<p>Specify the full path to an observation file in RINEX v2 or v3 format.</p><p>Specifying at least one RINEX observation file is mandatory.</p>"));
 
   _reqcNavFileChooser = new qtFileChooser(0, qtFileChooser::Files);
   _reqcNavFileChooser->setFileName(settings.value("reqcNavFile").toString());
-  _reqcNavFileChooser->setWhatsThis(tr("Specify the full path to a RINEX v2 or v3 navigation file."));
+  _reqcNavFileChooser->setWhatsThis(tr("<p>Specify the full path to a RINEX v2 or v3 navigation file.</p><p>Specifying at least one RINEX navigation file is mandatory.</p>"));
 
   _reqcOutObsLineEdit = new QLineEdit(settings.value("reqcOutObsFile").toString());
-  _reqcOutObsLineEdit->setWhatsThis(tr("Specify the full path to a RINEX observation output file."));
+  _reqcOutObsLineEdit->setWhatsThis(tr("<p>Specify the full path to a RINEX observation output file.</p><p>Default is an empty option field, meaning that no RINEX observation output file will be produced.</p>"));
 
   _reqcOutNavLineEdit = new QLineEdit(settings.value("reqcOutNavFile").toString());
-  _reqcOutNavLineEdit->setWhatsThis(tr("Specify the full path to a RINEX navigation output file."));
+  _reqcOutNavLineEdit->setWhatsThis(tr("<p>Specify the full path to a RINEX navigation output file.</p><p>Default is an empty option field, meaning that no RINEX navigation output file will be produced.</p>"));
 
   _reqcOutLogLineEdit = new QLineEdit(settings.value("reqcOutLogFile").toString());
-  _reqcOutLogLineEdit->setWhatsThis(tr("Specify the full path to a logfile."));
+  _reqcOutLogLineEdit->setWhatsThis(tr("<p>Specify the full path to a logfile.</p><p>Default is an empty option field, meaning that no 'RINEX Editing & QC' logfile will be produced.</p>"));
 
   _reqcPlotDirLineEdit = new QLineEdit(settings.value("reqcPlotDir").toString());
-  _reqcPlotDirLineEdit->setWhatsThis(tr("Specify the directory name for saving plots in PNG format."));
+  _reqcPlotDirLineEdit->setWhatsThis(tr("<p>Specify a directory for saving plots in PNG format.</p><p>Default is an empty option field, meaning that plots will not be saved on disk.</p>"));
 
   _reqcSkyPlotSignals = new QLineEdit(settings.value("reqcSkyPlotSignals").toString());
-  _reqcSkyPlotSignals->setWhatsThis(tr("<p>BNC can produce plots for multipath, signal-to-noise ratio, satellite availability, satellite elevation, and PDOP values. The 'Plots for signals' option lets you exactly specify the observation signals to be used for that. You can specify the navigation system, the frequency, and the tracking mode or channel as defined in RINEX Version 3. Specifications for fequency and tracking mode or channel must be seperated by ampersand character '&'. Specifications for each navigation systems must be seperated by blank character ' '.</p><p>Examples for 'Plots for signals' option:<ul><li> G:1&2 R:1&2 J:1&2 E:1&7 C:1&6 S:1<br>(Plots will be based on GPS observations on 1st and 2nd frequency, GLONASS observations on 1st and 2nd frequency, QZSS observations on 1st and 2nd frequency, Galileo observations on 1st and 7th frequency, BeiDou observations on 1st and 6th frequency, SBAS observations on 1st frequency.)</li><li>G:1C&5X<br>(Plots will be based on GPS observations on 1st frequency in C tracking mode and GPS observations on 5th frequency in X tracking mode.)</li><li>C:6I&7I<br>(Plots will be based on BeiDou observations on 6th frequency in I tracking mode and BeiDou observations on 7th frequency in I tracking mode.)<li></ul></p>"));
+  _reqcSkyPlotSignals->setWhatsThis(tr("<p>BNC can produce plots for multipath, signal-to-noise ratio, satellite availability, satellite elevation, and PDOP values. The 'Plots for signals' option lets you exactly specify the observation signals to be used for that. You can specify the navigation system, the frequency, and the tracking mode or channel as defined in RINEX Version 3. Specifications for fequency and tracking mode or channel must be seperated by ampersand character '&'. Specifications for each navigation systems must be seperated by blank character ' '.</p><p>Examples for 'Plots for signals' option:<ul><li> G:1&2 R:1&2 J:1&2 E:1&7 C:1&6 S:1<br>(Plots will be based on GPS observations on 1st and 2nd frequency, GLONASS observations on 1st and 2nd frequency, QZSS observations on 1st and 2nd frequency, Galileo observations on 1st and 7th frequency, BeiDou observations on 1st and 6th frequency, SBAS observations on 1st frequency.)</li><li>G:1C&5X<br>(Plots will be based on GPS observations on 1st frequency in C tracking mode and GPS observations on 5th frequency in X tracking mode.)</li><li>C:6I&7I<br>(Plots will be based on BeiDou observations on 6th frequency in I tracking mode and BeiDou observations on 7th frequency in I tracking mode.)<li></ul></p><p>Default is an empty option field, meaning that BNC will not produces.</p>"));
  
   connect(_reqcSkyPlotSignals, SIGNAL(textChanged(const QString &)), 
           this, SLOT(slotBncTextChanged()));
