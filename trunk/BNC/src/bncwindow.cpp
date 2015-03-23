@@ -995,11 +995,11 @@ bncWindow::bncWindow() {
 
   _reqcObsFileChooser = new qtFileChooser(0, qtFileChooser::Files);
   _reqcObsFileChooser->setFileName(settings.value("reqcObsFile").toString());
-  _reqcObsFileChooser->setWhatsThis(tr("<p>Specify the full path to an observation file in RINEX v2 or v3 format.</p><p>Specifying at least one RINEX observation file is mandatory.</p>"));
+  _reqcObsFileChooser->setWhatsThis(tr("<p>Specify the full path to an observation file in RINEX v2 or v3 format.</p><p>Note that when in 'Analyze' mode, specifying at least one RINEX observation file is mandatory.</p>"));
 
   _reqcNavFileChooser = new qtFileChooser(0, qtFileChooser::Files);
   _reqcNavFileChooser->setFileName(settings.value("reqcNavFile").toString());
-  _reqcNavFileChooser->setWhatsThis(tr("<p>Specify the full path to a RINEX v2 or v3 navigation file.</p><p>Specifying at least one RINEX navigation file is mandatory.</p>"));
+  _reqcNavFileChooser->setWhatsThis(tr("<p>Specify the full path to a RINEX v2 or v3 navigation file.</p><p>Note that when in 'Analyze' mode, specifying at least one RINEX navigation file is mandatory.</p>"));
 
   _reqcOutObsLineEdit = new QLineEdit(settings.value("reqcOutObsFile").toString());
   _reqcOutObsLineEdit->setWhatsThis(tr("<p>Specify the full path to a RINEX observation output file.</p><p>Default is an empty option field, meaning that no RINEX observation output file will be produced.</p>"));
@@ -1021,7 +1021,7 @@ bncWindow::bncWindow() {
 
   _reqcLogSummaryOnly = new QCheckBox();
   _reqcLogSummaryOnly->setCheckState(Qt::CheckState(settings.value("reqcLogSummaryOnly").toInt()));
-  _reqcLogSummaryOnly->setWhatsThis(tr("<p>By default BNC produces a detailed 'Logfile' providing all information resulting from editing or analyzing RINEX data. If that is too much information you can limit the logfile contents to a small summary.</p><p>Tick 'Summary only' to suppress a full logfile output and produce a logfile containing only summary information.</p>"));
+  _reqcLogSummaryOnly->setWhatsThis(tr("<p>By default BNC produces a detailed 'Logfile' providing all information resulting from editing or analyzing RINEX data. If that is too much information, you can limit the logfile contents to a small summary.</p><p>Tick 'Summary only' to suppress a full logfile output and produce a logfile containing only summary information.</p>"));
 
   ir = 0;
   reqcLayout->addWidget(new QLabel("RINEX file editing, concatenation and quality check."),ir, 0, 1, 8);
