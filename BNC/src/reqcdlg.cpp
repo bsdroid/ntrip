@@ -124,7 +124,7 @@ reqcDlg::reqcDlg(QWidget* parent) : QDialog(parent) {
   QGridLayout* grid = new QGridLayout;
 
   int ir = 0;
-  grid->addWidget(new QLabel("RNX Version"),      ir, 1);
+  grid->addWidget(new QLabel("RINEX Version"),    ir, 1);
   grid->addWidget(_reqcRnxVersion,                ir, 2);
   grid->addWidget(new QLabel("Sampling"),         ir, 3, Qt::AlignRight);
   grid->addWidget(_reqcSampling,                  ir, 4);
@@ -184,8 +184,9 @@ reqcDlg::reqcDlg(QWidget* parent) : QDialog(parent) {
   mainLayout->addLayout(grid);
   mainLayout->addLayout(buttonLayout);
 
-  _reqcRnxVersion->setWhatsThis(tr("<p>Select version number of emerging new RINEX file.</p><p>When converting RINEX Version 2 to RINEX Version 3, the tracking mode or channel information in the (last character out of the three characters) observation code is left blank if unknown. When converting RINEX Version 3 to RINEX Version 2<ul><li>C1P in RINEX Version 3 is mapped to P1 in RINEX Version 2</li><li>C2P in RINEX Version 3 is mapped to P2 in RINEX Version 2</li><li>If several observations in RINEX Version 3 come with the same observation type, same band/frequency but different tracking modes, BNC uses only the one provided first for creating RINEX Version 2 while ignoring others.</li></ul></p>"));
-  _reqcSampling->setWhatsThis(tr("<p>Select sampling rate of emerging new RINEX observation file.</p>"));
+  _reqcRnxVersion->setWhatsThis(tr("<p>Select version number of emerging new RINEX file.</p><p>When converting RINEX Version 2 to RINEX Version 3 Observation files, the tracking mode or channel information (signal attribute, see RINEX Version 3 document) in the (last character out of the three characters) observation code is left blank if unknown.</p><p>When converting RINEX Version 3 to RINEX Version 2 the mapping of observations follows a 'Signal priority list' with signal attributes as defined in RINEX Version 3.</p>")); 
+  _reqcUseObsTypes->setWhatsThis(tr("<p>This option lets you limit the RINEX output to specific observation types. Examples:</p><p><ul><li>G:C1C G:L1C R:C1C R:C1P S:C1C C:C1I C:L1I E:C1X E:L1X<br>(Valid for output of RINEX Version 3.)</li><li>C1 L2 L5<br>(Valid for output of RINEX Version 2 with mapping of Version 3 signals to Version 2 according to 'Version 2 Signal Priority'.)</li></ul></p><p>Default is an empty option field, meaning that the RINEX output file contains all observations made available through RINEX input file."));
+  _reqcSampling->setWhatsThis(tr("<p>Select sampling rate of emerging new RINEX observation file.</p><p>'0 sec' means that observations from all epochs in the RINEX input file will become part of the RINEX output file.</p>"));
   _reqcStartDateTime->setWhatsThis(tr("<p>Specify begin of emerging new RINEX observation file.</p>"));
   _reqcEndDateTime->setWhatsThis(tr("<p>Specify end of emerging new RINEX observation file.</p>"));
   _reqcOldMarkerName->setWhatsThis(tr("<p>Enter old marker name in RINEX observation file.</p>"));
