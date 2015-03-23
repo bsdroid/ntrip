@@ -217,6 +217,12 @@ t_irc t_rnxObsHeader::read(QTextStream* stream, int maxLines) {
     }
   }
 
+  // set default observation types if empty in skl file
+  // --------------------------------------------------
+  if (_obsTypes.empty()) {
+    setDefault(_markerName, _version);
+  }
+
   // Systems used
   // ------------
   _usedSystems.clear();
@@ -306,6 +312,7 @@ void t_rnxObsHeader::set(const t_rnxObsHeader& header, int version,
   _startTime       = header._startTime;   
   _comments        = header._comments;
   _usedSystems     = header._usedSystems;
+
   for (unsigned iPrn = 1; iPrn <= t_prn::MAXPRN_GPS; iPrn++) {
     _wlFactorsL1[iPrn] =  header._wlFactorsL1[iPrn]; 
     _wlFactorsL2[iPrn] =  header._wlFactorsL2[iPrn]; 
@@ -572,7 +579,6 @@ QString t_rnxObsHeader::obsType(char sys, int index, double version) const {
 QStringList t_rnxObsHeader::obsTypesStrings() const {
 
   QStringList strList;
-
   if (_version < 3.0) {
     char sys0 = _usedSystems[0].toAscii();
     QString hlp;
