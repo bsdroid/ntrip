@@ -995,11 +995,11 @@ bncWindow::bncWindow() {
 
   _reqcObsFileChooser = new qtFileChooser(0, qtFileChooser::Files);
   _reqcObsFileChooser->setFileName(settings.value("reqcObsFile").toString());
-  _reqcObsFileChooser->setWhatsThis(tr("<p>Specify the full path to an observation file in RINEX v2 or v3 format.</p><p>Note that when in 'Analyze' mode, specifying at least one RINEX observation file is mandatory.</p>"));
+  _reqcObsFileChooser->setWhatsThis(tr("<p>Specify the full path to an input observation file in RINEX v2 or v3 format.</p><p>Note that when in 'Analyze' mode, specifying at least one RINEX observation file is mandatory.</p>"));
 
   _reqcNavFileChooser = new qtFileChooser(0, qtFileChooser::Files);
   _reqcNavFileChooser->setFileName(settings.value("reqcNavFile").toString());
-  _reqcNavFileChooser->setWhatsThis(tr("<p>Specify the full path to a RINEX v2 or v3 navigation file.</p><p>Note that when in 'Analyze' mode, specifying at least one RINEX navigation file is mandatory.</p>"));
+  _reqcNavFileChooser->setWhatsThis(tr("<p>Specify the full path to an input navigation file in RINEX v2 or v3 format.</p><p>Note that when in 'Analyze' mode, specifying at least one RINEX navigation file is mandatory.</p>"));
 
   _reqcOutObsLineEdit = new QLineEdit(settings.value("reqcOutObsFile").toString());
   _reqcOutObsLineEdit->setWhatsThis(tr("<p>Specify the full path to a RINEX observation output file.</p><p>Default is an empty option field, meaning that no RINEX observation output file will be produced.</p>"));
