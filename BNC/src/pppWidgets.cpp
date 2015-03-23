@@ -90,7 +90,7 @@ t_pppWidgets::t_pppWidgets() {
   _mapSpeedSlider   = new QSlider;      _mapSpeedSlider  ->setObjectName("PPP/mapSpeedSlider");   _widgets << _mapSpeedSlider;
 
   _dataSource->setEditable(false);
-  _dataSource->addItems(QString("no,Real-Time Streams,RINEX Files").split(","));
+  _dataSource->addItems(QString(",Real-Time Streams,RINEX Files").split(","));
   connect(_dataSource, SIGNAL(currentIndexChanged(const QString&)), this, SLOT(slotEnableWidgets()));
 
   slotEnableWidgets();
@@ -310,7 +310,7 @@ void t_pppWidgets::slotEnableWidgets() {
   const static QPalette paletteWhite(QColor(255, 255, 255));
   const static QPalette paletteGray(QColor(230, 230, 230));
 
-  bool allDisabled = _dataSource->currentText() == "no";
+  bool allDisabled = _dataSource->currentText() == "";
   bool realTime    = _dataSource->currentText() == "Real-Time Streams";
   bool rinexFiles  = _dataSource->currentText() == "RINEX Files";
 
