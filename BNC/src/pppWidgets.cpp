@@ -147,7 +147,6 @@ t_pppWidgets::t_pppWidgets() {
   _mapSpeedSlider->setTickInterval(10);
   connect(_mapSpeedSlider, SIGNAL(valueChanged(int)), BNC_CORE, SIGNAL(mapSpeedSliderChanged(int)));
 
-// weber
   _staTable->setWhatsThis(tr("<p>Specify values for Sigma and Noise of the Station's North, East and Height coordinates in meters. Specify also a Sigma for a-priory model based Tropospheric delays and their expected variation (Noise).</p><p><ul><li>A Sigma of 100.0 meters may be an appropriate choice for the initial N/E/H coordinates. However, this value may be significantly smaller (i.e. 0.01) for stations with well known a-priory coordinates.</li><li>A white Noise of 100.0 meters for the estimated N/E/H coordinates may be appropriate considering the potential movement of a rover position.</li><li>A value of 0.1 meters may be an appropriate Sigma for the a-priory model based Tropospheric delay estimation.</li><li>Enter a Noise in meters per second to describe the expected variation of the tropospheric effect. Supposing 1Hz observation data, a value of 3e-6 would mean that the tropospheric effect may vary for 3600 * 3e-6 = 0.01 meters per hour.</li></ul></p>"));
 
   _plotCoordinates->setWhatsThis(tr("<p>BNC allows to produce a time series plot of coordinates for one Real-time PPP solution in the 'PPP Plot' section below. Specify the 'Mountpoint' of the stream whose coordinate displacements you would like to see plotted.</p><p>Default is an empty option field, meaning that BNC shall not produce a time series plot of PPP coordinate displacements.</p>"));
