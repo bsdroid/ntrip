@@ -624,7 +624,7 @@ bncWindow::bncWindow() {
   pLayout->setColumnMinimumWidth(0,13*ww);
   _proxyPortLineEdit->setMaximumWidth(9*ww);
 
-  pLayout->addWidget(new QLabel("Settings for proxy in protected networks and for SSL authorization, leave boxes blank if none."),0, 0, 1, 50);
+  pLayout->addWidget(new QLabel("Settings for proxy in protected networks and for SSL authorization, leave boxes blank if none.<br>"),0, 0, 1, 50);
   pLayout->addWidget(new QLabel("Proxy host"),                               1, 0);
   pLayout->addWidget(_proxyHostLineEdit,                                     1, 1, 1,10);
   pLayout->addWidget(new QLabel("Proxy port"),                               2, 0);
@@ -645,7 +645,7 @@ bncWindow::bncWindow() {
   gLayout->setColumnMinimumWidth(0,14*ww);
   _onTheFlyComboBox->setMaximumWidth(9*ww);
 
-  gLayout->addWidget(new QLabel("General settings for logfile, file handling, configuration on-the-fly, and auto-start."),0, 0, 1, 50);
+  gLayout->addWidget(new QLabel("General settings for logfile, file handling, configuration on-the-fly, and auto-start.<br>"),0, 0, 1, 50);
   gLayout->addWidget(new QLabel("Logfile (full path)"),          1, 0);
   gLayout->addWidget(_logFileLineEdit,                           1, 1, 1,20);
   gLayout->addWidget(new QLabel("Append files"),                 2, 0);
@@ -668,7 +668,7 @@ bncWindow::bncWindow() {
   _rnxIntrComboBox->setMaximumWidth(9*ww);
 //_rnxSamplSpinBox->setMaximumWidth(9*ww);
 
-  oLayout->addWidget(new QLabel("Saving RINEX observation files."),0, 0, 1,50);
+  oLayout->addWidget(new QLabel("Saving RINEX observation files.<br>"),0, 0, 1,50);
   oLayout->addWidget(new QLabel("Directory"),                      1, 0);
   oLayout->addWidget(_rnxPathLineEdit,                             1, 1, 1, 15);
   oLayout->addWidget(new QLabel("Interval"),                       2, 0);
@@ -696,7 +696,7 @@ bncWindow::bncWindow() {
   _ephIntrComboBox->setMaximumWidth(9*ww);
   _outEphPortLineEdit->setMaximumWidth(9*ww);
 
-  eLayout->addWidget(new QLabel("Saving RINEX navigation files and ephemeris output through IP port."),0,0,1,70);
+  eLayout->addWidget(new QLabel("Saving RINEX navigation files and ephemeris output through IP port.<br>"),0,0,1,70);
   eLayout->addWidget(new QLabel("Directory"),                     1, 0);
   eLayout->addWidget(_ephPathLineEdit,                            1, 1, 1,30);
   eLayout->addWidget(new QLabel("Interval"),                      2, 0);
@@ -717,7 +717,7 @@ bncWindow::bncWindow() {
   _corrIntrComboBox->setMaximumWidth(9*ww);
   _corrPortLineEdit->setMaximumWidth(9*ww);
 
-  cLayout->addWidget(new QLabel("Saving Broadcast Ephemeris correction files and correction output through IP port."),0,0,1,70);
+  cLayout->addWidget(new QLabel("Saving Broadcast Ephemeris correction files and correction output through IP port.<br>"),0,0,1,70);
   cLayout->addWidget(new QLabel("Directory, ASCII"),              1, 0);
   cLayout->addWidget(_corrPathLineEdit,                           1, 1, 1,30);
   cLayout->addWidget(new QLabel("Interval"),                      2, 0);
@@ -737,7 +737,7 @@ bncWindow::bncWindow() {
   _binSamplSpinBox->setMaximumWidth(9*ww);
   _outUPortLineEdit->setMaximumWidth(9*ww);
 
-  sLayout->addWidget(new QLabel("Output decoded observations in ASCII format to feed a real-time GNSS network engine."),0,0,1,50);
+  sLayout->addWidget(new QLabel("Output decoded observations in ASCII format to feed a real-time GNSS network engine.<br>"),0,0,1,50);
   sLayout->addWidget(new QLabel("Port"),                            1, 0);
   sLayout->addWidget(_outPortLineEdit,                              1, 1);
   sLayout->addWidget(new QLabel("       Wait for full obs epoch"),  1, 2, Qt::AlignRight);
@@ -765,7 +765,7 @@ bncWindow::bncWindow() {
   _serialAutoNMEAComboBox->setMaximumWidth(9*ww);
   _serialHeightNMEALineEdit->setMaximumWidth(8*ww);
 
-  serLayout->addWidget(new QLabel("Port settings to feed a serial connected receiver."),0,0,1,30);
+  serLayout->addWidget(new QLabel("Port settings to feed a serial connected receiver.<br>"),0,0,1,30);
   serLayout->addWidget(new QLabel("Mountpoint"),                  1, 0, Qt::AlignLeft);
   serLayout->addWidget(_serialMountPointLineEdit,                 1, 1, 1, 2);
   serLayout->addWidget(new QLabel("Port name"),                   2, 0, Qt::AlignLeft);
@@ -799,7 +799,7 @@ bncWindow::bncWindow() {
   _adviseFailSpinBox->setMaximumWidth(9*ww);
   _adviseRecoSpinBox->setMaximumWidth(9*ww);
 
-  aLayout->addWidget(new QLabel("Failure and recovery reports, advisory notes."),0,0,1,50,Qt::AlignLeft);
+  aLayout->addWidget(new QLabel("Failure and recovery reports, advisory notes.<br>"),0,0,1,50,Qt::AlignLeft);
   aLayout->addWidget(new QLabel("Observation rate"),              1, 0);
   aLayout->addWidget(_obsRateComboBox,                            1, 1);
   aLayout->addWidget(new QLabel("Failure threshold"),             2, 0);
@@ -820,7 +820,7 @@ bncWindow::bncWindow() {
   _perfIntrComboBox->setMaximumWidth(9*ww);
   _miscPortLineEdit->setMaximumWidth(9*ww);
 
-  rLayout->addWidget(new QLabel("Log latencies or scan RTCM streams for message types and antenna information or output raw data through TCP/IP port."),0, 0,1,50);
+  rLayout->addWidget(new QLabel("Log latencies or scan RTCM streams for message types and antenna information or output raw data through TCP/IP port.<br>"),0, 0,1,50);
   rLayout->addWidget(new QLabel("Mountpoint"),                    1, 0);
   rLayout->addWidget(_miscMountLineEdit,                          1, 1, 1, 7);
   rLayout->addWidget(new QLabel("Log latency"),                   2, 0);
@@ -880,15 +880,13 @@ bncWindow::bncWindow() {
   pppLayout1->addWidget(new QLabel("   Sampling"),           ir, 5);
   pppLayout1->addWidget(_pppWidgets._snxtroSampl,            ir, 6);
   ++ir;
-  pppLayout1->addWidget(new QLabel(""),                      ir, 7);
-  ++ir;
   pppLayout1->setRowStretch(ir, 999);
 
 
   pppGroup1->setLayout(pppLayout1);
 
   QVBoxLayout* pppLayout2 = new QVBoxLayout();
-  pppLayout2->addWidget(new QLabel("Precise Point Positioning - Processed Stations."));
+  pppLayout2->addWidget(new QLabel("Precise Point Positioning - Processed Stations.<br>"));
   pppLayout2->addWidget(_pppWidgets._staTable, 99);
   QHBoxLayout* pppLayout2sub = new QHBoxLayout();
   pppLayout2sub->addWidget(_pppWidgets._addStaButton);
@@ -901,7 +899,7 @@ bncWindow::bncWindow() {
 
   QGridLayout* pppLayout3 = new QGridLayout();
   ir = 0;
-  pppLayout3->addWidget(new QLabel("Precise Point Positioning - Options."), ir, 0, 1, 2, Qt::AlignLeft);
+  pppLayout3->addWidget(new QLabel("Precise Point Positioning - Options.<br>"), ir, 0, 1, 2, Qt::AlignLeft);
   ++ir;     
   pppLayout3->addWidget(new QLabel("GPS LCs"),              ir, 0, Qt::AlignLeft);
   pppLayout3->addWidget(_pppWidgets._lcGPS,                 ir, 1);
@@ -950,7 +948,7 @@ bncWindow::bncWindow() {
 
   QGridLayout* pppLayout4 = new QGridLayout();
   ir = 0;
-  pppLayout4->addWidget(new QLabel("Precise Point Positioning - Plots."), ir, 0, 1, 50, Qt::AlignLeft);
+  pppLayout4->addWidget(new QLabel("Precise Point Positioning - Plots.<br>"), ir, 0, 1, 50, Qt::AlignLeft);
   ++ir;
   pppLayout4->addWidget(new QLabel("PPP Plot"),                          ir, 0, Qt::AlignLeft);
   pppLayout4->addWidget(_pppWidgets._plotCoordinates,                    ir, 1, Qt::AlignLeft);
@@ -1024,7 +1022,7 @@ bncWindow::bncWindow() {
   _reqcLogSummaryOnly->setWhatsThis(tr("<p>By default BNC produces a detailed 'Logfile' providing all information resulting from editing or analyzing RINEX data. If that is too much information, you can limit the logfile contents to a small summary.</p><p>Tick 'Summary only' to suppress a full logfile output and produce a logfile containing only summary information.</p>"));
 
   ir = 0;
-  reqcLayout->addWidget(new QLabel("RINEX file editing, concatenation and quality check."),ir, 0, 1, 8);
+  reqcLayout->addWidget(new QLabel("RINEX file editing, concatenation and quality check.<br>"),ir, 0, 1, 8);
   ++ir;
   reqcLayout->addWidget(new QLabel("Action"),                    ir, 0);
   reqcLayout->addWidget(_reqcActionComboBox,                     ir, 1);
@@ -1093,7 +1091,7 @@ bncWindow::bncWindow() {
   _sp3CompLogLineEdit->setMaximumWidth(15*ww);
 
   ir = 0;
-  sp3CompLayout->addWidget(new QLabel("Orbit and clock comparison."),  ir, 0, 1, 40);
+  sp3CompLayout->addWidget(new QLabel("Orbit and clock comparison.<br>"),  ir, 0, 1, 40);
   ++ir;
   sp3CompLayout->addWidget(new QLabel("Input SP3 files (full path)"),  ir, 0, Qt::AlignLeft);
   sp3CompLayout->addWidget(_sp3CompFileChooser,                        ir, 1, 1, 20);
@@ -1122,7 +1120,7 @@ bncWindow::bncWindow() {
 
   populateCmbTable();
   cmbLayout->addWidget(_cmbTable,                                            0, 0, 8, 3);
-  cmbLayout->addWidget(new QLabel(" Combine Broadcast Correction streams."), 1, 6, 1, 10);
+  cmbLayout->addWidget(new QLabel(" Combine Broadcast Correction streams.<br>"), 1, 6, 1, 10);
   cmbLayout->addWidget(addCmbRowButton,                                      2, 6);
   cmbLayout->addWidget(delCmbRowButton,                                      2, 7);
   cmbLayout->addWidget(new QLabel("Method"),                                 3, 6, Qt::AlignRight);
@@ -1165,7 +1163,7 @@ bncWindow::bncWindow() {
   QBoxLayout* uploadLayout = new QBoxLayout(QBoxLayout::TopToBottom);
   populateUploadTable();
 
-  uploadLayout->addWidget(new QLabel("Upload RTCM Version 3 Broadcast Corrections to caster."));
+  uploadLayout->addWidget(new QLabel("Upload RTCM Version 3 Broadcast Corrections to caster.<br>"));
   uploadLayout->addWidget(_uploadTable);
   uploadLayout->addLayout(uploadHlpLayout);
 
@@ -1180,7 +1178,7 @@ bncWindow::bncWindow() {
   _uploadEphPasswordLineEdit->setMaximumWidth(9*ww);
   _uploadEphMountpointLineEdit->setMaximumWidth(12*ww);
 
-  uploadLayoutEph->addWidget(new QLabel("Upload concatenated RTCMv3 Broadcast Ephemeris to caster."), 0, 0, 1, 50);
+  uploadLayoutEph->addWidget(new QLabel("Upload concatenated RTCMv3 Broadcast Ephemeris to caster.<br>"), 0, 0, 1, 50);
   uploadLayoutEph->addWidget(new QLabel("Host"),                  1, 0);
   uploadLayoutEph->addWidget(_uploadEphHostLineEdit,              1, 1, 1, 3);
   uploadLayoutEph->addWidget(new QLabel("  Port"),                1, 4, Qt::AlignRight);
