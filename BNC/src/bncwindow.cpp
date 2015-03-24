@@ -881,12 +881,11 @@ bncWindow::bncWindow() {
   pppGroup1->setLayout(pppLayout1);
 
 
-  _pppWidgets._dataSource->setWhatsThis(tr("<p>Select real-time PPP from 'Real-Time Streams' or post processing PPP from 'RINEX Files'.</p><p><ul><li>Real-time PPP requires that you pull an RTCM stream carrying GNSS observations plus a stream providing corrections to broadcast ephemeris. If the observations stream does not contian broadcast ephemeris then you must in addition pull a broadcast ephemeris stream like 'RTCM3EPH' from NTRIP broadcaster www.igs-ip.net.</li><li>Post processing PPP requires RINEX observation files, RINEX navigation files and a file with corrections to Broadcast Ephemeris in plain ASCII format as beforehand saved with BNC.</li></ul></p><p>Note that BNC allows to carry out PPP solutions simultaneously for several stations.</p>"));
+  _pppWidgets._dataSource->setWhatsThis(tr("<p>Select 'Real-time Streams' for real-time PPP from RTCM streams or 'RINEX Files' for post processing PPP from RINEX files.</p><p><ul><li>Real-time PPP requires that you pull an RTCM stream carrying GNSS observations plus a stream providing corrections to Broadcast Ephemeris. If the observations stream does not contain Broadcast Ephemeris then you must in addition pull a Broadcast Ephemeris stream like 'RTCM3EPH' from NTRIP broadcaster www.igs-ip.net.</li><li>Post processing PPP requires RINEX observation files, RINEX navigation files and a file with corrections to Broadcast Ephemeris in plain ASCII format as saved beforehand using BNC.</li></ul></p><p>Note that BNC allows to carry out PPP solutions simultaneously for several stations.</p>"));
 
   _pppWidgets._corrMount->setWhatsThis(tr("<p>Specify a 'mountpoint' from the 'Streams' canvas below which provides corrections to Broadcast Ephemeris.</p>"));
 
   _pppWidgets._crdFile->setWhatsThis(tr("<p>Enter the full path to an ASCII file which specifies the streams or files of those stations you want to process. The 'Coordinates' file must contain one record per station with the following parameters separated by blank characters:<p><ul><li>Either<ul><li>the 'Mountpoint' of the station's RTCM stream (when in real-time PPP mode) or</li><li>the first four characters of the RINEX observations file (when in post processing PPP mode).</li></ul>This parameter is mandatory. BNC will carry out PPP solutions only for those stations which are listed here.</li><li>Approximate X,Y,Z coordinate components of station's Antenna Reference Point [m] (ARP, specify '0.0 0.0 0.0' if unknown).</li><li>Nort, East and Up component of antenna excentricity [m] (specify '0.0 0.0 0.0' if unknown).</li><li>20 Characters describing the antenna type and radome following the IGS 'ANTEX file' standard (leave blank if unknown).</li></ul></p><p>Records with exclamation mark '!' in the first column or blank records will be interpreted as comment lines and ignored.</p>"));
-
 
   _pppWidgets._antexFile->setWhatsThis(tr("<p>Observations in RTCM streams or RINEX files should be referred to the receiver's and to the satellite's Antenna Phase Center (APC) and therefore be corrected for<ul><li>Receiver APC offsets</li><li>Receiver APC variations</li><li>Satellite APC offsets.</li></ul> Specify the full path to an IGS 'ANTEX file' which contains APC offsets and variations.</p><p>If you don't specify an 'ANTEX file' then observations will not be corrected for APC offsets and variations.</p>"));
 
@@ -894,7 +893,7 @@ bncWindow::bncWindow() {
 
   _pppWidgets._rinexNav->setWhatsThis(tr("<p>Specify the RINEX navigation file(s).</p>"));
 
-  _pppWidgets._corrFile->setWhatsThis(tr("<p>Specify the Broadcast Ephemeris Corrections file(s) as beforehand saved using BNC.</p>"));
+  _pppWidgets._corrFile->setWhatsThis(tr("<p>Specify the Broadcast Ephemeris Corrections file(s) as saved beforehand using BNC.</p>"));
 
   _pppWidgets._logFile->setWhatsThis(tr("<p>Specify the path to daily PPP logfiles using e.g. the following syntax (example):</p><p> ./PPP_$(STATION)_$(DATE).log</p><p>BNC will produce one daily PPP logfile per station. Variable $(STATION) stands for the affected station and $(DATE) stands for the date.</p>"));
 
@@ -904,7 +903,7 @@ bncWindow::bncWindow() {
 
   _pppWidgets._snxtroFile->setWhatsThis(tr("<p>Specify the path to daily SINEX Troposphere files using e.g. the following syntax (example):</p><p> ./PPP_$(STATION)_$(DATE).tro</p><p>BNC will produce one daily troposphere file per station to save troposphere parameters from the PPP solution in SINEX Troposphere format. Variable $(STATION) stands for the affected station and $(DATE) stands for the date.</p>"));
 
-  _pppWidgets._snxtroSampl->setWhatsThis(tr("<p>Select a 'Sampling' rate for estimating troposphere paramers.</p>"));
+  _pppWidgets._snxtroSampl->setWhatsThis(tr("<p>Select a 'Sampling' rate for saving troposphere paramers.</p>"));
 
   QVBoxLayout* pppLayout2 = new QVBoxLayout();
   pppLayout2->addWidget(new QLabel("Precise Point Positioning - Processed Stations.<br>"));
