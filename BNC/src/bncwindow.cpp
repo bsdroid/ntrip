@@ -868,7 +868,6 @@ bncWindow::bncWindow() {
   ++ir;
   pppLayout1->addWidget(new QLabel("ANTEX file"),            ir, 0);
   pppLayout1->addWidget(_pppWidgets._antexFile,              ir, 1);
-  _pppWidgets._antexFile->setWhatsThis(tr("<p>Observations should be referred to the receiver's and to the satellite's Antenna Phase Center (APC) and therefore be corrected for<ul><li>Receiver APC offsets</li><li>Receiver APC variations</li><li>Satellite APC offsets.</li></ul> Specify the full path to an IGS 'ANTEX file' which contains APC offsets and variations.</p><p>If you don't specify an 'ANTEX file' then observations will not be corrected for APC offsets and variations.</p>"));
 
   pppLayout1->addWidget(new QLabel("   NMEA file"),          ir, 3);
   pppLayout1->addWidget(_pppWidgets._nmeaFile,               ir, 4);
@@ -882,8 +881,14 @@ bncWindow::bncWindow() {
   ++ir;
   pppLayout1->setRowStretch(ir, 999);
 
-
   pppGroup1->setLayout(pppLayout1);
+
+  _pppWidgets._antexFile->setWhatsThis(tr("<p>Observations should be referred to the receiver's and to the satellite's Antenna Phase Center (APC) and therefore be corrected for<ul><li>Receiver APC offsets</li><li>Receiver APC variations</li><li>Satellite APC offsets.</li></ul> Specify the full path to an IGS 'ANTEX file' which contains APC offsets and variations.</p><p>If you don't specify an 'ANTEX file' then observations will not be corrected for APC offsets and variations.</p>"));
+  _pppWidgets._dataSource->setWhatsThis(tr("<p>Select real-time PPP from 'Real-Time Streams' or post processing PPP from 'RINEX Files'.</p><p><ul><li>Real-time PPP requires that you pull an RTCM stream carrying GNSS observations plus a stream providing corrections to broadcast ephemeris. If the observations stream does not contian broadcast ephemeris then you must in addition pull a broadcast ephemeris stream like 'RTCM3EPH' from NTRIP broadcaster www.igs-ip.net.</li><li>Post processing PPP requires RINEX observation files, RINEX navigation files and a file with corrections to Broadcast Ephemeris in plain ASCII format as previously saved with BNC.</li></ul></p><p>Note that BNC allows to carry out PPP solutions simultaneously for several stations.</p>"));
+
+  _pppWidgets._corrMount->setWhatsThis(tr("<p>Specify a 'mountpoint' from the 'Streams' canvas below which provides corrections to Broadcast Ephemeris.</p>"));
+
+  _pppWidgets._crdFile->setWhatsThis(tr("<p>Enter the full path to an ASCII file which specifies the streams of those stations you want to process. The file must contain one record per station with the following parameters separated by blank characters:<p><ul><li>'Mountpoint' of the station (mandatory).</li><li>Approximate X,Y,Z coordinate components of station's Antenna Reference Point [m] (ARP, specify '0.0 0.0 0.0' if not available).</li><li>Nort, East and Up component of antenna excentricity [m] (specify '0.0 0.0 0.0' if not available).</li><li>20 Characters describing the antenna type and radome following the IGS 'ANTEX file' standard (leave blank if not available).</li></ul></p><p>Records with exclamation mark '!' in the first column or blank records will be interpreted as comment lines and ignored.</p>"));
 
   QVBoxLayout* pppLayout2 = new QVBoxLayout();
   pppLayout2->addWidget(new QLabel("Precise Point Positioning - Processed Stations.<br>"));
