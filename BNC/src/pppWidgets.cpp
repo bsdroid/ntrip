@@ -81,6 +81,9 @@ t_pppWidgets::t_pppWidgets() {
   _addStaButton = new QPushButton("Add Station");    _widgets << _addStaButton;
   _delStaButton = new QPushButton("Delete Station"); _widgets << _delStaButton;
 
+  _addStaButton->setWhatsThis(tr("<p>Hit the 'Add Station' button to add a new line to the Station table.</p>"));
+  _delStaButton->setWhatsThis(tr("<p>Hit the 'Delete Station' button to delete a highlighted row from the Station table.</p>"));
+
   _plotCoordinates  = new QLineEdit;    _plotCoordinates ->setObjectName("PPP/plotCoordinates");  _widgets << _plotCoordinates;
   _mapWinButton     = new QPushButton;  _mapWinButton    ->setObjectName("PPP/mapWinButton");     _widgets << _mapWinButton;
   _useGoogleMap     = new QRadioButton; _useGoogleMap    ->setObjectName("PPP/useGoogleMap");     _widgets << _useGoogleMap;
