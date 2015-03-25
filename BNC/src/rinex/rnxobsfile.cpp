@@ -212,13 +212,52 @@ t_irc t_rnxObsHeader::read(QTextStream* stream, int maxLines) {
       in >> year >> month >> day >> hour >> min >> sec;
       _startTime.set(year, month, day, hour, min, sec);
     }
+    else if (key == "SYS / PHASE SHIFT"){
+      QTextStream in(value.toAscii(), QIODevice::ReadOnly);
+      char sys;
+      QString obstype;
+      double shift;
+      in >> sys >> obstype >> shift;
+      if (obstype.size())
+        _phaseShifts.insert(sys, QPair<QString, double>(obstype, shift));
+    }
+    else if (key == "GLONASS COD/PHS/BIS"){
+      QTextStream in(value.toAscii(), QIODevice::ReadOnly);
+      for (int ii = 0; ii < 4; ii++) {
+        QString type;
+        double  value;
+        in >> type >> value;
+        if (type.size())
+          _gloPhaseBiases[type] = value;
+      }
+    }
+    else if (key == "GLONASS SLOT / FRQ #") {
+      QTextStream* in = new QTextStream(value.toAscii(), QIODevice::ReadOnly);
+      int nSlots = 0;
+      *in >> nSlots;
+      for (int ii = 0; ii < nSlots; ii++) {
+        if (ii > 0 && ii % 8 == 0) {
+          line = stream->readLine(); ++numLines;
+          delete in;
+          in = new QTextStream(line.left(60).toAscii(), QIODevice::ReadOnly);
+        }
+        QString sat;
+        int    slot;
+        *in >> sat >> slot;
+        t_prn prn;
+        prn.set(sat.toStdString());
+        if(sat.size())
+          _gloSlots[prn] = slot;
+      }
+      delete in;
+    }
     if (maxLines > 0 && numLines == maxLines) {
       break;
     }
   }
 
-  // set default observation types if empty in skl file
-  // --------------------------------------------------
+  // set default observation types if empty in input file
+  // ----------------------------------------------------
   if (_obsTypes.empty()) {
     setDefault(_markerName, _version);
   }
@@ -312,7 +351,11 @@ void t_rnxObsHeader::set(const t_rnxObsHeader& header, int version,
   _startTime       = header._startTime;   
   _comments        = header._comments;
   _usedSystems     = header._usedSystems;
-
+  if (_version >= 3.0) {
+    _phaseShifts   = header._phaseShifts;
+    _gloPhaseBiases = header._gloPhaseBiases;
+    _gloSlots       = header._gloSlots;
+  }
   for (unsigned iPrn = 1; iPrn <= t_prn::MAXPRN_GPS; iPrn++) {
     _wlFactorsL1[iPrn] =  header._wlFactorsL1[iPrn]; 
     _wlFactorsL2[iPrn] =  header._wlFactorsL2[iPrn]; 
@@ -514,6 +557,72 @@ void t_rnxObsHeader::write(QTextStream* stream,
     .arg("GPS", 8)
     .leftJustified(60)
            << "TIME OF FIRST OBS\n";
+
+  if (_version >= 3.0) {
+    if (_phaseShifts.empty()) {
+      QString sys = _usedSystems;
+      for (int ii = 0; ii < sys.size(); ii++) {
+        *stream << QString("%1")
+          .arg(sys[ii], 0)
+          .leftJustified(60)
+           << "SYS / PHASE SHIFT\n";
+      }
+    } else {
+      QMultiHash<char, QPair<QString, double> >::const_iterator it = _phaseShifts.begin();
+      while(it != _phaseShifts.end()) {
+        *stream << QString("%1%2%3")
+          .arg(it.key(), 0)
+          .arg(it.value().first, 4)
+          .arg(it.value().second, 9, 'f', 5)
+          .leftJustified(60)
+           << "SYS / PHASE SHIFT\n";
+        it++;
+      }
+    }
+  }
+
+  if (_version >= 3.0) {
+    QString hlp = "";
+    QMap<QString, double>::const_iterator it = _gloPhaseBiases.begin();
+    while (it != _gloPhaseBiases.end()){
+      hlp += QString("%1%2").arg(it.key(), 4).arg(it.value(), 9, 'f', 3);
+      it++;
+    }
+    *stream << QString("%1")
+      .arg(hlp, 0)
+      .leftJustified(60)
+           << "GLONASS COD/PHS/BIS\n";
+  }
+
+  if (_version >= 3.0) {
+    QString number = QString::number(_gloSlots.size());
+    QString hlp = "";
+    int ii = 0;
+    QMap<t_prn, int>::const_iterator it = _gloSlots.begin();
+    while (it != _gloSlots.end()) {
+      QString prn(it.key().toString().c_str());
+      hlp +=  QString("%1%2").arg(prn, 4).arg(it.value(), 3);
+      it++;
+      ii++;
+      if (ii % 8 == 0) {
+        *stream << QString("%1%2")
+          .arg(number, 3)
+          .arg(hlp, 0)
+          .leftJustified(60)
+           << "GLONASS SLOT / FRQ #\n";
+        ii = 0;
+        hlp = number = "";
+      }
+    }
+    if (hlp.size() || !_gloSlots.size()) {
+      *stream << QString("%1%2")
+            .arg(number, 3)
+            .arg(hlp, 0)
+            .leftJustified(60)
+            << "GLONASS SLOT / FRQ #\n";
+    }
+  }
+
 
   *stream << QString()
     .leftJustified(60)
