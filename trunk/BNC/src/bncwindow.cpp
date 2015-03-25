@@ -951,7 +951,7 @@ bncWindow::bncWindow() {
   pppLayout3->addWidget(new QLabel("Min Elevation"),        ir, 6, Qt::AlignLeft);
   pppLayout3->addWidget(_pppWidgets._minEle,                ir, 7);
   ++ir;
-  pppLayout3->addWidget(new QLabel("Seeding (seconds)"),    ir, 0, Qt::AlignLeft);
+  pppLayout3->addWidget(new QLabel("Seeding (sec)"),        ir, 0, Qt::AlignLeft);
   pppLayout3->addWidget(_pppWidgets._seedingTime,           ir, 1);
   ++ir;
   pppLayout3->addWidget(new QLabel(""),                     ir, 8);
