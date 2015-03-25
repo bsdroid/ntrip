@@ -63,27 +63,30 @@ class t_rnxObsHeader {
 
  private:
   QStringList obsTypesStrings() const;
-  QString                 _usedSystems;
-  double                  _version;
-  double                  _interval;
-  QString                 _antennaNumber;
-  QString                 _antennaName;
-  QString                 _markerName;
-  QString                 _markerNumber;
-  QString                 _observer;
-  QString                 _agency;
-  QString                 _receiverNumber;
-  QString                 _receiverType;
-  QString                 _receiverVersion;
-  QStringList             _comments;
-  ColumnVector            _antNEU;
-  ColumnVector            _antXYZ;
-  ColumnVector            _antBSG;
-  ColumnVector            _xyz;
+  QString         _usedSystems;
+  double          _version;
+  double          _interval;
+  QString         _antennaNumber;
+  QString         _antennaName;
+  QString         _markerName;
+  QString         _markerNumber;
+  QString         _observer;
+  QString         _agency;
+  QString         _receiverNumber;
+  QString         _receiverType;
+  QString         _receiverVersion;
+  QStringList     _comments;
+  ColumnVector    _antNEU;
+  ColumnVector    _antXYZ;
+  ColumnVector    _antBSG;
+  ColumnVector    _xyz;
   QMap<char, QStringList> _obsTypes;
+  QMap<t_prn, int>        _gloSlots;
+  QMap<QString, double>   _gloPhaseBiases;
   int                     _wlFactorsL1[t_prn::MAXPRN_GPS+1];
   int                     _wlFactorsL2[t_prn::MAXPRN_GPS+1];
   bncTime                 _startTime;
+  QMultiHash<char, QPair<QString, double> > _phaseShifts;
 };
 
 class t_rnxObsFile {
