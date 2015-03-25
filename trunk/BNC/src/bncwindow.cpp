@@ -905,6 +905,14 @@ bncWindow::bncWindow() {
 
   _pppWidgets._snxtroSampl->setWhatsThis(tr("<p>Select a 'Sampling' rate for saving troposphere paramers.</p>"));
 
+  _pppWidgets._sigmaC1->setWhatsThis(tr("<p>Enter a sigma for your GNSS C1 code observations in meters.</p><p>The higher the sigma you enter, the less the contribution of C1 code observations to a PPP solution based on a combination of code and phase data. 2.0 is likely to be an appropriate choice.</p>"));
+
+  _pppWidgets._sigmaL1->setWhatsThis(tr("<p>Enter a sigma for your GNSS L1 phase observations in meters.</p><p>The higher the sigma you enter, the less the contribution of L1 phase observations to a PPP solutions based on a combination of code and phase data. 0.01 is likely to be an appropriate choice.</p>"));
+
+  _pppWidgets._maxResC1->setWhatsThis(tr("<p>Specify a maximum for residuals from C1 code observations in a PPP solution. '3.0' may be an appropriate choise for that.</p><p>If the maximum is exceeded contributions from the corresponding observation will be ignored in the PPP solution.</p>"));
+
+  _pppWidgets._maxResL1->setWhatsThis(tr("<p>Specify a maximum for residuals from L1 code observations in a PPP solution. '0.03' may be an appropriate choise for that.</p><p>If the maximum is exceeded contributions from the corresponding observation will be ignored in the PPP solution.</p>"));
+
   QVBoxLayout* pppLayout2 = new QVBoxLayout();
   pppLayout2->addWidget(new QLabel("Precise Point Positioning - Processed Stations.<br>"));
   pppLayout2->addWidget(_pppWidgets._staTable, 99);
