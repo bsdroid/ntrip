@@ -997,7 +997,7 @@ bncWindow::bncWindow() {
   pppLayout4->addWidget(_pppWidgets._plotCoordinates,                    ir, 1, Qt::AlignLeft);
   pppLayout4->addWidget(new QLabel("Mountpoint"),                        ir, 2, 1, 10, Qt::AlignLeft);
   pppLayout4->addWidget(_pppWidgets._audioResponse,                      ir, 4, Qt::AlignLeft);
-  pppLayout4->addWidget(new QLabel("Audio Response"),                    ir, 5, Qt::AlignRight);
+  pppLayout4->addWidget(new QLabel("Audio response"),                    ir, 5, Qt::AlignRight);
 
   ++ir;
   pppLayout4->addWidget(new QLabel("Track map"),                         ir, 0, Qt::AlignLeft);
