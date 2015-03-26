@@ -909,9 +909,9 @@ bncWindow::bncWindow() {
 
   _pppWidgets._sigmaL1->setWhatsThis(tr("<p>Enter a sigma for your GNSS L1 phase observations in meters.</p><p>The higher the sigma you enter, the less the contribution of L1 phase observations to a PPP solutions based on a combination of code and phase data. 0.01 is likely to be an appropriate choice.</p>"));
 
-  _pppWidgets._maxResC1->setWhatsThis(tr("<p>Specify a maximum for residuals from C1 code observations in a PPP solution. '3.0' may be an appropriate choise for that.</p><p>If the maximum is exceeded contributions from the corresponding observation will be ignored in the PPP solution.</p>"));
+  _pppWidgets._maxResC1->setWhatsThis(tr("<p>Specify a maximum for residuals from C1 code observations in a PPP solution. '3.0' meters may be an appropriate choise for that.</p><p>If the maximum is exceeded contributions from the corresponding observation will be ignored in the PPP solution.</p>"));
 
-  _pppWidgets._maxResL1->setWhatsThis(tr("<p>Specify a maximum for residuals from L1 code observations in a PPP solution. '0.03' may be an appropriate choise for that.</p><p>If the maximum is exceeded contributions from the corresponding observation will be ignored in the PPP solution.</p>"));
+  _pppWidgets._maxResL1->setWhatsThis(tr("<p>Specify a maximum for residuals from L1 code observations in a PPP solution. '0.03' meters may be an appropriate choise for that.</p><p>If the maximum is exceeded contributions from the corresponding observation will be ignored in the PPP solution.</p>"));
 
   _pppWidgets._eleWgtCode->setWhatsThis(tr("<p>Tic 'Ele Wgt Code' to use satellite Elevation depending Weights for Code observations in the PPP solution.</p>"));
 
