@@ -70,6 +70,7 @@ class t_pppWidgets : public QObject {
   QPushButton*   _mapWinButton;
   QRadioButton*  _useGoogleMap;
   QRadioButton*  _useOpenStreetMap;
+  QLineEdit*     _audioResponse;
   QLineEdit*     _mapWinDotSize;
   QComboBox*     _mapWinDotColor;
   QSlider*       _mapSpeedSlider;
