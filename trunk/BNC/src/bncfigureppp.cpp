@@ -79,6 +79,9 @@ void bncFigurePPP::slotNewPosition(QByteArray staID, bncTime time, QVector<doubl
   QMutexLocker locker(&_mutex);
 
   bncSettings settings;
+
+  _audioResponseThreshold = settings.value("PPP/audioResponse").toDouble();
+
   if (settings.value("PPP/plotCoordinates").toByteArray() != staID) {
     return;
   }
@@ -169,6 +172,16 @@ void bncFigurePPP::paintEvent(QPaintEvent *) {
       for (int ii = 1; ii < _pos.size(); ++ii) {
         double t1 = _tMin + (_pos[ii-1]->time - _pos[0]->time);
         double t2 = _tMin + (_pos[ii]->time   - _pos[0]->time);
+
+        // Audio response
+        // --------------
+        if ( ii == _pos.size()-1) {
+          if ( _audioResponseThreshold > 0.0 &&
+               (fabs(neu[ii-1][0]) > _audioResponseThreshold ||
+                fabs(neu[ii-1][1]) > _audioResponseThreshold) ) {
+            QApplication::beep();
+          }
+        }
 
         // dots
         // ----
