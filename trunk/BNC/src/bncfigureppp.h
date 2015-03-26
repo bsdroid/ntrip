@@ -57,6 +57,7 @@ class bncFigurePPP : public QWidget {
   bncTime          _startTime;
   double           _neuMax;
   double           _tMin;
+  double           _audioResponseThreshold;
   int              _width;
   int              _height;
 };
