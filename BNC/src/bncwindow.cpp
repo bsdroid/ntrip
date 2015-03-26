@@ -913,6 +913,16 @@ bncWindow::bncWindow() {
 
   _pppWidgets._maxResL1->setWhatsThis(tr("<p>Specify a maximum for residuals from L1 code observations in a PPP solution. '0.03' may be an appropriate choise for that.</p><p>If the maximum is exceeded contributions from the corresponding observation will be ignored in the PPP solution.</p>"));
 
+  _pppWidgets._eleWgtCode->setWhatsThis(tr("<p>Tic 'Ele Wgt Code' to use satellite Elevation depending Weights for Code observations in the PPP solution.</p>"));
+
+  _pppWidgets._eleWgtPhase->setWhatsThis(tr("<p>Tic 'Ele Wgt Phase' to use satellite Elevation depending Weights for Phase observations in the PPP solution.</p>"));
+
+  _pppWidgets._minObs->setWhatsThis(tr("<p>Select a Minimum Number of Observations per epoch for a PPP solution.</p><p>BNC will only process epochs with observation numbers reaching or exceeding this limit.</p>"));
+
+  _pppWidgets._minEle->setWhatsThis(tr("<p>Select a Minimum satellite Elevation for observations.</p><p>BNC will ignore an observation if the associated Satellite Elevation does not reach or exceed this limit.</p>"));
+
+//_pppWidgets._minEle->setWhatsThis(tr("<p> // weber
+
   QVBoxLayout* pppLayout2 = new QVBoxLayout();
   pppLayout2->addWidget(new QLabel("Precise Point Positioning - Processed Stations.<br>"));
   pppLayout2->addWidget(_pppWidgets._staTable, 99);
