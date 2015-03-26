@@ -986,7 +986,8 @@ bncWindow::bncWindow() {
 
   // ------------------------
   connect(_pppWidgets._mapWinButton, SIGNAL(clicked()), SLOT(slotMapPPP()));
-  _pppWidgets._mapSpeedSlider->setMinimumWidth(28*ww);
+  _pppWidgets._mapSpeedSlider->setMinimumWidth(33*ww);
+  _pppWidgets._audioResponse->setMaximumWidth(8*ww);
 
   QGridLayout* pppLayout4 = new QGridLayout();
   ir = 0;
@@ -995,6 +996,9 @@ bncWindow::bncWindow() {
   pppLayout4->addWidget(new QLabel("PPP Plot"),                          ir, 0, Qt::AlignLeft);
   pppLayout4->addWidget(_pppWidgets._plotCoordinates,                    ir, 1, Qt::AlignLeft);
   pppLayout4->addWidget(new QLabel("Mountpoint"),                        ir, 2, 1, 10, Qt::AlignLeft);
+  pppLayout4->addWidget(_pppWidgets._audioResponse,                      ir, 4, Qt::AlignLeft);
+  pppLayout4->addWidget(new QLabel("Audio Response"),                    ir, 5, Qt::AlignRight);
+
   ++ir;
   pppLayout4->addWidget(new QLabel("Track map"),                         ir, 0, Qt::AlignLeft);
   pppLayout4->addWidget(_pppWidgets._mapWinButton,                       ir, 1, Qt::AlignLeft);
@@ -2578,6 +2582,7 @@ void bncWindow::slotMapMountPoints() {
 void bncWindow::slotMapPPP() {
 #ifdef QT_WEBKIT
   saveOptions();
+  enableWidget(false, _pppWidgets._audioResponse);
   enableWidget(false, _pppWidgets._mapWinButton);
   enableWidget(false, _pppWidgets._useGoogleMap);
   enableWidget(false, _pppWidgets._useOpenStreetMap);
@@ -2602,6 +2607,7 @@ void bncWindow::slotMapPPP() {
 void bncWindow::slotMapPPPClosed() {
 #ifdef QT_WEBKIT
   enableWidget(true, _pppWidgets._mapWinButton);
+  enableWidget(true, _pppWidgets._audioResponse);
   enableWidget(true, _pppWidgets._useGoogleMap);
   enableWidget(true, _pppWidgets._useOpenStreetMap);
   enableWidget(true, _pppWidgets._mapWinDotSize);
