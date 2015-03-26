@@ -88,6 +88,7 @@ t_pppWidgets::t_pppWidgets() {
   _mapWinButton     = new QPushButton;  _mapWinButton    ->setObjectName("PPP/mapWinButton");     _widgets << _mapWinButton;
   _useGoogleMap     = new QRadioButton; _useGoogleMap    ->setObjectName("PPP/useGoogleMap");     _widgets << _useGoogleMap;
   _useOpenStreetMap = new QRadioButton; _useOpenStreetMap->setObjectName("PPP/useOpenStreetMap"); _widgets << _useOpenStreetMap;
+  _audioResponse    = new QLineEdit;    _audioResponse   ->setObjectName("PPP/audioResponse");    _widgets << _audioResponse;
   _mapWinDotSize    = new QLineEdit;    _mapWinDotSize   ->setObjectName("PPP/mapWinDotSize");    _widgets << _mapWinDotSize;
   _mapWinDotColor   = new QComboBox;    _mapWinDotColor  ->setObjectName("PPP/mapWinDotColor");   _widgets << _mapWinDotColor;
   _mapSpeedSlider   = new QSlider;      _mapSpeedSlider  ->setObjectName("PPP/mapSpeedSlider");   _widgets << _mapSpeedSlider;
@@ -156,12 +157,20 @@ t_pppWidgets::t_pppWidgets() {
 
   _corrWaitTime->setWhatsThis(tr("<p>Specifying 'no' means that BNC will not wait and process each epoch of data immediately after arrival using satellite clock corrections available at that time.</p><p>Specifying a non-zero value (i.e. 5 sec) means that data will be buffered and the processing of each buffered epoch is postponed till satellite orbit and clock corrections not older than '5 sec' (example) become available.</p>"));
 
-  _plotCoordinates->setWhatsThis(tr("<p>BNC allows to produce a time series plot of coordinates for one Real-time PPP solution in the 'PPP Plot' section below. Specify the 'Mountpoint' of the stream whose coordinate displacements you would like to see plotted.</p><p>Default is an empty option field, meaning that BNC shall not produce a time series plot of PPP coordinate displacements.</p>"));
+  _plotCoordinates->setWhatsThis(tr("<p>BNC allows to produce a time series plot of coordinates for one of your Real-time PPP stations in the 'PPP Plot' window below. Specify the 'Mountpoint' of the stream whose coordinate displacements you would like to see plotted.</p><p>Note that this option makes only sense for a more or less stationary receiver with known a-priori coordinates as specified through PPP option 'Coordinates'.</p><p>Default is an empty option field, meaning that BNC shall not produce a time series plot of PPP coordinate displacements.</p>"));
+
   _mapWinButton->setWhatsThis(tr("<p>You make like to track your rover position using Google Maps or Open Street Map as a background map. Track maps can be produced with BNC in 'Realtime-PPP', 'Realtime-SPP' and 'Post-Processing' mode.</p><p>The 'Open Map' button opens a windows showing a map according to specified options.</p><p>Even in 'Post-Processing' mode you should not forget to specify a proxy under the 'Network' tab if that is operated in front of BNC."));
+
   _useGoogleMap->setWhatsThis(tr("<p>Specify Google Maps as the background for your rover positions."));
+
   _useOpenStreetMap->setWhatsThis(tr("<p>Specify Open Street Map as the background for your rover positions."));
+
+  _audioResponse->setWhatsThis(tr("<p>Specify an 'Audio response' threshold in meters. A beep is produced by BNC whenever a horizontal PPP coordinate component differs by more than the threshold value from the marker coordinate.</p><p>Default is an empty option field, meaning that you don't want BNC to produce alarm signals.</p>"));
+
   _mapWinDotSize->setWhatsThis(tr("<p>Specify the size of dots showing the rover positions on the track map.</p><p>A dot size of '3' may be appropriate. The maximum possible dot size is '10'. An empty option field or a size of '0' would mean that you don't want BNC to show the rover's track on the map.</p>"));
+
   _mapWinDotColor->setWhatsThis(tr("<p>Specify the color of dots showing the rover track on the map.</p>"));
+
   _mapSpeedSlider->setWhatsThis(tr("<p>With BNC in PPP post-processing mode you can specify the speed of computations as appropriate for 'Track map' visualization. Note that you can adjust 'speed' on-the-fly while BNC is already processing your observations."));
 
   readOptions();
@@ -244,6 +253,7 @@ void t_pppWidgets::readOptions() {
   // Plots and Maps
   // --------------
   _plotCoordinates ->setText(settings.value(_plotCoordinates->objectName()).toString());
+  _audioResponse   ->setText(settings.value(_audioResponse->objectName()).toString());
   _useGoogleMap    ->setChecked(settings.value(_useGoogleMap->objectName()).toBool());
   _useOpenStreetMap->setChecked(settings.value(_useOpenStreetMap->objectName()).toBool());
   _mapWinDotSize   ->setText(settings.value(_mapWinDotSize->objectName()).toString());
@@ -305,6 +315,7 @@ void t_pppWidgets::saveOptions() {
   settings.setValue(_staTable->objectName(), staList);
 
   settings.setValue(_plotCoordinates ->objectName(), _plotCoordinates ->text());
+  settings.setValue(_audioResponse   ->objectName(), _audioResponse   ->text());
   settings.setValue(_useGoogleMap    ->objectName(), _useGoogleMap    ->isChecked());
   settings.setValue(_useOpenStreetMap->objectName(), _useOpenStreetMap->isChecked());
   settings.setValue(_mapWinDotSize   ->objectName(), _mapWinDotSize   ->text());
