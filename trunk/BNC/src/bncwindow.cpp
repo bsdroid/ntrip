@@ -1065,7 +1065,7 @@ bncWindow::bncWindow() {
 
   _reqcLogSummaryOnly = new QCheckBox();
   _reqcLogSummaryOnly->setCheckState(Qt::CheckState(settings.value("reqcLogSummaryOnly").toInt()));
-  _reqcLogSummaryOnly->setWhatsThis(tr("<p>By default BNC produces a detailed 'Logfile' providing all information resulting from editing or analyzing RINEX data. If that is too much information, you can limit the logfile contents to a small summary.</p><p>Tick 'Summary only' to suppress a full logfile output and produce a logfile containing only summary information.</p>"));
+  _reqcLogSummaryOnly->setWhatsThis(tr("<p>By default BNC produces a detailed 'Logfile' providing all information resulting from editing or analyzing RINEX data. If that is too much information, you can limit the logfile contents to a small summary.</p><p>Tick 'Summary only' to suppress a full logfile output and instead produce a logfile containing only summary information.</p>"));
 
   ir = 0;
   reqcLayout->addWidget(new QLabel("RINEX file editing, concatenation and quality check.<br>"),ir, 0, 1, 8);
@@ -2297,7 +2297,7 @@ void bncWindow::slotBncTextChanged(){
   if (sender() == 0 || sender() == _reqcActionComboBox || sender() == _reqcSkyPlotSignals) {
     enable = !_reqcActionComboBox->currentText().isEmpty();
     bool enable10   = _reqcActionComboBox->currentText() == "Edit/Concatenate";
-    bool enablePlot = !_reqcSkyPlotSignals->text().isEmpty();
+//  bool enablePlot = !_reqcSkyPlotSignals->text().isEmpty();
     enableWidget(enable,                            _reqcObsFileChooser);
     enableWidget(enable,                            _reqcNavFileChooser);
     enableWidget(enable,                            _reqcOutLogLineEdit);
@@ -2306,7 +2306,8 @@ void bncWindow::slotBncTextChanged(){
     enableWidget(enable &&  enable10,               _reqcOutNavLineEdit);
     enableWidget(enable && !enable10,               _reqcLogSummaryOnly);
     enableWidget(enable && !enable10,               _reqcSkyPlotSignals);
-    enableWidget(enable && !enable10 && enablePlot, _reqcPlotDirLineEdit);
+//  enableWidget(enable && !enable10 && enablePlot, _reqcPlotDirLineEdit);
+    enableWidget(enable && !enable10,               _reqcPlotDirLineEdit);
   }
 
   // SP3 File Comparison
