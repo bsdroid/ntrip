@@ -2583,7 +2583,6 @@ void bncWindow::slotMapMountPoints() {
 void bncWindow::slotMapPPP() {
 #ifdef QT_WEBKIT
   saveOptions();
-  enableWidget(false, _pppWidgets._audioResponse);
   enableWidget(false, _pppWidgets._mapWinButton);
   enableWidget(false, _pppWidgets._useGoogleMap);
   enableWidget(false, _pppWidgets._useOpenStreetMap);
@@ -2608,7 +2607,6 @@ void bncWindow::slotMapPPP() {
 void bncWindow::slotMapPPPClosed() {
 #ifdef QT_WEBKIT
   enableWidget(true, _pppWidgets._mapWinButton);
-  enableWidget(true, _pppWidgets._audioResponse);
   enableWidget(true, _pppWidgets._useGoogleMap);
   enableWidget(true, _pppWidgets._useOpenStreetMap);
   enableWidget(true, _pppWidgets._mapWinDotSize);
