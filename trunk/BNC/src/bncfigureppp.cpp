@@ -80,7 +80,12 @@ void bncFigurePPP::slotNewPosition(QByteArray staID, bncTime time, QVector<doubl
 
   bncSettings settings;
 
-  _audioResponseThreshold = settings.value("PPP/audioResponse").toDouble();
+  if (settings.value("PPP/audioResponse").toString() != "" ) { 
+    _audioResponseThreshold = settings.value("PPP/audioResponse").toDouble();
+  }
+  else {
+    _audioResponseThreshold = 0.0;
+  }
 
   if (settings.value("PPP/plotCoordinates").toByteArray() != staID) {
     return;
