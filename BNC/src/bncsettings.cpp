@@ -133,6 +133,7 @@ void bncSettings::reRead() {
     setValue_p("reqcOutObsFile",      "");
     setValue_p("reqcOutNavFile",      "");
     setValue_p("reqcOutLogFile",      "");
+    setValue_p("reqcSkyPlotSignals",  "C:1&7 E:1&5 G:1&2 J:1&2 R:1&2 S:1&5");
     setValue_p("reqcPlotDir",         "");
     setValue_p("reqcRnxVersion",      "");
     setValue_p("reqcSampling",        "");
