@@ -347,6 +347,8 @@ void t_pppWidgets::slotEnableWidgets() {
   }
   else if (rinexFiles) {
     _corrMount->setEnabled(false);
+    _plotCoordinates->setEnabled(false);
+    _audioResponse->setEnabled(false);
   }
 
   _dataSource->setEnabled(true);
