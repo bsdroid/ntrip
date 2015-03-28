@@ -266,14 +266,18 @@ void reqcDlg::saveOptions() {
 ////////////////////////////////////////////////////////////////////////////
 void reqcDlg::slotReqcTextChanged(){
 
+  const static QPalette paletteWhite(QColor(255, 255, 255));
+  const static QPalette paletteGray(QColor(230, 230, 230));
+
   if (sender() == 0 || sender() == _reqcRnxVersion) {
     if (_reqcRnxVersion->currentText() == "2") {
-      _reqcV2Priority->setStyleSheet("background-color: white");
+      _reqcV2Priority->setPalette(paletteWhite);
       _reqcV2Priority->setEnabled(true);
     }
     else {
-      _reqcV2Priority->setStyleSheet("background-color: lightGray");
+      _reqcV2Priority->setPalette(paletteGray);
       _reqcV2Priority->setEnabled(false);
     }
   }
 }
+
