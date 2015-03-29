@@ -899,7 +899,7 @@ bncWindow::bncWindow() {
 
   _pppWidgets._nmeaFile->setWhatsThis(tr("<p>Specify the path to daily NMEA files using e.g. the following syntax (example):</p><p> ./PPP_$(STATION)_$(DATE).nmea</p><p>BNC will produce one daily NMEA file per station, mainly to save NMEA GGA sentences from the PPP solution. Variable $(STATION) stands for the affected station and $(DATE) stands for the date.</p>"));
 
-  _pppWidgets._nmeaPort->setWhatsThis(tr("<p>  </p>"));
+  _pppWidgets._nmeaPort->setWhatsThis(tr("<p>Text fehlt</p>"));
 
   _pppWidgets._snxtroFile->setWhatsThis(tr("<p>Specify the path to daily SINEX Troposphere files using e.g. the following syntax (example):</p><p> ./PPP_$(STATION)_$(DATE).tro</p><p>BNC will produce one daily troposphere file per station to save troposphere parameters from the PPP solution in SINEX Troposphere format. Variable $(STATION) stands for the affected station and $(DATE) stands for the date.</p>"));
 
