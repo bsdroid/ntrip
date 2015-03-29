@@ -97,6 +97,9 @@ t_pppWidgets::t_pppWidgets() {
   _dataSource->addItems(QString(",Real-Time Streams,RINEX Files").split(","));
   connect(_dataSource, SIGNAL(currentIndexChanged(const QString&)), this, SLOT(slotEnableWidgets()));
 
+  connect(_snxtroFile, SIGNAL(textChanged(const QString &)), 
+         this, SLOT(slotPPPTextChanged()));
+
   slotEnableWidgets();
 
   _lcGPS->setEditable(false);
@@ -351,6 +354,13 @@ void t_pppWidgets::slotEnableWidgets() {
     _audioResponse->setEnabled(false);
   }
 
+  if ( _snxtroFile->text() != "" && !allDisabled) {
+    _snxtroSampl->setEnabled(true);    
+  }
+  else {
+    _snxtroSampl->setEnabled(false);    
+  }
+
   _dataSource->setEnabled(true);
 
   it.toFront();
@@ -395,3 +405,23 @@ void t_pppWidgets::slotDelStation() {
   }
 }
 
+//  PPP Text
+////////////////////////////////////////////////////////////////////////////
+void t_pppWidgets::slotPPPTextChanged(){
+
+  const static QPalette paletteWhite(QColor(255, 255, 255));
+  const static QPalette paletteGray(QColor(230, 230, 230));
+
+  // SNX TRO file sampling
+  // ---------------------
+  if (sender() == 0 || sender() == _snxtroFile) {
+    if ( _snxtroFile->text() != "" ) {  
+      _snxtroSampl->setEnabled(true);    
+      _snxtroSampl->setPalette(paletteWhite);
+    }
+    else {
+    _snxtroSampl->setEnabled(false);    
+    _snxtroSampl->setPalette(paletteGray);
+    }
+  }
+}
