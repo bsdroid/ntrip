@@ -79,6 +79,7 @@ class t_pppWidgets : public QObject {
   void slotEnableWidgets();  
   void slotAddStation();
   void slotDelStation();
+  void slotPPPTextChanged();
 
  private:
   void readOptions();
