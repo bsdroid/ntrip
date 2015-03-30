@@ -211,7 +211,7 @@ bncWindow::bncWindow() {
   _rnxSkelLineEdit    = new QLineEdit(settings.value("rnxSkel").toString());
   _rnxSkelLineEdit->setMaximumWidth(5*ww);
   _rnxScrpLineEdit    = new QLineEdit(settings.value("rnxScript").toString());
-  _rnxV3CheckBox = new QCheckBox();
+  _rnxV3CheckBox      = new QCheckBox();
   _rnxV3CheckBox->setCheckState(Qt::CheckState(settings.value("rnxV3").toInt()));
   QString hlp = settings.value("rnxV2Priority").toString();
   if (hlp.isEmpty()) {
@@ -329,6 +329,13 @@ bncWindow::bncWindow() {
   }
   _serialFileNMEALineEdit    = new QLineEdit(settings.value("serialFileNMEA").toString());
   _serialHeightNMEALineEdit  = new QLineEdit(settings.value("serialHeightNMEA").toString());
+
+  _serialManualNMEASamplingSpinBox = new QSpinBox();
+  _serialManualNMEASamplingSpinBox->setMinimum(0);
+  _serialManualNMEASamplingSpinBox->setMaximum(300);
+  _serialManualNMEASamplingSpinBox->setSingleStep(10);
+  _serialManualNMEASamplingSpinBox->setValue(settings.value("serialManualNMEASampling").toInt());
+  _serialManualNMEASamplingSpinBox->setSuffix(" sec");
 
   connect(_serialMountPointLineEdit, SIGNAL(textChanged(const QString &)),
           this, SLOT(slotBncTextChanged()));
@@ -764,6 +771,7 @@ bncWindow::bncWindow() {
   _serialStopBitsComboBox->setMaximumWidth(5*ww);
   _serialAutoNMEAComboBox->setMaximumWidth(9*ww);
   _serialHeightNMEALineEdit->setMaximumWidth(8*ww);
+  _serialManualNMEASamplingSpinBox->setMaximumWidth(8*ww);
 
   serLayout->addWidget(new QLabel("Port settings to feed a serial connected receiver.<br>"),0,0,1,30);
   serLayout->addWidget(new QLabel("Mountpoint"),                  1, 0, Qt::AlignLeft);
@@ -786,6 +794,8 @@ bncWindow::bncWindow() {
   serLayout->addWidget(_serialFileNMEALineEdit,                   5, 3, 1,10);
   serLayout->addWidget(new QLabel("Height"),                      5,14, Qt::AlignRight); // 20
   serLayout->addWidget(_serialHeightNMEALineEdit,                 5,15, 1,11);
+  serLayout->addWidget(new QLabel("Sampling"),                    5,25, Qt::AlignRight);
+ serLayout->addWidget(_serialManualNMEASamplingSpinBox,           5,26, 1,12);
   serLayout->addWidget(new QLabel(""),                            6, 1);
   serLayout->setRowStretch(7, 999);
 
@@ -1307,6 +1317,7 @@ bncWindow::bncWindow() {
   _serialAutoNMEAComboBox->setWhatsThis(tr("<p>The 'NMEA' option supports the so-called 'Virtural Reference Station' (VRS) concept which requires the receiver to send approximate position information to the NTRIP Broadcaster. Select 'no' if you don't want BNC to forward or upload any NMEA message to the NTRIP broadcaster in support of VRS.</p><p>Select 'Auto' to automatically forward NMEA messages of type GPGGA or GNGGA from your serial connected receiver to the NTRIP broadcaster and/or save them in a file.</p><p>Select 'Manual' if you want BNC to produce and upload one initial GPGGA NMEA message to the NTRIP broadcaster because your serial connected receiver doesn't generate these messages.</p><p>Note that selecting 'Auto' or 'Manual' works only for VRS streams which show up under the 'Streams' canvas on BNC's main window with 'ntrip' stream attribute set to 'yes'. This attribute is either extracted from the NTRIP broadcaster's sourcetable or introduced by the user through editing the BNC configuration file.</p>"));
   _serialFileNMEALineEdit->setWhatsThis(tr("<p>Specify the full path to a file where NMEA messages coming from your serial connected receiver are saved.</p><p>Default is an empty option field, meaning that NMEA messages will not be saved on disk.</p>"));
   _serialHeightNMEALineEdit->setWhatsThis(tr("<p>Specify an approximate 'Height' above mean sea level in meters for the reference station introduced through 'Mountpoint'. Together with the latitude and longitude from the NTRIP broadcaster sourcetable the height information is used to build one initial GPGGA message to be sent to the NTRIP broadcaster.</p><p>This option is only relevant when option 'NMEA' is set to 'Manual'.</p>"));
+  _serialManualNMEASamplingSpinBox->setWhatsThis(tr("<p>Select the sampling interval in seconds for manual generated NMEA string. A sampling rate of '0' means, the NMEA string will be send only once. </p>"));
   _reqcActionComboBox->setWhatsThis(tr("<p>BNC allows to 'Edit or Concatenate' RINEX v2 or v3 files or to perform a quality check and 'Analyze' the data following UNAVCO's famous 'teqc' program.</p>"));
   _reqcEditOptionButton->setWhatsThis(tr("<p>Specify options for editing RINEX v2 or v3 files.</p>"));
   _bncFigurePPP->setWhatsThis(tr("PPP time series of North (red), East (green) and Up (blue) coordinate components are shown in the 'PPP Plot' tab when the corresponting option is selected above. Values are either referred to an XYZ reference coordinate (if specified) or referred to the first estimated set of coordinate compoments. The sliding PPP time series window covers the period of the latest 5 minutes."));
@@ -1718,8 +1729,9 @@ void bncWindow::saveOptions() {
   settings.setValue("serialParity",    _serialParityComboBox->currentText());
   settings.setValue("serialStopBits",  _serialStopBitsComboBox->currentText());
   settings.setValue("serialAutoNMEA",  _serialAutoNMEAComboBox->currentText());
-  settings.setValue("serialFileNMEA",_serialFileNMEALineEdit->text());
-  settings.setValue("serialHeightNMEA",_serialHeightNMEALineEdit->text());
+  settings.setValue("serialFileNMEA",    _serialFileNMEALineEdit->text());
+  settings.setValue("serialHeightNMEA",  _serialHeightNMEALineEdit->text());
+  settings.setValue("serialMaualSampling", _serialManualNMEASamplingSpinBox->value());
 // Outages
   settings.setValue("obsRate",     _obsRateComboBox->currentText());
   settings.setValue("adviseFail",  _adviseFailSpinBox->value());
@@ -2207,6 +2219,7 @@ void bncWindow::slotBncTextChanged(){
     enableWidget(enable2, _serialFileNMEALineEdit);
     bool enable3 = enable && _serialAutoNMEAComboBox->currentText() == "Manual";
     enableWidget(enable3, _serialHeightNMEALineEdit);
+    enableWidget(enable3, _serialManualNMEASamplingSpinBox);
   }
 
   // Outages
