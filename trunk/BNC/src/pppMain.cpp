@@ -125,7 +125,7 @@ void t_pppMain::readOptions() {
   _nmeaFile = settings.value("PPP/nmeaFile").toString();
   _nmeaPort = settings.value("PPP/nmeaPort").toInt();
   _snxtroFile = settings.value("PPP/snxtroFile").toString();
-  _snxtroSampling = settings.value("PPP/snxtroSampling").toInt();
+  _snxtroSampling = settings.value("PPP/snxtroSampl").toInt();
 
   _realTime = false;
   if      (settings.value("PPP/dataSource").toString() == "Real-Time Streams") {
