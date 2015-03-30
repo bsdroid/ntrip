@@ -22,6 +22,7 @@ class t_pppMain {
   QString  _logFile;
   QString  _nmeaFile;
   QString  _snxtroFile;
+  int      _snxtroSampling;
   int      _nmeaPort;
   bool     _running;
   bool     _realTime;
