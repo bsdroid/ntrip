@@ -187,6 +187,7 @@ class bncWindow : public QMainWindow {
     QLineEdit* _serialHeightNMEALineEdit;
     QLineEdit* _serialFileNMEALineEdit;
     QComboBox* _serialAutoNMEAComboBox;
+    QSpinBox*  _serialManualNMEASamplingSpinBox;
 
     QLineEdit*   _LatLineEdit;
     QLineEdit*   _LonLineEdit;

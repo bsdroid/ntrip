@@ -111,6 +111,9 @@ class bncGetThread : public QThread {
    QByteArray                 _height;
    QByteArray                 _nmea;
    QByteArray                 _ntripVersion;
+   QByteArray                 _manualNMEAString;
+   QDateTime                  _lastManualNMEA;
+   int                        _manualNMEASampl;
    int                        _nextSleep;
    int                        _iMount;
    bncRawFile*                _rawFile;

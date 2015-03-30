@@ -259,6 +259,15 @@ void bncGetThread::initialize() {
     // -----------
     if (settings.value("serialAutoNMEA").toString() == "Manual") {
       _serialNMEA = MANUAL_NMEA;
+      bncSettings settings;
+      _manualNMEASampl = settings.value("serialManualNMEASampling").toInt();
+      QString hlp      = settings.value("serialHeightNMEA").toString();
+      if (hlp.isEmpty()) {
+        hlp = "0.0";
+      }
+      QByteArray _serialHeightNMEA = hlp.toAscii();
+      _manualNMEAString = ggaString(_latitude, _longitude, _serialHeightNMEA);
+
     }
   }
 
@@ -609,14 +618,8 @@ t_irc bncGetThread::tryReconnect() {
       _query = new bncNetQueryV1();
     }
     if (_nmea == "yes" && _serialNMEA == MANUAL_NMEA) {
-      bncSettings settings;
-      QString hlp = settings.value("serialHeightNMEA").toString();
-      if (hlp.isEmpty()) {
-        hlp = "0.0";
-      }
-      QByteArray _serialHeightNMEA = hlp.toAscii();
-      QByteArray gga = ggaString(_latitude, _longitude, _serialHeightNMEA);
-      _query->startRequest(_mountPoint, gga);
+      _query->startRequest(_mountPoint, _manualNMEAString);
+      _lastManualNMEA = QDateTime::currentDateTime();
     }
     else {
       _query->startRequest(_mountPoint, "");
@@ -811,12 +814,22 @@ void bncGetThread::slotSerialReadyRead() {
           i1 = data.indexOf("$GNGGA");
         }
         if (i1 != -1) {
-	  int i2 = data.indexOf("*", i1);
+          int i2 = data.indexOf("*", i1);
           if (i2 != -1 && data.size() > i2 + 1) {
-            QByteArray gga = data.mid(i1,i2-i1+3);
+            QByteArray gga = data.mid(i1, i2 - i1 + 3);
             _query->sendNMEA(gga);
-	  }
-	}
+          }
+        }
+      }
+
+      if (_nmea == "yes" && _serialNMEA == MANUAL_NMEA) {
+        if (_manualNMEASampl) {
+          int dt = _lastManualNMEA.secsTo(QDateTime::currentDateTime());
+          if (fmod(double(dt), double(_manualNMEASampl)) == 0.0) {
+            _query->sendNMEA(_manualNMEAString);
+            _lastManualNMEA = QDateTime::currentDateTime();
+          }
+        }
       }
 
       if (_serialOutFile) {
