@@ -825,7 +825,7 @@ void bncGetThread::slotSerialReadyRead() {
       if (_nmea == "yes" && _serialNMEA == MANUAL_NMEA) {
         if (_manualNMEASampl) {
           int dt = _lastManualNMEA.secsTo(QDateTime::currentDateTime());
-          if (fmod(double(dt), double(_manualNMEASampl)) == 0.0) {
+          if (dt && (fmod(double(dt), double(_manualNMEASampl)) == 0.0)) {
             _query->sendNMEA(_manualNMEAString);
             _lastManualNMEA = QDateTime::currentDateTime();
           }
