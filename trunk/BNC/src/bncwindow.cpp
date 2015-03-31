@@ -1731,7 +1731,7 @@ void bncWindow::saveOptions() {
   settings.setValue("serialAutoNMEA",  _serialAutoNMEAComboBox->currentText());
   settings.setValue("serialFileNMEA",    _serialFileNMEALineEdit->text());
   settings.setValue("serialHeightNMEA",  _serialHeightNMEALineEdit->text());
-  settings.setValue("serialMaualSampling", _serialManualNMEASamplingSpinBox->value());
+  settings.setValue("serialManualNMEASampling", _serialManualNMEASamplingSpinBox->value());
 // Outages
   settings.setValue("obsRate",     _obsRateComboBox->currentText());
   settings.setValue("adviseFail",  _adviseFailSpinBox->value());
