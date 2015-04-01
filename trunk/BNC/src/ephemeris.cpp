@@ -1335,16 +1335,13 @@ t_ephBDS::t_ephBDS(float rnxVersion, const QStringList& lines) {
   // RINEX Format
   // ------------
   int fieldLen = 19;
+  _URAI = -1; // undefined in RINEX format
 
   int pos[4];
   pos[0] = (rnxVersion <= 2.12) ?  3 :  4;
   pos[1] = pos[0] + fieldLen;
   pos[2] = pos[1] + fieldLen;
   pos[3] = pos[2] + fieldLen;
-
-  double TOTs;
-  double TOEs;
-  double TOEw;
 
   // Read eight lines
   // ----------------
@@ -1406,7 +1403,7 @@ t_ephBDS::t_ephBDS(float rnxVersion, const QStringList& lines) {
     }
 
     else if ( iLine == 3 ) {
-      if ( readDbl(line, pos[0], fieldLen, TOEs   )  ||
+      if ( readDbl(line, pos[0], fieldLen, _TOEs   )  ||
            readDbl(line, pos[1], fieldLen, _Cic   )  ||
            readDbl(line, pos[2], fieldLen, _OMEGA0)  ||
            readDbl(line, pos[3], fieldLen, _Cis   ) ) {
@@ -1427,7 +1424,7 @@ t_ephBDS::t_ephBDS(float rnxVersion, const QStringList& lines) {
 
     else if ( iLine == 5 ) {
       if ( readDbl(line, pos[0], fieldLen, _IDOT    ) ||
-           readDbl(line, pos[2], fieldLen, TOEw)    ) {
+           readDbl(line, pos[2], fieldLen, _TOEw)    ) {
         _checkState = bad;
         return;
       }
@@ -1435,7 +1432,8 @@ t_ephBDS::t_ephBDS(float rnxVersion, const QStringList& lines) {
 
     else if ( iLine == 6 ) {
       double SatH1;
-      if ( readDbl(line, pos[1], fieldLen, SatH1) ||
+      if ( readDbl(line, pos[0], fieldLen, _URA ) ||
+           readDbl(line, pos[1], fieldLen, SatH1) ||
            readDbl(line, pos[2], fieldLen, _TGD1) ||
            readDbl(line, pos[3], fieldLen, _TGD2) ) {
         _checkState = bad;
@@ -1446,20 +1444,20 @@ t_ephBDS::t_ephBDS(float rnxVersion, const QStringList& lines) {
 
     else if ( iLine == 7 ) {
       double aodc;
-      if ( readDbl(line, pos[0], fieldLen, TOTs) ||
+      if ( readDbl(line, pos[0], fieldLen, _TOTs) ||
            readDbl(line, pos[1], fieldLen, aodc) ) {
         _checkState = bad;
         return;
       }
-      if (TOTs == 0.9999e9) {  // 0.9999e9 means not known (RINEX standard)
-        TOTs = TOEs;
+      if (_TOTs == 0.9999e9) {  // 0.9999e9 means not known (RINEX standard)
+        _TOTs = _TOEs;
       }
       _AODC = int(aodc);
     }
   }
 
-  TOEw += 1356;  // BDT -> GPS week number
-  _TOE_bdt.set(int(TOEw), TOEs);
+  _TOEw += 1356;  // BDT -> GPS week number
+  _TOE_bdt.set(int(_TOEw), _TOEs);
 
   // GPS->BDT
   // --------
@@ -1474,6 +1472,12 @@ t_ephBDS::t_ephBDS(float rnxVersion, const QStringList& lines) {
 // Set BDS Satellite Position
 ////////////////////////////////////////////////////////////////////////////
 void t_ephBDS::set(const bdsephemeris* ee) {
+
+  // RINEX File entries
+  // --------------------
+  _TOTs = 0.0;
+  _TOEs = 0.0;
+  _TOEw = 0.0;
 
   _receptDateTime = currentDateAndTimeGPS();
 
@@ -1676,11 +1680,15 @@ QString t_ephBDS::toString(double version) const {
     .arg(_Cus,    19, 'e', 12)
     .arg(_sqrt_A, 19, 'e', 12);
 
+  double toes = _TOEs;
+  if (!toes) { // RTCM stream input
+    toes = _TOE_bdt.gpssec();
+  }
   out << QString(fmt)
-    .arg(_TOE_bdt.gpssec(), 19, 'e', 12)
-    .arg(_Cic,              19, 'e', 12)
-    .arg(_OMEGA0,           19, 'e', 12)
-    .arg(_Cis,              19, 'e', 12);
+    .arg(toes,   19, 'e', 12)
+    .arg(_Cic,    19, 'e', 12)
+    .arg(_OMEGA0, 19, 'e', 12)
+    .arg(_Cis,    19, 'e', 12);
 
   out << QString(fmt)
     .arg(_i0,       19, 'e', 12)
@@ -1688,31 +1696,38 @@ QString t_ephBDS::toString(double version) const {
     .arg(_omega,    19, 'e', 12)
     .arg(_OMEGADOT, 19, 'e', 12);
 
+  double toew = _TOEw;
+  if (!toew) { // RTCM stream input
+    toew = double(_TOE_bdt.gpsw() - 1356.0);
+  }
   out << QString(fmt)
-    .arg(_IDOT,                            19, 'e', 12)
-    .arg(0.0,                              19, 'e', 12)
-    .arg(double(_TOE_bdt.gpsw() - 1356.0), 19, 'e', 12)
-    .arg(0.0,                              19, 'e', 12);
+    .arg(_IDOT, 19, 'e', 12)
+    .arg(0.0,   19, 'e', 12)
+    .arg(toew,  19, 'e', 12)
+    .arg(0.0,   19, 'e', 12);
 
-  double ura = 0.0;
+  double ura = _URA; // RINEX file input
   if ((_URAI <  6) && (_URAI >= 0)) {
     ura = ceil(10.0 * pow(2.0, ((double)_URAI/2.0) + 1.0)) / 10.0;
   }
   if ((_URAI >= 6) && (_URAI < 15)) {
     ura = ceil(10.0 * pow(2.0, ((double)_URAI/2.0)      )) / 10.0;
   }
-
   out << QString(fmt)
     .arg(ura,            19, 'e', 12)
     .arg(double(_SatH1), 19, 'e', 12)
     .arg(_TGD1,          19, 'e', 12)
     .arg(_TGD2,          19, 'e', 12);
 
+  double tots = _TOTs;
+  if (!tots) { // RTCM stream input
+    tots = _TOE_bdt.gpssec();
+  }
   out << QString(fmt)
-    .arg(_TOE_bdt.gpssec(), 19, 'e', 12)
-    .arg(double(_AODC),     19, 'e', 12)
-    .arg("",                19, QChar(' '))
-    .arg("",                19, QChar(' '));
+    .arg(tots,         19, 'e', 12)
+    .arg(double(_AODC), 19, 'e', 12)
+    .arg("",            19, QChar(' '))
+    .arg("",            19, QChar(' '));
   return rnxStr;
 }
 

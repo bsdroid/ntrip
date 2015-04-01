@@ -259,7 +259,8 @@ class t_ephBDS : public t_eph {
   bncTime _TOE_bdt;
   int     _AODE;
   int     _AODC;
-  int     _URAI;             //  [0..15]
+  int     _URAI;             //  [0..15] from RTCM stream
+  double  _URA;              //  [m]     from RINEX file
   double  _clock_bias;       //  [s]    
   double  _clock_drift;      //  [s/s]  
   double  _clock_driftrate;  //  [s/s^2]
@@ -281,6 +282,9 @@ class t_ephBDS : public t_eph {
   double  _TGD1;             //  [s]    
   double  _TGD2;             //  [s]    
   int     _SatH1;            // 
+  double  _TOTs;             //  [s] of BDT week; RINEX file entry
+  double  _TOEs;             //  [s] of BDT week; RINEX file entry
+  double  _TOEw;             //  [-] BDT week; RINEX file entry
 };
 
 #endif
