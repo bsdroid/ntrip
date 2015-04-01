@@ -1132,7 +1132,7 @@ bncWindow::bncWindow() {
 
   _sp3CompFileChooser = new qtFileChooser(0, qtFileChooser::Files);
   _sp3CompFileChooser->setFileName(settings.value("sp3CompFile").toString());
-  _sp3CompFileChooser->setWhatsThis(tr("Specify the full path to two files with orbits and clocks in SP3 format, separate them by comma."));
+  _sp3CompFileChooser->setWhatsThis(tr("<p>BNC can compare two SP3 files containing GNSS satellite orbit and clock information.</p></p>Specify the full path to two files with orbits and clocks in SP3 format, separate them by comma.</p>"));
   _sp3CompFileChooser->setMinimumWidth(15*ww);
   _sp3CompFileChooser->setMaximumWidth(40*ww);
 
@@ -1142,7 +1142,7 @@ bncWindow::bncWindow() {
   _sp3CompExclude->setWhatsThis(tr("<p>Specify satellites to exclude them from orbit and clock comparision. Example:<p>G04,G31,R</p><p>This excludes GPS satellites RPN 4 and 31 as well as all GLONASS satellites from the comparision.</p><p>Default is an empty option field, meaning that no satellite is excluded from the comparison.</p>"));
 
   _sp3CompLogLineEdit = new QLineEdit(settings.value("sp3CompOutLogFile").toString());
-  _sp3CompLogLineEdit->setWhatsThis(tr("Specify the full path to a logfile."));
+  _sp3CompLogLineEdit->setWhatsThis(tr("<p>Specify the full path to a logfile to save comparison results.</p><p>Specifying a logfile is mandatory. Comparing SP3 files and not saving the results on disk would be meaningless.</p>"));
   _sp3CompLogLineEdit->setMinimumWidth(15*ww);
   _sp3CompLogLineEdit->setMaximumWidth(15*ww);
 
@@ -1317,7 +1317,7 @@ bncWindow::bncWindow() {
   _serialAutoNMEAComboBox->setWhatsThis(tr("<p>The 'NMEA' option supports the so-called 'Virtural Reference Station' (VRS) concept which requires the receiver to send approximate position information to the NTRIP Broadcaster. Select 'no' if you don't want BNC to forward or upload any NMEA message to the NTRIP broadcaster in support of VRS.</p><p>Select 'Auto' to automatically forward NMEA messages of type GPGGA or GNGGA from your serial connected receiver to the NTRIP broadcaster and/or save them in a file.</p><p>Select 'Manual' if you want BNC to produce and upload one initial GPGGA NMEA message to the NTRIP broadcaster because your serial connected receiver doesn't generate these messages.</p><p>Note that selecting 'Auto' or 'Manual' works only for VRS streams which show up under the 'Streams' canvas on BNC's main window with 'ntrip' stream attribute set to 'yes'. This attribute is either extracted from the NTRIP broadcaster's sourcetable or introduced by the user through editing the BNC configuration file.</p>"));
   _serialFileNMEALineEdit->setWhatsThis(tr("<p>Specify the full path to a file where NMEA messages coming from your serial connected receiver are saved.</p><p>Default is an empty option field, meaning that NMEA messages will not be saved on disk.</p>"));
   _serialHeightNMEALineEdit->setWhatsThis(tr("<p>Specify an approximate 'Height' above mean sea level in meters for the reference station introduced through 'Mountpoint'. Together with the latitude and longitude from the NTRIP broadcaster sourcetable the height information is used to build one initial GPGGA message to be sent to the NTRIP broadcaster.</p><p>This option is only relevant when option 'NMEA' is set to 'Manual'.</p>"));
-  _serialManualNMEASamplingSpinBox->setWhatsThis(tr("<p>Select the sampling interval in seconds for manual generated NMEA string. A sampling rate of '0' means, the NMEA string will be send only once. </p>"));
+  _serialManualNMEASamplingSpinBox->setWhatsThis(tr("<p>Select the sampling interval in seconds for manual generation and upload of NMEA GGA sentences.</p><p>A sampling rate of '0' means, the a GGA sentence will be send only once to initialize the requested VRS stream. Note that some VRS systems need GGA sentences at regular intervals.</p>"));
   _reqcActionComboBox->setWhatsThis(tr("<p>BNC allows to 'Edit or Concatenate' RINEX v2 or v3 files or to perform a quality check and 'Analyze' the data following UNAVCO's famous 'teqc' program.</p>"));
   _reqcEditOptionButton->setWhatsThis(tr("<p>Specify options for editing RINEX v2 or v3 files.</p>"));
   _bncFigurePPP->setWhatsThis(tr("PPP time series of North (red), East (green) and Up (blue) coordinate components are shown in the 'PPP Plot' tab when the corresponting option is selected above. Values are either referred to an XYZ reference coordinate (if specified) or referred to the first estimated set of coordinate compoments. The sliding PPP time series window covers the period of the latest 5 minutes."));
