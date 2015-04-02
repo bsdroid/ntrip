@@ -1335,7 +1335,8 @@ t_ephBDS::t_ephBDS(float rnxVersion, const QStringList& lines) {
   // RINEX Format
   // ------------
   int fieldLen = 19;
-  _URAI = -1; // undefined in RINEX format
+  double TOEw;
+  _URAI = -1; // RINEX usage: set RTCM entry to be undefined
 
   int pos[4];
   pos[0] = (rnxVersion <= 2.12) ?  3 :  4;
@@ -1424,7 +1425,7 @@ t_ephBDS::t_ephBDS(float rnxVersion, const QStringList& lines) {
 
     else if ( iLine == 5 ) {
       if ( readDbl(line, pos[0], fieldLen, _IDOT    ) ||
-           readDbl(line, pos[2], fieldLen, _TOEw)    ) {
+           readDbl(line, pos[2], fieldLen, TOEw)    ) {
         _checkState = bad;
         return;
       }
@@ -1456,8 +1457,8 @@ t_ephBDS::t_ephBDS(float rnxVersion, const QStringList& lines) {
     }
   }
 
-  _TOEw += 1356;  // BDT -> GPS week number
-  _TOE_bdt.set(int(_TOEw), _TOEs);
+  TOEw += 1356;  // BDT -> GPS week number
+  _TOE_bdt.set(int(TOEw), _TOEs);
 
   // GPS->BDT
   // --------
@@ -1473,11 +1474,10 @@ t_ephBDS::t_ephBDS(float rnxVersion, const QStringList& lines) {
 ////////////////////////////////////////////////////////////////////////////
 void t_ephBDS::set(const bdsephemeris* ee) {
 
-  // RINEX File entries
-  // --------------------
+  // RTCM usage: set RINEX File entries to zero
+  // ------------------------------------------
   _TOTs = 0.0;
   _TOEs = 0.0;
-  _TOEw = 0.0;
 
   _receptDateTime = currentDateAndTimeGPS();
 
@@ -1696,15 +1696,12 @@ QString t_ephBDS::toString(double version) const {
     .arg(_omega,    19, 'e', 12)
     .arg(_OMEGADOT, 19, 'e', 12);
 
-  double toew = _TOEw;
-  if (!toew) { // RTCM stream input
-    toew = double(_TOE_bdt.gpsw() - 1356.0);
-  }
+
   out << QString(fmt)
-    .arg(_IDOT, 19, 'e', 12)
-    .arg(0.0,   19, 'e', 12)
-    .arg(toew,  19, 'e', 12)
-    .arg(0.0,   19, 'e', 12);
+    .arg(_IDOT,                             19, 'e', 12)
+    .arg(0.0,                               19, 'e', 12)
+    .arg(double(_TOE_bdt.gpsw() - 1356.0),  19, 'e', 12)
+    .arg(0.0,                               19, 'e', 12);
 
   double ura = _URA; // RINEX file input
   if ((_URAI <  6) && (_URAI >= 0)) {

@@ -193,7 +193,7 @@ class t_ephGal : public t_eph {
 
   double  _SISA;             //  Signal In Space Accuracy
   double  _E5aHS;            //  E5a Health Status
-  double  _E5bHS;            //  E5a Health Status
+  double  _E5bHS;            //  E5b Health Status
   double  _BGD_1_5A;         //  group delay [s] 
   double  _BGD_1_5B;         //  group delay [s] 
 
@@ -284,7 +284,6 @@ class t_ephBDS : public t_eph {
   int     _SatH1;            // 
   double  _TOTs;             //  [s] of BDT week; RINEX file entry
   double  _TOEs;             //  [s] of BDT week; RINEX file entry
-  double  _TOEw;             //  [-] BDT week; RINEX file entry
 };
 
 #endif
