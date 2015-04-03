@@ -155,6 +155,7 @@ latencyChecker::latencyChecker(QByteArray staID) {
   _checkTime = QDateTime::currentDateTime();
   _decodeSucc = QDateTime::currentDateTime();
 
+  _decodeStart = QDateTime::currentDateTime();
   _decodeStop = QDateTime::currentDateTime();
   
 }
@@ -167,6 +168,8 @@ latencyChecker::~latencyChecker() {
 // Perform 'Begin outage' check
 //////////////////////////////////////////////////////////////////////////////
 void latencyChecker::checkReconnect() {
+
+  if (_inspSegm == 0) { return;} // weber
 
   // Begin outage threshold
   // ----------------------
@@ -181,9 +184,10 @@ void latencyChecker::checkReconnect() {
                     + _begDateOut + " " + _begTimeOut).toAscii(), true));
       callScript(("Begin_Outage "
                     + _begDateOut + " " + _begTimeOut).toAscii());
-      _decodeStart = QDateTime::currentDateTime();
     }
   }
+  _fromReconnect = true;
+  _decodeStart = QDateTime::currentDateTime();
 }
 
 // Perform Corrupt and 'End outage' check
@@ -279,6 +283,10 @@ void latencyChecker::checkOutage(bool decoded) {
     }
   }
 
+  if (_fromReconnect) {
+    _decodeStart = QDateTime::currentDateTime();
+  } 
+
   // End outage threshold
   // --------------------
   if ( _decodeStart.isValid() ) {
@@ -299,6 +307,7 @@ void latencyChecker::checkOutage(bool decoded) {
                     + _begDateOut + " " + _begTimeOut).toAscii());
     }
   }
+  _fromReconnect = false;
   _decodeStop = QDateTime::currentDateTime();
 }
 
