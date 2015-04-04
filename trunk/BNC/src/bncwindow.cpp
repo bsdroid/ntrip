@@ -84,9 +84,6 @@ bncWindow::bncWindow() {
   BNC_CORE->setConfFileName("");
 #endif
 
-  const static QPalette paletteWhite(QColor(255, 255, 255));
-  const static QPalette paletteGray(QColor(230, 230, 230));
-
   _caster    = 0;
   _casterEph = 0;
 
@@ -462,16 +459,16 @@ bncWindow::bncWindow() {
   int iRow = _cmbTable->rowCount();
   if (iRow > 0) {
     enableWidget(true, _cmbMethodComboBox);
-    _cmbMaxresLineEdit->setStyleSheet("background-color: paletteWhite");
-    _cmbSamplSpinBox->setStyleSheet("background-color: paletteWhite");
+    _cmbMaxresLineEdit->setStyleSheet("background-color: white");
+    _cmbSamplSpinBox->setStyleSheet("background-color: white");
     _cmbMaxresLineEdit->setEnabled(true);
     _cmbSamplSpinBox->setEnabled(true);
     _cmbUseGlonass->setEnabled(true);
   } 
   else {
     enableWidget(false, _cmbMethodComboBox);
-    _cmbMaxresLineEdit->setStyleSheet("background-color: paletteGray");
-    _cmbSamplSpinBox->setStyleSheet("background-color: paletteGray");
+    _cmbMaxresLineEdit->setStyleSheet("background-color: lightGray");
+    _cmbSamplSpinBox->setStyleSheet("background-color: lightGray");
     _cmbMaxresLineEdit->setEnabled(false);
     _cmbSamplSpinBox->setEnabled(false);
     _cmbUseGlonass->setEnabled(false);
@@ -2129,6 +2126,7 @@ bncFlowchartDlg::~bncFlowchartDlg() {
 // Enable/Disable Widget (and change its color)
 ////////////////////////////////////////////////////////////////////////////
 void bncWindow::enableWidget(bool enable, QWidget* widget) {
+
   const static QPalette paletteWhite(QColor(255, 255, 255));
   const static QPalette paletteGray(QColor(230, 230, 230));
 
@@ -2142,8 +2140,8 @@ void bncWindow::enableWidget(bool enable, QWidget* widget) {
 }
 
 //  Bnc Text
-////////////////////////////////////////////////////////////////////////////
-void bncWindow::slotBncTextChanged(){
+//////////////////////////////////////////////////////////////////////////// 
+void bncWindow::slotBncTextChanged(){ // weber
 
   const static QPalette paletteWhite(QColor(255, 255, 255));
   const static QPalette paletteGray(QColor(230, 230, 230));
@@ -2253,20 +2251,20 @@ void bncWindow::slotBncTextChanged(){
   // ------------------------------------
   if (sender() == 0 || sender() == _uploadEphHostLineEdit) {
     if (!_uploadEphHostLineEdit->text().isEmpty()) {
-      _uploadEphPortLineEdit->setStyleSheet("background-color: paletteWhite");
-      _uploadEphMountpointLineEdit->setStyleSheet("background-color: paletteWhite");
-      _uploadEphPasswordLineEdit->setStyleSheet("background-color: paletteWhite");
-      _uploadEphSampleSpinBox->setStyleSheet("background-color: paletteWhite");
+      _uploadEphPortLineEdit->setStyleSheet("background-color: white");
+      _uploadEphMountpointLineEdit->setStyleSheet("background-color: white");
+      _uploadEphPasswordLineEdit->setStyleSheet("background-color: white");
+      _uploadEphSampleSpinBox->setStyleSheet("background-color: white");
       _uploadEphPortLineEdit->setEnabled(true);
       _uploadEphMountpointLineEdit->setEnabled(true);
       _uploadEphPasswordLineEdit->setEnabled(true);
       _uploadEphSampleSpinBox->setEnabled(true);
     } 
     else {
-      _uploadEphPortLineEdit->setStyleSheet("background-color: paletteGray");
-      _uploadEphMountpointLineEdit->setStyleSheet("background-color: paletteGray");
-      _uploadEphPasswordLineEdit->setStyleSheet("background-color: paletteGray");
-      _uploadEphSampleSpinBox->setStyleSheet("background-color: paletteGray");
+      _uploadEphPortLineEdit->setStyleSheet("background-color: lightGray");
+      _uploadEphMountpointLineEdit->setStyleSheet("background-color: lightGray");
+      _uploadEphPasswordLineEdit->setStyleSheet("background-color: lightGray");
+      _uploadEphSampleSpinBox->setStyleSheet("background-color: lightGray");
       _uploadEphPortLineEdit->setEnabled(false);
       _uploadEphMountpointLineEdit->setEnabled(false);
       _uploadEphPasswordLineEdit->setEnabled(false);
@@ -2280,16 +2278,16 @@ void bncWindow::slotBncTextChanged(){
     int iRow = _cmbTable->rowCount();
     if (iRow > 0) {
       enableWidget(true, _cmbMethodComboBox);
-      _cmbMaxresLineEdit->setStyleSheet("background-color: paletteWhite");
-      _cmbSamplSpinBox->setStyleSheet("background-color: paletteWhite");
+      _cmbMaxresLineEdit->setStyleSheet("background-color: white");
+      _cmbSamplSpinBox->setStyleSheet("background-color: white");
       _cmbMaxresLineEdit->setEnabled(true);
       _cmbSamplSpinBox->setEnabled(true);
       _cmbUseGlonass->setEnabled(true);
     } 
     else {
       enableWidget(false, _cmbMethodComboBox);
-      _cmbMaxresLineEdit->setStyleSheet("background-color: paletteGray");
-      _cmbSamplSpinBox->setStyleSheet("background-color: paletteGray");
+      _cmbMaxresLineEdit->setStyleSheet("background-color: lightGray");
+      _cmbSamplSpinBox->setStyleSheet("background-color: lightGray");
       _cmbMaxresLineEdit->setEnabled(false);
       _cmbSamplSpinBox->setEnabled(false);
       _cmbUseGlonass->setEnabled(false);
@@ -2341,7 +2339,7 @@ void bncWindow::slotBncTextChanged(){
   }
 
   enableStartStop();
-}
+} // weber
 
 // 
 ////////////////////////////////////////////////////////////////////////////
@@ -2356,6 +2354,7 @@ void bncWindow::slotAddCmbRow() {
 // 
 ////////////////////////////////////////////////////////////////////////////
 void bncWindow::slotDelCmbRow() {
+
   int nRows = _cmbTable->rowCount();
   bool flg[nRows];
   for (int iRow = 0; iRow < nRows; iRow++) {
