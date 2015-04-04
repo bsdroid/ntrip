@@ -80,6 +80,9 @@ Q_EXPORT_PLUGIN2(gnsscenter_bnc, t_bncFactory)
 ////////////////////////////////////////////////////////////////////////////
 bncWindow::bncWindow() {
 
+  const static QPalette paletteWhite(QColor(255, 255, 255));
+  const static QPalette paletteGray(QColor(230, 230, 230));
+
 #ifdef GNSSCENTER_PLUGIN
   BNC_CORE->setConfFileName("");
 #endif
@@ -459,19 +462,15 @@ bncWindow::bncWindow() {
   int iRow = _cmbTable->rowCount();
   if (iRow > 0) {
     enableWidget(true, _cmbMethodComboBox);
-    _cmbMaxresLineEdit->setStyleSheet("background-color: white");
-    _cmbSamplSpinBox->setStyleSheet("background-color: white");
-    _cmbMaxresLineEdit->setEnabled(true);
-    _cmbSamplSpinBox->setEnabled(true);
-    _cmbUseGlonass->setEnabled(true);
+    enableWidget(true, _cmbMaxresLineEdit);
+    enableWidget(true, _cmbSamplSpinBox);
+    enableWidget(true, _cmbUseGlonass);
   } 
   else {
     enableWidget(false, _cmbMethodComboBox);
-    _cmbMaxresLineEdit->setStyleSheet("background-color: lightGray");
-    _cmbSamplSpinBox->setStyleSheet("background-color: lightGray");
-    _cmbMaxresLineEdit->setEnabled(false);
-    _cmbSamplSpinBox->setEnabled(false);
-    _cmbUseGlonass->setEnabled(false);
+    enableWidget(false, _cmbMaxresLineEdit);
+    enableWidget(false, _cmbSamplSpinBox);
+    enableWidget(false, _cmbUseGlonass);
   }
 
   // Upload Results
@@ -2141,7 +2140,7 @@ void bncWindow::enableWidget(bool enable, QWidget* widget) {
 
 //  Bnc Text
 //////////////////////////////////////////////////////////////////////////// 
-void bncWindow::slotBncTextChanged(){ // weber
+void bncWindow::slotBncTextChanged(){
 
   const static QPalette paletteWhite(QColor(255, 255, 255));
   const static QPalette paletteGray(QColor(230, 230, 230));
@@ -2251,24 +2250,16 @@ void bncWindow::slotBncTextChanged(){ // weber
   // ------------------------------------
   if (sender() == 0 || sender() == _uploadEphHostLineEdit) {
     if (!_uploadEphHostLineEdit->text().isEmpty()) {
-      _uploadEphPortLineEdit->setStyleSheet("background-color: white");
-      _uploadEphMountpointLineEdit->setStyleSheet("background-color: white");
-      _uploadEphPasswordLineEdit->setStyleSheet("background-color: white");
-      _uploadEphSampleSpinBox->setStyleSheet("background-color: white");
-      _uploadEphPortLineEdit->setEnabled(true);
-      _uploadEphMountpointLineEdit->setEnabled(true);
-      _uploadEphPasswordLineEdit->setEnabled(true);
-      _uploadEphSampleSpinBox->setEnabled(true);
+      enableWidget(enable, _uploadEphPortLineEdit);
+      enableWidget(enable, _uploadEphMountpointLineEdit);
+      enableWidget(enable, _uploadEphPasswordLineEdit);
+      enableWidget(enable, _uploadEphSampleSpinBox);
     } 
     else {
-      _uploadEphPortLineEdit->setStyleSheet("background-color: lightGray");
-      _uploadEphMountpointLineEdit->setStyleSheet("background-color: lightGray");
-      _uploadEphPasswordLineEdit->setStyleSheet("background-color: lightGray");
-      _uploadEphSampleSpinBox->setStyleSheet("background-color: lightGray");
-      _uploadEphPortLineEdit->setEnabled(false);
-      _uploadEphMountpointLineEdit->setEnabled(false);
-      _uploadEphPasswordLineEdit->setEnabled(false);
-      _uploadEphSampleSpinBox->setEnabled(false);
+      enableWidget(false, _uploadEphPortLineEdit);
+      enableWidget(false, _uploadEphMountpointLineEdit);
+      enableWidget(false, _uploadEphPasswordLineEdit);
+      enableWidget(false, _uploadEphSampleSpinBox);
     }
   }
 
@@ -2278,19 +2269,15 @@ void bncWindow::slotBncTextChanged(){ // weber
     int iRow = _cmbTable->rowCount();
     if (iRow > 0) {
       enableWidget(true, _cmbMethodComboBox);
-      _cmbMaxresLineEdit->setStyleSheet("background-color: white");
-      _cmbSamplSpinBox->setStyleSheet("background-color: white");
-      _cmbMaxresLineEdit->setEnabled(true);
-      _cmbSamplSpinBox->setEnabled(true);
-      _cmbUseGlonass->setEnabled(true);
+      enableWidget(true, _cmbMaxresLineEdit);
+      enableWidget(true, _cmbSamplSpinBox);
+      enableWidget(true, _cmbUseGlonass);
     } 
     else {
       enableWidget(false, _cmbMethodComboBox);
-      _cmbMaxresLineEdit->setStyleSheet("background-color: lightGray");
-      _cmbSamplSpinBox->setStyleSheet("background-color: lightGray");
-      _cmbMaxresLineEdit->setEnabled(false);
-      _cmbSamplSpinBox->setEnabled(false);
-      _cmbUseGlonass->setEnabled(false);
+      enableWidget(false, _cmbMaxresLineEdit);
+      enableWidget(false, _cmbSamplSpinBox);
+      enableWidget(false, _cmbUseGlonass);
     }
   }
 
@@ -2339,7 +2326,7 @@ void bncWindow::slotBncTextChanged(){ // weber
   }
 
   enableStartStop();
-} // weber
+}
 
 // 
 ////////////////////////////////////////////////////////////////////////////
@@ -2354,6 +2341,9 @@ void bncWindow::slotAddCmbRow() {
 // 
 ////////////////////////////////////////////////////////////////////////////
 void bncWindow::slotDelCmbRow() {
+
+  const static QPalette paletteWhite(QColor(255, 255, 255));
+  const static QPalette paletteGray(QColor(230, 230, 230));
 
   int nRows = _cmbTable->rowCount();
   bool flg[nRows];
@@ -2373,11 +2363,9 @@ void bncWindow::slotDelCmbRow() {
   nRows = _cmbTable->rowCount();
   if (nRows < 1) {
     enableWidget(false, _cmbMethodComboBox);
-    _cmbMaxresLineEdit->setStyleSheet("background-color: lightGray");
-    _cmbSamplSpinBox->setStyleSheet("background-color: lightGray");
-    _cmbMaxresLineEdit->setEnabled(false);
-    _cmbSamplSpinBox->setEnabled(false);
-    _cmbUseGlonass->setEnabled(false);
+    enableWidget(false, _cmbMaxresLineEdit);
+    enableWidget(false, _cmbSamplSpinBox);
+    enableWidget(false, _cmbUseGlonass);
   }
 }
 
