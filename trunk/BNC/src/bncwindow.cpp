@@ -2159,23 +2159,26 @@ void bncWindow::slotBncTextChanged(){
     enableWidget(enable, _rnxSamplSpinBox);
     enableWidget(enable, _rnxSkelLineEdit);
     enableWidget(enable, _rnxScrpLineEdit);
+    enableWidget(enable, _rnxV2Priority);
     enableWidget(enable, _rnxV3CheckBox);
-    if (!_rnxV3CheckBox->isChecked()) {
-      enableWidget(enable, _rnxV2Priority);
+
+    bool enable1 = true;
+    enable1 = _rnxV3CheckBox->isChecked();
+    if (enable && enable1) {
+    enableWidget(false, _rnxV2Priority);
     }
-    else {
-      enableWidget(false, _rnxV2Priority);
+    if (enable && !enable1) {
+    enableWidget(true, _rnxV2Priority);
     }
   }
 
   // RINEX Observations, Signal Priority
   // -----------------------------------
   if (sender() == 0 || sender() == _rnxV3CheckBox) {
-    if (!_rnxV3CheckBox->isChecked()) {
-      enableWidget(true, _rnxV2Priority);
-    }
-    else {
-      enableWidget(false, _rnxV2Priority);
+    if (!_rnxPathLineEdit->text().isEmpty()) {
+      enableWidget(enable, _rnxIntrComboBox);
+      enable = !_rnxV3CheckBox->isChecked();
+      enableWidget(enable, _rnxV2Priority);
     }
   }
 
