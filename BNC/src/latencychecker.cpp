@@ -169,7 +169,7 @@ latencyChecker::~latencyChecker() {
 //////////////////////////////////////////////////////////////////////////////
 void latencyChecker::checkReconnect() {
 
-  if (_inspSegm == 0) { return;} // weber
+  if (_inspSegm == 0) { return;}
 
   // Begin outage threshold
   // ----------------------
