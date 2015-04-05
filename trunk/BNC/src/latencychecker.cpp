@@ -302,9 +302,15 @@ void latencyChecker::checkOutage(bool decoded) {
       emit(newMessage((_staID
                     + ": Recovery threshold exceeded, outage ended "
                     + _endDateOut + " " + _endTimeOut).toAscii(), true));
-      callScript(("End_Outage "
-                    + _endDateOut + " " + _endTimeOut + " Begin was "
-                    + _begDateOut + " " + _begTimeOut).toAscii());
+      if ( _begDateOut != "" && _begTimeOut != "" ) {
+        callScript(("End_Outage "
+                      + _endDateOut + " " + _endTimeOut + " Begin was "
+                      + _begDateOut + " " + _begTimeOut).toAscii());
+      }
+      else {
+        callScript(("End_Outage "
+                      + _endDateOut + " " + _endTimeOut).toAscii());
+      }
     }
   }
   _fromReconnect = false;
