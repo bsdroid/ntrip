@@ -153,6 +153,10 @@ latencyChecker::latencyChecker(QByteArray staID) {
   _curLat     = 0.0;
 
   _checkTime = QDateTime::currentDateTime();
+
+  _begDateOut = _checkTime.toUTC().date().toString("yy-MM-dd"); // weber
+  _begTimeOut = _checkTime.toUTC().time().toString("hh:mm:ss");
+
   _decodeSucc = QDateTime::currentDateTime();
 
   _decodeStart = QDateTime::currentDateTime();
@@ -182,6 +186,8 @@ void latencyChecker::checkReconnect() {
       emit(newMessage((_staID
                     + ": Failure threshold exceeded, outage since "
                     + _begDateOut + " " + _begTimeOut).toAscii(), true));
+      emit(newMessage((_staID + ": Begin_Outage "  // weber
+                    + _begDateOut + " " + _begTimeOut).toAscii(),true));
       callScript(("Begin_Outage "
                     + _begDateOut + " " + _begTimeOut).toAscii());
     }
@@ -302,15 +308,12 @@ void latencyChecker::checkOutage(bool decoded) {
       emit(newMessage((_staID
                     + ": Recovery threshold exceeded, outage ended "
                     + _endDateOut + " " + _endTimeOut).toAscii(), true));
-      if ( _begDateOut != "" && _begTimeOut != "" ) {
-        callScript(("End_Outage "
-                      + _endDateOut + " " + _endTimeOut + " Begin was "
-                      + _begDateOut + " " + _begTimeOut).toAscii());
-      }
-      else {
-        callScript(("End_Outage "
-                      + _endDateOut + " " + _endTimeOut).toAscii());
-      }
+      emit(newMessage((_staID + ": End_Outage "  // weber
+                    + _endDateOut + " " + _endTimeOut + " Begin was "
+                    + _begDateOut + " " + _begTimeOut).toAscii(),true));
+      callScript(("End_Outage "
+                    + _endDateOut + " " + _endTimeOut + " Begin was "
+                    + _begDateOut + " " + _begTimeOut).toAscii());
     }
   }
   _fromReconnect = false;
