@@ -267,7 +267,6 @@ void bncGetThread::initialize() {
       }
       QByteArray _serialHeightNMEA = hlp.toAscii();
       _manualNMEAString = ggaString(_latitude, _longitude, _serialHeightNMEA);
-
     }
   }
 
@@ -617,13 +616,35 @@ t_irc bncGetThread::tryReconnect() {
     else {
       _query = new bncNetQueryV1();
     }
-    if (_nmea == "yes" && _serialNMEA == MANUAL_NMEA) {
-      _query->startRequest(_mountPoint, _manualNMEAString);
-      _lastManualNMEA = QDateTime::currentDateTime();
+    if (_nmea == "yes") {
+      if (_serialNMEA == MANUAL_NMEA) {
+        _query->startRequest(_mountPoint, _manualNMEAString);
+        _lastManualNMEA = QDateTime::currentDateTime();
+      }
+      else if (_serialNMEA == AUTO_NMEA) {
+        if (_serialPort) {
+          int nb = _serialPort->bytesAvailable();
+          if (nb > 0) {
+            QByteArray data = _serialPort->read(nb);
+            int i1 = data.indexOf("$GPGGA");
+            if (i1 == -1) {
+              i1 = data.indexOf("$GNGGA");
+            }
+            if (i1 != -1) {
+              int i2 = data.indexOf("*", i1);
+              if (i2 != -1 && data.size() > i2 + 1) {
+                QByteArray gga = data.mid(i1, i2 - i1 + 3);
+                _query->startRequest(_mountPoint, gga);
+              }
+            }
+          }
+        }
+      }
     }
     else {
       _query->startRequest(_mountPoint, "");
     }
+
     if (_query->status() != bncNetQuery::running) {
       return failure;
     }
@@ -803,8 +824,11 @@ void bncGetThread::scanRTCM() {
 // Handle Data from Serial Port
 ////////////////////////////////////////////////////////////////////////////
 void bncGetThread::slotSerialReadyRead() {
+
   if (_serialPort) {
+
     int nb = _serialPort->bytesAvailable();
+
     if (nb > 0) {
       QByteArray data = _serialPort->read(nb);
 
