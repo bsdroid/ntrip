@@ -827,8 +827,17 @@ void bncGetThread::slotSerialReadyRead() {
 
   if (_serialPort) {
 
-    int nb = _serialPort->bytesAvailable();
+    if (_nmea == "yes" && _serialNMEA == MANUAL_NMEA) {
+      if (_manualNMEASampl) {
+        int dt = _lastManualNMEA.secsTo(QDateTime::currentDateTime());
+        if (dt && (fmod(double(dt), double(_manualNMEASampl)) == 0.0)) {
+          _query->sendNMEA(_manualNMEAString);
+          _lastManualNMEA = QDateTime::currentDateTime();
+        }
+      }
+    }
 
+    int nb = _serialPort->bytesAvailable();
     if (nb > 0) {
       QByteArray data = _serialPort->read(nb);
 
@@ -842,16 +851,6 @@ void bncGetThread::slotSerialReadyRead() {
           if (i2 != -1 && data.size() > i2 + 1) {
             QByteArray gga = data.mid(i1, i2 - i1 + 3);
             _query->sendNMEA(gga);
-          }
-        }
-      }
-
-      if (_nmea == "yes" && _serialNMEA == MANUAL_NMEA) {
-        if (_manualNMEASampl) {
-          int dt = _lastManualNMEA.secsTo(QDateTime::currentDateTime());
-          if (dt && (fmod(double(dt), double(_manualNMEASampl)) == 0.0)) {
-            _query->sendNMEA(_manualNMEAString);
-            _lastManualNMEA = QDateTime::currentDateTime();
           }
         }
       }
