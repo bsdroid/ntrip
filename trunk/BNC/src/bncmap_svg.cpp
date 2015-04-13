@@ -83,7 +83,7 @@ t_bncMap::t_bncMap(QWidget* parent) : QDialog(parent) {
   connect(_buttonPrint, SIGNAL(clicked()), this, SLOT(slotPrint()));
 
   _buttonWhatsThis = new QPushButton(tr("Help=Shift+F1"), this);
-  _buttonWhatsThis->setMaximumWidth(10*ww);
+  _buttonWhatsThis->setMaximumWidth(14*ww); // weber
   connect(_buttonWhatsThis, SIGNAL(clicked()), this, SLOT(slotWhatsThis()));
 
   // Layout
