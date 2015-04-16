@@ -1870,6 +1870,31 @@ void bncWindow::startRealTime() {
 
   bncSettings settings;
 
+  // Active panels
+  // -------------
+  if (!_rnxPathLineEdit->text().isEmpty())
+      BNC_CORE->slotMessage("Panel 'RINEX Observations' active", true);
+  if (!_ephPathLineEdit->text().isEmpty())
+      BNC_CORE->slotMessage("Panel 'RINEX Ephemeris' active", true);
+  if (!_corrPathLineEdit->text().isEmpty())
+      BNC_CORE->slotMessage("Panel 'Broadcast Corrections' active", true);
+  if (!_outPortLineEdit->text().isEmpty())
+      BNC_CORE->slotMessage("Panel 'Feed Engine' active", true);
+  if (!_serialMountPointLineEdit->text().isEmpty())
+      BNC_CORE->slotMessage("Panel 'Serial Output' active", true);
+  if (!_obsRateComboBox->currentText().isEmpty())
+      BNC_CORE->slotMessage("Panel 'Outages' active", true);
+  if (!_miscMountLineEdit->text().isEmpty())
+      BNC_CORE->slotMessage("Panel 'Miscellaneous' active", true);
+  if (_pppWidgets._dataSource->currentText() == "Real-Time Streams")
+      BNC_CORE->slotMessage("Panel 'PPP' active", true);
+  if (_cmbTable->rowCount() > 0) 
+      BNC_CORE->slotMessage("Panel 'Combine Corrections' active", true);
+  if (_uploadTable->rowCount() > 0) 
+      BNC_CORE->slotMessage("Panel 'Upload Corrections' active", true);
+  if (!_uploadEphHostLineEdit->text().isEmpty())
+      BNC_CORE->slotMessage("Panel 'UploadEphemeris' active", true);
+
   QDir rnxdir(settings.value("rnxPath").toString());
   if (!rnxdir.exists()) BNC_CORE->slotMessage("Cannot find RINEX Observations directory", true);
 
