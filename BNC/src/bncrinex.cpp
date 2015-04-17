@@ -127,6 +127,7 @@ t_irc bncRinex::downloadSkeleton() {
     }
   }
   QString sklDir;
+
   if (!net.isEmpty()) {
     it.toFront();
     while (it.hasNext()) {
@@ -145,7 +146,12 @@ t_irc bncRinex::downloadSkeleton() {
   if (!sklDir.isEmpty() && sklDir != "none") {
     QUrl url(sklDir + "/" + _mountPoint.path().mid(1,4).toLower() + ".skl"); 
     if (url.port() == -1) {
-      url.setPort(80);
+      if (sklDir.contains("https")) {
+        url.setPort(443);
+      }
+      else {
+        url.setPort(80);
+      }
     }
 
     bncNetQuery* query;
@@ -161,6 +167,7 @@ t_irc bncRinex::downloadSkeleton() {
 
     QByteArray outData;
     query->waitForRequestResult(url, outData);
+
     if (query->status() == bncNetQuery::finished) {
       irc = success;
       QTextStream in(outData);
