@@ -325,7 +325,7 @@ bncWindow::bncWindow() {
     _serialStopBitsComboBox->setCurrentIndex(kk);
   }
   _serialAutoNMEAComboBox  = new QComboBox();
-  _serialAutoNMEAComboBox->addItems(QString("no,Auto,Manual").split(","));
+  _serialAutoNMEAComboBox->addItems(QString("no,Auto,Manual GPGGA,Manual GNGGA").split(","));
   kk = _serialAutoNMEAComboBox->findText(settings.value("serialAutoNMEA").toString());
   if (kk != -1) {
     _serialAutoNMEAComboBox->setCurrentIndex(kk);
@@ -794,7 +794,7 @@ bncWindow::bncWindow() {
   serLayout->addWidget(new QLabel("Height"),                      5,14, Qt::AlignRight); // 20
   serLayout->addWidget(_serialHeightNMEALineEdit,                 5,15, 1,11);
   serLayout->addWidget(new QLabel("Sampling"),                    5,25, Qt::AlignRight);
- serLayout->addWidget(_serialManualNMEASamplingSpinBox,           5,26, 1,12);
+  serLayout->addWidget(_serialManualNMEASamplingSpinBox,          5,26, 1,12);
   serLayout->addWidget(new QLabel(""),                            6, 1);
   serLayout->setRowStretch(7, 999);
 
@@ -2250,9 +2250,12 @@ void bncWindow::slotBncTextChanged(){
    
     bool enable2 = enable && _serialAutoNMEAComboBox->currentText() == "Auto";
     enableWidget(enable2, _serialFileNMEALineEdit);
-    bool enable3 = enable && _serialAutoNMEAComboBox->currentText() == "Manual";
+    bool enable3 = enable && _serialAutoNMEAComboBox->currentText() == "Manual GPGGA";
     enableWidget(enable3, _serialHeightNMEALineEdit);
     enableWidget(enable3, _serialManualNMEASamplingSpinBox);
+    bool enable4 = enable && _serialAutoNMEAComboBox->currentText() == "Manual GNGGA";
+    enableWidget(enable4, _serialHeightNMEALineEdit);
+    enableWidget(enable4, _serialManualNMEASamplingSpinBox);
   }
 
   // Outages
