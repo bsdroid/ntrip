@@ -21,7 +21,7 @@ warnings) in the project.  Note that _TTY_NOWARN_ will also turn off portability
 /*!
 \fn Posix_QextSerialPort::Posix_QextSerialPort()
 Default constructor.  Note that the name of the device used by a QextSerialPort constructed with
-this constructor will be determined by #defined constants, or lack thereof - the default behavior
+this constructor will be determined by defined constants, or lack thereof - the default behavior
 is the same as _TTY_LINUX_.  Possible naming conventions and their associated constants are:
 
 \verbatim

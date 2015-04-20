@@ -23,7 +23,7 @@ make no guarantees as to the quality of POSIX support under NT/2000 however.
 /*!
 \fn QextSerialPort::QextSerialPort()
 Default constructor.  Note that the naming convention used by a QextSerialPort constructed with
-this constructor will be determined by #defined constants, or lack thereof - the default behavior
+this constructor will be determined by defined constants, or lack thereof - the default behavior
 is the same as _TTY_LINUX_.  Possible naming conventions and their associated constants are:
 
 \verbatim
