@@ -240,9 +240,9 @@ void bncGetThread::initialize() {
 
     // Automatic NMEA
     // --------------
-    if (settings.value("serialAutoNMEA").toString() == "Auto") {
+    QString nmeaMode = settings.value("serialAutoNMEA").toString();
+    if (nmeaMode == "Auto") {
       _serialNMEA = AUTO_NMEA;
-
       QString fName = settings.value("serialFileNMEA").toString();
       if (!fName.isEmpty()) {
         _serialOutFile = new QFile(fName);
@@ -254,10 +254,9 @@ void bncGetThread::initialize() {
         }
       }
     }
-
     // Manual NMEA
     // -----------
-    if (settings.value("serialAutoNMEA").toString() == "Manual") {
+    if ((nmeaMode == "Manual GPGGA") ||(nmeaMode == "Manual GNGGA")) {
       _serialNMEA = MANUAL_NMEA;
       bncSettings settings;
       _manualNMEASampl = settings.value("serialManualNMEASampling").toInt();
@@ -266,7 +265,7 @@ void bncGetThread::initialize() {
         hlp = "0.0";
       }
       QByteArray _serialHeightNMEA = hlp.toAscii();
-      _manualNMEAString = ggaString(_latitude, _longitude, _serialHeightNMEA);
+      _manualNMEAString = ggaString(_latitude, _longitude, _serialHeightNMEA, nmeaMode);
     }
   }
 
