@@ -20,11 +20,11 @@ class bncNetQuery : public QObject {
   virtual void stop() = 0;
   virtual void waitForRequestResult(const QUrl& url, QByteArray& outData) = 0;
   virtual void startRequest(const QUrl& url, const QByteArray& gga) = 0;
+  virtual void keepAliveRequest(const QUrl& url, const QByteArray& gga) = 0;
   virtual void waitForReadyRead(QByteArray& outData) = 0;
   
   void sendNMEA(const QByteArray& gga) {
-    stop();
-    startRequest(_url, gga);
+    keepAliveRequest(_url, gga);
   }
 
   queryStatus status() const {return _status;}

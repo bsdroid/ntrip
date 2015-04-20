@@ -104,6 +104,65 @@ void bncNetQueryV1::startRequest(const QUrl& url, const QByteArray& gga) {
   startRequestPrivate(url, gga, false);
 }
 
+
+// Already connected to Caster, send another Request
+////////////////////////////////////////////////////////////////////////////
+void bncNetQueryV1::keepAliveRequest(const QUrl& url, const QByteArray& gga) {
+
+  _status = running;
+
+  // Default scheme and path
+  // -----------------------
+  _url = url;
+  if (_url.scheme().isEmpty()) {
+    _url.setScheme("http");
+  }
+  if (_url.path().isEmpty()) {
+    _url.setPath("/");
+  }
+
+  // Connect the Socket
+  // ------------------
+  bncSettings settings;
+  QString proxyHost = settings.value("proxyHost").toString();
+  int     proxyPort = settings.value("proxyPort").toInt();
+
+  if ( proxyHost.isEmpty() ) {
+    _socket->connectToHost(_url.host(), _url.port());
+  }
+  else {
+    _socket->connectToHost(proxyHost, proxyPort);
+  }
+  if (!_socket->waitForConnected(_timeOut)) {
+    delete _socket;
+    _socket = 0;
+    _status = error;
+    return;
+  }
+
+  // Send Request
+  // ------------
+   QByteArray reqStr;
+
+   // NMEA string to handle VRS stream
+   // --------------------------------
+   if (!gga.isEmpty()) {
+     reqStr += gga + "\r\n";
+   }
+
+   _socket->write(reqStr, reqStr.length());
+
+   if (!_socket->waitForBytesWritten(_timeOut)) {
+     delete _socket;
+     _socket = 0;
+     _status = error;
+     emit newMessage(_url.path().toAscii().replace(0,1,"")
+                     + ": Write timeout", true);
+     return;
+   }
+
+}
+
 // Connect to Caster, send the Request
 ////////////////////////////////////////////////////////////////////////////
 void bncNetQueryV1::startRequestPrivate(const QUrl& url, 

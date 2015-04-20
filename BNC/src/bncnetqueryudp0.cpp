@@ -74,3 +74,5 @@ void bncNetQueryUdp0::startRequest(const QUrl& url, const QByteArray& /* gga */)
   connect(_udpSocket, SIGNAL(readyRead()), _eventLoop, SLOT(quit()));
 }
 
+void bncNetQueryUdp0::keepAliveRequest(const QUrl& /* url */, const QByteArray& /* gga */) {
+}

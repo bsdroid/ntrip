@@ -127,3 +127,5 @@ void bncNetQueryV0::startRequest(const QUrl& url, const QByteArray& /* gga */) {
   }
 }
 
+void bncNetQueryV0::keepAliveRequest(const QUrl& /* url */, const QByteArray& /* gga */) {
+}
