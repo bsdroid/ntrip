@@ -145,11 +145,16 @@ QDateTime currentDateAndTimeGPS() {
 ////////////////////////////////////////////////////////////////////////////
 QByteArray ggaString(const QByteArray& latitude,
                      const QByteArray& longitude,
-                     const QByteArray& height) {
+                     const QByteArray& height,
+                     const QString& ggaType) {
 
   double lat = strtod(latitude,NULL);
   double lon = strtod(longitude,NULL);
   double hei = strtod(height,NULL);
+  QString sentences = "GPGGA,";
+  if (ggaType.contains("GNGGA")) {
+    sentences = "GNGGA,";
+  }
 
   const char* flagN="N";
   const char* flagE="E";
@@ -168,7 +173,7 @@ QByteArray ggaString(const QByteArray& latitude,
   mm=ttime.minute();
   ss=(double)ttime.second()+0.001*ttime.msec();
   QString gga;
-  gga += "GPGGA,";
+  gga += sentences;
   gga += QString("%1%2%3,").arg((int)hh, 2, 10, QLatin1Char('0')).arg((int)mm, 2, 10, QLatin1Char('0')).arg((int)ss, 2, 10, QLatin1Char('0'));
   gga += QString("%1%2,").arg((int)lat_deg,2, 10, QLatin1Char('0')).arg(lat_min, 7, 'f', 4, QLatin1Char('0'));
   gga += flagN;

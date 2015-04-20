@@ -42,7 +42,7 @@ void         currentGPSWeeks(int& week, double& sec);
 QDateTime    currentDateAndTimeGPS();
 
 QByteArray   ggaString(const QByteArray& latitude, const QByteArray& longitude,
-                       const QByteArray& height);
+                       const QByteArray& height, const QString& ggaType);
 
 void         RSW_to_XYZ(const ColumnVector& rr, const ColumnVector& vv,
                         const ColumnVector& rsw, ColumnVector& xyz);
