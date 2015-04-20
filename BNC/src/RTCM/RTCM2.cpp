@@ -291,7 +291,7 @@ void ThirtyBitWord::append(unsigned char b) {
 
 // Get next 30bit word from string
 
-void ThirtyBitWord::get(const string& buf) {
+void ThirtyBitWord::get(const std::string& buf) {
 
   // Check if string is long enough
    
@@ -320,7 +320,7 @@ void ThirtyBitWord::get(const string& buf) {
 
 // Get next 30bit word from file
 
-void ThirtyBitWord::get(istream& inp) {
+void ThirtyBitWord::get(std::istream& inp) {
 
   unsigned char b;
 
@@ -341,7 +341,7 @@ void ThirtyBitWord::get(istream& inp) {
 
 // Get next header word from string
 
-void ThirtyBitWord::getHeader(string& buf) {
+void ThirtyBitWord::getHeader(std::string& buf) {
 
   const unsigned int wordLen = 5; // Number of bytes representing a 30-bit word
   const unsigned int spare   = 1; // Number of spare words for resync of parity
@@ -380,7 +380,7 @@ void ThirtyBitWord::getHeader(string& buf) {
 
 // Get next header word from file
 
-void ThirtyBitWord::getHeader(istream& inp) {
+void ThirtyBitWord::getHeader(std::istream& inp) {
 
   unsigned char b;
   unsigned int  i;
