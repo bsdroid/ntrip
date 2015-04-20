@@ -236,3 +236,5 @@ void bncNetQueryRtp::startRequest(const QUrl& url, const QByteArray& gga) {
                   + ": NetQuery, waiting for connect", true);
 }
 
+void bncNetQueryRtp::keepAliveRequest(const QUrl& /* url */, const QByteArray& /* gga */) {
+}

@@ -93,6 +93,12 @@ void bncNetQueryV2::startRequest(const QUrl& url, const QByteArray& gga) {
   startRequestPrivate(url, gga, false);
 }
 
+// Start request, block till the next read
+////////////////////////////////////////////////////////////////////////////
+void bncNetQueryV2::keepAliveRequest(const QUrl& url, const QByteArray& gga) {
+  startRequestPrivate(url, gga, false);
+}
+
 // Start Request (Private Method)
 ////////////////////////////////////////////////////////////////////////////
 void bncNetQueryV2::startRequestPrivate(const QUrl& url, const QByteArray& gga,

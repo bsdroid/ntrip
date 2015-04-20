@@ -176,3 +176,5 @@ void bncNetQueryUdp::startRequest(const QUrl& url, const QByteArray& gga) {
   }
 }
 
+void bncNetQueryUdp::keepAliveRequest(const QUrl& /* url */ , const QByteArray& /* gga */) {
+}
