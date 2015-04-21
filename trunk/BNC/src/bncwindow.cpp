@@ -762,13 +762,13 @@ bncWindow::bncWindow() {
   // Serial Output
   // -------------
   QGridLayout* serLayout = new QGridLayout;
-  serLayout->setColumnMinimumWidth(0,14*ww);
+  serLayout->setColumnMinimumWidth(0,12*ww);
   _serialBaudRateComboBox->setMaximumWidth(9*ww);
   _serialFlowControlComboBox->setMaximumWidth(11*ww);
   _serialDataBitsComboBox->setMaximumWidth(5*ww);
   _serialParityComboBox->setMaximumWidth(9*ww);
   _serialStopBitsComboBox->setMaximumWidth(5*ww);
-  _serialAutoNMEAComboBox->setMaximumWidth(9*ww);
+  _serialAutoNMEAComboBox->setMaximumWidth(14*ww);
   _serialHeightNMEALineEdit->setMaximumWidth(8*ww);
   _serialManualNMEASamplingSpinBox->setMaximumWidth(8*ww);
 
@@ -789,9 +789,9 @@ bncWindow::bncWindow() {
   serLayout->addWidget(_serialStopBitsComboBox,                   4, 5);
   serLayout->addWidget(new QLabel("NMEA"),                        5, 0);
   serLayout->addWidget(_serialAutoNMEAComboBox,                   5, 1);
-  serLayout->addWidget(new QLabel("   File (full path)"),         5, 2, Qt::AlignRight);
+  serLayout->addWidget(new QLabel("    File (full path)"),        5, 2, Qt::AlignRight);
   serLayout->addWidget(_serialFileNMEALineEdit,                   5, 3, 1,10);
-  serLayout->addWidget(new QLabel("Height"),                      5,14, Qt::AlignRight); // 20
+  serLayout->addWidget(new QLabel("Height"),                      5,14, Qt::AlignRight);
   serLayout->addWidget(_serialHeightNMEALineEdit,                 5,15, 1,11);
   serLayout->addWidget(new QLabel("Sampling"),                    5,25, Qt::AlignRight);
   serLayout->addWidget(_serialManualNMEASamplingSpinBox,          5,26, 1,12);
@@ -2247,15 +2247,11 @@ void bncWindow::slotBncTextChanged(){
     enableWidget(enable, _serialStopBitsComboBox);
     enableWidget(enable, _serialFlowControlComboBox);
     enableWidget(enable, _serialAutoNMEAComboBox);
-   
     bool enable2 = enable && _serialAutoNMEAComboBox->currentText() == "Auto";
     enableWidget(enable2, _serialFileNMEALineEdit);
-    bool enable3 = enable && _serialAutoNMEAComboBox->currentText() == "Manual GPGGA";
+    bool enable3 = enable && _serialAutoNMEAComboBox->currentText().contains("Manual");
     enableWidget(enable3, _serialHeightNMEALineEdit);
     enableWidget(enable3, _serialManualNMEASamplingSpinBox);
-    bool enable4 = enable && _serialAutoNMEAComboBox->currentText() == "Manual GNGGA";
-    enableWidget(enable4, _serialHeightNMEALineEdit);
-    enableWidget(enable4, _serialManualNMEASamplingSpinBox);
   }
 
   // Outages
