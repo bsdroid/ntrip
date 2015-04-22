@@ -190,11 +190,14 @@ class t_ephGal : public t_eph {
   double _TOEweek;
   // spare
 
-  int     _SISAI;            //  Signal In Space Accuracy Index from RTCM stream
-  double  _SISA;             //  Signal In Space Accuracy [m] from RINEX file
-  double  _E5aHS;            //  E5a Health Status
-  double  _E5bHS;            //  E5b Health Status
-  double  _E1_bHS;           //  E1-b Health Status
+  int     _SISAI;            //  [0..255] Signal In Space Accuracy Index from RTCM stream
+  double  _SISA;             //  [m]      Signal In Space Accuracy from RINEX file
+  // Health Status
+  //   0: signal OK, 1: signal out of service, 2: signal will be out of service
+  //   3: signal component currently in test
+  double  _E5aHS;            //  [0..3] E5a Health Status
+  double  _E5bHS;            //  [0..3] E5b Health Status
+  double  _E1_bHS;           //  [0..3] E1-b Health Status
   double  _BGD_1_5A;         //  group delay [s] 
   double  _BGD_1_5B;         //  group delay [s] 
 
@@ -259,7 +262,7 @@ class t_ephBDS : public t_eph {
   bncTime _TOE_bdt;
   int     _AODE;
   int     _AODC;
-  int     _URAI;             //  [0..15] from RTCM stream
+  int     _URAI;             //  [0..15] index from RTCM stream
   double  _URA;              //  [m]     from RINEX file
   double  _clock_bias;       //  [s]    
   double  _clock_drift;      //  [s/s]  
