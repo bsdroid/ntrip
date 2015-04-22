@@ -187,18 +187,18 @@ class t_ephGal : public t_eph {
   double  _OMEGADOT;         //  [rad/s]
 
   double  _IDOT;             //  [rad/s]
-  //
   double _TOEweek;
   // spare
 
-  double  _SISA;             //  Signal In Space Accuracy
+  int     _SISAI;            //  Signal In Space Accuracy Index from RTCM stream
+  double  _SISA;             //  Signal In Space Accuracy [m] from RINEX file
   double  _E5aHS;            //  E5a Health Status
   double  _E5bHS;            //  E5b Health Status
+  double  _E1_bHS;           //  E1-b Health Status
   double  _BGD_1_5A;         //  group delay [s] 
   double  _BGD_1_5B;         //  group delay [s] 
 
   double _TOT;               // [s]
-
   int    _flags;
 };
 

@@ -445,7 +445,7 @@ void t_ephGal::set(const galileoephemeris* ee) {
   _sqrt_A   = ee->sqrt_A;
 
   _TOEsec   = _TOC.gpssec();
-  ////  _TOEsec   = ee->TOE;  //// TODO: 
+
   _Cic      = ee->Cic;
   _OMEGA0   = ee->OMEGA0;
   _Cis      = ee->Cis;
@@ -461,6 +461,7 @@ void t_ephGal::set(const galileoephemeris* ee) {
   _SISA     = ee->SISA;
   _E5aHS    = ee->E5aHS;
   _E5bHS    = ee->E5bHS;
+  _E1_bHS   = ee->E1_HS;
   _BGD_1_5A = ee->BGD_1_5A;
   _BGD_1_5B = ee->BGD_1_5B;
 
@@ -807,7 +808,8 @@ t_ephGal::t_ephGal(float rnxVersion, const QStringList& lines) {
   // RINEX Format
   // ------------
   int fieldLen = 19;
-
+  double SVhealth = 0.0;
+  double datasource = 0.0;
   int pos[4];
   pos[0] = (rnxVersion <= 2.12) ?  3 :  4;
   pos[1] = pos[0] + fieldLen;
@@ -892,20 +894,46 @@ t_ephGal::t_ephGal(float rnxVersion, const QStringList& lines) {
     }
 
     else if ( iLine == 5 ) {
-      if ( readDbl(line, pos[0], fieldLen, _IDOT    ) ||
-           readDbl(line, pos[2], fieldLen, _TOEweek) ) {
+      if ( readDbl(line, pos[0], fieldLen, _IDOT      ) ||
+           readDbl(line, pos[1], fieldLen, datasource) ||
+           readDbl(line, pos[2], fieldLen, _TOEweek   ) ) {
         _checkState = bad;
         return;
+      } else {
+        if        (int(datasource) & (1<<8)) {
+          _flags |= GALEPHF_FNAV;
+        } else if (int(datasource) & (1<<9)) {
+          _flags |= GALEPHF_INAV;
+        }
       }
     }
 
     else if ( iLine == 6 ) {
       if ( readDbl(line, pos[0], fieldLen, _SISA    ) ||
-           readDbl(line, pos[1], fieldLen, _E5aHS   ) ||
+           readDbl(line, pos[1], fieldLen,  SVhealth) ||
            readDbl(line, pos[2], fieldLen, _BGD_1_5A) ||
            readDbl(line, pos[3], fieldLen, _BGD_1_5B) ) {
         _checkState = bad;
         return;
+      } else {
+        // Bit 0
+        if (int(SVhealth) & (1<<0)) {
+          _flags |= GALEPHF_E1DINVALID;
+        }
+        // Bit 1-2
+        _E1_bHS = double((int(SVhealth) >> 1) & 0x3);
+        // Bit 3
+        if (int(SVhealth) & (1<<3)) {
+          _flags |= GALEPHF_E5ADINVALID;
+        }
+        // Bit 4-5
+        _E5aHS = double((int(SVhealth) >> 4) & 0x3);
+        // Bit 6
+        if (int(SVhealth) & (1<<6)) {
+          _flags |= GALEPHF_E5BDINVALID;
+        }
+        // Bit 7-8
+        _E5bHS = double((int(SVhealth) >> 7) & 0x3);
       }
     }
 
@@ -1096,29 +1124,92 @@ QString t_ephGal::toString(double version) const {
     .arg(_omega,    19, 'e', 12)
     .arg(_OMEGADOT, 19, 'e', 12);
 
-  int dataSource = 0;
-  double HS = 0.0;
-  if      ( (_flags & GALEPHF_INAV) == GALEPHF_INAV ) {
-    dataSource |= (1<<0);
-    dataSource |= (1<<9);
-    HS = _E5bHS;
-  }
-  else if ( (_flags & GALEPHF_FNAV) == GALEPHF_FNAV ) {
+  int    dataSource = 0;
+  int    SVhealth   = 0;
+  double BGD_1_5A   = _BGD_1_5A;
+  double BGD_1_5B   = _BGD_1_5B;
+  if      ((_flags & GALEPHF_FNAV) == GALEPHF_FNAV) {
     dataSource |= (1<<1);
     dataSource |= (1<<8);
-    HS = _E5aHS;
+    BGD_1_5B = 0.0;
+    // SVhealth
+    //   Bit 3  : E5a DVS
+    if ((_flags & GALEPHF_E5ADINVALID) == GALEPHF_E5ADINVALID) {
+      SVhealth |= (1<<3);
+    }
+    //   Bit 4-5: E5a HS
+    if (_E5aHS == 1.0) {
+      SVhealth |= (1<<4);
+    }
+    else if (_E5aHS == 2.0) {
+      SVhealth |= (1<<5);
+    }
+    else if (_E5aHS  == 3.0) {
+      SVhealth |= (1<<4);
+      SVhealth |= (1<<5);
+    }
   }
+  else if ((_flags & GALEPHF_INAV) == GALEPHF_INAV) {
+    dataSource |= (1<<0);
+    dataSource |= (1<<2);
+    dataSource |= (1<<9);
+    // SVhealth
+    //   Bit 0  : E1-B DVS
+    if ((_flags & GALEPHF_E1DINVALID) == GALEPHF_E1DINVALID) {
+      SVhealth |= (1<<0);
+    }
+    //   Bit 1-2: E1-B HS
+    if      (_E1_bHS == 1.0) {
+      SVhealth |= (1<<1);
+    }
+    else if (_E1_bHS == 2.0) {
+      SVhealth |= (1<<2);
+    }
+    else if (_E1_bHS  == 3.0) {
+      SVhealth |= (1<<1);
+      SVhealth |= (1<<2);
+    }
+    //   Bit 6  : E5b DVS
+    if ((_flags & GALEPHF_E1DINVALID) == GALEPHF_E1DINVALID) {
+      SVhealth |= (1<<6);
+    }
+    //   Bit 7-8: E5b HS
+    if      (_E5bHS == 1.0) {
+      SVhealth |= (1<<7);
+    }
+    else if (_E5bHS == 2.0) {
+      SVhealth |= (1<<8);
+    }
+    else if (_E5bHS  == 3.0) {
+      SVhealth |= (1<<7);
+      SVhealth |= (1<<8);
+    }
+  }
+
   out << QString(fmt)
     .arg(_IDOT,              19, 'e', 12)
     .arg(double(dataSource), 19, 'e', 12)
     .arg(_TOEweek,           19, 'e', 12)
     .arg(0.0,                19, 'e', 12);
 
+  double SISA = -1.0;
+  if ((_SISA >= 0) && (_SISA <= 49)) {
+    SISA = _SISA / 100.0;
+  }
+  if((_SISA >= 50) && (_SISA <= 74)) {
+    SISA = (50 + (_SISA - 50.0) * 2.0) / 100.0;
+  }
+  if((_SISA >= 75) && (_SISA <= 99)) {
+    SISA = 1.0 + (_SISA - 75.0) * 0.04;
+  }
+  if((_SISA >= 100) && (_SISA <= 125)) {
+    SISA = 2.0 + (_SISA - 100.0) * 0.16;
+  }
   out << QString(fmt)
-    .arg(_SISA,     19, 'e', 12)
-    .arg(HS,        19, 'e', 12)
-    .arg(_BGD_1_5A, 19, 'e', 12)
-    .arg(_BGD_1_5B, 19, 'e', 12);
+    .arg(SISA,             19, 'e', 12)
+    .arg(double(SVhealth), 19, 'e', 12)
+    .arg(BGD_1_5A,         19, 'e', 12)
+    .arg(BGD_1_5B,         19, 'e', 12);
 
   out << QString(fmt)
     .arg(_TOT,    19, 'e', 12)
@@ -1703,7 +1794,9 @@ QString t_ephBDS::toString(double version) const {
     .arg(double(_TOE_bdt.gpsw() - 1356.0),  19, 'e', 12)
     .arg(0.0,                               19, 'e', 12);
 
-  double ura = _URA; // RINEX file input
+  // RINEX file input
+  double ura = _URA;
+  // RTCM stream input
   if ((_URAI <  6) && (_URAI >= 0)) {
     ura = ceil(10.0 * pow(2.0, ((double)_URAI/2.0) + 1.0)) / 10.0;
   }
@@ -1721,7 +1814,7 @@ QString t_ephBDS::toString(double version) const {
     tots = _TOE_bdt.gpssec();
   }
   out << QString(fmt)
-    .arg(tots,         19, 'e', 12)
+    .arg(tots,          19, 'e', 12)
     .arg(double(_AODC), 19, 'e', 12)
     .arg("",            19, QChar(' '))
     .arg("",            19, QChar(' '));
