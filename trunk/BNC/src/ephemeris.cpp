@@ -425,6 +425,8 @@ void t_ephGlo::set(const glonassephemeris* ee) {
 ////////////////////////////////////////////////////////////////////////////
 void t_ephGal::set(const galileoephemeris* ee) {
 
+  _SISA     = -1.0; // set RINEX entry to invalid
+
   _receptDateTime = currentDateAndTimeGPS();
 
   _prn.set('E', ee->satellite);
@@ -457,8 +459,8 @@ void t_ephGal::set(const galileoephemeris* ee) {
 
   _IDOT     = ee->IDOT;
   _TOEweek  = ee->Week;
-
-  _SISA     = ee->SISA;
+  
+  _SISAI    = ee->SISA; // index from RTCM
   _E5aHS    = ee->E5aHS;
   _E5bHS    = ee->E5bHS;
   _E1_bHS   = ee->E1_HS;
@@ -811,6 +813,7 @@ t_ephGal::t_ephGal(float rnxVersion, const QStringList& lines) {
   double SVhealth = 0.0;
   double datasource = 0.0;
   int pos[4];
+  _SISAI = -1; // set index from RTCM invalid
   pos[0] = (rnxVersion <= 2.12) ?  3 :  4;
   pos[1] = pos[0] + fieldLen;
   pos[2] = pos[1] + fieldLen;
@@ -1192,18 +1195,23 @@ QString t_ephGal::toString(double version) const {
     .arg(_TOEweek,           19, 'e', 12)
     .arg(0.0,                19, 'e', 12);
 
-  double SISA = -1.0;
-  if ((_SISA >= 0) && (_SISA <= 49)) {
-    SISA = _SISA / 100.0;
+  // RINEX file input
+  double SISA = _SISA; // [m]
+  // RTCM stream input
+  if ((_SISAI >= 0) && (_SISAI <= 49)) {
+    SISA = _SISAI / 100.0;
   }
-  if((_SISA >= 50) && (_SISA <= 74)) {
-    SISA = (50 + (_SISA - 50.0) * 2.0) / 100.0;
+  if((_SISAI >= 50) && (_SISAI <= 74)) {
+    SISA = (50 + (_SISAI - 50.0) * 2.0) / 100.0;
   }
-  if((_SISA >= 75) && (_SISA <= 99)) {
-    SISA = 1.0 + (_SISA - 75.0) * 0.04;
+  if((_SISAI >= 75) && (_SISAI <= 99)) {
+    SISA = 1.0 + (_SISAI - 75.0) * 0.04;
   }
-  if((_SISA >= 100) && (_SISA <= 125)) {
-    SISA = 2.0 + (_SISA - 100.0) * 0.16;
+  if((_SISAI >= 100) && (_SISAI <= 125)) {
+    SISA = 2.0 + (_SISAI - 100.0) * 0.16;
+  }
+  if (_SISAI >= 126 ) {
+    SISA = -1.0;
   }
   out << QString(fmt)
     .arg(SISA,             19, 'e', 12)
