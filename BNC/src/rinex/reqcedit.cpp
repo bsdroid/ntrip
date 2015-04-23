@@ -338,12 +338,57 @@ void t_reqcEdit::editRnxObsHeader(t_rnxObsFile& obsFile) {
     }
   }
 
+  QString oldAntennaNumber  = settings.value("reqcOldAntennaNumber").toString();
+  QString newAntennaNumber  = settings.value("reqcNewAntennaNumber").toString();
+  if (!newAntennaNumber.isEmpty()) {
+    if (oldAntennaNumber.isEmpty() ||
+        QRegExp(oldAntennaNumber).exactMatch(obsFile.antennaNumber())) {
+      obsFile.setAntennaNumber(newAntennaNumber);
+    }
+  }
+
+
+  const ColumnVector& obsFileAntNEU = obsFile.antNEU();
+  QString oldAntennadN = settings.value("reqcOldAntennadN").toString();
+  QString newAntennadN = settings.value("reqcNewAntennadN").toString();
+  if(!newAntennadN.isEmpty()) {
+    if (oldAntennadN.isEmpty() ||
+        oldAntennadN.toDouble() == obsFileAntNEU(1)) {
+      obsFile.setAntennaN(newAntennadN.toDouble());
+    }
+  }
+  QString oldAntennadE = settings.value("reqcOldAntennadE").toString();
+  QString newAntennadE = settings.value("reqcNewAntennadE").toString();
+  if(!newAntennadE.isEmpty()) {
+    if (oldAntennadE.isEmpty() ||
+        oldAntennadE.toDouble() == obsFileAntNEU(2)) {
+      obsFile.setAntennaE(newAntennadE.toDouble());
+    }
+  }
+  QString oldAntennadU = settings.value("reqcOldAntennadU").toString();
+  QString newAntennadU = settings.value("reqcNewAntennadU").toString();
+  if(!newAntennadU.isEmpty()) {
+    if (oldAntennadU.isEmpty() ||
+        oldAntennadU.toDouble() == obsFileAntNEU(3)) {
+      obsFile.setAntennaU(newAntennadU.toDouble());
+    }
+  }
+
   QString oldReceiverType = settings.value("reqcOldReceiverName").toString();
   QString newReceiverType = settings.value("reqcNewReceiverName").toString();
   if (!newReceiverType.isEmpty()) {
     if (oldReceiverType.isEmpty() || 
         QRegExp(oldReceiverType).exactMatch(obsFile.receiverType())) {
       obsFile.setReceiverType(newReceiverType);
+    }
+  }
+
+  QString oldReceiverNumber = settings.value("reqcOldReceiverNumber").toString();
+  QString newReceiverNumber = settings.value("reqcNewReceiverNumber").toString();
+  if (!newReceiverNumber.isEmpty()) {
+    if (oldReceiverNumber.isEmpty() ||
+        QRegExp(oldReceiverNumber).exactMatch(obsFile.receiverNumber())) {
+      obsFile.setReceiverNumber(newReceiverNumber);
     }
   }
 }

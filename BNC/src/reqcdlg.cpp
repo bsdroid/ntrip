@@ -56,21 +56,32 @@ reqcDlg::reqcDlg(QWidget* parent) : QDialog(parent) {
 
   const QString timeFmtString = "yyyy-MM-dd hh:mm:ss";
 
-  _reqcRnxVersion      = new QComboBox(this);
-  _reqcSampling        = new QSpinBox(this);
-  _reqcStartDateTime   = new QDateTimeEdit(this);
+  _reqcRnxVersion        = new QComboBox(this);
+  _reqcSampling          = new QSpinBox(this);
+  _reqcStartDateTime     = new QDateTimeEdit(this);
   _reqcStartDateTime->setDisplayFormat(timeFmtString);
-  _reqcEndDateTime     = new QDateTimeEdit(this);
+  _reqcEndDateTime       = new QDateTimeEdit(this);
   _reqcEndDateTime->setDisplayFormat(timeFmtString);
-  _reqcRunBy           = new QLineEdit(this);
-  _reqcUseObsTypes     = new QLineEdit(this);
-  _reqcComment         = new QLineEdit(this);
-  _reqcOldMarkerName   = new QLineEdit(this);
-  _reqcNewMarkerName   = new QLineEdit(this);
-  _reqcOldAntennaName  = new QLineEdit(this);
-  _reqcNewAntennaName  = new QLineEdit(this);
-  _reqcOldReceiverName = new QLineEdit(this);
-  _reqcNewReceiverName = new QLineEdit(this);
+  _reqcRunBy             = new QLineEdit(this);
+  _reqcUseObsTypes       = new QLineEdit(this);
+  _reqcComment           = new QLineEdit(this);
+  _reqcOldMarkerName     = new QLineEdit(this);
+  _reqcNewMarkerName     = new QLineEdit(this);
+  _reqcOldAntennaName    = new QLineEdit(this);
+  _reqcNewAntennaName    = new QLineEdit(this);
+  _reqcOldAntennaNumber  = new QLineEdit(this);
+  _reqcNewAntennaNumber  = new QLineEdit(this);
+  _reqcOldAntennadN      = new QLineEdit(this);
+  _reqcNewAntennadN      = new QLineEdit(this);
+  _reqcOldAntennadE      = new QLineEdit(this);
+  _reqcNewAntennadE      = new QLineEdit(this);
+  _reqcOldAntennadU      = new QLineEdit(this);
+  _reqcNewAntennadU      = new QLineEdit(this);
+  _reqcOldReceiverName   = new QLineEdit(this);
+  _reqcNewReceiverName   = new QLineEdit(this);
+  _reqcOldReceiverNumber = new QLineEdit(this);
+  _reqcNewReceiverNumber = new QLineEdit(this);
+
 
   _reqcRnxVersion->setEditable(false);
   _reqcRnxVersion->addItems(QString("2,3").split(","));
@@ -110,8 +121,19 @@ reqcDlg::reqcDlg(QWidget* parent) : QDialog(parent) {
   _reqcNewMarkerName->setText(settings.value("reqcNewMarkerName").toString());
   _reqcOldAntennaName->setText(settings.value("reqcOldAntennaName").toString());
   _reqcNewAntennaName->setText(settings.value("reqcNewAntennaName").toString());
+  _reqcOldAntennaNumber->setText(settings.value("reqcOldAntennaNumber").toString());
+  _reqcNewAntennaNumber->setText(settings.value("reqcNewAntennaNumber").toString());
+  _reqcOldAntennadN->setText(settings.value("reqcOldAntennadN").toString());
+  _reqcNewAntennadN->setText(settings.value("reqcNewAntennadN").toString());
+  _reqcOldAntennadE->setText(settings.value("reqcOldAntennadE").toString());
+  _reqcNewAntennadE->setText(settings.value("reqcNewAntennadE").toString());
+  _reqcOldAntennadU->setText(settings.value("reqcOldAntennadU").toString());
+  _reqcNewAntennadU->setText(settings.value("reqcNewAntennadU").toString());
   _reqcOldReceiverName->setText(settings.value("reqcOldReceiverName").toString());
   _reqcNewReceiverName->setText(settings.value("reqcNewReceiverName").toString());
+  _reqcOldReceiverNumber->setText(settings.value("reqcOldReceiverNumber").toString());
+  _reqcNewReceiverNumber->setText(settings.value("reqcNewReceiverNumber").toString());
+
 
   QString hlp = settings.value("reqcV2Priority").toString();
   if (hlp.isEmpty()) {
@@ -157,9 +179,30 @@ reqcDlg::reqcDlg(QWidget* parent) : QDialog(parent) {
   grid->addWidget(_reqcOldAntennaName,            ir, 1, 1, 2);
   grid->addWidget(_reqcNewAntennaName,            ir, 3, 1, 2);
   ++ir;
+  grid->addWidget(new QLabel("Antenna Number"),   ir, 0);
+  grid->addWidget(_reqcOldAntennaNumber,          ir, 1, 1, 2);
+  grid->addWidget(_reqcNewAntennaNumber,          ir, 3, 1, 2);
+  ++ir;
+  grid->addWidget(new QLabel("Antenna ecc. dN"),  ir, 0);
+  grid->addWidget(_reqcOldAntennadN,              ir, 1, 1, 2);
+  grid->addWidget(_reqcNewAntennadN,              ir, 3, 1, 2);
+  ++ir;
+  grid->addWidget(new QLabel("Antenna ecc. dE"),  ir, 0);
+  grid->addWidget(_reqcOldAntennadE,              ir, 1, 1, 2);
+  grid->addWidget(_reqcNewAntennadE,              ir, 3, 1, 2);
+  ++ir;
+  grid->addWidget(new QLabel("Antenna ecc. dU"),  ir, 0);
+  grid->addWidget(_reqcOldAntennadU,              ir, 1, 1, 2);
+  grid->addWidget(_reqcNewAntennadU,              ir, 3, 1, 2);
+  ++ir;
   grid->addWidget(new QLabel("Receiver Name"),    ir, 0);
   grid->addWidget(_reqcOldReceiverName,           ir, 1, 1, 2);
   grid->addWidget(_reqcNewReceiverName,           ir, 3, 1, 2);
+  ++ir;
+  grid->addWidget(new QLabel("Receiver Number"),  ir, 0);
+  grid->addWidget(_reqcOldReceiverNumber,         ir, 1, 1, 2);
+  grid->addWidget(_reqcNewReceiverNumber,         ir, 3, 1, 2);
+
 
   slotReqcTextChanged();
   connect(_reqcRnxVersion, SIGNAL(currentIndexChanged(const QString &)),
@@ -193,8 +236,18 @@ reqcDlg::reqcDlg(QWidget* parent) : QDialog(parent) {
   _reqcNewMarkerName->setWhatsThis(tr("<p>Enter new marker name in RINEX observation file.</p><p>If option 'Old Marker Name' is either left blank or its contents is specified as given in the RINEX input file, then the marker name in the RINEX output file will be specified by 'New Marker Name'</p><p>Default is an empty option field, meaning that the contents of the marker name data field in the RINEX file will not be changed.</p>"));
   _reqcOldAntennaName->setWhatsThis(tr("<p>Enter old antenna name in RINEX observation file.</p><p>Default is an empty option field.</p>"));
   _reqcNewAntennaName->setWhatsThis(tr("<p>Enter new antenna name in RINEX observation file.</p><p>If option 'Old Antenna Name' is either left blank or its contents is specified as given in the RINEX input file, then the antenna name in the RINEX output file will be specified by 'New Antenna Name'</p><p>Default is an empty option field, meaning that the contents of the antenna name data field in the RINEX file will not be changed.</p>"));
+  _reqcOldAntennaNumber->setWhatsThis(tr("<p>Enter old antenna number in RINEX observation file.</p><p>Default is an empty option field.</p>"));
+  _reqcNewAntennaNumber->setWhatsThis(tr("<p>Enter new antenna number in RINEX observation file.</p><p>If option 'Old Antenna Number' is either left blank or its contents is specified as given in the RINEX input file, then the antenna number in the RINEX output file will be specified by 'New Antenna Number'</p><p>Default is an empty option field, meaning that the contents of the antenna number data field in the RINEX file will not be changed.</p>"));
+  _reqcOldAntennadN->setWhatsThis(tr("<p>Enter old north antenna eccentricity in RINEX observation file.</p><p>Default is an empty option field.</p>"));
+  _reqcNewAntennadN->setWhatsThis(tr("<p>Enter new north antenna eccentricity in RINEX observation file.</p><p>If option 'Old Antenna North Eccentricity' is either left blank or its contents is specified as given in the RINEX input file, then the north antenna eccentricity in the RINEX output file will be specified by 'New North Antenna Eccentricity'</p><p>Default is an empty option field, meaning that the contents of the north antenna eccentricity data field in the RINEX file will not be changed.</p>"));
+  _reqcOldAntennadE->setWhatsThis(tr("<p>Enter old east antenna eccentricity in RINEX observation file.</p><p>Default is an empty option field.</p>"));
+  _reqcNewAntennadE->setWhatsThis(tr("<p>Enter new east antenna eccentricity in RINEX observation file.</p><p>If option 'Old Antenna East Eccentricity' is either left blank or its contents is specified as given in the RINEX input file, then the east antenna eccentricity in the RINEX output file will be specified by 'New East Antenna Eccentricity'</p><p>Default is an empty option field, meaning that the contents of the east antenna eccentricity data field in the RINEX file will not be changed.</p>"));
+  _reqcOldAntennadU->setWhatsThis(tr("<p>Enter old up antenna eccentricity in RINEX observation file.</p><p>Default is an empty option field.</p>"));
+  _reqcNewAntennadU->setWhatsThis(tr("<p>Enter new up antenna eccentricity in RINEX observation file.</p><p>If option 'Old Antenna Up Eccentricity' is either left blank or its contents is specified as given in the RINEX input file, then the up antenna eccentricity in the RINEX output file will be specified by 'New Up Antenna Eccentricity'</p><p>Default is an empty option field, meaning that the contents of the up antenna eccentricity data field in the RINEX file will not be changed.</p>"));
   _reqcOldReceiverName->setWhatsThis(tr("<p>Enter old receiver name in RINEX observation file.<p>Default is an empty option field.</p></p>"));
   _reqcNewReceiverName->setWhatsThis(tr("<p>Enter new receiver name in RINEX observation file.</p><p>If option 'Old Receiver Name' is either left blank or its contents is specified as given in the RINEX input file, then the receiver name in the RINEX output file will be specified by 'New Receiver Name'</p><p>Default is an empty option field, meaning that the contents of the receiver name data field in the RINEX file will not be changed.</p>"));
+  _reqcOldReceiverNumber->setWhatsThis(tr("<p>Enter old receiver number in RINEX observation file.<p>Default is an empty option field.</p></p>"));
+  _reqcNewReceiverNumber->setWhatsThis(tr("<p>Enter new receiver number in RINEX observation file.</p><p>If option 'Old Receiver Number' is either left blank or its contents is specified as given in the RINEX input file, then the receiver number in the RINEX output file will be specified by 'New Receiver Number'</p><p>Default is an empty option field, meaning that the contents of the receiver number data field in the RINEX file will not be changed.</p>"));
   _reqcComment->setWhatsThis(tr("<p>Specifying a comment line text to be added to the emerging new RINEX file header is an option. Any introduction of newline specification '\\n' in this enforces the beginning of a further comment line. The  comment line(s) will be added to the header after the 'PGM / RUN BY / DATE' record.</p><p>Default is an empty option field meaning that no additional comment line is added to the RINEX header.</p>"));
   _reqcRunBy->setWhatsThis(tr("<p>Specify a 'RUN BY' string to be included in the emerging new RINEX file header.</p><p>Default is an empty option field meanig the operator's user ID is used as 'RUN BY' string.</p>"));
   _reqcV2Priority->setWhatsThis(tr("<p>Specify a priority list of characters defining signal attributes as defined in RINEX Version 3. Priorities will be used in post processing mode to map RINEX Version 3 observation files to Version 2. The underscore character '_' stands for undefined attributes. A question mark '?' can be used as wildcard which represents any one character.</p><p>Default is priority list 'CWPX_?'.</p>"));
@@ -246,20 +299,31 @@ void reqcDlg::saveOptions() {
 
   bncSettings settings;
 
-  settings.setValue("reqcRnxVersion"     , _reqcRnxVersion->currentText());    
-  settings.setValue("reqcSampling"       , _reqcSampling->value());      
-  settings.setValue("reqcV2Priority"     , _reqcV2Priority->text()); 
-  settings.setValue("reqcStartDateTime"  , _reqcStartDateTime->dateTime().toString(Qt::ISODate)); 
-  settings.setValue("reqcEndDateTime"    , _reqcEndDateTime->dateTime().toString(Qt::ISODate));   
-  settings.setValue("reqcRunBy"          , _reqcRunBy->text()); 
-  settings.setValue("reqcUseObsTypes"    , _reqcUseObsTypes->text()); 
-  settings.setValue("reqcComment"        , _reqcComment->text()); 
-  settings.setValue("reqcOldMarkerName"  , _reqcOldMarkerName->text()); 
-  settings.setValue("reqcNewMarkerName"  , _reqcNewMarkerName->text()); 
-  settings.setValue("reqcOldAntennaName" , _reqcOldAntennaName->text());
-  settings.setValue("reqcNewAntennaName" , _reqcNewAntennaName->text());
-  settings.setValue("reqcOldReceiverName", _reqcOldReceiverName->text());
-  settings.setValue("reqcNewReceiverName", _reqcNewReceiverName->text());
+  settings.setValue("reqcRnxVersion"       , _reqcRnxVersion->currentText());
+  settings.setValue("reqcSampling"         , _reqcSampling->value());
+  settings.setValue("reqcV2Priority"       , _reqcV2Priority->text());
+  settings.setValue("reqcStartDateTime"    , _reqcStartDateTime->dateTime().toString(Qt::ISODate));
+  settings.setValue("reqcEndDateTime"      , _reqcEndDateTime->dateTime().toString(Qt::ISODate));
+  settings.setValue("reqcRunBy"            , _reqcRunBy->text());
+  settings.setValue("reqcUseObsTypes"      , _reqcUseObsTypes->text());
+  settings.setValue("reqcComment"          , _reqcComment->text());
+  settings.setValue("reqcOldMarkerName"    , _reqcOldMarkerName->text());
+  settings.setValue("reqcNewMarkerName"    , _reqcNewMarkerName->text());
+  settings.setValue("reqcOldAntennaName"   , _reqcOldAntennaName->text());
+  settings.setValue("reqcNewAntennaName"   , _reqcNewAntennaName->text());
+  settings.setValue("reqcOldAntennaNumber" , _reqcOldAntennaNumber->text());
+  settings.setValue("reqcNewAntennaNumber" , _reqcNewAntennaNumber->text());
+  settings.setValue("reqcOldAntennadN"     , _reqcOldAntennadN->text());
+  settings.setValue("reqcNewAntennadN"     , _reqcNewAntennadN->text());
+  settings.setValue("reqcOldAntennadE"     , _reqcOldAntennadE->text());
+  settings.setValue("reqcNewAntennadE"     , _reqcNewAntennadE->text());
+  settings.setValue("reqcOldAntennadU"     , _reqcOldAntennadU->text());
+  settings.setValue("reqcNewAntennadU"     , _reqcNewAntennadU->text());
+  settings.setValue("reqcNewAntennaNumber" , _reqcNewAntennaNumber->text());
+  settings.setValue("reqcOldReceiverName"  , _reqcOldReceiverName->text());
+  settings.setValue("reqcNewReceiverName"  , _reqcNewReceiverName->text());
+  settings.setValue("reqcOldReceiverNumber", _reqcOldReceiverNumber->text());
+  settings.setValue("reqcNewReceiverNumber", _reqcNewReceiverNumber->text());
 }
 
 //  Reqc Text Changed

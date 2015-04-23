@@ -65,8 +65,18 @@ class reqcDlg : public QDialog {
    QLineEdit*     _reqcNewMarkerName;
    QLineEdit*     _reqcOldAntennaName;
    QLineEdit*     _reqcNewAntennaName;
+   QLineEdit*     _reqcOldAntennaNumber;
+   QLineEdit*     _reqcNewAntennaNumber;
+   QLineEdit*     _reqcOldAntennadN;
+   QLineEdit*     _reqcNewAntennadN;
+   QLineEdit*     _reqcOldAntennadE;
+   QLineEdit*     _reqcNewAntennadE;
+   QLineEdit*     _reqcOldAntennadU;
+   QLineEdit*     _reqcNewAntennadU;
    QLineEdit*     _reqcOldReceiverName;
    QLineEdit*     _reqcNewReceiverName;
+   QLineEdit*     _reqcOldReceiverNumber;
+   QLineEdit*     _reqcNewReceiverNumber;
    QPushButton*   _buttonOK;
    QPushButton*   _buttonCancel;
    QPushButton*   _buttonWhatsThis;
