@@ -138,14 +138,22 @@ class t_rnxObsFile {
     return _header.obsType(sys, index, version);
   }
   const QString& antennaName() const {return _header._antennaName;}
+  const QString& antennaNumber() const {return _header._antennaNumber;}
   const QString& markerName() const {return _header._markerName;}
   const QString& markerNumber() const {return _header._markerNumber;}
   const QString& receiverType() const {return _header._receiverType;}
+  const QString& receiverNumber() const {return _header._receiverNumber;}
 
   void setInterval(double interval) {_header._interval = interval;}
   void setAntennaName(const QString& antennaName) {_header._antennaName = antennaName;}
+  void setAntennaNumber(const QString& antennaNumber) {_header._antennaNumber = antennaNumber;}
+  void setAntennaN(double antN) {_header._antNEU(1) = antN;}
+  void setAntennaE(double antE) {_header._antNEU(2) = antE;}
+  void setAntennaU(double antU) {_header._antNEU(3) = antU;}
+
   void setMarkerName(const QString& markerName) {_header._markerName = markerName;}
   void setReceiverType(const QString& receiverType) {_header._receiverType = receiverType;}
+  void setReceiverNumber(const QString& receiverNumber) {_header._receiverNumber = receiverNumber;}
 
   const ColumnVector& xyz() const {return _header._xyz;}
   const ColumnVector& antNEU() const {return _header._antNEU;}
