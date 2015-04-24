@@ -210,6 +210,8 @@ bncWindow::bncWindow() {
   _rnxSamplSpinBox->setMaximum(60);
   _rnxSamplSpinBox->setSingleStep(5);
   _rnxSamplSpinBox->setValue(settings.value("rnxSampl").toInt());
+  _rnxFileCheckBox = new QCheckBox();
+  _rnxFileCheckBox->setCheckState(Qt::CheckState(settings.value("rnxOnlyWithSKL").toInt()));
   _rnxSamplSpinBox->setSuffix(" sec");
   _rnxSkelLineEdit    = new QLineEdit(settings.value("rnxSkel").toString());
   _rnxSkelLineEdit->setMaximumWidth(5*ww);
@@ -672,7 +674,7 @@ bncWindow::bncWindow() {
   QGridLayout* oLayout = new QGridLayout;
   oLayout->setColumnMinimumWidth(0,14*ww);
   _rnxIntrComboBox->setMaximumWidth(9*ww);
-//_rnxSamplSpinBox->setMaximumWidth(9*ww);
+  _rnxSamplSpinBox->setMaximumWidth(9*ww);
 
   oLayout->addWidget(new QLabel("Saving RINEX observation files.<br>"),0, 0, 1,50);
   oLayout->addWidget(new QLabel("Directory"),                      1, 0);
@@ -683,6 +685,8 @@ bncWindow::bncWindow() {
   oLayout->addWidget(_rnxSamplSpinBox,                             2, 3, Qt::AlignLeft);
   oLayout->addWidget(new QLabel("Skeleton extension"),             3, 0);
   oLayout->addWidget(_rnxSkelLineEdit,                             3, 1, Qt::AlignLeft);
+  oLayout->addWidget(new QLabel("RINEX File generation only with SKL file"),3, 2);
+  oLayout->addWidget(_rnxFileCheckBox,                             3, 3);
   oLayout->addWidget(new QLabel("Script (full path)"),             4, 0);
   oLayout->addWidget(_rnxScrpLineEdit,                             4, 1, 1, 15);
   oLayout->addWidget(new QLabel("Version 2"),                      5, 0);
@@ -1703,6 +1707,7 @@ void bncWindow::saveOptions() {
   settings.setValue("rnxIntr",     _rnxIntrComboBox->currentText());
   settings.setValue("rnxSampl",    _rnxSamplSpinBox->value());
   settings.setValue("rnxSkel",     _rnxSkelLineEdit->text());
+  settings.setValue("rnxOnlyWithSKL",_rnxFileCheckBox->checkState());
   settings.setValue("rnxScript",   _rnxScrpLineEdit->text());
   settings.setValue("rnxV3",       _rnxV3CheckBox->checkState());
   settings.setValue("rnxV2Priority",_rnxV2Priority->text());
@@ -2188,6 +2193,7 @@ void bncWindow::slotBncTextChanged(){
     enableWidget(enable, _rnxIntrComboBox);
     enableWidget(enable, _rnxSamplSpinBox);
     enableWidget(enable, _rnxSkelLineEdit);
+    enableWidget(enable, _rnxFileCheckBox);
     enableWidget(enable, _rnxScrpLineEdit);
     enableWidget(enable, _rnxV2Priority);
     enableWidget(enable, _rnxV3CheckBox);

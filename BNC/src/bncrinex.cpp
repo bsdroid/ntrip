@@ -90,6 +90,8 @@ bncRinex::bncRinex(const QByteArray& statID, const QUrl& mountPoint,
   _userName = _userName.leftJustified(20, ' ', true);
 
   _samplingRate = settings.value("rnxSampl").toInt();
+
+  _writeRinexFileOnlyWithSkl = settings.value("rnxOnlyWithSKL").toBool();
 }
 
 // Destructor
@@ -322,6 +324,22 @@ void bncRinex::writeHeader(const QByteArray& format, const bncTime& firstObsTime
 
   bncSettings settings;
 
+  // Set RINEX Version
+  // -----------------
+  int intHeaderVers = (Qt::CheckState(settings.value("rnxV3").toInt()) == Qt::Checked ? 3 : 2);
+
+  // Read Skeleton Header
+  // --------------------
+  if (readSkeleton()) {
+    _header.set(_sklHeader, intHeaderVers);
+  }
+  else {
+    if (_writeRinexFileOnlyWithSkl) {
+      return;
+    }
+    _header.setDefault(_statID, intHeaderVers);
+  }
+
   // Open the Output File
   // --------------------
   QDateTime datTimNom  = dateAndTimeFromGPSweek(firstObsTime.gpsw(), 
@@ -342,19 +360,6 @@ void bncRinex::writeHeader(const QByteArray& format, const bncTime& firstObsTime
   }
 
   _out.setf(ios::showpoint | ios::fixed);
-
-  // Set RINEX Version
-  // -----------------
-  int intHeaderVers = (Qt::CheckState(settings.value("rnxV3").toInt()) == Qt::Checked ? 3 : 2);
-
-  // Read Skeleton Header
-  // --------------------
-  if (readSkeleton()) {
-    _header.set(_sklHeader, intHeaderVers);
-  }
-  else {
-    _header.setDefault(_statID, intHeaderVers);
-  }
 
   // A Few Additional Comments
   // -------------------------
@@ -427,6 +432,9 @@ void bncRinex::dumpEpoch(const QByteArray& format, const bncTime& maxTime) {
   // ------------------
   if (!_headerWritten) {
     writeHeader(format, fObs._time);
+  }
+  if (!_headerWritten) {
+    return;
   }
 
   // Prepare structure t_rnxEpo
