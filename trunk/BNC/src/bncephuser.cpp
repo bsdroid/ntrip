@@ -153,7 +153,9 @@ t_irc bncEphUser::putNewEph(t_eph* eph, bool check) {
 
   const t_eph* ephOld = ephLast(prn);
 
-  if (ephOld == 0 || newEph->isNewerThan(ephOld)) {
+  if (ephOld == 0 ||
+      newEph->isNewerThan(ephOld) ||
+      newEph->hasOtherFlagsThan(ephOld)) {
     deque<t_eph*>& qq = _eph[prn];
     qq.push_back(newEph);
     if (qq.size() > _maxQueueSize) {
@@ -209,7 +211,7 @@ void bncEphUser::checkEphemeris(t_eph* eph) {
     double diff = (xc.Rows(1,3) - xcL.Rows(1,3)).norm_Frobenius();
 
     if (diff < MAXDIFF) {
-      if (dt != 0.0) {
+      if(dt != 0.0 || eph->hasOtherFlagsThan(ephL)) {
         eph->setCheckState(t_eph::ok);
         ephL->setCheckState(t_eph::ok);
       }
