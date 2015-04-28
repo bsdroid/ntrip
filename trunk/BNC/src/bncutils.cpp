@@ -742,7 +742,22 @@ int indexFromAccuracy(double accuracy, t_eph::e_type type) {
   }
 
   if (type == t_eph::Galileo) {
-    //TODO: implement conversion
+
+    if (accuracy <= 0.49) {
+      return int(ceil(accuracy * 100.0));
+    }
+    else if (accuracy <= 0.98) {
+      return int(50.0 + (((accuracy * 100.0) - 50) / 2.0));
+    }
+    else if (accuracy <= 2.0) {
+      return int(75.0 + ((accuracy - 1.0) / 0.04));
+    }
+    else if (accuracy <= 6.0) {
+      return int(100.0 + ((accuracy - 2.0) / 0.16));
+    }
+    else {
+      return 255;
+    }
   }
 
   return (type == t_eph::Galileo) ? 255 : 15;
