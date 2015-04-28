@@ -44,55 +44,7 @@ int t_ephEncoder::RTCM3(const t_ephGPS& eph, unsigned char *buffer) {
   int size = 0;
   int numbits = 0;
   unsigned long long bitbuffer = 0;
-  if (eph._ura <= 2.40){
-    eph._ura = 0;
-  }
-  else if (eph._ura <= 3.40){
-    eph._ura = 1;
-  }
-  else if (eph._ura <= 6.85){
-    eph._ura = 2;
-  }
-  else if (eph._ura <= 9.65){
-    eph._ura = 3;
-  }
-  else if (eph._ura <= 13.65){
-    eph._ura = 4;
-  }
-  else if (eph._ura <= 24.00){
-    eph._ura = 5;
-  }
-  else if (eph._ura <= 48.00){
-    eph._ura = 6;
-  }
-  else if (eph._ura <= 96.00){
-    eph._ura = 7;
-  }
-  else if (eph._ura <= 192.00){
-    eph._ura = 8;
-  }
-  else if (eph._ura <= 384.00){
-    eph._ura = 9;
-  }
-  else if (eph._ura <= 768.00){
-    eph._ura = 10;
-  }
-  else if (eph._ura <= 1536.00){
-    eph._ura = 11;
-  }
-  else if (eph._ura <= 1536.00){
-    eph._ura = 12;
-  }
-  else if (eph._ura <= 2072.00){
-    eph._ura = 13;
-  }
-  else if (eph._ura <= 6144.00){
-    eph._ura = 14;
-  }
-  else{
-    eph._ura = 15;
-  }
-
+  eph._ura = indexFromAccuracy(eph._ura, eph.type());
   GPSADDBITS(12, 1019)
   if (eph._prn.system() == 'J') {
     GPSADDBITS(6,eph._prn.number() + PRN_QZSS_START - 1)
@@ -255,8 +207,9 @@ int t_ephEncoder::RTCM3(const t_ephGal& eph, unsigned char *buffer) {
   unsigned char *startbuffer = buffer;
   buffer= buffer+3;
 
-  bool inav = ( (eph._flags & GALEPHF_INAV) == GALEPHF_INAV );
+  eph._SISA = indexFromAccuracy(eph._SISA, eph.type());
 
+  bool inav = ( (eph._flags & GALEPHF_INAV) == GALEPHF_INAV );
   GALILEOADDBITS(12, inav ? 1046 : 1045)
   GALILEOADDBITS(6, eph._prn.number())
   GALILEOADDBITS(12, eph._TOC.gpsw())
@@ -339,6 +292,7 @@ int t_ephEncoder::RTCM3(const t_ephSBAS& eph, unsigned char* buffer) {
   unsigned char *startbuffer = buffer;
   buffer= buffer+3;
 
+  eph._ura = indexFromAccuracy(eph._ura, eph.type());
   SBASADDBITS(12, 1043)
   SBASADDBITS(6, eph._prn.number()-20)
   SBASADDBITS(8, eph._IODN)
@@ -387,10 +341,11 @@ int t_ephEncoder::RTCM3(const t_ephBDS& eph, unsigned char* buffer) {
   unsigned char *startbuffer = buffer;
   buffer= buffer+3;
 
+  eph._URA = indexFromAccuracy(eph._URA, eph.type());
   BDSADDBITS(12, RTCM3ID_BDS)
   BDSADDBITS(6, eph._prn.number())
   BDSADDBITS(13, eph._TOC_bdt.gpsw() - 1356.0)
-  BDSADDBITS(4, eph._URAI);
+  BDSADDBITS(4, eph._URA);
   BDSADDBITSFLOAT(14, eph._IDOT, M_PI/static_cast<double>(1<<30)/static_cast<double>(1<<13))
   BDSADDBITS(5, eph._AODE)
   BDSADDBITS(17, static_cast<int>(eph._TOC_bdt.gpssec())>>3)

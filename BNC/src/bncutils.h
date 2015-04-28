@@ -32,6 +32,7 @@
 
 #include <newmat.h>
 #include <bncconst.h>
+#include <ephemeris.h>
 
 void         expandEnvVar(QString& str);
 
@@ -107,5 +108,9 @@ void         jdgp(double tjul, double & second, long & nweek);
 void         jmt (double djul, long& jj, long& mm, double& dd);
 
 void         stripWhiteSpace(std::string& str);
+
+double       accuracyFromIndex(int index, t_eph::e_type type);
+
+int          indexFromAccuracy(double accuracy, t_eph::e_type type);
 
 #endif

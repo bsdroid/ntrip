@@ -2,6 +2,7 @@
 #define EPHENCODER_H
 
 #include "ephemeris.h"
+#include "bncutils.h"
 
 class t_ephEncoder {
  public:

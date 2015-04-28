@@ -134,12 +134,8 @@ void t_ephGPS::set(const gpsephemeris* ee) {
   _TOEweek  = ee->GPSweek;
   _L2PFlag  = 0.0;
 
-  if (ee->URAindex <= 6) {
-    _ura = ceil(10.0*pow(2.0, 1.0+((double)ee->URAindex)/2.0))/10.0;
-  }
-  else {
-    _ura = ceil(10.0*pow(2.0, ((double)ee->URAindex)/2.0))/10.0;
-  }
+  _ura = accuracyFromIndex(ee->URAindex, type());
+
   _health   = ee->SVhealth;
   _TGD      = ee->TGD;
   _IODC     = ee->IODC;
@@ -460,21 +456,7 @@ void t_ephGal::set(const galileoephemeris* ee) {
   _IDOT     = ee->IDOT;
   _TOEweek  = ee->Week;
   
-  if ((ee->SISA >= 0) && (ee->SISA <= 49)) {
-    _SISA = ee->SISA / 100.0;
-  }
-  else if((ee->SISA >= 50) && (ee->SISA <= 74)) {
-    _SISA = (50 + (ee->SISA - 50.0) * 2.0) / 100.0;
-  }
-  else if((ee->SISA >= 75) && (ee->SISA <= 99)) {
-    _SISA = 1.0 + (ee->SISA - 75.0) * 0.04;
-  }
-  else if((ee->SISA >= 100) && (ee->SISA <= 125)) {
-    _SISA = 2.0 + (ee->SISA - 100.0) * 0.16;
-  }
-  else if (ee->SISA >= 126 ) {
-    _SISA = -1.0;
-  }
+  _SISA = accuracyFromIndex(ee->SISA, type());
   _E5aHS    = ee->E5aHS;
   _E5bHS    = ee->E5bHS;
   _E1_bHS   = ee->E1_HS;
@@ -1351,7 +1333,7 @@ void t_ephSBAS::set(const sbasephemeris* ee) {
   _z_velocity     = ee->z_velocity;     
   _z_acceleration = ee->z_acceleration; 
 
-  _ura            = ee->URA;
+  _ura            = accuracyFromIndex(ee->URA, type());
 
   _health = 0;
 }
@@ -1607,18 +1589,14 @@ void t_ephBDS::set(const bdsephemeris* ee) {
   _Crc      = ee->Crc;
   _omega    = ee->omega;
   _OMEGADOT = ee->OMEGADOT;
+
   _IDOT     = ee->IDOT;
 
+  _URA      = accuracyFromIndex(ee->URAI, type());
+  _SatH1    = (ee->flags & BDSEPHF_SATH1) ? 1: 0;
   _TGD1     = ee->TGD_B1_B3;
   _TGD2     = ee->TGD_B2_B3;
 
-  if ((ee->URAI <  6) && (ee->URAI >= 0)) {
-    _URA = ceil(10.0 * pow(2.0, ((double)ee->URAI/2.0) + 1.0)) / 10.0;
-  }
-  if ((ee->URAI >= 6) && (ee->URAI < 15)) {
-    _URA = ceil(10.0 * pow(2.0, ((double)ee->URAI/2.0)      )) / 10.0;
-  }
-  _SatH1    = (ee->flags & BDSEPHF_SATH1) ? 1: 0;
 
 }
 
