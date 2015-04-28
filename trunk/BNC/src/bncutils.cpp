@@ -643,3 +643,107 @@ void kalman(const Matrix& AA, const ColumnVector& ll, const DiagonalMatrix& PP,
   QQ << (SS.t() * SS);
 }
 
+double accuracyFromIndex(int index, t_eph::e_type type) {
+
+  if (type == t_eph::GPS || type == t_eph::BDS || type == t_eph::SBAS
+      || type == t_eph::QZSS) {
+
+    if ((index >= 0) && (index <= 6)) {
+      if (index == 3) {
+        return ceil(10.0 * pow(2.0, (double(index) / 2.0) + 1.0)) / 10.0;
+      }
+      else {
+        return floor(10.0 * pow(2.0, (double(index) / 2.0) + 1.0)) / 10.0;
+      }
+    }
+    else if ((index > 6) && (index <= 15)) {
+      return (10.0 * pow(2.0, (double(index) - 2.0))) / 10.0;
+    }
+    else {
+      return 8192.0;
+    }
+  }
+
+  if (type == t_eph::Galileo) {
+
+    if ((index >= 0) && (index <= 49)) {
+      return (double(index) / 100.0);
+    }
+    else if ((index > 49) && (index <= 74)) {
+      return (50.0 + (double(index) - 50.0) * 2.0) / 100.0;
+    }
+    else if ((index > 74) && (index <= 99)) {
+      return 1.0 + (double(index) - 75.0) * 0.04;
+    }
+    else if ((index > 99) && (index <= 125)) {
+      return 2.0 + (double(index) - 100.0) * 0.16;
+    }
+    else {
+      return -1.0;
+    }
+  }
+
+  return double(index);
+}
+
+int indexFromAccuracy(double accuracy, t_eph::e_type type) {
+
+  if (type == t_eph::GPS || type == t_eph::BDS || type == t_eph::SBAS
+      || type == t_eph::QZSS) {
+
+    if (accuracy <= 2.40) {
+      return 0;
+    }
+    else if (accuracy <= 3.40) {
+      return 1;
+    }
+    else if (accuracy <= 4.85) {
+      return 2;
+    }
+    else if (accuracy <= 6.85) {
+      return 3;
+    }
+    else if (accuracy <= 9.65) {
+      return 4;
+    }
+    else if (accuracy <= 13.65) {
+      return 5;
+    }
+    else if (accuracy <= 24.00) {
+      return 6;
+    }
+    else if (accuracy <= 48.00) {
+      return 7;
+    }
+    else if (accuracy <= 96.00) {
+      return 8;
+    }
+    else if (accuracy <= 192.00) {
+      return 9;
+    }
+    else if (accuracy <= 384.00) {
+      return 10;
+    }
+    else if (accuracy <= 768.00) {
+      return 11;
+    }
+    else if (accuracy <= 1536.00) {
+      return 12;
+    }
+    else if (accuracy <= 3072.00) {
+      return 13;
+    }
+    else if (accuracy <= 6144.00) {
+      return 14;
+    }
+    else {
+      return 15;
+    }
+  }
+
+  if (type == t_eph::Galileo) {
+    //TODO: implement conversion
+  }
+
+  return (type == t_eph::Galileo) ? 255 : 15;
+}
