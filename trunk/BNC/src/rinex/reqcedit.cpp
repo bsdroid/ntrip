@@ -544,7 +544,9 @@ void t_reqcEdit::appendEphemerides(const QString& fileName,
     bool   isNew = true;
     for (int iOld = 0; iOld < ephs.size(); iOld++) {
       const t_eph* ephOld = ephs[iOld];
-      if (ephOld->prn() == eph->prn() && ephOld->TOC() == eph->TOC()) {
+      if (ephOld->prn() == eph->prn() &&
+          ephOld->TOC() == eph->TOC() &&
+          ephOld->flags() == eph->flags()) {
         isNew = false;
         break;
       }
