@@ -1149,8 +1149,9 @@ QString t_ephGal::toString(double version) const {
     }
   }
   else if ((_flags & GALEPHF_INAV) == GALEPHF_INAV) {
+    // Bit 2 and 0 are set because from MT1046 the data source cannot be determined
+    // and RNXv3.03 says both can be set if the navigation messages were merged
     dataSource |= (1<<0);
-    dataSource |= (1<<1);// not clear but seems to be common in practice
     dataSource |= (1<<2);
     dataSource |= (1<<9);
     // SVhealth
@@ -1165,7 +1166,7 @@ QString t_ephGal::toString(double version) const {
     else if (_E1_bHS == 2.0) {
       SVhealth |= (1<<2);
     }
-    else if (_E1_bHS  == 3.0) {
+    else if (_E1_bHS == 3.0) {
       SVhealth |= (1<<1);
       SVhealth |= (1<<2);
     }
@@ -1180,7 +1181,7 @@ QString t_ephGal::toString(double version) const {
     else if (_E5aHS == 2.0) {
       SVhealth |= (1<<5);
     }
-    else if (_E5aHS  == 3.0) {
+    else if (_E5aHS == 3.0) {
       SVhealth |= (1<<4);
       SVhealth |= (1<<5);
     }
@@ -1195,7 +1196,7 @@ QString t_ephGal::toString(double version) const {
     else if (_E5bHS == 2.0) {
       SVhealth |= (1<<8);
     }
-    else if (_E5bHS  == 3.0) {
+    else if (_E5bHS == 3.0) {
       SVhealth |= (1<<7);
       SVhealth |= (1<<8);
     }
