@@ -922,19 +922,19 @@ t_ephGal::t_ephGal(float rnxVersion, const QStringList& lines) {
           _flags |= GALEPHF_E1DINVALID;
         }
         // Bit 1-2
-        _E1_bHS = double((int(SVhealth) >> 1) & 0x2);
+        _E1_bHS = double((int(SVhealth) >> 1) & 0x3);
         // Bit 3
         if (int(SVhealth) & (1<<3)) {
           _flags |= GALEPHF_E5ADINVALID;
         }
         // Bit 4-5
-        _E5aHS = double((int(SVhealth) >> 4) & 0x2);
+        _E5aHS = double((int(SVhealth) >> 4) & 0x3);
         // Bit 6
         if (int(SVhealth) & (1<<6)) {
           _flags |= GALEPHF_E5BDINVALID;
         }
         // Bit 7-8
-        _E5bHS = double((int(SVhealth) >> 7) & 0x2);
+        _E5bHS = double((int(SVhealth) >> 7) & 0x3);
       }
     }
 
@@ -1150,7 +1150,7 @@ QString t_ephGal::toString(double version) const {
   }
   else if ((_flags & GALEPHF_INAV) == GALEPHF_INAV) {
     dataSource |= (1<<0);
-    dataSource |= (1<<1);// not clear but common practice
+    dataSource |= (1<<1);// not clear but seems to be common in practice
     dataSource |= (1<<2);
     dataSource |= (1<<9);
     // SVhealth
@@ -1169,8 +1169,23 @@ QString t_ephGal::toString(double version) const {
       SVhealth |= (1<<1);
       SVhealth |= (1<<2);
     }
+    //   Bit 3  : E5a DVS
+    if ((_flags & GALEPHF_E5ADINVALID) == GALEPHF_E5ADINVALID) {
+      SVhealth |= (1<<3);
+    }
+    //   Bit 4-5: E5a HS
+    if      (_E5aHS == 1.0) {
+      SVhealth |= (1<<4);
+    }
+    else if (_E5aHS == 2.0) {
+      SVhealth |= (1<<5);
+    }
+    else if (_E5aHS  == 3.0) {
+      SVhealth |= (1<<4);
+      SVhealth |= (1<<5);
+    }
     //   Bit 6  : E5b DVS
-    if ((_flags & GALEPHF_E1DINVALID) == GALEPHF_E1DINVALID) {
+    if ((_flags & GALEPHF_E5BDINVALID) == GALEPHF_E5BDINVALID) {
       SVhealth |= (1<<6);
     }
     //   Bit 7-8: E5b HS
