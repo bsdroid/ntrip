@@ -87,6 +87,180 @@ t_irc t_eph::getCrd(const bncTime& tt, ColumnVector& xc, ColumnVector& vv, bool 
   return success;
 }
 
+//
+//////////////////////////////////////////////////////////////////////////////
+QString t_eph::rinexDateStr(const bncTime& tt, const t_prn& prn, double version) {
+  QString prnStr(prn.toString().c_str());
+  return rinexDateStr(tt, prnStr, version);
+}
+
+//
+//////////////////////////////////////////////////////////////////////////////
+QString t_eph::rinexDateStr(const bncTime& tt, const QString& prnStr, double version) {
+
+  QString datStr;
+
+  unsigned year, month, day, hour, min;
+  double   sec;
+  tt.civil_date(year, month, day);
+  tt.civil_time(hour, min, sec);
+
+  QTextStream out(&datStr);
+
+  if (version < 3.0) {
+    QString prnHlp = prnStr.mid(1,2); if (prnHlp[0] == '0') prnHlp[0] = ' ';
+    out << prnHlp << QString(" %1 %2 %3 %4 %5%6")
+      .arg(year % 100, 2, 10, QChar('0'))
+      .arg(month,      2)
+      .arg(day,        2)
+      .arg(hour,       2)
+      .arg(min,        2)
+      .arg(sec, 5, 'f',1);
+  }
+  else {
+    out << prnStr << QString(" %1 %2 %3 %4 %5 %6")
+      .arg(year,     4)
+      .arg(month,    2, 10, QChar('0'))
+      .arg(day,      2, 10, QChar('0'))
+      .arg(hour,     2, 10, QChar('0'))
+      .arg(min,      2, 10, QChar('0'))
+      .arg(int(sec), 2, 10, QChar('0'));
+  }
+
+  return datStr;
+}
+
+// Constructor
+//////////////////////////////////////////////////////////////////////////////
+t_ephGPS::t_ephGPS(float rnxVersion, const QStringList& lines) {
+
+  const int nLines = 8;
+
+  if (lines.size() != nLines) {
+    _checkState = bad;
+    return;
+  }
+
+  // RINEX Format
+  // ------------
+  int fieldLen = 19;
+
+  int pos[4];
+  pos[0] = (rnxVersion <= 2.12) ?  3 :  4;
+  pos[1] = pos[0] + fieldLen;
+  pos[2] = pos[1] + fieldLen;
+  pos[3] = pos[2] + fieldLen;
+
+  // Read eight lines
+  // ----------------
+  for (int iLine = 0; iLine < nLines; iLine++) {
+    QString line = lines[iLine];
+
+    if      ( iLine == 0 ) {
+      QTextStream in(line.left(pos[1]).toAscii());
+
+      int    year, month, day, hour, min;
+      double sec;
+
+      QString prnStr;
+      in >> prnStr >> year >> month >> day >> hour >> min >> sec;
+      if      (prnStr.at(0) == 'G') {
+        _prn.set('G', prnStr.mid(1).toInt());
+      }
+      else if (prnStr.at(0) == 'J') {
+        _prn.set('J', prnStr.mid(1).toInt());
+      }
+      else {
+        _prn.set('G', prnStr.toInt());
+      }
+
+      if      (year <  80) {
+        year += 2000;
+      }
+      else if (year < 100) {
+        year += 1900;
+      }
+
+      _TOC.set(year, month, day, hour, min, sec);
+
+      if ( readDbl(line, pos[1], fieldLen, _clock_bias     ) ||
+           readDbl(line, pos[2], fieldLen, _clock_drift    ) ||
+           readDbl(line, pos[3], fieldLen, _clock_driftrate) ) {
+        _checkState = bad;
+        return;
+      }
+    }
+
+    else if      ( iLine == 1 ) {
+      if ( readDbl(line, pos[0], fieldLen, _IODE   ) ||
+           readDbl(line, pos[1], fieldLen, _Crs    ) ||
+           readDbl(line, pos[2], fieldLen, _Delta_n) ||
+           readDbl(line, pos[3], fieldLen, _M0     ) ) {
+        _checkState = bad;
+        return;
+      }
+    }
+
+    else if ( iLine == 2 ) {
+      if ( readDbl(line, pos[0], fieldLen, _Cuc   ) ||
+           readDbl(line, pos[1], fieldLen, _e     ) ||
+           readDbl(line, pos[2], fieldLen, _Cus   ) ||
+           readDbl(line, pos[3], fieldLen, _sqrt_A) ) {
+        _checkState = bad;
+        return;
+      }
+    }
+
+    else if ( iLine == 3 ) {
+      if ( readDbl(line, pos[0], fieldLen, _TOEsec)  ||
+           readDbl(line, pos[1], fieldLen, _Cic   )  ||
+           readDbl(line, pos[2], fieldLen, _OMEGA0)  ||
+           readDbl(line, pos[3], fieldLen, _Cis   ) ) {
+        _checkState = bad;
+        return;
+      }
+    }
+
+    else if ( iLine == 4 ) {
+      if ( readDbl(line, pos[0], fieldLen, _i0      ) ||
+           readDbl(line, pos[1], fieldLen, _Crc     ) ||
+           readDbl(line, pos[2], fieldLen, _omega   ) ||
+           readDbl(line, pos[3], fieldLen, _OMEGADOT) ) {
+        _checkState = bad;
+        return;
+      }
+    }
+
+    else if ( iLine == 5 ) {
+      if ( readDbl(line, pos[0], fieldLen, _IDOT   ) ||
+           readDbl(line, pos[1], fieldLen, _L2Codes) ||
+           readDbl(line, pos[2], fieldLen, _TOEweek  ) ||
+           readDbl(line, pos[3], fieldLen, _L2PFlag) ) {
+        _checkState = bad;
+        return;
+      }
+    }
+
+    else if ( iLine == 6 ) {
+      if ( readDbl(line, pos[0], fieldLen, _ura   ) ||
+           readDbl(line, pos[1], fieldLen, _health) ||
+           readDbl(line, pos[2], fieldLen, _TGD   ) ||
+           readDbl(line, pos[3], fieldLen, _IODC  ) ) {
+        _checkState = bad;
+        return;
+      }
+    }
+
+    else if ( iLine == 7 ) {
+      if ( readDbl(line, pos[0], fieldLen, _TOT) ) {
+        _checkState = bad;
+        return;
+      }
+      readDbl(line, pos[1], fieldLen, _fitInterval); // _fitInterval optional
+    }
+  }
+}
+
 // Set GPS Satellite Position
 ////////////////////////////////////////////////////////////////////////////
 void t_ephGPS::set(const gpsephemeris* ee) {
@@ -230,97 +404,170 @@ t_irc t_ephGPS::position(int GPSweek, double GPSweeks, double* xc, double* vv) c
   return success;
 }
 
-// Derivative of the state vector using a simple force model (static)
-////////////////////////////////////////////////////////////////////////////
-ColumnVector t_ephGlo::glo_deriv(double /* tt */, const ColumnVector& xv,
-                                 double* acc) {
+// RINEX Format String
+//////////////////////////////////////////////////////////////////////////////
+QString t_ephGPS::toString(double version) const {
 
-  // State vector components
-  // -----------------------
-  ColumnVector rr = xv.rows(1,3);
-  ColumnVector vv = xv.rows(4,6);
+  QString rnxStr = rinexDateStr(_TOC, _prn, version);
 
-  // Acceleration 
+  QTextStream out(&rnxStr);
+
+  out << QString("%1%2%3\n")
+    .arg(_clock_bias,      19, 'e', 12)
+    .arg(_clock_drift,     19, 'e', 12)
+    .arg(_clock_driftrate, 19, 'e', 12);
+
+  QString fmt = version < 3.0 ? "   %1%2%3%4\n" : "    %1%2%3%4\n";
+
+  out << QString(fmt)
+    .arg(_IODE,    19, 'e', 12)
+    .arg(_Crs,     19, 'e', 12)
+    .arg(_Delta_n, 19, 'e', 12)
+    .arg(_M0,      19, 'e', 12);
+
+  out << QString(fmt)
+    .arg(_Cuc,    19, 'e', 12)
+    .arg(_e,      19, 'e', 12)
+    .arg(_Cus,    19, 'e', 12)
+    .arg(_sqrt_A, 19, 'e', 12);
+
+  out << QString(fmt)
+    .arg(_TOEsec, 19, 'e', 12)
+    .arg(_Cic,    19, 'e', 12)
+    .arg(_OMEGA0, 19, 'e', 12)
+    .arg(_Cis,    19, 'e', 12);
+
+  out << QString(fmt)
+    .arg(_i0,       19, 'e', 12)
+    .arg(_Crc,      19, 'e', 12)
+    .arg(_omega,    19, 'e', 12)
+    .arg(_OMEGADOT, 19, 'e', 12);
+
+  out << QString(fmt)
+    .arg(_IDOT,    19, 'e', 12)
+    .arg(_L2Codes, 19, 'e', 12)
+    .arg(_TOEweek, 19, 'e', 12)
+    .arg(_L2PFlag, 19, 'e', 12);
+
+  out << QString(fmt)
+    .arg(_ura,    19, 'e', 12)
+    .arg(_health, 19, 'e', 12)
+    .arg(_TGD,    19, 'e', 12)
+    .arg(_IODC,   19, 'e', 12);
+
+  out << QString(fmt)
+    .arg(_TOT,         19, 'e', 12)
+    .arg(_fitInterval, 19, 'e', 12)
+    .arg("",           19, QChar(' '))
+    .arg("",           19, QChar(' '));
+
+  return rnxStr;
+}
+
+// Constructor
+//////////////////////////////////////////////////////////////////////////////
+t_ephGlo::t_ephGlo(float rnxVersion, const QStringList& lines) {
+
+  const int nLines = 4;
+
+  if (lines.size() != nLines) {
+    _checkState = bad;
+    return;
+  }
+
+  // RINEX Format
   // ------------
-  static const double gmWGS = 398.60044e12;
-  static const double AE    = 6378136.0;
-  static const double OMEGA = 7292115.e-11;
-  static const double C20   = -1082.6257e-6;
+  int fieldLen = 19;
 
-  double rho = rr.norm_Frobenius();
-  double t1  = -gmWGS/(rho*rho*rho);
-  double t2  = 3.0/2.0 * C20 * (gmWGS*AE*AE) / (rho*rho*rho*rho*rho);
-  double t3  = OMEGA * OMEGA;
-  double t4  = 2.0 * OMEGA;
-  double z2  = rr(3) * rr(3);
+  int pos[4];
+  pos[0] = (rnxVersion <= 2.12) ?  3 :  4;
+  pos[1] = pos[0] + fieldLen;
+  pos[2] = pos[1] + fieldLen;
+  pos[3] = pos[2] + fieldLen;
 
-  // Vector of derivatives
-  // ---------------------
-  ColumnVector va(6);
-  va(1) = vv(1);
-  va(2) = vv(2);
-  va(3) = vv(3);
-  va(4) = (t1 + t2*(1.0-5.0*z2/(rho*rho)) + t3) * rr(1) + t4*vv(2) + acc[0]; 
-  va(5) = (t1 + t2*(1.0-5.0*z2/(rho*rho)) + t3) * rr(2) - t4*vv(1) + acc[1]; 
-  va(6) = (t1 + t2*(3.0-5.0*z2/(rho*rho))     ) * rr(3)            + acc[2];
+  // Read four lines
+  // ---------------
+  for (int iLine = 0; iLine < nLines; iLine++) {
+    QString line = lines[iLine];
 
-  return va;
-}
+    if      ( iLine == 0 ) {
+      QTextStream in(line.left(pos[1]).toAscii());
 
-// Compute Glonass Satellite Position (virtual)
-////////////////////////////////////////////////////////////////////////////
-t_irc t_ephGlo::position(int GPSweek, double GPSweeks, double* xc, double* vv) const {
+      int    year, month, day, hour, min;
+      double sec;
 
-  if (_checkState == bad) {
-    return failure;
+      QString prnStr;
+      in >> prnStr >> year >> month >> day >> hour >> min >> sec;
+      if (prnStr.at(0) == 'R') {
+        _prn.set('R', prnStr.mid(1).toInt());
+      }
+      else {
+        _prn.set('R', prnStr.toInt());
+      }
+
+      if      (year <  80) {
+        year += 2000;
+      }
+      else if (year < 100) {
+        year += 1900;
+      }
+
+      _gps_utc = gnumleap(year, month, day);
+
+      _TOC.set(year, month, day, hour, min, sec);
+      _TOC  = _TOC + _gps_utc;
+
+      if ( readDbl(line, pos[1], fieldLen, _tau  ) ||
+           readDbl(line, pos[2], fieldLen, _gamma) ||
+           readDbl(line, pos[3], fieldLen, _tki  ) ) {
+        _checkState = bad;
+        return;
+      }
+
+      _tau = -_tau;
+    }
+
+    else if      ( iLine == 1 ) {
+      if ( readDbl(line, pos[0], fieldLen, _x_pos         ) ||
+           readDbl(line, pos[1], fieldLen, _x_velocity    ) ||
+           readDbl(line, pos[2], fieldLen, _x_acceleration) ||
+           readDbl(line, pos[3], fieldLen, _health        ) ) {
+        _checkState = bad;
+        return;
+      }
+    }
+
+    else if ( iLine == 2 ) {
+      if ( readDbl(line, pos[0], fieldLen, _y_pos           ) ||
+           readDbl(line, pos[1], fieldLen, _y_velocity      ) ||
+           readDbl(line, pos[2], fieldLen, _y_acceleration  ) ||
+           readDbl(line, pos[3], fieldLen, _frequency_number) ) {
+        _checkState = bad;
+        return;
+      }
+    }
+
+    else if ( iLine == 3 ) {
+      if ( readDbl(line, pos[0], fieldLen, _z_pos         )  ||
+           readDbl(line, pos[1], fieldLen, _z_velocity    )  ||
+           readDbl(line, pos[2], fieldLen, _z_acceleration)  ||
+           readDbl(line, pos[3], fieldLen, _E             ) ) {
+        _checkState = bad;
+        return;
+      }
+    }
   }
 
-  static const double nominalStep = 10.0;
-
-  memset(xc, 0, 4*sizeof(double));
-  memset(vv, 0, 3*sizeof(double));
-
-  double dtPos = bncTime(GPSweek, GPSweeks) - _tt;
-
-  if (fabs(dtPos) > 24*3600.0) {
-    return failure;
-  }
-
-  int nSteps  = int(fabs(dtPos) / nominalStep) + 1;
-  double step = dtPos / nSteps;
-
-  double acc[3];
-  acc[0] = _x_acceleration * 1.e3;
-  acc[1] = _y_acceleration * 1.e3;
-  acc[2] = _z_acceleration * 1.e3;
-  for (int ii = 1; ii <= nSteps; ii++) { 
-    _xv = rungeKutta4(_tt.gpssec(), _xv, step, acc, glo_deriv);
-    _tt = _tt + step;
-  }
-
-  // Position and Velocity
-  // ---------------------
-  xc[0] = _xv(1);
-  xc[1] = _xv(2);
-  xc[2] = _xv(3);
-
-  vv[0] = _xv(4);
-  vv[1] = _xv(5);
-  vv[2] = _xv(6);
-
-  // Clock Correction
-  // ----------------
-  double dtClk = bncTime(GPSweek, GPSweeks) - _TOC;
-  xc[3] = -_tau + _gamma * dtClk;
-
-  return success;
-}
-
-// IOD of Glonass Ephemeris (virtual)
-////////////////////////////////////////////////////////////////////////////
-int t_ephGlo::IOD() const {
-  bncTime tMoscow = _TOC - _gps_utc + 3 * 3600.0;
-  return int(tMoscow.daysec() / 900);
+  // Initialize status vector
+  // ------------------------
+  _tt = _TOC;
+  _xv.ReSize(6);
+  _xv(1) = _x_pos * 1.e3;
+  _xv(2) = _y_pos * 1.e3;
+  _xv(3) = _z_pos * 1.e3;
+  _xv(4) = _x_velocity * 1.e3;
+  _xv(5) = _y_velocity * 1.e3;
+  _xv(6) = _z_velocity * 1.e3;
 }
 
 // Set Glonass Ephemeris
@@ -418,378 +665,133 @@ void t_ephGlo::set(const glonassephemeris* ee) {
   _xv(6) = _z_velocity * 1.e3; 
 }
 
-// Set Galileo Satellite Position
+// Compute Glonass Satellite Position (virtual)
 ////////////////////////////////////////////////////////////////////////////
-void t_ephGal::set(const galileoephemeris* ee) {
-
-  _receptDateTime = currentDateAndTimeGPS();
-
-  _prn.set('E', ee->satellite);
-
-  _TOC.set(ee->Week, ee->TOC);
-  _clock_bias      = ee->clock_bias;
-  _clock_drift     = ee->clock_drift;
-  _clock_driftrate = ee->clock_driftrate;
-
-  _IODnav   = ee->IODnav;
-  _Crs      = ee->Crs;
-  _Delta_n  = ee->Delta_n;
-  _M0       = ee->M0;
-
-  _Cuc      = ee->Cuc;
-  _e        = ee->e;
-  _Cus      = ee->Cus;
-  _sqrt_A   = ee->sqrt_A;
-
-  _TOEsec   = _TOC.gpssec();
-  //  _TOEsec   = ee->TOE;  // TODO:
-
-  _Cic      = ee->Cic;
-  _OMEGA0   = ee->OMEGA0;
-  _Cis      = ee->Cis;
-
-  _i0       = ee->i0;
-  _Crc      = ee->Crc;
-  _omega    = ee->omega;
-  _OMEGADOT = ee->OMEGADOT;
-
-  _IDOT     = ee->IDOT;
-  _TOEweek  = ee->Week;
-  
-  _SISA = accuracyFromIndex(ee->SISA, type());
-  _E5aHS    = ee->E5aHS;
-  _E5bHS    = ee->E5bHS;
-  _E1_bHS   = ee->E1_HS;
-  _BGD_1_5A = ee->BGD_1_5A;
-  _BGD_1_5B = ee->BGD_1_5B;
-
-  _TOT      = 0.9999e9;
-
-  _flags    = ee->flags;
-}
-
-// Compute Galileo Satellite Position (virtual)
-////////////////////////////////////////////////////////////////////////////
-t_irc t_ephGal::position(int GPSweek, double GPSweeks, double* xc, double* vv) const {
+t_irc t_ephGlo::position(int GPSweek, double GPSweeks, double* xc, double* vv) const {
 
   if (_checkState == bad) {
     return failure;
   }
 
-  static const double omegaEarth = 7292115.1467e-11;
-  static const double gmWGS = 398.60044e12;
+  static const double nominalStep = 10.0;
 
   memset(xc, 0, 4*sizeof(double));
   memset(vv, 0, 3*sizeof(double));
 
-  double a0 = _sqrt_A * _sqrt_A;
-  if (a0 == 0) {
+  double dtPos = bncTime(GPSweek, GPSweeks) - _tt;
+
+  if (fabs(dtPos) > 24*3600.0) {
     return failure;
   }
 
-  double n0 = sqrt(gmWGS/(a0*a0*a0));
+  int nSteps  = int(fabs(dtPos) / nominalStep) + 1;
+  double step = dtPos / nSteps;
 
-  bncTime tt(GPSweek, GPSweeks);
-  double tk = tt - bncTime(_TOC.gpsw(), _TOEsec);
+  double acc[3];
+  acc[0] = _x_acceleration * 1.e3;
+  acc[1] = _y_acceleration * 1.e3;
+  acc[2] = _z_acceleration * 1.e3;
+  for (int ii = 1; ii <= nSteps; ii++) {
+    _xv = rungeKutta4(_tt.gpssec(), _xv, step, acc, glo_deriv);
+    _tt = _tt + step;
+  }
 
-  double n  = n0 + _Delta_n;
-  double M  = _M0 + n*tk;
-  double E  = M;
-  double E_last;
-  do {
-    E_last = E;
-    E = M + _e*sin(E);
-  } while ( fabs(E-E_last)*a0 > 0.001 );
-  double v      = 2.0*atan( sqrt( (1.0 + _e)/(1.0 - _e) )*tan( E/2 ) );
-  double u0     = v + _omega;
-  double sin2u0 = sin(2*u0);
-  double cos2u0 = cos(2*u0);
-  double r      = a0*(1 - _e*cos(E)) + _Crc*cos2u0 + _Crs*sin2u0;
-  double i      = _i0 + _IDOT*tk + _Cic*cos2u0 + _Cis*sin2u0;
-  double u      = u0 + _Cuc*cos2u0 + _Cus*sin2u0;
-  double xp     = r*cos(u);
-  double yp     = r*sin(u);
-  double OM     = _OMEGA0 + (_OMEGADOT - omegaEarth)*tk - 
-                  omegaEarth*_TOEsec;
-  
-  double sinom = sin(OM);
-  double cosom = cos(OM);
-  double sini  = sin(i);
-  double cosi  = cos(i);
-  xc[0] = xp*cosom - yp*cosi*sinom;
-  xc[1] = xp*sinom + yp*cosi*cosom;
-  xc[2] = yp*sini;                 
-  
-  double tc = tt - _TOC;
-  xc[3] = _clock_bias + _clock_drift*tc + _clock_driftrate*tc*tc;
+  // Position and Velocity
+  // ---------------------
+  xc[0] = _xv(1);
+  xc[1] = _xv(2);
+  xc[2] = _xv(3);
 
-  // Velocity
-  // --------
-  double tanv2 = tan(v/2);
-  double dEdM  = 1 / (1 - _e*cos(E));
-  double dotv  = sqrt((1.0 + _e)/(1.0 - _e)) / cos(E/2)/cos(E/2) / (1 + tanv2*tanv2) 
-               * dEdM * n;
-  double dotu  = dotv + (-_Cuc*sin2u0 + _Cus*cos2u0)*2*dotv;
-  double dotom = _OMEGADOT - omegaEarth;
-  double doti  = _IDOT + (-_Cic*sin2u0 + _Cis*cos2u0)*2*dotv;
-  double dotr  = a0 * _e*sin(E) * dEdM * n 
-                + (-_Crc*sin2u0 + _Crs*cos2u0)*2*dotv;
-  double dotx  = dotr*cos(u) - r*sin(u)*dotu;
-  double doty  = dotr*sin(u) + r*cos(u)*dotu;
+  vv[0] = _xv(4);
+  vv[1] = _xv(5);
+  vv[2] = _xv(6);
 
-  vv[0]  = cosom   *dotx  - cosi*sinom   *doty      // dX / dr
-           - xp*sinom*dotom - yp*cosi*cosom*dotom   // dX / dOMEGA
-                       + yp*sini*sinom*doti;        // dX / di
-
-  vv[1]  = sinom   *dotx  + cosi*cosom   *doty
-           + xp*cosom*dotom - yp*cosi*sinom*dotom
-                          - yp*sini*cosom*doti;
-
-  vv[2]  = sini    *doty  + yp*cosi      *doti;
-
-  // Relativistic Correction
-  // -----------------------
-  //  xc(4) -= 4.442807633e-10 * _e * sqrt(a0) *sin(E);
-  xc[3] -= 2.0 * (xc[0]*vv[0] + xc[1]*vv[1] + xc[2]*vv[2]) / t_CST::c / t_CST::c;
+  // Clock Correction
+  // ----------------
+  double dtClk = bncTime(GPSweek, GPSweeks) - _TOC;
+  xc[3] = -_tau + _gamma * dtClk;
 
   return success;
 }
 
-// Constructor
+// RINEX Format String
 //////////////////////////////////////////////////////////////////////////////
-t_ephGPS::t_ephGPS(float rnxVersion, const QStringList& lines) {
+QString t_ephGlo::toString(double version) const {
 
-  const int nLines = 8;
+  QString rnxStr = rinexDateStr(_TOC-_gps_utc, _prn, version);
 
-  if (lines.size() != nLines) {
-    _checkState = bad;
-    return;
-  }
+  QTextStream out(&rnxStr);
 
-  // RINEX Format
-  // ------------
-  int fieldLen = 19;
+  out << QString("%1%2%3\n")
+    .arg(-_tau,  19, 'e', 12)
+    .arg(_gamma, 19, 'e', 12)
+    .arg(_tki,   19, 'e', 12);
 
-  int pos[4];
-  pos[0] = (rnxVersion <= 2.12) ?  3 :  4;
-  pos[1] = pos[0] + fieldLen;
-  pos[2] = pos[1] + fieldLen;
-  pos[3] = pos[2] + fieldLen;
+  QString fmt = version < 3.0 ? "   %1%2%3%4\n" : "    %1%2%3%4\n";
 
-  // Read eight lines
-  // ----------------
-  for (int iLine = 0; iLine < nLines; iLine++) {
-    QString line = lines[iLine];
+  out << QString(fmt)
+    .arg(_x_pos,          19, 'e', 12)
+    .arg(_x_velocity,     19, 'e', 12)
+    .arg(_x_acceleration, 19, 'e', 12)
+    .arg(_health,         19, 'e', 12);
 
-    if      ( iLine == 0 ) {
-      QTextStream in(line.left(pos[1]).toAscii());
+  out << QString(fmt)
+    .arg(_y_pos,            19, 'e', 12)
+    .arg(_y_velocity,       19, 'e', 12)
+    .arg(_y_acceleration,   19, 'e', 12)
+    .arg(_frequency_number, 19, 'e', 12);
 
-      int    year, month, day, hour, min;
-      double sec;
-      
-      QString prnStr;
-      in >> prnStr >> year >> month >> day >> hour >> min >> sec;
-      if      (prnStr.at(0) == 'G') {
-        _prn.set('G', prnStr.mid(1).toInt());
-      }
-      else if (prnStr.at(0) == 'J') {
-        _prn.set('J', prnStr.mid(1).toInt());
-      }
-      else {
-        _prn.set('G', prnStr.toInt());
-      }
+  out << QString(fmt)
+    .arg(_z_pos,          19, 'e', 12)
+    .arg(_z_velocity,     19, 'e', 12)
+    .arg(_z_acceleration, 19, 'e', 12)
+    .arg(_E,              19, 'e', 12);
 
-      if      (year <  80) {
-        year += 2000;
-      }
-      else if (year < 100) {
-        year += 1900;
-      }
-
-      _TOC.set(year, month, day, hour, min, sec);
-
-      if ( readDbl(line, pos[1], fieldLen, _clock_bias     ) ||
-           readDbl(line, pos[2], fieldLen, _clock_drift    ) ||
-           readDbl(line, pos[3], fieldLen, _clock_driftrate) ) {
-        _checkState = bad;
-        return;
-      }
-    }
-
-    else if      ( iLine == 1 ) {
-      if ( readDbl(line, pos[0], fieldLen, _IODE   ) ||
-           readDbl(line, pos[1], fieldLen, _Crs    ) ||
-           readDbl(line, pos[2], fieldLen, _Delta_n) ||
-           readDbl(line, pos[3], fieldLen, _M0     ) ) {
-        _checkState = bad;
-        return;
-      }
-    }
-
-    else if ( iLine == 2 ) {
-      if ( readDbl(line, pos[0], fieldLen, _Cuc   ) ||
-           readDbl(line, pos[1], fieldLen, _e     ) ||
-           readDbl(line, pos[2], fieldLen, _Cus   ) ||
-           readDbl(line, pos[3], fieldLen, _sqrt_A) ) {
-        _checkState = bad;
-        return;
-      }
-    }
-
-    else if ( iLine == 3 ) {
-      if ( readDbl(line, pos[0], fieldLen, _TOEsec)  ||
-           readDbl(line, pos[1], fieldLen, _Cic   )  ||
-           readDbl(line, pos[2], fieldLen, _OMEGA0)  ||
-           readDbl(line, pos[3], fieldLen, _Cis   ) ) {
-        _checkState = bad;
-        return;
-      }
-    }
-
-    else if ( iLine == 4 ) {
-      if ( readDbl(line, pos[0], fieldLen, _i0      ) ||
-           readDbl(line, pos[1], fieldLen, _Crc     ) ||
-           readDbl(line, pos[2], fieldLen, _omega   ) ||
-           readDbl(line, pos[3], fieldLen, _OMEGADOT) ) {
-        _checkState = bad;
-        return;
-      }
-    }
-
-    else if ( iLine == 5 ) {
-      if ( readDbl(line, pos[0], fieldLen, _IDOT   ) ||
-           readDbl(line, pos[1], fieldLen, _L2Codes) ||
-           readDbl(line, pos[2], fieldLen, _TOEweek  ) ||
-           readDbl(line, pos[3], fieldLen, _L2PFlag) ) {
-        _checkState = bad;
-        return;
-      }
-    }
-
-    else if ( iLine == 6 ) {
-      if ( readDbl(line, pos[0], fieldLen, _ura   ) ||
-           readDbl(line, pos[1], fieldLen, _health) ||
-           readDbl(line, pos[2], fieldLen, _TGD   ) ||
-           readDbl(line, pos[3], fieldLen, _IODC  ) ) {
-        _checkState = bad;
-        return;
-      }
-    }
-
-    else if ( iLine == 7 ) {
-      if ( readDbl(line, pos[0], fieldLen, _TOT) ) {
-        _checkState = bad;
-        return;
-      }
-      readDbl(line, pos[1], fieldLen, _fitInterval); // _fitInterval optional
-    }
-  }
+  return rnxStr;
 }
 
-// Constructor
-//////////////////////////////////////////////////////////////////////////////
-t_ephGlo::t_ephGlo(float rnxVersion, const QStringList& lines) {
+// Derivative of the state vector using a simple force model (static)
+////////////////////////////////////////////////////////////////////////////
+ColumnVector t_ephGlo::glo_deriv(double /* tt */, const ColumnVector& xv,
+                                 double* acc) {
 
-  const int nLines = 4;
+  // State vector components
+  // -----------------------
+  ColumnVector rr = xv.rows(1,3);
+  ColumnVector vv = xv.rows(4,6);
 
-  if (lines.size() != nLines) {
-    _checkState = bad;
-    return;
-  }
-
-  // RINEX Format
+  // Acceleration
   // ------------
-  int fieldLen = 19;
+  static const double gmWGS = 398.60044e12;
+  static const double AE    = 6378136.0;
+  static const double OMEGA = 7292115.e-11;
+  static const double C20   = -1082.6257e-6;
 
-  int pos[4];
-  pos[0] = (rnxVersion <= 2.12) ?  3 :  4;
-  pos[1] = pos[0] + fieldLen;
-  pos[2] = pos[1] + fieldLen;
-  pos[3] = pos[2] + fieldLen;
+  double rho = rr.norm_Frobenius();
+  double t1  = -gmWGS/(rho*rho*rho);
+  double t2  = 3.0/2.0 * C20 * (gmWGS*AE*AE) / (rho*rho*rho*rho*rho);
+  double t3  = OMEGA * OMEGA;
+  double t4  = 2.0 * OMEGA;
+  double z2  = rr(3) * rr(3);
 
-  // Read four lines
-  // ---------------
-  for (int iLine = 0; iLine < nLines; iLine++) {
-    QString line = lines[iLine];
+  // Vector of derivatives
+  // ---------------------
+  ColumnVector va(6);
+  va(1) = vv(1);
+  va(2) = vv(2);
+  va(3) = vv(3);
+  va(4) = (t1 + t2*(1.0-5.0*z2/(rho*rho)) + t3) * rr(1) + t4*vv(2) + acc[0];
+  va(5) = (t1 + t2*(1.0-5.0*z2/(rho*rho)) + t3) * rr(2) - t4*vv(1) + acc[1];
+  va(6) = (t1 + t2*(3.0-5.0*z2/(rho*rho))     ) * rr(3)            + acc[2];
 
-    if      ( iLine == 0 ) {
-      QTextStream in(line.left(pos[1]).toAscii());
+  return va;
+}
 
-      int    year, month, day, hour, min;
-      double sec;
-      
-      QString prnStr;
-      in >> prnStr >> year >> month >> day >> hour >> min >> sec;
-      if (prnStr.at(0) == 'R') {
-        _prn.set('R', prnStr.mid(1).toInt());
-      }
-      else {
-        _prn.set('R', prnStr.toInt());
-      }
-
-      if      (year <  80) {
-        year += 2000;
-      }
-      else if (year < 100) {
-        year += 1900;
-      }
-
-      _gps_utc = gnumleap(year, month, day);
-
-      _TOC.set(year, month, day, hour, min, sec);
-      _TOC  = _TOC + _gps_utc;
-
-      if ( readDbl(line, pos[1], fieldLen, _tau  ) ||
-           readDbl(line, pos[2], fieldLen, _gamma) ||
-           readDbl(line, pos[3], fieldLen, _tki  ) ) {
-        _checkState = bad;
-        return;
-      }
-
-      _tau = -_tau;
-    }
-
-    else if      ( iLine == 1 ) {
-      if ( readDbl(line, pos[0], fieldLen, _x_pos         ) ||
-           readDbl(line, pos[1], fieldLen, _x_velocity    ) ||
-           readDbl(line, pos[2], fieldLen, _x_acceleration) ||
-           readDbl(line, pos[3], fieldLen, _health        ) ) {
-        _checkState = bad;
-        return;
-      }
-    }
-
-    else if ( iLine == 2 ) {
-      if ( readDbl(line, pos[0], fieldLen, _y_pos           ) ||
-           readDbl(line, pos[1], fieldLen, _y_velocity      ) ||
-           readDbl(line, pos[2], fieldLen, _y_acceleration  ) ||
-           readDbl(line, pos[3], fieldLen, _frequency_number) ) {
-        _checkState = bad;
-        return;
-      }
-    }
-
-    else if ( iLine == 3 ) {
-      if ( readDbl(line, pos[0], fieldLen, _z_pos         )  ||
-           readDbl(line, pos[1], fieldLen, _z_velocity    )  ||
-           readDbl(line, pos[2], fieldLen, _z_acceleration)  ||
-           readDbl(line, pos[3], fieldLen, _E             ) ) {
-        _checkState = bad;
-        return;
-      }
-    }
-  }
-
-  // Initialize status vector
-  // ------------------------
-  _tt = _TOC;
-  _xv.ReSize(6); 
-  _xv(1) = _x_pos * 1.e3; 
-  _xv(2) = _y_pos * 1.e3; 
-  _xv(3) = _z_pos * 1.e3; 
-  _xv(4) = _x_velocity * 1.e3; 
-  _xv(5) = _y_velocity * 1.e3; 
-  _xv(6) = _z_velocity * 1.e3; 
+// IOD of Glonass Ephemeris (virtual)
+////////////////////////////////////////////////////////////////////////////
+int t_ephGlo::IOD() const {
+  bncTime tMoscow = _TOC - _gps_utc + 3 * 3600.0;
+  return int(tMoscow.daysec() / 900);
 }
 
 // Constructor
@@ -920,19 +922,19 @@ t_ephGal::t_ephGal(float rnxVersion, const QStringList& lines) {
           _flags |= GALEPHF_E1DINVALID;
         }
         // Bit 1-2
-        _E1_bHS = double((int(SVhealth) >> 1) & 0x3);
+        _E1_bHS = double((int(SVhealth) >> 1) & 0x2);
         // Bit 3
         if (int(SVhealth) & (1<<3)) {
           _flags |= GALEPHF_E5ADINVALID;
         }
         // Bit 4-5
-        _E5aHS = double((int(SVhealth) >> 4) & 0x3);
+        _E5aHS = double((int(SVhealth) >> 4) & 0x2);
         // Bit 6
         if (int(SVhealth) & (1<<6)) {
           _flags |= GALEPHF_E5BDINVALID;
         }
         // Bit 7-8
-        _E5bHS = double((int(SVhealth) >> 7) & 0x3);
+        _E5bHS = double((int(SVhealth) >> 7) & 0x2);
       }
     }
 
@@ -945,143 +947,141 @@ t_ephGal::t_ephGal(float rnxVersion, const QStringList& lines) {
   }
 }
 
-// 
-//////////////////////////////////////////////////////////////////////////////
-QString t_eph::rinexDateStr(const bncTime& tt, const t_prn& prn, double version) {
-  QString prnStr(prn.toString().c_str());
-  return rinexDateStr(tt, prnStr, version);
+// Set Galileo Satellite Position
+////////////////////////////////////////////////////////////////////////////
+void t_ephGal::set(const galileoephemeris* ee) {
+
+  _receptDateTime = currentDateAndTimeGPS();
+
+  _prn.set('E', ee->satellite);
+
+  _TOC.set(ee->Week, ee->TOC);
+  _clock_bias      = ee->clock_bias;
+  _clock_drift     = ee->clock_drift;
+  _clock_driftrate = ee->clock_driftrate;
+
+  _IODnav   = ee->IODnav;
+  _Crs      = ee->Crs;
+  _Delta_n  = ee->Delta_n;
+  _M0       = ee->M0;
+
+  _Cuc      = ee->Cuc;
+  _e        = ee->e;
+  _Cus      = ee->Cus;
+  _sqrt_A   = ee->sqrt_A;
+
+  _TOEsec   = _TOC.gpssec();
+  //  _TOEsec   = ee->TOE;  // TODO:
+
+  _Cic      = ee->Cic;
+  _OMEGA0   = ee->OMEGA0;
+  _Cis      = ee->Cis;
+
+  _i0       = ee->i0;
+  _Crc      = ee->Crc;
+  _omega    = ee->omega;
+  _OMEGADOT = ee->OMEGADOT;
+
+  _IDOT     = ee->IDOT;
+  _TOEweek  = ee->Week;
+
+  _SISA = accuracyFromIndex(ee->SISA, type());
+  _E5aHS    = ee->E5aHS;
+  _E5bHS    = ee->E5bHS;
+  _E1_bHS   = ee->E1_HS;
+  _BGD_1_5A = ee->BGD_1_5A;
+  _BGD_1_5B = ee->BGD_1_5B;
+
+  _TOT      = 0.9999e9;
+
+  _flags    = ee->flags;
 }
 
-// 
-//////////////////////////////////////////////////////////////////////////////
-QString t_eph::rinexDateStr(const bncTime& tt, const QString& prnStr, double version) {
+// Compute Galileo Satellite Position (virtual)
+////////////////////////////////////////////////////////////////////////////
+t_irc t_ephGal::position(int GPSweek, double GPSweeks, double* xc, double* vv) const {
 
-  QString datStr;
-  
-  unsigned year, month, day, hour, min;
-  double   sec;
-  tt.civil_date(year, month, day);
-  tt.civil_time(hour, min, sec);
-  
-  QTextStream out(&datStr);
-
-  if (version < 3.0) {
-    QString prnHlp = prnStr.mid(1,2); if (prnHlp[0] == '0') prnHlp[0] = ' ';
-    out << prnHlp << QString(" %1 %2 %3 %4 %5%6")
-      .arg(year % 100, 2, 10, QChar('0'))
-      .arg(month,      2)
-      .arg(day,        2)
-      .arg(hour,       2)
-      .arg(min,        2)
-      .arg(sec, 5, 'f',1);
+  if (_checkState == bad) {
+    return failure;
   }
-  else {
-    out << prnStr << QString(" %1 %2 %3 %4 %5 %6")
-      .arg(year,     4)
-      .arg(month,    2, 10, QChar('0'))
-      .arg(day,      2, 10, QChar('0'))
-      .arg(hour,     2, 10, QChar('0'))
-      .arg(min,      2, 10, QChar('0'))
-      .arg(int(sec), 2, 10, QChar('0'));
+
+  static const double omegaEarth = 7292115.1467e-11;
+  static const double gmWGS = 398.60044e12;
+
+  memset(xc, 0, 4*sizeof(double));
+  memset(vv, 0, 3*sizeof(double));
+
+  double a0 = _sqrt_A * _sqrt_A;
+  if (a0 == 0) {
+    return failure;
   }
 
-  return datStr;
-}
+  double n0 = sqrt(gmWGS/(a0*a0*a0));
 
-// RINEX Format String
-//////////////////////////////////////////////////////////////////////////////
-QString t_ephGPS::toString(double version) const {
+  bncTime tt(GPSweek, GPSweeks);
+  double tk = tt - bncTime(_TOC.gpsw(), _TOEsec);
 
-  QString rnxStr = rinexDateStr(_TOC, _prn, version);
-  
-  QTextStream out(&rnxStr);
-  
-  out << QString("%1%2%3\n")
-    .arg(_clock_bias,      19, 'e', 12)
-    .arg(_clock_drift,     19, 'e', 12)
-    .arg(_clock_driftrate, 19, 'e', 12);
+  double n  = n0 + _Delta_n;
+  double M  = _M0 + n*tk;
+  double E  = M;
+  double E_last;
+  do {
+    E_last = E;
+    E = M + _e*sin(E);
+  } while ( fabs(E-E_last)*a0 > 0.001 );
+  double v      = 2.0*atan( sqrt( (1.0 + _e)/(1.0 - _e) )*tan( E/2 ) );
+  double u0     = v + _omega;
+  double sin2u0 = sin(2*u0);
+  double cos2u0 = cos(2*u0);
+  double r      = a0*(1 - _e*cos(E)) + _Crc*cos2u0 + _Crs*sin2u0;
+  double i      = _i0 + _IDOT*tk + _Cic*cos2u0 + _Cis*sin2u0;
+  double u      = u0 + _Cuc*cos2u0 + _Cus*sin2u0;
+  double xp     = r*cos(u);
+  double yp     = r*sin(u);
+  double OM     = _OMEGA0 + (_OMEGADOT - omegaEarth)*tk -
+                  omegaEarth*_TOEsec;
 
-  QString fmt = version < 3.0 ? "   %1%2%3%4\n" : "    %1%2%3%4\n";
+  double sinom = sin(OM);
+  double cosom = cos(OM);
+  double sini  = sin(i);
+  double cosi  = cos(i);
+  xc[0] = xp*cosom - yp*cosi*sinom;
+  xc[1] = xp*sinom + yp*cosi*cosom;
+  xc[2] = yp*sini;
 
-  out << QString(fmt)
-    .arg(_IODE,    19, 'e', 12)
-    .arg(_Crs,     19, 'e', 12)
-    .arg(_Delta_n, 19, 'e', 12)
-    .arg(_M0,      19, 'e', 12);
+  double tc = tt - _TOC;
+  xc[3] = _clock_bias + _clock_drift*tc + _clock_driftrate*tc*tc;
 
-  out << QString(fmt)
-    .arg(_Cuc,    19, 'e', 12)
-    .arg(_e,      19, 'e', 12)
-    .arg(_Cus,    19, 'e', 12)
-    .arg(_sqrt_A, 19, 'e', 12);
+  // Velocity
+  // --------
+  double tanv2 = tan(v/2);
+  double dEdM  = 1 / (1 - _e*cos(E));
+  double dotv  = sqrt((1.0 + _e)/(1.0 - _e)) / cos(E/2)/cos(E/2) / (1 + tanv2*tanv2)
+               * dEdM * n;
+  double dotu  = dotv + (-_Cuc*sin2u0 + _Cus*cos2u0)*2*dotv;
+  double dotom = _OMEGADOT - omegaEarth;
+  double doti  = _IDOT + (-_Cic*sin2u0 + _Cis*cos2u0)*2*dotv;
+  double dotr  = a0 * _e*sin(E) * dEdM * n
+                + (-_Crc*sin2u0 + _Crs*cos2u0)*2*dotv;
+  double dotx  = dotr*cos(u) - r*sin(u)*dotu;
+  double doty  = dotr*sin(u) + r*cos(u)*dotu;
 
-  out << QString(fmt)
-    .arg(_TOEsec, 19, 'e', 12)
-    .arg(_Cic,    19, 'e', 12)
-    .arg(_OMEGA0, 19, 'e', 12)
-    .arg(_Cis,    19, 'e', 12);
+  vv[0]  = cosom   *dotx  - cosi*sinom   *doty      // dX / dr
+           - xp*sinom*dotom - yp*cosi*cosom*dotom   // dX / dOMEGA
+                       + yp*sini*sinom*doti;        // dX / di
 
-  out << QString(fmt)
-    .arg(_i0,       19, 'e', 12)
-    .arg(_Crc,      19, 'e', 12)
-    .arg(_omega,    19, 'e', 12)
-    .arg(_OMEGADOT, 19, 'e', 12);
+  vv[1]  = sinom   *dotx  + cosi*cosom   *doty
+           + xp*cosom*dotom - yp*cosi*sinom*dotom
+                          - yp*sini*cosom*doti;
 
-  out << QString(fmt)
-    .arg(_IDOT,    19, 'e', 12)
-    .arg(_L2Codes, 19, 'e', 12)
-    .arg(_TOEweek, 19, 'e', 12)
-    .arg(_L2PFlag, 19, 'e', 12);
+  vv[2]  = sini    *doty  + yp*cosi      *doti;
 
-  out << QString(fmt)
-    .arg(_ura,    19, 'e', 12)
-    .arg(_health, 19, 'e', 12)
-    .arg(_TGD,    19, 'e', 12)
-    .arg(_IODC,   19, 'e', 12);
+  // Relativistic Correction
+  // -----------------------
+  //  xc(4) -= 4.442807633e-10 * _e * sqrt(a0) *sin(E);
+  xc[3] -= 2.0 * (xc[0]*vv[0] + xc[1]*vv[1] + xc[2]*vv[2]) / t_CST::c / t_CST::c;
 
-  out << QString(fmt)
-    .arg(_TOT,         19, 'e', 12)
-    .arg(_fitInterval, 19, 'e', 12)
-    .arg("",           19, QChar(' '))
-    .arg("",           19, QChar(' '));
-
-  return rnxStr;
-}
-
-// RINEX Format String
-//////////////////////////////////////////////////////////////////////////////
-QString t_ephGlo::toString(double version) const {
-
-  QString rnxStr = rinexDateStr(_TOC-_gps_utc, _prn, version);
-
-  QTextStream out(&rnxStr);
-
-  out << QString("%1%2%3\n")
-    .arg(-_tau,  19, 'e', 12)
-    .arg(_gamma, 19, 'e', 12)
-    .arg(_tki,   19, 'e', 12);
-
-  QString fmt = version < 3.0 ? "   %1%2%3%4\n" : "    %1%2%3%4\n";
-
-  out << QString(fmt)
-    .arg(_x_pos,          19, 'e', 12)
-    .arg(_x_velocity,     19, 'e', 12)
-    .arg(_x_acceleration, 19, 'e', 12)
-    .arg(_health,         19, 'e', 12);
-
-  out << QString(fmt)
-    .arg(_y_pos,            19, 'e', 12)
-    .arg(_y_velocity,       19, 'e', 12)
-    .arg(_y_acceleration,   19, 'e', 12)
-    .arg(_frequency_number, 19, 'e', 12);
-
-  out << QString(fmt)
-    .arg(_z_pos,          19, 'e', 12)
-    .arg(_z_velocity,     19, 'e', 12)
-    .arg(_z_acceleration, 19, 'e', 12)
-    .arg(_E,              19, 'e', 12);
-
-  return rnxStr;
+  return success;
 }
 
 // RINEX Format String
@@ -1150,6 +1150,7 @@ QString t_ephGal::toString(double version) const {
   }
   else if ((_flags & GALEPHF_INAV) == GALEPHF_INAV) {
     dataSource |= (1<<0);
+    dataSource |= (1<<1);// not clear but common practice
     dataSource |= (1<<2);
     dataSource |= (1<<9);
     // SVhealth
@@ -1596,8 +1597,6 @@ void t_ephBDS::set(const bdsephemeris* ee) {
   _SatH1    = (ee->flags & BDSEPHF_SATH1) ? 1: 0;
   _TGD1     = ee->TGD_B1_B3;
   _TGD2     = ee->TGD_B2_B3;
-
-
 }
 
 // Compute BDS Satellite Position (virtual)
