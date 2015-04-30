@@ -89,6 +89,8 @@ Q_OBJECT
   QDateTime  _decodeStart;
   QDateTime  _decodeStop;
   QDateTime  _checkPause;
+  QDateTime  _begDateTimeOut;
+  QDateTime  _endDateTimeOut;
 };
 
 #endif
