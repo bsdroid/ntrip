@@ -189,7 +189,7 @@ void latencyChecker::checkReconnect() {
       _begTimeOut = _endDateTimeOut.toUTC().time().toString("hh:mm:ss");
       emit(newMessage((_staID + ": Failure threshold exceeded, outage since "
                     + _begDateOut + " " + _begTimeOut + " UTC").toAscii(), true));
-      callScript(("Begin_Outage"
+      callScript(("Begin_Outage "
                     + _begDateOut + " " + _begTimeOut + " UTC").toAscii());
       _decodeStop.setDate(QDate());
       _decodeStop.setTime(QTime());
