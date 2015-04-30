@@ -38,6 +38,14 @@ string t_prn::toString() const {
   return ss.str();
 }
 
+//
+//////////////////////////////////////////////////////////////////////////////
+string t_prn::toInternalString() const {
+  stringstream ss;
+  ss << _system << setfill('0') << setw(2) << _number << '_' << _flags;
+  return ss.str();
+}
+
 // Set from string
 ////////////////////////////////////////////////////////////////////////////
 void t_prn::set(const std::string& str) {
