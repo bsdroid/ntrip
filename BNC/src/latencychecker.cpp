@@ -153,14 +153,14 @@ latencyChecker::latencyChecker(QByteArray staID) {
   _curLat     = 0.0;
 
   _checkTime = QDateTime::currentDateTime();
-
-  _begDateOut = _checkTime.toUTC().date().toString("yy-MM-dd"); // weber
-  _begTimeOut = _checkTime.toUTC().time().toString("hh:mm:ss");
-
   _decodeSucc = QDateTime::currentDateTime();
 
-  _decodeStart = QDateTime::currentDateTime();
   _decodeStop = QDateTime::currentDateTime();
+
+  _begDateTimeOut = QDateTime::currentDateTime();
+  _endDateTimeOut = QDateTime::currentDateTime();
+
+  _fromReconnect = false;
   
 }
 
@@ -177,23 +177,25 @@ void latencyChecker::checkReconnect() {
 
   // Begin outage threshold
   // ----------------------
+  if (!_fromReconnect) {
+    _endDateTimeOut = QDateTime::currentDateTime();
+  } 
+  _fromReconnect = true;
+
   if ( _decodeStop.isValid() ) {
-    if ( _decodeStop.secsTo(QDateTime::currentDateTime()) >  _adviseFail * 60 ) {
+    _begDateTimeOut = QDateTime::currentDateTime();
+    if ( _endDateTimeOut.secsTo(QDateTime::currentDateTime()) >  _adviseFail * 60 ) {
+      _begDateOut = _endDateTimeOut.toUTC().date().toString("yy-MM-dd");
+      _begTimeOut = _endDateTimeOut.toUTC().time().toString("hh:mm:ss");
+      emit(newMessage((_staID + ": Failure threshold exceeded, outage since "
+                    + _begDateOut + " " + _begTimeOut + " UTC").toAscii(), true));
+      callScript(("Begin_Outage"
+                    + _begDateOut + " " + _begTimeOut + " UTC").toAscii());
       _decodeStop.setDate(QDate());
       _decodeStop.setTime(QTime());
-      _begDateOut = _checkTime.toUTC().date().toString("yy-MM-dd");
-      _begTimeOut = _checkTime.toUTC().time().toString("hh:mm:ss");
-      emit(newMessage((_staID
-                    + ": Failure threshold exceeded, outage since "
-                    + _begDateOut + " " + _begTimeOut).toAscii(), true));
-      emit(newMessage((_staID + ": Begin_Outage "  // weber
-                    + _begDateOut + " " + _begTimeOut).toAscii(),true));
-      callScript(("Begin_Outage "
-                    + _begDateOut + " " + _begTimeOut).toAscii());
+      _decodeStart = QDateTime::currentDateTime();
     }
   }
-  _fromReconnect = true;
-  _decodeStart = QDateTime::currentDateTime();
 }
 
 // Perform Corrupt and 'End outage' check
@@ -231,7 +233,7 @@ void latencyChecker::checkOutage(bool decoded) {
       else {
         _secFail += _inspSegm;
         _secSucc = 0;
-        if (_secFail > _adviseFail * 60) { 
+        if (_secFail > _adviseFail * 60) {
           _secFail = _adviseFail * 60 + 1;
         }
         if (!_checkPause.isValid()) {
@@ -247,7 +249,7 @@ void latencyChecker::checkOutage(bool decoded) {
           }
         }
       }
-  
+
       // End corrupt threshold
       // ---------------------
       if ( _begCorrupt && !_endCorrupt && _secSucc > _adviseReco * 60 ) {
@@ -257,16 +259,16 @@ void latencyChecker::checkOutage(bool decoded) {
         _endTimeCor = QDateTime::currentDateTime()
                     .addSecs(- _adviseReco * 60)
                     .toUTC().time().toString("hh:mm:ss");
-        emit(newMessage((_staID 
-                    + ": Recovery threshold exceeded, corruption ended " 
-                    + _endDateCor + " " + _endTimeCor).toAscii(), true));
-        callScript(("End_Corrupted " 
-                    + _endDateCor + " " + _endTimeCor + " Begin was " 
-                    + _begDateCor + " " + _begTimeCor).toAscii());
+        emit(newMessage((_staID
+                    + ": Recovery threshold exceeded, corruption ended "
+                    + _endDateCor + " " + _endTimeCor + " UTC").toAscii(), true));
+        callScript(("End_Corrupted "
+                    + _endDateCor + " " + _endTimeCor + " UTC Begin was "
+                    + _begDateCor + " " + _begTimeCor + " UTC").toAscii());
         _endCorrupt = true;
         _begCorrupt = false;
         _secFail = 0;
-      } 
+      }
       else {
 
         // Begin corrupt threshold
@@ -274,11 +276,11 @@ void latencyChecker::checkOutage(bool decoded) {
         if ( !_begCorrupt && _secFail > _adviseFail * 60 ) {
           _begDateCor = _decodeSucc.toUTC().date().toString("yy-MM-dd");
           _begTimeCor = _decodeSucc.toUTC().time().toString("hh:mm:ss");
-          emit(newMessage((_staID 
-                    + ": Failure threshold exceeded, corrupted since " 
-                    + _begDateCor + " " + _begTimeCor).toAscii(), true));
-          callScript(("Begin_Corrupted " 
-                    + _begDateCor + " " + _begTimeCor).toAscii());
+          emit(newMessage((_staID
+                    + ": Failure threshold exceeded, corrupted since "
+                    + _begDateCor + " " + _begTimeCor + " UTC").toAscii(), true));
+          callScript(("Begin_Corrupted "
+                    + _begDateCor + " " + _begTimeCor + " UTC").toAscii());
           _begCorrupt = true;
           _endCorrupt = false;
           _secSucc = 0;
@@ -289,35 +291,28 @@ void latencyChecker::checkOutage(bool decoded) {
     }
   }
 
-  if (_fromReconnect) {
-    _decodeStart = QDateTime::currentDateTime();
-  } 
-
   // End outage threshold
   // --------------------
+  if (_fromReconnect) {
+    _begDateTimeOut = QDateTime::currentDateTime();
+  } 
+  _fromReconnect = false;
+
   if ( _decodeStart.isValid() ) {
-    if ( _decodeStart.secsTo(QDateTime::currentDateTime()) >  _adviseReco * 60 ) {
+    _endDateTimeOut = QDateTime::currentDateTime();
+    if ( _begDateTimeOut.secsTo(QDateTime::currentDateTime()) >  _adviseReco * 60 ) {
+      _endDateOut = _begDateTimeOut.toUTC().date().toString("yy-MM-dd");
+      _endTimeOut = _begDateTimeOut.toUTC().time().toString("hh:mm:ss");
+      emit(newMessage((_staID + ": Recovery threshold exceeded, outage ended "
+                    + _endDateOut + " " + _endTimeOut + " UTC").toAscii(), true));
+      callScript(("End_Outage "
+                    + _endDateOut + " " + _endTimeOut + " UTC Begin was "
+                    + _begDateOut + " " + _begTimeOut + " UTC").toAscii());
       _decodeStart.setDate(QDate());
       _decodeStart.setTime(QTime());
-      _endDateOut = QDateTime::currentDateTime()
-                    .addSecs(- _adviseReco * 60)
-                    .toUTC().date().toString("yy-MM-dd");
-      _endTimeOut = QDateTime::currentDateTime()
-                    .addSecs(- _adviseReco * 60)
-                    .toUTC().time().toString("hh:mm:ss");
-      emit(newMessage((_staID
-                    + ": Recovery threshold exceeded, outage ended "
-                    + _endDateOut + " " + _endTimeOut).toAscii(), true));
-      emit(newMessage((_staID + ": End_Outage "  // weber
-                    + _endDateOut + " " + _endTimeOut + " Begin was "
-                    + _begDateOut + " " + _begTimeOut).toAscii(),true));
-      callScript(("End_Outage "
-                    + _endDateOut + " " + _endTimeOut + " Begin was "
-                    + _begDateOut + " " + _begTimeOut).toAscii());
+      _decodeStop = QDateTime::currentDateTime();
     }
   }
-  _fromReconnect = false;
-  _decodeStop = QDateTime::currentDateTime();
 }
 
 // Perform latency checks (observations)
