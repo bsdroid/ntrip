@@ -4,31 +4,60 @@
 #include <string>
 
 class t_prn {
- public:
-  static const unsigned MAXPRN_GPS     = 32;
+public:
+  static const unsigned MAXPRN_GPS = 32;
   static const unsigned MAXPRN_GLONASS = 26;
   static const unsigned MAXPRN_GALILEO = 36;
-  static const unsigned MAXPRN_QZSS    = 10;
-  static const unsigned MAXPRN_SBAS    = 38;
-  static const unsigned MAXPRN_BDS     = 37;
-  static const unsigned MAXPRN         = MAXPRN_GPS  + MAXPRN_GLONASS + MAXPRN_GALILEO
-		                               + MAXPRN_QZSS + MAXPRN_SBAS    + MAXPRN_BDS;
+  static const unsigned MAXPRN_QZSS = 10;
+  static const unsigned MAXPRN_SBAS = 38;
+  static const unsigned MAXPRN_BDS = 37;
+  static const unsigned MAXPRN = MAXPRN_GPS + MAXPRN_GLONASS + MAXPRN_GALILEO
+      + MAXPRN_QZSS + MAXPRN_SBAS + MAXPRN_BDS;
 
-  t_prn() : _system('G'), _number(0) {}
-  t_prn(char system, int number) : _system(system), _number(number) {}
+  t_prn() :
+      _system('G'), _number(0), _flags(0) {
+  }
+  t_prn(char system, int number) :
+      _system(system), _number(number), _flags(0) {
+  }
 
-  ~t_prn() {}; 
+  t_prn(char system, int number, int flags) :
+      _system(system), _number(number), _flags(flags) {
+  }
 
-  void        set(char system, int number) {_system = system; _number = number;} 
-  void        set(const std::string& str);
+  ~t_prn() {
+  }
 
-  char        system() const {return _system;}
-  int         number() const {return _number;}
-  int         toInt() const;
+  void set(char system, int number) {
+    _system = system;
+    _number = number;
+    _flags  = 0;
+  }
+
+  void set(char system, int number, int flags) {
+    _system = system;
+    _number = number;
+    _flags  = flags;
+  }
+
+  void set(const std::string& str);
+
+  char system() const {
+    return _system;
+  }
+  int number() const {
+    return _number;
+  }
+  int flags() const {
+    return _flags;
+  }
+  int toInt() const;
   std::string toString() const;
+  std::string toInternalString() const;
 
   bool operator==(const t_prn& prn2) const {
-    if (_system == prn2._system && _number == prn2._number) {
+    if (_system == prn2._system && _number == prn2._number
+        && _flags == prn2._flags) {
       return true;
     }
     else {
@@ -38,13 +67,14 @@ class t_prn {
 
   operator unsigned() const;
 
-  friend std::istream& operator >> (std::istream& in, t_prn& prn);
+  friend std::istream& operator >>(std::istream& in, t_prn& prn);
 
- private:
+private:
   char _system;
-  int  _number;
+  int _number;
+  int _flags;
 };
 
-std::istream& operator >> (std::istream& in, t_prn& prn);
+std::istream& operator >>(std::istream& in, t_prn& prn);
 
 #endif

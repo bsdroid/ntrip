@@ -149,13 +149,11 @@ t_irc bncEphUser::putNewEph(t_eph* eph, bool check) {
     return failure;
   }
 
-  QString prn(newEph->prn().toString().c_str());
+  QString prn(newEph->prn().toInternalString().c_str());
 
   const t_eph* ephOld = ephLast(prn);
 
-  if (ephOld == 0 ||
-      newEph->isNewerThan(ephOld) ||
-      newEph->hasOtherFlagsThan(ephOld)) {
+  if (ephOld == 0 || newEph->isNewerThan(ephOld)) {
     deque<t_eph*>& qq = _eph[prn];
     qq.push_back(newEph);
     if (qq.size() > _maxQueueSize) {
@@ -200,7 +198,7 @@ void bncEphUser::checkEphemeris(t_eph* eph) {
   // Check consistency with older ephemerides
   // ----------------------------------------
   const double MAXDIFF = 1000.0;
-  QString      prn     = QString(eph->prn().toString().c_str());
+  QString      prn     = QString(eph->prn().toInternalString().c_str());
   t_eph*       ephL    = ephLast(prn);
   if (ephL) {
     ColumnVector xcL(4);
@@ -211,7 +209,7 @@ void bncEphUser::checkEphemeris(t_eph* eph) {
     double diff = (xc.Rows(1,3) - xcL.Rows(1,3)).norm_Frobenius();
 
     if (diff < MAXDIFF) {
-      if(dt != 0.0 || eph->hasOtherFlagsThan(ephL)) {
+      if(dt != 0.0) {
         eph->setCheckState(t_eph::ok);
         ephL->setCheckState(t_eph::ok);
       }

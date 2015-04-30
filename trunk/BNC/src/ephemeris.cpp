@@ -22,7 +22,6 @@ t_eph::t_eph() {
   _checkState = unchecked;
   _orbCorr    = 0;
   _clkCorr    = 0;
-  _flags      = 0;
 }
 
 // 
@@ -797,13 +796,15 @@ int t_ephGlo::IOD() const {
 // Constructor
 //////////////////////////////////////////////////////////////////////////////
 t_ephGal::t_ephGal(float rnxVersion, const QStringList& lines) {
-
+  int       year, month, day, hour, min;
+  double    sec;
+  QString   prnStr;
   const int nLines = 8;
-
   if (lines.size() != nLines) {
     _checkState = bad;
     return;
   }
+  _flags = 0;
 
   // RINEX Format
   // ------------
@@ -825,18 +826,7 @@ t_ephGal::t_ephGal(float rnxVersion, const QStringList& lines) {
     if      ( iLine == 0 ) {
       QTextStream in(line.left(pos[1]).toAscii());
 
-      int    year, month, day, hour, min;
-      double sec;
-      
-      QString prnStr;
       in >> prnStr >> year >> month >> day >> hour >> min >> sec;
-      if (prnStr.at(0) == 'E') {
-        _prn.set('E', prnStr.mid(1).toInt());
-      }
-      else {
-        _prn.set('E', prnStr.toInt());
-      }
-
       if      (year <  80) {
         year += 2000;
       }
@@ -935,6 +925,13 @@ t_ephGal::t_ephGal(float rnxVersion, const QStringList& lines) {
         }
         // Bit 7-8
         _E5bHS = double((int(SVhealth) >> 7) & 0x3);
+
+        if (prnStr.at(0) == 'E') {
+          _prn.set('E', prnStr.mid(1,2).toInt(), _flags);
+        }
+        else {
+          _prn.set('E', prnStr.mid(1,2).toInt(), _flags);
+        }
       }
     }
 
@@ -953,7 +950,8 @@ void t_ephGal::set(const galileoephemeris* ee) {
 
   _receptDateTime = currentDateAndTimeGPS();
 
-  _prn.set('E', ee->satellite);
+  _flags    = ee->flags;
+  _prn.set('E', ee->satellite, _flags);
 
   _TOC.set(ee->Week, ee->TOC);
   _clock_bias      = ee->clock_bias;
@@ -993,8 +991,6 @@ void t_ephGal::set(const galileoephemeris* ee) {
   _BGD_1_5B = ee->BGD_1_5B;
 
   _TOT      = 0.9999e9;
-
-  _flags    = ee->flags;
 }
 
 // Compute Galileo Satellite Position (virtual)

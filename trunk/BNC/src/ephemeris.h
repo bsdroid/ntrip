@@ -33,8 +33,6 @@ class t_eph {
   e_checkState checkState() const {return _checkState;}
   void    setCheckState(e_checkState checkState) {_checkState = checkState;}
   t_prn   prn() const {return _prn;}
-  int     flags() const {return _flags;}
-  bool    hasOtherFlagsThan(const t_eph* eph) {return differentFlags(eph, this);}
   t_irc   getCrd(const bncTime& tt, ColumnVector& xc, ColumnVector& vv, bool useCorr) const;
   void    setOrbCorr(const t_orbCorr* orbCorr);
   void    setClkCorr(const t_clkCorr* clkCorr);
@@ -42,13 +40,11 @@ class t_eph {
   static QString rinexDateStr(const bncTime& tt, const t_prn& prn, double version);
   static QString rinexDateStr(const bncTime& tt, const QString& prnStr, double version);
   static bool earlierTime(const t_eph* eph1, const t_eph* eph2) {return eph1->_TOC < eph2->_TOC;}
-  static bool differentFlags(const t_eph* eph1, const t_eph* eph2) {return eph1->_flags != eph2->_flags;}
 
  protected:  
   virtual t_irc position(int GPSweek, double GPSweeks, double* xc, double* vv) const = 0;
   t_prn        _prn;
   bncTime      _TOC;
-  int          _flags;
   QDateTime    _receptDateTime;
   e_checkState _checkState;
   t_orbCorr*   _orbCorr;
@@ -154,7 +150,7 @@ class t_ephGlo : public t_eph {
 class t_ephGal : public t_eph {
  friend class t_ephEncoder;
  public:
-  t_ephGal() { }
+  t_ephGal() : _flags(0) { };
   t_ephGal(float rnxVersion, const QStringList& lines);
   virtual ~t_ephGal() {}
 
@@ -191,7 +187,7 @@ class t_ephGal : public t_eph {
   double  _OMEGADOT;         //  [rad/s]
 
   double  _IDOT;             //  [rad/s]
-  double _TOEweek;
+  double  _TOEweek;
   // spare
 
   mutable double  _SISA;     // Signal In Space Accuracy
@@ -201,7 +197,13 @@ class t_ephGal : public t_eph {
   double  _BGD_1_5A;         //  group delay [s] 
   double  _BGD_1_5B;         //  group delay [s] 
 
-  double _TOT;               // [s]
+  double  _TOT;              // [s]
+
+  int     _flags;            // GALEPHF_E5ADINVALID   E5aDVS set invalid
+                             // GALEPHF_E5BDINVALID   E5bDVS set invalid
+                             // GALEPHF_INAV          INAV data
+                             // GALEPHF_FNAV          FNAV data
+                             // GALEPHF_E1DINVALID    E1DVS set invalid
 };
 
 class t_ephSBAS : public t_eph {
