@@ -1549,12 +1549,13 @@ Sample script for Unix/Linux/Mac OS X systems:
 <pre>
 #!/bin/bash
 sleep $((60*RANDOM/32767))
-cat | mail -s &quot;NABU: $1&quot; email@address &lt;&lt;!
+cat &gt; mail.txt &lt;&lt;EOF
 Advisory Note to BNC User,
 Please note the following advisory received from BNC.
 Stream: $*
 Regards, BNC
-!
+EOF
+mail -s &quot;NABU: $1&quot; email@address &lt; mail.txt
 </pre>
 </p>
 <p>
