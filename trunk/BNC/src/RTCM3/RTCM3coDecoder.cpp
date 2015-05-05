@@ -46,7 +46,6 @@
 #include "bncrinex.h"
 #include "bnccore.h"
 #include "bncsettings.h"
-#include "rtcm3torinex.h"
 #include "bnctime.h"
 
 using namespace std;

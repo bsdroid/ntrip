@@ -52,6 +52,70 @@ bncTime& bncTime::set(int gpsw, double gpssec) {
 
 // 
 //////////////////////////////////////////////////////////////////////////////
+bncTime &bncTime::set(int msec) {
+  int week;
+  double sec;
+
+  currentGPSWeeks(week, sec);
+  if(msec/1000.0 < sec - 86400.0)
+    ++week;
+  return set(week, msec/1000.0);
+}
+
+// 
+//////////////////////////////////////////////////////////////////////////////
+bncTime &bncTime::setTOD(int msec) {
+  int week;
+  double sec;
+
+  currentGPSWeeks(week, sec);
+  int intsec = sec;
+  int day = intsec/(24*60*60);
+  int tod = (intsec%(24*60*60))*1000;
+  if(msec > 19*60*60*1000 && tod < 5*60*60*1000)
+    --day;
+  else if(msec < 5*60*60 && tod > 19*60*60*1000)
+    ++day;
+  msec += day*24*60*60*1000;
+  if(msec < 0.0) {
+    msec += 7*24*60*60*1000;
+    --week;
+  }
+
+  return set(week, msec/1000.0);
+}
+
+// 
+//////////////////////////////////////////////////////////////////////////////
+bncTime &bncTime::setTk(int msec) {
+  int week;
+  double sec;
+  int intsec;
+
+  currentGPSWeeks(week, sec);
+  intsec = sec;
+  updatetime(&week, &intsec, msec, 0); /* Moscow -> GPS */
+  sec = intsec+(msec%1000)/1000.0;
+  return set(week, sec);
+}
+
+// 
+//////////////////////////////////////////////////////////////////////////////
+bncTime &bncTime::setBDS(int msec) {
+  int week;
+  double sec;
+
+  msec += 14000;
+  if(msec >= 7*24*60*60*1000)
+    msec -= 7*24*60*60*1000;
+  currentGPSWeeks(week, sec);
+  if(msec/1000.0 < sec - 86400.0)
+    ++week;
+  return set(week, msec/1000.0);
+}
+
+// 
+//////////////////////////////////////////////////////////////////////////////
 bncTime& bncTime::setmjd(double daysec, int mjd) {
   _sec = daysec;
   _mjd = mjd;
@@ -104,10 +168,34 @@ double bncTime::gpssec() const {
   return gsec + _sec;
 }
 
+//
+//////////////////////////////////////////////////////////////////////////////
+unsigned int bncTime::bdsw() const {
+  double   gsec;
+  long     gpsw;
+  jdgp(_mjd, gsec, gpsw);
+  if(gsec <= 14.0)
+    gpsw -= 1;
+  return (int)gpsw-1356;
+}
+
+// 
+//////////////////////////////////////////////////////////////////////////////
+double bncTime::bdssec() const {
+  double   gsec;
+  long     gpsw;
+  jdgp(_mjd, gsec, gpsw);
+  if(gsec <= 14.0)
+    gsec += 7.0*24.0*60.0*60.0-14.0;
+  else
+    gsec -= 14.0;
+  return gsec + _sec;
+}
+
 // 
 //////////////////////////////////////////////////////////////////////////////
 bool bncTime::operator!=(const bncTime &time1) const {
-  if ( ((*this) - time1) != 0.0 ) {
+  if ( fabs((*this) - time1) > 0.000000000001 ) {
     return true;
   }
   else {
@@ -118,7 +206,7 @@ bool bncTime::operator!=(const bncTime &time1) const {
 // 
 //////////////////////////////////////////////////////////////////////////////
 bool bncTime::operator==(const bncTime &time1) const {
-  if ( ((*this) - time1) == 0.0 ) {
+  if ( fabs((*this) - time1) < 0.000000000001 ) {
     return true;
   }
   else {
@@ -293,7 +381,7 @@ string bncTime::datestr(char sep) const {
 
 // 
 //////////////////////////////////////////////////////////////////////////////
-bncTime::operator string() const {
+bncTime::operator std::string() const {
   return datestr() + '_' + timestr();
 }
 
@@ -302,6 +390,13 @@ bncTime::operator string() const {
 bncTime& bncTime::set(int year, int month, int day, 
                       int hour, int min, double sec) {
   return set(year, month, day, hour*3600 + min*60 + sec);
+}
+
+// 
+//////////////////////////////////////////////////////////////////////////////
+bncTime& bncTime::setBDS(int year, int month, int day, 
+                      int hour, int min, double sec) {
+  return set(year, month, day, hour*3600 + min*60 + sec+14.0);
 }
 
 // 

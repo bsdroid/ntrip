@@ -53,6 +53,110 @@
 
 using namespace std;
 
+struct leapseconds { /* specify the day of leap second */
+  int day;        /* this is the day, where 23:59:59 exists 2 times */
+  int month;      /* not the next day! */
+  int year;
+  int taicount;
+};
+static const int months[13] = {0,31,28,31,30,31,30,31,31,30,31,30,31};
+static const struct leapseconds leap[] = {
+/*{31, 12, 1971, 10},*/
+/*{30, 06, 1972, 11},*/
+/*{31, 12, 1972, 12},*/
+/*{31, 12, 1973, 13},*/
+/*{31, 12, 1974, 14},*/
+/*{31, 12, 1975, 15},*/
+/*{31, 12, 1976, 16},*/
+/*{31, 12, 1977, 17},*/
+/*{31, 12, 1978, 18},*/
+/*{31, 12, 1979, 19},*/
+{30, 06, 1981,20},
+{30, 06, 1982,21},
+{30, 06, 1983,22},
+{30, 06, 1985,23},
+{31, 12, 1987,24},
+{31, 12, 1989,25},
+{31, 12, 1990,26},
+{30, 06, 1992,27},
+{30, 06, 1993,28},
+{30, 06, 1994,29},
+{31, 12, 1995,30},
+{30, 06, 1997,31},
+{31, 12, 1998,32},
+{31, 12, 2005,33},
+{31, 12, 2008,34},
+{30, 06, 2012,35},
+{30, 06, 2015,36},
+{0,0,0,0} /* end marker */
+};
+
+#define GPSLEAPSTART    19 /* 19 leap seconds existed at 6.1.1980 */
+
+static int longyear(int year, int month)
+{
+  if(!(year % 4) && (!(year % 400) || (year % 100)))
+  {
+    if(!month || month == 2)
+      return 1;
+  }
+  return 0;
+}
+
+int gnumleap(int year, int month, int day)
+{
+  int ls = 0;
+  const struct leapseconds *l;
+
+  for(l = leap; l->taicount && year >= l->year; ++l)
+  {
+    if(year > l->year || month > l->month || (month == l->month && day > l->day))
+       ls = l->taicount - GPSLEAPSTART;
+  }
+  return ls;
+}
+
+/* Convert Moscow time into UTC (fixnumleap == 1) or GPS (fixnumleap == 0) */
+void updatetime(int *week, int *secOfWeek, int mSecOfWeek, bool fixnumleap)
+{
+  int y,m,d,k,l, nul;
+  unsigned int j = *week*(7*24*60*60) + *secOfWeek + 5*24*60*60+3*60*60;
+  int glo_daynumber = 0, glo_timeofday;
+  for(y = 1980; j >= (unsigned int)(k = (l = (365+longyear(y,0)))*24*60*60)
+  + gnumleap(y+1,1,1); ++y)
+  {
+    j -= k; glo_daynumber += l;
+  }
+  for(m = 1; j >= (unsigned int)(k = (l = months[m]+longyear(y, m))*24*60*60)
+  + gnumleap(y, m+1, 1); ++m)
+  {
+    j -= k; glo_daynumber += l;
+  }
+  for(d = 1; j >= 24UL*60UL*60UL + gnumleap(y, m, d+1); ++d)
+    j -= 24*60*60;
+  glo_daynumber -= 16*365+4-d;
+  nul = gnumleap(y, m, d);
+  glo_timeofday = j-nul;
+
+  // original version
+  // if(mSecOfWeek < 5*60*1000 && glo_timeofday > 23*60*60)
+  //   *secOfWeek += 24*60*60;
+  // else if(glo_timeofday < 5*60 && mSecOfWeek > 23*60*60*1000)
+  //   *secOfWeek -= 24*60*60;
+
+  // new version 
+  if(mSecOfWeek < 4*60*60*1000 && glo_timeofday > 20*60*60)
+    *secOfWeek += 24*60*60;
+  else if(glo_timeofday < 4*60*60 && mSecOfWeek > 20*60*60*1000)
+    *secOfWeek -= 24*60*60;
+
+  *secOfWeek += mSecOfWeek/1000-glo_timeofday;
+  if(fixnumleap)
+    *secOfWeek -= nul;
+  if(*secOfWeek < 0) {*secOfWeek += 24*60*60*7; --*week; }
+  if(*secOfWeek >= 24*60*60*7) {*secOfWeek -= 24*60*60*7; ++*week; }
+}
+
 // 
 ////////////////////////////////////////////////////////////////////////////
 void expandEnvVar(QString& str) {

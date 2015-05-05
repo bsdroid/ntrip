@@ -36,6 +36,26 @@
 
 void         expandEnvVar(QString& str);
 
+/**
+ * Return GPS leap seconds for a given UTC time
+ * @param year 4 digit year
+ * @param month month in year (1-12)
+ * @param day day in month (1-31)
+ * @return number of leap seconds since 6.1.1980
+ */
+int          gnumleap(int year, int month, int day);
+
+/**
+ * Convert Moscow time into GPS or UTC. Note that parts of a second are not preserved
+ * and must be handled separately.
+ * @param week GPS week number (must be prefilled, contains fixed value afterwards)
+ * @param secOfWeek seconds in GPS week (must be prefilled, contains fixed value afterwards) 
+ * @param mSecOfWeek milli seconds in GLONASS time
+ * @param fixnumleap when <code>true</code> then result is UTC time, otherwise it is GPS
+ * @return does not return a value, but updates first two arguments
+ */
+void         updatetime(int *week, int *secOfWeek, int mSecOfWeek, bool fixnumleap);
+
 QDateTime    dateAndTimeFromGPSweek(int GPSWeek, double GPSWeeks);
 
 void         currentGPSWeeks(int& week, double& sec);

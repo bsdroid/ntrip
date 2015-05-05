@@ -1,10 +1,6 @@
 
 #include "ephEncoder.h"
 
-extern "C" {
-#  include "rtcm3torinex.h"
-}
-
 using namespace std;
 
 // Returns CRC24
@@ -46,12 +42,7 @@ int t_ephEncoder::RTCM3(const t_ephGPS& eph, unsigned char *buffer) {
   unsigned long long bitbuffer = 0;
   eph._ura = indexFromAccuracy(eph._ura, eph.type());
   GPSADDBITS(12, 1019)
-  if (eph._prn.system() == 'J') {
-    GPSADDBITS(6,eph._prn.number() + PRN_QZSS_START - 1)
-  }
-  else {
-    GPSADDBITS(6,eph._prn.number())
-  }
+  GPSADDBITS(6,eph._prn.number())
   GPSADDBITS(10, eph._TOC.gpsw())
   GPSADDBITS(4, eph._ura)
   GPSADDBITS(2,eph._L2Codes)
@@ -209,8 +200,7 @@ int t_ephEncoder::RTCM3(const t_ephGal& eph, unsigned char *buffer) {
 
   eph._SISA = indexFromAccuracy(eph._SISA, eph.type());
 
-  bool inav = ( (eph._flags & GALEPHF_INAV) == GALEPHF_INAV );
-  GALILEOADDBITS(12, inav ? 1046 : 1045)
+  GALILEOADDBITS(12, eph._inav ? 1046 : 1045)
   GALILEOADDBITS(6, eph._prn.number())
   GALILEOADDBITS(12, eph._TOC.gpsw())
   GALILEOADDBITS(10, eph._IODnav)
@@ -245,22 +235,22 @@ int t_ephEncoder::RTCM3(const t_ephGal& eph, unsigned char *buffer) {
   /static_cast<double>(1<<13))
   GALILEOADDBITSFLOAT(10, eph._BGD_1_5A, 1.0/static_cast<double>(1<<30)
   /static_cast<double>(1<<2))
-  if(inav)
+  if(eph._inav)
   {
     GALILEOADDBITSFLOAT(10, eph._BGD_1_5B, 1.0/static_cast<double>(1<<30)
     /static_cast<double>(1<<2))
     GALILEOADDBITS(2, static_cast<int>(eph._E5bHS))
-    GALILEOADDBITS(1, eph._flags & GALEPHF_E5BDINVALID)
+    GALILEOADDBITS(1, eph._e5bDataInValid ? 1 : 0)
   }
   else
   {
     GALILEOADDBITS(2, static_cast<int>(eph._E5aHS))
-    GALILEOADDBITS(1, eph._flags & GALEPHF_E5ADINVALID)
+    GALILEOADDBITS(1,  eph._e5aDataInValid ? 1 : 0)
   }
   ////  eph._TOEsec = 0.9999E9;
   GALILEOADDBITS(20, eph._TOEsec)
 
-  GALILEOADDBITS((inav ? 1 : 3), 0)
+  GALILEOADDBITS((eph._inav ? 1 : 3), 0)
 
   startbuffer[0]=0xD3;
   startbuffer[1]=(size >> 8);
@@ -344,11 +334,11 @@ int t_ephEncoder::RTCM3(const t_ephBDS& eph, unsigned char* buffer) {
   eph._URA = indexFromAccuracy(eph._URA, eph.type());
   BDSADDBITS(12, RTCM3ID_BDS)
   BDSADDBITS(6, eph._prn.number())
-  BDSADDBITS(13, eph._TOC_bdt.gpsw() - 1356.0)
+  BDSADDBITS(13, eph._TOC.bdsw() - 1356.0)
   BDSADDBITS(4, eph._URA);
   BDSADDBITSFLOAT(14, eph._IDOT, M_PI/static_cast<double>(1<<30)/static_cast<double>(1<<13))
   BDSADDBITS(5, eph._AODE)
-  BDSADDBITS(17, static_cast<int>(eph._TOC_bdt.gpssec())>>3)
+  BDSADDBITS(17, static_cast<int>(eph._TOC.bdssec())>>3)
   BDSADDBITSFLOAT(11, eph._clock_driftrate, 1.0/static_cast<double>(1<<30)
       /static_cast<double>(1<<30)/static_cast<double>(1<<6))
   BDSADDBITSFLOAT(22, eph._clock_drift, 1.0/static_cast<double>(1<<30)/static_cast<double>(1<<20))
@@ -361,7 +351,7 @@ int t_ephEncoder::RTCM3(const t_ephBDS& eph, unsigned char* buffer) {
   BDSADDBITSFLOAT(32, eph._e, 1.0/static_cast<double>(1<<30)/static_cast<double>(1<<3))
   BDSADDBITSFLOAT(18, eph._Cus, 1.0/static_cast<double>(1<<30)/static_cast<double>(1<<1))
   BDSADDBITSFLOAT(32, eph._sqrt_A, 1.0/static_cast<double>(1<<19))
-  BDSADDBITS(17, static_cast<int>(eph._TOE_bdt.gpssec())>>3)
+  BDSADDBITS(17, static_cast<int>(eph._TOE.bdssec())>>3)
   BDSADDBITSFLOAT(18, eph._Cic, 1.0/static_cast<double>(1<<30)/static_cast<double>(1<<1))
   BDSADDBITSFLOAT(32, eph._OMEGA0, M_PI/static_cast<double>(1<<30)/static_cast<double>(1<<1))
   BDSADDBITSFLOAT(18, eph._Cis, 1.0/static_cast<double>(1<<30)/static_cast<double>(1<<1))

@@ -501,7 +501,7 @@ void bncGetThread::run() {
             continue;
           }
         }
-      
+
         // Check observations coming twice (e.g. KOUR0 Problem)
         // ----------------------------------------------------
         if (!_rawFile) {
