@@ -68,10 +68,10 @@ public:
   /**
    * Cleanup function resets all elements to initial state.
    */
-  inline void clear(void)
-  {
+  inline void clear(void) {
     _system = 'G';
     _number = 0;
+    _flags = 0;
   }
 
   operator unsigned() const;
