@@ -260,63 +260,6 @@ t_ephGPS::t_ephGPS(float rnxVersion, const QStringList& lines) {
   }
 }
 
-// Set GPS Satellite Position
-////////////////////////////////////////////////////////////////////////////
-void t_ephGPS::set(const gpsephemeris* ee) {
-
-  _receptDateTime = currentDateAndTimeGPS();
-
-  if      (PRN_GPS_START <= ee->satellite && ee->satellite <= PRN_GPS_END) {
-    _prn.set('G', ee->satellite);
-  }
-  else if (PRN_QZSS_START <= ee->satellite && ee->satellite <= PRN_QZSS_END) {
-    _prn.set('J', ee->satellite - PRN_QZSS_START + 1);
-  }
-  else {
-    _checkState = bad;
-    return;
-  }
-
-  _TOC.set(ee->GPSweek, ee->TOC);
-  _clock_bias      = ee->clock_bias;
-  _clock_drift     = ee->clock_drift;
-  _clock_driftrate = ee->clock_driftrate;
-
-  _IODE     = ee->IODE;
-  _Crs      = ee->Crs;
-  _Delta_n  = ee->Delta_n;
-  _M0       = ee->M0;
-
-  _Cuc      = ee->Cuc;
-  _e        = ee->e;
-  _Cus      = ee->Cus;
-  _sqrt_A   = ee->sqrt_A;
-
-  _TOEsec   = ee->TOE;
-  _Cic      = ee->Cic;
-  _OMEGA0   = ee->OMEGA0;
-  _Cis      = ee->Cis;
-
-  _i0       = ee->i0;
-  _Crc      = ee->Crc;
-  _omega    = ee->omega;
-  _OMEGADOT = ee->OMEGADOT;
-
-  _IDOT     = ee->IDOT;
-  _L2Codes  = 0.0;
-  _TOEweek  = ee->GPSweek;
-  _L2PFlag  = 0.0;
-
-  _ura = accuracyFromIndex(ee->URAindex, type());
-
-  _health   = ee->SVhealth;
-  _TGD      = ee->TGD;
-  _IODC     = ee->IODC;
-
-  _TOT         = 0.9999e9;
-  _fitInterval = 0.0;
-}
-
 // Compute GPS Satellite Position (virtual)
 ////////////////////////////////////////////////////////////////////////////
 t_irc t_ephGPS::position(int GPSweek, double GPSweeks, double* xc, double* vv) const {
@@ -569,101 +512,6 @@ t_ephGlo::t_ephGlo(float rnxVersion, const QStringList& lines) {
   _xv(6) = _z_velocity * 1.e3;
 }
 
-// Set Glonass Ephemeris
-////////////////////////////////////////////////////////////////////////////
-void t_ephGlo::set(const glonassephemeris* ee) {
-
-  _receptDateTime = currentDateAndTimeGPS();
-
-  _prn.set('R', ee->almanac_number);
-
-  int ww  = ee->GPSWeek;
-  int tow = ee->GPSTOW; 
-  updatetime(&ww, &tow, ee->tb*1000, 0);  // Moscow -> GPS
-
-  // Check the day once more 
-  // -----------------------
-  bool timeChanged = false;
-  {
-    const double secPerDay  = 24 * 3600.0;
-    const double secPerWeek = 7 * secPerDay;
-    int ww_old  = ww;
-    int tow_old = tow;
-    int    currentWeek;
-    double currentSec;
-    currentGPSWeeks(currentWeek, currentSec);
-    bncTime currentTime(currentWeek, currentSec);
-    bncTime hTime(ww, (double) tow);
-
-    if      (hTime - currentTime >  secPerDay/2.0) {
-      timeChanged = true;
-      tow -= int(secPerDay);
-      if (tow < 0) {
-        tow += int(secPerWeek);
-        ww  -= 1;
-      }
-    }
-    else if (hTime - currentTime < -secPerDay/2.0) {
-      timeChanged = true;
-      tow += int(secPerDay);
-      if (tow > secPerWeek) {
-        tow -= int(secPerWeek);
-        ww  += 1;
-      }
-    }
-
-    if (false && timeChanged && BNC_CORE->mode() == t_bncCore::batchPostProcessing) {
-      bncTime newHTime(ww, (double) tow);
-      cout << "GLONASS " << ee->almanac_number <<  " Time Changed at " 
-           << currentTime.datestr()         << " " << currentTime.timestr() 
-           << endl
-           << "old: " << hTime.datestr()    << " " << hTime.timestr()       
-           << endl
-           << "new: " << newHTime.datestr() << " " << newHTime.timestr()    
-           << endl
-           << "eph: " << ee->GPSWeek << " " << ee->GPSTOW << " " << ee->tb 
-           << endl
-           << "ww, tow (old): " << ww_old << " " << tow_old 
-           << endl
-           << "ww, tow (new): " << ww     << " " << tow 
-           << endl << endl;
-    }
-  }
-
-  bncTime hlpTime(ww, (double) tow);
-  unsigned year, month, day;
-  hlpTime.civil_date(year, month, day);
-  _gps_utc = gnumleap(year, month, day);
-
-  _TOC.set(ww, tow);
-  _E                 = ee->E;
-  _tau               = ee->tau;
-  _gamma             = ee->gamma;
-  _x_pos             = ee->x_pos;
-  _x_velocity        = ee->x_velocity;     
-  _x_acceleration    = ee->x_acceleration;
-  _y_pos             = ee->y_pos;         
-  _y_velocity        = ee->y_velocity;    
-  _y_acceleration    = ee->y_acceleration;
-  _z_pos             = ee->z_pos;         
-  _z_velocity        = ee->z_velocity;    
-  _z_acceleration    = ee->z_acceleration;
-  _health            = 0;
-  _frequency_number  = ee->frequency_number;
-  _tki               = ee->tk-3*60*60; if (_tki < 0) _tki += 86400;
-
-  // Initialize status vector
-  // ------------------------
-  _tt = _TOC;
-
-  _xv(1) = _x_pos * 1.e3; 
-  _xv(2) = _y_pos * 1.e3; 
-  _xv(3) = _z_pos * 1.e3; 
-  _xv(4) = _x_velocity * 1.e3; 
-  _xv(5) = _y_velocity * 1.e3; 
-  _xv(6) = _z_velocity * 1.e3; 
-}
-
 // Compute Glonass Satellite Position (virtual)
 ////////////////////////////////////////////////////////////////////////////
 t_irc t_ephGlo::position(int GPSweek, double GPSweeks, double* xc, double* vv) const {
@@ -804,7 +652,6 @@ t_ephGal::t_ephGal(float rnxVersion, const QStringList& lines) {
     _checkState = bad;
     return;
   }
-  _flags = 0;
 
   // RINEX Format
   // ------------
@@ -892,9 +739,11 @@ t_ephGal::t_ephGal(float rnxVersion, const QStringList& lines) {
         return;
       } else {
         if        (int(datasource) & (1<<8)) {
-          _flags |= GALEPHF_FNAV;
+          _fnav = true;
+          _inav = false;
         } else if (int(datasource) & (1<<9)) {
-          _flags |= GALEPHF_INAV;
+          _fnav = false;
+          _inav = true;
         }
       }
     }
@@ -908,29 +757,20 @@ t_ephGal::t_ephGal(float rnxVersion, const QStringList& lines) {
         return;
       } else {
         // Bit 0
-        if (int(SVhealth) & (1<<0)) {
-          _flags |= GALEPHF_E1DINVALID;
-        }
+        _e1DataInValid = (int(SVhealth) & (1<<0));
         // Bit 1-2
         _E1_bHS = double((int(SVhealth) >> 1) & 0x3);
         // Bit 3
-        if (int(SVhealth) & (1<<3)) {
-          _flags |= GALEPHF_E5ADINVALID;
-        }
+        _e5aDataInValid = (int(SVhealth) & (1<<3));
         // Bit 4-5
         _E5aHS = double((int(SVhealth) >> 4) & 0x3);
         // Bit 6
-        if (int(SVhealth) & (1<<6)) {
-          _flags |= GALEPHF_E5BDINVALID;
-        }
+        _e5bDataInValid = (int(SVhealth) & (1<<6));
         // Bit 7-8
         _E5bHS = double((int(SVhealth) >> 7) & 0x3);
 
         if (prnStr.at(0) == 'E') {
-          _prn.set('E', prnStr.mid(1,2).toInt(), _flags);
-        }
-        else {
-          _prn.set('E', prnStr.mid(1,2).toInt(), _flags);
+          _prn.set('E', prnStr.mid(1,2).toInt(), _inav ? 1 : 0);
         }
       }
     }
@@ -942,55 +782,6 @@ t_ephGal::t_ephGal(float rnxVersion, const QStringList& lines) {
       }
     }
   }
-}
-
-// Set Galileo Satellite Position
-////////////////////////////////////////////////////////////////////////////
-void t_ephGal::set(const galileoephemeris* ee) {
-
-  _receptDateTime = currentDateAndTimeGPS();
-
-  _flags    = ee->flags;
-  _prn.set('E', ee->satellite, _flags);
-
-  _TOC.set(ee->Week, ee->TOC);
-  _clock_bias      = ee->clock_bias;
-  _clock_drift     = ee->clock_drift;
-  _clock_driftrate = ee->clock_driftrate;
-
-  _IODnav   = ee->IODnav;
-  _Crs      = ee->Crs;
-  _Delta_n  = ee->Delta_n;
-  _M0       = ee->M0;
-
-  _Cuc      = ee->Cuc;
-  _e        = ee->e;
-  _Cus      = ee->Cus;
-  _sqrt_A   = ee->sqrt_A;
-
-  _TOEsec   = _TOC.gpssec();
-  //  _TOEsec   = ee->TOE;  // TODO:
-
-  _Cic      = ee->Cic;
-  _OMEGA0   = ee->OMEGA0;
-  _Cis      = ee->Cis;
-
-  _i0       = ee->i0;
-  _Crc      = ee->Crc;
-  _omega    = ee->omega;
-  _OMEGADOT = ee->OMEGADOT;
-
-  _IDOT     = ee->IDOT;
-  _TOEweek  = ee->Week;
-
-  _SISA = accuracyFromIndex(ee->SISA, type());
-  _E5aHS    = ee->E5aHS;
-  _E5bHS    = ee->E5bHS;
-  _E1_bHS   = ee->E1_HS;
-  _BGD_1_5A = ee->BGD_1_5A;
-  _BGD_1_5B = ee->BGD_1_5B;
-
-  _TOT      = 0.9999e9;
 }
 
 // Compute Galileo Satellite Position (virtual)
@@ -1123,13 +914,13 @@ QString t_ephGal::toString(double version) const {
   int    SVhealth   = 0;
   double BGD_1_5A   = _BGD_1_5A;
   double BGD_1_5B   = _BGD_1_5B;
-  if      ((_flags & GALEPHF_FNAV) == GALEPHF_FNAV) {
+  if (_fnav) {
     dataSource |= (1<<1);
     dataSource |= (1<<8);
     BGD_1_5B = 0.0;
     // SVhealth
     //   Bit 3  : E5a DVS
-    if ((_flags & GALEPHF_E5ADINVALID) == GALEPHF_E5ADINVALID) {
+    if (_e5aDataInValid) {
       SVhealth |= (1<<3);
     }
     //   Bit 4-5: E5a HS
@@ -1144,7 +935,7 @@ QString t_ephGal::toString(double version) const {
       SVhealth |= (1<<5);
     }
   }
-  else if ((_flags & GALEPHF_INAV) == GALEPHF_INAV) {
+  else if(_inav) {
     // Bit 2 and 0 are set because from MT1046 the data source cannot be determined
     // and RNXv3.03 says both can be set if the navigation messages were merged
     dataSource |= (1<<0);
@@ -1152,7 +943,7 @@ QString t_ephGal::toString(double version) const {
     dataSource |= (1<<9);
     // SVhealth
     //   Bit 0  : E1-B DVS
-    if ((_flags & GALEPHF_E1DINVALID) == GALEPHF_E1DINVALID) {
+    if (_e1DataInValid) {
       SVhealth |= (1<<0);
     }
     //   Bit 1-2: E1-B HS
@@ -1167,7 +958,7 @@ QString t_ephGal::toString(double version) const {
       SVhealth |= (1<<2);
     }
     //   Bit 3  : E5a DVS
-    if ((_flags & GALEPHF_E5ADINVALID) == GALEPHF_E5ADINVALID) {
+    if (_e5aDataInValid) {
       SVhealth |= (1<<3);
     }
     //   Bit 4-5: E5a HS
@@ -1182,7 +973,7 @@ QString t_ephGal::toString(double version) const {
       SVhealth |= (1<<5);
     }
     //   Bit 6  : E5b DVS
-    if ((_flags & GALEPHF_E5BDINVALID) == GALEPHF_E5BDINVALID) {
+    if (_e5bDataInValid) {
       SVhealth |= (1<<6);
     }
     //   Bit 7-8: E5b HS
@@ -1321,36 +1112,6 @@ t_ephSBAS::t_ephSBAS(float rnxVersion, const QStringList& lines) {
   _z_acceleration *= 1.e3; 
 }
 
-// Set SBAS Satellite Position
-////////////////////////////////////////////////////////////////////////////
-void t_ephSBAS::set(const sbasephemeris* ee) {
-
-  _prn.set('S', ee->satellite - PRN_SBAS_START + 20);
-  _TOC.set(ee->GPSweek_TOE, double(ee->TOE));
-
-  _IODN           = ee->IODN;
-  _TOW            = ee->TOW;            
-
-  _agf0           = ee->agf0;           
-  _agf1           = ee->agf1;           
-                                
-  _x_pos          = ee->x_pos;          
-  _x_velocity     = ee->x_velocity;     
-  _x_acceleration = ee->x_acceleration; 
-                                
-  _y_pos          = ee->y_pos;          
-  _y_velocity     = ee->y_velocity;     
-  _y_acceleration = ee->y_acceleration; 
-                                
-  _z_pos          = ee->z_pos;          
-  _z_velocity     = ee->z_velocity;     
-  _z_acceleration = ee->z_acceleration; 
-
-  _ura            = accuracyFromIndex(ee->URA, type());
-
-  _health = 0;
-}
-
 // Compute SBAS Satellite Position (virtual)
 ////////////////////////////////////////////////////////////////////////////
 t_irc t_ephSBAS::position(int GPSweek, double GPSweeks, double* xc, double* vv) const {
@@ -1425,7 +1186,6 @@ t_ephBDS::t_ephBDS(float rnxVersion, const QStringList& lines) {
   // RINEX Format
   // ------------
   int fieldLen = 19;
-  double TOEw;
 
   int pos[4];
   pos[0] = (rnxVersion <= 2.12) ?  3 :  4;
@@ -1460,7 +1220,7 @@ t_ephBDS::t_ephBDS(float rnxVersion, const QStringList& lines) {
         year += 1900;
       }
 
-      _TOC_bdt.set(year, month, day, hour, min, sec);
+      _TOC.setBDS(year, month, day, hour, min, sec);
 
       if ( readDbl(line, pos[1], fieldLen, _clock_bias     ) ||
            readDbl(line, pos[2], fieldLen, _clock_drift    ) ||
@@ -1493,7 +1253,7 @@ t_ephBDS::t_ephBDS(float rnxVersion, const QStringList& lines) {
     }
 
     else if ( iLine == 3 ) {
-      if ( readDbl(line, pos[0], fieldLen, _TOEs   )  ||
+      if ( readDbl(line, pos[0], fieldLen, _TOEsec )  ||
            readDbl(line, pos[1], fieldLen, _Cic   )  ||
            readDbl(line, pos[2], fieldLen, _OMEGA0)  ||
            readDbl(line, pos[3], fieldLen, _Cis   ) ) {
@@ -1514,7 +1274,7 @@ t_ephBDS::t_ephBDS(float rnxVersion, const QStringList& lines) {
 
     else if ( iLine == 5 ) {
       if ( readDbl(line, pos[0], fieldLen, _IDOT    ) ||
-           readDbl(line, pos[2], fieldLen, TOEw)    ) {
+           readDbl(line, pos[2], fieldLen, _TOEweek)) {
         _checkState = bad;
         return;
       }
@@ -1534,81 +1294,21 @@ t_ephBDS::t_ephBDS(float rnxVersion, const QStringList& lines) {
 
     else if ( iLine == 7 ) {
       double aodc;
-      if ( readDbl(line, pos[0], fieldLen, _TOTs) ||
+      if ( readDbl(line, pos[0], fieldLen, _TOT) ||
            readDbl(line, pos[1], fieldLen, aodc) ) {
         _checkState = bad;
         return;
       }
-      if (_TOTs == 0.9999e9) {  // 0.9999e9 means not known (RINEX standard)
-        _TOTs = _TOEs;
+      if (_TOT == 0.9999e9) {  // 0.9999e9 means not known (RINEX standard)
+        _TOT = _TOEsec;
       }
       _AODC = int(aodc);
     }
   }
 
-  TOEw += 1356;  // BDT -> GPS week number
-  _TOE_bdt.set(int(TOEw), _TOEs);
-
-  // GPS->BDT
-  // --------
-  _TOC = _TOC_bdt + 14.0;
-  _TOE = _TOE_bdt + 14.0;
-
   // remark: actually should be computed from second_tot
   //         but it seems to be unreliable in RINEX files
-  _TOT = _TOC;
-}
-
-// Set BDS Satellite Position
-////////////////////////////////////////////////////////////////////////////
-void t_ephBDS::set(const bdsephemeris* ee) {
-
-  // RTCM usage: set RINEX File entries to zero
-  // ------------------------------------------
-  _TOTs = 0.0;
-  _TOEs = 0.0;
-
-  _receptDateTime = currentDateAndTimeGPS();
-
-  _prn.set('C', ee->satellite - PRN_BDS_START + 1);
-
-  _TOE_bdt.set(1356 + ee->BDSweek, ee->TOE);
-  _TOE   = _TOE_bdt + 14.0;
-
-  _TOC_bdt.set(1356 + ee->BDSweek, ee->TOC);
-  _TOC   = _TOC_bdt + 14.0;
-
-  _AODE  = ee->AODE;
-  _AODC  = ee->AODC;
-
-  _clock_bias      = ee->clock_bias;
-  _clock_drift     = ee->clock_drift;
-  _clock_driftrate = ee->clock_driftrate;
-
-  _Crs      = ee->Crs;
-  _Delta_n  = ee->Delta_n;
-  _M0       = ee->M0;
-
-  _Cuc      = ee->Cuc;
-  _e        = ee->e;
-  _Cus      = ee->Cus;
-  _sqrt_A   = ee->sqrt_A;
-
-  _Cic      = ee->Cic;
-  _OMEGA0   = ee->OMEGA0;
-  _Cis      = ee->Cis;
-
-  _i0       = ee->i0;
-  _Crc      = ee->Crc;
-  _omega    = ee->omega;
-  _OMEGADOT = ee->OMEGADOT;
-
-  _IDOT     = ee->IDOT;
-
-  _URA      = accuracyFromIndex(ee->URAI, type());
-  _SatH1    = (ee->flags & BDSEPHF_SATH1) ? 1: 0;
-  _TGD1     = ee->TGD_B1_B3;
-  _TGD2     = ee->TGD_B2_B3;
+  _TOT = _TOC.bdssec();
 }
 
 // Compute BDS Satellite Position (virtual)
@@ -1745,7 +1445,7 @@ t_irc t_ephBDS::position(int GPSweek, double GPSweeks, double* xc, double* vv) c
 //////////////////////////////////////////////////////////////////////////////
 QString t_ephBDS::toString(double version) const {
 
-  QString rnxStr = rinexDateStr(_TOC_bdt, _prn, version);
+  QString rnxStr = rinexDateStr(_TOC-14.0, _prn, version);
 
   QTextStream out(&rnxStr);
 
@@ -1768,9 +1468,9 @@ QString t_ephBDS::toString(double version) const {
     .arg(_Cus,    19, 'e', 12)
     .arg(_sqrt_A, 19, 'e', 12);
 
-  double toes = _TOEs;
+  double toes = _TOEsec;
   if (!toes) { // RTCM stream input
-    toes = _TOE_bdt.gpssec();
+    toes = _TOE.bdssec();
   }
   out << QString(fmt)
     .arg(toes,   19, 'e', 12)
@@ -1787,7 +1487,7 @@ QString t_ephBDS::toString(double version) const {
   out << QString(fmt)
     .arg(_IDOT,                             19, 'e', 12)
     .arg(0.0,                               19, 'e', 12)
-    .arg(double(_TOE_bdt.gpsw() - 1356.0),  19, 'e', 12)
+    .arg(double(_TOE.bdsw()),               19, 'e', 12)
     .arg(0.0,                               19, 'e', 12);
 
   out << QString(fmt)
@@ -1796,9 +1496,9 @@ QString t_ephBDS::toString(double version) const {
     .arg(_TGD1,          19, 'e', 12)
     .arg(_TGD2,          19, 'e', 12);
 
-  double tots = _TOTs;
+  double tots = _TOT;
   if (!tots) { // RTCM stream input
-    tots = _TOE_bdt.gpssec();
+    tots = _TOE.bdssec();
   }
   out << QString(fmt)
     .arg(tots,          19, 'e', 12)
@@ -1807,4 +1507,3 @@ QString t_ephBDS::toString(double version) const {
     .arg("",            19, QChar(' '));
   return rnxStr;
 }
-

@@ -8,10 +8,7 @@
 #include "bnctime.h"
 #include "bncconst.h"
 #include "t_prn.h"
-
-extern "C" {
-#  include "rtcm3torinex.h"
-}
+#include "gnss.h"
 
 class t_orbCorr;
 class t_clkCorr;
@@ -54,6 +51,7 @@ class t_eph {
 
 class t_ephGPS : public t_eph {
  friend class t_ephEncoder;
+ friend class RTCM3Decoder;
  public:
   t_ephGPS() { }
   t_ephGPS(float rnxVersion, const QStringList& lines);
@@ -62,7 +60,6 @@ class t_ephGPS : public t_eph {
   virtual e_type type() const {return (_prn.system() == 'J' ? t_eph::QZSS : t_eph::GPS); }
   virtual QString toString(double version) const;
   virtual int  IOD() const { return static_cast<int>(_IODC); }
-  void set(const gpsephemeris* ee);
   double TGD() const {return _TGD;} // Timing Group Delay (P1-P2 DCB)
 
  private:
@@ -108,6 +105,7 @@ class t_ephGPS : public t_eph {
 
 class t_ephGlo : public t_eph {
  friend class t_ephEncoder;
+ friend class RTCM3Decoder;
  public:
   t_ephGlo() { _xv.ReSize(6); }
   t_ephGlo(float rnxVersion, const QStringList& lines);
@@ -117,7 +115,6 @@ class t_ephGlo : public t_eph {
   virtual QString toString(double version) const;
   virtual int  IOD() const;
   virtual int slotNum() const {return int(_frequency_number);}
-  void set(const glonassephemeris* ee);
 
  private:
   virtual t_irc position(int GPSweek, double GPSweeks, double* xc, double* vv) const;
@@ -149,15 +146,15 @@ class t_ephGlo : public t_eph {
 
 class t_ephGal : public t_eph {
  friend class t_ephEncoder;
+ friend class RTCM3Decoder;
  public:
-  t_ephGal() : _flags(0) { };
+  t_ephGal() { };
   t_ephGal(float rnxVersion, const QStringList& lines);
   virtual ~t_ephGal() {}
 
   virtual QString toString(double version) const;
   virtual e_type type() const {return t_eph::Galileo;}
   virtual int  IOD() const { return static_cast<int>(_IODnav); }
-  void set(const galileoephemeris* ee);
 
  private:
   virtual t_irc position(int GPSweek, double GPSweeks, double* xc, double* vv) const;
@@ -166,7 +163,7 @@ class t_ephGal : public t_eph {
   double  _clock_drift;      //  [s/s]  
   double  _clock_driftrate;  //  [s/s^2]
 
-  double  _IODnav;             
+  double  _IODnav;
   double  _Crs;              //  [m]    
   double  _Delta_n;          //  [rad/s]
   double  _M0;               //  [rad]  
@@ -198,22 +195,26 @@ class t_ephGal : public t_eph {
   double  _BGD_1_5B;         //  group delay [s] 
 
   double  _TOT;              // [s]
-
-  int     _flags;            // GALEPHF_E5ADINVALID   E5aDVS set invalid
-                             // GALEPHF_E5BDINVALID   E5bDVS set invalid
-                             // GALEPHF_INAV          INAV data
-                             // GALEPHF_FNAV          FNAV data
-                             // GALEPHF_E1DINVALID    E1DVS set invalid
+  /** Data comes from I/NAV when <code>true</code> */
+  bool    _inav;
+  /** Data comes from F/NAV when <code>true</code> */
+  bool    _fnav;
+  /** EE Data is not valid */
+  bool    _e1DataInValid;
+  /** E5A Data is not valid */
+  bool    _e5aDataInValid;
+  /** E5B Data is not valid */
+  bool    _e5bDataInValid;
 };
 
 class t_ephSBAS : public t_eph {
  friend class t_ephEncoder;
+ friend class RTCM3Decoder;
  public:
   t_ephSBAS() {}
   t_ephSBAS(float rnxVersion, const QStringList& lines);
   virtual ~t_ephSBAS() {}
 
-  void            set(const sbasephemeris* ee);
   virtual e_type  type() const {return t_eph::SBAS;}
   virtual int     IOD() const {return _IODN;}
   virtual QString toString(double version) const;
@@ -244,12 +245,12 @@ class t_ephSBAS : public t_eph {
 
 class t_ephBDS : public t_eph {
  friend class t_ephEncoder;
+ friend class RTCM3Decoder;
  public:
  t_ephBDS() {}
  t_ephBDS(float rnxVersion, const QStringList& lines);
   virtual ~t_ephBDS() {}
 
-  void set(const bdsephemeris* ee);
   virtual e_type  type() const {return t_eph::BDS;}
   virtual int     IOD() const {return _AODC;}
   virtual QString toString(double version) const;
@@ -257,12 +258,11 @@ class t_ephBDS : public t_eph {
  private:
   virtual t_irc position(int GPSweek, double GPSweeks, double* xc, double* vv) const;
 
-  bncTime _TOT;
+  double  _TOT;
   bncTime _TOE;
-  bncTime _TOC_bdt;
-  bncTime _TOE_bdt;
   int     _AODE;
   int     _AODC;
+  int     _URAI;             //  [0..15] index from RTCM stream
   mutable double  _URA;      //  user range accuracy
   double  _clock_bias;       //  [s]    
   double  _clock_drift;      //  [s/s]  
@@ -285,8 +285,9 @@ class t_ephBDS : public t_eph {
   double  _TGD1;             //  [s]    
   double  _TGD2;             //  [s]    
   int     _SatH1;            // 
-  double  _TOTs;             //  [s] of BDT week; RINEX file entry
-  double  _TOEs;             //  [s] of BDT week; RINEX file entry
+  double  _TOW;              //  [s] of BDT week; RINEX file entry
+  double  _TOEsec;           //  [s] of BDT week; RINEX file entry
+  double  _TOEweek;
 };
 
 #endif

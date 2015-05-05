@@ -51,7 +51,27 @@ class t_satObs {
       _obs.push_back(new t_frqObs(*old._obs[ii]));
     }
   }
-  ~t_satObs() {for (unsigned ii = 0; ii < _obs.size(); ii++) delete _obs[ii];}
+  /**
+   * Destructor of satellite measurement storage class
+   */
+  ~t_satObs()
+  {
+    clear();
+  }
+
+  /**
+   * Cleanup function resets all elements to initial state.
+   */
+  inline void clear(void)
+  {
+    for (unsigned ii = 0; ii < _obs.size(); ii++)
+      delete _obs[ii];
+    _obs.clear();
+    _obs.resize(0);
+    _time.reset();
+    _prn.clear();
+    _staID.clear();
+  }
 
   std::string            _staID;
   t_prn                  _prn;

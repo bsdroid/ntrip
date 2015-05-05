@@ -75,6 +75,7 @@ class GPSDecoder {
     int    message;
   };
 
+  /** List of observations */
   QList<t_satObs>  _obsList;
   QList<int>       _typeList;  // RTCM message types
   QStringList      _antType;   // RTCM antenna descriptor

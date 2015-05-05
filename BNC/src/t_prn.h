@@ -65,6 +65,15 @@ public:
     }
   }
 
+  /**
+   * Cleanup function resets all elements to initial state.
+   */
+  inline void clear(void)
+  {
+    _system = 'G';
+    _number = 0;
+  }
+
   operator unsigned() const;
 
   friend std::istream& operator >>(std::istream& in, t_prn& prn);

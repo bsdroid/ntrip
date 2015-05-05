@@ -20,10 +20,7 @@
 #include "bncephuser.h"
 #include "bncclockrinex.h"
 #include "bncsp3.h"
-
-extern "C" {
-#  include "rtcm3torinex.h"
-}
+#include "gnss.h"
 
 using namespace std;
 
