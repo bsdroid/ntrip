@@ -40,51 +40,89 @@ int t_ephEncoder::RTCM3(const t_ephGPS& eph, unsigned char *buffer) {
   int size = 0;
   int numbits = 0;
   unsigned long long bitbuffer = 0;
-  eph._ura = indexFromAccuracy(eph._ura, eph.type());
+  int ura = indexFromAccuracy(eph._ura, eph.type());
   if (eph.type() == t_eph::QZSS) {
     GPSADDBITS(12, 1044)
+    GPSADDBITS(4,eph._prn.number())
+    GPSADDBITS(16, static_cast<int>(eph._TOC.gpssec())>>4)
+    GPSADDBITSFLOAT(8, eph._clock_driftrate, 1.0/static_cast<double>(1<<30)
+    /static_cast<double>(1<<25))
+    GPSADDBITSFLOAT(16, eph._clock_drift, 1.0/static_cast<double>(1<<30)
+    /static_cast<double>(1<<13))
+    GPSADDBITSFLOAT(22, eph._clock_bias, 1.0/static_cast<double>(1<<30)
+    /static_cast<double>(1<<1))
+    GPSADDBITS(8, eph._IODE)
+    GPSADDBITSFLOAT(16, eph._Crs, 1.0/static_cast<double>(1<<5))
+    GPSADDBITSFLOAT(16, eph._Delta_n, M_PI/static_cast<double>(1<<30)
+    /static_cast<double>(1<<13))
+    GPSADDBITSFLOAT(32, eph._M0, M_PI/static_cast<double>(1<<30)/static_cast<double>(1<<1))
+    GPSADDBITSFLOAT(16, eph._Cuc, 1.0/static_cast<double>(1<<29))
+    GPSADDBITSFLOAT(32, eph._e, 1.0/static_cast<double>(1<<30)/static_cast<double>(1<<3))
+    GPSADDBITSFLOAT(16, eph._Cus, 1.0/static_cast<double>(1<<29))
+    GPSADDBITSFLOAT(32, eph._sqrt_A, 1.0/static_cast<double>(1<<19))
+    GPSADDBITS(16, static_cast<int>(eph._TOEsec)>>4)
+    GPSADDBITSFLOAT(16, eph._Cic, 1.0/static_cast<double>(1<<29))
+    GPSADDBITSFLOAT(32, eph._OMEGA0, M_PI/static_cast<double>(1<<30)
+    /static_cast<double>(1<<1))
+    GPSADDBITSFLOAT(16, eph._Cis, 1.0/static_cast<double>(1<<29))
+    GPSADDBITSFLOAT(32, eph._i0, M_PI/static_cast<double>(1<<30)/static_cast<double>(1<<1))
+    GPSADDBITSFLOAT(16, eph._Crc, 1.0/static_cast<double>(1<<5))
+    GPSADDBITSFLOAT(32, eph._omega, M_PI/static_cast<double>(1<<30)
+    /static_cast<double>(1<<1))
+    GPSADDBITSFLOAT(24, eph._OMEGADOT, M_PI/static_cast<double>(1<<30)
+    /static_cast<double>(1<<13))
+    GPSADDBITSFLOAT(14, eph._IDOT, M_PI/static_cast<double>(1<<30)
+    /static_cast<double>(1<<13))
+    GPSADDBITS(2,eph._L2Codes)
+    GPSADDBITS(10, eph._TOC.gpsw())
+    GPSADDBITS(4, ura)
+    GPSADDBITS(6, eph._health)
+    GPSADDBITSFLOAT(8, eph._TGD, 1.0/static_cast<double>(1<<30)/static_cast<double>(1<<1))
+    GPSADDBITS(10, eph._IODC)
+    GPSADDBITS(1, eph._fitInterval)
+    GPSADDBITS(3, 0) /* padding */
   }
   else {
     GPSADDBITS(12, 1019)
+    GPSADDBITS(6,eph._prn.number())
+    GPSADDBITS(10, eph._TOC.gpsw())
+    GPSADDBITS(4, ura)
+    GPSADDBITS(2,eph._L2Codes)
+    GPSADDBITSFLOAT(14, eph._IDOT, M_PI/static_cast<double>(1<<30)
+    /static_cast<double>(1<<13))
+    GPSADDBITS(8, eph._IODE)
+    GPSADDBITS(16, static_cast<int>(eph._TOC.gpssec())>>4)
+    GPSADDBITSFLOAT(8, eph._clock_driftrate, 1.0/static_cast<double>(1<<30)
+    /static_cast<double>(1<<25))
+    GPSADDBITSFLOAT(16, eph._clock_drift, 1.0/static_cast<double>(1<<30)
+    /static_cast<double>(1<<13))
+    GPSADDBITSFLOAT(22, eph._clock_bias, 1.0/static_cast<double>(1<<30)
+    /static_cast<double>(1<<1))
+    GPSADDBITS(10, eph._IODC)
+    GPSADDBITSFLOAT(16, eph._Crs, 1.0/static_cast<double>(1<<5))
+    GPSADDBITSFLOAT(16, eph._Delta_n, M_PI/static_cast<double>(1<<30)
+    /static_cast<double>(1<<13))
+    GPSADDBITSFLOAT(32, eph._M0, M_PI/static_cast<double>(1<<30)/static_cast<double>(1<<1))
+    GPSADDBITSFLOAT(16, eph._Cuc, 1.0/static_cast<double>(1<<29))
+    GPSADDBITSFLOAT(32, eph._e, 1.0/static_cast<double>(1<<30)/static_cast<double>(1<<3))
+    GPSADDBITSFLOAT(16, eph._Cus, 1.0/static_cast<double>(1<<29))
+    GPSADDBITSFLOAT(32, eph._sqrt_A, 1.0/static_cast<double>(1<<19))
+    GPSADDBITS(16, static_cast<int>(eph._TOEsec)>>4)
+    GPSADDBITSFLOAT(16, eph._Cic, 1.0/static_cast<double>(1<<29))
+    GPSADDBITSFLOAT(32, eph._OMEGA0, M_PI/static_cast<double>(1<<30)
+    /static_cast<double>(1<<1))
+    GPSADDBITSFLOAT(16, eph._Cis, 1.0/static_cast<double>(1<<29))
+    GPSADDBITSFLOAT(32, eph._i0, M_PI/static_cast<double>(1<<30)/static_cast<double>(1<<1))
+    GPSADDBITSFLOAT(16, eph._Crc, 1.0/static_cast<double>(1<<5))
+    GPSADDBITSFLOAT(32, eph._omega, M_PI/static_cast<double>(1<<30)
+    /static_cast<double>(1<<1))
+    GPSADDBITSFLOAT(24, eph._OMEGADOT, M_PI/static_cast<double>(1<<30)
+    /static_cast<double>(1<<13))
+    GPSADDBITSFLOAT(8, eph._TGD, 1.0/static_cast<double>(1<<30)/static_cast<double>(1<<1))
+    GPSADDBITS(6, eph._health) 
+    GPSADDBITS(1, eph._L2PFlag)
+    GPSADDBITS(1, eph._fitInterval)
   }
-  GPSADDBITS(6,eph._prn.number())
-  GPSADDBITS(10, eph._TOC.gpsw())
-  GPSADDBITS(4, eph._ura)
-  GPSADDBITS(2,eph._L2Codes)
-  GPSADDBITSFLOAT(14, eph._IDOT, M_PI/static_cast<double>(1<<30)
-  /static_cast<double>(1<<13))
-  GPSADDBITS(8, eph._IODE)
-  GPSADDBITS(16, static_cast<int>(eph._TOC.gpssec())>>4)
-  GPSADDBITSFLOAT(8, eph._clock_driftrate, 1.0/static_cast<double>(1<<30)
-  /static_cast<double>(1<<25))
-  GPSADDBITSFLOAT(16, eph._clock_drift, 1.0/static_cast<double>(1<<30)
-  /static_cast<double>(1<<13))
-  GPSADDBITSFLOAT(22, eph._clock_bias, 1.0/static_cast<double>(1<<30)
-  /static_cast<double>(1<<1))
-  GPSADDBITS(10, eph._IODC)
-  GPSADDBITSFLOAT(16, eph._Crs, 1.0/static_cast<double>(1<<5))
-  GPSADDBITSFLOAT(16, eph._Delta_n, M_PI/static_cast<double>(1<<30)
-  /static_cast<double>(1<<13))
-  GPSADDBITSFLOAT(32, eph._M0, M_PI/static_cast<double>(1<<30)/static_cast<double>(1<<1))
-  GPSADDBITSFLOAT(16, eph._Cuc, 1.0/static_cast<double>(1<<29))
-  GPSADDBITSFLOAT(32, eph._e, 1.0/static_cast<double>(1<<30)/static_cast<double>(1<<3))
-  GPSADDBITSFLOAT(16, eph._Cus, 1.0/static_cast<double>(1<<29))
-  GPSADDBITSFLOAT(32, eph._sqrt_A, 1.0/static_cast<double>(1<<19))
-  GPSADDBITS(16, static_cast<int>(eph._TOEsec)>>4)
-  GPSADDBITSFLOAT(16, eph._Cic, 1.0/static_cast<double>(1<<29))
-  GPSADDBITSFLOAT(32, eph._OMEGA0, M_PI/static_cast<double>(1<<30)
-  /static_cast<double>(1<<1))
-  GPSADDBITSFLOAT(16, eph._Cis, 1.0/static_cast<double>(1<<29))
-  GPSADDBITSFLOAT(32, eph._i0, M_PI/static_cast<double>(1<<30)/static_cast<double>(1<<1))
-  GPSADDBITSFLOAT(16, eph._Crc, 1.0/static_cast<double>(1<<5))
-  GPSADDBITSFLOAT(32, eph._omega, M_PI/static_cast<double>(1<<30)
-  /static_cast<double>(1<<1))
-  GPSADDBITSFLOAT(24, eph._OMEGADOT, M_PI/static_cast<double>(1<<30)
-  /static_cast<double>(1<<13))
-  GPSADDBITSFLOAT(8, eph._TGD, 1.0/static_cast<double>(1<<30)/static_cast<double>(1<<1))
-  GPSADDBITS(6, eph._health) 
-  GPSADDBITS(1, eph._L2PFlag)
-  GPSADDBITS(1, 0) /* GPS fit interval */
 
   startbuffer[0]=0xD3;
   startbuffer[1]=(size >> 8);
@@ -203,13 +241,13 @@ int t_ephEncoder::RTCM3(const t_ephGal& eph, unsigned char *buffer) {
   unsigned char *startbuffer = buffer;
   buffer= buffer+3;
 
-  eph._SISA = indexFromAccuracy(eph._SISA, eph.type());
+  int SISA = indexFromAccuracy(eph._SISA, eph.type());
 
   GALILEOADDBITS(12, eph._inav ? 1046 : 1045)
   GALILEOADDBITS(6, eph._prn.number())
   GALILEOADDBITS(12, eph._TOC.gpsw())
   GALILEOADDBITS(10, eph._IODnav)
-  GALILEOADDBITS(8, eph._SISA)
+  GALILEOADDBITS(8, SISA)
   GALILEOADDBITSFLOAT(14, eph._IDOT, M_PI/static_cast<double>(1<<30)
   /static_cast<double>(1<<13))
   GALILEOADDBITS(14, eph._TOC.gpssec()/60)
@@ -287,12 +325,12 @@ int t_ephEncoder::RTCM3(const t_ephSBAS& eph, unsigned char* buffer) {
   unsigned char *startbuffer = buffer;
   buffer= buffer+3;
 
-  eph._ura = indexFromAccuracy(eph._ura, eph.type());
+  int ura = indexFromAccuracy(eph._ura, eph.type());
   SBASADDBITS(12, 1043)
   SBASADDBITS(6, eph._prn.number()-20)
   SBASADDBITS(8, eph._IODN)
   SBASADDBITS(13, static_cast<int>(eph._TOC.daysec())>>4)
-  SBASADDBITS(4, eph._ura)
+  SBASADDBITS(4, ura)
   SBASADDBITSFLOAT(30, eph._x_pos, 0.08)
   SBASADDBITSFLOAT(30, eph._y_pos, 0.08)
   SBASADDBITSFLOAT(25, eph._z_pos, 0.4)
@@ -336,11 +374,11 @@ int t_ephEncoder::RTCM3(const t_ephBDS& eph, unsigned char* buffer) {
   unsigned char *startbuffer = buffer;
   buffer= buffer+3;
 
-  eph._URA = indexFromAccuracy(eph._URA, eph.type());
+  int URA = indexFromAccuracy(eph._URA, eph.type());
   BDSADDBITS(12, RTCM3ID_BDS)
   BDSADDBITS(6, eph._prn.number())
   BDSADDBITS(13, eph._TOC.bdsw() - 1356.0)
-  BDSADDBITS(4, eph._URA);
+  BDSADDBITS(4, URA);
   BDSADDBITSFLOAT(14, eph._IDOT, M_PI/static_cast<double>(1<<30)/static_cast<double>(1<<13))
   BDSADDBITS(5, eph._AODE)
   BDSADDBITS(17, static_cast<int>(eph._TOC.bdssec())>>3)
