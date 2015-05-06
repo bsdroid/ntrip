@@ -43,7 +43,7 @@ class t_frequency {
                         J6, // Lex(6) 1278.75
                         S1, // 1575.42
                         S5, // 1176.45
-                        C1, // 1561.098
+                        C2, // 1561.098
                         C7, // 1207.14
                         C6, // 1268.52
              max};
@@ -65,7 +65,7 @@ class t_frequency {
     else if (tt == J6) return "J6";
     else if (tt == S1) return "S1";
     else if (tt == S5) return "S5";
-    else if (tt == C1) return "C1";
+    else if (tt == C2) return "C2";
     else if (tt == C7) return "C7";
     else if (tt == C6) return "C6";
     return std::string();
@@ -87,7 +87,7 @@ class t_frequency {
     else if (s == "J6") return J6;
     else if (s == "S1") return S1;
     else if (s == "S5") return S5;
-    else if (s == "C1") return C1;
+    else if (s == "C2") return C2;
     else if (s == "C7") return C7;
     else if (s == "C6") return C6;
     return type();

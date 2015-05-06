@@ -69,7 +69,7 @@ t_reqcAnalyze::t_reqcAnalyze(QObject* parent) : QThread(parent) {
   _obsFileNames    = settings.value("reqcObsFile").toString().split(",", QString::SkipEmptyParts);
   _navFileNames    = settings.value("reqcNavFile").toString().split(",", QString::SkipEmptyParts);
   _reqcPlotSignals = settings.value("reqcSkyPlotSignals").toString();
-  _defaultSignalTypes << "G:1&2" << "R:1&2" << "J:1&2" << "E:1&5" << "S:1&5" << "C:1&7";
+  _defaultSignalTypes << "G:1&2" << "R:1&2" << "J:1&2" << "E:1&5" << "S:1&5" << "C:2&7";
   if (_reqcPlotSignals.isEmpty()) {
     _reqcPlotSignals = _defaultSignalTypes.join(" ");
   }
