@@ -199,8 +199,11 @@ t_irc t_rnxObsHeader::read(QTextStream* stream, int maxLines) {
         }
         QString hlp;
         *in >> hlp;
-        if (sys == 'C' && _version == 3.02){
+        if      (sys == 'C' && _version == 3.02) {
           hlp.replace('2', '1');
+        }
+        else if (sys == 'C' && _version == 3.03) {
+          hlp.replace('1', '2');
         }
         _obsTypes[sys].push_back(hlp);
       }
