@@ -246,16 +246,16 @@ int t_ephEncoder::RTCM3(const t_ephGal& eph, unsigned char *buffer) {
     /static_cast<double>(1<<2))
     GALILEOADDBITS(2, static_cast<int>(eph._E5bHS))
     GALILEOADDBITS(1, eph._e5bDataInValid ? 1 : 0)
+    GALILEOADDBITS(2, static_cast<int>(eph._E1_bHS))
+    GALILEOADDBITS(1, eph._e1DataInValid ? 1 : 0)
   }
   else
   {
     GALILEOADDBITS(2, static_cast<int>(eph._E5aHS))
     GALILEOADDBITS(1,  eph._e5aDataInValid ? 1 : 0)
   }
-  ////  eph._TOEsec = 0.9999E9;
-  GALILEOADDBITS(20, eph._TOEsec)
 
-  GALILEOADDBITS((eph._inav ? 1 : 3), 0)
+  GALILEOADDBITS((eph._inav ? 2 : 7), 0)
 
   startbuffer[0]=0xD3;
   startbuffer[1]=(size >> 8);
