@@ -43,7 +43,7 @@ class t_rnxObsHeader {
 
  public:
   static const double  defaultRnxObsVersion2 = 2.11;
-  static const double  defaultRnxObsVersion3 = 3.02;
+  static const double  defaultRnxObsVersion3 = 3.03;
   static const QString defaultSystems;
 
   t_rnxObsHeader();
@@ -86,7 +86,7 @@ class t_rnxObsHeader {
   int                     _wlFactorsL1[t_prn::MAXPRN_GPS+1];
   int                     _wlFactorsL2[t_prn::MAXPRN_GPS+1];
   bncTime                 _startTime;
-  QMultiHash<char, QPair<QString, double> > _phaseShifts;
+  QMap<QString, QPair<double, QStringList> > _phaseShifts;
 };
 
 class t_rnxObsFile {

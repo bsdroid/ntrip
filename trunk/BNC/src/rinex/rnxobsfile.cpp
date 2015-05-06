@@ -74,6 +74,7 @@ t_rnxObsHeader::~t_rnxObsHeader() {
 t_irc t_rnxObsHeader::read(QTextStream* stream, int maxLines) {
   _comments.clear();
   int numLines = 0;
+
   while ( stream->status() == QTextStream::Ok && !stream->atEnd() ) {
     QString line = stream->readLine(); ++ numLines;
     if (line.isEmpty()) {
@@ -198,7 +199,7 @@ t_irc t_rnxObsHeader::read(QTextStream* stream, int maxLines) {
         }
         QString hlp;
         *in >> hlp;
-        if (sys == 'C') {
+        if (sys == 'C' && _version == 3.02){
           hlp.replace('2', '1');
         }
         _obsTypes[sys].push_back(hlp);
@@ -213,13 +214,27 @@ t_irc t_rnxObsHeader::read(QTextStream* stream, int maxLines) {
       _startTime.set(year, month, day, hour, min, sec);
     }
     else if (key == "SYS / PHASE SHIFT"){
-      QTextStream in(value.toAscii(), QIODevice::ReadOnly);
-      char sys;
-      QString obstype;
-      double shift;
-      in >> sys >> obstype >> shift;
-      if (obstype.size())
-        _phaseShifts.insert(sys, QPair<QString, double>(obstype, shift));
+      QTextStream* in = new QTextStream(value.toAscii(), QIODevice::ReadOnly);
+      char        sys;
+      QString     obstype;
+      double      shift;
+      int         satnum = 0;
+      QStringList satList;
+      QString     sat;
+      *in >> sys >> obstype >> shift >> satnum;
+      if (obstype.size()) {
+        for (int ii = 0; ii < satnum; ii++) {
+          if (ii > 0 && ii % 10 == 0) {
+            line = stream->readLine(); ++numLines;
+            delete in;
+            in = new QTextStream(line.left(60).toAscii(), QIODevice::ReadOnly);
+          }
+          *in >> sat;
+          satList.append(sat);
+        }
+        _phaseShifts.insert(sys+obstype, QPair<double, QStringList>(shift, satList));
+        delete in;
+      }
     }
     else if (key == "GLONASS COD/PHS/BIS"){
       QTextStream in(value.toAscii(), QIODevice::ReadOnly);
@@ -301,25 +316,28 @@ void t_rnxObsHeader::setDefault(const QString& markerName, int version) {
   }
   else {
     _obsTypes['G'] << "C1C" << "L1C"  << "S1C" 
+                   << "C1W" << "L1W"  << "S1W"
+                   << "C2X" << "L2X"  << "S2X"
                    << "C2W" << "L2W"  << "S2W" 
-                   << "C5"  << "L5"   << "S5";
-    
+                   << "C5X" << "L5X"  << "S5X";
+
     _obsTypes['J'] = _obsTypes['G'];
     
     _obsTypes['R'] << "C1C" << "L1C" << "S1C" 
                    << "C2P" << "L2P" << "S2P";
     
-    _obsTypes['E'] << "C1" << "L1" << "S1"
-                   << "C5" << "L5" << "S5" 
-                   << "C7" << "L7" << "S7"
-                   << "C8" << "L8" << "S8";
+    _obsTypes['E'] << "C1X" << "L1X" << "SX1"
+                   << "C5X" << "L5X" << "SX5"
+                   << "C7X" << "L7X" << "SX7"
+                   << "C8X" << "L8X" << "SX8";
     
-    _obsTypes['S'] << "C1" << "L1" << "S1" 
-                   << "C5" << "L5" << "S5";
+    _obsTypes['S'] << "C1C" << "L1C" << "S1C"
+                   << "C5I" << "L5I" << "S5I"
+                   << "C5Q" << "L5Q" << "S5Q";
     
-    _obsTypes['C'] << "C1" << "L1" << "S1"
-                   << "C6" << "L6" << "S6"
-                   << "C7" << "L7" << "S7";
+    _obsTypes['C'] << "C2I" << "L2I" << "S2I"
+                   << "C6I" << "L6I" << "S6I"
+                   << "C7I" << "L7I" << "S7I";
   }
 }
 
@@ -352,7 +370,7 @@ void t_rnxObsHeader::set(const t_rnxObsHeader& header, int version,
   _comments        = header._comments;
   _usedSystems     = header._usedSystems;
   if (_version >= 3.0) {
-    _phaseShifts   = header._phaseShifts;
+    _phaseShifts    = header._phaseShifts;
     _gloPhaseBiases = header._gloPhaseBiases;
     _gloSlots       = header._gloSlots;
   }
@@ -560,23 +578,67 @@ void t_rnxObsHeader::write(QTextStream* stream,
 
   if (_version >= 3.0) {
     if (_phaseShifts.empty()) {
-      QString sys = _usedSystems;
-      for (int ii = 0; ii < sys.size(); ii++) {
-        *stream << QString("%1")
-          .arg(sys[ii], 0)
-          .leftJustified(60)
-           << "SYS / PHASE SHIFT\n";
+      QMap<char, QStringList>::const_iterator it;
+      for (it = _obsTypes.begin(); it != _obsTypes.end(); ++it) {
+        char sys = it.key();
+        double shift = 0.0;
+        foreach (const QString &obstype, it.value()) {
+          if (obstype.left(1).contains('L')) {
+          *stream << QString("%1 %2 %3")
+            .arg(sys, 0)
+            .arg(obstype, 0)
+            .arg(shift, 9, 'f', 5)
+            .leftJustified(60)
+             << "SYS / PHASE SHIFT\n";
+          }
+        }
       }
     } else {
-      QMultiHash<char, QPair<QString, double> >::const_iterator it = _phaseShifts.begin();
-      while(it != _phaseShifts.end()) {
-        *stream << QString("%1%2%3")
-          .arg(it.key(), 0)
-          .arg(it.value().first, 4)
-          .arg(it.value().second, 9, 'f', 5)
+      QMap<QString, QPair<double, QStringList> >::const_iterator it;
+      QString emptyFillStr;
+      for(it = _phaseShifts.begin(); it!= _phaseShifts.end(); ++it) {
+        QString sys         = it.key().left(1);
+        QString obstype     = it.key().mid(1);
+        double shift        = it.value().first;
+        QStringList satList =  it.value().second;
+        QString hlp = QString("%1 %2 %3 ")
+          .arg(sys.toStdString().c_str(), 0)
+          .arg(obstype, 4)
+          .arg(shift, 9, 'f', 5);
+        if (!satList.empty()) {
+          hlp += QString("%1 ").arg(satList.size(), 2);
+        }
+        else {
+          *stream << QString("%1")
+            .arg(hlp, 0)
+            .leftJustified(60)
+             << "SYS / PHASE SHIFT\n";
+          hlp = "";
+        }
+        int ii = 0;
+        QStringList::const_iterator it_s;
+        for (it_s = satList.begin(); it_s != satList.end(); ++it_s) {
+          (hlp.contains(obstype)) ?
+             emptyFillStr = "":
+             emptyFillStr = "                    ";
+          hlp += QString("%1 ").arg(*it_s);
+          ii++;
+          if (ii % 10 == 0) {
+            *stream << QString("%1%2")
+              .arg(emptyFillStr, 0)
+              .arg(hlp, 0)
+              .leftJustified(60)
+              << "SYS / PHASE SHIFT\n";
+            hlp = "";
+          }
+        }
+        if (hlp.size()) {
+        *stream <<  QString("%1%2")
+          .arg(emptyFillStr, 0)
+          .arg(hlp, 0)
           .leftJustified(60)
-           << "SYS / PHASE SHIFT\n";
-        it++;
+          << "SYS / PHASE SHIFT\n";
+        }
       }
     }
   }
@@ -622,7 +684,6 @@ void t_rnxObsHeader::write(QTextStream* stream,
             << "GLONASS SLOT / FRQ #\n";
     }
   }
-
 
   *stream << QString()
     .leftJustified(60)
