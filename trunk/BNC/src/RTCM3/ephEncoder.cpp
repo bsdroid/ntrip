@@ -41,7 +41,12 @@ int t_ephEncoder::RTCM3(const t_ephGPS& eph, unsigned char *buffer) {
   int numbits = 0;
   unsigned long long bitbuffer = 0;
   eph._ura = indexFromAccuracy(eph._ura, eph.type());
-  GPSADDBITS(12, 1019)
+  if (eph.type() == t_eph::QZSS) {
+    GPSADDBITS(12, 1044)
+  }
+  else {
+    GPSADDBITS(12, 1019)
+  }
   GPSADDBITS(6,eph._prn.number())
   GPSADDBITS(10, eph._TOC.gpsw())
   GPSADDBITS(4, eph._ura)
