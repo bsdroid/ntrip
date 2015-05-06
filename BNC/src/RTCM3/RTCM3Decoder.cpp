@@ -382,7 +382,7 @@ static struct CodeData qzss[RTCM3_MSM_NUMSIG] =
 static struct CodeData bds[RTCM3_MSM_NUMSIG] =
 {
   {0.0,0},
-  {BDS_WAVELENGTH_B1,"1I"},
+  {BDS_WAVELENGTH_B1,"2I"},
   {0.0,0},
   {0.0,0},
   {0.0,0},
