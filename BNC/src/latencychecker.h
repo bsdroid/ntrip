@@ -65,6 +65,7 @@ Q_OBJECT
   bool       _endCorrupt;
   bool       _followSec;
   bool       _fromReconnect;
+  bool       _fromCorrupt;
   double     _maxDt;
   double     _sumLat;
   double     _sumLatQ;
@@ -75,12 +76,12 @@ Q_OBJECT
   QByteArray _staID;
   QString    _adviseScript;
   QString    _checkMountPoint;
-  QString    _begDateCor;
-  QString    _begTimeCor;
+  QString    _begDateCorr;
+  QString    _begTimeCorr;
   QString    _begDateOut;
   QString    _begTimeOut;
-  QString    _endDateCor;
-  QString    _endTimeCor;
+  QString    _endDateCorr;
+  QString    _endTimeCorr;
   QString    _endDateOut;
   QString    _endTimeOut;
   QDateTime  _checkTime;
@@ -88,9 +89,13 @@ Q_OBJECT
   QDateTime  _decodeFailure;
   QDateTime  _decodeStart;
   QDateTime  _decodeStop;
+  QDateTime  _decodeStartCorr;
+  QDateTime  _decodeStopCorr;
   QDateTime  _checkPause;
   QDateTime  _begDateTimeOut;
   QDateTime  _endDateTimeOut;
+  QDateTime  _begDateTimeCorr;
+  QDateTime  _endDateTimeCorr;
 };
 
 #endif
