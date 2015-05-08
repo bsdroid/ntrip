@@ -137,8 +137,6 @@ latencyChecker::latencyChecker(QByteArray staID) {
   _secFail    = 0;
   _initPause  = 0;
   _currPause  = 0;
-  _begCorrupt = false;
-  _endCorrupt = false;
   _followSec  = false;
   _oldSecGPS  = 0;
   _newSecGPS  = 0;
@@ -156,11 +154,13 @@ latencyChecker::latencyChecker(QByteArray staID) {
   _decodeSucc = QDateTime::currentDateTime();
 
   _decodeStop = QDateTime::currentDateTime();
-
   _begDateTimeOut = QDateTime::currentDateTime();
   _endDateTimeOut = QDateTime::currentDateTime();
-
   _fromReconnect = false;
+
+  _decodeStopCorr = QDateTime::currentDateTime();
+  _begDateTimeCorr = QDateTime::currentDateTime();
+  _endDateTimeCorr = QDateTime::currentDateTime();
   
 }
 
@@ -221,6 +221,7 @@ void latencyChecker::checkOutage(bool decoded) {
 
       if (_numSucc > 0) {
         _secSucc += _inspSegm;
+        _secFail = 0;
         _decodeSucc = QDateTime::currentDateTime();
         if (_secSucc > _adviseReco * 60) {
           _secSucc = _adviseReco * 60 + 1;
@@ -250,41 +251,51 @@ void latencyChecker::checkOutage(bool decoded) {
         }
       }
 
-      // End corrupt threshold
-      // ---------------------
-      if ( _begCorrupt && !_endCorrupt && _secSucc > _adviseReco * 60 ) {
-        _endDateCor = QDateTime::currentDateTime()
-                    .addSecs(- _adviseReco * 60)
-                    .toUTC().date().toString("yy-MM-dd");
-        _endTimeCor = QDateTime::currentDateTime()
-                    .addSecs(- _adviseReco * 60)
-                    .toUTC().time().toString("hh:mm:ss");
-        emit(newMessage((_staID
-                    + ": Recovery threshold exceeded, corruption ended "
-                    + _endDateCor + " " + _endTimeCor + " UTC").toAscii(), true));
-        callScript(("End_Corrupted "
-                    + _endDateCor + " " + _endTimeCor + " UTC Begin was "
-                    + _begDateCor + " " + _begTimeCor + " UTC").toAscii());
-        _endCorrupt = true;
-        _begCorrupt = false;
-        _secFail = 0;
+      // Begin corrupt threshold
+      // -----------------------
+      if (_secSucc > 0) {
+        _endDateTimeCorr = QDateTime::currentDateTime();
       }
-      else {
 
-        // Begin corrupt threshold
-        // -----------------------
-        if ( !_begCorrupt && _secFail > _adviseFail * 60 ) {
-          _begDateCor = _decodeSucc.toUTC().date().toString("yy-MM-dd");
-          _begTimeCor = _decodeSucc.toUTC().time().toString("hh:mm:ss");
-          emit(newMessage((_staID
-                    + ": Failure threshold exceeded, corrupted since "
-                    + _begDateCor + " " + _begTimeCor + " UTC").toAscii(), true));
+      if (_secFail > 0) {
+        _begDateTimeCorr = QDateTime::currentDateTime();
+      }
+
+      if ( _decodeStopCorr.isValid() ) {
+        _begDateTimeCorr = QDateTime::currentDateTime();
+        if ( _endDateTimeCorr.secsTo(QDateTime::currentDateTime()) > _adviseFail * 60 ) {
+          _begDateCorr = _endDateTimeCorr.toUTC().date().toString("yy-MM-dd");
+          _begTimeCorr = _endDateTimeCorr.toUTC().time().toString("hh:mm:ss");
+          emit(newMessage((_staID + ": Failure threshold exceeded, corrupted since "
+                    + _begDateCorr + " " + _begTimeCorr + " UTC").toAscii(), true));
           callScript(("Begin_Corrupted "
-                    + _begDateCor + " " + _begTimeCor + " UTC").toAscii());
-          _begCorrupt = true;
-          _endCorrupt = false;
+                    + _begDateCorr + " " + _begTimeCorr + " UTC").toAscii());
           _secSucc = 0;
           _numSucc = 0;
+          _decodeStopCorr.setDate(QDate());
+          _decodeStopCorr.setTime(QTime());
+          _decodeStartCorr = QDateTime::currentDateTime();
+        }
+      } 
+      else {
+
+        // End corrupt threshold
+        // ---------------------
+        if ( _decodeStartCorr.isValid() ) {
+          _endDateTimeCorr = QDateTime::currentDateTime();
+          if ( _begDateTimeCorr.secsTo(QDateTime::currentDateTime()) > _adviseReco * 60 ) {
+            _endDateCorr = _begDateTimeCorr.toUTC().date().toString("yy-MM-dd");
+            _endTimeCorr = _begDateTimeCorr.toUTC().time().toString("hh:mm:ss");
+            emit(newMessage((_staID + ": Recovery threshold exceeded, corruption ended "
+                        + _endDateCorr + " " + _endTimeCorr + " UTC").toAscii(), true));
+            callScript(("End_Corrupted "
+                        + _endDateCorr + " " + _endTimeCorr + " UTC Begin was "
+                        + _begDateCorr + " " + _begTimeCorr + " UTC").toAscii());
+            _decodeStartCorr.setDate(QDate());
+            _decodeStartCorr.setTime(QTime());
+            _decodeStopCorr = QDateTime::currentDateTime();
+            _secFail = 0;
+          }
         }
       }
       _checkSeg = false;
