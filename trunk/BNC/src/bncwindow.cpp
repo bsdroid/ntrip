@@ -685,7 +685,7 @@ bncWindow::bncWindow() {
   oLayout->addWidget(_rnxSamplSpinBox,                             2, 3, Qt::AlignLeft);
   oLayout->addWidget(new QLabel("Skeleton extension"),             3, 0);
   oLayout->addWidget(_rnxSkelLineEdit,                             3, 1, Qt::AlignLeft);
-  oLayout->addWidget(new QLabel("RINEX File generation only with SKL file"),3, 2);
+  oLayout->addWidget(new QLabel("Skeleton mandatory"),             3, 2);
   oLayout->addWidget(_rnxFileCheckBox,                             3, 3);
   oLayout->addWidget(new QLabel("Script (full path)"),             4, 0);
   oLayout->addWidget(_rnxScrpLineEdit,                             4, 1, 1, 15);
@@ -1285,6 +1285,7 @@ bncWindow::bncWindow() {
   _corrPathLineEdit->setWhatsThis(tr("Specify a directory for saving Broadcast Ephemeris Correction files. If the specified directory does not exist, BNC will not create the files."));
   _rnxScrpLineEdit->setWhatsThis(tr("<p>Whenever a RINEX Observation file is saved, you might want to compress, copy or upload it immediately via FTP. BNC allows you to execute a script/batch file to carry out these operations. To do that specify the full path of the script/batch file here. BNC will pass the full RINEX Observation file path to the script as a command line parameter (%1 on Windows systems, $1 onUnix/Linux systems).</p>"));
   _rnxSkelLineEdit->setWhatsThis(tr("<p>BNC allows using personal skeleton files that contain the header records you would like to include. You can derive a personal RINEX header skeleton file from the information given in an up to date sitelog.</p><p>A file in the RINEX Observations 'Directory' with a 'Skeleton extension' suffix is interpreted by BNC as a personal RINEX header skeleton file for the corresponding stream.</p>"));
+  _rnxFileCheckBox->setWhatsThis(tr("<p>Tick check box 'Skeleton mandatory' in case you want that RINEX files are only produced if skeleton files are available for BNC. If no skeleton file is available for a particular source then no RINEX observation file will be created from the affected stream.</p><p>Note that a skeleton file contains RINEX header information such as receiver and antenna types. In case of stream conversion to RINEX Version 3 a skeleton file should also contain information on potentially available observation types. A missing sekeleton file will therefore enforce BNC to only save a default set of RINEX 3 observation types."));
   _rnxAppendCheckBox->setWhatsThis(tr("<p>When BNC is started, new files are created by default and any existing files with the same name will be overwritten. However, users might want to append already existing files following a restart of BNC, a system crash or when BNC crashed. Tick 'Append files' to continue with existing files and keep what has been recorded so far.</p>"));
   _autoStartCheckBox->setWhatsThis(tr("<p>Tick 'Auto start' for auto-start of BNC at startup time in window mode with preassigned processing options.</p>"));
   _rawOutFileLineEdit->setWhatsThis(tr("<p>Save all data coming in through various streams in the received order and format in one file.</p>"));
