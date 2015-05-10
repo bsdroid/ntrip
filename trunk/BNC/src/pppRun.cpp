@@ -122,7 +122,7 @@ t_pppRun::t_pppRun(const t_pppOptions* opt) {
 
   QString roverName(_opt->_roverName.c_str());
 
-  QString logFileSkl = settings.value("PPP/logFile").toString();
+  QString logFileSkl = settings.value("PPP/logFilePPP").toString();
   if (logFileSkl.isEmpty()) {
     _logFile = 0;
   }
