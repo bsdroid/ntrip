@@ -121,7 +121,7 @@ void t_pppMain::readOptions() {
 
   bncSettings settings;
 
-  _logFile  = settings.value("PPP/logFile").toString();
+  _logFile  = settings.value("PPP/logFilePPP").toString();
   _nmeaFile = settings.value("PPP/nmeaFile").toString();
   _nmeaPort = settings.value("PPP/nmeaPort").toInt();
   _snxtroFile = settings.value("PPP/snxtroFile").toString();
