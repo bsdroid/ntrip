@@ -86,8 +86,10 @@ void bncSettings::reRead() {
     // RINEX Observations
     setValue_p("rnxPath",             "");
     setValue_p("rnxIntr",             "1 day");
+    setValue_p("rnxOnlyWithSKL",      "");
     setValue_p("rnxSampl",            "0");
     setValue_p("rnxSkel",             "SKL");
+    setValue_p("rnxV2Priority",       "");
     setValue_p("rnxScript",           "");
     setValue_p("rnxV3",               "0");
     // RINEX Ephemeris
@@ -95,6 +97,44 @@ void bncSettings::reRead() {
     setValue_p("ephIntr",             "1 day");
     setValue_p("outEphPort",          "");
     setValue_p("ephV3",               "0");
+    // Reqc
+    setValue_p("reqcAction",          "");
+    setValue_p("reqcObsFile",         "");
+    setValue_p("reqcNavFile",         "");
+    setValue_p("reqcOutObsFile",      "");
+    setValue_p("reqcOutNavFile",      "");
+    setValue_p("reqcOutLogFile",      "");
+    setValue_p("reqcSkyPlotSignals",  "C:2&7 E:1&5 G:1&2 J:1&2 R:1&2 S:1&5");
+    setValue_p("reqcPlotDir",         "");
+    setValue_p("reqcRnxVersion",      "");
+    setValue_p("reqcSampling",        "");
+    setValue_p("reqcStartDateTime",   "");
+    setValue_p("reqcEndDateTime",     "");
+    setValue_p("reqcLogSummaryOnly",  "");
+    setValue_p("reqcRunBy",           "");
+    setValue_p("reqcComment",         "");
+    setValue_p("reqcOldMarkerName",   "");
+    setValue_p("reqcNewMarkerName",   "");
+    setValue_p("reqcOldAntennaName",  "");
+    setValue_p("reqcNewAntennaName",  "");
+    setValue_p("reqcOldReceiverName", "");
+    setValue_p("reqcNewReceiverName", "");
+    setValue_p("reqcNewAntennaNumber","");
+    setValue_p("reqcNewAntennadE",    "");
+    setValue_p("reqcNewAntennadN",    "");
+    setValue_p("reqcNewAntennadU",    "");
+    setValue_p("reqcNewReceiverNumber", "");
+    setValue_p("reqcOldAntennaNumber", "");
+    setValue_p("reqcOldAntennadE",    "");
+    setValue_p("reqcOldAntennadN",    "");
+    setValue_p("reqcOldAntennadU",    "");
+    setValue_p("reqcOldReceiverNumber", "");
+    setValue_p("reqcUseObsTypes",     "");
+    setValue_p("reqcV2Priority",      "");
+    // SP3 
+    setValue_p("sp3CompFile",         "");
+    setValue_p("sp3CompExclude",      "");
+    setValue_p("sp3CompOutLogFile",   "");
     // Braodcast Corrections
     setValue_p("corrPath",            "");
     setValue_p("corrIntr",            "1 day");
@@ -116,7 +156,7 @@ void bncSettings::reRead() {
     setValue_p("serialAutoNMEA",      "Auto");
     setValue_p("serialFileNMEA",      "");
     setValue_p("serialHeightNMEA",    "");
-    setValue_p("serialManualNMEASampling","");
+    setValue_p("serialManualNMEASampling", "");
     // Outages
     setValue_p("obsRate",             "");
     setValue_p("adviseFail",          "15");
@@ -127,38 +167,18 @@ void bncSettings::reRead() {
     setValue_p("perfIntr",            "");
     setValue_p("scanRTCM",            "0");
     setValue_p("miscPort",            "");  
-    // Reqc
-    setValue_p("reqcAction",          "");
-    setValue_p("reqcObsFile",         "");
-    setValue_p("reqcNavFile",         "");
-    setValue_p("reqcOutObsFile",      "");
-    setValue_p("reqcOutNavFile",      "");
-    setValue_p("reqcOutLogFile",      "");
-    setValue_p("reqcSkyPlotSignals",  "C:2&7 E:1&5 G:1&2 J:1&2 R:1&2 S:1&5");
-    setValue_p("reqcPlotDir",         "");
-    setValue_p("reqcRnxVersion",      "");
-    setValue_p("reqcSampling",        "");
-    setValue_p("reqcStartDateTime",   "");
-    setValue_p("reqcEndDateTime",     "");
-    setValue_p("reqcRunBy",           "");
-    setValue_p("reqcComment",         "");
-    setValue_p("reqcOldMarkerName",   "");
-    setValue_p("reqcNewMarkerName",   "");
-    setValue_p("reqcOldAntennaName",  "");
-    setValue_p("reqcNewAntennaName",  "");
-    setValue_p("reqcOldReceiverName", "");
-    setValue_p("reqcNewReceiverName", "");
     // Combination
     setValue_p("combineStreams",      "");
     setValue_p("cmbMethod",           "");
     setValue_p("cmbMaxres",           "");
-    setValue_p("cmbSampl",          "10");
+    setValue_p("cmbSampl",            "10");
+    setValue_p("cmbUseGlonass",       "");
     // Upload (clk)
     setValue_p("uploadMountpointsOut","");
     setValue_p("uploadIntr",          "1 day");
     setValue_p("uploadSamplRtcmEphCorr", "0");
-    setValue_p("uploadSamplSp3",         "1");
-    setValue_p("uploadSamplClkRnx",     "10");
+    setValue_p("uploadSamplSp3",      "1");
+    setValue_p("uploadSamplClkRnx",   "10");
     setValue_p("trafo_dx",            "");
     setValue_p("trafo_dy",            "");
     setValue_p("trafo_dz",            "");
@@ -177,6 +197,7 @@ void bncSettings::reRead() {
     // Upload (eph)
     setValue_p("uploadEphHost",       "");
     setValue_p("uploadEphPort",       "");
+    setValue_p("uploadAntexFile",     "");
     setValue_p("uploadEphMountpoint", "");
     setValue_p("uploadEphPassword",   "");
     setValue_p("uploadEphSample",     "5");
