@@ -65,6 +65,7 @@ void bncSettings::reRead() {
   else {
     setValue_p("startTab",            "0");
     setValue_p("statusTab",           "0");
+    setValue_p("font",                "");
     setValue_p("casterUrlList", (QStringList() 
                                << "http://user:pass@www.euref-ip.net:2101" 
                                << "http://user:pass@www.igs-ip.net:2101" 
