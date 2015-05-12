@@ -121,7 +121,7 @@ Lennard Huisman, Kadaster Netherlands, and Rolf Dach, Astronomical Institute Uni
 </p>
 
 <p>
-BNC supports decoding the following GNSS stream formats and message types:
+BNC supports the following GNSS stream formats and message types:
 </p>
 <p>
 <ul>
@@ -139,23 +139,23 @@ Note that BNC allows to by-pass its decoding and conversion algorithms for incom
 
 <p><a name="suppGNSS"><h3>1.1 Supported Systems</h3></p>
 <p>
-BNC is continuously completed in order to support all existing GNSS systems throughout all features of the program. The table below shows in detail which GNSS systems are so far supported by particular applications when using the latest BNC version. The applications named here are 
+BNC is continuously completed in order to support all existing GNSS systems throughout all features of the program. The table below shows in detail which GNSS systems are so far supported by particular applications when using the latest BNC version. Applications fields named here are:
 <ul>
 <li>Decoding of RTCM or RTNET streams</li>
 <li>RINEX and SP3 file input and output</li>
 <li>Encoding of SSR and ephemeris messages</li>
 <li>Upload of SSR and ephemeris messages</li>
 <li>PPP (Precise Point Positioning)</li>
-<li>Combination of SSR or ephemeris messages from various real-time sources</li>
+<li>Combination/merging of SSR or ephemeris messages from various real-time sources</li>
 </ul>
-The table mentions if the Navigation, Observation, or SSR message implementation in BNC could so far only be based on a 'RTCM Proposal'.
+The table mentions if the message implementation in BNC could so far only be based on a 'RTCM Proposal'.
 </p>
 <p><u>Table:</u> Status of RTCM Version 3 message implementation in BNC supporting various GNSS systems</p>
 
 <p></p>
 <table border="1" frame="box" rules="rows" bgcolor="#FFF5EE" style="font-size:13">
 
-<tr><td><b>Message<br>Type</b></td> <td><b>Description</b></td> <td><b>System</b></td> <td><b>RTCM<br>Proposal&nbsp;</b></td> <td><b>Decoding&nbsp;</b></td> <td><b>&nbsp;RINEX/&nbsp;<br>&nbsp;SP3</b></td> <td><b>Encoding&nbsp;</b></td> <td><b>Upload&nbsp;</b></td> <td><b>&nbsp;PPP&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</b></td> <td><b>Combin.&nbsp;</b></td> </tr>
+<tr><td><b>Message<br>Type #</b></td> <td><b>Description</b></td> <td><b>System</b></td> <td><b>RTCM<br>Proposal&nbsp;</b></td> <td><b>Decoding&nbsp;</b></td> <td><b>&nbsp;RINEX/&nbsp;<br>&nbsp;SP3</b></td> <td><b>Encoding&nbsp;</b></td> <td><b>Upload&nbsp;</b></td> <td><b>&nbsp;PPP&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</b></td> <td><b>Combin.&nbsp;</b></td> </tr>
 
 <tr> <td><b><br>General</b></td> <td></td> <td></td> <td></td> <td></td> <td></td> <td></td> </tr>
 <tr> <td>1005,1006</td> <td>Station</td>               <td> </td>             <td> </td> <td>x</td> <td> </td> <td> </td> <td> </td> <td> </td> <td> </td> </tr>
@@ -234,7 +234,10 @@ The table mentions if the Navigation, Observation, or SSR message implementation
 <p><a name="dataFlow"><h3>1.2 Data Flow</h3></p>
 
 <p>
-BNC can be used in different contexts with varying data flows. The first of the following figures shows a flow chart of BNC connected to a GNSS receiver providing observations via serial or TCP communication link for the purpose of Precise Point Positioning. The second figure shows the conversion of RTCM streams to RINEX files. The third figure shows a flow chart of BNC feeding a real-time GNSS engine which estimates precise orbits and clocks. BNC is used in this scenario to encode correctors to RTCM Version 3 and upload them to an NTRIP Broadcaster. The fourth figure shows BNC combining several Broadcast Correction streams to disseminate the combination product while saving results in SP3 and Clock RINEX files.
+BNC can be used in different contexts with varying data flows. Typical real-time communication follows the Ntrip protocol over TCP/IP (probably via SSL), RTSP/RTP or UDP, plain TCP/IP protocol, or serial communication links. Stream contents could be observations, ephemeris, satellite orbit/clock products or NMEA sentences.
+</p>
+<p>
+ The first of the following figures shows a flow chart of BNC connected to a GNSS receiver providing observations via serial or TCP communication link for the purpose of Precise Point Positioning. The second figure shows the conversion of RTCM streams to RINEX files. The third figure shows a flow chart of BNC feeding a real-time GNSS engine which estimates precise orbits and clocks. BNC is used in this scenario to encode correctors to RTCM Version 3 and upload them to an NTRIP Broadcaster. The fourth figure shows BNC combining several Broadcast Correction streams to disseminate the combination product while saving results in SP3 and Clock RINEX files.
 </p>
 <p><img src="IMG/screenshot10.png"/></p>
 <p><u>Figure 1:</u> Flowchart, BNC connected to a GNSS rover for Precise Point Positioning.</p>
