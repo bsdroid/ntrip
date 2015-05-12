@@ -106,7 +106,7 @@ Lennard Huisman, Kadaster Netherlands, and Rolf Dach, Astronomical Institute Uni
 <li>Carry out real-time Precise Point Positioning to determine a GNSS rover position;</li>
 <li>Simultaneously process several Broadcast Correction streams to produce, encode and upload combined Broadcast Corrections;</li>
 <li>Upload a Broadcast Ephemeris stream in RTCM Version 3 format;</li>
-<li>Read GNSS orbits and clocks in a plain ASCII format from an IP port. They can be produced by a real-time GNSS engine such as RTNet and should be referenced to the IGS Earth-Centered-Earth-Fixed (ECEF) reference system. BNC will then</li>
+<li>Read GNSS orbits and clocks in a plain ASCII format from an IP port. They can be produced by a real-time GNSS engine such as RTNET and should be referenced to the IGS Earth-Centered-Earth-Fixed (ECEF) reference system. BNC will then</li>
 <ul>
 <li>Convert the IGS Earth-Centered-Earth-Fixed orbits and clocks into Broadcast Corrections with radial, along-track and cross-track components;</li>
 <li>Upload Broadcast Corrections as an RTCM Version 3 stream to an NTRIP Broadcaster;</li>
@@ -125,25 +125,114 @@ BNC supports decoding the following GNSS stream formats and message types:
 </p>
 <p>
 <ul>
-<li>RTCM Version 2 message types for GPS and GLONASS observations; </li>
-<li>RTCM Version 3 'conventional' message types for GPS and GLONASS observations;</li>
-<li>RTCM Version 3 message types for Broadcast Ephemeris for GPS, GLONASS, Galileo, QZSS, and SBAS;</li>
-<li>RTCM Version 3 'State Space Representation' (SSR) messages for GPS and GLONASS;</li>
-<li>RTCM Version 3 'Multiple Signal Messages' (MSM) and 'High Precision Multiple Signal Messages' (HP MSM) including X-type observations for GPS, GLONASS, Galileo, BeiDou, QZSS, and SBAS (draft);</li>
+<li>RTCM Version 2 message types; </li>
+<li>RTCM Version 3 'conventional' message types;</li>
+<li>RTCM Version 3 message types for Broadcast Ephemeris;</li>
+<li>RTCM Version 3 'State Space Representation' (SSR) messages;</li>
+<li>RTCM Version 3 'Multiple Signal Messages' (MSM) and 'High Precision Multiple Signal Messages' (HP MSM);</li>
 <li>RTNET, a plain ASCII format defined within BNC to receive orbits and clocks from a serving GNSS engine.
 </ul>
 </p>
-
 <p>
-Note that while BNC decodes RTCM's MSM and HP MSM messages for GPS, GLONASS, Galileo, BeiDou, and QZSS, the implemented decoding of SBAS follows an internal agreement between BKG, Alberding and DLR.
+Note that BNC allows to by-pass its decoding and conversion algorithms for incoming streams, leave whatever is received untouched to save it in files or output it through local TCP/IP port.
 </p>
 
+<p><a name="suppGNSS"><h3>1.1 Supported Systems</h3></p>
 <p>
-Note also that BNC allows to by-pass its decoding and conversion algorithms for incoming streams, leave whatever is received untouched to save it in files or output it through local TCP/IP port.
+BNC is continuously completed in order to support all existing GNSS systems throughout all features of the program. The table below shows in detail which GNSS systems are so far supported by particular applications when using the latest BNC version. The applications named here are 
+<ul>
+<li>Decoding of RTCM or RTNET streams</li>
+<li>RINEX and SP3 file input and output</li>
+<li>Encoding of SSR and ephemeris messages</li>
+<li>Upload of SSR and ephemeris messages</li>
+<li>PPP (Precise Point Positioning)</li>
+<li>Combination of SSR or ephemeris messages from various real-time sources</li>
+</ul>
+The table mentions if the Navigation, Observation, or SSR message implementation in BNC could so far only be based on a 'RTCM Proposal'.
 </p>
+<p><u>Table:</u> Status of RTCM Version 3 message implementation in BNC supporting various GNSS systems</p>
+
+<table border="1" frame="box" rules="rows" bgcolor="#FFF5EE" style="font-size:13">
+
+<tr></tr> <tr><td><b>Message<br>Type</b></td> <td><b>Description</b></td> <td><b>System</b></td> <td><b>RTCM<br>Proposal&nbsp;</b></td> <td><b>Decoding&nbsp;</b></td> <td><b>&nbsp;RINEX/&nbsp;<br>&nbsp;SP3</b></td> <td><b>Encoding&nbsp;</b></td> <td><b>Upload&nbsp;</b></td> <td><b>&nbsp;PPP&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</b></td> <td><b>Combin.&nbsp;</b></td> </tr>
+
+<tr> <td><b><br>General</b></td> <td></td> <td></td> <td></td> <td></td> <td></td> <td></td> </tr>
+<tr> <td>1005,1006</td> <td>Station</td>               <td> </td>             <td> </td> <td>x</td> <td> </td> <td> </td> <td> </td> <td> </td> <td> </td> </tr>
+<tr> <td>1007,1008</td> <td>Antenna</td>               <td> </td>             <td> </td> <td>x</td> <td> </td> <td> </td> <td> </td> <td> </td> <td> </td> </tr>
+<tr> <td>1033</td>      <td>Receiver, Antenna</td>     <td> </td>             <td> </td> <td>x</td> <td> </td> <td> </td> <td> </td> <td> </td> <td> </td> </tr>
+<tr> <td>1013</td>      <td>System Parameters</td>     <td> </td>             <td> </td> <td>x</td> <td> </td> <td> </td> <td> </td> <td> </td> <td> </td> </tr>
+
+<tr> <td><b><br>Navigation</b></td> <td></td> <td></td> <td></td> <td></td> <td></td> <td></td> </tr>
+<tr> <td>1019</td> <td>Ephemeris</td>                  <td>GPS</td>           <td> </td> <td>x</td> <td>x</td> <td>x</td> <td>x</td> <td>x</td> <td>x</td> </tr>
+<tr> <td>1020</td> <td>Ephemeris</td>                  <td>GLONASS</td>       <td> </td> <td>x</td> <td>x</td> <td>x</td> <td>x</td> <td>x</td> <td>x</td> </tr>
+<tr> <td>1045</td> <td>Ephemeris</td>                  <td>Galileo F/Nav</td> <td> </td> <td>x</td> <td>x</td> <td>x</td> <td>x</td> <td>x</td> <td> </td> </tr>
+<tr> <td>1046</td> <td>Ephemeris</td>                  <td>Galileo I/Nav</td> <td>x</td> <td>x</td> <td>x</td> <td>x</td> <td>x</td> <td>x</td> <td> </td> </tr>
+<tr> <td>1043</td> <td>Ephemeris</td>                  <td>SBAS</td>          <td>x</td> <td>x</td> <td>x</td> <td>x</td> <td>x</td> <td> </td> <td> </td> </tr>
+<tr> <td>1044</td> <td>Ephemeris</td>                  <td>QZSS</td>          <td> </td> <td>x</td> <td>x</td> <td>x</td> <td>x</td> <td> </td> <td> </td> </tr>
+<tr> <td>63</td>   <td>Ephemeris</td>                  <td>BDS</td>           <td>x</td> <td>x</td> <td>x</td> <td>x</td> <td>x</td> <td> </td> <td> </td> </tr>
+
+<tr> <td><b><br>Observation</b></td> <td></td> <td></td> <td></td> <td></td> <td></td> <td></td> </tr>
+<tr> <td>1001-4</td>  <td>Conventional Messages</td>   <td>GPS</td>           <td> </td> <td>x</td> <td>x</td> <td> </td> <td> </td> <td>x</td> <td> </td> </tr>
+<tr> <td>1009-12</td> <td>Conventional Messages</td>   <td>GLONASS</td>       <td> </td> <td>x</td> <td>x</td> <td> </td> <td> </td> <td>x</td> <td> </td> </tr>
+
+<tr> <td><b><br>Observation</b></td> <td></td> <td></td> <td></td> <td></td> <td></td> <td></td> </tr>
+<tr> <td>1071-77</td> <td>Multiple Signal Message</td> <td>GPS</td>           <td> </td> <td>x</td> <td>x</td> <td> </td> <td> </td> <td>x</td> <td> </td> </tr>
+<tr> <td>1081-87</td> <td>Multiple Signal Message</td> <td>GLONASS</td>       <td> </td> <td>x</td> <td>x</td> <td> </td> <td> </td> <td>x</td> <td> </td> </tr>
+<tr> <td>1091-97</td> <td>Multiple Signal Message</td> <td>Galileo</td>       <td> </td> <td>x</td> <td>x</td> <td> </td> <td> </td> <td>x</td> <td> </td> </tr>
+<tr> <td>1101-07</td> <td>Multiple Signal Message</td> <td>SBAS</td>          <td>x</td> <td>x</td> <td>x</td> <td> </td> <td> </td> <td> </td> <td> </td> </tr>
+<tr> <td>1111-17</td> <td>Multiple Signal Message</td> <td>QZSS</td>          <td> </td> <td>x</td> <td>x</td> <td> </td> <td> </td> <td> </td> <td> </td> </tr>
+<tr> <td>1121-27</td> <td>Multiple Signal Message</td> <td>BDS</td>           <td>x</td> <td>x</td> <td>x</td> <td> </td> <td> </td> <td> </td> <td> </td> </tr>
+
+<tr> <td><b><br>SSR I</b></td> <td></td> <td></td> <td></td> <td></td> <td></td> <td></td> </tr>
+<tr> <td>1057</td> <td>Orbit Corrections</td>          <td>GPS</td>           <td> </td> <td>x</td> <td>x</td> <td>x</td> <td>x</td> <td>x</td> <td>x</td> </tr>
+<tr> <td>1063</td> <td>Orbit Corrections</td>          <td>GLONASS</td>       <td> </td> <td>x</td> <td>x</td> <td>x</td> <td>x</td> <td>x</td> <td>x</td> </tr>
+<tr> <td>1240</td> <td>Orbit Corrections</td>          <td>Galileo</td>       <td>x</td> <td>x</td> <td>x</td> <td> </td> <td> </td> <td>x</td> <td> </td> </tr>
+<tr> <td>1246</td> <td>Orbit Corrections</td>          <td>SBAS</td>          <td>x</td> <td>x</td> <td>x</td> <td> </td> <td> </td> <td> </td> <td> </td> </tr>
+<tr> <td>1252</td> <td>Orbit Corrections</td>          <td>QZSS</td>          <td>x</td> <td>x</td> <td>x</td> <td> </td> <td> </td> <td> </td> <td> </td> </tr>
+<tr> <td>1258</td> <td>Orbit Corrections</td>          <td>BDS</td>           <td>x</td> <td>x</td> <td>x</td> <td> </td> <td> </td> <td> </td> <td> </td> </tr>
+<tr> <td>1058</td> <td>Clock Corrections</td>          <td>GPS</td>           <td> </td> <td>x</td> <td>x</td> <td>x</td> <td>x</td> <td>x</td> <td>x</td> </tr>
+<tr> <td>1064</td> <td>Clock Corrections</td>          <td>GLONASS</td>       <td> </td> <td>x</td> <td>x</td> <td>x</td> <td>x</td> <td>x</td> <td>x</td> </tr>
+<tr> <td>1241</td> <td>Clock Corrections</td>          <td>Galileo</td>       <td>x</td> <td>x</td> <td>x</td> <td> </td> <td> </td> <td>x</td> <td> </td> </tr>
+<tr> <td>1247</td> <td>Clock Corrections</td>          <td>SBAS</td>          <td>x</td> <td>x</td> <td>x</td> <td> </td> <td> </td> <td> </td> <td> </td> </tr>
+<tr> <td>1253</td> <td>Clock Corrections</td>          <td>QZSS</td>          <td>x</td> <td>x</td> <td>x</td> <td> </td> <td> </td> <td> </td> <td> </td> </tr>
+<tr> <td>1259</td> <td>Clock Corrections</td>          <td>BDS</td>           <td>x</td> <td>x</td> <td>x</td> <td> </td> <td> </td> <td> </td> <td> </td> </tr>
+
+<tr> <td>1059</td> <td>Code Biases</td>                <td>GPS</td>           <td> </td> <td>x</td> <td>x</td> <td>x</td> <td>x</td> <td>x</td> <td> </td> </tr>
+<tr> <td>1065</td> <td>Code Biases</td>                <td>GLONASS</td>       <td> </td> <td>x</td> <td>x</td> <td>x</td> <td>x</td> <td>x</td> <td> </td> </tr>
+<tr> <td>1242</td> <td>Code Biases</td>                <td>Galileo</td>       <td>x</td> <td>x</td> <td>x</td> <td> </td> <td> </td> <td>x</td> <td> </td> </tr>
+<tr> <td>1248</td> <td>Code Biases</td>                <td>SBAS</td>          <td>x</td> <td>x</td> <td>x</td> <td> </td> <td> </td> <td> </td> <td> </td> </tr>
+<tr> <td>1254</td> <td>Code Biases</td>                <td>QZSS</td>          <td>x</td> <td>x</td> <td>x</td> <td> </td> <td> </td> <td> </td> <td> </td> </tr>
+<tr> <td>1260</td> <td>Code Biases</td>                <td>BDS</td>           <td>x</td> <td>x</td> <td>x</td> <td> </td> <td> </td> <td> </td> <td> </td> </tr>
+
+<tr> <td>1061, 1062</td> <td>User Range Accuracy, HR&nbsp;</td> <td>GPS</td>        <td> </td> <td>x</td> <td>x</td> <td> </td> <td> </td> <td> </td> <td> </td> </tr>
+<tr> <td>1067, 1068</td> <td>User Range Accuracy, HR&nbsp;</td> <td>GLONASS</td>    <td> </td> <td>x</td> <td>x</td> <td> </td> <td> </td> <td> </td> <td> </td> </tr>
+<tr> <td>1244, 1245</td> <td>User Range Accuracy, HR&nbsp;</td> <td>Galileo</td>    <td>x</td> <td>x</td> <td>x</td> <td> </td> <td> </td> <td> </td> <td> </td> </tr>
+<tr> <td>1250, 1251</td> <td>User Range Accuracy, HR&nbsp;</td> <td>SBAS</td>       <td>x</td> <td>x</td> <td>x</td> <td> </td> <td> </td> <td> </td> <td> </td> </tr>
+<tr> <td>1256, 1257</td> <td>User Range Accuracy, HR&nbsp;</td> <td>QZSS</td>       <td>x</td> <td>x</td> <td>x</td> <td> </td> <td> </td> <td> </td> <td> </td> </tr>
+<tr> <td>1262, 1263</td> <td>User Range Accuracy, HR&nbsp;</td> <td>BDS</td>        <td>x</td> <td>x</td> <td>x</td> <td> </td> <td> </td> <td> </td> <td> </td> </tr>
+
+<tr> <td>1060</td> <td>Comb. Orbits & Clocks</td>      <td>GPS</td>           <td> </td> <td>x</td> <td>x</td> <td>x</td> <td>x</td> <td>x</td> <td>x</td> </tr>
+<tr> <td>1066</td> <td>Comb. Orbits & Clocks</td>      <td>GLONASS</td>       <td> </td> <td>x</td> <td>x</td> <td>x</td> <td>x</td> <td>x</td> <td>x</td> </tr>
+<tr> <td>1243</td> <td>Comb. Orbits & Clocks</td>      <td>Galileo</td>       <td>x</td> <td>x</td> <td>x</td> <td> </td> <td> </td> <td> </td> <td> </td> </tr>
+<tr> <td>1249</td> <td>Comb. Orbits & Clocks</td>      <td>SBAS</td>          <td>x</td> <td>x</td> <td>x</td> <td> </td> <td> </td> <td> </td> <td> </td> </tr>
+<tr> <td>1255</td> <td>Comb. Orbits & Clocks</td>      <td>QZSS</td>          <td>x</td> <td>x</td> <td>x</td> <td> </td> <td> </td> <td> </td> <td> </td> </tr>
+<tr> <td>1261</td> <td>Comb. Orbits & Clocks</td>      <td>BDS</td>           <td>x</td> <td>x</td> <td>x</td> <td> </td> <td> </td> <td> </td> <td> </td> </tr>
+
+<tr> <td><b><br>SSR II</b></td> <td></td> <td></td> <td></td> <td></td> <td></td> <td></td> </tr>
+<tr> <td>1264</td> <td>VTEC</td>                       <td> </td>             <td>x</td> <td>x</td> <td>x</td> <td> </td> <td> </td> <td> </td> <td> </td> </tr>
+<tr> <td>1265</td> <td>Phase Biases</td>               <td>GPS</td>           <td>x</td> <td>x</td> <td>x</td> <td> </td> <td> </td> <td> </td> <td> </td> </tr>
+<tr> <td>1266</td> <td>Phase Biases</td>               <td>GLONASS</td>       <td>x</td> <td>x</td> <td>x</td> <td> </td> <td> </td> <td> </td> <td> </td> </tr>
+<tr> <td>1267</td> <td>Phase Biases</td>               <td>Galileo</td>       <td>x</td> <td>x</td> <td>x</td> <td> </td> <td> </td> <td> </td> <td> </td> </tr>
+<tr> <td>1268</td> <td>Phase Biases</td>               <td>SBAS</td>          <td>x</td> <td>x</td> <td>x</td> <td> </td> <td> </td> <td> </td> <td> </td> </tr>
+<tr> <td>1269</td> <td>Phase Biases</td>               <td>QZSS</td>          <td>x</td> <td>x</td> <td>x</td> <td> </td> <td> </td> <td> </td> <td> </td> </tr>
+<tr> <td>1270</td> <td>Phase Biases</td>               <td>BDS</td>           <td>x</td> <td>x</td> <td>x</td> <td> </td> <td> </td> <td> </td> <td> </td> </tr>
+
+</table>
+
+<p><a name="dataFlow"><h3>1.2 Data Flow</h3></p>
 
 <p>
-The first of the following figures shows a flow chart of BNC connected to a GNSS receiver providing observations via serial or TCP communication link for the purpose of Precise Point Positioning. The second figure shows the conversion of RTCM streams to RINEX files. The third figure shows a flow chart of BNC feeding a real-time GNSS engine which estimates precise orbits and clocks. BNC is used in this scenario to encode correctors to RTCM Version 3 and upload them to an NTRIP Broadcaster. The fourth figure shows BNC combining several Broadcast Correction streams to disseminate the combination product while saving results in SP3 and Clock RINEX files.
+BNC can be used in different contexts with varying data flows. The first of the following figures shows a flow chart of BNC connected to a GNSS receiver providing observations via serial or TCP communication link for the purpose of Precise Point Positioning. The second figure shows the conversion of RTCM streams to RINEX files. The third figure shows a flow chart of BNC feeding a real-time GNSS engine which estimates precise orbits and clocks. BNC is used in this scenario to encode correctors to RTCM Version 3 and upload them to an NTRIP Broadcaster. The fourth figure shows BNC combining several Broadcast Correction streams to disseminate the combination product while saving results in SP3 and Clock RINEX files.
 </p>
 <p><img src="IMG/screenshot10.png"/></p>
 <p><u>Figure 1:</u> Flowchart, BNC connected to a GNSS rover for Precise Point Positioning.</p>
@@ -162,7 +251,6 @@ The first of the following figures shows a flow chart of BNC connected to a GNSS
 </p>
 <p><img src="IMG/screenshot19.png"/></p>
 <p><u>Figure 4:</u> Flowchart, BNC combining Broadcast Correction streams.</p>
-
 
 <p><a name="opthandling"><h3>2. Handling</h3></p>
 <p>
@@ -448,7 +536,7 @@ help contents.<br>
 You may keep the 'Help Contents' window open while configuring BNC.
 </li>
 <li>
-a 'Flow Chart' showing BNC linked to a real-time GNSS network engine such as RTNet.
+a 'Flow Chart' showing BNC linked to a real-time GNSS network engine such as RTNET.
 </li>
 <li>
 general information about BNC.<br>
@@ -522,7 +610,7 @@ The default value for 'Raw output file' is an empty option field, meaning that B
 
 <p><a name="rinex"><h4>3.4. RINEX Observations</h4></p>
 <p>
-Observations will be converted to RINEX if they come in either RTCM Version 2 or RTCM Version 3 format. Depending on the RINEX version and incoming RTCM message types, files generated by BNC may contain data from GPS, GLONASS, Galileo, SBAS, QZSS and/or BeiDou. In case an observation type is listed in the RINEX header but the corresponding observation is unavailable, its value is set to zero '0.000'. Note that the 'RINEX TYPE' field in the RINEX Version 3 Observation file header is always set to 'M(MIXED)' or 'Mixed' even if the file only contains data from one system.
+Observations will be converted to RINEX if they come in either RTCM Version 2 or RTCM Version 3 format. Depending on the RINEX version and incoming RTCM message types, files generated by BNC may contain data from GPS, GLONASS, Galileo, SBAS, QZSS and/or BDS(BeiDou). In case an observation type is listed in the RINEX header but the corresponding observation is unavailable, its value is set to zero '0.000'. Note that the 'RINEX TYPE' field in the RINEX Version 3 Observation file header is always set to 'M(MIXED)' or 'Mixed' even if the file only contains data from one system.
 </p>
 <p>
 It is important to understand that converting RTCM streams to RINEX files requires a-priori information on observation types for specifying a complete RINEX header. Regarding the RINEX Version 2 file header, BNC simply introduces all observation types defined in the Version 2 standard and later reports "0.000" for all observations which are not received. However, following this approach is not possible for RINEX Version 3 files from RTCM Version 3 MSM streams because of the huge number of observation types which might in principle show up. The solution implemented in BNC is to start with RINEX Version 3 observation type records from skeleton files (see section 'Skeleton Extension') and switch to a default selection of observation types when such skeleton file is not available or does not contain the required information. The following is a default selection of observation types specified for a RINEX Version 3 file:
@@ -714,11 +802,11 @@ The default format for RINEX Observation files is RINEX Version 2.11. Select 'Ve
 
 <p><a name="ephemeris"><h4>3.5. RINEX Ephemeris</h4></p>
 <p>
-Broadcast Ephemeris can be saved as RINEX Navigation files when received via RTCM Version 3 e.g. as message types 1019 (GPS) or 1020 (GLONASS) or 1044 (QZSS) or 1043 (SBAS) or 1045 and 1046 (Galileo) or 63 (tentative, BeiDou). The file name convention follows the details given in section 'RINEX File Names' except that the first four characters are 'BRDC' and the last character is
+Broadcast Ephemeris can be saved as RINEX Navigation files when received via RTCM Version 3 e.g. as message types 1019 (GPS) or 1020 (GLONASS) or 1044 (QZSS) or 1043 (SBAS) or 1045 and 1046 (Galileo) or 63 (tentative, BDS/BeiDou). The file name convention follows the details given in section 'RINEX File Names' except that the first four characters are 'BRDC' and the last character is
 </p>
 <ul>
 <li>'N' or 'G' for GPS or GLONASS ephemeris in two separate RINEX Version 2.11 Navigation files, or</li>
-<li>'P' for GPS plus GLONASS plus Galileo ephemeris saved together in one RINEX Version 3 Navigation file.
+<li>'P' for GPS plus GLONASS, Galileo, SBAS, QZSS, and BDS ephemeris, saved together in one RINEX Version 3 Navigation file.
 </ul>
 
 <p>
@@ -779,7 +867,7 @@ and hence follows UNAVCO's famous 'TEQC' program. The remarkable thing about BNC
 
 <p><a name="reqcgnss"><h4>3.6.2 Sky Plots - mandatory if 'Action' is set to 'Analyze'</h4></p>
 
-<p>Once the 'Analyze' action is selected, you have to specify the GNSS system(s) whose observations you want to analyze for multipath and signal-to-noise ratio sky plots. Possible options are 'ALL', 'GPS', 'GLONASS', and 'Galileo'. Default is 'ALL', meaning that observations from all GNSS will be analyzed.
+<p>Once the 'Analyze' action is selected, you have to specify the GNSS system(s) whose observations you want to analyze for multipath and signal-to-noise ratio sky plots. Possible options are 'ALL', 'GPS', 'GLONASS', 'Galileo', 'SBAS', 'QZSS' and 'BDS'. Default is 'ALL', meaning that observations from all GNSS will be analyzed.
 </p>
 
 <p>
@@ -1310,7 +1398,7 @@ It is the current understanding of BNC's authors that different Slip Counts coul
 </p>
 
 <p>
-The following is an output example which presents observations from BeiDou, SBAS, Galileo, QZSS, GLONASS and GPS satellites as collected through streams UNBS7 and CUT07:
+The following is an output example which presents observations from BDS (BeiDou), SBAS, Galileo, QZSS, GLONASS and GPS satellites as collected through streams UNBS7 and CUT07:
 <pre>
 > 1768 124003.0000000
 BRUX7 C09     C1I   39216013.767 L1I  204207406.208   2 D1I      -1043.207 S1I   42.500 C7I   39216013.579 L7I  157906195.465   0 D7I       -806.619 S7I   44.500
@@ -2199,7 +2287,7 @@ The procedure taken by BNC to generate the orbit and clock corrections to Broadc
 </ul>
 Then, epoch by epoch:
 <ul>
-<li>Continuously receive the best available orbit and clock estimates for all satellites in XYZ Earth-Centered-Earth-Fixed IGS08 reference system. Receive them every epoch in plain ASCII format as provided by a real-time GNSS engine such as RTNet or generate them following a combination approach. </li>
+<li>Continuously receive the best available orbit and clock estimates for all satellites in XYZ Earth-Centered-Earth-Fixed IGS08 reference system. Receive them every epoch in plain ASCII format as provided by a real-time GNSS engine such as RTNET or generate them following a combination approach. </li>
 <li>Calculate XYZ coordinates from Broadcast Ephemeris orbits. </li>
 <li>Calculate differences dX,dY,dZ between Broadcast Ephemeris and IGS08 orbits. </li>
 <li>Transform these differences into radial, along-track and cross-track corrections to Broadcast Ephemeris orbits. </li>
@@ -2218,7 +2306,7 @@ The usual handling of BNC when uploading a stream with Broadcast Corrections is 
 </p>
 <p>
 <u>'RTNET' Stream Format</u><br>
-When uploading an SSR stream generated according to b. then  BNC requires precise GNSS orbits and clocks in the IGS Earth-Centered-Earth-Fixed (ECEF) reference system and in a specific ASCII format named 'RTNET' because the data may come from a real-time engine such as RTNet. The sampling interval for data transmission should not exceed 15 sec. Note that otherwise tools involved in IP streaming such as NTRIP Broadcasters or NTRIP Clients may respond with a timeout.
+When uploading an SSR stream generated according to b. then  BNC requires precise GNSS orbits and clocks in the IGS Earth-Centered-Earth-Fixed (ECEF) reference system and in a specific ASCII format named 'RTNET' because the data may come from a real-time engine such as RTNET. The sampling interval for data transmission should not exceed 15 sec. Note that otherwise tools involved in IP streaming such as NTRIP Broadcasters or NTRIP Clients may respond with a timeout.
 </p>
 <p>
 Below you find an example for the 'RTNET' ASCII format coming from a real-time GNSS engine. Each epoch begins with an asterisk character followed by the time as year, month, day of month, hour, minute and second. Subsequent records provide the following set of parameters for each satellite:
@@ -2714,7 +2802,7 @@ Some streams on NTRIP Broadcasters may be restricted. Enter a valid 'User' ID an
 
 <p><a name="gettable"><h4>3.19.1.1.4 Get Table</h4></p>
 <p>
-Use the 'Get Table' button to download the source-table from the NTRIP Broadcaster. Pay attention to data fields 'format' and 'format-details'. Keep in mind that BNC can only decode and convert streams that come in RTCM Version 2, RTCM Version 3, or RTNET format. For access to observations, Broadcast Ephemeris and Broadcast Corrections in RTCM format streams must contain a selection of appropriate message types as listed in the Annex, cf. data field 'format-details' for available message types and their repetition rates in brackets. Note that in order to produce RINEX Navigation files RTCM Version 3 streams containing message types 1019 (GPS) and 1020 (GLONASS) and 1043 (SBAS) and 1044 (QZSS) and 1045, 1046 (Galileo) and 63 (tentative, BeiDou) are required. Select your streams line by line, use +Shift and +Ctrl when necessary. The figure below provides an example source-table.
+Use the 'Get Table' button to download the source-table from the NTRIP Broadcaster. Pay attention to data fields 'format' and 'format-details'. Keep in mind that BNC can only decode and convert streams that come in RTCM Version 2, RTCM Version 3, or RTNET format. For access to observations, Broadcast Ephemeris and Broadcast Corrections in RTCM format streams must contain a selection of appropriate message types as listed in the Annex, cf. data field 'format-details' for available message types and their repetition rates in brackets. Note that in order to produce RINEX Navigation files RTCM Version 3 streams containing message types 1019 (GPS) and 1020 (GLONASS) and 1043 (SBAS) and 1044 (QZSS) and 1045, 1046 (Galileo) and 63 (tentative, BDS/BeiDou) are required. Select your streams line by line, use +Shift and +Ctrl when necessary. The figure below provides an example source-table.
 </p>
 <p>
 The contents of data field 'nmea' tells you whether a stream retrieval needs to be initiated by BNC through sending an NMEA-GGA message carrying approximate position coordinates (virtual reference station).
@@ -3086,7 +3174,7 @@ Drag and drop of configuration file is currently not supported on Mac OS X.
 
 <tr>
 <td>Dec 2013 &nbsp;</td><td>Version 2.10 &nbsp;</td>
-<td>[Add] Started work on new version in Aug 2013<br>[Bug] Clock RINEX und SP3 file generation on Windows systems<br>[Bug] Broadcast Ephemeris generation<br>[Add] Transformation ITRF2008 to NAD83 and DREF91<br>[Add] CodeBias added to RTNet stream format<br>[Bug] GPS L2 in 'Feed Engine' output<br>[Mod] Made C1 in BeiDou default observation type instead of C2<br>[Add] Feed engine output sorted per stream<br>[Add] Feed engine output file name change on-the-fly<br>[Add] 'Append files' option for RINEX observation files<br>[Mod] Broadcast Corrections ASCII file output for message 1058 &amp; 1064 modified<br>[Bug] GPS L2 phase data in RINEX2<br>[Bug] GLONASS frequency numbers<br>[Add] RTCMv3 Galileo Broadcast Ephemeris message 1046<br>[Add] Reset ambiguities in PPP when orbit/clock correction IDs change<br>[Add] Satellite clock offsets are reset in adjustment for combination when orbit/clock correction IDs change<br>[Add] Version 2.10 published</td>
+<td>[Add] Started work on new version in Aug 2013<br>[Bug] Clock RINEX und SP3 file generation on Windows systems<br>[Bug] Broadcast Ephemeris generation<br>[Add] Transformation ITRF2008 to NAD83 and DREF91<br>[Add] CodeBias added to RTNET stream format<br>[Bug] GPS L2 in 'Feed Engine' output<br>[Mod] Made C1 in BeiDou default observation type instead of C2<br>[Add] Feed engine output sorted per stream<br>[Add] Feed engine output file name change on-the-fly<br>[Add] 'Append files' option for RINEX observation files<br>[Mod] Broadcast Corrections ASCII file output for message 1058 &amp; 1064 modified<br>[Bug] GPS L2 phase data in RINEX2<br>[Bug] GLONASS frequency numbers<br>[Add] RTCMv3 Galileo Broadcast Ephemeris message 1046<br>[Add] Reset ambiguities in PPP when orbit/clock correction IDs change<br>[Add] Satellite clock offsets are reset in adjustment for combination when orbit/clock correction IDs change<br>[Add] Version 2.10 published</td>
 </tr>
 
 <tr>
