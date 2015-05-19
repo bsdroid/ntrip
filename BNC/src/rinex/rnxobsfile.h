@@ -52,11 +52,18 @@ class t_rnxObsHeader {
   double      version() const {return _version;}
   t_irc       read(QTextStream* stream, int maxLines = 0);
   void        setDefault(const QString& markerName, int version);
-  void        set(const t_rnxObsHeader& header, int version, const QStringList* useObsTypes = 0);
+  void        set(const t_rnxObsHeader& header, int version,
+                  const QStringList* useObsTypes = 0, const QStringList* phaseShifts = 0,
+                  const QStringList* gloBiases = 0, const QStringList* gloSlots = 0);
   int         numSys() const;
   char        system(int iSys) const;
   int         nTypes(char sys) const;
+  int         numGloBiases() const;
+  int         numGloSlots() const;
   QString     obsType(char sys, int index, double version = 0.0) const;
+  QStringList phaseShifts() const;
+  QStringList gloBiases() const;
+  QStringList gloSlots() const;
   void        write(QTextStream* stream, const QMap<QString, QString>* txtMap = 0) const;
   bncTime     startTime() const {return _startTime;}
   void        setStartTime(const bncTime& startTime) {_startTime = startTime;}
@@ -82,7 +89,7 @@ class t_rnxObsHeader {
   ColumnVector    _xyz;
   QMap<char, QStringList> _obsTypes;
   QMap<t_prn, int>        _gloSlots;
-  QMap<QString, double>   _gloPhaseBiases;
+  QMap<QString, double>   _gloBiases;
   int                     _wlFactorsL1[t_prn::MAXPRN_GPS+1];
   int                     _wlFactorsL2[t_prn::MAXPRN_GPS+1];
   bncTime                 _startTime;
@@ -133,10 +140,15 @@ class t_rnxObsFile {
   int            numSys() const {return _header.numSys();}
   char           system(int iSys) const {return _header.system(iSys);}
   int            nTypes(char sys) const {return _header.nTypes(sys);}
+  int            numGloBiases() const {return _header.numGloBiases();}
+  int            numGloSlots() const {return _header.numGloSlots();}
   const QString& fileName() const {return _fileName;}
   QString obsType(char sys, int index, double version = 0.0) const {
     return _header.obsType(sys, index, version);
   }
+  QStringList phaseShifts() const {return _header.phaseShifts();}
+  QStringList gloBiases() const {return _header.gloBiases();}
+  QStringList gloSlots() const {return _header.gloSlots();}
   const QString& antennaName() const {return _header._antennaName;}
   const QString& antennaNumber() const {return _header._antennaNumber;}
   const QString& markerName() const {return _header._markerName;}
@@ -174,8 +186,10 @@ class t_rnxObsFile {
 
   const t_rnxObsHeader& header() const {return _header;}
 
-  void setHeader(const t_rnxObsHeader& header, int version, const QStringList* useObsTypes = 0) {
-    _header.set(header, version, useObsTypes);
+  void setHeader(const t_rnxObsHeader& header, int version,
+      const QStringList* useObsTypes = 0, const QStringList* phaseShifts = 0,
+      const QStringList* gloBiases = 0, const QStringList* gloSlots = 0) {
+    _header.set(header, version, useObsTypes, phaseShifts, gloBiases, gloSlots);
   }
 
   void writeEpoch(const t_rnxEpo* epo);

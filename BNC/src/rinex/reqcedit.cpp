@@ -243,6 +243,50 @@ void t_reqcEdit::editObservations() {
     useObsTypes.removeDuplicates();
   }
 
+  // Put together all phase shifts
+  // -----------------------------
+  QStringList phaseShifts;
+  if (_rnxVersion >= 3.0 && _rnxObsFiles.size() > 1) {
+    for (int ii = 0; ii < _rnxObsFiles.size(); ii++) {
+      t_rnxObsFile* obsFile = _rnxObsFiles[ii];
+      phaseShifts << obsFile->phaseShifts();
+    }
+    phaseShifts.removeDuplicates();
+  }
+
+  // Put together all GLONASS biases
+  // -------------------------------
+  QStringList gloBiases;
+  if (_rnxVersion >= 3.0 && _rnxObsFiles.size() > 1) {
+    for (int ii = 0; ii < _rnxObsFiles.size(); ii++) {
+      t_rnxObsFile* obsFile = _rnxObsFiles[ii];
+      if (ii == 0 &&  obsFile->numGloBiases() == 4) {
+        break;
+      }
+      else {
+        gloBiases << obsFile->gloBiases();
+      }
+    }
+    gloBiases.removeDuplicates();
+  }
+
+  // Put together all GLONASS slots
+  // -----------------------------
+  QStringList gloSlots;
+  if (_rnxVersion >= 3.0 && _rnxObsFiles.size() > 1) {
+    for (int ii = 0; ii < _rnxObsFiles.size(); ii++) {
+      t_rnxObsFile* obsFile = _rnxObsFiles[ii];
+      if (ii == 0 &&
+          obsFile->numGloSlots() == signed(t_prn::MAXPRN_GLONASS)) {
+        break;
+      }
+      else {
+        gloSlots << obsFile->gloSlots();
+      }
+    }
+    gloSlots.removeDuplicates();
+  }
+
   // Loop over all input observation files
   // -------------------------------------
   for (int ii = 0; ii < _rnxObsFiles.size(); ii++) {
@@ -253,7 +297,8 @@ void t_reqcEdit::editObservations() {
             << obsFile->startTime().timestr(0).c_str() << endl;
     }
     if (ii == 0) {
-      outObsFile.setHeader(obsFile->header(), int(_rnxVersion), &useObsTypes);
+      outObsFile.setHeader(obsFile->header(), int(_rnxVersion), &useObsTypes,
+          &phaseShifts, &gloBiases, &gloSlots);
       if (_begTime.valid() && _begTime > outObsFile.startTime()) {
         outObsFile.setStartTime(_begTime);
       }

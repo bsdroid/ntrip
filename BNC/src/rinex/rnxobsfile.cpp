@@ -243,7 +243,7 @@ t_irc t_rnxObsHeader::read(QTextStream* stream, int maxLines) {
         double  value;
         in >> type >> value;
         if (type.size())
-          _gloPhaseBiases[type] = value;
+          _gloBiases[type] = value;
       }
     }
     else if (key == "GLONASS SLOT / FRQ #") {
@@ -344,7 +344,10 @@ void t_rnxObsHeader::setDefault(const QString& markerName, int version) {
 // Copy header
 ////////////////////////////////////////////////////////////////////////////
 void t_rnxObsHeader::set(const t_rnxObsHeader& header, int version,
-                         const QStringList* useObsTypes) {
+                         const QStringList* useObsTypes,
+                         const QStringList* phaseShifts,
+                         const QStringList* gloBiases,
+                         const QStringList* gloSlots) {
 
   if (version <= 2) {
     _version = t_rnxObsHeader::defaultRnxObsVersion2;
@@ -369,11 +372,7 @@ void t_rnxObsHeader::set(const t_rnxObsHeader& header, int version,
   _startTime       = header._startTime;   
   _comments        = header._comments;
   _usedSystems     = header._usedSystems;
-  if (_version >= 3.0) {
-    _phaseShifts    = header._phaseShifts;
-    _gloPhaseBiases = header._gloPhaseBiases;
-    _gloSlots       = header._gloSlots;
-  }
+
   for (unsigned iPrn = 1; iPrn <= t_prn::MAXPRN_GPS; iPrn++) {
     _wlFactorsL1[iPrn] =  header._wlFactorsL1[iPrn]; 
     _wlFactorsL2[iPrn] =  header._wlFactorsL2[iPrn]; 
@@ -453,6 +452,59 @@ void t_rnxObsHeader::set(const t_rnxObsHeader& header, int version,
     while (it.hasNext()) {
       it.next();
       _usedSystems += QChar(it.key());
+    }
+  }
+
+  if (_version >= 3.0) {
+    // set phase shifts
+    if (!phaseShifts ||  phaseShifts->empty()) {
+      _phaseShifts = header._phaseShifts;
+    }
+    else {
+      foreach (const QString &str, *phaseShifts) {
+        QStringList hlp  = str.split("_", QString::SkipEmptyParts);
+        QStringList hlp1 = hlp.last().split(":", QString::SkipEmptyParts);
+        QString type = hlp.first();
+        double shift = hlp1.first().toDouble();
+        hlp1.removeFirst();
+        QStringList &satList = hlp1;
+        QMap<QString, QPair<double, QStringList> >::iterator it = _phaseShifts.find(type);
+        if ( it != _phaseShifts.end()) {
+          it.value().second.append(satList);
+          it.value().second.removeDuplicates();
+        }
+        else {
+          _phaseShifts.insert(type, QPair<double, QStringList>(shift, satList));
+        }
+      }
+    }
+    // set GLONASS biases
+    if (!gloBiases || gloBiases->empty()) {
+      _gloBiases = header._gloBiases;
+    }
+    else {
+      foreach (const QString &str, *gloBiases) {
+        QStringList hlp = str.split(":", QString::SkipEmptyParts);
+        QString type = hlp.first();;
+        double  value = hlp.last().toDouble();
+        if (type.size())
+          _gloBiases[type] = value;
+      }
+    }
+    // set GLONASS slots
+    if (!gloSlots  || gloSlots->empty()) {
+      _gloSlots = header._gloSlots;
+    }
+    else {
+      foreach (const QString &str, *gloSlots) {
+        QStringList hlp = str.split(":", QString::SkipEmptyParts);
+        QString sat = hlp.first();
+        int    slot = hlp.last().toInt();
+        t_prn prn;
+        prn.set(sat.toStdString());
+        if(sat.size())
+          _gloSlots[prn] = slot;
+      }
     }
   }
 }
@@ -645,8 +697,8 @@ void t_rnxObsHeader::write(QTextStream* stream,
 
   if (_version >= 3.0) {
     QString hlp = "";
-    QMap<QString, double>::const_iterator it = _gloPhaseBiases.begin();
-    while (it != _gloPhaseBiases.end()){
+    QMap<QString, double>::const_iterator it = _gloBiases.begin();
+    while (it != _gloBiases.end()){
       hlp += QString("%1%2").arg(it.key(), 4).arg(it.value(), 9, 'f', 3);
       it++;
     }
@@ -722,6 +774,18 @@ int t_rnxObsHeader::nTypes(char sys) const {
   }
 }
 
+// Number of GLONASS biases
+////////////////////////////////////////////////////////////////////////////
+int t_rnxObsHeader::numGloBiases() const {
+  return _gloBiases.size();
+}
+
+// Number of GLONASS biases
+////////////////////////////////////////////////////////////////////////////
+int t_rnxObsHeader::numGloSlots() const {
+  return _gloSlots.size();
+}
+
 // Observation Type (satellite-system specific)
 ////////////////////////////////////////////////////////////////////////////
 QString t_rnxObsHeader::obsType(char sys, int index, double version) const {
@@ -742,6 +806,43 @@ QString t_rnxObsHeader::obsType(char sys, int index, double version) const {
     }
   }
   return "";
+}
+
+//
+////////////////////////////////////////////////////////////////////////////
+QStringList t_rnxObsHeader::phaseShifts() const {
+  QStringList strList;
+  QMap<QString, QPair<double, QStringList> >::const_iterator it =  _phaseShifts.begin();
+  while (it != _phaseShifts.end()) {
+    strList.append(QString("%1_%2:%3").arg(it.key(), 3).arg(it.value().first, 9, 'f', 3).arg(it.value().second.join("")));
+    it++;
+  }
+  return strList;
+}
+
+//
+////////////////////////////////////////////////////////////////////////////
+QStringList t_rnxObsHeader::gloBiases() const {
+  QStringList strList;
+  QMap<QString, double>::const_iterator it = _gloBiases.begin();
+  while (it != _gloBiases.end()) {
+    strList.append(QString("%1:%2").arg(it.key(), 3).arg(it.value(), 9, 'f', 3));
+    it++;
+  }
+  return strList;
+}
+
+//
+////////////////////////////////////////////////////////////////////////////
+QStringList t_rnxObsHeader::gloSlots() const {
+  QStringList strList;
+  QMap<t_prn, int>::const_iterator it = _gloSlots.begin();
+  while (it != _gloSlots.end()){
+    QString prn(it.key().toString().c_str());
+    strList.append(QString("%1:%2").arg(prn, 3).arg(it.value()));
+    it++;
+  }
+  return strList;
 }
 
 // Write Observation Types
