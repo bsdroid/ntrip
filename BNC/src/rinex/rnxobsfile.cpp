@@ -780,7 +780,7 @@ int t_rnxObsHeader::numGloBiases() const {
   return _gloBiases.size();
 }
 
-// Number of GLONASS biases
+// Number of GLONASS slots
 ////////////////////////////////////////////////////////////////////////////
 int t_rnxObsHeader::numGloSlots() const {
   return _gloSlots.size();
