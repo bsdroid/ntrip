@@ -1308,7 +1308,7 @@ t_ephBDS::t_ephBDS(float rnxVersion, const QStringList& lines) {
 
   // remark: actually should be computed from second_tot
   //         but it seems to be unreliable in RINEX files
-  _TOT = _TOC.bdssec();
+  //_TOT = _TOC.bdssec();
 }
 
 // Compute BDS Satellite Position (virtual)
@@ -1468,12 +1468,15 @@ QString t_ephBDS::toString(double version) const {
     .arg(_Cus,    19, 'e', 12)
     .arg(_sqrt_A, 19, 'e', 12);
 
-  double toes = _TOEsec;
-  if (!toes) { // RTCM stream input
+  double toes = 0.0;
+  if (_TOEweek > -1.0) {// RINEX input
+    toes = _TOEsec;
+  }
+  else {// RTCM stream input
     toes = _TOE.bdssec();
   }
   out << QString(fmt)
-    .arg(toes,   19, 'e', 12)
+    .arg(toes,    19, 'e', 12)
     .arg(_Cic,    19, 'e', 12)
     .arg(_OMEGA0, 19, 'e', 12)
     .arg(_Cis,    19, 'e', 12);
@@ -1484,11 +1487,18 @@ QString t_ephBDS::toString(double version) const {
     .arg(_omega,    19, 'e', 12)
     .arg(_OMEGADOT, 19, 'e', 12);
 
+  double toew = 0.0;
+  if (_TOEweek > -1.0) {// RINEX input
+    toew = _TOEweek;
+  }
+  else {// RTCM stream input
+    toew = double(_TOE.bdsw());
+  }
   out << QString(fmt)
-    .arg(_IDOT,                             19, 'e', 12)
-    .arg(0.0,                               19, 'e', 12)
-    .arg(double(_TOE.bdsw()),               19, 'e', 12)
-    .arg(0.0,                               19, 'e', 12);
+    .arg(_IDOT, 19, 'e', 12)
+    .arg(0.0,   19, 'e', 12)
+    .arg(toew,  19, 'e', 12)
+    .arg(0.0,   19, 'e', 12);
 
   out << QString(fmt)
     .arg(_URA,           19, 'e', 12)
@@ -1496,8 +1506,11 @@ QString t_ephBDS::toString(double version) const {
     .arg(_TGD1,          19, 'e', 12)
     .arg(_TGD2,          19, 'e', 12);
 
-  double tots = _TOT;
-  if (!tots) { // RTCM stream input
+  double tots = 0.0;
+  if (_TOEweek > -1.0) {// RINEX input
+    tots = _TOT;
+  }
+  else {// RTCM stream input
     tots = _TOE.bdssec();
   }
   out << QString(fmt)

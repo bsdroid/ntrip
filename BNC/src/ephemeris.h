@@ -247,7 +247,7 @@ class t_ephBDS : public t_eph {
  friend class t_ephEncoder;
  friend class RTCM3Decoder;
  public:
- t_ephBDS() {}
+ t_ephBDS() : _TOEweek(-1.0) {}
  t_ephBDS(float rnxVersion, const QStringList& lines);
   virtual ~t_ephBDS() {}
 
@@ -285,9 +285,9 @@ class t_ephBDS : public t_eph {
   double  _TGD1;             //  [s]    
   double  _TGD2;             //  [s]    
   int     _SatH1;            // 
-  double  _TOW;              //  [s] of BDT week; RINEX file entry
-  double  _TOEsec;           //  [s] of BDT week; RINEX file entry
-  double  _TOEweek;
+  double  _TOW;              //  [s] of BDT week
+  double  _TOEsec;           //  [s] of BDT week
+  double  _TOEweek;          //  BDT week will be set only in case of RINEX file input
 };
 
 #endif
