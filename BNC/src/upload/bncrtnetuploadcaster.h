@@ -70,4 +70,19 @@ class bncRtnetUploadCaster : public bncUploadCaster {
   QMap<QString, const t_eph*>* _usedEph;
 };
 
+struct phaseBiasesSat {
+  double yA;
+  double yR;
+  unsigned int dispInd;
+  unsigned int MWInd;
+};
+
+struct phaseBiasSignal {
+  QString type;
+  double bias;
+  unsigned int intInd;
+  unsigned int WLInd;
+  unsigned int discCount;
+};
+
 #endif
