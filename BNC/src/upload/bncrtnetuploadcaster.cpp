@@ -414,8 +414,31 @@ void bncRtnetUploadCaster::decodeRtnetStream(char* buffer, int bufLen) {
         ++co.NumberOfSat[CLOCKORBIT_SATGPS];
       }
       else if (prn[0] == 'R') {
-        sd = co.Sat + CLOCKORBIT_NUMGPS + co.NumberOfSat[CLOCKORBIT_SATGLONASS];
+        sd = co.Sat + CLOCKORBIT_NUMGPS
+            + co.NumberOfSat[CLOCKORBIT_SATGLONASS];
         ++co.NumberOfSat[CLOCKORBIT_SATGLONASS];
+      }
+      else if (prn[0] == 'E') {
+        sd = co.Sat + CLOCKORBIT_NUMGPS + CLOCKORBIT_NUMGLONASS
+            + co.NumberOfSat[CLOCKORBIT_SATGALILEO];
+        ++co.NumberOfSat[CLOCKORBIT_SATGALILEO];
+      }
+      else if (prn[0] == 'J') {
+        sd = co.Sat + CLOCKORBIT_NUMGPS + CLOCKORBIT_NUMGLONASS + CLOCKORBIT_NUMGALILEO
+            + co.NumberOfSat[CLOCKORBIT_SATQZSS];
+        ++co.NumberOfSat[CLOCKORBIT_SATQZSS];
+      }
+      else if (prn[0] == 'S') {
+        sd = co.Sat + CLOCKORBIT_NUMGPS + CLOCKORBIT_NUMGLONASS + CLOCKORBIT_NUMGALILEO
+            + CLOCKORBIT_NUMQZSS
+            + co.NumberOfSat[CLOCKORBIT_SATSBAS];
+        ++co.NumberOfSat[CLOCKORBIT_SATSBAS];
+      }
+      else if (prn[0] == 'C') {
+        sd = co.Sat + CLOCKORBIT_NUMGPS + CLOCKORBIT_NUMGLONASS + CLOCKORBIT_NUMGALILEO
+            + CLOCKORBIT_NUMQZSS + CLOCKORBIT_NUMSBAS
+            + co.NumberOfSat[CLOCKORBIT_SATBDS];
+        ++co.NumberOfSat[CLOCKORBIT_SATBDS];
       }
       if (sd) {
         QString outLine;
@@ -429,8 +452,31 @@ void bncRtnetUploadCaster::decodeRtnetStream(char* buffer, int bufLen) {
         ++bias.NumberOfSat[CLOCKORBIT_SATGPS];
       }
       else if (prn[0] == 'R') {
-        biasSat = bias.Sat + CLOCKORBIT_NUMGPS + bias.NumberOfSat[CLOCKORBIT_SATGLONASS];
+        biasSat = bias.Sat + CLOCKORBIT_NUMGPS
+            + bias.NumberOfSat[CLOCKORBIT_SATGLONASS];
         ++bias.NumberOfSat[CLOCKORBIT_SATGLONASS];
+      }
+      else if (prn[0] == 'E') {
+        biasSat = bias.Sat + CLOCKORBIT_NUMGPS + CLOCKORBIT_NUMGLONASS
+            + bias.NumberOfSat[CLOCKORBIT_SATGALILEO];
+        ++bias.NumberOfSat[CLOCKORBIT_SATGALILEO];
+      }
+      else if (prn[0] == 'J') {
+        biasSat = bias.Sat + CLOCKORBIT_NUMGPS + CLOCKORBIT_NUMGLONASS + CLOCKORBIT_NUMGALILEO
+            + bias.NumberOfSat[CLOCKORBIT_SATQZSS];
+        ++bias.NumberOfSat[CLOCKORBIT_SATQZSS];
+      }
+      else if (prn[0] == 'S') {
+        biasSat = bias.Sat + CLOCKORBIT_NUMGPS + CLOCKORBIT_NUMGLONASS + CLOCKORBIT_NUMGALILEO
+            + CLOCKORBIT_NUMQZSS
+            + bias.NumberOfSat[CLOCKORBIT_SATSBAS];
+        ++bias.NumberOfSat[CLOCKORBIT_SATSBAS];
+      }
+      else if (prn[0] == 'C') {
+        biasSat = bias.Sat + CLOCKORBIT_NUMGPS + CLOCKORBIT_NUMGLONASS + CLOCKORBIT_NUMGALILEO
+            + CLOCKORBIT_NUMQZSS + CLOCKORBIT_NUMSBAS
+            + bias.NumberOfSat[CLOCKORBIT_SATBDS];
+        ++bias.NumberOfSat[CLOCKORBIT_SATBDS];
       }
 
       // Code Biases
@@ -443,12 +489,6 @@ void bncRtnetUploadCaster::decodeRtnetStream(char* buffer, int bufLen) {
           while (it.hasNext()) {
             it.next();
             if      (it.key() == "1C") {
-              int ii = biasSat->NumberOfCodeBiases; if (ii >= CLOCKORBIT_NUMBIAS) break;
-              biasSat->NumberOfCodeBiases += 1;
-              biasSat->Biases[ii].Type = CODETYPEGPS_L1_CA;
-              biasSat->Biases[ii].Bias = it.value();
-            }
-            else if (it.key() == "1C") {
               int ii = biasSat->NumberOfCodeBiases; if (ii >= CLOCKORBIT_NUMBIAS) break;
               biasSat->NumberOfCodeBiases += 1;
               biasSat->Biases[ii].Type = CODETYPEGPS_L1_CA;
@@ -520,6 +560,12 @@ void bncRtnetUploadCaster::decodeRtnetStream(char* buffer, int bufLen) {
               biasSat->Biases[ii].Type = CODETYPEGPS_L5_Q;
               biasSat->Biases[ii].Bias = it.value();
             }
+            else if (it.key() == "5X") {
+              int ii = biasSat->NumberOfCodeBiases; if (ii >= CLOCKORBIT_NUMBIAS) break;
+              biasSat->NumberOfCodeBiases += 1;
+              biasSat->Biases[ii].Type = CODETYPEGPS_L5_IQ;
+              biasSat->Biases[ii].Bias = it.value();
+            }
           }
         }
         else if (prn[0] == 'R') {
@@ -552,6 +598,258 @@ void bncRtnetUploadCaster::decodeRtnetStream(char* buffer, int bufLen) {
             }
           }
         }
+        else if (prn[0] == 'E') {
+          QMapIterator<QString, double> it(codeBiases);
+          while (it.hasNext()) {
+            it.next();
+            if      (it.key() == "1A") {
+              int ii = biasSat->NumberOfCodeBiases; if (ii >= CLOCKORBIT_NUMBIAS) break;
+              biasSat->NumberOfCodeBiases += 1;
+              biasSat->Biases[ii].Type = CODETYPEGALILEO_E1_A;
+              biasSat->Biases[ii].Bias = it.value();
+            }
+            else if (it.key() == "1B") {
+              int ii = biasSat->NumberOfCodeBiases; if (ii >= CLOCKORBIT_NUMBIAS) break;
+              biasSat->NumberOfCodeBiases += 1;
+              biasSat->Biases[ii].Type = CODETYPEGALILEO_E1_B;
+              biasSat->Biases[ii].Bias = it.value();
+            }
+            else if (it.key() == "1C") {
+              int ii = biasSat->NumberOfCodeBiases; if (ii >= CLOCKORBIT_NUMBIAS) break;
+              biasSat->NumberOfCodeBiases += 1;
+              biasSat->Biases[ii].Type = CODETYPEGALILEO_E1_C;
+              biasSat->Biases[ii].Bias = it.value();
+            }
+            else if (it.key() == "5I") {
+              int ii = biasSat->NumberOfCodeBiases; if (ii >= CLOCKORBIT_NUMBIAS) break;
+              biasSat->NumberOfCodeBiases += 1;
+              biasSat->Biases[ii].Type = CODETYPEGALILEO_E5A_I;
+              biasSat->Biases[ii].Bias = it.value();
+            }
+            else if (it.key() == "5Q") {
+              int ii = biasSat->NumberOfCodeBiases; if (ii >= CLOCKORBIT_NUMBIAS) break;
+              biasSat->NumberOfCodeBiases += 1;
+              biasSat->Biases[ii].Type = CODETYPEGALILEO_E5A_Q;
+              biasSat->Biases[ii].Bias = it.value();
+            }
+            else if (it.key() == "7I") {
+              int ii = biasSat->NumberOfCodeBiases; if (ii >= CLOCKORBIT_NUMBIAS) break;
+              biasSat->NumberOfCodeBiases += 1;
+              biasSat->Biases[ii].Type = CODETYPEGALILEO_E5B_I;
+              biasSat->Biases[ii].Bias = it.value();
+            }
+            else if (it.key() == "7Q") {
+              int ii = biasSat->NumberOfCodeBiases; if (ii >= CLOCKORBIT_NUMBIAS) break;
+              biasSat->NumberOfCodeBiases += 1;
+              biasSat->Biases[ii].Type = CODETYPEGALILEO_E5B_Q;
+              biasSat->Biases[ii].Bias = it.value();
+            }
+            else if (it.key() == "8I") {
+              int ii = biasSat->NumberOfCodeBiases; if (ii >= CLOCKORBIT_NUMBIAS) break;
+              biasSat->NumberOfCodeBiases += 1;
+              biasSat->Biases[ii].Type = CODETYPEGALILEO_E5_I;
+              biasSat->Biases[ii].Bias = it.value();
+            }
+            else if (it.key() == "8Q") {
+              int ii = biasSat->NumberOfCodeBiases; if (ii >= CLOCKORBIT_NUMBIAS) break;
+              biasSat->NumberOfCodeBiases += 1;
+              biasSat->Biases[ii].Type = CODETYPEGALILEO_E5_Q;
+              biasSat->Biases[ii].Bias = it.value();
+            }
+            else if (it.key() == "6A") {
+              int ii = biasSat->NumberOfCodeBiases; if (ii >= CLOCKORBIT_NUMBIAS) break;
+              biasSat->NumberOfCodeBiases += 1;
+              biasSat->Biases[ii].Type = CODETYPEGALILEO_E6_A;
+              biasSat->Biases[ii].Bias = it.value();
+            }
+            else if (it.key() == "6B") {
+              int ii = biasSat->NumberOfCodeBiases; if (ii >= CLOCKORBIT_NUMBIAS) break;
+              biasSat->NumberOfCodeBiases += 1;
+              biasSat->Biases[ii].Type = CODETYPEGALILEO_E6_B;
+              biasSat->Biases[ii].Bias = it.value();
+            }
+            else if (it.key() == "6C") {
+              int ii = biasSat->NumberOfCodeBiases; if (ii >= CLOCKORBIT_NUMBIAS) break;
+              biasSat->NumberOfCodeBiases += 1;
+              biasSat->Biases[ii].Type = CODETYPEGALILEO_E6_C;
+              biasSat->Biases[ii].Bias = it.value();
+            }
+          }
+        }
+        else if (prn[0] == 'J') {
+          QMapIterator<QString, double> it(codeBiases);
+          while (it.hasNext()) {
+            it.next();
+            if      (it.key() == "1C") {
+              int ii = biasSat->NumberOfCodeBiases; if (ii >= CLOCKORBIT_NUMBIAS) break;
+              biasSat->NumberOfCodeBiases += 1;
+              biasSat->Biases[ii].Type = CODETYPEQZSS_L1_CA;
+              biasSat->Biases[ii].Bias = it.value();
+            }
+            else if (it.key() == "1S") {
+              int ii = biasSat->NumberOfCodeBiases; if (ii >= CLOCKORBIT_NUMBIAS) break;
+              biasSat->NumberOfCodeBiases += 1;
+              biasSat->Biases[ii].Type = CODETYPEQZSS_L1C_D;
+              biasSat->Biases[ii].Bias = it.value();
+            }
+            else if (it.key() == "1L") {
+              int ii = biasSat->NumberOfCodeBiases; if (ii >= CLOCKORBIT_NUMBIAS) break;
+              biasSat->NumberOfCodeBiases += 1;
+              biasSat->Biases[ii].Type = CODETYPEQZSS_L1C_P;
+              biasSat->Biases[ii].Bias = it.value();
+            }
+            else if (it.key() == "1X") {
+              int ii = biasSat->NumberOfCodeBiases; if (ii >= CLOCKORBIT_NUMBIAS) break;
+              biasSat->NumberOfCodeBiases += 1;
+              biasSat->Biases[ii].Type = CODETYPEQZSS_L1C_DP;
+              biasSat->Biases[ii].Bias = it.value();
+            }
+            else if (it.key() == "2S") {
+              int ii = biasSat->NumberOfCodeBiases; if (ii >= CLOCKORBIT_NUMBIAS) break;
+              biasSat->NumberOfCodeBiases += 1;
+              biasSat->Biases[ii].Type = CODETYPEQZSS_L2_CM;
+              biasSat->Biases[ii].Bias = it.value();
+            }
+            else if (it.key() == "2L") {
+              int ii = biasSat->NumberOfCodeBiases; if (ii >= CLOCKORBIT_NUMBIAS) break;
+              biasSat->NumberOfCodeBiases += 1;
+              biasSat->Biases[ii].Type = CODETYPEQZSS_L2_CL;
+              biasSat->Biases[ii].Bias = it.value();
+            }
+            else if (it.key() == "2X") {
+              int ii = biasSat->NumberOfCodeBiases; if (ii >= CLOCKORBIT_NUMBIAS) break;
+              biasSat->NumberOfCodeBiases += 1;
+              biasSat->Biases[ii].Type = CODETYPEQZSS_L2_CML;
+              biasSat->Biases[ii].Bias = it.value();
+            }
+            else if (it.key() == "5I") {
+              int ii = biasSat->NumberOfCodeBiases; if (ii >= CLOCKORBIT_NUMBIAS) break;
+              biasSat->NumberOfCodeBiases += 1;
+              biasSat->Biases[ii].Type = CODETYPEQZSS_L5_I;
+              biasSat->Biases[ii].Bias = it.value();
+            }
+            else if (it.key() == "5Q") {
+              int ii = biasSat->NumberOfCodeBiases; if (ii >= CLOCKORBIT_NUMBIAS) break;
+              biasSat->NumberOfCodeBiases += 1;
+              biasSat->Biases[ii].Type = CODETYPEQZSS_L5_Q;
+              biasSat->Biases[ii].Bias = it.value();
+            }
+            else if (it.key() == "5X") {
+              int ii = biasSat->NumberOfCodeBiases; if (ii >= CLOCKORBIT_NUMBIAS) break;
+              biasSat->NumberOfCodeBiases += 1;
+              biasSat->Biases[ii].Type = CODETYPEQZSS_L5_IQ;
+              biasSat->Biases[ii].Bias = it.value();
+            }
+            else if (it.key() == "6S") {
+              int ii = biasSat->NumberOfCodeBiases; if (ii >= CLOCKORBIT_NUMBIAS) break;
+              biasSat->NumberOfCodeBiases += 1;
+              biasSat->Biases[ii].Type = CODETYPEQZSS_LEX_S;
+              biasSat->Biases[ii].Bias = it.value();
+            }
+            else if (it.key() == "6L") {
+              int ii = biasSat->NumberOfCodeBiases; if (ii >= CLOCKORBIT_NUMBIAS) break;
+              biasSat->NumberOfCodeBiases += 1;
+              biasSat->Biases[ii].Type = CODETYPEQZSS_LEX_L;
+              biasSat->Biases[ii].Bias = it.value();
+            }
+            else if (it.key() == "6X") {
+              int ii = biasSat->NumberOfCodeBiases; if (ii >= CLOCKORBIT_NUMBIAS) break;
+              biasSat->NumberOfCodeBiases += 1;
+              biasSat->Biases[ii].Type = CODETYPEQZSS_LEX_SL;
+              biasSat->Biases[ii].Bias = it.value();
+            }
+          }
+        }
+        else if (prn[0] == 'S') {
+          QMapIterator<QString, double> it(codeBiases);
+          while (it.hasNext()) {
+            it.next();
+            if      (it.key() == "1C") {
+              int ii = biasSat->NumberOfCodeBiases; if (ii >= CLOCKORBIT_NUMBIAS) break;
+              biasSat->NumberOfCodeBiases += 1;
+              biasSat->Biases[ii].Type = CODETYPE_SBAS_L1_CA;
+              biasSat->Biases[ii].Bias = it.value();
+            }
+            else if (it.key() == "5I") {
+              int ii = biasSat->NumberOfCodeBiases; if (ii >= CLOCKORBIT_NUMBIAS) break;
+              biasSat->NumberOfCodeBiases += 1;
+              biasSat->Biases[ii].Type = CODETYPE_SBAS_L5_I;
+              biasSat->Biases[ii].Bias = it.value();
+            }
+            else if (it.key() == "5Q") {
+              int ii = biasSat->NumberOfCodeBiases; if (ii >= CLOCKORBIT_NUMBIAS) break;
+              biasSat->NumberOfCodeBiases += 1;
+              biasSat->Biases[ii].Type = CODETYPE_SBAS_L5_Q;
+              biasSat->Biases[ii].Bias = it.value();
+            }
+            else if (it.key() == "5X") {
+              int ii = biasSat->NumberOfCodeBiases; if (ii >= CLOCKORBIT_NUMBIAS) break;
+              biasSat->NumberOfCodeBiases += 1;
+              biasSat->Biases[ii].Type = CODETYPE_SBAS_L5_IQ;
+              biasSat->Biases[ii].Bias = it.value();
+            }
+          }
+        }
+        else if (prn[0] == 'C') {
+          QMapIterator<QString, double> it(codeBiases);
+          while (it.hasNext()) {
+            it.next();
+            if      (it.key() == "2I") {
+              int ii = biasSat->NumberOfCodeBiases; if (ii >= CLOCKORBIT_NUMBIAS) break;
+              biasSat->NumberOfCodeBiases += 1;
+              biasSat->Biases[ii].Type = CODETYPE_BDS_B1_I;
+              biasSat->Biases[ii].Bias = it.value();
+            }
+            else if (it.key() == "2Q") {
+              int ii = biasSat->NumberOfCodeBiases; if (ii >= CLOCKORBIT_NUMBIAS) break;
+              biasSat->NumberOfCodeBiases += 1;
+              biasSat->Biases[ii].Type = CODETYPE_BDS_B1_Q;
+              biasSat->Biases[ii].Bias = it.value();
+            }
+            else if (it.key() == "2X") {
+              int ii = biasSat->NumberOfCodeBiases; if (ii >= CLOCKORBIT_NUMBIAS) break;
+              biasSat->NumberOfCodeBiases += 1;
+              biasSat->Biases[ii].Type = CODETYPE_BDS_B1_IQ;
+              biasSat->Biases[ii].Bias = it.value();
+            }
+            else if (it.key() == "6I") {
+              int ii = biasSat->NumberOfCodeBiases; if (ii >= CLOCKORBIT_NUMBIAS) break;
+              biasSat->NumberOfCodeBiases += 1;
+              biasSat->Biases[ii].Type = CODETYPE_BDS_B3_I;
+              biasSat->Biases[ii].Bias = it.value();
+            }
+            else if (it.key() == "6Q") {
+              int ii = biasSat->NumberOfCodeBiases; if (ii >= CLOCKORBIT_NUMBIAS) break;
+              biasSat->NumberOfCodeBiases += 1;
+              biasSat->Biases[ii].Type = CODETYPE_BDS_B3_Q;
+              biasSat->Biases[ii].Bias = it.value();
+            }
+            else if (it.key() == "6X") {
+              int ii = biasSat->NumberOfCodeBiases; if (ii >= CLOCKORBIT_NUMBIAS) break;
+              biasSat->NumberOfCodeBiases += 1;
+              biasSat->Biases[ii].Type = CODETYPE_BDS_B3_IQ;
+              biasSat->Biases[ii].Bias = it.value();
+            }
+            else if (it.key() == "7I") {
+              int ii = biasSat->NumberOfCodeBiases; if (ii >= CLOCKORBIT_NUMBIAS) break;
+              biasSat->NumberOfCodeBiases += 1;
+              biasSat->Biases[ii].Type = CODETYPE_BDS_B2_I;
+              biasSat->Biases[ii].Bias = it.value();
+            }
+            else if (it.key() == "7Q") {
+              int ii = biasSat->NumberOfCodeBiases; if (ii >= CLOCKORBIT_NUMBIAS) break;
+              biasSat->NumberOfCodeBiases += 1;
+              biasSat->Biases[ii].Type = CODETYPE_BDS_B2_Q;
+              biasSat->Biases[ii].Bias = it.value();
+            }
+            else if (it.key() == "7X") {
+              int ii = biasSat->NumberOfCodeBiases; if (ii >= CLOCKORBIT_NUMBIAS) break;
+              biasSat->NumberOfCodeBiases += 1;
+              biasSat->Biases[ii].Type = CODETYPE_BDS_B2_IQ;
+              biasSat->Biases[ii].Bias = it.value();
+            }
+          }
+        }
       }
     }
   }
@@ -561,7 +859,12 @@ void bncRtnetUploadCaster::decodeRtnetStream(char* buffer, int bufLen) {
   // Orbit and Clock Corrections together
   // ------------------------------------
   if (_samplRtcmEphCorr == 0.0) {
-    if (co.NumberOfSat[CLOCKORBIT_SATGPS] > 0 || co.NumberOfSat[CLOCKORBIT_SATGLONASS] > 0) {
+    if (co.NumberOfSat[CLOCKORBIT_SATGPS] > 0 ||
+        co.NumberOfSat[CLOCKORBIT_SATGLONASS] > 0 ||
+        co.NumberOfSat[CLOCKORBIT_SATGALILEO] > 0 ||
+        co.NumberOfSat[CLOCKORBIT_SATQZSS] > 0 ||
+        co.NumberOfSat[CLOCKORBIT_SATSBAS] > 0 ||
+        co.NumberOfSat[CLOCKORBIT_SATBDS] > 0) {
       char obuffer[CLOCKORBIT_BUFFERSIZE];
       int len = MakeClockOrbit(&co, COTYPE_AUTO, 0, obuffer, sizeof(obuffer));
       if (len > 0) {
@@ -599,7 +902,71 @@ void bncRtnetUploadCaster::decodeRtnetStream(char* buffer, int bufLen) {
           hlpBufferCo += QByteArray(obuffer, len1);
         }
       }
-      int len2 = MakeClockOrbit(&co, COTYPE_GLONASSCLOCK, 0, obuffer, sizeof(obuffer));
+      int mmsg = (co.NumberOfSat[CLOCKORBIT_SATGALILEO] > 0) ? 1 : 0;
+      int len2 = MakeClockOrbit(&co, COTYPE_GLONASSCLOCK, mmsg, obuffer, sizeof(obuffer));
+      if (len2 > 0) {
+        hlpBufferCo += QByteArray(obuffer, len2);
+      }
+    }
+    if (co.NumberOfSat[CLOCKORBIT_SATGALILEO] > 0) {
+      char obuffer[CLOCKORBIT_BUFFERSIZE];
+      if (fmod(epoTime.gpssec(), _samplRtcmEphCorr) == 0.0) {
+        co.UpdateInterval = ephUpdInd;
+        int len1 = MakeClockOrbit(&co, COTYPE_GALILEOORBIT, 1, obuffer, sizeof(obuffer));
+        co.UpdateInterval = clkUpdInd;
+        if (len1 > 0) {
+          hlpBufferCo += QByteArray(obuffer, len1);
+        }
+      }
+      int mmsg = (co.NumberOfSat[CLOCKORBIT_SATQZSS] > 0) ? 1 : 0;
+      int len2 = MakeClockOrbit(&co, COTYPE_GALILEOCLOCK, mmsg, obuffer, sizeof(obuffer));
+      if (len2 > 0) {
+        hlpBufferCo += QByteArray(obuffer, len2);
+      }
+    }
+    if (co.NumberOfSat[CLOCKORBIT_SATQZSS] > 0) {
+      char obuffer[CLOCKORBIT_BUFFERSIZE];
+      if (fmod(epoTime.gpssec(), _samplRtcmEphCorr) == 0.0) {
+        co.UpdateInterval = ephUpdInd;
+        int len1 = MakeClockOrbit(&co, COTYPE_QZSSORBIT, 1, obuffer, sizeof(obuffer));
+        co.UpdateInterval = clkUpdInd;
+        if (len1 > 0) {
+          hlpBufferCo += QByteArray(obuffer, len1);
+        }
+      }
+      int mmsg = (co.NumberOfSat[CLOCKORBIT_SATSBAS] > 0) ? 1 : 0;
+      int len2 = MakeClockOrbit(&co, COTYPE_QZSSCLOCK, mmsg, obuffer, sizeof(obuffer));
+      if (len2 > 0) {
+        hlpBufferCo += QByteArray(obuffer, len2);
+      }
+    }
+    if (co.NumberOfSat[CLOCKORBIT_SATSBAS] > 0) {
+      char obuffer[CLOCKORBIT_BUFFERSIZE];
+      if (fmod(epoTime.gpssec(), _samplRtcmEphCorr) == 0.0) {
+        co.UpdateInterval = ephUpdInd;
+        int len1 = MakeClockOrbit(&co, COTYPE_SBASORBIT, 1, obuffer, sizeof(obuffer));
+        co.UpdateInterval = clkUpdInd;
+        if (len1 > 0) {
+          hlpBufferCo += QByteArray(obuffer, len1);
+        }
+      }
+      int mmsg = (co.NumberOfSat[CLOCKORBIT_SATBDS] > 0) ? 1 : 0;
+      int len2 = MakeClockOrbit(&co, COTYPE_SBASCLOCK, mmsg, obuffer, sizeof(obuffer));
+      if (len2 > 0) {
+        hlpBufferCo += QByteArray(obuffer, len2);
+      }
+    }
+    if (co.NumberOfSat[CLOCKORBIT_SATBDS] > 0) {
+      char obuffer[CLOCKORBIT_BUFFERSIZE];
+      if (fmod(epoTime.gpssec(), _samplRtcmEphCorr) == 0.0) {
+        co.UpdateInterval = ephUpdInd;
+        int len1 = MakeClockOrbit(&co, COTYPE_BDSORBIT, 1, obuffer, sizeof(obuffer));
+        co.UpdateInterval = clkUpdInd;
+        if (len1 > 0) {
+          hlpBufferCo += QByteArray(obuffer, len1);
+        }
+      }
+      int len2 = MakeClockOrbit(&co, COTYPE_BDSCLOCK, 0, obuffer, sizeof(obuffer));
       if (len2 > 0) {
         hlpBufferCo += QByteArray(obuffer, len2);
       }
@@ -609,7 +976,12 @@ void bncRtnetUploadCaster::decodeRtnetStream(char* buffer, int bufLen) {
   // Biases
   // ------
   QByteArray hlpBufferBias;
-  if (bias.NumberOfSat[CLOCKORBIT_SATGPS] > 0 || bias.NumberOfSat[CLOCKORBIT_SATGLONASS] > 0) {
+  if (bias.NumberOfSat[CLOCKORBIT_SATGPS] > 0 ||
+      bias.NumberOfSat[CLOCKORBIT_SATGLONASS] > 0 ||
+      bias.NumberOfSat[CLOCKORBIT_SATGALILEO] > 0 ||
+      bias.NumberOfSat[CLOCKORBIT_SATQZSS] > 0 ||
+      bias.NumberOfSat[CLOCKORBIT_SATSBAS] > 0 ||
+      bias.NumberOfSat[CLOCKORBIT_SATBDS] > 0 ) {
     char obuffer[CLOCKORBIT_BUFFERSIZE];
     int len = MakeCodeBias(&bias, BTYPE_AUTO, 0, obuffer, sizeof(obuffer));
     if (len > 0) {
