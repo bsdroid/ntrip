@@ -108,7 +108,7 @@ enum COR_CONSTANTS {
   CLOCKORBIT_NUMQZSS=10,
   CLOCKORBIT_NUMSBAS=38,
   CLOCKORBIT_NUMBDS=37,
-  CLOCKORBIT_NUMBIAS=10,
+  CLOCKORBIT_NUMBIAS=17,
   CLOCKORBIT_NUMIONOLAYERS=4,
   CLOCKORBIT_MAXIONOORDER=8,
   CLOCKORBIT_MAXIONODEGREE=8
@@ -156,7 +156,7 @@ enum CodeType {
   CODETYPEGPS_L2_M           = 13,*/
   CODETYPEGPS_L5_I           = 14,
   CODETYPEGPS_L5_Q           = 15,
-  /*CODETYPEGPS_L5_IQ          = 16,*/
+  CODETYPEGPS_L5_IQ          = 16,
 
   CODETYPEGLONASS_L1_CA      = 0,
   CODETYPEGLONASS_L1_P       = 1,
@@ -208,7 +208,7 @@ enum CodeType {
 
 #define SSR_MAXURA 5.5 /* > 5466.5mm in meter */
 
-/* satellite system data data is stored with offset CLOCKORBIT_OFFSET...
+/* satellite system data is stored with offset CLOCKORBIT_OFFSET...
 in the data structures. So first GLONASS satellite is at
 xxx->Sat[CLOCKORBIT_OFFSETGLONASS], first GPS satellite is
 xxx->Sat[CLOCKORBIT_OFFSETGPS]. */
