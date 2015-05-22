@@ -148,6 +148,8 @@ class t_satPhaseBias {
  public:
   t_satPhaseBias() {
     _updateInt  = 0;
+    _dispersiveBiasConsitencyIndicator = 0;
+    _MWConsistencyIndicator = 0;
     _yawDeg     = 0.0;
     _yawDegRate = 0.0;
   }
@@ -157,6 +159,8 @@ class t_satPhaseBias {
   t_prn                       _prn;
   bncTime                     _time;
   unsigned int                _updateInt;
+  unsigned int                _dispersiveBiasConsitencyIndicator;
+  unsigned int                _MWConsistencyIndicator;
   double                      _yawDeg;
   double                      _yawDegRate;
   std::vector<t_frqPhaseBias> _bias;
