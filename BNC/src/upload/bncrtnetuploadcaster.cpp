@@ -289,6 +289,10 @@ void bncRtnetUploadCaster::decodeRtnetStream(char* buffer, int bufLen) {
   co.EpochTime[CLOCKORBIT_SATGPS] = static_cast<int>(epoTime.gpssec());
   double gt = epoTime.gpssec() + 3 * 3600 - gnumleap(year, month, day);
   co.EpochTime[CLOCKORBIT_SATGLONASS] = static_cast<int>(fmod(gt, 86400.0));
+  co.EpochTime[CLOCKORBIT_SATGALILEO] = static_cast<int>(epoTime.gpssec());
+  co.EpochTime[CLOCKORBIT_SATQZSS]  = static_cast<int>(epoTime.gpssec());
+  co.EpochTime[CLOCKORBIT_SATSBAS] = static_cast<int>(epoTime.gpssec());
+  co.EpochTime[CLOCKORBIT_SATBDS] = static_cast<int>(epoTime.bdssec());
 
   co.Supplied[COBOFS_CLOCK] = 1;
   co.Supplied[COBOFS_ORBIT] = 1;
@@ -301,6 +305,10 @@ void bncRtnetUploadCaster::decodeRtnetStream(char* buffer, int bufLen) {
   memset(&bias, 0, sizeof(bias));
   bias.EpochTime[CLOCKORBIT_SATGPS]     = co.EpochTime[CLOCKORBIT_SATGPS];
   bias.EpochTime[CLOCKORBIT_SATGLONASS] = co.EpochTime[CLOCKORBIT_SATGLONASS];
+  bias.EpochTime[CLOCKORBIT_SATGALILEO] = co.EpochTime[CLOCKORBIT_SATGALILEO];
+  bias.EpochTime[CLOCKORBIT_SATQZSS]    = co.EpochTime[CLOCKORBIT_SATQZSS];
+  bias.EpochTime[CLOCKORBIT_SATSBAS]    = co.EpochTime[CLOCKORBIT_SATSBAS];
+  bias.EpochTime[CLOCKORBIT_SATBDS]     = co.EpochTime[CLOCKORBIT_SATBDS];
 
   // Default Update Interval
   // -----------------------
