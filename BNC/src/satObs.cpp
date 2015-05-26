@@ -216,8 +216,6 @@ void t_satPhaseBias::writeEpoch(ostream* out, const QList<t_satPhaseBias>& biasL
       epoTime = satPhaseBias._time;
       *out << "> PHASE_BIAS " << epoTime.datestr(' ') << ' ' << epoTime.timestr(1,' ') << " "
            << satPhaseBias._updateInt <<  " "
-           << satPhaseBias._dispersiveBiasConsitencyIndicator <<  " "
-           << satPhaseBias._MWConsistencyIndicator <<  " "
            << biasList.size() << ' ' << satPhaseBias._staID << endl;
     }
     *out << satPhaseBias._prn.toString() << ' '
