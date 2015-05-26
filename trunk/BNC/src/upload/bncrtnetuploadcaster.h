@@ -73,8 +73,6 @@ class bncRtnetUploadCaster : public bncUploadCaster {
 struct phaseBiasesSat {
   double yA;
   double yR;
-  unsigned int dispInd;
-  unsigned int MWInd;
 };
 
 struct phaseBiasSignal {

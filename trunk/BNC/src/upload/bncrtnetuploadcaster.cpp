@@ -393,8 +393,8 @@ void bncRtnetUploadCaster::decodeRtnetStream(char* buffer, int bufLen) {
     if (eph) {
 
       QMap<QString, double> codeBiases;
-
-      QVector<phaseBiasSignal*> pbSig(0);
+      QList<phaseBiasSignal> phaseBiasList;
+      phaseBiasesSat pbSat;
 
       while (true) {
         QString key;
@@ -438,14 +438,19 @@ void bncRtnetUploadCaster::decodeRtnetStream(char* buffer, int bufLen) {
             codeBiases[type] = value;
           }
         }
+        else if (key == "yawAngle") {
+          in >> numVal >> pbSat.yA;
+        }
+        else if (key == "yawRate") {
+          in >> numVal >> pbSat.yR;
+        }
         else if (key == "PhaseBias") {
-          phaseBiasesSat pbSat;
-          in >> pbSat.yA >> pbSat.yR >> pbSat.dispInd >> pbSat.MWInd;
           in >> numVal;
-          pbSig.resize(numVal);
           for (int ii = 0; ii < numVal; ii++) {
-            in >> pbSig[ii]->type >> pbSig[ii]->bias >> pbSig[ii]->intInd
-                >> pbSig[ii]->WLInd >> pbSig[ii]->discCount;
+            phaseBiasSignal pb;
+            in >> pb.type >> pb.bias >> pb.intInd >> pb.WLInd
+              >> pb.discCount;
+            phaseBiasList.append(pb);
           }
         }
         else {
@@ -937,534 +942,536 @@ void bncRtnetUploadCaster::decodeRtnetStream(char* buffer, int bufLen) {
       if (phasebiasSat) {
         phasebiasSat->ID = prn.mid(1).toInt();
         phasebiasSat->NumberOfPhaseBiases = 0;
+        phasebiasSat->YawAngle = pbSat.yA;
+        phasebiasSat->YawRate = pbSat.yR;
         if      (prn[0] == 'G') {
-          QMutableVectorIterator<phaseBiasSignal*> it(pbSig);
+          QListIterator<phaseBiasSignal> it(phaseBiasList);
           while (it.hasNext()) {
-            phaseBiasSignal *pbsig = it.next();
-            if      (pbsig->type == "1C") {
+            const phaseBiasSignal &pbSig = it.next();
+            if      (pbSig.type == "1C") {
               int ii = phasebiasSat->NumberOfPhaseBiases; if (ii >= CLOCKORBIT_NUMBIAS) break;
               phasebiasSat->NumberOfPhaseBiases += 1;
               phasebiasSat->Biases[ii].Type = CODETYPEGPS_L1_CA;
-              phasebiasSat->Biases[ii].Bias = pbsig->bias;
-              phasebiasSat->Biases[ii].SignalIntegerIndicator          = pbsig->intInd;
-              phasebiasSat->Biases[ii].SignalsWideLaneIntegerIndicator = pbsig->WLInd;
-              phasebiasSat->Biases[ii].SignalDiscontinuityCounter      = pbsig->discCount;
+              phasebiasSat->Biases[ii].Bias = pbSig.bias;
+              phasebiasSat->Biases[ii].SignalIntegerIndicator          = pbSig.intInd;
+              phasebiasSat->Biases[ii].SignalsWideLaneIntegerIndicator = pbSig.WLInd;
+              phasebiasSat->Biases[ii].SignalDiscontinuityCounter      = pbSig.discCount;
             }
-            else if (pbsig->type == "1P") {
+            else if (pbSig.type == "1P") {
               int ii = phasebiasSat->NumberOfPhaseBiases; if (ii >= CLOCKORBIT_NUMBIAS) break;
               phasebiasSat->NumberOfPhaseBiases += 1;
               phasebiasSat->Biases[ii].Type = CODETYPEGPS_L1_P;
-              phasebiasSat->Biases[ii].Bias = pbsig->bias;
-              phasebiasSat->Biases[ii].SignalIntegerIndicator          = pbsig->intInd;
-              phasebiasSat->Biases[ii].SignalsWideLaneIntegerIndicator = pbsig->WLInd;
-              phasebiasSat->Biases[ii].SignalDiscontinuityCounter      = pbsig->discCount;
+              phasebiasSat->Biases[ii].Bias = pbSig.bias;
+              phasebiasSat->Biases[ii].SignalIntegerIndicator          = pbSig.intInd;
+              phasebiasSat->Biases[ii].SignalsWideLaneIntegerIndicator = pbSig.WLInd;
+              phasebiasSat->Biases[ii].SignalDiscontinuityCounter      = pbSig.discCount;
             }
-            else if (pbsig->type == "1W") {
+            else if (pbSig.type == "1W") {
               int ii = phasebiasSat->NumberOfPhaseBiases; if (ii >= CLOCKORBIT_NUMBIAS) break;
               phasebiasSat->NumberOfPhaseBiases += 1;
               phasebiasSat->Biases[ii].Type = CODETYPEGPS_L1_Z;
-              phasebiasSat->Biases[ii].Bias = pbsig->bias;
-              phasebiasSat->Biases[ii].SignalIntegerIndicator          = pbsig->intInd;
-              phasebiasSat->Biases[ii].SignalsWideLaneIntegerIndicator = pbsig->WLInd;
-              phasebiasSat->Biases[ii].SignalDiscontinuityCounter      = pbsig->discCount;
+              phasebiasSat->Biases[ii].Bias = pbSig.bias;
+              phasebiasSat->Biases[ii].SignalIntegerIndicator          = pbSig.intInd;
+              phasebiasSat->Biases[ii].SignalsWideLaneIntegerIndicator = pbSig.WLInd;
+              phasebiasSat->Biases[ii].SignalDiscontinuityCounter      = pbSig.discCount;
             }
-            else if (pbsig->type == "2C") {
+            else if (pbSig.type == "2C") {
               int ii = phasebiasSat->NumberOfPhaseBiases; if (ii >= CLOCKORBIT_NUMBIAS) break;
               phasebiasSat->NumberOfPhaseBiases += 1;
               phasebiasSat->Biases[ii].Type = CODETYPEGPS_L2_CA;
-              phasebiasSat->Biases[ii].Bias = pbsig->bias;
-              phasebiasSat->Biases[ii].SignalIntegerIndicator          = pbsig->intInd;
-              phasebiasSat->Biases[ii].SignalsWideLaneIntegerIndicator = pbsig->WLInd;
-              phasebiasSat->Biases[ii].SignalDiscontinuityCounter      = pbsig->discCount;
+              phasebiasSat->Biases[ii].Bias = pbSig.bias;
+              phasebiasSat->Biases[ii].SignalIntegerIndicator          = pbSig.intInd;
+              phasebiasSat->Biases[ii].SignalsWideLaneIntegerIndicator = pbSig.WLInd;
+              phasebiasSat->Biases[ii].SignalDiscontinuityCounter      = pbSig.discCount;
             }
-            else if (pbsig->type == "2D") {
+            else if (pbSig.type == "2D") {
               int ii = phasebiasSat->NumberOfPhaseBiases; if (ii >= CLOCKORBIT_NUMBIAS) break;
               phasebiasSat->NumberOfPhaseBiases += 1;
               phasebiasSat->Biases[ii].Type = CODETYPEGPS_SEMI_CODELESS;
-              phasebiasSat->Biases[ii].Bias = pbsig->bias;
-              phasebiasSat->Biases[ii].SignalIntegerIndicator          = pbsig->intInd;
-              phasebiasSat->Biases[ii].SignalsWideLaneIntegerIndicator = pbsig->WLInd;
-              phasebiasSat->Biases[ii].SignalDiscontinuityCounter      = pbsig->discCount;
+              phasebiasSat->Biases[ii].Bias = pbSig.bias;
+              phasebiasSat->Biases[ii].SignalIntegerIndicator          = pbSig.intInd;
+              phasebiasSat->Biases[ii].SignalsWideLaneIntegerIndicator = pbSig.WLInd;
+              phasebiasSat->Biases[ii].SignalDiscontinuityCounter      = pbSig.discCount;
             }
-            else if (pbsig->type == "2S") {
+            else if (pbSig.type == "2S") {
               int ii = phasebiasSat->NumberOfPhaseBiases; if (ii >= CLOCKORBIT_NUMBIAS) break;
               phasebiasSat->NumberOfPhaseBiases += 1;
               phasebiasSat->Biases[ii].Type = CODETYPEGPS_L2_CM;
-              phasebiasSat->Biases[ii].Bias = pbsig->bias;
-              phasebiasSat->Biases[ii].SignalIntegerIndicator          = pbsig->intInd;
-              phasebiasSat->Biases[ii].SignalsWideLaneIntegerIndicator = pbsig->WLInd;
-              phasebiasSat->Biases[ii].SignalDiscontinuityCounter      = pbsig->discCount;
+              phasebiasSat->Biases[ii].Bias = pbSig.bias;
+              phasebiasSat->Biases[ii].SignalIntegerIndicator          = pbSig.intInd;
+              phasebiasSat->Biases[ii].SignalsWideLaneIntegerIndicator = pbSig.WLInd;
+              phasebiasSat->Biases[ii].SignalDiscontinuityCounter      = pbSig.discCount;
             }
-            else if (pbsig->type == "2L") {
+            else if (pbSig.type == "2L") {
               int ii = phasebiasSat->NumberOfPhaseBiases; if (ii >= CLOCKORBIT_NUMBIAS) break;
               phasebiasSat->NumberOfPhaseBiases += 1;
               phasebiasSat->Biases[ii].Type = CODETYPEGPS_L2_CL;
-              phasebiasSat->Biases[ii].Bias = pbsig->bias;
-              phasebiasSat->Biases[ii].SignalIntegerIndicator          = pbsig->intInd;
-              phasebiasSat->Biases[ii].SignalsWideLaneIntegerIndicator = pbsig->WLInd;
-              phasebiasSat->Biases[ii].SignalDiscontinuityCounter      = pbsig->discCount;
+              phasebiasSat->Biases[ii].Bias = pbSig.bias;
+              phasebiasSat->Biases[ii].SignalIntegerIndicator          = pbSig.intInd;
+              phasebiasSat->Biases[ii].SignalsWideLaneIntegerIndicator = pbSig.WLInd;
+              phasebiasSat->Biases[ii].SignalDiscontinuityCounter      = pbSig.discCount;
             }
-            else if (pbsig->type == "2X") {
+            else if (pbSig.type == "2X") {
               int ii = phasebiasSat->NumberOfPhaseBiases; if (ii >= CLOCKORBIT_NUMBIAS) break;
               phasebiasSat->NumberOfPhaseBiases += 1;
               phasebiasSat->Biases[ii].Type = CODETYPEGPS_L2_CML;
-              phasebiasSat->Biases[ii].Bias = pbsig->bias;
-              phasebiasSat->Biases[ii].SignalIntegerIndicator          = pbsig->intInd;
-              phasebiasSat->Biases[ii].SignalsWideLaneIntegerIndicator = pbsig->WLInd;
-              phasebiasSat->Biases[ii].SignalDiscontinuityCounter      = pbsig->discCount;
+              phasebiasSat->Biases[ii].Bias = pbSig.bias;
+              phasebiasSat->Biases[ii].SignalIntegerIndicator          = pbSig.intInd;
+              phasebiasSat->Biases[ii].SignalsWideLaneIntegerIndicator = pbSig.WLInd;
+              phasebiasSat->Biases[ii].SignalDiscontinuityCounter      = pbSig.discCount;
             }
-            else if (pbsig->type == "2P") {
+            else if (pbSig.type == "2P") {
               int ii = phasebiasSat->NumberOfPhaseBiases; if (ii >= CLOCKORBIT_NUMBIAS) break;
               phasebiasSat->NumberOfPhaseBiases += 1;
               phasebiasSat->Biases[ii].Type = CODETYPEGPS_L2_P;
-              phasebiasSat->Biases[ii].Bias = pbsig->bias;
-              phasebiasSat->Biases[ii].SignalIntegerIndicator          = pbsig->intInd;
-              phasebiasSat->Biases[ii].SignalsWideLaneIntegerIndicator = pbsig->WLInd;
-              phasebiasSat->Biases[ii].SignalDiscontinuityCounter      = pbsig->discCount;
+              phasebiasSat->Biases[ii].Bias = pbSig.bias;
+              phasebiasSat->Biases[ii].SignalIntegerIndicator          = pbSig.intInd;
+              phasebiasSat->Biases[ii].SignalsWideLaneIntegerIndicator = pbSig.WLInd;
+              phasebiasSat->Biases[ii].SignalDiscontinuityCounter      = pbSig.discCount;
             }
-            else if (pbsig->type == "2W") {
+            else if (pbSig.type == "2W") {
               int ii = phasebiasSat->NumberOfPhaseBiases; if (ii >= CLOCKORBIT_NUMBIAS) break;
               phasebiasSat->NumberOfPhaseBiases += 1;
               phasebiasSat->Biases[ii].Type = CODETYPEGPS_L2_Z;
-              phasebiasSat->Biases[ii].Bias = pbsig->bias;
-              phasebiasSat->Biases[ii].SignalIntegerIndicator          = pbsig->intInd;
-              phasebiasSat->Biases[ii].SignalsWideLaneIntegerIndicator = pbsig->WLInd;
-              phasebiasSat->Biases[ii].SignalDiscontinuityCounter      = pbsig->discCount;
+              phasebiasSat->Biases[ii].Bias = pbSig.bias;
+              phasebiasSat->Biases[ii].SignalIntegerIndicator          = pbSig.intInd;
+              phasebiasSat->Biases[ii].SignalsWideLaneIntegerIndicator = pbSig.WLInd;
+              phasebiasSat->Biases[ii].SignalDiscontinuityCounter      = pbSig.discCount;
             }
-            else if (pbsig->type == "5I") {
+            else if (pbSig.type == "5I") {
               int ii = phasebiasSat->NumberOfPhaseBiases; if (ii >= CLOCKORBIT_NUMBIAS) break;
               phasebiasSat->NumberOfPhaseBiases += 1;
               phasebiasSat->Biases[ii].Type = CODETYPEGPS_L5_I;
-              phasebiasSat->Biases[ii].Bias = pbsig->bias;
-              phasebiasSat->Biases[ii].SignalIntegerIndicator          = pbsig->intInd;
-              phasebiasSat->Biases[ii].SignalsWideLaneIntegerIndicator = pbsig->WLInd;
-              phasebiasSat->Biases[ii].SignalDiscontinuityCounter      = pbsig->discCount;
+              phasebiasSat->Biases[ii].Bias = pbSig.bias;
+              phasebiasSat->Biases[ii].SignalIntegerIndicator          = pbSig.intInd;
+              phasebiasSat->Biases[ii].SignalsWideLaneIntegerIndicator = pbSig.WLInd;
+              phasebiasSat->Biases[ii].SignalDiscontinuityCounter      = pbSig.discCount;
             }
-            else if (pbsig->type == "5Q") {
+            else if (pbSig.type == "5Q") {
               int ii = phasebiasSat->NumberOfPhaseBiases; if (ii >= CLOCKORBIT_NUMBIAS) break;
               phasebiasSat->NumberOfPhaseBiases += 1;
               phasebiasSat->Biases[ii].Type = CODETYPEGPS_L5_Q;
-              phasebiasSat->Biases[ii].Bias = pbsig->bias;
-              phasebiasSat->Biases[ii].SignalIntegerIndicator          = pbsig->intInd;
-              phasebiasSat->Biases[ii].SignalsWideLaneIntegerIndicator = pbsig->WLInd;
-              phasebiasSat->Biases[ii].SignalDiscontinuityCounter      = pbsig->discCount;
+              phasebiasSat->Biases[ii].Bias = pbSig.bias;
+              phasebiasSat->Biases[ii].SignalIntegerIndicator          = pbSig.intInd;
+              phasebiasSat->Biases[ii].SignalsWideLaneIntegerIndicator = pbSig.WLInd;
+              phasebiasSat->Biases[ii].SignalDiscontinuityCounter      = pbSig.discCount;
             }
-            else if (pbsig->type == "5X") {
+            else if (pbSig.type == "5X") {
               int ii = phasebiasSat->NumberOfPhaseBiases; if (ii >= CLOCKORBIT_NUMBIAS) break;
               phasebiasSat->NumberOfPhaseBiases += 1;
               phasebiasSat->Biases[ii].Type = CODETYPEGPS_L5_IQ;
-              phasebiasSat->Biases[ii].Bias = pbsig->bias;
-              phasebiasSat->Biases[ii].SignalIntegerIndicator          = pbsig->intInd;
-              phasebiasSat->Biases[ii].SignalsWideLaneIntegerIndicator = pbsig->WLInd;
-              phasebiasSat->Biases[ii].SignalDiscontinuityCounter      = pbsig->discCount;
+              phasebiasSat->Biases[ii].Bias = pbSig.bias;
+              phasebiasSat->Biases[ii].SignalIntegerIndicator          = pbSig.intInd;
+              phasebiasSat->Biases[ii].SignalsWideLaneIntegerIndicator = pbSig.WLInd;
+              phasebiasSat->Biases[ii].SignalDiscontinuityCounter      = pbSig.discCount;
             }
           }
         }
         if      (prn[0] == 'R') {
-          QMutableVectorIterator<phaseBiasSignal*> it(pbSig);
+          QListIterator<phaseBiasSignal> it(phaseBiasList);
           while (it.hasNext()) {
-            phaseBiasSignal *pbsig = it.next();
-            if      (pbsig->type == "1C") {
+            const phaseBiasSignal &pbSig = it.next();
+            if      (pbSig.type == "1C") {
               int ii = phasebiasSat->NumberOfPhaseBiases; if (ii >= CLOCKORBIT_NUMBIAS) break;
               phasebiasSat->NumberOfPhaseBiases += 1;
               phasebiasSat->Biases[ii].Type = CODETYPEGLONASS_L1_CA;
-              phasebiasSat->Biases[ii].Bias = pbsig->bias;
-              phasebiasSat->Biases[ii].SignalIntegerIndicator          = pbsig->intInd;
-              phasebiasSat->Biases[ii].SignalsWideLaneIntegerIndicator = pbsig->WLInd;
-              phasebiasSat->Biases[ii].SignalDiscontinuityCounter      = pbsig->discCount;
+              phasebiasSat->Biases[ii].Bias = pbSig.bias;
+              phasebiasSat->Biases[ii].SignalIntegerIndicator          = pbSig.intInd;
+              phasebiasSat->Biases[ii].SignalsWideLaneIntegerIndicator = pbSig.WLInd;
+              phasebiasSat->Biases[ii].SignalDiscontinuityCounter      = pbSig.discCount;
             }
-            else if (pbsig->type == "1P") {
+            else if (pbSig.type == "1P") {
               int ii = phasebiasSat->NumberOfPhaseBiases; if (ii >= CLOCKORBIT_NUMBIAS) break;
               phasebiasSat->NumberOfPhaseBiases += 1;
               phasebiasSat->Biases[ii].Type = CODETYPEGLONASS_L1_P;
-              phasebiasSat->Biases[ii].Bias = pbsig->bias;
-              phasebiasSat->Biases[ii].SignalIntegerIndicator          = pbsig->intInd;
-              phasebiasSat->Biases[ii].SignalsWideLaneIntegerIndicator = pbsig->WLInd;
-              phasebiasSat->Biases[ii].SignalDiscontinuityCounter      = pbsig->discCount;
+              phasebiasSat->Biases[ii].Bias = pbSig.bias;
+              phasebiasSat->Biases[ii].SignalIntegerIndicator          = pbSig.intInd;
+              phasebiasSat->Biases[ii].SignalsWideLaneIntegerIndicator = pbSig.WLInd;
+              phasebiasSat->Biases[ii].SignalDiscontinuityCounter      = pbSig.discCount;
             }
-            else if (pbsig->type == "2C") {
+            else if (pbSig.type == "2C") {
               int ii = phasebiasSat->NumberOfPhaseBiases; if (ii >= CLOCKORBIT_NUMBIAS) break;
               phasebiasSat->NumberOfPhaseBiases += 1;
               phasebiasSat->Biases[ii].Type = CODETYPEGLONASS_L2_CA;
-              phasebiasSat->Biases[ii].Bias = pbsig->bias;
-              phasebiasSat->Biases[ii].SignalIntegerIndicator          = pbsig->intInd;
-              phasebiasSat->Biases[ii].SignalsWideLaneIntegerIndicator = pbsig->WLInd;
-              phasebiasSat->Biases[ii].SignalDiscontinuityCounter      = pbsig->discCount;
+              phasebiasSat->Biases[ii].Bias = pbSig.bias;
+              phasebiasSat->Biases[ii].SignalIntegerIndicator          = pbSig.intInd;
+              phasebiasSat->Biases[ii].SignalsWideLaneIntegerIndicator = pbSig.WLInd;
+              phasebiasSat->Biases[ii].SignalDiscontinuityCounter      = pbSig.discCount;
             }
-            else if (pbsig->type == "2P") {
+            else if (pbSig.type == "2P") {
               int ii = phasebiasSat->NumberOfPhaseBiases; if (ii >= CLOCKORBIT_NUMBIAS) break;
               phasebiasSat->NumberOfPhaseBiases += 1;
               phasebiasSat->Biases[ii].Type = CODETYPEGLONASS_L2_P;
-              phasebiasSat->Biases[ii].Bias = pbsig->bias;
-              phasebiasSat->Biases[ii].SignalIntegerIndicator          = pbsig->intInd;
-              phasebiasSat->Biases[ii].SignalsWideLaneIntegerIndicator = pbsig->WLInd;
-              phasebiasSat->Biases[ii].SignalDiscontinuityCounter      = pbsig->discCount;
+              phasebiasSat->Biases[ii].Bias = pbSig.bias;
+              phasebiasSat->Biases[ii].SignalIntegerIndicator          = pbSig.intInd;
+              phasebiasSat->Biases[ii].SignalsWideLaneIntegerIndicator = pbSig.WLInd;
+              phasebiasSat->Biases[ii].SignalDiscontinuityCounter      = pbSig.discCount;
             }
           }
         }
         if      (prn[0] == 'E') {
-          QMutableVectorIterator<phaseBiasSignal*> it(pbSig);
+          QListIterator<phaseBiasSignal> it(phaseBiasList);
           while (it.hasNext()) {
-            phaseBiasSignal *pbsig = it.next();
-            if      (pbsig->type == "1A") {
+            const phaseBiasSignal &pbSig = it.next();
+            if      (pbSig.type == "1A") {
               int ii = phasebiasSat->NumberOfPhaseBiases; if (ii >= CLOCKORBIT_NUMBIAS) break;
               phasebiasSat->NumberOfPhaseBiases += 1;
               phasebiasSat->Biases[ii].Type = CODETYPEGALILEO_E1_A;
-              phasebiasSat->Biases[ii].Bias = pbsig->bias;
-              phasebiasSat->Biases[ii].SignalIntegerIndicator          = pbsig->intInd;
-              phasebiasSat->Biases[ii].SignalsWideLaneIntegerIndicator = pbsig->WLInd;
-              phasebiasSat->Biases[ii].SignalDiscontinuityCounter      = pbsig->discCount;
+              phasebiasSat->Biases[ii].Bias = pbSig.bias;
+              phasebiasSat->Biases[ii].SignalIntegerIndicator          = pbSig.intInd;
+              phasebiasSat->Biases[ii].SignalsWideLaneIntegerIndicator = pbSig.WLInd;
+              phasebiasSat->Biases[ii].SignalDiscontinuityCounter      = pbSig.discCount;
             }
-            else if (pbsig->type == "1B") {
+            else if (pbSig.type == "1B") {
               int ii = phasebiasSat->NumberOfPhaseBiases; if (ii >= CLOCKORBIT_NUMBIAS) break;
               phasebiasSat->NumberOfPhaseBiases += 1;
               phasebiasSat->Biases[ii].Type = CODETYPEGALILEO_E1_B;
-              phasebiasSat->Biases[ii].Bias = pbsig->bias;
-              phasebiasSat->Biases[ii].SignalIntegerIndicator          = pbsig->intInd;
-              phasebiasSat->Biases[ii].SignalsWideLaneIntegerIndicator = pbsig->WLInd;
-              phasebiasSat->Biases[ii].SignalDiscontinuityCounter      = pbsig->discCount;
+              phasebiasSat->Biases[ii].Bias = pbSig.bias;
+              phasebiasSat->Biases[ii].SignalIntegerIndicator          = pbSig.intInd;
+              phasebiasSat->Biases[ii].SignalsWideLaneIntegerIndicator = pbSig.WLInd;
+              phasebiasSat->Biases[ii].SignalDiscontinuityCounter      = pbSig.discCount;
             }
-            else if (pbsig->type == "1C") {
+            else if (pbSig.type == "1C") {
               int ii = phasebiasSat->NumberOfPhaseBiases; if (ii >= CLOCKORBIT_NUMBIAS) break;
               phasebiasSat->NumberOfPhaseBiases += 1;
               phasebiasSat->Biases[ii].Type = CODETYPEGALILEO_E1_C;
-              phasebiasSat->Biases[ii].Bias = pbsig->bias;
-              phasebiasSat->Biases[ii].SignalIntegerIndicator          = pbsig->intInd;
-              phasebiasSat->Biases[ii].SignalsWideLaneIntegerIndicator = pbsig->WLInd;
-              phasebiasSat->Biases[ii].SignalDiscontinuityCounter      = pbsig->discCount;
+              phasebiasSat->Biases[ii].Bias = pbSig.bias;
+              phasebiasSat->Biases[ii].SignalIntegerIndicator          = pbSig.intInd;
+              phasebiasSat->Biases[ii].SignalsWideLaneIntegerIndicator = pbSig.WLInd;
+              phasebiasSat->Biases[ii].SignalDiscontinuityCounter      = pbSig.discCount;
             }
-            else if (pbsig->type == "5I") {
+            else if (pbSig.type == "5I") {
               int ii = phasebiasSat->NumberOfPhaseBiases; if (ii >= CLOCKORBIT_NUMBIAS) break;
               phasebiasSat->NumberOfPhaseBiases += 1;
               phasebiasSat->Biases[ii].Type = CODETYPEGALILEO_E5A_I;
-              phasebiasSat->Biases[ii].Bias = pbsig->bias;
-              phasebiasSat->Biases[ii].SignalIntegerIndicator          = pbsig->intInd;
-              phasebiasSat->Biases[ii].SignalsWideLaneIntegerIndicator = pbsig->WLInd;
-              phasebiasSat->Biases[ii].SignalDiscontinuityCounter      = pbsig->discCount;
+              phasebiasSat->Biases[ii].Bias = pbSig.bias;
+              phasebiasSat->Biases[ii].SignalIntegerIndicator          = pbSig.intInd;
+              phasebiasSat->Biases[ii].SignalsWideLaneIntegerIndicator = pbSig.WLInd;
+              phasebiasSat->Biases[ii].SignalDiscontinuityCounter      = pbSig.discCount;
             }
-            else if (pbsig->type == "5Q") {
+            else if (pbSig.type == "5Q") {
               int ii = phasebiasSat->NumberOfPhaseBiases; if (ii >= CLOCKORBIT_NUMBIAS) break;
               phasebiasSat->NumberOfPhaseBiases += 1;
               phasebiasSat->Biases[ii].Type = CODETYPEGALILEO_E5A_Q;
-              phasebiasSat->Biases[ii].Bias = pbsig->bias;
-              phasebiasSat->Biases[ii].SignalIntegerIndicator          = pbsig->intInd;
-              phasebiasSat->Biases[ii].SignalsWideLaneIntegerIndicator = pbsig->WLInd;
-              phasebiasSat->Biases[ii].SignalDiscontinuityCounter      = pbsig->discCount;
+              phasebiasSat->Biases[ii].Bias = pbSig.bias;
+              phasebiasSat->Biases[ii].SignalIntegerIndicator          = pbSig.intInd;
+              phasebiasSat->Biases[ii].SignalsWideLaneIntegerIndicator = pbSig.WLInd;
+              phasebiasSat->Biases[ii].SignalDiscontinuityCounter      = pbSig.discCount;
             }
-            else if (pbsig->type == "7I") {
+            else if (pbSig.type == "7I") {
               int ii = phasebiasSat->NumberOfPhaseBiases; if (ii >= CLOCKORBIT_NUMBIAS) break;
               phasebiasSat->NumberOfPhaseBiases += 1;
               phasebiasSat->Biases[ii].Type = CODETYPEGALILEO_E5B_I;
-              phasebiasSat->Biases[ii].Bias = pbsig->bias;
-              phasebiasSat->Biases[ii].SignalIntegerIndicator          = pbsig->intInd;
-              phasebiasSat->Biases[ii].SignalsWideLaneIntegerIndicator = pbsig->WLInd;
-              phasebiasSat->Biases[ii].SignalDiscontinuityCounter      = pbsig->discCount;
+              phasebiasSat->Biases[ii].Bias = pbSig.bias;
+              phasebiasSat->Biases[ii].SignalIntegerIndicator          = pbSig.intInd;
+              phasebiasSat->Biases[ii].SignalsWideLaneIntegerIndicator = pbSig.WLInd;
+              phasebiasSat->Biases[ii].SignalDiscontinuityCounter      = pbSig.discCount;
             }
-            else if (pbsig->type == "7Q") {
+            else if (pbSig.type == "7Q") {
               int ii = phasebiasSat->NumberOfPhaseBiases; if (ii >= CLOCKORBIT_NUMBIAS) break;
               phasebiasSat->NumberOfPhaseBiases += 1;
               phasebiasSat->Biases[ii].Type = CODETYPEGALILEO_E5B_Q;
-              phasebiasSat->Biases[ii].Bias = pbsig->bias;
-              phasebiasSat->Biases[ii].SignalIntegerIndicator          = pbsig->intInd;
-              phasebiasSat->Biases[ii].SignalsWideLaneIntegerIndicator = pbsig->WLInd;
-              phasebiasSat->Biases[ii].SignalDiscontinuityCounter      = pbsig->discCount;
+              phasebiasSat->Biases[ii].Bias = pbSig.bias;
+              phasebiasSat->Biases[ii].SignalIntegerIndicator          = pbSig.intInd;
+              phasebiasSat->Biases[ii].SignalsWideLaneIntegerIndicator = pbSig.WLInd;
+              phasebiasSat->Biases[ii].SignalDiscontinuityCounter      = pbSig.discCount;
             }
-            else if (pbsig->type == "8I") {
+            else if (pbSig.type == "8I") {
               int ii = phasebiasSat->NumberOfPhaseBiases; if (ii >= CLOCKORBIT_NUMBIAS) break;
               phasebiasSat->NumberOfPhaseBiases += 1;
               phasebiasSat->Biases[ii].Type = CODETYPEGALILEO_E5_I;
-              phasebiasSat->Biases[ii].Bias = pbsig->bias;
-              phasebiasSat->Biases[ii].SignalIntegerIndicator          = pbsig->intInd;
-              phasebiasSat->Biases[ii].SignalsWideLaneIntegerIndicator = pbsig->WLInd;
-              phasebiasSat->Biases[ii].SignalDiscontinuityCounter      = pbsig->discCount;
+              phasebiasSat->Biases[ii].Bias = pbSig.bias;
+              phasebiasSat->Biases[ii].SignalIntegerIndicator          = pbSig.intInd;
+              phasebiasSat->Biases[ii].SignalsWideLaneIntegerIndicator = pbSig.WLInd;
+              phasebiasSat->Biases[ii].SignalDiscontinuityCounter      = pbSig.discCount;
             }
-            else if (pbsig->type == "8Q") {
+            else if (pbSig.type == "8Q") {
               int ii = phasebiasSat->NumberOfPhaseBiases; if (ii >= CLOCKORBIT_NUMBIAS) break;
               phasebiasSat->NumberOfPhaseBiases += 1;
               phasebiasSat->Biases[ii].Type = CODETYPEGALILEO_E5_Q;
-              phasebiasSat->Biases[ii].Bias = pbsig->bias;
-              phasebiasSat->Biases[ii].SignalIntegerIndicator          = pbsig->intInd;
-              phasebiasSat->Biases[ii].SignalsWideLaneIntegerIndicator = pbsig->WLInd;
-              phasebiasSat->Biases[ii].SignalDiscontinuityCounter      = pbsig->discCount;
+              phasebiasSat->Biases[ii].Bias = pbSig.bias;
+              phasebiasSat->Biases[ii].SignalIntegerIndicator          = pbSig.intInd;
+              phasebiasSat->Biases[ii].SignalsWideLaneIntegerIndicator = pbSig.WLInd;
+              phasebiasSat->Biases[ii].SignalDiscontinuityCounter      = pbSig.discCount;
             }
-            else if (pbsig->type == "6A") {
+            else if (pbSig.type == "6A") {
               int ii = phasebiasSat->NumberOfPhaseBiases; if (ii >= CLOCKORBIT_NUMBIAS) break;
               phasebiasSat->NumberOfPhaseBiases += 1;
               phasebiasSat->Biases[ii].Type = CODETYPEGALILEO_E6_A;
-              phasebiasSat->Biases[ii].Bias = pbsig->bias;
-              phasebiasSat->Biases[ii].SignalIntegerIndicator          = pbsig->intInd;
-              phasebiasSat->Biases[ii].SignalsWideLaneIntegerIndicator = pbsig->WLInd;
-              phasebiasSat->Biases[ii].SignalDiscontinuityCounter      = pbsig->discCount;
+              phasebiasSat->Biases[ii].Bias = pbSig.bias;
+              phasebiasSat->Biases[ii].SignalIntegerIndicator          = pbSig.intInd;
+              phasebiasSat->Biases[ii].SignalsWideLaneIntegerIndicator = pbSig.WLInd;
+              phasebiasSat->Biases[ii].SignalDiscontinuityCounter      = pbSig.discCount;
             }
-            else if (pbsig->type == "6B") {
+            else if (pbSig.type == "6B") {
               int ii = phasebiasSat->NumberOfPhaseBiases; if (ii >= CLOCKORBIT_NUMBIAS) break;
               phasebiasSat->NumberOfPhaseBiases += 1;
               phasebiasSat->Biases[ii].Type = CODETYPEGALILEO_E6_B;
-              phasebiasSat->Biases[ii].Bias = pbsig->bias;
-              phasebiasSat->Biases[ii].SignalIntegerIndicator          = pbsig->intInd;
-              phasebiasSat->Biases[ii].SignalsWideLaneIntegerIndicator = pbsig->WLInd;
-              phasebiasSat->Biases[ii].SignalDiscontinuityCounter      = pbsig->discCount;
+              phasebiasSat->Biases[ii].Bias = pbSig.bias;
+              phasebiasSat->Biases[ii].SignalIntegerIndicator          = pbSig.intInd;
+              phasebiasSat->Biases[ii].SignalsWideLaneIntegerIndicator = pbSig.WLInd;
+              phasebiasSat->Biases[ii].SignalDiscontinuityCounter      = pbSig.discCount;
             }
-            else if (pbsig->type == "6C") {
+            else if (pbSig.type == "6C") {
               int ii = phasebiasSat->NumberOfPhaseBiases; if (ii >= CLOCKORBIT_NUMBIAS) break;
               phasebiasSat->NumberOfPhaseBiases += 1;
               phasebiasSat->Biases[ii].Type = CODETYPEGALILEO_E6_C;
-              phasebiasSat->Biases[ii].Bias = pbsig->bias;
-              phasebiasSat->Biases[ii].SignalIntegerIndicator          = pbsig->intInd;
-              phasebiasSat->Biases[ii].SignalsWideLaneIntegerIndicator = pbsig->WLInd;
-              phasebiasSat->Biases[ii].SignalDiscontinuityCounter      = pbsig->discCount;
+              phasebiasSat->Biases[ii].Bias = pbSig.bias;
+              phasebiasSat->Biases[ii].SignalIntegerIndicator          = pbSig.intInd;
+              phasebiasSat->Biases[ii].SignalsWideLaneIntegerIndicator = pbSig.WLInd;
+              phasebiasSat->Biases[ii].SignalDiscontinuityCounter      = pbSig.discCount;
             }
           }
         }
         if      (prn[0] == 'J') {
-          QMutableVectorIterator<phaseBiasSignal*> it(pbSig);
+          QListIterator<phaseBiasSignal> it(phaseBiasList);
           while (it.hasNext()) {
-            phaseBiasSignal *pbsig = it.next();
-            if      (pbsig->type == "1C") {
+            const phaseBiasSignal &pbSig = it.next();
+            if      (pbSig.type == "1C") {
               int ii = phasebiasSat->NumberOfPhaseBiases; if (ii >= CLOCKORBIT_NUMBIAS) break;
               phasebiasSat->NumberOfPhaseBiases += 1;
               phasebiasSat->Biases[ii].Type = CODETYPEQZSS_L1_CA;
-              phasebiasSat->Biases[ii].Bias = pbsig->bias;
-              phasebiasSat->Biases[ii].SignalIntegerIndicator          = pbsig->intInd;
-              phasebiasSat->Biases[ii].SignalsWideLaneIntegerIndicator = pbsig->WLInd;
-              phasebiasSat->Biases[ii].SignalDiscontinuityCounter      = pbsig->discCount;
+              phasebiasSat->Biases[ii].Bias = pbSig.bias;
+              phasebiasSat->Biases[ii].SignalIntegerIndicator          = pbSig.intInd;
+              phasebiasSat->Biases[ii].SignalsWideLaneIntegerIndicator = pbSig.WLInd;
+              phasebiasSat->Biases[ii].SignalDiscontinuityCounter      = pbSig.discCount;
             }
-            else if (pbsig->type == "1S") {
+            else if (pbSig.type == "1S") {
               int ii = phasebiasSat->NumberOfPhaseBiases; if (ii >= CLOCKORBIT_NUMBIAS) break;
               phasebiasSat->NumberOfPhaseBiases += 1;
               phasebiasSat->Biases[ii].Type = CODETYPEQZSS_L1C_D;
-              phasebiasSat->Biases[ii].Bias = pbsig->bias;
-              phasebiasSat->Biases[ii].SignalIntegerIndicator          = pbsig->intInd;
-              phasebiasSat->Biases[ii].SignalsWideLaneIntegerIndicator = pbsig->WLInd;
-              phasebiasSat->Biases[ii].SignalDiscontinuityCounter      = pbsig->discCount;
+              phasebiasSat->Biases[ii].Bias = pbSig.bias;
+              phasebiasSat->Biases[ii].SignalIntegerIndicator          = pbSig.intInd;
+              phasebiasSat->Biases[ii].SignalsWideLaneIntegerIndicator = pbSig.WLInd;
+              phasebiasSat->Biases[ii].SignalDiscontinuityCounter      = pbSig.discCount;
             }
-            else if (pbsig->type == "1L") {
+            else if (pbSig.type == "1L") {
               int ii = phasebiasSat->NumberOfPhaseBiases; if (ii >= CLOCKORBIT_NUMBIAS) break;
               phasebiasSat->NumberOfPhaseBiases += 1;
               phasebiasSat->Biases[ii].Type = CODETYPEQZSS_L1C_P;
-              phasebiasSat->Biases[ii].Bias = pbsig->bias;
-              phasebiasSat->Biases[ii].SignalIntegerIndicator          = pbsig->intInd;
-              phasebiasSat->Biases[ii].SignalsWideLaneIntegerIndicator = pbsig->WLInd;
-              phasebiasSat->Biases[ii].SignalDiscontinuityCounter      = pbsig->discCount;
+              phasebiasSat->Biases[ii].Bias = pbSig.bias;
+              phasebiasSat->Biases[ii].SignalIntegerIndicator          = pbSig.intInd;
+              phasebiasSat->Biases[ii].SignalsWideLaneIntegerIndicator = pbSig.WLInd;
+              phasebiasSat->Biases[ii].SignalDiscontinuityCounter      = pbSig.discCount;
             }
-            else if (pbsig->type == "1X") {
+            else if (pbSig.type == "1X") {
               int ii = phasebiasSat->NumberOfPhaseBiases; if (ii >= CLOCKORBIT_NUMBIAS) break;
               phasebiasSat->NumberOfPhaseBiases += 1;
               phasebiasSat->Biases[ii].Type = CODETYPEQZSS_L1C_DP;
-              phasebiasSat->Biases[ii].Bias = pbsig->bias;
-              phasebiasSat->Biases[ii].SignalIntegerIndicator          = pbsig->intInd;
-              phasebiasSat->Biases[ii].SignalsWideLaneIntegerIndicator = pbsig->WLInd;
-              phasebiasSat->Biases[ii].SignalDiscontinuityCounter      = pbsig->discCount;
+              phasebiasSat->Biases[ii].Bias = pbSig.bias;
+              phasebiasSat->Biases[ii].SignalIntegerIndicator          = pbSig.intInd;
+              phasebiasSat->Biases[ii].SignalsWideLaneIntegerIndicator = pbSig.WLInd;
+              phasebiasSat->Biases[ii].SignalDiscontinuityCounter      = pbSig.discCount;
             }
-            else if (pbsig->type == "2S") {
+            else if (pbSig.type == "2S") {
               int ii = phasebiasSat->NumberOfPhaseBiases; if (ii >= CLOCKORBIT_NUMBIAS) break;
               phasebiasSat->NumberOfPhaseBiases += 1;
               phasebiasSat->Biases[ii].Type = CODETYPEQZSS_L2_CM;
-              phasebiasSat->Biases[ii].Bias = pbsig->bias;
-              phasebiasSat->Biases[ii].SignalIntegerIndicator          = pbsig->intInd;
-              phasebiasSat->Biases[ii].SignalsWideLaneIntegerIndicator = pbsig->WLInd;
-              phasebiasSat->Biases[ii].SignalDiscontinuityCounter      = pbsig->discCount;
+              phasebiasSat->Biases[ii].Bias = pbSig.bias;
+              phasebiasSat->Biases[ii].SignalIntegerIndicator          = pbSig.intInd;
+              phasebiasSat->Biases[ii].SignalsWideLaneIntegerIndicator = pbSig.WLInd;
+              phasebiasSat->Biases[ii].SignalDiscontinuityCounter      = pbSig.discCount;
             }
-            else if (pbsig->type == "2L") {
+            else if (pbSig.type == "2L") {
               int ii = phasebiasSat->NumberOfPhaseBiases; if (ii >= CLOCKORBIT_NUMBIAS) break;
               phasebiasSat->NumberOfPhaseBiases += 1;
               phasebiasSat->Biases[ii].Type = CODETYPEQZSS_L2_CL;
-              phasebiasSat->Biases[ii].Bias = pbsig->bias;
-              phasebiasSat->Biases[ii].SignalIntegerIndicator          = pbsig->intInd;
-              phasebiasSat->Biases[ii].SignalsWideLaneIntegerIndicator = pbsig->WLInd;
-              phasebiasSat->Biases[ii].SignalDiscontinuityCounter      = pbsig->discCount;
+              phasebiasSat->Biases[ii].Bias = pbSig.bias;
+              phasebiasSat->Biases[ii].SignalIntegerIndicator          = pbSig.intInd;
+              phasebiasSat->Biases[ii].SignalsWideLaneIntegerIndicator = pbSig.WLInd;
+              phasebiasSat->Biases[ii].SignalDiscontinuityCounter      = pbSig.discCount;
             }
-            else if (pbsig->type == "2X") {
+            else if (pbSig.type == "2X") {
               int ii = phasebiasSat->NumberOfPhaseBiases; if (ii >= CLOCKORBIT_NUMBIAS) break;
               phasebiasSat->NumberOfPhaseBiases += 1;
               phasebiasSat->Biases[ii].Type = CODETYPEQZSS_L2_CML;
-              phasebiasSat->Biases[ii].Bias = pbsig->bias;
-              phasebiasSat->Biases[ii].SignalIntegerIndicator          = pbsig->intInd;
-              phasebiasSat->Biases[ii].SignalsWideLaneIntegerIndicator = pbsig->WLInd;
-              phasebiasSat->Biases[ii].SignalDiscontinuityCounter      = pbsig->discCount;
+              phasebiasSat->Biases[ii].Bias = pbSig.bias;
+              phasebiasSat->Biases[ii].SignalIntegerIndicator          = pbSig.intInd;
+              phasebiasSat->Biases[ii].SignalsWideLaneIntegerIndicator = pbSig.WLInd;
+              phasebiasSat->Biases[ii].SignalDiscontinuityCounter      = pbSig.discCount;
             }
-            else if (pbsig->type == "5I") {
+            else if (pbSig.type == "5I") {
               int ii = phasebiasSat->NumberOfPhaseBiases; if (ii >= CLOCKORBIT_NUMBIAS) break;
               phasebiasSat->NumberOfPhaseBiases += 1;
               phasebiasSat->Biases[ii].Type = CODETYPEQZSS_L5_I;
-              phasebiasSat->Biases[ii].Bias = pbsig->bias;
-              phasebiasSat->Biases[ii].SignalIntegerIndicator          = pbsig->intInd;
-              phasebiasSat->Biases[ii].SignalsWideLaneIntegerIndicator = pbsig->WLInd;
-              phasebiasSat->Biases[ii].SignalDiscontinuityCounter      = pbsig->discCount;
+              phasebiasSat->Biases[ii].Bias = pbSig.bias;
+              phasebiasSat->Biases[ii].SignalIntegerIndicator          = pbSig.intInd;
+              phasebiasSat->Biases[ii].SignalsWideLaneIntegerIndicator = pbSig.WLInd;
+              phasebiasSat->Biases[ii].SignalDiscontinuityCounter      = pbSig.discCount;
             }
-            else if (pbsig->type == "5Q") {
+            else if (pbSig.type == "5Q") {
               int ii = phasebiasSat->NumberOfPhaseBiases; if (ii >= CLOCKORBIT_NUMBIAS) break;
               phasebiasSat->NumberOfPhaseBiases += 1;
               phasebiasSat->Biases[ii].Type = CODETYPEQZSS_L5_Q;
-              phasebiasSat->Biases[ii].Bias = pbsig->bias;
-              phasebiasSat->Biases[ii].SignalIntegerIndicator          = pbsig->intInd;
-              phasebiasSat->Biases[ii].SignalsWideLaneIntegerIndicator = pbsig->WLInd;
-              phasebiasSat->Biases[ii].SignalDiscontinuityCounter      = pbsig->discCount;
+              phasebiasSat->Biases[ii].Bias = pbSig.bias;
+              phasebiasSat->Biases[ii].SignalIntegerIndicator          = pbSig.intInd;
+              phasebiasSat->Biases[ii].SignalsWideLaneIntegerIndicator = pbSig.WLInd;
+              phasebiasSat->Biases[ii].SignalDiscontinuityCounter      = pbSig.discCount;
             }
-            else if (pbsig->type == "5X") {
+            else if (pbSig.type == "5X") {
               int ii = phasebiasSat->NumberOfPhaseBiases; if (ii >= CLOCKORBIT_NUMBIAS) break;
               phasebiasSat->NumberOfPhaseBiases += 1;
               phasebiasSat->Biases[ii].Type = CODETYPEQZSS_L5_IQ;
-              phasebiasSat->Biases[ii].Bias = pbsig->bias;
-              phasebiasSat->Biases[ii].SignalIntegerIndicator          = pbsig->intInd;
-              phasebiasSat->Biases[ii].SignalsWideLaneIntegerIndicator = pbsig->WLInd;
-              phasebiasSat->Biases[ii].SignalDiscontinuityCounter      = pbsig->discCount;
+              phasebiasSat->Biases[ii].Bias = pbSig.bias;
+              phasebiasSat->Biases[ii].SignalIntegerIndicator          = pbSig.intInd;
+              phasebiasSat->Biases[ii].SignalsWideLaneIntegerIndicator = pbSig.WLInd;
+              phasebiasSat->Biases[ii].SignalDiscontinuityCounter      = pbSig.discCount;
             }
-            else if (pbsig->type == "6S") {
+            else if (pbSig.type == "6S") {
               int ii = phasebiasSat->NumberOfPhaseBiases; if (ii >= CLOCKORBIT_NUMBIAS) break;
               phasebiasSat->NumberOfPhaseBiases += 1;
               phasebiasSat->Biases[ii].Type = CODETYPEQZSS_LEX_S;
-              phasebiasSat->Biases[ii].Bias = pbsig->bias;
-              phasebiasSat->Biases[ii].SignalIntegerIndicator          = pbsig->intInd;
-              phasebiasSat->Biases[ii].SignalsWideLaneIntegerIndicator = pbsig->WLInd;
-              phasebiasSat->Biases[ii].SignalDiscontinuityCounter      = pbsig->discCount;
+              phasebiasSat->Biases[ii].Bias = pbSig.bias;
+              phasebiasSat->Biases[ii].SignalIntegerIndicator          = pbSig.intInd;
+              phasebiasSat->Biases[ii].SignalsWideLaneIntegerIndicator = pbSig.WLInd;
+              phasebiasSat->Biases[ii].SignalDiscontinuityCounter      = pbSig.discCount;
             }
-            else if (pbsig->type == "6L") {
+            else if (pbSig.type == "6L") {
               int ii = phasebiasSat->NumberOfPhaseBiases; if (ii >= CLOCKORBIT_NUMBIAS) break;
               phasebiasSat->NumberOfPhaseBiases += 1;
               phasebiasSat->Biases[ii].Type = CODETYPEQZSS_LEX_L;
-              phasebiasSat->Biases[ii].Bias = pbsig->bias;
-              phasebiasSat->Biases[ii].SignalIntegerIndicator          = pbsig->intInd;
-              phasebiasSat->Biases[ii].SignalsWideLaneIntegerIndicator = pbsig->WLInd;
-              phasebiasSat->Biases[ii].SignalDiscontinuityCounter      = pbsig->discCount;
+              phasebiasSat->Biases[ii].Bias = pbSig.bias;
+              phasebiasSat->Biases[ii].SignalIntegerIndicator          = pbSig.intInd;
+              phasebiasSat->Biases[ii].SignalsWideLaneIntegerIndicator = pbSig.WLInd;
+              phasebiasSat->Biases[ii].SignalDiscontinuityCounter      = pbSig.discCount;
             }
-            else if (pbsig->type == "6X") {
+            else if (pbSig.type == "6X") {
               int ii = phasebiasSat->NumberOfPhaseBiases; if (ii >= CLOCKORBIT_NUMBIAS) break;
               phasebiasSat->NumberOfPhaseBiases += 1;
               phasebiasSat->Biases[ii].Type = CODETYPEQZSS_LEX_SL;
-              phasebiasSat->Biases[ii].Bias = pbsig->bias;
-              phasebiasSat->Biases[ii].SignalIntegerIndicator          = pbsig->intInd;
-              phasebiasSat->Biases[ii].SignalsWideLaneIntegerIndicator = pbsig->WLInd;
-              phasebiasSat->Biases[ii].SignalDiscontinuityCounter      = pbsig->discCount;
+              phasebiasSat->Biases[ii].Bias = pbSig.bias;
+              phasebiasSat->Biases[ii].SignalIntegerIndicator          = pbSig.intInd;
+              phasebiasSat->Biases[ii].SignalsWideLaneIntegerIndicator = pbSig.WLInd;
+              phasebiasSat->Biases[ii].SignalDiscontinuityCounter      = pbSig.discCount;
             }
           }
         }
         if      (prn[0] == 'S') {
-          QMutableVectorIterator<phaseBiasSignal*> it(pbSig);
+          QListIterator<phaseBiasSignal> it(phaseBiasList);
           while (it.hasNext()) {
-            phaseBiasSignal *pbsig = it.next();
-            if      (pbsig->type == "1C") {
+            const phaseBiasSignal &pbSig = it.next();
+            if      (pbSig.type == "1C") {
               int ii = phasebiasSat->NumberOfPhaseBiases; if (ii >= CLOCKORBIT_NUMBIAS) break;
               phasebiasSat->NumberOfPhaseBiases += 1;
               phasebiasSat->Biases[ii].Type = CODETYPE_SBAS_L1_CA;
-              phasebiasSat->Biases[ii].Bias = pbsig->bias;
-              phasebiasSat->Biases[ii].SignalIntegerIndicator          = pbsig->intInd;
-              phasebiasSat->Biases[ii].SignalsWideLaneIntegerIndicator = pbsig->WLInd;
-              phasebiasSat->Biases[ii].SignalDiscontinuityCounter      = pbsig->discCount;
+              phasebiasSat->Biases[ii].Bias = pbSig.bias;
+              phasebiasSat->Biases[ii].SignalIntegerIndicator          = pbSig.intInd;
+              phasebiasSat->Biases[ii].SignalsWideLaneIntegerIndicator = pbSig.WLInd;
+              phasebiasSat->Biases[ii].SignalDiscontinuityCounter      = pbSig.discCount;
             }
-            else if (pbsig->type == "5I") {
+            else if (pbSig.type == "5I") {
               int ii = phasebiasSat->NumberOfPhaseBiases; if (ii >= CLOCKORBIT_NUMBIAS) break;
               phasebiasSat->NumberOfPhaseBiases += 1;
               phasebiasSat->Biases[ii].Type = CODETYPE_SBAS_L5_I;
-              phasebiasSat->Biases[ii].Bias = pbsig->bias;
-              phasebiasSat->Biases[ii].SignalIntegerIndicator          = pbsig->intInd;
-              phasebiasSat->Biases[ii].SignalsWideLaneIntegerIndicator = pbsig->WLInd;
-              phasebiasSat->Biases[ii].SignalDiscontinuityCounter      = pbsig->discCount;
+              phasebiasSat->Biases[ii].Bias = pbSig.bias;
+              phasebiasSat->Biases[ii].SignalIntegerIndicator          = pbSig.intInd;
+              phasebiasSat->Biases[ii].SignalsWideLaneIntegerIndicator = pbSig.WLInd;
+              phasebiasSat->Biases[ii].SignalDiscontinuityCounter      = pbSig.discCount;
             }
-            else if (pbsig->type == "5Q") {
+            else if (pbSig.type == "5Q") {
               int ii = phasebiasSat->NumberOfPhaseBiases; if (ii >= CLOCKORBIT_NUMBIAS) break;
               phasebiasSat->NumberOfPhaseBiases += 1;
               phasebiasSat->Biases[ii].Type = CODETYPE_SBAS_L5_Q;
-              phasebiasSat->Biases[ii].Bias = pbsig->bias;
-              phasebiasSat->Biases[ii].SignalIntegerIndicator          = pbsig->intInd;
-              phasebiasSat->Biases[ii].SignalsWideLaneIntegerIndicator = pbsig->WLInd;
-              phasebiasSat->Biases[ii].SignalDiscontinuityCounter      = pbsig->discCount;
+              phasebiasSat->Biases[ii].Bias = pbSig.bias;
+              phasebiasSat->Biases[ii].SignalIntegerIndicator          = pbSig.intInd;
+              phasebiasSat->Biases[ii].SignalsWideLaneIntegerIndicator = pbSig.WLInd;
+              phasebiasSat->Biases[ii].SignalDiscontinuityCounter      = pbSig.discCount;
             }
-            else if (pbsig->type == "5X") {
+            else if (pbSig.type == "5X") {
               int ii = phasebiasSat->NumberOfPhaseBiases; if (ii >= CLOCKORBIT_NUMBIAS) break;
               phasebiasSat->NumberOfPhaseBiases += 1;
               phasebiasSat->Biases[ii].Type = CODETYPE_SBAS_L5_IQ;
-              phasebiasSat->Biases[ii].Bias = pbsig->bias;
-              phasebiasSat->Biases[ii].SignalIntegerIndicator          = pbsig->intInd;
-              phasebiasSat->Biases[ii].SignalsWideLaneIntegerIndicator = pbsig->WLInd;
-              phasebiasSat->Biases[ii].SignalDiscontinuityCounter      = pbsig->discCount;
+              phasebiasSat->Biases[ii].Bias = pbSig.bias;
+              phasebiasSat->Biases[ii].SignalIntegerIndicator          = pbSig.intInd;
+              phasebiasSat->Biases[ii].SignalsWideLaneIntegerIndicator = pbSig.WLInd;
+              phasebiasSat->Biases[ii].SignalDiscontinuityCounter      = pbSig.discCount;
             }
           }
         }
         if      (prn[0] == 'C') {
-          QMutableVectorIterator<phaseBiasSignal*> it(pbSig);
+          QListIterator<phaseBiasSignal> it(phaseBiasList);
           while (it.hasNext()) {
-            phaseBiasSignal *pbsig = it.next();
-            if      (pbsig->type == "2I") {
+            const phaseBiasSignal &pbSig = it.next();
+            if      (pbSig.type == "2I") {
               int ii = phasebiasSat->NumberOfPhaseBiases; if (ii >= CLOCKORBIT_NUMBIAS) break;
               phasebiasSat->NumberOfPhaseBiases += 1;
               phasebiasSat->Biases[ii].Type = CODETYPE_BDS_B1_I;
-              phasebiasSat->Biases[ii].Bias = pbsig->bias;
-              phasebiasSat->Biases[ii].SignalIntegerIndicator          = pbsig->intInd;
-              phasebiasSat->Biases[ii].SignalsWideLaneIntegerIndicator = pbsig->WLInd;
-              phasebiasSat->Biases[ii].SignalDiscontinuityCounter      = pbsig->discCount;
+              phasebiasSat->Biases[ii].Bias = pbSig.bias;
+              phasebiasSat->Biases[ii].SignalIntegerIndicator          = pbSig.intInd;
+              phasebiasSat->Biases[ii].SignalsWideLaneIntegerIndicator = pbSig.WLInd;
+              phasebiasSat->Biases[ii].SignalDiscontinuityCounter      = pbSig.discCount;
             }
-            else if (pbsig->type == "2Q") {
+            else if (pbSig.type == "2Q") {
               int ii = phasebiasSat->NumberOfPhaseBiases; if (ii >= CLOCKORBIT_NUMBIAS) break;
               phasebiasSat->NumberOfPhaseBiases += 1;
               phasebiasSat->Biases[ii].Type = CODETYPE_BDS_B1_Q;
-              phasebiasSat->Biases[ii].Bias = pbsig->bias;
-              phasebiasSat->Biases[ii].SignalIntegerIndicator          = pbsig->intInd;
-              phasebiasSat->Biases[ii].SignalsWideLaneIntegerIndicator = pbsig->WLInd;
-              phasebiasSat->Biases[ii].SignalDiscontinuityCounter      = pbsig->discCount;
+              phasebiasSat->Biases[ii].Bias = pbSig.bias;
+              phasebiasSat->Biases[ii].SignalIntegerIndicator          = pbSig.intInd;
+              phasebiasSat->Biases[ii].SignalsWideLaneIntegerIndicator = pbSig.WLInd;
+              phasebiasSat->Biases[ii].SignalDiscontinuityCounter      = pbSig.discCount;
             }
-            else if (pbsig->type == "2X") {
+            else if (pbSig.type == "2X") {
               int ii = phasebiasSat->NumberOfPhaseBiases; if (ii >= CLOCKORBIT_NUMBIAS) break;
               phasebiasSat->NumberOfPhaseBiases += 1;
               phasebiasSat->Biases[ii].Type = CODETYPE_BDS_B1_IQ;
-              phasebiasSat->Biases[ii].Bias = pbsig->bias;
-              phasebiasSat->Biases[ii].SignalIntegerIndicator          = pbsig->intInd;
-              phasebiasSat->Biases[ii].SignalsWideLaneIntegerIndicator = pbsig->WLInd;
-              phasebiasSat->Biases[ii].SignalDiscontinuityCounter      = pbsig->discCount;
+              phasebiasSat->Biases[ii].Bias = pbSig.bias;
+              phasebiasSat->Biases[ii].SignalIntegerIndicator          = pbSig.intInd;
+              phasebiasSat->Biases[ii].SignalsWideLaneIntegerIndicator = pbSig.WLInd;
+              phasebiasSat->Biases[ii].SignalDiscontinuityCounter      = pbSig.discCount;
             }
-            else if (pbsig->type == "6I") {
+            else if (pbSig.type == "6I") {
               int ii = phasebiasSat->NumberOfPhaseBiases; if (ii >= CLOCKORBIT_NUMBIAS) break;
               phasebiasSat->NumberOfPhaseBiases += 1;
               phasebiasSat->Biases[ii].Type = CODETYPE_BDS_B2_Q;
-              phasebiasSat->Biases[ii].Bias = pbsig->bias;
-              phasebiasSat->Biases[ii].SignalIntegerIndicator          = pbsig->intInd;
-              phasebiasSat->Biases[ii].SignalsWideLaneIntegerIndicator = pbsig->WLInd;
-              phasebiasSat->Biases[ii].SignalDiscontinuityCounter      = pbsig->discCount;
+              phasebiasSat->Biases[ii].Bias = pbSig.bias;
+              phasebiasSat->Biases[ii].SignalIntegerIndicator          = pbSig.intInd;
+              phasebiasSat->Biases[ii].SignalsWideLaneIntegerIndicator = pbSig.WLInd;
+              phasebiasSat->Biases[ii].SignalDiscontinuityCounter      = pbSig.discCount;
             }
-            else if (pbsig->type == "6Q") {
+            else if (pbSig.type == "6Q") {
               int ii = phasebiasSat->NumberOfPhaseBiases; if (ii >= CLOCKORBIT_NUMBIAS) break;
               phasebiasSat->NumberOfPhaseBiases += 1;
               phasebiasSat->Biases[ii].Type = CODETYPE_BDS_B2_I;
-              phasebiasSat->Biases[ii].Bias = pbsig->bias;
-              phasebiasSat->Biases[ii].SignalIntegerIndicator          = pbsig->intInd;
-              phasebiasSat->Biases[ii].SignalsWideLaneIntegerIndicator = pbsig->WLInd;
-              phasebiasSat->Biases[ii].SignalDiscontinuityCounter      = pbsig->discCount;
+              phasebiasSat->Biases[ii].Bias = pbSig.bias;
+              phasebiasSat->Biases[ii].SignalIntegerIndicator          = pbSig.intInd;
+              phasebiasSat->Biases[ii].SignalsWideLaneIntegerIndicator = pbSig.WLInd;
+              phasebiasSat->Biases[ii].SignalDiscontinuityCounter      = pbSig.discCount;
             }
-            else if (pbsig->type == "6X") {
+            else if (pbSig.type == "6X") {
               int ii = phasebiasSat->NumberOfPhaseBiases; if (ii >= CLOCKORBIT_NUMBIAS) break;
               phasebiasSat->NumberOfPhaseBiases += 1;
               phasebiasSat->Biases[ii].Type = CODETYPE_BDS_B2_IQ;
-              phasebiasSat->Biases[ii].Bias = pbsig->bias;
-              phasebiasSat->Biases[ii].SignalIntegerIndicator          = pbsig->intInd;
-              phasebiasSat->Biases[ii].SignalsWideLaneIntegerIndicator = pbsig->WLInd;
-              phasebiasSat->Biases[ii].SignalDiscontinuityCounter      = pbsig->discCount;
+              phasebiasSat->Biases[ii].Bias = pbSig.bias;
+              phasebiasSat->Biases[ii].SignalIntegerIndicator          = pbSig.intInd;
+              phasebiasSat->Biases[ii].SignalsWideLaneIntegerIndicator = pbSig.WLInd;
+              phasebiasSat->Biases[ii].SignalDiscontinuityCounter      = pbSig.discCount;
             }
-            else if (pbsig->type == "7I") {
+            else if (pbSig.type == "7I") {
               int ii = phasebiasSat->NumberOfPhaseBiases; if (ii >= CLOCKORBIT_NUMBIAS) break;
               phasebiasSat->NumberOfPhaseBiases += 1;
               phasebiasSat->Biases[ii].Type = CODETYPE_BDS_B3_Q;
-              phasebiasSat->Biases[ii].Bias = pbsig->bias;
-              phasebiasSat->Biases[ii].SignalIntegerIndicator          = pbsig->intInd;
-              phasebiasSat->Biases[ii].SignalsWideLaneIntegerIndicator = pbsig->WLInd;
-              phasebiasSat->Biases[ii].SignalDiscontinuityCounter      = pbsig->discCount;
+              phasebiasSat->Biases[ii].Bias = pbSig.bias;
+              phasebiasSat->Biases[ii].SignalIntegerIndicator          = pbSig.intInd;
+              phasebiasSat->Biases[ii].SignalsWideLaneIntegerIndicator = pbSig.WLInd;
+              phasebiasSat->Biases[ii].SignalDiscontinuityCounter      = pbSig.discCount;
             }
-            else if (pbsig->type == "7Q") {
+            else if (pbSig.type == "7Q") {
               int ii = phasebiasSat->NumberOfPhaseBiases; if (ii >= CLOCKORBIT_NUMBIAS) break;
               phasebiasSat->NumberOfPhaseBiases += 1;
               phasebiasSat->Biases[ii].Type = CODETYPE_BDS_B3_I;
-              phasebiasSat->Biases[ii].Bias = pbsig->bias;
-              phasebiasSat->Biases[ii].SignalIntegerIndicator          = pbsig->intInd;
-              phasebiasSat->Biases[ii].SignalsWideLaneIntegerIndicator = pbsig->WLInd;
-              phasebiasSat->Biases[ii].SignalDiscontinuityCounter      = pbsig->discCount;
+              phasebiasSat->Biases[ii].Bias = pbSig.bias;
+              phasebiasSat->Biases[ii].SignalIntegerIndicator          = pbSig.intInd;
+              phasebiasSat->Biases[ii].SignalsWideLaneIntegerIndicator = pbSig.WLInd;
+              phasebiasSat->Biases[ii].SignalDiscontinuityCounter      = pbSig.discCount;
             }
-            else if (pbsig->type == "7X") {
+            else if (pbSig.type == "7X") {
               int ii = phasebiasSat->NumberOfPhaseBiases; if (ii >= CLOCKORBIT_NUMBIAS) break;
               phasebiasSat->NumberOfPhaseBiases += 1;
               phasebiasSat->Biases[ii].Type = CODETYPE_BDS_B3_IQ;
-              phasebiasSat->Biases[ii].Bias = pbsig->bias;
-              phasebiasSat->Biases[ii].SignalIntegerIndicator          = pbsig->intInd;
-              phasebiasSat->Biases[ii].SignalsWideLaneIntegerIndicator = pbsig->WLInd;
-              phasebiasSat->Biases[ii].SignalDiscontinuityCounter      = pbsig->discCount;
+              phasebiasSat->Biases[ii].Bias = pbSig.bias;
+              phasebiasSat->Biases[ii].SignalIntegerIndicator          = pbSig.intInd;
+              phasebiasSat->Biases[ii].SignalsWideLaneIntegerIndicator = pbSig.WLInd;
+              phasebiasSat->Biases[ii].SignalDiscontinuityCounter      = pbSig.discCount;
             }
           }
         }
