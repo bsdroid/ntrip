@@ -215,13 +215,36 @@ void RTCM3coDecoder::sendResults() {
 
   // Orbit and clock corrections of all satellites
   // ---------------------------------------------
-  for (unsigned ii = 0; ii < CLOCKORBIT_NUMGPS + _clkOrb.NumberOfSat[CLOCKORBIT_SATGLONASS]; ii++) {
+  for (unsigned ii = 0; ii <  CLOCKORBIT_NUMGPS
+                            + CLOCKORBIT_NUMGLONASS
+                            + CLOCKORBIT_NUMGALILEO
+                            + CLOCKORBIT_NUMQZSS
+                            + CLOCKORBIT_NUMSBAS
+                            + _clkOrb.NumberOfSat[CLOCKORBIT_SATBDS];
+    ii++) {
     char sysCh = ' ';
     if      (ii < _clkOrb.NumberOfSat[CLOCKORBIT_SATGPS]) {
       sysCh = 'G';
     }
-    else if (ii >= CLOCKORBIT_NUMGPS) {
+    else if (ii >= CLOCKORBIT_OFFSETGLONASS &&
+        ii < _clkOrb.NumberOfSat[CLOCKORBIT_SATGLONASS]) {
       sysCh = 'R';
+    }
+    else if (ii >= CLOCKORBIT_OFFSETGALILEO &&
+        ii < _clkOrb.NumberOfSat[CLOCKORBIT_SATGALILEO]) {
+      sysCh = 'E';
+    }
+    else if (ii >= CLOCKORBIT_OFFSETQZSS &&
+        ii < _clkOrb.NumberOfSat[CLOCKORBIT_SATQZSS]) {
+      sysCh = 'J';
+    }
+    else if (ii >= CLOCKORBIT_OFFSETSBAS &&
+        ii < _clkOrb.NumberOfSat[CLOCKORBIT_SATSBAS]) {
+      sysCh = 'S';
+    }
+    else if (ii >= CLOCKORBIT_OFFSETBDS &&
+        ii < _clkOrb.NumberOfSat[CLOCKORBIT_SATBDS]) {
+      sysCh = 'C';
     }
     else {
       continue;
@@ -231,8 +254,16 @@ void RTCM3coDecoder::sendResults() {
     // ----------------
     if ( _clkOrb.messageType == COTYPE_GPSCOMBINED     ||
          _clkOrb.messageType == COTYPE_GLONASSCOMBINED ||
-         _clkOrb.messageType == COTYPE_GPSORBIT        ||
-         _clkOrb.messageType == COTYPE_GLONASSORBIT    ) {
+         _clkOrb.messageType == COTYPE_GALILEOCOMBINED ||
+         _clkOrb.messageType == COTYPE_QZSSCOMBINED ||
+         _clkOrb.messageType == COTYPE_SBASCOMBINED ||
+         _clkOrb.messageType == COTYPE_BDSCOMBINED ||
+         _clkOrb.messageType == COTYPE_GPSORBIT ||
+         _clkOrb.messageType == COTYPE_GLONASSORBIT ||
+         _clkOrb.messageType == COTYPE_GALILEOORBIT ||
+         _clkOrb.messageType == COTYPE_QZSSORBIT ||
+         _clkOrb.messageType == COTYPE_SBASORBIT ||
+         _clkOrb.messageType == COTYPE_BDSORBIT ) {
 
       t_orbCorr orbCorr;
       orbCorr._prn.set(sysCh, _clkOrb.Sat[ii].ID);
@@ -240,7 +271,7 @@ void RTCM3coDecoder::sendResults() {
       orbCorr._iod       = _clkOrb.Sat[ii].IOD;
       orbCorr._time      = _lastTime;
       orbCorr._updateInt = _clkOrb.UpdateInterval;
-      orbCorr._system    = 'R';
+      orbCorr._system    = sysCh;
       orbCorr._xr[0]     = _clkOrb.Sat[ii].Orbit.DeltaRadial;
       orbCorr._xr[1]     = _clkOrb.Sat[ii].Orbit.DeltaAlongTrack;
       orbCorr._xr[2]     = _clkOrb.Sat[ii].Orbit.DeltaCrossTrack;
@@ -257,8 +288,16 @@ void RTCM3coDecoder::sendResults() {
     // -----------------
     if ( _clkOrb.messageType == COTYPE_GPSCOMBINED     ||
          _clkOrb.messageType == COTYPE_GLONASSCOMBINED ||
-         _clkOrb.messageType == COTYPE_GPSCLOCK        ||
-         _clkOrb.messageType == COTYPE_GLONASSCLOCK    ) {
+         _clkOrb.messageType == COTYPE_GALILEOCOMBINED ||
+         _clkOrb.messageType == COTYPE_QZSSCOMBINED ||
+         _clkOrb.messageType == COTYPE_SBASCOMBINED ||
+         _clkOrb.messageType == COTYPE_BDSCOMBINED ||
+         _clkOrb.messageType == COTYPE_GPSCLOCK ||
+         _clkOrb.messageType == COTYPE_GLONASSCLOCK ||
+         _clkOrb.messageType == COTYPE_GALILEOCLOCK ||
+         _clkOrb.messageType == COTYPE_QZSSCLOCK ||
+         _clkOrb.messageType == COTYPE_SBASCLOCK ||
+         _clkOrb.messageType == COTYPE_BDSCLOCK) {
 
       t_clkCorr clkCorr;
       clkCorr._prn.set(sysCh, _clkOrb.Sat[ii].ID);
@@ -280,7 +319,11 @@ void RTCM3coDecoder::sendResults() {
     // High-Resolution Clocks
     // ----------------------
     if ( _clkOrb.messageType == COTYPE_GPSHR     ||
-         _clkOrb.messageType == COTYPE_GLONASSHR ) {
+         _clkOrb.messageType == COTYPE_GLONASSHR ||
+         _clkOrb.messageType == COTYPE_GALILEOHR ||
+         _clkOrb.messageType == COTYPE_QZSSHR ||
+         _clkOrb.messageType == COTYPE_SBASHR ||
+         _clkOrb.messageType == COTYPE_BDSHR) {
 
       t_prn prn(sysCh, _clkOrb.Sat[ii].ID);
       if (_lastClkCorrections.contains(prn)) {
@@ -299,13 +342,36 @@ void RTCM3coDecoder::sendResults() {
 
   // Code Biases
   // -----------
-  for (unsigned ii = 0; ii < CLOCKORBIT_NUMGPS + _codeBias.NumberOfSat[CLOCKORBIT_SATGLONASS]; ii++) {
+  for (unsigned ii = 0; ii <  CLOCKORBIT_NUMGPS
+                            + CLOCKORBIT_NUMGLONASS
+                            + CLOCKORBIT_NUMGALILEO
+                            + CLOCKORBIT_NUMQZSS
+                            + CLOCKORBIT_NUMSBAS
+                            + _codeBias.NumberOfSat[CLOCKORBIT_SATBDS];
+    ii++) {
     char sysCh = ' ';
     if      (ii < _codeBias.NumberOfSat[CLOCKORBIT_SATGPS]) {
       sysCh = 'G';
     }
-    else if (ii >= CLOCKORBIT_NUMGPS) {
+    else if (ii >= CLOCKORBIT_OFFSETGLONASS &&
+        ii < _codeBias.NumberOfSat[CLOCKORBIT_SATGLONASS]) {
       sysCh = 'R';
+    }
+    else if (ii >= CLOCKORBIT_OFFSETGALILEO &&
+        ii < _codeBias.NumberOfSat[CLOCKORBIT_SATGALILEO]) {
+      sysCh = 'E';
+    }
+    else if (ii >= CLOCKORBIT_OFFSETQZSS &&
+        ii < _codeBias.NumberOfSat[CLOCKORBIT_SATQZSS]) {
+      sysCh = 'J';
+    }
+    else if (ii >= CLOCKORBIT_OFFSETSBAS &&
+        ii < _codeBias.NumberOfSat[CLOCKORBIT_SATSBAS]) {
+      sysCh = 'S';
+    }
+    else if (ii >= CLOCKORBIT_OFFSETBDS &&
+        ii < _codeBias.NumberOfSat[CLOCKORBIT_SATBDS]) {
+      sysCh = 'C';
     }
     else {
       continue;
@@ -329,13 +395,36 @@ void RTCM3coDecoder::sendResults() {
 
   // Phase Biases
   // -----------
-  for (unsigned ii = 0; ii < CLOCKORBIT_NUMGPS + _phaseBias.NumberOfSat[CLOCKORBIT_SATGLONASS]; ii++) {
+  for (unsigned ii = 0; ii <  CLOCKORBIT_NUMGPS
+                            + CLOCKORBIT_NUMGLONASS
+                            + CLOCKORBIT_NUMGALILEO
+                            + CLOCKORBIT_NUMQZSS
+                            + CLOCKORBIT_NUMSBAS
+                            + _phaseBias.NumberOfSat[CLOCKORBIT_SATBDS];
+    ii++) {
     char sysCh = ' ';
     if      (ii < _phaseBias.NumberOfSat[CLOCKORBIT_SATGPS]) {
       sysCh = 'G';
     }
-    else if (ii >= CLOCKORBIT_NUMGPS) {
+    else if (ii >= CLOCKORBIT_OFFSETGLONASS &&
+        ii < _phaseBias.NumberOfSat[CLOCKORBIT_SATGLONASS]) {
       sysCh = 'R';
+    }
+    else if (ii >= CLOCKORBIT_OFFSETGALILEO &&
+        ii < _phaseBias.NumberOfSat[CLOCKORBIT_SATGALILEO]) {
+      sysCh = 'E';
+    }
+    else if (ii >= CLOCKORBIT_OFFSETQZSS &&
+        ii < _phaseBias.NumberOfSat[CLOCKORBIT_SATQZSS]) {
+      sysCh = 'J';
+    }
+    else if (ii >= CLOCKORBIT_OFFSETSBAS &&
+        ii < _phaseBias.NumberOfSat[CLOCKORBIT_SATSBAS]) {
+      sysCh = 'S';
+    }
+    else if (ii >= CLOCKORBIT_OFFSETBDS &&
+        ii < _phaseBias.NumberOfSat[CLOCKORBIT_SATBDS]) {
+      sysCh = 'C';
     }
     else {
       continue;
@@ -471,8 +560,12 @@ void RTCM3coDecoder::setEpochTime() {
 
   _lastTime.reset();
 
-  double epoSecGPS = -1.0;
-  double epoSecGlo = -1.0;
+  double epoSecGPS  = -1.0;
+  double epoSecGlo  = -1.0;
+  double epoSecGal  = -1.0;
+  double epoSecQzss = -1.0;
+  double epoSecSbas = -1.0;
+  double epoSecBds  = -1.0;
   if      (_clkOrb.NumberOfSat[CLOCKORBIT_SATGPS] > 0) {
     epoSecGPS = _clkOrb.EpochTime[CLOCKORBIT_SATGPS];        // 0 .. 604799 s
   }
@@ -494,6 +587,42 @@ void RTCM3coDecoder::setEpochTime() {
   else if (_phaseBias.NumberOfSat[CLOCKORBIT_SATGLONASS] > 0) {
     epoSecGlo = _phaseBias.EpochTime[CLOCKORBIT_SATGLONASS]; // 0 .. 86399 s
   }
+  else if (_clkOrb.NumberOfSat[CLOCKORBIT_SATGALILEO] > 0) {
+    epoSecGal = _clkOrb.EpochTime[CLOCKORBIT_SATGALILEO];
+  }
+  else if (_codeBias.NumberOfSat[CLOCKORBIT_SATGALILEO] > 0) {
+    epoSecGal = _codeBias.EpochTime[CLOCKORBIT_SATGALILEO];
+  }
+  else if (_phaseBias.NumberOfSat[CLOCKORBIT_SATGALILEO] > 0) {
+    epoSecGal = _phaseBias.EpochTime[CLOCKORBIT_SATGALILEO];
+  }
+  else if (_clkOrb.NumberOfSat[CLOCKORBIT_SATQZSS] > 0) {
+    epoSecQzss = _clkOrb.EpochTime[CLOCKORBIT_SATQZSS];
+  }
+  else if (_codeBias.NumberOfSat[CLOCKORBIT_SATQZSS] > 0) {
+    epoSecQzss = _codeBias.EpochTime[CLOCKORBIT_SATQZSS];
+  }
+  else if (_phaseBias.NumberOfSat[CLOCKORBIT_SATQZSS] > 0) {
+    epoSecQzss = _phaseBias.EpochTime[CLOCKORBIT_SATQZSS];
+  }
+  else if (_clkOrb.NumberOfSat[CLOCKORBIT_SATSBAS] > 0) {
+    epoSecSbas = _clkOrb.EpochTime[CLOCKORBIT_SATSBAS];
+  }
+  else if (_codeBias.NumberOfSat[CLOCKORBIT_SATSBAS] > 0) {
+    epoSecSbas = _codeBias.EpochTime[CLOCKORBIT_SATSBAS];
+  }
+  else if (_phaseBias.NumberOfSat[CLOCKORBIT_SATSBAS] > 0) {
+    epoSecSbas = _phaseBias.EpochTime[CLOCKORBIT_SATSBAS];
+  }
+  else if (_clkOrb.NumberOfSat[CLOCKORBIT_SATBDS] > 0) {
+    epoSecBds = _clkOrb.EpochTime[CLOCKORBIT_SATBDS];
+  }
+  else if (_codeBias.NumberOfSat[CLOCKORBIT_SATBDS] > 0) {
+    epoSecBds = _codeBias.EpochTime[CLOCKORBIT_SATBDS];
+  }
+  else if (_phaseBias.NumberOfSat[CLOCKORBIT_SATBDS] > 0) {
+    epoSecBds = _phaseBias.EpochTime[CLOCKORBIT_SATBDS];
+  }
 
   // Retrieve current time
   // ---------------------
@@ -511,6 +640,19 @@ void RTCM3coDecoder::setEpochTime() {
     QDate date = dateAndTimeFromGPSweek(currentTime.gpsw(), currentTime.gpssec()).date();
     epoSecGlo = epoSecGlo - 3 * 3600 + gnumleap(date.year(), date.month(), date.day());
     _lastTime.set(currentWeek, epoSecGlo);
+  }
+  else if (epoSecGal != -1) {
+    _lastTime.set(currentWeek, epoSecGal);
+  }
+  else if (epoSecQzss != -1) {
+    _lastTime.set(currentWeek, epoSecQzss);
+  }
+  else if (epoSecSbas != -1) {
+    _lastTime.set(currentWeek, epoSecSbas);
+  }
+  else if (epoSecBds != -1) {
+    epoSecBds += 14.0;
+    _lastTime.set(currentWeek, epoSecBds);
   }
 
   if (_lastTime.valid()) {
