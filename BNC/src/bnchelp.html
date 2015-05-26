@@ -6,16 +6,16 @@ The BKG Ntrip Client (BNC) is a program for simultaneously retrieving, decoding,
 <ul>
 <li><u>http://www.euref-ip.net/home</u>,</li>
 <li><u>http://www.igs-ip.net/home</u>,</li>
-<li><u>http://products.igs-ip.net/home</u>, or</li>
+<li><u>http://products.igs-ip.net/home</u>,</li>
 <li><u>http://mgex.igs-ip.net/home</u>. </li>
 </ul>
 </p>
 
 <p>
-BNC has been written under GNU General Public License (GPL). Source code is available from Subversion software archive <u>http://software.rtcm-ntrip.org/svn/trunk/BNC.</u> Binaries for BNC are available for Windows, Linux, and Mac OS X systems. We used the MinGW Version 4.4.0 compiler to create the Windows binaries. It is likely that BNC can be compiled on other systems where a GNU compiler and Qt Version 4.7.3 or any later version are installed. Please ensure that you always use the latest version of BNC available from <u>http://igs.bkg.bund.de/ntrip/download</u>. Note that static and shared builds of BNC are made available. A <u>static</u> build would be sufficient in case you don't want BNC to trace positions using Google Map (GM) or Open StreetMap (OSM). However, GM/OSM usage requires the QtWebKit library which can only be part of BNC builds from <u>shared</u> libraries. Using a shared library BNC build requires that you first install your own shared Qt library. The 'README.txt' file which comes with the BNC source code describes how to install Qt on Windows, Linux and Mac systems.
+BNC has been written under GNU General Public License (GPL). Source code is available from Subversion software archive <u>http://software.rtcm-ntrip.org/svn/trunk/BNC.</u> Binaries for BNC are available for Windows, Linux, and Mac OS X systems. We used the MinGW Version 4.4.0 compiler to create the Windows binaries. It is likely that BNC can be compiled on other systems where a GNU compiler and Qt Version 4.8.4 or any later version are installed. Please ensure that you always use the latest precompiled version of BNC available from <u>http://igs.bkg.bund.de/ntrip/download</u>. Note that static and shared builds of BNC are made available. A <u>static</u> build would be sufficient in case you don't want BNC to trace PPP results using Google Map (GM) or Open StreetMap (OSM). However, GM/OSM usage requires the QtWebKit library which can only be part of BNC builds from <u>shared</u> libraries. Using a shared library BNC build requires that you first install your own shared Qt library. The 'README.txt' file which comes with the BNC source code describes how to install Qt on Windows, Linux and Mac systems.
 </p>
 <p>
-Feel free to send us your comments, suggestions or bug reports. Your contribution would be appreciated.
+Feel free to send us comments, suggestions or bug reports. Your contribution would be appreciated.
 </p>
 
 <p><b>Contents</b><br>
@@ -28,26 +28,40 @@ Feel free to send us your comments, suggestions or bug reports. Your contributio
 
 <p>
 <b><a name="authors">Authors</b><br>
-The BKG Ntrip Client (BNC) and its Qt graphic user interface has been developed for
+The BKG Ntrip Client (BNC) and its Qt Graphical User Interface (GUI) has been developed for
 </p>
 <p>
 Federal Agency for Cartography and Geodesy (BKG)<br>
-c/o Georg Weber<br>
+c/o Dr. Georg Weber<br>
 Department of Geodesy<br>
 Frankfurt, Germany<br>
 [euref-ip@bkg.bund.de] or [igs-ip@bkg.bund.de]
 </p>
 
 <p>
-BNC has been written by
+BNC was written by
 </p>
 
 <p>
-Leos Mervart<br>
+Prof. Dr. Leos Mervart<br>
 Czech Technical University (CTU)<br>
 Department of Geodesy<br>
 Prague, Czech Republic
 </p>
+
+<p>
+While work on BNC startet in June 2005, Prof. Mervart's sole responsibility for the progam code and concept lasted till February 2015. Since March 2015 the expert in charge for further develoments is 
+</p>
+
+<p>
+Dipl.-Ing. Andrea St&uuml;rze<br>
+Federal Agency for Cartography and Geodesy (BKG)<br>
+Department of Geodesy<br>
+Section Navigation<br>
+Frankfurt, Germany<br>
+[andrea.stuerze@bkg.bund.de]
+</p>
+
 <p>
 BNC includes the following GNU GPL software components:
 <ul>
@@ -56,14 +70,14 @@ BNC includes the following GNU GPL software components:
 </ul>
 </p>
 <p>
-Note that some figures presented in this documentation show screenshots from earlier versions of BNC. If so then there is either no relevant change compared to the current appearance of BNC or no change at all.
+Note that some figures presented in this documentation show screenshots from earlier versions of BNC. If so then there is either no relevant change compared to the current appearance of the program or no change at all.
 </p>
 
 <p>
 <b>Acknowledgements</b><br>
 <ul>
 <li>
-Thomas Yan, Australian NSW Land and Property Information, proofread earlier versions of BNC's Help Contents. He also provides builds of BNC for Mac OS X systems.
+Thomas Yan, Australian NSW Land and Property Information, proofread earlier versions of BNC's Help Contents. Up to Version 2.11 he also provides builds of BNC for Mac OS X systems.
 </li>
 <li>
 Scott Glazier, OmniSTAR Australia, has been helpful in finding BNC bugs in version 1.5.
@@ -96,16 +110,23 @@ Lennard Huisman, Kadaster Netherlands, and Rolf Dach, Astronomical Institute Uni
 <li>Retrieve real-time GNSS data streams available through NTRIP transport protocol;</li>
 <li>Retrieve real-time GNSS data streams via TCP directly from an IP address without using the NTRIP transport protocol;</li>
 <li>Retrieve real-time GNSS data streams from a local UDP or serial port without using the NTRIP transport protocol;</li>
+<li>Plot stream distribution map from NTRIP Broadcaster source-tables;</li>
 <li>Generate RINEX Observation and Navigation files to support near real-time GNSS Post Processing applications;</li>
+<li>Edit or concatenate RINEX files or carry out RINEX Quality Checks (QC);</li>
+<li>Convert RINEX Version 2 to RINEX Version 3 and vice versa;</li>
+<li>Compare SP3 files containing satellite orbit and clock data;</li>
+<li>Generate orbit and clock corrections to Broadcast Ephemeris through an IP port to</li>
+<ul>
+<li>support real-time Precise Point Positioning on GNSS rovers;</li>
+<li>support the (outside) combination of such streams as coming simultaneously from various correction providers;</li>
+</ul>
 <li>Generate ephemeris and synchronized or unsynchronized observations epoch by epoch through an IP port to support real-time GNSS network engines;</li>
-<li>Generate orbit and clock corrections to Broadcast Ephemeris through an IP port to support real-time Precise Point Positioning on GNSS rovers;</li>
-<li>Generate synchronized or unsynchronized orbit and clock corrections to Broadcast Ephemeris epoch by epoch through an IP port to support the (outside) combination of such streams as coming simultaneously from various correction providers;</li>
-<li>Monitor the performance of a network of real-time GNSS data streams to generate advisory notes in case of outages or corrupted streams;</li>
-<li>Scan RTCM streams for incoming antenna information as well as observation types and message types and their repetition rates;</li>
 <li>Feed a stream into a GNSS receiver via serial communication link;</li>
-<li>Carry out real-time Precise Point Positioning to determine a GNSS rover position;</li>
+<li>Monitor the performance of a network of real-time GNSS data streams to generate advisory notes in case of outages or corrupted streams;</li>
+<li>Scan RTCM streams for incoming antenna information as well as observation types and message types and their repetition rates and latencies;</li>
+<li>Carry out real-time Precise Point Positioning to determine GNSS rover positions;</li>
+<li>Plot positions derived via PPP from RTCM streams or RINEX files on maps from Google Map or Open StreetMap;</li>
 <li>Simultaneously process several Broadcast Correction streams to produce, encode and upload combined Broadcast Corrections;</li>
-<li>Upload a Broadcast Ephemeris stream in RTCM Version 3 format;</li>
 <li>Read GNSS orbits and clocks in a plain ASCII format from an IP port. They can be produced by a real-time GNSS engine such as RTNET and should be referenced to the IGS Earth-Centered-Earth-Fixed (ECEF) reference system. BNC will then</li>
 <ul>
 <li>Convert the IGS Earth-Centered-Earth-Fixed orbits and clocks into Broadcast Corrections with radial, along-track and cross-track components;</li>
@@ -114,9 +135,7 @@ Lennard Huisman, Kadaster Netherlands, and Rolf Dach, Astronomical Institute Uni
 <li>Log the Broadcast Corrections as Clock RINEX files for further processing using other tools than BNC;</li>
 <li>Log the Broadcast Corrections as SP3 files for further processing using other tools than BNC;</li>
 </ul>
-<li>Edit or concatenate RINEX files or check their quality;</li>
-<li>Plot stream distribution map from NTRIP Broadcaster source-tables;</li>
-<li>Plot positions derived from RTCM streams or RINEX files on maps from Google Map or Open StreetMap.</li>
+<li>Upload a Broadcast Ephemeris stream in RTCM Version 3 format;</li>
 </ul>
 </p>
 
@@ -139,31 +158,31 @@ Note that BNC allows to by-pass its decoding and conversion algorithms for incom
 
 <p><a name="suppGNSS"><h3>1.1 Supported Systems</h3></p>
 <p>
-BNC is continuously completed in order to support all existing GNSS systems throughout all features of the program. The table below shows in detail which GNSS systems are so far supported by particular applications when using the latest BNC version. Applications fields named here are:
+BNC is permanently completed to finally support all existing GNSS systems throughout all features of the program. The table below shows in detail which GNSS systems are so far supported by particular applications when using the latest BNC version. Application areas named here are:
 <ul>
 <li>Decoding of RTCM or RTNET streams</li>
 <li>RINEX and SP3 file input and output</li>
 <li>Encoding of SSR and ephemeris messages</li>
 <li>Upload of SSR and ephemeris messages</li>
 <li>PPP (Precise Point Positioning)</li>
-<li>Combination/merging of SSR or ephemeris messages from various real-time sources</li>
+<li>Combining/merging SSR or ephemeris messages from various real-time sources</li>
 </ul>
-The table mentions if the message implementation in BNC could so far only be based on a 'RTCM Proposal'.
+The table mentions if a message implementation in BNC could so far only be based on a 'RTCM Proposal'.
 </p>
-<p><u>Table:</u> Status of RTCM Version 3 message implementation in BNC supporting various GNSS systems</p>
+<p><u>Table:</u> Status of RTCM Version 3 message implementations in BNC supporting various GNSS systems</p>
 
 <p></p>
 <table border="1" rules="rows" frame="box" bgcolor="#FFF5EE" style="font-size:13">
 
-<tr><td><b>Message<br>Type #</b></td> <td><b>Description</b></td> <td><b>System</b></td> <td><b>RTCM<br>Proposal&nbsp;</b></td> <td><b>Decoding&nbsp;</b></td> <td><b>&nbsp;RINEX/&nbsp;<br>&nbsp;SP3</b></td> <td><b>Encoding&nbsp;</b></td> <td><b>Upload&nbsp;</b></td> <td><b>&nbsp;PPP&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</b></td> <td><b>Combin.&nbsp;</b></td> </tr>
+<tr><td><b>Message<br>Type #</b></td> <td><b>Description</b></td> <td><b>GNSS<br>System</b></td> <td><b>RTCM<br>Proposal&nbsp;</b></td> <td><b>Decoding&nbsp;</b></td> <td><b>&nbsp;RINEX/&nbsp;<br>&nbsp;SP3</b></td> <td><b>Encoding&nbsp;</b></td> <td><b>Upload&nbsp;</b></td> <td><b>&nbsp;PPP&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</b></td> <td><b>Combin.&nbsp;</b></td> </tr>
 
-<tr> <td><b><br>General</b></td> <td></td> <td></td> <td></td> <td></td> <td></td> <td></td> </tr>
+<tr> <td><b><br>General</b></td> <td></td>             <td></td>              <td> </td> <td> </td> <td> </td> <td> </td> <td> </td> <td> </td> <td> </td> </tr>
 <tr> <td>1005,1006</td> <td>Station</td>               <td> </td>             <td> </td> <td>x</td> <td> </td> <td> </td> <td> </td> <td> </td> <td> </td> </tr>
 <tr> <td>1007,1008</td> <td>Antenna</td>               <td> </td>             <td> </td> <td>x</td> <td> </td> <td> </td> <td> </td> <td> </td> <td> </td> </tr>
 <tr> <td>1033</td>      <td>Receiver, Antenna</td>     <td> </td>             <td> </td> <td>x</td> <td> </td> <td> </td> <td> </td> <td> </td> <td> </td> </tr>
 <tr> <td>1013</td>      <td>System Parameters</td>     <td> </td>             <td> </td> <td>x</td> <td> </td> <td> </td> <td> </td> <td> </td> <td> </td> </tr>
 
-<tr> <td><b><br>Navigation</b></td> <td></td> <td></td> <td></td> <td></td> <td></td> <td></td> </tr>
+<tr> <td><b><br>Navigation</b></td> <td></td>          <td></td>              <td> </td> <td> </td> <td> </td> <td> </td> <td> </td> <td> </td> <td> </td> </tr>
 <tr> <td>1019</td> <td>Ephemeris</td>                  <td>GPS</td>           <td> </td> <td>x</td> <td>x</td> <td>x</td> <td>x</td> <td>x</td> <td>x</td> </tr>
 <tr> <td>1020</td> <td>Ephemeris</td>                  <td>GLONASS</td>       <td> </td> <td>x</td> <td>x</td> <td>x</td> <td>x</td> <td>x</td> <td>x</td> </tr>
 <tr> <td>1045</td> <td>Ephemeris</td>                  <td>Galileo F/Nav</td> <td> </td> <td>x</td> <td>x</td> <td>x</td> <td>x</td> <td>x</td> <td> </td> </tr>
@@ -172,11 +191,11 @@ The table mentions if the message implementation in BNC could so far only be bas
 <tr> <td>1044</td> <td>Ephemeris</td>                  <td>QZSS</td>          <td> </td> <td>x</td> <td>x</td> <td>x</td> <td>x</td> <td> </td> <td> </td> </tr>
 <tr> <td>63</td>   <td>Ephemeris</td>                  <td>BDS</td>           <td>x</td> <td>x</td> <td>x</td> <td>x</td> <td>x</td> <td> </td> <td> </td> </tr>
 
-<tr> <td><b><br>Observation</b></td> <td></td> <td></td> <td></td> <td></td> <td></td> <td></td> </tr>
+<tr> <td><b><br>Observation</b></td> <td></td>         <td></td>              <td> </td> <td> </td> <td> </td> <td> </td> <td> </td> <td> </td> <td> </td> </tr>
 <tr> <td>1001-4</td>  <td>Conventional Messages</td>   <td>GPS</td>           <td> </td> <td>x</td> <td>x</td> <td> </td> <td> </td> <td>x</td> <td> </td> </tr>
 <tr> <td>1009-12</td> <td>Conventional Messages</td>   <td>GLONASS</td>       <td> </td> <td>x</td> <td>x</td> <td> </td> <td> </td> <td>x</td> <td> </td> </tr>
 
-<tr> <td><b><br>Observation</b></td> <td></td> <td></td> <td></td> <td></td> <td></td> <td></td> </tr>
+<tr> <td><b><br>Observation</b></td> <td></td>         <td></td>              <td> </td> <td> </td> <td> </td> <td> </td> <td> </td> <td> </td> <td> </td> </tr>
 <tr> <td>1071-77</td> <td>Multiple Signal Message</td> <td>GPS</td>           <td> </td> <td>x</td> <td>x</td> <td> </td> <td> </td> <td>x</td> <td> </td> </tr>
 <tr> <td>1081-87</td> <td>Multiple Signal Message</td> <td>GLONASS</td>       <td> </td> <td>x</td> <td>x</td> <td> </td> <td> </td> <td>x</td> <td> </td> </tr>
 <tr> <td>1091-97</td> <td>Multiple Signal Message</td> <td>Galileo</td>       <td> </td> <td>x</td> <td>x</td> <td> </td> <td> </td> <td>x</td> <td> </td> </tr>
@@ -184,7 +203,7 @@ The table mentions if the message implementation in BNC could so far only be bas
 <tr> <td>1111-17</td> <td>Multiple Signal Message</td> <td>QZSS</td>          <td> </td> <td>x</td> <td>x</td> <td> </td> <td> </td> <td> </td> <td> </td> </tr>
 <tr> <td>1121-27</td> <td>Multiple Signal Message</td> <td>BDS</td>           <td>x</td> <td>x</td> <td>x</td> <td> </td> <td> </td> <td> </td> <td> </td> </tr>
 
-<tr> <td><b><br>SSR I</b></td> <td></td> <td></td> <td></td> <td></td> <td></td> <td></td> </tr>
+<tr> <td><b><br>SSR I</b></td> <td></td>               <td></td>              <td> </td> <td> </td> <td> </td> <td> </td> <td> </td> <td> </td> <td> </td> </tr>
 <tr> <td>1057</td> <td>Orbit Corrections</td>          <td>GPS</td>           <td> </td> <td>x</td> <td>x</td> <td>x</td> <td>x</td> <td>x</td> <td>x</td> </tr>
 <tr> <td>1063</td> <td>Orbit Corrections</td>          <td>GLONASS</td>       <td> </td> <td>x</td> <td>x</td> <td>x</td> <td>x</td> <td>x</td> <td>x</td> </tr>
 <tr> <td>1240</td> <td>Orbit Corrections</td>          <td>Galileo</td>       <td>x</td> <td>x</td> <td>x</td> <td>x</td> <td>x</td> <td>x</td> <td> </td> </tr>
@@ -220,7 +239,7 @@ The table mentions if the message implementation in BNC could so far only be bas
 <tr> <td>1255</td> <td>Comb. Orbits & Clocks</td>      <td>QZSS</td>          <td>x</td> <td>x</td> <td>x</td> <td>x</td> <td>x</td> <td> </td> <td> </td> </tr>
 <tr> <td>1261</td> <td>Comb. Orbits & Clocks</td>      <td>BDS</td>           <td>x</td> <td>x</td> <td>x</td> <td>x</td> <td>x</td> <td> </td> <td> </td> </tr>
 
-<tr> <td><b><br>SSR II</b></td> <td></td> <td></td> <td></td> <td></td> <td></td> <td></td> </tr>
+<tr> <td><b><br>SSR II</b></td> <td></td>               <td></td>             <td> </td> <td> </td> <td> </td> <td> </td> <td> </td> <td> </td> <td> </td> </tr>
 <tr> <td>1264</td> <td>VTEC</td>                       <td> </td>             <td>x</td> <td>x</td> <td>x</td> <td> </td> <td> </td> <td> </td> <td> </td> </tr>
 <tr> <td>1265</td> <td>Phase Biases</td>               <td>GPS</td>           <td>x</td> <td>x</td> <td>x</td> <td>x</td> <td>x</td> <td> </td> <td> </td> </tr>
 <tr> <td>1266</td> <td>Phase Biases</td>               <td>GLONASS</td>       <td>x</td> <td>x</td> <td>x</td> <td>x</td> <td>x</td> <td> </td> <td> </td> </tr>
