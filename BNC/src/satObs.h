@@ -148,6 +148,8 @@ class t_satPhaseBias {
  public:
   t_satPhaseBias() {
     _updateInt  = 0;
+    _dispBiasConstistInd = 0;
+    _MWConsistInd = 0;
     _yawDeg     = 0.0;
     _yawDegRate = 0.0;
   }
@@ -156,7 +158,9 @@ class t_satPhaseBias {
   std::string                 _staID;
   t_prn                       _prn;
   bncTime                     _time;
-  unsigned int                _updateInt;
+  unsigned int                _updateInt;           // not satellite specific
+  unsigned int                _dispBiasConstistInd; // not satellite specific
+  unsigned int                _MWConsistInd;        // not satellite specific
   double                      _yawDeg;
   double                      _yawDegRate;
   std::vector<t_frqPhaseBias> _bias;
