@@ -227,29 +227,28 @@ void RTCM3coDecoder::sendResults() {
       sysCh = 'G';
     }
     else if (ii >= CLOCKORBIT_OFFSETGLONASS &&
-        ii < _clkOrb.NumberOfSat[CLOCKORBIT_SATGLONASS]) {
+        ii < CLOCKORBIT_OFFSETGLONASS + _clkOrb.NumberOfSat[CLOCKORBIT_SATGLONASS]) {
       sysCh = 'R';
     }
     else if (ii >= CLOCKORBIT_OFFSETGALILEO &&
-        ii < _clkOrb.NumberOfSat[CLOCKORBIT_SATGALILEO]) {
+        ii < CLOCKORBIT_OFFSETGALILEO + _clkOrb.NumberOfSat[CLOCKORBIT_SATGALILEO]) {
       sysCh = 'E';
     }
     else if (ii >= CLOCKORBIT_OFFSETQZSS &&
-        ii < _clkOrb.NumberOfSat[CLOCKORBIT_SATQZSS]) {
+        ii < CLOCKORBIT_OFFSETQZSS + _clkOrb.NumberOfSat[CLOCKORBIT_SATQZSS]) {
       sysCh = 'J';
     }
     else if (ii >= CLOCKORBIT_OFFSETSBAS &&
-        ii < _clkOrb.NumberOfSat[CLOCKORBIT_SATSBAS]) {
+        ii < CLOCKORBIT_OFFSETSBAS + _clkOrb.NumberOfSat[CLOCKORBIT_SATSBAS]) {
       sysCh = 'S';
     }
     else if (ii >= CLOCKORBIT_OFFSETBDS &&
-        ii < _clkOrb.NumberOfSat[CLOCKORBIT_SATBDS]) {
+        ii < CLOCKORBIT_OFFSETBDS + _clkOrb.NumberOfSat[CLOCKORBIT_SATBDS]) {
       sysCh = 'C';
     }
     else {
       continue;
     }
-
     // Orbit correction
     // ----------------
     if ( _clkOrb.messageType == COTYPE_GPSCOMBINED     ||
@@ -354,23 +353,23 @@ void RTCM3coDecoder::sendResults() {
       sysCh = 'G';
     }
     else if (ii >= CLOCKORBIT_OFFSETGLONASS &&
-        ii < _codeBias.NumberOfSat[CLOCKORBIT_SATGLONASS]) {
+        ii < CLOCKORBIT_OFFSETGLONASS + _codeBias.NumberOfSat[CLOCKORBIT_SATGLONASS]) {
       sysCh = 'R';
     }
     else if (ii >= CLOCKORBIT_OFFSETGALILEO &&
-        ii < _codeBias.NumberOfSat[CLOCKORBIT_SATGALILEO]) {
+        ii < CLOCKORBIT_OFFSETGALILEO + _codeBias.NumberOfSat[CLOCKORBIT_SATGALILEO]) {
       sysCh = 'E';
     }
     else if (ii >= CLOCKORBIT_OFFSETQZSS &&
-        ii < _codeBias.NumberOfSat[CLOCKORBIT_SATQZSS]) {
+        ii < CLOCKORBIT_OFFSETQZSS + _codeBias.NumberOfSat[CLOCKORBIT_SATQZSS]) {
       sysCh = 'J';
     }
     else if (ii >= CLOCKORBIT_OFFSETSBAS &&
-        ii < _codeBias.NumberOfSat[CLOCKORBIT_SATSBAS]) {
+        ii < CLOCKORBIT_OFFSETSBAS + _codeBias.NumberOfSat[CLOCKORBIT_SATSBAS]) {
       sysCh = 'S';
     }
     else if (ii >= CLOCKORBIT_OFFSETBDS &&
-        ii < _codeBias.NumberOfSat[CLOCKORBIT_SATBDS]) {
+        ii < CLOCKORBIT_OFFSETBDS + _codeBias.NumberOfSat[CLOCKORBIT_SATBDS]) {
       sysCh = 'C';
     }
     else {
@@ -407,23 +406,23 @@ void RTCM3coDecoder::sendResults() {
       sysCh = 'G';
     }
     else if (ii >= CLOCKORBIT_OFFSETGLONASS &&
-        ii < _phaseBias.NumberOfSat[CLOCKORBIT_SATGLONASS]) {
+        ii < CLOCKORBIT_OFFSETGLONASS + _phaseBias.NumberOfSat[CLOCKORBIT_SATGLONASS]) {
       sysCh = 'R';
     }
     else if (ii >= CLOCKORBIT_OFFSETGALILEO &&
-        ii < _phaseBias.NumberOfSat[CLOCKORBIT_SATGALILEO]) {
+        ii < CLOCKORBIT_OFFSETGALILEO + _phaseBias.NumberOfSat[CLOCKORBIT_SATGALILEO]) {
       sysCh = 'E';
     }
     else if (ii >= CLOCKORBIT_OFFSETQZSS &&
-        ii < _phaseBias.NumberOfSat[CLOCKORBIT_SATQZSS]) {
+        ii < CLOCKORBIT_OFFSETQZSS + _phaseBias.NumberOfSat[CLOCKORBIT_SATQZSS]) {
       sysCh = 'J';
     }
     else if (ii >= CLOCKORBIT_OFFSETSBAS &&
-        ii < _phaseBias.NumberOfSat[CLOCKORBIT_SATSBAS]) {
+        ii < CLOCKORBIT_OFFSETSBAS + _phaseBias.NumberOfSat[CLOCKORBIT_SATSBAS]) {
       sysCh = 'S';
     }
     else if (ii >= CLOCKORBIT_OFFSETBDS &&
-        ii < _phaseBias.NumberOfSat[CLOCKORBIT_SATBDS]) {
+        ii < CLOCKORBIT_OFFSETBDS + _phaseBias.NumberOfSat[CLOCKORBIT_SATBDS]) {
       sysCh = 'C';
     }
     else {
