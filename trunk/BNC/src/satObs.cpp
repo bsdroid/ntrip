@@ -216,9 +216,11 @@ void t_satPhaseBias::writeEpoch(ostream* out, const QList<t_satPhaseBias>& biasL
       epoTime = satPhaseBias._time;
       *out << "> PHASE_BIAS " << epoTime.datestr(' ') << ' ' << epoTime.timestr(1,' ') << " "
            << satPhaseBias._updateInt <<  " "
-           << biasList.size() << ' ' << satPhaseBias._staID << endl;
+           << biasList.size() << ' ' << satPhaseBias._staID <<  endl;
     }
     *out << satPhaseBias._prn.toString() << ' '
+        << setw(2) << satPhaseBias._dispBiasConstistInd << "   "
+        << setw(2) << satPhaseBias._MWConsistInd << "   "
          << setw(12) << setprecision(8) << satPhaseBias._yawDeg << ' '
          << setw(12) << setprecision(8) << satPhaseBias._yawDegRate << "   "
          << setw(2) << satPhaseBias._bias.size();
@@ -242,6 +244,7 @@ void t_satPhaseBias::readEpoch(const string& epoLine, istream& inStream, QList<t
   unsigned int updateInt;
   int          numSat;
   string       staID;
+
   if (t_corrSSR::readEpoLine(epoLine, epoTime, updateInt, numSat, staID) != t_corrSSR::phaseBias) {
     return;
   }
@@ -254,9 +257,10 @@ void t_satPhaseBias::readEpoch(const string& epoLine, istream& inStream, QList<t
     string line;
     getline(inStream, line);
     istringstream in(line.c_str());
-    
+
     int numBias;
-    in >> satPhaseBias._prn >> satPhaseBias._yawDeg >> satPhaseBias._yawDegRate >> numBias;
+    in >> satPhaseBias._prn >> satPhaseBias._dispBiasConstistInd >> satPhaseBias._MWConsistInd
+       >> satPhaseBias._yawDeg >> satPhaseBias._yawDegRate >> numBias;
 
     while (in.good()) {
       t_frqPhaseBias frqPhaseBias;
