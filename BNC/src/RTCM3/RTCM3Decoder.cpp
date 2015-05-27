@@ -1465,10 +1465,10 @@ t_irc RTCM3Decoder::Decode(char* buffer, int bufLen, vector<string>& errmsg)
       /* store the id into the list of loaded blocks */
       _typeList.push_back(id);
 
-      /* Clock and orbit data handled in another function, already pass the
+      /* SSR I+II data handled in another function, already pass the
        * extracted data block. That does no harm, as it anyway skip everything
        * else. */
-      if((id >= 1057 && id <= 1068) || (id >= 1240 && id <= 1263))
+      if((id >= 1057 && id <= 1068) || (id >= 1240 && id <= 1270))
       {
         if (!_coDecoders.contains(_staID.toAscii()))
           _coDecoders[_staID.toAscii()] = new RTCM3coDecoder(_staID); 
