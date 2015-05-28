@@ -2345,14 +2345,19 @@ The usual handling of BNC when uploading a stream with Broadcast Corrections is 
 When uploading an SSR stream generated according to b. then  BNC requires precise GNSS orbits and clocks in the IGS Earth-Centered-Earth-Fixed (ECEF) reference system and in a specific ASCII format named 'RTNET' because the data may come from a real-time engine such as RTNET. The sampling interval for data transmission should not exceed 15 sec. Note that otherwise tools involved in IP streaming such as NTRIP Broadcasters or NTRIP Clients may respond with a timeout.
 </p>
 <p>
-Below you find an example for the 'RTNET' ASCII format coming from a real-time GNSS engine. Each epoch begins with an asterisk character followed by the time as year, month, day of month, hour, minute and second. Subsequent records provide the following set of parameters for each satellite:
+Below you find an example for the 'RTNET' ASCII format coming from a real-time GNSS engine. Each epoch begins with an asterisk character followed by the time as year, month, day of month, hour, minute and second. Subsequent records can provide 
 </p>
+<p>
+<li>satellite specific parameters </li>
+</p>
+<ul>
+A set of parameters can be defined for each satellite as follows:
 <p>
 &lt;SatelliteID&gt; &lt;key&gt; &lt;numValues&gt; &lt;value1 value2 ...&gt; &lt;key&gt; &lt;numValues&gt; &lt;value1 value2 ...&gt; ...
 &nbsp;
 </p>
 <p>
-The following keys and values are currently specified in BNC:
+The following satellite specific keys and values are currently specified in BNC:
 </p>
 <table>
 <tr><td><i>Key&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</i></td><td><i>Values</i></td></tr>
@@ -2366,7 +2371,19 @@ The following keys and values are currently specified in BNC:
 <tr><td>PhaseBias</td><td>Satellite Phase Biases in meters with two characters for frequency and tracking mode per bias as defined in RINEX 3, preceded by total number of biases and followed by Signal Wilde-Lane Integer Indicator as well as Signal Discontinuity Counter</td></tr>
 </table>
 </p>
-
+</ul>
+<li> non-satellite specific parameters
+<ul>
+The following non-satellite specific keys and values are currently specified in BNC:
+</p>
+<table>
+<tr><td><i>Key&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</i></td><td><i>Values</i></td></tr>
+<tr><td>IND</td><td>followed by Dispersive Bias Consistency Indicator and MW Consitency Indicator</td></tr>
+<tr><td>VTEC</td><td>followed by Update Interval and Number of Ionospheric Layers</td></tr>
+</table>
+</p>
+If the key VTEC is specified, a data set for each layer contains within its first line the Layers Number, followed by Maximum Degree, Maximum Order and Layer Hight. After that the respective Spherical Harmonic Coefficients follow.
+</ul>
 <p>
 Because each keyword is associated to a certain number of values, an 'old' BNC could be operated with an incoming 'new' RTNET stream containing so far unknown keys - they would just be skipped in BNC.
 </p>
