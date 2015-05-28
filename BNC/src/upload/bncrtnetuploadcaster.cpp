@@ -314,6 +314,8 @@ void bncRtnetUploadCaster::decodeRtnetStream(char* buffer, int bufLen) {
 
   struct PhaseBias phasebias;
   memset(&phasebias, 0, sizeof(phasebias));
+  unsigned int dispInd = 0;
+  unsigned int mwInd = 0;
   phasebias.EpochTime[CLOCKORBIT_SATGPS]     = co.EpochTime[CLOCKORBIT_SATGPS];
   phasebias.EpochTime[CLOCKORBIT_SATGLONASS] = co.EpochTime[CLOCKORBIT_SATGLONASS];
   phasebias.EpochTime[CLOCKORBIT_SATGALILEO] = co.EpochTime[CLOCKORBIT_SATGALILEO];
@@ -323,6 +325,14 @@ void bncRtnetUploadCaster::decodeRtnetStream(char* buffer, int bufLen) {
   phasebias.SSRIOD        = _IOD;
   phasebias.SSRProviderID = _PID;
   phasebias.SSRSolutionID = _SID;
+
+  struct VTEC vtec;
+  memset(&vtec, 0, sizeof(vtec));
+  vtec.EpochTime = static_cast<int>(epoTime.gpssec());
+  vtec.SSRIOD        = _IOD;
+  vtec.SSRProviderID = _PID;
+  vtec.SSRSolutionID = _SID;
+
 
   // Default Update Interval
   // -----------------------
@@ -345,7 +355,7 @@ void bncRtnetUploadCaster::decodeRtnetStream(char* buffer, int bufLen) {
 
   for (int ii = 1; ii < lines.size(); ii++) {
 
-    QString      prn;
+    QString      prn;  // prn or key VTEC, IND (phase bias indicators)
     ColumnVector rtnAPC;
     ColumnVector rtnVel;
     ColumnVector rtnCoM;
@@ -354,6 +364,34 @@ void bncRtnetUploadCaster::decodeRtnetStream(char* buffer, int bufLen) {
     QTextStream in(lines[ii].toAscii());
 
     in >> prn;
+
+    // non-satellite specific parameters
+    if      (prn.contains("IND", Qt::CaseSensitive)) {
+      in >> dispInd >> mwInd;
+      continue;
+    }
+    if (prn.contains("VTEC", Qt::CaseSensitive)) {
+      in >> vtec.UpdateInterval >> vtec.NumLayers;
+      for (unsigned ll = 0; ll < vtec.NumLayers; ll++) {
+        int dummy;
+        in >> dummy >> vtec.Layers[ll].Degree >> vtec.Layers[ll].Order
+          >> vtec.Layers[ll].Height;
+        ii++;
+        for (unsigned iDeg = 0; iDeg < vtec.Layers[ll].Degree; iDeg++) {
+          for (unsigned iOrd = 0; iOrd < vtec.Layers[ll].Order; iOrd++) {
+            in >> vtec.Layers[ll].Cosinus[iDeg][iOrd];
+          }
+          ii++;
+        }
+        for (unsigned iDeg = 0; iDeg < vtec.Layers[ll].Degree; iDeg++) {
+          for (unsigned iOrd = 0; iOrd < vtec.Layers[ll].Order; iOrd++) {
+            in >> vtec.Layers[ll].Sinus[iDeg][iOrd];
+          }
+          ii++;
+        }
+      }
+      continue;
+    }
 
     const t_eph* ephLast = _ephUser->ephLast(prn);
     const t_eph* ephPrev = _ephUser->ephPrev(prn);
@@ -443,12 +481,6 @@ void bncRtnetUploadCaster::decodeRtnetStream(char* buffer, int bufLen) {
         }
         else if (key == "YawRate") {
           in >> numVal >> pbSat.yR;
-        }
-        else if (key == "DisInd") {
-          in >> numVal >> pbSat.dispInd;
-        }
-        else if (key == "MwInd") {
-          in >> numVal >> pbSat.mwInd;
         }
         else if (key == "PhaseBias") {
           in >> numVal;
@@ -946,8 +978,8 @@ void bncRtnetUploadCaster::decodeRtnetStream(char* buffer, int bufLen) {
       }
 
       if (phasebiasSat) {
-        phasebias.DispersiveBiasConsistencyIndicator = pbSat.dispInd;
-        phasebias.MWConsistencyIndicator = pbSat.mwInd;
+        phasebias.DispersiveBiasConsistencyIndicator = dispInd;
+        phasebias.MWConsistencyIndicator = mwInd;
         phasebiasSat->ID = prn.mid(1).toInt();
         phasebiasSat->NumberOfPhaseBiases = 0;
         phasebiasSat->YawAngle = pbSat.yA;
@@ -1642,8 +1674,15 @@ void bncRtnetUploadCaster::decodeRtnetStream(char* buffer, int bufLen) {
   // VTEC
   // ----
   QByteArray hlpBufferVtec;
+  if (vtec.NumLayers > 0) {
+    char obuffer[CLOCKORBIT_BUFFERSIZE];
+    int len = MakeVTEC(&vtec, 0, obuffer, sizeof(obuffer));
+    if (len > 0) {
+      hlpBufferVtec = QByteArray(obuffer, len);
+    }
+  }
 
-  _outBuffer += hlpBufferCo + hlpBufferBias + hlpBufferPhaseBias;
+  _outBuffer += hlpBufferCo + hlpBufferBias + hlpBufferPhaseBias + hlpBufferVtec;
 }
 
 //
