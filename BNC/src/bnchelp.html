@@ -2382,7 +2382,7 @@ The following non-satellite specific keys and values are currently specified in 
 <tr><td>VTEC</td><td>followed by Update Interval and Number of Ionospheric Layers</td></tr>
 </table>
 </p>
-If the key VTEC is specified, a data set for each layer contains within its first line the Layers Number, followed by Maximum Degree, Maximum Order and Layer Hight. After that the respective Spherical Harmonic Coefficients follow.
+If the key VTEC is specified, a data set for each layer contains within its first line the Layers Number, followed by Maximum Degree, Maximum Order and Layer Hight. After that follow Cosinus and Sinus Spherical Harmonic Coefficients, one block each.
 </ul>
 <p>
 Because each keyword is associated to a certain number of values, an 'old' BNC could be operated with an incoming 'new' RTNET stream containing so far unknown keys - they would just be skipped in BNC.
