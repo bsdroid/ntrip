@@ -126,6 +126,7 @@ class bncGetThread : public QThread {
    bool                       _rawOutput;
    QMap<QString, long>        _prnLastEpo;
    QMap<char, QVector<QString> > _rnxTypes;
+   QStringList                _gloSlots;
 };
 
 #endif

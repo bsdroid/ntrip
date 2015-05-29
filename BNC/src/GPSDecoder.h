@@ -80,6 +80,7 @@ class GPSDecoder {
   QList<int>       _typeList;  // RTCM message types
   QStringList      _antType;   // RTCM antenna descriptor
   QList<t_antInfo> _antList;   // RTCM antenna XYZ
+  QString          _gloFrq;    // GLONASS slot
   bncRinex*        _rnx;       // RINEX writer
 };
 

@@ -789,6 +789,21 @@ void bncGetThread::scanRTCM() {
                        decoder()->_antList[ii].yy, decoder()->_antList[ii].zz, 
                        hh, antT));
       }
+
+      // RTCM GLONASS slots
+      // ------------------
+      if (decoder()->_gloFrq.size()) {
+        bool allFound = true;
+        QString slot = decoder()->_gloFrq;
+        if (_gloSlots.indexOf(slot) == -1) {
+          _gloSlots.append(slot);
+          allFound = false;
+        }
+        if (!allFound) {
+          _gloSlots.sort();
+          emit(newMessage(_staID + ": GLONASS slots "  + _gloSlots.join(" ").toAscii(), true));
+        }
+      }
     }
   }
 
@@ -815,6 +830,7 @@ void bncGetThread::scanRTCM() {
   }
 #endif
 
+  decoder()->_gloFrq.clear();
   decoder()->_typeList.clear();
   decoder()->_antType.clear();
   decoder()->_antList.clear();

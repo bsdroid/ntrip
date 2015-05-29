@@ -1060,7 +1060,7 @@ bool RTCM3Decoder::DecodeGLONASSEphemeris(unsigned char* data, int size)
     GETBITS(i, 5)
     eph._frequency_number = i-7;
     GLOFreq[sv-1] = 100+i-7; /* store frequency for other users (MSM) */
-
+    _gloFrq = QString("%1 %2").arg(eph._prn.toString().c_str()).arg(eph._frequency_number,2,'f',0);
     SKIPBITS(4) /* almanac healthy, almanac health ok, P1 */
     GETBITS(i, 5)
     tk = i*60*60;
