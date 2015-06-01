@@ -652,13 +652,13 @@ void t_rnxObsHeader::write(QTextStream* stream,
         QString sys         = it.key().left(1);
         QString obstype     = it.key().mid(1);
         double shift        = it.value().first;
-        QStringList satList =  it.value().second;
-        QString hlp = QString("%1 %2 %3 ")
+        QStringList satList = it.value().second;
+        QString hlp = QString("%1%2%3")
           .arg(sys.toStdString().c_str(), 0)
           .arg(obstype, 4)
           .arg(shift, 9, 'f', 5);
         if (!satList.empty()) {
-          hlp += QString("%1 ").arg(satList.size(), 2);
+          hlp += QString("%1").arg(satList.size(), 4);
         }
         else {
           *stream << QString("%1")
@@ -671,9 +671,8 @@ void t_rnxObsHeader::write(QTextStream* stream,
         QStringList::const_iterator it_s;
         for (it_s = satList.begin(); it_s != satList.end(); ++it_s) {
           (hlp.contains(obstype)) ?
-             emptyFillStr = "":
-             emptyFillStr = "                    ";
-          hlp += QString("%1 ").arg(*it_s);
+            emptyFillStr = "": emptyFillStr = "                  ";
+          hlp += QString("%1").arg(*it_s, 4);
           ii++;
           if (ii % 10 == 0) {
             *stream << QString("%1%2")
@@ -685,6 +684,8 @@ void t_rnxObsHeader::write(QTextStream* stream,
           }
         }
         if (hlp.size()) {
+          (hlp.contains(obstype)) ?
+            emptyFillStr = "": emptyFillStr = "                  ";
         *stream <<  QString("%1%2")
           .arg(emptyFillStr, 0)
           .arg(hlp, 0)
