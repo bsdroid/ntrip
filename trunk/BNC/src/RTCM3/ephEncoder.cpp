@@ -245,7 +245,7 @@ int t_ephEncoder::RTCM3(const t_ephGal& eph, unsigned char *buffer) {
 
   GALILEOADDBITS(12, eph._inav ? 1046 : 1045)
   GALILEOADDBITS(6, eph._prn.number())
-  GALILEOADDBITS(12, eph._TOC.gpsw())
+  GALILEOADDBITS(12, eph._TOC.galw())
   GALILEOADDBITS(10, eph._IODnav)
   GALILEOADDBITS(8, SISA)
   GALILEOADDBITSFLOAT(14, eph._IDOT, M_PI/static_cast<double>(1<<30)
