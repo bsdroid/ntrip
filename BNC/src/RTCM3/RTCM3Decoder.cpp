@@ -1270,7 +1270,7 @@ bool RTCM3Decoder::DecodeGalileoEphemeris(unsigned char* data, int size)
     eph._SISA = accuracyFromIndex(i, eph.type());
     GETFLOATSIGN(eph._IDOT, 14, R2R_PI/(double)(1<<30)/(double)(1<<13))
     GETBITSFACTOR(i, 14, 60)
-    eph._TOC.set(eph._TOEweek, i);
+    eph._TOC.set(1024+eph._TOEweek, i);
     GETFLOATSIGN(eph._clock_driftrate, 6, 1.0/(double)(1<<30)/(double)(1<<29))
     GETFLOATSIGN(eph._clock_drift, 21, 1.0/(double)(1<<30)/(double)(1<<16))
     GETFLOATSIGN(eph._clock_bias, 31, 1.0/(double)(1<<30)/(double)(1<<4))
