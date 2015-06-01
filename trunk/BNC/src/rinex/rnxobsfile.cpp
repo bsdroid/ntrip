@@ -234,6 +234,8 @@ t_irc t_rnxObsHeader::read(QTextStream* stream, int maxLines) {
         }
         _phaseShifts.insert(sys+obstype, QPair<double, QStringList>(shift, satList));
         delete in;
+      } else if (sys) {
+        _phaseShifts.insert(sys+obstype, QPair<double, QStringList>(shift, satList));
       }
     }
     else if (key == "GLONASS COD/PHS/BIS"){
@@ -653,10 +655,17 @@ void t_rnxObsHeader::write(QTextStream* stream,
         QString obstype     = it.key().mid(1);
         double shift        = it.value().first;
         QStringList satList = it.value().second;
-        QString hlp = QString("%1%2%3")
-          .arg(sys.toStdString().c_str(), 0)
-          .arg(obstype, 4)
-          .arg(shift, 9, 'f', 5);
+        QString hlp;
+        if (obstype.isEmpty()) {
+          hlp = QString("%1")
+            .arg(sys.toStdString().c_str(), 0);
+        }
+        else {
+          hlp = QString("%1%2%3")
+            .arg(sys.toStdString().c_str(), 0)
+            .arg(obstype, 4)
+            .arg(shift, 9, 'f', 5);
+        }
         if (!satList.empty()) {
           hlp += QString("%1").arg(satList.size(), 4);
         }
