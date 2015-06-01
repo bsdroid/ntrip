@@ -636,9 +636,9 @@ void t_rnxObsHeader::write(QTextStream* stream,
         double shift = 0.0;
         foreach (const QString &obstype, it.value()) {
           if (obstype.left(1).contains('L')) {
-          *stream << QString("%1 %2 %3")
+          *stream << QString("%1%2%3")
             .arg(sys, 0)
-            .arg(obstype, 0)
+            .arg(obstype, 4)
             .arg(shift, 9, 'f', 5)
             .leftJustified(60)
              << "SYS / PHASE SHIFT\n";
