@@ -110,12 +110,17 @@ void t_reqcAnalyze::run() {
 
   // Open Log File
   // -------------
-  _logFile = new QFile(_logFileName);
-  if (_logFile->open(QIODevice::WriteOnly | QIODevice::Text)) {
-    _log = new QTextStream();
-    _log->setDevice(_logFile);
+  if (!_logFileName.isEmpty()) {
+    _logFile = new QFile(_logFileName);
+    if (_logFile->open(QIODevice::WriteOnly | QIODevice::Text)) {
+      _log = new QTextStream();
+      _log->setDevice(_logFile);
+    }
   }
-  *_log << "QC Format Version : " << QString("%1").arg(QC_FORMAT_VERSION,3,'f',1)  << endl << endl;
+
+  if (_log) {
+    *_log << "QC Format Version : " << QString("%1").arg(QC_FORMAT_VERSION,3,'f',1)  << endl << endl;
+  }
 
   // Check Ephemerides
   // -----------------
@@ -815,8 +820,8 @@ void t_reqcAnalyze::printReport(const t_rnxObsFile* obsFile) {
     const t_qcSatSum& qcSatSum = itSat.value();
     systemMap[prn.system()].push_back(&qcSatSum);
   }
-
   *_log << "Navigation Systems: " << systemMap.size() << "   ";
+
   QMapIterator<QChar, QVector<const t_qcSatSum*> > itSys(systemMap);
   while (itSys.hasNext()) {
     itSys.next();
@@ -844,7 +849,7 @@ void t_reqcAnalyze::printReport(const t_rnxObsFile* obsFile) {
     *_log << endl
           << prefixSys << "Satellites: " << qcSatVec.size() << endl
           << prefixSys << "Signals   : " << frqMap.size() << "   ";
-    QMapIterator<QString, QVector<const t_qcFrqSum*> > itFrq(frqMap); 
+    QMapIterator<QString, QVector<const t_qcFrqSum*> > itFrq(frqMap);
     while (itFrq.hasNext()) {
       itFrq.next();
       QString frqType = itFrq.key(); if (frqType.length() < 2) frqType += '?';
@@ -995,9 +1000,9 @@ void t_reqcAnalyze::checkEphemerides() {
       navFileName += ", " + navFi.fileName();
     }
   }
-
-  *_log << "Navigation File(s): " << navFileName                                   << endl;
-
+  if (_log) {
+    *_log << "Navigation File(s): " << navFileName                                   << endl;
+  }
   QStringListIterator it(_navFileNames);
   while (it.hasNext()) {
     const QString& fileName = it.next();
@@ -1015,18 +1020,23 @@ void t_reqcAnalyze::checkEphemerides() {
         ++numOK;
       }
     }
-    *_log << "Ephemeris         : " << numOK << " OK   " << numBad << " BAD" << endl;
+    if (_log) {
+      *_log << "Ephemeris         : " << numOK << " OK   " << numBad << " BAD" << endl;
+    }
     if (numBad > 0) {
       for (unsigned ii = 0; ii < rnxNavFile.ephs().size(); ii++) {
         t_eph* eph = rnxNavFile.ephs()[ii];
         if (eph->checkState() == t_eph::bad) {
           QFileInfo navFi(fileName);
-          *_log << "  Bad Ephemeris   : " << navFi.fileName() << ' '
-                << eph->toString(3.0).left(24) << endl;
+          if (_log) {
+            *_log << "  Bad Ephemeris   : " << navFi.fileName() << ' '
+                  << eph->toString(3.0).left(24) << endl;
+          }
         }
       }
     }
   }
-
-  *_log << endl;
+  if (_log) {
+    *_log << endl;
+  }
 }
