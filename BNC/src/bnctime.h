@@ -65,6 +65,10 @@ class bncTime {
    * @return GPS week number
    */
   unsigned int gpsw()   const;
+  /** Get Galileo week.
+   * @return Galileo week number
+   */
+  inline unsigned int galw() const { return gpsw()-1024; };
   /** Get Seconds in GPS week.
    * @return time of GPS week in seconds
    */
