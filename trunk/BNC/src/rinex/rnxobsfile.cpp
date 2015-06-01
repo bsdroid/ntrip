@@ -232,11 +232,9 @@ t_irc t_rnxObsHeader::read(QTextStream* stream, int maxLines) {
           *in >> sat;
           satList.append(sat);
         }
-        _phaseShifts.insert(sys+obstype, QPair<double, QStringList>(shift, satList));
         delete in;
-      } else if (sys) {
-        _phaseShifts.insert(sys+obstype, QPair<double, QStringList>(shift, satList));
       }
+      _phaseShifts.insert(sys+obstype, QPair<double, QStringList>(shift, satList));
     }
     else if (key == "GLONASS COD/PHS/BIS"){
       QTextStream in(value.toAscii(), QIODevice::ReadOnly);
