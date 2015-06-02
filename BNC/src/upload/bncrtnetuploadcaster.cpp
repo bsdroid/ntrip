@@ -355,22 +355,23 @@ void bncRtnetUploadCaster::decodeRtnetStream(char* buffer, int bufLen) {
 
   for (int ii = 1; ii < lines.size(); ii++) {
 
-    QString      prn;  // prn or key VTEC, IND (phase bias indicators)
+    QString      key;  // prn or key VTEC, IND (phase bias indicators)
     ColumnVector rtnAPC;
     ColumnVector rtnVel;
     ColumnVector rtnCoM;
     double       rtnClk;
+    t_prn        prn;
 
     QTextStream in(lines[ii].toAscii());
 
-    in >> prn;
+    in >> key;
 
     // non-satellite specific parameters
-    if      (prn.contains("IND", Qt::CaseSensitive)) {
+    if      (key.contains("IND", Qt::CaseSensitive)) {
       in >> dispInd >> mwInd;
       continue;
     }
-    if (prn.contains("VTEC", Qt::CaseSensitive)) {
+    if (key.contains("VTEC", Qt::CaseSensitive)) {
       in >> vtec.UpdateInterval >> vtec.NumLayers;
       for (unsigned ll = 0; ll < vtec.NumLayers; ll++) {
         int dummy;
@@ -392,9 +393,15 @@ void bncRtnetUploadCaster::decodeRtnetStream(char* buffer, int bufLen) {
       }
       continue;
     }
-
-    const t_eph* ephLast = _ephUser->ephLast(prn);
-    const t_eph* ephPrev = _ephUser->ephPrev(prn);
+    char sys   = key.mid(0,1).at(0).toAscii();
+    int number = key.mid(1,2).toInt();
+    int flags  = 0;
+    if (sys == 'E') { flags = 1;} // I/NAV
+    prn.set(sys, number, flags);
+    QString prnInternalStr = QString::fromStdString(prn.toInternalString());
+    QString prnStr         = QString::fromStdString(prn.toString());
+    const t_eph* ephLast = _ephUser->ephLast(prnInternalStr);
+    const t_eph* ephPrev = _ephUser->ephPrev(prnInternalStr);
     const t_eph* eph     = ephLast;
 
     if (eph) {
@@ -411,12 +418,12 @@ void bncRtnetUploadCaster::decodeRtnetStream(char* buffer, int bufLen) {
       // ----------------------------------------------------------------
       if (_usedEph) {
         if (fmod(epoTime.gpssec(), _samplRtcmEphCorr) == 0.0) {
-          (*_usedEph)[prn] = eph;
+          (*_usedEph)[prnInternalStr] = eph;
         }
         else {
           eph = 0;
-          if (_usedEph->contains(prn)) {
-            const t_eph* usedEph = _usedEph->value(prn);
+          if (_usedEph->contains(prnInternalStr)) {
+            const t_eph* usedEph = _usedEph->value(prnInternalStr);
             if      (usedEph == ephLast) {
               eph = ephLast;
             }
@@ -500,32 +507,32 @@ void bncRtnetUploadCaster::decodeRtnetStream(char* buffer, int bufLen) {
       }
 
       struct ClockOrbit::SatData* sd = 0;
-      if      (prn[0] == 'G') {
+      if      (prn.system() == 'G') {
         sd = co.Sat + co.NumberOfSat[CLOCKORBIT_SATGPS];
         ++co.NumberOfSat[CLOCKORBIT_SATGPS];
       }
-      else if (prn[0] == 'R') {
+      else if (prn.system() == 'R') {
         sd = co.Sat + CLOCKORBIT_NUMGPS
             + co.NumberOfSat[CLOCKORBIT_SATGLONASS];
         ++co.NumberOfSat[CLOCKORBIT_SATGLONASS];
       }
-      else if (prn[0] == 'E') {
+      else if (prn.system() == 'E') {
         sd = co.Sat + CLOCKORBIT_NUMGPS + CLOCKORBIT_NUMGLONASS
             + co.NumberOfSat[CLOCKORBIT_SATGALILEO];
         ++co.NumberOfSat[CLOCKORBIT_SATGALILEO];
       }
-      else if (prn[0] == 'J') {
+      else if (prn.system() == 'J') {
         sd = co.Sat + CLOCKORBIT_NUMGPS + CLOCKORBIT_NUMGLONASS + CLOCKORBIT_NUMGALILEO
             + co.NumberOfSat[CLOCKORBIT_SATQZSS];
         ++co.NumberOfSat[CLOCKORBIT_SATQZSS];
       }
-      else if (prn[0] == 'S') {
+      else if (prn.system() == 'S') {
         sd = co.Sat + CLOCKORBIT_NUMGPS + CLOCKORBIT_NUMGLONASS + CLOCKORBIT_NUMGALILEO
             + CLOCKORBIT_NUMQZSS
             + co.NumberOfSat[CLOCKORBIT_SATSBAS];
         ++co.NumberOfSat[CLOCKORBIT_SATSBAS];
       }
-      else if (prn[0] == 'C') {
+      else if (prn.system() == 'C') {
         sd = co.Sat + CLOCKORBIT_NUMGPS + CLOCKORBIT_NUMGLONASS + CLOCKORBIT_NUMGALILEO
             + CLOCKORBIT_NUMQZSS + CLOCKORBIT_NUMSBAS
             + co.NumberOfSat[CLOCKORBIT_SATBDS];
@@ -533,39 +540,39 @@ void bncRtnetUploadCaster::decodeRtnetStream(char* buffer, int bufLen) {
       }
       if (sd) {
         QString outLine;
-        processSatellite(eph, epoTime.gpsw(), epoTime.gpssec(), prn,
+        processSatellite(eph, epoTime.gpsw(), epoTime.gpssec(), prnStr,
                          rtnAPC, rtnClk, rtnVel, rtnCoM, sd, outLine);
       }
 
       // Code Biases
       // -----------
       struct CodeBias::BiasSat* biasSat = 0;
-      if      (prn[0] == 'G') {
+      if      (prn.system() == 'G') {
         biasSat = bias.Sat + bias.NumberOfSat[CLOCKORBIT_SATGPS];
         ++bias.NumberOfSat[CLOCKORBIT_SATGPS];
       }
-      else if (prn[0] == 'R') {
+      else if (prn.system() == 'R') {
         biasSat = bias.Sat + CLOCKORBIT_NUMGPS
             + bias.NumberOfSat[CLOCKORBIT_SATGLONASS];
         ++bias.NumberOfSat[CLOCKORBIT_SATGLONASS];
       }
-      else if (prn[0] == 'E') {
+      else if (prn.system() == 'E') {
         biasSat = bias.Sat + CLOCKORBIT_NUMGPS + CLOCKORBIT_NUMGLONASS
             + bias.NumberOfSat[CLOCKORBIT_SATGALILEO];
         ++bias.NumberOfSat[CLOCKORBIT_SATGALILEO];
       }
-      else if (prn[0] == 'J') {
+      else if (prn.system() == 'J') {
         biasSat = bias.Sat + CLOCKORBIT_NUMGPS + CLOCKORBIT_NUMGLONASS + CLOCKORBIT_NUMGALILEO
             + bias.NumberOfSat[CLOCKORBIT_SATQZSS];
         ++bias.NumberOfSat[CLOCKORBIT_SATQZSS];
       }
-      else if (prn[0] == 'S') {
+      else if (prn.system() == 'S') {
         biasSat = bias.Sat + CLOCKORBIT_NUMGPS + CLOCKORBIT_NUMGLONASS + CLOCKORBIT_NUMGALILEO
             + CLOCKORBIT_NUMQZSS
             + bias.NumberOfSat[CLOCKORBIT_SATSBAS];
         ++bias.NumberOfSat[CLOCKORBIT_SATSBAS];
       }
-      else if (prn[0] == 'C') {
+      else if (prn.system() == 'C') {
         biasSat = bias.Sat + CLOCKORBIT_NUMGPS + CLOCKORBIT_NUMGLONASS + CLOCKORBIT_NUMGALILEO
             + CLOCKORBIT_NUMQZSS + CLOCKORBIT_NUMSBAS
             + bias.NumberOfSat[CLOCKORBIT_SATBDS];
@@ -573,9 +580,9 @@ void bncRtnetUploadCaster::decodeRtnetStream(char* buffer, int bufLen) {
       }
 
       if (biasSat) {
-        biasSat->ID = prn.mid(1).toInt();
+        biasSat->ID = prn.number();
         biasSat->NumberOfCodeBiases = 0;
-        if      (prn[0] == 'G') {
+        if      (prn.system() == 'G') {
           QMapIterator<QString, double> it(codeBiases);
           while (it.hasNext()) {
             it.next();
@@ -659,7 +666,7 @@ void bncRtnetUploadCaster::decodeRtnetStream(char* buffer, int bufLen) {
             }
           }
         }
-        else if (prn[0] == 'R') {
+        else if (prn.system() == 'R') {
           QMapIterator<QString, double> it(codeBiases);
           while (it.hasNext()) {
             it.next();
@@ -689,7 +696,7 @@ void bncRtnetUploadCaster::decodeRtnetStream(char* buffer, int bufLen) {
             }
           }
         }
-        else if (prn[0] == 'E') {
+        else if (prn.system() == 'E') {
           QMapIterator<QString, double> it(codeBiases);
           while (it.hasNext()) {
             it.next();
@@ -767,7 +774,7 @@ void bncRtnetUploadCaster::decodeRtnetStream(char* buffer, int bufLen) {
             }
           }
         }
-        else if (prn[0] == 'J') {
+        else if (prn.system() == 'J') {
           QMapIterator<QString, double> it(codeBiases);
           while (it.hasNext()) {
             it.next();
@@ -851,7 +858,7 @@ void bncRtnetUploadCaster::decodeRtnetStream(char* buffer, int bufLen) {
             }
           }
         }
-        else if (prn[0] == 'S') {
+        else if (prn.system() == 'S') {
           QMapIterator<QString, double> it(codeBiases);
           while (it.hasNext()) {
             it.next();
@@ -881,7 +888,7 @@ void bncRtnetUploadCaster::decodeRtnetStream(char* buffer, int bufLen) {
             }
           }
         }
-        else if (prn[0] == 'C') {
+        else if (prn.system() == 'C') {
           QMapIterator<QString, double> it(codeBiases);
           while (it.hasNext()) {
             it.next();
@@ -945,32 +952,32 @@ void bncRtnetUploadCaster::decodeRtnetStream(char* buffer, int bufLen) {
       // Phase Biases
       // ------------
       struct PhaseBias::PhaseBiasSat* phasebiasSat = 0;
-      if      (prn[0] == 'G') {
+      if      (prn.system() == 'G') {
         phasebiasSat = phasebias.Sat + phasebias.NumberOfSat[CLOCKORBIT_SATGPS];
         ++phasebias.NumberOfSat[CLOCKORBIT_SATGPS];
       }
-      else if (prn[0] == 'R') {
+      else if (prn.system() == 'R') {
         phasebiasSat = phasebias.Sat + CLOCKORBIT_NUMGPS
             + phasebias.NumberOfSat[CLOCKORBIT_SATGLONASS];
         ++phasebias.NumberOfSat[CLOCKORBIT_SATGLONASS];
       }
-      else if (prn[0] == 'E') {
+      else if (prn.system() == 'E') {
         phasebiasSat = phasebias.Sat + CLOCKORBIT_NUMGPS + CLOCKORBIT_NUMGLONASS
             + phasebias.NumberOfSat[CLOCKORBIT_SATGALILEO];
         ++phasebias.NumberOfSat[CLOCKORBIT_SATGALILEO];
       }
-      else if (prn[0] == 'J') {
+      else if (prn.system() == 'J') {
         phasebiasSat = phasebias.Sat + CLOCKORBIT_NUMGPS + CLOCKORBIT_NUMGLONASS + CLOCKORBIT_NUMGALILEO
             + phasebias.NumberOfSat[CLOCKORBIT_SATQZSS];
         ++phasebias.NumberOfSat[CLOCKORBIT_SATQZSS];
       }
-      else if (prn[0] == 'S') {
+      else if (prn.system() == 'S') {
         phasebiasSat = phasebias.Sat + CLOCKORBIT_NUMGPS + CLOCKORBIT_NUMGLONASS + CLOCKORBIT_NUMGALILEO
             + CLOCKORBIT_NUMQZSS
             + phasebias.NumberOfSat[CLOCKORBIT_SATSBAS];
         ++phasebias.NumberOfSat[CLOCKORBIT_SATSBAS];
       }
-      else if (prn[0] == 'C') {
+      else if (prn.system() == 'C') {
         phasebiasSat = phasebias.Sat + CLOCKORBIT_NUMGPS + CLOCKORBIT_NUMGLONASS + CLOCKORBIT_NUMGALILEO
             + CLOCKORBIT_NUMQZSS + CLOCKORBIT_NUMSBAS
             + phasebias.NumberOfSat[CLOCKORBIT_SATBDS];
@@ -980,11 +987,11 @@ void bncRtnetUploadCaster::decodeRtnetStream(char* buffer, int bufLen) {
       if (phasebiasSat) {
         phasebias.DispersiveBiasConsistencyIndicator = dispInd;
         phasebias.MWConsistencyIndicator = mwInd;
-        phasebiasSat->ID = prn.mid(1).toInt();
+        phasebiasSat->ID = prn.number();
         phasebiasSat->NumberOfPhaseBiases = 0;
         phasebiasSat->YawAngle = pbSat.yA;
         phasebiasSat->YawRate = pbSat.yR;
-        if      (prn[0] == 'G') {
+        if      (prn.system() == 'G') {
           QListIterator<phaseBiasSignal> it(phaseBiasList);
           while (it.hasNext()) {
             const phaseBiasSignal &pbSig = it.next();
@@ -1107,7 +1114,7 @@ void bncRtnetUploadCaster::decodeRtnetStream(char* buffer, int bufLen) {
             }
           }
         }
-        if      (prn[0] == 'R') {
+        if      (prn.system() == 'R') {
           QListIterator<phaseBiasSignal> it(phaseBiasList);
           while (it.hasNext()) {
             const phaseBiasSignal &pbSig = it.next();
@@ -1149,7 +1156,7 @@ void bncRtnetUploadCaster::decodeRtnetStream(char* buffer, int bufLen) {
             }
           }
         }
-        if      (prn[0] == 'E') {
+        if      (prn.system() == 'E') {
           QListIterator<phaseBiasSignal> it(phaseBiasList);
           while (it.hasNext()) {
             const phaseBiasSignal &pbSig = it.next();
@@ -1263,7 +1270,7 @@ void bncRtnetUploadCaster::decodeRtnetStream(char* buffer, int bufLen) {
             }
           }
         }
-        if      (prn[0] == 'J') {
+        if      (prn.system() == 'J') {
           QListIterator<phaseBiasSignal> it(phaseBiasList);
           while (it.hasNext()) {
             const phaseBiasSignal &pbSig = it.next();
@@ -1386,7 +1393,7 @@ void bncRtnetUploadCaster::decodeRtnetStream(char* buffer, int bufLen) {
             }
           }
         }
-        if      (prn[0] == 'S') {
+        if      (prn.system() == 'S') {
           QListIterator<phaseBiasSignal> it(phaseBiasList);
           while (it.hasNext()) {
             const phaseBiasSignal &pbSig = it.next();
@@ -1428,7 +1435,7 @@ void bncRtnetUploadCaster::decodeRtnetStream(char* buffer, int bufLen) {
             }
           }
         }
-        if      (prn[0] == 'C') {
+        if      (prn.system() == 'C') {
           QListIterator<phaseBiasSignal> it(phaseBiasList);
           while (it.hasNext()) {
             const phaseBiasSignal &pbSig = it.next();
