@@ -1,5 +1,4 @@
 
-DEFINES       += NO_RTCM3_MAIN 
 unix:DEFINES  += _TTY_POSIX_
 win32:DEFINES += _TTY_WIN_
 
@@ -127,10 +126,10 @@ exists(PPP) {
              PPP/pppSatObs.cpp      
 }
 else {
-  INCLUDEPATH += PPP_free
-  DEFINES += USE_PPP_FREE
-  HEADERS += PPP_free/pppClient.h   PPP_free/pppFilter.h
-  SOURCES += PPP_free/pppClient.cpp PPP_free/pppFilter.cpp
+  INCLUDEPATH += PPP_SSR_I
+  DEFINES += USE_PPP_SSR_I
+  HEADERS += PPP_SSR_I/pppClient.h   PPP_SSR_I/pppFilter.h
+  SOURCES += PPP_SSR_I/pppClient.cpp PPP_SSR_I/pppFilter.cpp
 }
 
 # Check QtWebKit Library Existence
