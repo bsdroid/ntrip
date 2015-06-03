@@ -27,13 +27,10 @@ using namespace std;
 // Constructor
 ////////////////////////////////////////////////////////////////////////////
 bncRtnetUploadCaster::bncRtnetUploadCaster(const QString& mountpoint,
-                                 const QString& outHost, int outPort,
-                                 const QString& password,
-                                 const QString& crdTrafo, bool  CoM,
-                                 const QString& sp3FileName,
-                                 const QString& rnxFileName,
-                                 int PID, int SID, int IOD, int iRow) :
-  bncUploadCaster(mountpoint, outHost, outPort, password, iRow, 0) {
+    const QString& outHost, int outPort, const QString& password,
+    const QString& crdTrafo, bool CoM, const QString& sp3FileName,
+    const QString& rnxFileName, int PID, int SID, int IOD, int iRow) :
+    bncUploadCaster(mountpoint, outHost, outPort, password, iRow, 0) {
 
   if (!outHost.isEmpty()) {
     _casterID += outHost;
@@ -48,27 +45,28 @@ bncRtnetUploadCaster::bncRtnetUploadCaster(const QString& mountpoint,
     _casterID += " " + rnxFileName;
   }
 
-  _crdTrafo   = crdTrafo;
-  _CoM        = CoM;
-  _PID        = PID;
-  _SID        = SID;
-  _IOD        = IOD;
+  _crdTrafo = crdTrafo;
+  _CoM = CoM;
+  _PID = PID;
+  _SID = SID;
+  _IOD = IOD;
 
   // Member that receives the ephemeris
   // ----------------------------------
   _ephUser = new bncEphUser(true);
 
   bncSettings settings;
-  QString     intr  = settings.value("uploadIntr").toString();
-  QStringList hlp  = settings.value("combineStreams").toStringList();
+  QString intr = settings.value("uploadIntr").toString();
+  QStringList hlp = settings.value("combineStreams").toStringList();
   _samplRtcmEphCorr = settings.value("uploadSamplRtcmEphCorr").toDouble();
   if (hlp.size() > 1) { // combination stream upload
-    _samplRtcmClkCorr  = settings.value("cmbSampl").toInt();
-  } else { // single stream upload or sp3 file generation
-    _samplRtcmClkCorr  = 5; // default
+    _samplRtcmClkCorr = settings.value("cmbSampl").toInt();
   }
-  int samplClkRnx    = settings.value("uploadSamplClkRnx").toInt();
-  int samplSp3       = settings.value("uploadSamplSp3").toInt() * 60;
+  else { // single stream upload or sp3 file generation
+    _samplRtcmClkCorr = 5; // default
+  }
+  int samplClkRnx = settings.value("uploadSamplClkRnx").toInt();
+  int samplSp3 = settings.value("uploadSamplSp3").toInt() * 60;
 
   if (_samplRtcmEphCorr == 0.0) {
     _usedEph = 0;
@@ -97,124 +95,124 @@ bncRtnetUploadCaster::bncRtnetUploadCaster(const QString& mountpoint,
 
   // Set Transformation Parameters
   // -----------------------------
-  if      (_crdTrafo == "ETRF2000") {
-    _dx  =    0.0521;
-    _dy  =    0.0493;
-    _dz  =   -0.0585;
-    _dxr =    0.0001;
-    _dyr =    0.0001;
-    _dzr =   -0.0018;
-    _ox  =  0.000891;
-    _oy  =  0.005390;
-    _oz  = -0.008712;
-    _oxr =  0.000081;
-    _oyr =  0.000490;
+  if (_crdTrafo == "ETRF2000") {
+    _dx = 0.0521;
+    _dy = 0.0493;
+    _dz = -0.0585;
+    _dxr = 0.0001;
+    _dyr = 0.0001;
+    _dzr = -0.0018;
+    _ox = 0.000891;
+    _oy = 0.005390;
+    _oz = -0.008712;
+    _oxr = 0.000081;
+    _oyr = 0.000490;
     _ozr = -0.000792;
-    _sc  =      1.34;
-    _scr =      0.08;
-    _t0  =    2000.0;
+    _sc = 1.34;
+    _scr = 0.08;
+    _t0 = 2000.0;
   }
   else if (_crdTrafo == "NAD83") {
-    _dx  =     0.99343;
-    _dy  =    -1.90331;
-    _dz  =    -0.52655;
-    _dxr =     0.00079;
-    _dyr =    -0.00060;
-    _dzr =    -0.00134;
-    _ox  = -0.02591467;
-    _oy  = -0.00942645;
-    _oz  = -0.01159935;
+    _dx = 0.99343;
+    _dy = -1.90331;
+    _dz = -0.52655;
+    _dxr = 0.00079;
+    _dyr = -0.00060;
+    _dzr = -0.00134;
+    _ox = -0.02591467;
+    _oy = -0.00942645;
+    _oz = -0.01159935;
     _oxr = -0.00006667;
-    _oyr =  0.00075744;
-    _ozr =  0.00005133;
-    _sc  =     1.71504;
-    _scr =    -0.10201;
-    _t0  =      1997.0;
+    _oyr = 0.00075744;
+    _ozr = 0.00005133;
+    _sc = 1.71504;
+    _scr = -0.10201;
+    _t0 = 1997.0;
   }
   else if (_crdTrafo == "GDA94") {
-    _dx  =   -0.08468;
-    _dy  =   -0.01942;
-    _dz  =    0.03201;
-    _dxr =    0.00142;
-    _dyr =    0.00134;
-    _dzr =    0.00090;
-    _ox  =  0.0004254;
-    _oy  = -0.0022578;
-    _oz  = -0.0024015;
+    _dx = -0.08468;
+    _dy = -0.01942;
+    _dz = 0.03201;
+    _dxr = 0.00142;
+    _dyr = 0.00134;
+    _dzr = 0.00090;
+    _ox = 0.0004254;
+    _oy = -0.0022578;
+    _oz = -0.0024015;
     _oxr = -0.0015461;
     _oyr = -0.0011820;
     _ozr = -0.0011551;
-    _sc  =      9.710;
-    _scr =      0.109;
-    _t0  =     1994.0;
+    _sc = 9.710;
+    _scr = 0.109;
+    _t0 = 1994.0;
   }
   else if (_crdTrafo == "SIRGAS2000") {
-    _dx  =    0.0020;
-    _dy  =    0.0041;
-    _dz  =    0.0039;
-    _dxr =    0.0000;
-    _dyr =    0.0000;
-    _dzr =    0.0000;
-    _ox  =  0.000170;
-    _oy  = -0.000030;
-    _oz  =  0.000070;
-    _oxr =  0.000000;
-    _oyr =  0.000000;
-    _ozr =  0.000000;
-    _sc  =    -1.000;
-    _scr =     0.000;
-    _t0  =    0000.0;
+    _dx = 0.0020;
+    _dy = 0.0041;
+    _dz = 0.0039;
+    _dxr = 0.0000;
+    _dyr = 0.0000;
+    _dzr = 0.0000;
+    _ox = 0.000170;
+    _oy = -0.000030;
+    _oz = 0.000070;
+    _oxr = 0.000000;
+    _oyr = 0.000000;
+    _ozr = 0.000000;
+    _sc = -1.000;
+    _scr = 0.000;
+    _t0 = 0000.0;
   }
   else if (_crdTrafo == "SIRGAS95") {
-    _dx  =    0.0077;
-    _dy  =    0.0058;
-    _dz  =   -0.0138;
-    _dxr =    0.0000;
-    _dyr =    0.0000;
-    _dzr =    0.0000;
-    _ox  =  0.000000;
-    _oy  =  0.000000;
-    _oz  = -0.000030;
-    _oxr =  0.000000;
-    _oyr =  0.000000;
-    _ozr =  0.000000;
-    _sc  =     1.570;
-    _scr =     0.000;
-    _t0  =    0000.0;
+    _dx = 0.0077;
+    _dy = 0.0058;
+    _dz = -0.0138;
+    _dxr = 0.0000;
+    _dyr = 0.0000;
+    _dzr = 0.0000;
+    _ox = 0.000000;
+    _oy = 0.000000;
+    _oz = -0.000030;
+    _oxr = 0.000000;
+    _oyr = 0.000000;
+    _ozr = 0.000000;
+    _sc = 1.570;
+    _scr = 0.000;
+    _t0 = 0000.0;
   }
   else if (_crdTrafo == "DREF91") {
-    _dx  =   -0.0118;
-    _dy  =    0.1432;
-    _dz  =   -0.1117;
-    _dxr =    0.0001;
-    _dyr =    0.0001;
-    _dzr =   -0.0018;
-    _ox  =  0.003291;
-    _oy  =  0.006190;
-    _oz  = -0.011012;
-    _oxr =  0.000081;
-    _oyr =  0.000490;
+    _dx = -0.0118;
+    _dy = 0.1432;
+    _dz = -0.1117;
+    _dxr = 0.0001;
+    _dyr = 0.0001;
+    _dzr = -0.0018;
+    _ox = 0.003291;
+    _oy = 0.006190;
+    _oz = -0.011012;
+    _oxr = 0.000081;
+    _oyr = 0.000490;
     _ozr = -0.000792;
-    _sc  =     12.24;
-    _scr =      0.08;
-    _t0  =    2000.0;
+    _sc = 12.24;
+    _scr = 0.08;
+    _t0 = 2000.0;
   }
   else if (_crdTrafo == "Custom") {
-    _dx  = settings.value("trafo_dx").toDouble();
-    _dy  = settings.value("trafo_dy").toDouble();
-    _dz  = settings.value("trafo_dz").toDouble();
+    _dx = settings.value("trafo_dx").toDouble();
+    _dy = settings.value("trafo_dy").toDouble();
+    _dz = settings.value("trafo_dz").toDouble();
     _dxr = settings.value("trafo_dxr").toDouble();
     _dyr = settings.value("trafo_dyr").toDouble();
     _dzr = settings.value("trafo_dzr").toDouble();
-    _ox  = settings.value("trafo_ox").toDouble();
-    _oy  = settings.value("trafo_oy").toDouble();
-    _oz  = settings.value("trafo_oz").toDouble();
+    _ox = settings.value("trafo_ox").toDouble();
+    _oy = settings.value("trafo_oy").toDouble();
+    _oz = settings.value("trafo_oz").toDouble();
     _oxr = settings.value("trafo_oxr").toDouble();
     _oyr = settings.value("trafo_oyr").toDouble();
     _ozr = settings.value("trafo_ozr").toDouble();
-    _sc  = settings.value("trafo_sc").toDouble();
+    _sc = settings.value("trafo_sc").toDouble();
     _scr = settings.value("trafo_scr").toDouble();
-    _t0  = settings.value("trafo_t0").toDouble();
+    _t0 = settings.value("trafo_t0").toDouble();
   }
 }
 
@@ -255,8 +253,9 @@ void bncRtnetUploadCaster::decodeRtnetStream(char* buffer, int bufLen) {
     return;
   }
   else {
-    lines = _rtnetStreamBuffer.left(iEpoEnd).split('\n', QString::SkipEmptyParts);
-    _rtnetStreamBuffer = _rtnetStreamBuffer.mid(iEpoEnd+3);
+    lines = _rtnetStreamBuffer.left(iEpoEnd).split('\n',
+        QString::SkipEmptyParts);
+    _rtnetStreamBuffer = _rtnetStreamBuffer.mid(iEpoEnd + 3);
   }
 
   if (lines.size() < 2) {
@@ -267,22 +266,23 @@ void bncRtnetUploadCaster::decodeRtnetStream(char* buffer, int bufLen) {
   // ---------------------------------------
   int iLastEOL = _rtnetStreamBuffer.lastIndexOf('\n');
   if (iLastEOL != -1) {
-    _rtnetStreamBuffer = _rtnetStreamBuffer.mid(iLastEOL+1);
+    _rtnetStreamBuffer = _rtnetStreamBuffer.mid(iLastEOL + 1);
   }
 
   // Read first line (with epoch time)
   // ---------------------------------
   QTextStream in(lines[0].toAscii());
   QString hlp;
-  int     year, month, day, hour, min;
-  double  sec;
+  int year, month, day, hour, min;
+  double sec;
   in >> hlp >> year >> month >> day >> hour >> min >> sec;
-  bncTime epoTime; epoTime.set( year, month, day, hour, min, sec);
+  bncTime epoTime;
+  epoTime.set(year, month, day, hour, min, sec);
 
-  emit(newMessage("bncRtnetUploadCaster: decode " +
-                  QByteArray(epoTime.datestr().c_str()) + " " +
-                  QByteArray(epoTime.timestr().c_str()) + " " +
-                  _casterID.toAscii(), false));
+  emit(newMessage(
+      "bncRtnetUploadCaster: decode " + QByteArray(epoTime.datestr().c_str())
+          + " " + QByteArray(epoTime.timestr().c_str()) + " "
+          + _casterID.toAscii(), false));
 
   struct ClockOrbit co;
   memset(&co, 0, sizeof(co));
@@ -290,25 +290,25 @@ void bncRtnetUploadCaster::decodeRtnetStream(char* buffer, int bufLen) {
   double gt = epoTime.gpssec() + 3 * 3600 - gnumleap(year, month, day);
   co.EpochTime[CLOCKORBIT_SATGLONASS] = static_cast<int>(fmod(gt, 86400.0));
   co.EpochTime[CLOCKORBIT_SATGALILEO] = static_cast<int>(epoTime.gpssec());
-  co.EpochTime[CLOCKORBIT_SATQZSS]  = static_cast<int>(epoTime.gpssec());
+  co.EpochTime[CLOCKORBIT_SATQZSS] = static_cast<int>(epoTime.gpssec());
   co.EpochTime[CLOCKORBIT_SATSBAS] = static_cast<int>(epoTime.gpssec());
   co.EpochTime[CLOCKORBIT_SATBDS] = static_cast<int>(epoTime.bdssec());
   co.Supplied[COBOFS_CLOCK] = 1;
   co.Supplied[COBOFS_ORBIT] = 1;
-  co.SatRefDatum   = DATUM_ITRF;
-  co.SSRIOD        = _IOD;
+  co.SatRefDatum = DATUM_ITRF;
+  co.SSRIOD = _IOD;
   co.SSRProviderID = _PID; // 256 .. BKG,  257 ... EUREF
   co.SSRSolutionID = _SID;
 
   struct CodeBias bias;
   memset(&bias, 0, sizeof(bias));
-  bias.EpochTime[CLOCKORBIT_SATGPS]     = co.EpochTime[CLOCKORBIT_SATGPS];
+  bias.EpochTime[CLOCKORBIT_SATGPS] = co.EpochTime[CLOCKORBIT_SATGPS];
   bias.EpochTime[CLOCKORBIT_SATGLONASS] = co.EpochTime[CLOCKORBIT_SATGLONASS];
   bias.EpochTime[CLOCKORBIT_SATGALILEO] = co.EpochTime[CLOCKORBIT_SATGALILEO];
-  bias.EpochTime[CLOCKORBIT_SATQZSS]    = co.EpochTime[CLOCKORBIT_SATQZSS];
-  bias.EpochTime[CLOCKORBIT_SATSBAS]    = co.EpochTime[CLOCKORBIT_SATSBAS];
-  bias.EpochTime[CLOCKORBIT_SATBDS]     = co.EpochTime[CLOCKORBIT_SATBDS];
-  bias.SSRIOD        = _IOD;
+  bias.EpochTime[CLOCKORBIT_SATQZSS] = co.EpochTime[CLOCKORBIT_SATQZSS];
+  bias.EpochTime[CLOCKORBIT_SATSBAS] = co.EpochTime[CLOCKORBIT_SATSBAS];
+  bias.EpochTime[CLOCKORBIT_SATBDS] = co.EpochTime[CLOCKORBIT_SATBDS];
+  bias.SSRIOD = _IOD;
   bias.SSRProviderID = _PID;
   bias.SSRSolutionID = _SID;
 
@@ -316,23 +316,22 @@ void bncRtnetUploadCaster::decodeRtnetStream(char* buffer, int bufLen) {
   memset(&phasebias, 0, sizeof(phasebias));
   unsigned int dispInd = 0;
   unsigned int mwInd = 0;
-  phasebias.EpochTime[CLOCKORBIT_SATGPS]     = co.EpochTime[CLOCKORBIT_SATGPS];
+  phasebias.EpochTime[CLOCKORBIT_SATGPS] = co.EpochTime[CLOCKORBIT_SATGPS];
   phasebias.EpochTime[CLOCKORBIT_SATGLONASS] = co.EpochTime[CLOCKORBIT_SATGLONASS];
   phasebias.EpochTime[CLOCKORBIT_SATGALILEO] = co.EpochTime[CLOCKORBIT_SATGALILEO];
-  phasebias.EpochTime[CLOCKORBIT_SATQZSS]    = co.EpochTime[CLOCKORBIT_SATQZSS];
-  phasebias.EpochTime[CLOCKORBIT_SATSBAS]    = co.EpochTime[CLOCKORBIT_SATSBAS];
-  phasebias.EpochTime[CLOCKORBIT_SATBDS]     = co.EpochTime[CLOCKORBIT_SATBDS];
-  phasebias.SSRIOD        = _IOD;
+  phasebias.EpochTime[CLOCKORBIT_SATQZSS] = co.EpochTime[CLOCKORBIT_SATQZSS];
+  phasebias.EpochTime[CLOCKORBIT_SATSBAS] = co.EpochTime[CLOCKORBIT_SATSBAS];
+  phasebias.EpochTime[CLOCKORBIT_SATBDS] = co.EpochTime[CLOCKORBIT_SATBDS];
+  phasebias.SSRIOD = _IOD;
   phasebias.SSRProviderID = _PID;
   phasebias.SSRSolutionID = _SID;
 
   struct VTEC vtec;
   memset(&vtec, 0, sizeof(vtec));
   vtec.EpochTime = static_cast<int>(epoTime.gpssec());
-  vtec.SSRIOD        = _IOD;
+  vtec.SSRIOD = _IOD;
   vtec.SSRProviderID = _PID;
   vtec.SSRSolutionID = _SID;
-
 
   // Default Update Interval
   // -----------------------
@@ -349,25 +348,25 @@ void bncRtnetUploadCaster::decodeRtnetStream(char* buffer, int bufLen) {
     ephUpdInd = determineUpdateInd(_samplRtcmEphCorr);
   }
 
-  co.UpdateInterval   = clkUpdInd;
+  co.UpdateInterval = clkUpdInd;
   bias.UpdateInterval = clkUpdInd;
   phasebias.UpdateInterval = clkUpdInd;
 
   for (int ii = 1; ii < lines.size(); ii++) {
 
-    QString      key;  // prn or key VTEC, IND (phase bias indicators)
+    QString key;  // prn or key VTEC, IND (phase bias indicators)
     ColumnVector rtnAPC;
     ColumnVector rtnVel;
     ColumnVector rtnCoM;
-    double       rtnClk;
-    t_prn        prn;
+    double rtnClk;
+    t_prn prn;
 
     QTextStream in(lines[ii].toAscii());
 
     in >> key;
 
     // non-satellite specific parameters
-    if      (key.contains("IND", Qt::CaseSensitive)) {
+    if (key.contains("IND", Qt::CaseSensitive)) {
       in >> dispInd >> mwInd;
       continue;
     }
@@ -376,7 +375,7 @@ void bncRtnetUploadCaster::decodeRtnetStream(char* buffer, int bufLen) {
       for (unsigned ll = 0; ll < vtec.NumLayers; ll++) {
         int dummy;
         in >> dummy >> vtec.Layers[ll].Degree >> vtec.Layers[ll].Order
-          >> vtec.Layers[ll].Height;
+            >> vtec.Layers[ll].Height;
         ii++;
         for (unsigned iDeg = 0; iDeg < vtec.Layers[ll].Degree; iDeg++) {
           for (unsigned iOrd = 0; iOrd < vtec.Layers[ll].Order; iOrd++) {
@@ -393,24 +392,28 @@ void bncRtnetUploadCaster::decodeRtnetStream(char* buffer, int bufLen) {
       }
       continue;
     }
-    char sys   = key.mid(0,1).at(0).toAscii();
-    int number = key.mid(1,2).toInt();
-    int flags  = 0;
-    if (sys == 'E') { flags = 1;} // I/NAV
+    // satellite specific parameters
+    char sys = key.mid(0, 1).at(0).toAscii();
+    int number = key.mid(1, 2).toInt();
+    int flags = 0;
+    if (sys == 'E') { // I/NAV
+      flags = 1;
+    }
     prn.set(sys, number, flags);
     QString prnInternalStr = QString::fromStdString(prn.toInternalString());
-    QString prnStr         = QString::fromStdString(prn.toString());
+    QString prnStr = QString::fromStdString(prn.toString());
+
     const t_eph* ephLast = _ephUser->ephLast(prnInternalStr);
     const t_eph* ephPrev = _ephUser->ephPrev(prnInternalStr);
-    const t_eph* eph     = ephLast;
+    const t_eph* eph = ephLast;
 
     if (eph) {
 
       // Use previous ephemeris if the last one is too recent
       // ----------------------------------------------------
       const int MINAGE = 60; // seconds
-      if (ephPrev && eph->receptDateTime().isValid() &&
-          eph->receptDateTime().secsTo(currentDateAndTimeGPS()) < MINAGE) {
+      if (ephPrev && eph->receptDateTime().isValid()
+          && eph->receptDateTime().secsTo(currentDateAndTimeGPS()) < MINAGE) {
         eph = ephPrev;
       }
 
@@ -424,7 +427,7 @@ void bncRtnetUploadCaster::decodeRtnetStream(char* buffer, int bufLen) {
           eph = 0;
           if (_usedEph->contains(prnInternalStr)) {
             const t_eph* usedEph = _usedEph->value(prnInternalStr);
-            if      (usedEph == ephLast) {
+            if (usedEph == ephLast) {
               eph = ephLast;
             }
             else if (usedEph == ephPrev) {
@@ -443,12 +446,12 @@ void bncRtnetUploadCaster::decodeRtnetStream(char* buffer, int bufLen) {
 
       while (true) {
         QString key;
-        int     numVal = 0;
+        int numVal = 0;
         in >> key;
         if (in.status() != QTextStream::Ok) {
           break;
         }
-        if       (key == "APC") {
+        if (key == "APC") {
           in >> numVal;
           rtnAPC.ReSize(3);
           for (int ii = 0; ii < numVal; ii++) {
@@ -457,7 +460,7 @@ void bncRtnetUploadCaster::decodeRtnetStream(char* buffer, int bufLen) {
         }
         else if (key == "Clk") {
           in >> numVal;
-          if (numVal ==1)
+          if (numVal == 1)
             in >> rtnClk;
         }
         else if (key == "Vel") {
@@ -478,7 +481,7 @@ void bncRtnetUploadCaster::decodeRtnetStream(char* buffer, int bufLen) {
           in >> numVal;
           for (int ii = 0; ii < numVal; ii++) {
             QString type;
-            double  value;
+            double value;
             in >> type >> value;
             codeBiases[type] = value;
           }
@@ -493,8 +496,7 @@ void bncRtnetUploadCaster::decodeRtnetStream(char* buffer, int bufLen) {
           in >> numVal;
           for (int ii = 0; ii < numVal; ii++) {
             phaseBiasSignal pb;
-            in >> pb.type >> pb.bias >> pb.intInd >> pb.wlInd
-              >> pb.discCount;
+            in >> pb.type >> pb.bias >> pb.intInd >> pb.wlInd >> pb.discCount;
             phaseBiasList.append(pb);
           }
         }
@@ -507,13 +509,12 @@ void bncRtnetUploadCaster::decodeRtnetStream(char* buffer, int bufLen) {
       }
 
       struct ClockOrbit::SatData* sd = 0;
-      if      (prn.system() == 'G') {
+      if (prn.system() == 'G') {
         sd = co.Sat + co.NumberOfSat[CLOCKORBIT_SATGPS];
         ++co.NumberOfSat[CLOCKORBIT_SATGPS];
       }
       else if (prn.system() == 'R') {
-        sd = co.Sat + CLOCKORBIT_NUMGPS
-            + co.NumberOfSat[CLOCKORBIT_SATGLONASS];
+        sd = co.Sat + CLOCKORBIT_NUMGPS + co.NumberOfSat[CLOCKORBIT_SATGLONASS];
         ++co.NumberOfSat[CLOCKORBIT_SATGLONASS];
       }
       else if (prn.system() == 'E') {
@@ -522,144 +523,172 @@ void bncRtnetUploadCaster::decodeRtnetStream(char* buffer, int bufLen) {
         ++co.NumberOfSat[CLOCKORBIT_SATGALILEO];
       }
       else if (prn.system() == 'J') {
-        sd = co.Sat + CLOCKORBIT_NUMGPS + CLOCKORBIT_NUMGLONASS + CLOCKORBIT_NUMGALILEO
-            + co.NumberOfSat[CLOCKORBIT_SATQZSS];
+        sd = co.Sat + CLOCKORBIT_NUMGPS + CLOCKORBIT_NUMGLONASS
+            + CLOCKORBIT_NUMGALILEO + co.NumberOfSat[CLOCKORBIT_SATQZSS];
         ++co.NumberOfSat[CLOCKORBIT_SATQZSS];
       }
       else if (prn.system() == 'S') {
-        sd = co.Sat + CLOCKORBIT_NUMGPS + CLOCKORBIT_NUMGLONASS + CLOCKORBIT_NUMGALILEO
-            + CLOCKORBIT_NUMQZSS
+        sd = co.Sat + CLOCKORBIT_NUMGPS + CLOCKORBIT_NUMGLONASS
+            + CLOCKORBIT_NUMGALILEO + CLOCKORBIT_NUMQZSS
             + co.NumberOfSat[CLOCKORBIT_SATSBAS];
         ++co.NumberOfSat[CLOCKORBIT_SATSBAS];
       }
       else if (prn.system() == 'C') {
-        sd = co.Sat + CLOCKORBIT_NUMGPS + CLOCKORBIT_NUMGLONASS + CLOCKORBIT_NUMGALILEO
-            + CLOCKORBIT_NUMQZSS + CLOCKORBIT_NUMSBAS
+        sd = co.Sat + CLOCKORBIT_NUMGPS + CLOCKORBIT_NUMGLONASS
+            + CLOCKORBIT_NUMGALILEO + CLOCKORBIT_NUMQZSS + CLOCKORBIT_NUMSBAS
             + co.NumberOfSat[CLOCKORBIT_SATBDS];
         ++co.NumberOfSat[CLOCKORBIT_SATBDS];
       }
       if (sd) {
         QString outLine;
-        processSatellite(eph, epoTime.gpsw(), epoTime.gpssec(), prnStr,
-                         rtnAPC, rtnClk, rtnVel, rtnCoM, sd, outLine);
+        processSatellite(eph, epoTime.gpsw(), epoTime.gpssec(), prnStr, rtnAPC,
+            rtnClk, rtnVel, rtnCoM, sd, outLine);
       }
 
       // Code Biases
       // -----------
       struct CodeBias::BiasSat* biasSat = 0;
-      if      (prn.system() == 'G') {
-        biasSat = bias.Sat + bias.NumberOfSat[CLOCKORBIT_SATGPS];
-        ++bias.NumberOfSat[CLOCKORBIT_SATGPS];
-      }
-      else if (prn.system() == 'R') {
-        biasSat = bias.Sat + CLOCKORBIT_NUMGPS
-            + bias.NumberOfSat[CLOCKORBIT_SATGLONASS];
-        ++bias.NumberOfSat[CLOCKORBIT_SATGLONASS];
-      }
-      else if (prn.system() == 'E') {
-        biasSat = bias.Sat + CLOCKORBIT_NUMGPS + CLOCKORBIT_NUMGLONASS
-            + bias.NumberOfSat[CLOCKORBIT_SATGALILEO];
-        ++bias.NumberOfSat[CLOCKORBIT_SATGALILEO];
-      }
-      else if (prn.system() == 'J') {
-        biasSat = bias.Sat + CLOCKORBIT_NUMGPS + CLOCKORBIT_NUMGLONASS + CLOCKORBIT_NUMGALILEO
-            + bias.NumberOfSat[CLOCKORBIT_SATQZSS];
-        ++bias.NumberOfSat[CLOCKORBIT_SATQZSS];
-      }
-      else if (prn.system() == 'S') {
-        biasSat = bias.Sat + CLOCKORBIT_NUMGPS + CLOCKORBIT_NUMGLONASS + CLOCKORBIT_NUMGALILEO
-            + CLOCKORBIT_NUMQZSS
-            + bias.NumberOfSat[CLOCKORBIT_SATSBAS];
-        ++bias.NumberOfSat[CLOCKORBIT_SATSBAS];
-      }
-      else if (prn.system() == 'C') {
-        biasSat = bias.Sat + CLOCKORBIT_NUMGPS + CLOCKORBIT_NUMGLONASS + CLOCKORBIT_NUMGALILEO
-            + CLOCKORBIT_NUMQZSS + CLOCKORBIT_NUMSBAS
-            + bias.NumberOfSat[CLOCKORBIT_SATBDS];
-        ++bias.NumberOfSat[CLOCKORBIT_SATBDS];
+      if (!codeBiases.isEmpty()) {
+        if (prn.system() == 'G') {
+          biasSat = bias.Sat + bias.NumberOfSat[CLOCKORBIT_SATGPS];
+          ++bias.NumberOfSat[CLOCKORBIT_SATGPS];
+        }
+        else if (prn.system() == 'R') {
+          biasSat = bias.Sat + CLOCKORBIT_NUMGPS
+              + bias.NumberOfSat[CLOCKORBIT_SATGLONASS];
+          ++bias.NumberOfSat[CLOCKORBIT_SATGLONASS];
+        }
+        else if (prn.system() == 'E') {
+          biasSat = bias.Sat + CLOCKORBIT_NUMGPS + CLOCKORBIT_NUMGLONASS
+              + bias.NumberOfSat[CLOCKORBIT_SATGALILEO];
+          ++bias.NumberOfSat[CLOCKORBIT_SATGALILEO];
+        }
+        else if (prn.system() == 'J') {
+          biasSat = bias.Sat + CLOCKORBIT_NUMGPS + CLOCKORBIT_NUMGLONASS
+              + CLOCKORBIT_NUMGALILEO + bias.NumberOfSat[CLOCKORBIT_SATQZSS];
+          ++bias.NumberOfSat[CLOCKORBIT_SATQZSS];
+        }
+        else if (prn.system() == 'S') {
+          biasSat = bias.Sat + CLOCKORBIT_NUMGPS + CLOCKORBIT_NUMGLONASS
+              + CLOCKORBIT_NUMGALILEO + CLOCKORBIT_NUMQZSS
+              + bias.NumberOfSat[CLOCKORBIT_SATSBAS];
+          ++bias.NumberOfSat[CLOCKORBIT_SATSBAS];
+        }
+        else if (prn.system() == 'C') {
+          biasSat = bias.Sat + CLOCKORBIT_NUMGPS + CLOCKORBIT_NUMGLONASS
+              + CLOCKORBIT_NUMGALILEO + CLOCKORBIT_NUMQZSS + CLOCKORBIT_NUMSBAS
+              + bias.NumberOfSat[CLOCKORBIT_SATBDS];
+          ++bias.NumberOfSat[CLOCKORBIT_SATBDS];
+        }
       }
 
       if (biasSat) {
         biasSat->ID = prn.number();
         biasSat->NumberOfCodeBiases = 0;
-        if      (prn.system() == 'G') {
+        if (prn.system() == 'G') {
           QMapIterator<QString, double> it(codeBiases);
           while (it.hasNext()) {
             it.next();
-            if      (it.key() == "1C") {
-              int ii = biasSat->NumberOfCodeBiases; if (ii >= CLOCKORBIT_NUMBIAS) break;
+            if (it.key() == "1C") {
+              int ii = biasSat->NumberOfCodeBiases;
+              if (ii >= CLOCKORBIT_NUMBIAS)
+                break;
               biasSat->NumberOfCodeBiases += 1;
               biasSat->Biases[ii].Type = CODETYPEGPS_L1_CA;
               biasSat->Biases[ii].Bias = it.value();
             }
             else if (it.key() == "1P") {
-              int ii = biasSat->NumberOfCodeBiases; if (ii >= CLOCKORBIT_NUMBIAS) break;
+              int ii = biasSat->NumberOfCodeBiases;
+              if (ii >= CLOCKORBIT_NUMBIAS)
+                break;
               biasSat->NumberOfCodeBiases += 1;
               biasSat->Biases[ii].Type = CODETYPEGPS_L1_P;
               biasSat->Biases[ii].Bias = it.value();
             }
             else if (it.key() == "1W") {
-              int ii = biasSat->NumberOfCodeBiases; if (ii >= CLOCKORBIT_NUMBIAS) break;
+              int ii = biasSat->NumberOfCodeBiases;
+              if (ii >= CLOCKORBIT_NUMBIAS)
+                break;
               biasSat->NumberOfCodeBiases += 1;
               biasSat->Biases[ii].Type = CODETYPEGPS_L1_Z;
               biasSat->Biases[ii].Bias = it.value();
             }
             else if (it.key() == "2C") {
-              int ii = biasSat->NumberOfCodeBiases; if (ii >= CLOCKORBIT_NUMBIAS) break;
+              int ii = biasSat->NumberOfCodeBiases;
+              if (ii >= CLOCKORBIT_NUMBIAS)
+                break;
               biasSat->NumberOfCodeBiases += 1;
               biasSat->Biases[ii].Type = CODETYPEGPS_L2_CA;
               biasSat->Biases[ii].Bias = it.value();
             }
             else if (it.key() == "2D") {
-              int ii = biasSat->NumberOfCodeBiases; if (ii >= CLOCKORBIT_NUMBIAS) break;
+              int ii = biasSat->NumberOfCodeBiases;
+              if (ii >= CLOCKORBIT_NUMBIAS)
+                break;
               biasSat->NumberOfCodeBiases += 1;
               biasSat->Biases[ii].Type = CODETYPEGPS_SEMI_CODELESS;
               biasSat->Biases[ii].Bias = it.value();
             }
             else if (it.key() == "2S") {
-              int ii = biasSat->NumberOfCodeBiases; if (ii >= CLOCKORBIT_NUMBIAS) break;
+              int ii = biasSat->NumberOfCodeBiases;
+              if (ii >= CLOCKORBIT_NUMBIAS)
+                break;
               biasSat->NumberOfCodeBiases += 1;
               biasSat->Biases[ii].Type = CODETYPEGPS_L2_CM;
               biasSat->Biases[ii].Bias = it.value();
             }
             else if (it.key() == "2L") {
-              int ii = biasSat->NumberOfCodeBiases; if (ii >= CLOCKORBIT_NUMBIAS) break;
+              int ii = biasSat->NumberOfCodeBiases;
+              if (ii >= CLOCKORBIT_NUMBIAS)
+                break;
               biasSat->NumberOfCodeBiases += 1;
               biasSat->Biases[ii].Type = CODETYPEGPS_L2_CL;
               biasSat->Biases[ii].Bias = it.value();
             }
             else if (it.key() == "2X") {
-              int ii = biasSat->NumberOfCodeBiases; if (ii >= CLOCKORBIT_NUMBIAS) break;
+              int ii = biasSat->NumberOfCodeBiases;
+              if (ii >= CLOCKORBIT_NUMBIAS)
+                break;
               biasSat->NumberOfCodeBiases += 1;
               biasSat->Biases[ii].Type = CODETYPEGPS_L2_CML;
               biasSat->Biases[ii].Bias = it.value();
             }
             else if (it.key() == "2P") {
-              int ii = biasSat->NumberOfCodeBiases; if (ii >= CLOCKORBIT_NUMBIAS) break;
+              int ii = biasSat->NumberOfCodeBiases;
+              if (ii >= CLOCKORBIT_NUMBIAS)
+                break;
               biasSat->NumberOfCodeBiases += 1;
               biasSat->Biases[ii].Type = CODETYPEGPS_L2_P;
               biasSat->Biases[ii].Bias = it.value();
             }
             else if (it.key() == "2W") {
-              int ii = biasSat->NumberOfCodeBiases; if (ii >= CLOCKORBIT_NUMBIAS) break;
+              int ii = biasSat->NumberOfCodeBiases;
+              if (ii >= CLOCKORBIT_NUMBIAS)
+                break;
               biasSat->NumberOfCodeBiases += 1;
               biasSat->Biases[ii].Type = CODETYPEGPS_L2_Z;
               biasSat->Biases[ii].Bias = it.value();
             }
             else if (it.key() == "5I") {
-              int ii = biasSat->NumberOfCodeBiases; if (ii >= CLOCKORBIT_NUMBIAS) break;
+              int ii = biasSat->NumberOfCodeBiases;
+              if (ii >= CLOCKORBIT_NUMBIAS)
+                break;
               biasSat->NumberOfCodeBiases += 1;
               biasSat->Biases[ii].Type = CODETYPEGPS_L5_I;
               biasSat->Biases[ii].Bias = it.value();
             }
             else if (it.key() == "5Q") {
-              int ii = biasSat->NumberOfCodeBiases; if (ii >= CLOCKORBIT_NUMBIAS) break;
+              int ii = biasSat->NumberOfCodeBiases;
+              if (ii >= CLOCKORBIT_NUMBIAS)
+                break;
               biasSat->NumberOfCodeBiases += 1;
               biasSat->Biases[ii].Type = CODETYPEGPS_L5_Q;
               biasSat->Biases[ii].Bias = it.value();
             }
             else if (it.key() == "5X") {
-              int ii = biasSat->NumberOfCodeBiases; if (ii >= CLOCKORBIT_NUMBIAS) break;
+              int ii = biasSat->NumberOfCodeBiases;
+              if (ii >= CLOCKORBIT_NUMBIAS)
+                break;
               biasSat->NumberOfCodeBiases += 1;
               biasSat->Biases[ii].Type = CODETYPEGPS_L5_IQ;
               biasSat->Biases[ii].Bias = it.value();
@@ -670,26 +699,34 @@ void bncRtnetUploadCaster::decodeRtnetStream(char* buffer, int bufLen) {
           QMapIterator<QString, double> it(codeBiases);
           while (it.hasNext()) {
             it.next();
-            if      (it.key() == "1C") {
-              int ii = biasSat->NumberOfCodeBiases; if (ii >= CLOCKORBIT_NUMBIAS) break;
+            if (it.key() == "1C") {
+              int ii = biasSat->NumberOfCodeBiases;
+              if (ii >= CLOCKORBIT_NUMBIAS)
+                break;
               biasSat->NumberOfCodeBiases += 1;
               biasSat->Biases[ii].Type = CODETYPEGLONASS_L1_CA;
               biasSat->Biases[ii].Bias = it.value();
             }
             else if (it.key() == "1P") {
-              int ii = biasSat->NumberOfCodeBiases; if (ii >= CLOCKORBIT_NUMBIAS) break;
+              int ii = biasSat->NumberOfCodeBiases;
+              if (ii >= CLOCKORBIT_NUMBIAS)
+                break;
               biasSat->NumberOfCodeBiases += 1;
               biasSat->Biases[ii].Type = CODETYPEGLONASS_L1_P;
               biasSat->Biases[ii].Bias = it.value();
             }
             else if (it.key() == "2C") {
-              int ii = biasSat->NumberOfCodeBiases; if (ii >= CLOCKORBIT_NUMBIAS) break;
+              int ii = biasSat->NumberOfCodeBiases;
+              if (ii >= CLOCKORBIT_NUMBIAS)
+                break;
               biasSat->NumberOfCodeBiases += 1;
               biasSat->Biases[ii].Type = CODETYPEGLONASS_L2_CA;
               biasSat->Biases[ii].Bias = it.value();
             }
             else if (it.key() == "2P") {
-              int ii = biasSat->NumberOfCodeBiases; if (ii >= CLOCKORBIT_NUMBIAS) break;
+              int ii = biasSat->NumberOfCodeBiases;
+              if (ii >= CLOCKORBIT_NUMBIAS)
+                break;
               biasSat->NumberOfCodeBiases += 1;
               biasSat->Biases[ii].Type = CODETYPEGLONASS_L2_P;
               biasSat->Biases[ii].Bias = it.value();
@@ -700,74 +737,98 @@ void bncRtnetUploadCaster::decodeRtnetStream(char* buffer, int bufLen) {
           QMapIterator<QString, double> it(codeBiases);
           while (it.hasNext()) {
             it.next();
-            if      (it.key() == "1A") {
-              int ii = biasSat->NumberOfCodeBiases; if (ii >= CLOCKORBIT_NUMBIAS) break;
+            if (it.key() == "1A") {
+              int ii = biasSat->NumberOfCodeBiases;
+              if (ii >= CLOCKORBIT_NUMBIAS)
+                break;
               biasSat->NumberOfCodeBiases += 1;
               biasSat->Biases[ii].Type = CODETYPEGALILEO_E1_A;
               biasSat->Biases[ii].Bias = it.value();
             }
             else if (it.key() == "1B") {
-              int ii = biasSat->NumberOfCodeBiases; if (ii >= CLOCKORBIT_NUMBIAS) break;
+              int ii = biasSat->NumberOfCodeBiases;
+              if (ii >= CLOCKORBIT_NUMBIAS)
+                break;
               biasSat->NumberOfCodeBiases += 1;
               biasSat->Biases[ii].Type = CODETYPEGALILEO_E1_B;
               biasSat->Biases[ii].Bias = it.value();
             }
             else if (it.key() == "1C") {
-              int ii = biasSat->NumberOfCodeBiases; if (ii >= CLOCKORBIT_NUMBIAS) break;
+              int ii = biasSat->NumberOfCodeBiases;
+              if (ii >= CLOCKORBIT_NUMBIAS)
+                break;
               biasSat->NumberOfCodeBiases += 1;
               biasSat->Biases[ii].Type = CODETYPEGALILEO_E1_C;
               biasSat->Biases[ii].Bias = it.value();
             }
             else if (it.key() == "5I") {
-              int ii = biasSat->NumberOfCodeBiases; if (ii >= CLOCKORBIT_NUMBIAS) break;
+              int ii = biasSat->NumberOfCodeBiases;
+              if (ii >= CLOCKORBIT_NUMBIAS)
+                break;
               biasSat->NumberOfCodeBiases += 1;
               biasSat->Biases[ii].Type = CODETYPEGALILEO_E5A_I;
               biasSat->Biases[ii].Bias = it.value();
             }
             else if (it.key() == "5Q") {
-              int ii = biasSat->NumberOfCodeBiases; if (ii >= CLOCKORBIT_NUMBIAS) break;
+              int ii = biasSat->NumberOfCodeBiases;
+              if (ii >= CLOCKORBIT_NUMBIAS)
+                break;
               biasSat->NumberOfCodeBiases += 1;
               biasSat->Biases[ii].Type = CODETYPEGALILEO_E5A_Q;
               biasSat->Biases[ii].Bias = it.value();
             }
             else if (it.key() == "7I") {
-              int ii = biasSat->NumberOfCodeBiases; if (ii >= CLOCKORBIT_NUMBIAS) break;
+              int ii = biasSat->NumberOfCodeBiases;
+              if (ii >= CLOCKORBIT_NUMBIAS)
+                break;
               biasSat->NumberOfCodeBiases += 1;
               biasSat->Biases[ii].Type = CODETYPEGALILEO_E5B_I;
               biasSat->Biases[ii].Bias = it.value();
             }
             else if (it.key() == "7Q") {
-              int ii = biasSat->NumberOfCodeBiases; if (ii >= CLOCKORBIT_NUMBIAS) break;
+              int ii = biasSat->NumberOfCodeBiases;
+              if (ii >= CLOCKORBIT_NUMBIAS)
+                break;
               biasSat->NumberOfCodeBiases += 1;
               biasSat->Biases[ii].Type = CODETYPEGALILEO_E5B_Q;
               biasSat->Biases[ii].Bias = it.value();
             }
             else if (it.key() == "8I") {
-              int ii = biasSat->NumberOfCodeBiases; if (ii >= CLOCKORBIT_NUMBIAS) break;
+              int ii = biasSat->NumberOfCodeBiases;
+              if (ii >= CLOCKORBIT_NUMBIAS)
+                break;
               biasSat->NumberOfCodeBiases += 1;
               biasSat->Biases[ii].Type = CODETYPEGALILEO_E5_I;
               biasSat->Biases[ii].Bias = it.value();
             }
             else if (it.key() == "8Q") {
-              int ii = biasSat->NumberOfCodeBiases; if (ii >= CLOCKORBIT_NUMBIAS) break;
+              int ii = biasSat->NumberOfCodeBiases;
+              if (ii >= CLOCKORBIT_NUMBIAS)
+                break;
               biasSat->NumberOfCodeBiases += 1;
               biasSat->Biases[ii].Type = CODETYPEGALILEO_E5_Q;
               biasSat->Biases[ii].Bias = it.value();
             }
             else if (it.key() == "6A") {
-              int ii = biasSat->NumberOfCodeBiases; if (ii >= CLOCKORBIT_NUMBIAS) break;
+              int ii = biasSat->NumberOfCodeBiases;
+              if (ii >= CLOCKORBIT_NUMBIAS)
+                break;
               biasSat->NumberOfCodeBiases += 1;
               biasSat->Biases[ii].Type = CODETYPEGALILEO_E6_A;
               biasSat->Biases[ii].Bias = it.value();
             }
             else if (it.key() == "6B") {
-              int ii = biasSat->NumberOfCodeBiases; if (ii >= CLOCKORBIT_NUMBIAS) break;
+              int ii = biasSat->NumberOfCodeBiases;
+              if (ii >= CLOCKORBIT_NUMBIAS)
+                break;
               biasSat->NumberOfCodeBiases += 1;
               biasSat->Biases[ii].Type = CODETYPEGALILEO_E6_B;
               biasSat->Biases[ii].Bias = it.value();
             }
             else if (it.key() == "6C") {
-              int ii = biasSat->NumberOfCodeBiases; if (ii >= CLOCKORBIT_NUMBIAS) break;
+              int ii = biasSat->NumberOfCodeBiases;
+              if (ii >= CLOCKORBIT_NUMBIAS)
+                break;
               biasSat->NumberOfCodeBiases += 1;
               biasSat->Biases[ii].Type = CODETYPEGALILEO_E6_C;
               biasSat->Biases[ii].Bias = it.value();
@@ -778,80 +839,106 @@ void bncRtnetUploadCaster::decodeRtnetStream(char* buffer, int bufLen) {
           QMapIterator<QString, double> it(codeBiases);
           while (it.hasNext()) {
             it.next();
-            if      (it.key() == "1C") {
-              int ii = biasSat->NumberOfCodeBiases; if (ii >= CLOCKORBIT_NUMBIAS) break;
+            if (it.key() == "1C") {
+              int ii = biasSat->NumberOfCodeBiases;
+              if (ii >= CLOCKORBIT_NUMBIAS)
+                break;
               biasSat->NumberOfCodeBiases += 1;
               biasSat->Biases[ii].Type = CODETYPEQZSS_L1_CA;
               biasSat->Biases[ii].Bias = it.value();
             }
             else if (it.key() == "1S") {
-              int ii = biasSat->NumberOfCodeBiases; if (ii >= CLOCKORBIT_NUMBIAS) break;
+              int ii = biasSat->NumberOfCodeBiases;
+              if (ii >= CLOCKORBIT_NUMBIAS)
+                break;
               biasSat->NumberOfCodeBiases += 1;
               biasSat->Biases[ii].Type = CODETYPEQZSS_L1C_D;
               biasSat->Biases[ii].Bias = it.value();
             }
             else if (it.key() == "1L") {
-              int ii = biasSat->NumberOfCodeBiases; if (ii >= CLOCKORBIT_NUMBIAS) break;
+              int ii = biasSat->NumberOfCodeBiases;
+              if (ii >= CLOCKORBIT_NUMBIAS)
+                break;
               biasSat->NumberOfCodeBiases += 1;
               biasSat->Biases[ii].Type = CODETYPEQZSS_L1C_P;
               biasSat->Biases[ii].Bias = it.value();
             }
             else if (it.key() == "1X") {
-              int ii = biasSat->NumberOfCodeBiases; if (ii >= CLOCKORBIT_NUMBIAS) break;
+              int ii = biasSat->NumberOfCodeBiases;
+              if (ii >= CLOCKORBIT_NUMBIAS)
+                break;
               biasSat->NumberOfCodeBiases += 1;
               biasSat->Biases[ii].Type = CODETYPEQZSS_L1C_DP;
               biasSat->Biases[ii].Bias = it.value();
             }
             else if (it.key() == "2S") {
-              int ii = biasSat->NumberOfCodeBiases; if (ii >= CLOCKORBIT_NUMBIAS) break;
+              int ii = biasSat->NumberOfCodeBiases;
+              if (ii >= CLOCKORBIT_NUMBIAS)
+                break;
               biasSat->NumberOfCodeBiases += 1;
               biasSat->Biases[ii].Type = CODETYPEQZSS_L2_CM;
               biasSat->Biases[ii].Bias = it.value();
             }
             else if (it.key() == "2L") {
-              int ii = biasSat->NumberOfCodeBiases; if (ii >= CLOCKORBIT_NUMBIAS) break;
+              int ii = biasSat->NumberOfCodeBiases;
+              if (ii >= CLOCKORBIT_NUMBIAS)
+                break;
               biasSat->NumberOfCodeBiases += 1;
               biasSat->Biases[ii].Type = CODETYPEQZSS_L2_CL;
               biasSat->Biases[ii].Bias = it.value();
             }
             else if (it.key() == "2X") {
-              int ii = biasSat->NumberOfCodeBiases; if (ii >= CLOCKORBIT_NUMBIAS) break;
+              int ii = biasSat->NumberOfCodeBiases;
+              if (ii >= CLOCKORBIT_NUMBIAS)
+                break;
               biasSat->NumberOfCodeBiases += 1;
               biasSat->Biases[ii].Type = CODETYPEQZSS_L2_CML;
               biasSat->Biases[ii].Bias = it.value();
             }
             else if (it.key() == "5I") {
-              int ii = biasSat->NumberOfCodeBiases; if (ii >= CLOCKORBIT_NUMBIAS) break;
+              int ii = biasSat->NumberOfCodeBiases;
+              if (ii >= CLOCKORBIT_NUMBIAS)
+                break;
               biasSat->NumberOfCodeBiases += 1;
               biasSat->Biases[ii].Type = CODETYPEQZSS_L5_I;
               biasSat->Biases[ii].Bias = it.value();
             }
             else if (it.key() == "5Q") {
-              int ii = biasSat->NumberOfCodeBiases; if (ii >= CLOCKORBIT_NUMBIAS) break;
+              int ii = biasSat->NumberOfCodeBiases;
+              if (ii >= CLOCKORBIT_NUMBIAS)
+                break;
               biasSat->NumberOfCodeBiases += 1;
               biasSat->Biases[ii].Type = CODETYPEQZSS_L5_Q;
               biasSat->Biases[ii].Bias = it.value();
             }
             else if (it.key() == "5X") {
-              int ii = biasSat->NumberOfCodeBiases; if (ii >= CLOCKORBIT_NUMBIAS) break;
+              int ii = biasSat->NumberOfCodeBiases;
+              if (ii >= CLOCKORBIT_NUMBIAS)
+                break;
               biasSat->NumberOfCodeBiases += 1;
               biasSat->Biases[ii].Type = CODETYPEQZSS_L5_IQ;
               biasSat->Biases[ii].Bias = it.value();
             }
             else if (it.key() == "6S") {
-              int ii = biasSat->NumberOfCodeBiases; if (ii >= CLOCKORBIT_NUMBIAS) break;
+              int ii = biasSat->NumberOfCodeBiases;
+              if (ii >= CLOCKORBIT_NUMBIAS)
+                break;
               biasSat->NumberOfCodeBiases += 1;
               biasSat->Biases[ii].Type = CODETYPEQZSS_LEX_S;
               biasSat->Biases[ii].Bias = it.value();
             }
             else if (it.key() == "6L") {
-              int ii = biasSat->NumberOfCodeBiases; if (ii >= CLOCKORBIT_NUMBIAS) break;
+              int ii = biasSat->NumberOfCodeBiases;
+              if (ii >= CLOCKORBIT_NUMBIAS)
+                break;
               biasSat->NumberOfCodeBiases += 1;
               biasSat->Biases[ii].Type = CODETYPEQZSS_LEX_L;
               biasSat->Biases[ii].Bias = it.value();
             }
             else if (it.key() == "6X") {
-              int ii = biasSat->NumberOfCodeBiases; if (ii >= CLOCKORBIT_NUMBIAS) break;
+              int ii = biasSat->NumberOfCodeBiases;
+              if (ii >= CLOCKORBIT_NUMBIAS)
+                break;
               biasSat->NumberOfCodeBiases += 1;
               biasSat->Biases[ii].Type = CODETYPEQZSS_LEX_SL;
               biasSat->Biases[ii].Bias = it.value();
@@ -862,26 +949,34 @@ void bncRtnetUploadCaster::decodeRtnetStream(char* buffer, int bufLen) {
           QMapIterator<QString, double> it(codeBiases);
           while (it.hasNext()) {
             it.next();
-            if      (it.key() == "1C") {
-              int ii = biasSat->NumberOfCodeBiases; if (ii >= CLOCKORBIT_NUMBIAS) break;
+            if (it.key() == "1C") {
+              int ii = biasSat->NumberOfCodeBiases;
+              if (ii >= CLOCKORBIT_NUMBIAS)
+                break;
               biasSat->NumberOfCodeBiases += 1;
               biasSat->Biases[ii].Type = CODETYPE_SBAS_L1_CA;
               biasSat->Biases[ii].Bias = it.value();
             }
             else if (it.key() == "5I") {
-              int ii = biasSat->NumberOfCodeBiases; if (ii >= CLOCKORBIT_NUMBIAS) break;
+              int ii = biasSat->NumberOfCodeBiases;
+              if (ii >= CLOCKORBIT_NUMBIAS)
+                break;
               biasSat->NumberOfCodeBiases += 1;
               biasSat->Biases[ii].Type = CODETYPE_SBAS_L5_I;
               biasSat->Biases[ii].Bias = it.value();
             }
             else if (it.key() == "5Q") {
-              int ii = biasSat->NumberOfCodeBiases; if (ii >= CLOCKORBIT_NUMBIAS) break;
+              int ii = biasSat->NumberOfCodeBiases;
+              if (ii >= CLOCKORBIT_NUMBIAS)
+                break;
               biasSat->NumberOfCodeBiases += 1;
               biasSat->Biases[ii].Type = CODETYPE_SBAS_L5_Q;
               biasSat->Biases[ii].Bias = it.value();
             }
             else if (it.key() == "5X") {
-              int ii = biasSat->NumberOfCodeBiases; if (ii >= CLOCKORBIT_NUMBIAS) break;
+              int ii = biasSat->NumberOfCodeBiases;
+              if (ii >= CLOCKORBIT_NUMBIAS)
+                break;
               biasSat->NumberOfCodeBiases += 1;
               biasSat->Biases[ii].Type = CODETYPE_SBAS_L5_IQ;
               biasSat->Biases[ii].Bias = it.value();
@@ -892,56 +987,74 @@ void bncRtnetUploadCaster::decodeRtnetStream(char* buffer, int bufLen) {
           QMapIterator<QString, double> it(codeBiases);
           while (it.hasNext()) {
             it.next();
-            if      (it.key() == "2I") {
-              int ii = biasSat->NumberOfCodeBiases; if (ii >= CLOCKORBIT_NUMBIAS) break;
+            if (it.key() == "2I") {
+              int ii = biasSat->NumberOfCodeBiases;
+              if (ii >= CLOCKORBIT_NUMBIAS)
+                break;
               biasSat->NumberOfCodeBiases += 1;
               biasSat->Biases[ii].Type = CODETYPE_BDS_B1_I;
               biasSat->Biases[ii].Bias = it.value();
             }
             else if (it.key() == "2Q") {
-              int ii = biasSat->NumberOfCodeBiases; if (ii >= CLOCKORBIT_NUMBIAS) break;
+              int ii = biasSat->NumberOfCodeBiases;
+              if (ii >= CLOCKORBIT_NUMBIAS)
+                break;
               biasSat->NumberOfCodeBiases += 1;
               biasSat->Biases[ii].Type = CODETYPE_BDS_B1_Q;
               biasSat->Biases[ii].Bias = it.value();
             }
             else if (it.key() == "2X") {
-              int ii = biasSat->NumberOfCodeBiases; if (ii >= CLOCKORBIT_NUMBIAS) break;
+              int ii = biasSat->NumberOfCodeBiases;
+              if (ii >= CLOCKORBIT_NUMBIAS)
+                break;
               biasSat->NumberOfCodeBiases += 1;
               biasSat->Biases[ii].Type = CODETYPE_BDS_B1_IQ;
               biasSat->Biases[ii].Bias = it.value();
             }
             else if (it.key() == "6I") {
-              int ii = biasSat->NumberOfCodeBiases; if (ii >= CLOCKORBIT_NUMBIAS) break;
+              int ii = biasSat->NumberOfCodeBiases;
+              if (ii >= CLOCKORBIT_NUMBIAS)
+                break;
               biasSat->NumberOfCodeBiases += 1;
               biasSat->Biases[ii].Type = CODETYPE_BDS_B3_I;
               biasSat->Biases[ii].Bias = it.value();
             }
             else if (it.key() == "6Q") {
-              int ii = biasSat->NumberOfCodeBiases; if (ii >= CLOCKORBIT_NUMBIAS) break;
+              int ii = biasSat->NumberOfCodeBiases;
+              if (ii >= CLOCKORBIT_NUMBIAS)
+                break;
               biasSat->NumberOfCodeBiases += 1;
               biasSat->Biases[ii].Type = CODETYPE_BDS_B3_Q;
               biasSat->Biases[ii].Bias = it.value();
             }
             else if (it.key() == "6X") {
-              int ii = biasSat->NumberOfCodeBiases; if (ii >= CLOCKORBIT_NUMBIAS) break;
+              int ii = biasSat->NumberOfCodeBiases;
+              if (ii >= CLOCKORBIT_NUMBIAS)
+                break;
               biasSat->NumberOfCodeBiases += 1;
               biasSat->Biases[ii].Type = CODETYPE_BDS_B3_IQ;
               biasSat->Biases[ii].Bias = it.value();
             }
             else if (it.key() == "7I") {
-              int ii = biasSat->NumberOfCodeBiases; if (ii >= CLOCKORBIT_NUMBIAS) break;
+              int ii = biasSat->NumberOfCodeBiases;
+              if (ii >= CLOCKORBIT_NUMBIAS)
+                break;
               biasSat->NumberOfCodeBiases += 1;
               biasSat->Biases[ii].Type = CODETYPE_BDS_B2_I;
               biasSat->Biases[ii].Bias = it.value();
             }
             else if (it.key() == "7Q") {
-              int ii = biasSat->NumberOfCodeBiases; if (ii >= CLOCKORBIT_NUMBIAS) break;
+              int ii = biasSat->NumberOfCodeBiases;
+              if (ii >= CLOCKORBIT_NUMBIAS)
+                break;
               biasSat->NumberOfCodeBiases += 1;
               biasSat->Biases[ii].Type = CODETYPE_BDS_B2_Q;
               biasSat->Biases[ii].Bias = it.value();
             }
             else if (it.key() == "7X") {
-              int ii = biasSat->NumberOfCodeBiases; if (ii >= CLOCKORBIT_NUMBIAS) break;
+              int ii = biasSat->NumberOfCodeBiases;
+              if (ii >= CLOCKORBIT_NUMBIAS)
+                break;
               biasSat->NumberOfCodeBiases += 1;
               biasSat->Biases[ii].Type = CODETYPE_BDS_B2_IQ;
               biasSat->Biases[ii].Bias = it.value();
@@ -952,36 +1065,42 @@ void bncRtnetUploadCaster::decodeRtnetStream(char* buffer, int bufLen) {
       // Phase Biases
       // ------------
       struct PhaseBias::PhaseBiasSat* phasebiasSat = 0;
-      if      (prn.system() == 'G') {
-        phasebiasSat = phasebias.Sat + phasebias.NumberOfSat[CLOCKORBIT_SATGPS];
-        ++phasebias.NumberOfSat[CLOCKORBIT_SATGPS];
-      }
-      else if (prn.system() == 'R') {
-        phasebiasSat = phasebias.Sat + CLOCKORBIT_NUMGPS
-            + phasebias.NumberOfSat[CLOCKORBIT_SATGLONASS];
-        ++phasebias.NumberOfSat[CLOCKORBIT_SATGLONASS];
-      }
-      else if (prn.system() == 'E') {
-        phasebiasSat = phasebias.Sat + CLOCKORBIT_NUMGPS + CLOCKORBIT_NUMGLONASS
-            + phasebias.NumberOfSat[CLOCKORBIT_SATGALILEO];
-        ++phasebias.NumberOfSat[CLOCKORBIT_SATGALILEO];
-      }
-      else if (prn.system() == 'J') {
-        phasebiasSat = phasebias.Sat + CLOCKORBIT_NUMGPS + CLOCKORBIT_NUMGLONASS + CLOCKORBIT_NUMGALILEO
-            + phasebias.NumberOfSat[CLOCKORBIT_SATQZSS];
-        ++phasebias.NumberOfSat[CLOCKORBIT_SATQZSS];
-      }
-      else if (prn.system() == 'S') {
-        phasebiasSat = phasebias.Sat + CLOCKORBIT_NUMGPS + CLOCKORBIT_NUMGLONASS + CLOCKORBIT_NUMGALILEO
-            + CLOCKORBIT_NUMQZSS
-            + phasebias.NumberOfSat[CLOCKORBIT_SATSBAS];
-        ++phasebias.NumberOfSat[CLOCKORBIT_SATSBAS];
-      }
-      else if (prn.system() == 'C') {
-        phasebiasSat = phasebias.Sat + CLOCKORBIT_NUMGPS + CLOCKORBIT_NUMGLONASS + CLOCKORBIT_NUMGALILEO
-            + CLOCKORBIT_NUMQZSS + CLOCKORBIT_NUMSBAS
-            + phasebias.NumberOfSat[CLOCKORBIT_SATBDS];
-        ++phasebias.NumberOfSat[CLOCKORBIT_SATBDS];
+      if (!phaseBiasList.isEmpty()) {
+        if (prn.system() == 'G') {
+          phasebiasSat = phasebias.Sat
+              + phasebias.NumberOfSat[CLOCKORBIT_SATGPS];
+          ++phasebias.NumberOfSat[CLOCKORBIT_SATGPS];
+        }
+        else if (prn.system() == 'R') {
+          phasebiasSat = phasebias.Sat + CLOCKORBIT_NUMGPS
+              + phasebias.NumberOfSat[CLOCKORBIT_SATGLONASS];
+          ++phasebias.NumberOfSat[CLOCKORBIT_SATGLONASS];
+        }
+        else if (prn.system() == 'E') {
+          phasebiasSat = phasebias.Sat + CLOCKORBIT_NUMGPS
+              + CLOCKORBIT_NUMGLONASS
+              + phasebias.NumberOfSat[CLOCKORBIT_SATGALILEO];
+          ++phasebias.NumberOfSat[CLOCKORBIT_SATGALILEO];
+        }
+        else if (prn.system() == 'J') {
+          phasebiasSat = phasebias.Sat + CLOCKORBIT_NUMGPS
+              + CLOCKORBIT_NUMGLONASS + CLOCKORBIT_NUMGALILEO
+              + phasebias.NumberOfSat[CLOCKORBIT_SATQZSS];
+          ++phasebias.NumberOfSat[CLOCKORBIT_SATQZSS];
+        }
+        else if (prn.system() == 'S') {
+          phasebiasSat = phasebias.Sat + CLOCKORBIT_NUMGPS
+              + CLOCKORBIT_NUMGLONASS + CLOCKORBIT_NUMGALILEO
+              + CLOCKORBIT_NUMQZSS + phasebias.NumberOfSat[CLOCKORBIT_SATSBAS];
+          ++phasebias.NumberOfSat[CLOCKORBIT_SATSBAS];
+        }
+        else if (prn.system() == 'C') {
+          phasebiasSat = phasebias.Sat + CLOCKORBIT_NUMGPS
+              + CLOCKORBIT_NUMGLONASS + CLOCKORBIT_NUMGALILEO
+              + CLOCKORBIT_NUMQZSS + CLOCKORBIT_NUMSBAS
+              + phasebias.NumberOfSat[CLOCKORBIT_SATBDS];
+          ++phasebias.NumberOfSat[CLOCKORBIT_SATBDS];
+        }
       }
 
       if (phasebiasSat) {
@@ -991,534 +1110,754 @@ void bncRtnetUploadCaster::decodeRtnetStream(char* buffer, int bufLen) {
         phasebiasSat->NumberOfPhaseBiases = 0;
         phasebiasSat->YawAngle = pbSat.yA;
         phasebiasSat->YawRate = pbSat.yR;
-        if      (prn.system() == 'G') {
+        if (prn.system() == 'G') {
           QListIterator<phaseBiasSignal> it(phaseBiasList);
           while (it.hasNext()) {
             const phaseBiasSignal &pbSig = it.next();
-            if      (pbSig.type == "1C") {
-              int ii = phasebiasSat->NumberOfPhaseBiases; if (ii >= CLOCKORBIT_NUMBIAS) break;
+            if (pbSig.type == "1C") {
+              int ii = phasebiasSat->NumberOfPhaseBiases;
+              if (ii >= CLOCKORBIT_NUMBIAS)
+                break;
               phasebiasSat->NumberOfPhaseBiases += 1;
               phasebiasSat->Biases[ii].Type = CODETYPEGPS_L1_CA;
               phasebiasSat->Biases[ii].Bias = pbSig.bias;
-              phasebiasSat->Biases[ii].SignalIntegerIndicator          = pbSig.intInd;
-              phasebiasSat->Biases[ii].SignalsWideLaneIntegerIndicator = pbSig.wlInd;
-              phasebiasSat->Biases[ii].SignalDiscontinuityCounter      = pbSig.discCount;
+              phasebiasSat->Biases[ii].SignalIntegerIndicator = pbSig.intInd;
+              phasebiasSat->Biases[ii].SignalsWideLaneIntegerIndicator =
+                  pbSig.wlInd;
+              phasebiasSat->Biases[ii].SignalDiscontinuityCounter =
+                  pbSig.discCount;
             }
             else if (pbSig.type == "1P") {
-              int ii = phasebiasSat->NumberOfPhaseBiases; if (ii >= CLOCKORBIT_NUMBIAS) break;
+              int ii = phasebiasSat->NumberOfPhaseBiases;
+              if (ii >= CLOCKORBIT_NUMBIAS)
+                break;
               phasebiasSat->NumberOfPhaseBiases += 1;
               phasebiasSat->Biases[ii].Type = CODETYPEGPS_L1_P;
               phasebiasSat->Biases[ii].Bias = pbSig.bias;
-              phasebiasSat->Biases[ii].SignalIntegerIndicator          = pbSig.intInd;
-              phasebiasSat->Biases[ii].SignalsWideLaneIntegerIndicator = pbSig.wlInd;
-              phasebiasSat->Biases[ii].SignalDiscontinuityCounter      = pbSig.discCount;
+              phasebiasSat->Biases[ii].SignalIntegerIndicator = pbSig.intInd;
+              phasebiasSat->Biases[ii].SignalsWideLaneIntegerIndicator =
+                  pbSig.wlInd;
+              phasebiasSat->Biases[ii].SignalDiscontinuityCounter =
+                  pbSig.discCount;
             }
             else if (pbSig.type == "1W") {
-              int ii = phasebiasSat->NumberOfPhaseBiases; if (ii >= CLOCKORBIT_NUMBIAS) break;
+              int ii = phasebiasSat->NumberOfPhaseBiases;
+              if (ii >= CLOCKORBIT_NUMBIAS)
+                break;
               phasebiasSat->NumberOfPhaseBiases += 1;
               phasebiasSat->Biases[ii].Type = CODETYPEGPS_L1_Z;
               phasebiasSat->Biases[ii].Bias = pbSig.bias;
-              phasebiasSat->Biases[ii].SignalIntegerIndicator          = pbSig.intInd;
-              phasebiasSat->Biases[ii].SignalsWideLaneIntegerIndicator = pbSig.wlInd;
-              phasebiasSat->Biases[ii].SignalDiscontinuityCounter      = pbSig.discCount;
+              phasebiasSat->Biases[ii].SignalIntegerIndicator = pbSig.intInd;
+              phasebiasSat->Biases[ii].SignalsWideLaneIntegerIndicator =
+                  pbSig.wlInd;
+              phasebiasSat->Biases[ii].SignalDiscontinuityCounter =
+                  pbSig.discCount;
             }
             else if (pbSig.type == "2C") {
-              int ii = phasebiasSat->NumberOfPhaseBiases; if (ii >= CLOCKORBIT_NUMBIAS) break;
+              int ii = phasebiasSat->NumberOfPhaseBiases;
+              if (ii >= CLOCKORBIT_NUMBIAS)
+                break;
               phasebiasSat->NumberOfPhaseBiases += 1;
               phasebiasSat->Biases[ii].Type = CODETYPEGPS_L2_CA;
               phasebiasSat->Biases[ii].Bias = pbSig.bias;
-              phasebiasSat->Biases[ii].SignalIntegerIndicator          = pbSig.intInd;
-              phasebiasSat->Biases[ii].SignalsWideLaneIntegerIndicator = pbSig.wlInd;
-              phasebiasSat->Biases[ii].SignalDiscontinuityCounter      = pbSig.discCount;
+              phasebiasSat->Biases[ii].SignalIntegerIndicator = pbSig.intInd;
+              phasebiasSat->Biases[ii].SignalsWideLaneIntegerIndicator =
+                  pbSig.wlInd;
+              phasebiasSat->Biases[ii].SignalDiscontinuityCounter =
+                  pbSig.discCount;
             }
             else if (pbSig.type == "2D") {
-              int ii = phasebiasSat->NumberOfPhaseBiases; if (ii >= CLOCKORBIT_NUMBIAS) break;
+              int ii = phasebiasSat->NumberOfPhaseBiases;
+              if (ii >= CLOCKORBIT_NUMBIAS)
+                break;
               phasebiasSat->NumberOfPhaseBiases += 1;
               phasebiasSat->Biases[ii].Type = CODETYPEGPS_SEMI_CODELESS;
               phasebiasSat->Biases[ii].Bias = pbSig.bias;
-              phasebiasSat->Biases[ii].SignalIntegerIndicator          = pbSig.intInd;
-              phasebiasSat->Biases[ii].SignalsWideLaneIntegerIndicator = pbSig.wlInd;
-              phasebiasSat->Biases[ii].SignalDiscontinuityCounter      = pbSig.discCount;
+              phasebiasSat->Biases[ii].SignalIntegerIndicator = pbSig.intInd;
+              phasebiasSat->Biases[ii].SignalsWideLaneIntegerIndicator =
+                  pbSig.wlInd;
+              phasebiasSat->Biases[ii].SignalDiscontinuityCounter =
+                  pbSig.discCount;
             }
             else if (pbSig.type == "2S") {
-              int ii = phasebiasSat->NumberOfPhaseBiases; if (ii >= CLOCKORBIT_NUMBIAS) break;
+              int ii = phasebiasSat->NumberOfPhaseBiases;
+              if (ii >= CLOCKORBIT_NUMBIAS)
+                break;
               phasebiasSat->NumberOfPhaseBiases += 1;
               phasebiasSat->Biases[ii].Type = CODETYPEGPS_L2_CM;
               phasebiasSat->Biases[ii].Bias = pbSig.bias;
-              phasebiasSat->Biases[ii].SignalIntegerIndicator          = pbSig.intInd;
-              phasebiasSat->Biases[ii].SignalsWideLaneIntegerIndicator = pbSig.wlInd;
-              phasebiasSat->Biases[ii].SignalDiscontinuityCounter      = pbSig.discCount;
+              phasebiasSat->Biases[ii].SignalIntegerIndicator = pbSig.intInd;
+              phasebiasSat->Biases[ii].SignalsWideLaneIntegerIndicator =
+                  pbSig.wlInd;
+              phasebiasSat->Biases[ii].SignalDiscontinuityCounter =
+                  pbSig.discCount;
             }
             else if (pbSig.type == "2L") {
-              int ii = phasebiasSat->NumberOfPhaseBiases; if (ii >= CLOCKORBIT_NUMBIAS) break;
+              int ii = phasebiasSat->NumberOfPhaseBiases;
+              if (ii >= CLOCKORBIT_NUMBIAS)
+                break;
               phasebiasSat->NumberOfPhaseBiases += 1;
               phasebiasSat->Biases[ii].Type = CODETYPEGPS_L2_CL;
               phasebiasSat->Biases[ii].Bias = pbSig.bias;
-              phasebiasSat->Biases[ii].SignalIntegerIndicator          = pbSig.intInd;
-              phasebiasSat->Biases[ii].SignalsWideLaneIntegerIndicator = pbSig.wlInd;
-              phasebiasSat->Biases[ii].SignalDiscontinuityCounter      = pbSig.discCount;
+              phasebiasSat->Biases[ii].SignalIntegerIndicator = pbSig.intInd;
+              phasebiasSat->Biases[ii].SignalsWideLaneIntegerIndicator =
+                  pbSig.wlInd;
+              phasebiasSat->Biases[ii].SignalDiscontinuityCounter =
+                  pbSig.discCount;
             }
             else if (pbSig.type == "2X") {
-              int ii = phasebiasSat->NumberOfPhaseBiases; if (ii >= CLOCKORBIT_NUMBIAS) break;
+              int ii = phasebiasSat->NumberOfPhaseBiases;
+              if (ii >= CLOCKORBIT_NUMBIAS)
+                break;
               phasebiasSat->NumberOfPhaseBiases += 1;
               phasebiasSat->Biases[ii].Type = CODETYPEGPS_L2_CML;
               phasebiasSat->Biases[ii].Bias = pbSig.bias;
-              phasebiasSat->Biases[ii].SignalIntegerIndicator          = pbSig.intInd;
-              phasebiasSat->Biases[ii].SignalsWideLaneIntegerIndicator = pbSig.wlInd;
-              phasebiasSat->Biases[ii].SignalDiscontinuityCounter      = pbSig.discCount;
+              phasebiasSat->Biases[ii].SignalIntegerIndicator = pbSig.intInd;
+              phasebiasSat->Biases[ii].SignalsWideLaneIntegerIndicator =
+                  pbSig.wlInd;
+              phasebiasSat->Biases[ii].SignalDiscontinuityCounter =
+                  pbSig.discCount;
             }
             else if (pbSig.type == "2P") {
-              int ii = phasebiasSat->NumberOfPhaseBiases; if (ii >= CLOCKORBIT_NUMBIAS) break;
+              int ii = phasebiasSat->NumberOfPhaseBiases;
+              if (ii >= CLOCKORBIT_NUMBIAS)
+                break;
               phasebiasSat->NumberOfPhaseBiases += 1;
               phasebiasSat->Biases[ii].Type = CODETYPEGPS_L2_P;
               phasebiasSat->Biases[ii].Bias = pbSig.bias;
-              phasebiasSat->Biases[ii].SignalIntegerIndicator          = pbSig.intInd;
-              phasebiasSat->Biases[ii].SignalsWideLaneIntegerIndicator = pbSig.wlInd;
-              phasebiasSat->Biases[ii].SignalDiscontinuityCounter      = pbSig.discCount;
+              phasebiasSat->Biases[ii].SignalIntegerIndicator = pbSig.intInd;
+              phasebiasSat->Biases[ii].SignalsWideLaneIntegerIndicator =
+                  pbSig.wlInd;
+              phasebiasSat->Biases[ii].SignalDiscontinuityCounter =
+                  pbSig.discCount;
             }
             else if (pbSig.type == "2W") {
-              int ii = phasebiasSat->NumberOfPhaseBiases; if (ii >= CLOCKORBIT_NUMBIAS) break;
+              int ii = phasebiasSat->NumberOfPhaseBiases;
+              if (ii >= CLOCKORBIT_NUMBIAS)
+                break;
               phasebiasSat->NumberOfPhaseBiases += 1;
               phasebiasSat->Biases[ii].Type = CODETYPEGPS_L2_Z;
               phasebiasSat->Biases[ii].Bias = pbSig.bias;
-              phasebiasSat->Biases[ii].SignalIntegerIndicator          = pbSig.intInd;
-              phasebiasSat->Biases[ii].SignalsWideLaneIntegerIndicator = pbSig.wlInd;
-              phasebiasSat->Biases[ii].SignalDiscontinuityCounter      = pbSig.discCount;
+              phasebiasSat->Biases[ii].SignalIntegerIndicator = pbSig.intInd;
+              phasebiasSat->Biases[ii].SignalsWideLaneIntegerIndicator =
+                  pbSig.wlInd;
+              phasebiasSat->Biases[ii].SignalDiscontinuityCounter =
+                  pbSig.discCount;
             }
             else if (pbSig.type == "5I") {
-              int ii = phasebiasSat->NumberOfPhaseBiases; if (ii >= CLOCKORBIT_NUMBIAS) break;
+              int ii = phasebiasSat->NumberOfPhaseBiases;
+              if (ii >= CLOCKORBIT_NUMBIAS)
+                break;
               phasebiasSat->NumberOfPhaseBiases += 1;
               phasebiasSat->Biases[ii].Type = CODETYPEGPS_L5_I;
               phasebiasSat->Biases[ii].Bias = pbSig.bias;
-              phasebiasSat->Biases[ii].SignalIntegerIndicator          = pbSig.intInd;
-              phasebiasSat->Biases[ii].SignalsWideLaneIntegerIndicator = pbSig.wlInd;
-              phasebiasSat->Biases[ii].SignalDiscontinuityCounter      = pbSig.discCount;
+              phasebiasSat->Biases[ii].SignalIntegerIndicator = pbSig.intInd;
+              phasebiasSat->Biases[ii].SignalsWideLaneIntegerIndicator =
+                  pbSig.wlInd;
+              phasebiasSat->Biases[ii].SignalDiscontinuityCounter =
+                  pbSig.discCount;
             }
             else if (pbSig.type == "5Q") {
-              int ii = phasebiasSat->NumberOfPhaseBiases; if (ii >= CLOCKORBIT_NUMBIAS) break;
+              int ii = phasebiasSat->NumberOfPhaseBiases;
+              if (ii >= CLOCKORBIT_NUMBIAS)
+                break;
               phasebiasSat->NumberOfPhaseBiases += 1;
               phasebiasSat->Biases[ii].Type = CODETYPEGPS_L5_Q;
               phasebiasSat->Biases[ii].Bias = pbSig.bias;
-              phasebiasSat->Biases[ii].SignalIntegerIndicator          = pbSig.intInd;
-              phasebiasSat->Biases[ii].SignalsWideLaneIntegerIndicator = pbSig.wlInd;
-              phasebiasSat->Biases[ii].SignalDiscontinuityCounter      = pbSig.discCount;
+              phasebiasSat->Biases[ii].SignalIntegerIndicator = pbSig.intInd;
+              phasebiasSat->Biases[ii].SignalsWideLaneIntegerIndicator =
+                  pbSig.wlInd;
+              phasebiasSat->Biases[ii].SignalDiscontinuityCounter =
+                  pbSig.discCount;
             }
             else if (pbSig.type == "5X") {
-              int ii = phasebiasSat->NumberOfPhaseBiases; if (ii >= CLOCKORBIT_NUMBIAS) break;
+              int ii = phasebiasSat->NumberOfPhaseBiases;
+              if (ii >= CLOCKORBIT_NUMBIAS)
+                break;
               phasebiasSat->NumberOfPhaseBiases += 1;
               phasebiasSat->Biases[ii].Type = CODETYPEGPS_L5_IQ;
               phasebiasSat->Biases[ii].Bias = pbSig.bias;
-              phasebiasSat->Biases[ii].SignalIntegerIndicator          = pbSig.intInd;
-              phasebiasSat->Biases[ii].SignalsWideLaneIntegerIndicator = pbSig.wlInd;
-              phasebiasSat->Biases[ii].SignalDiscontinuityCounter      = pbSig.discCount;
+              phasebiasSat->Biases[ii].SignalIntegerIndicator = pbSig.intInd;
+              phasebiasSat->Biases[ii].SignalsWideLaneIntegerIndicator =
+                  pbSig.wlInd;
+              phasebiasSat->Biases[ii].SignalDiscontinuityCounter =
+                  pbSig.discCount;
             }
           }
         }
-        if      (prn.system() == 'R') {
+        if (prn.system() == 'R') {
           QListIterator<phaseBiasSignal> it(phaseBiasList);
           while (it.hasNext()) {
             const phaseBiasSignal &pbSig = it.next();
-            if      (pbSig.type == "1C") {
-              int ii = phasebiasSat->NumberOfPhaseBiases; if (ii >= CLOCKORBIT_NUMBIAS) break;
+            if (pbSig.type == "1C") {
+              int ii = phasebiasSat->NumberOfPhaseBiases;
+              if (ii >= CLOCKORBIT_NUMBIAS)
+                break;
               phasebiasSat->NumberOfPhaseBiases += 1;
               phasebiasSat->Biases[ii].Type = CODETYPEGLONASS_L1_CA;
               phasebiasSat->Biases[ii].Bias = pbSig.bias;
-              phasebiasSat->Biases[ii].SignalIntegerIndicator          = pbSig.intInd;
-              phasebiasSat->Biases[ii].SignalsWideLaneIntegerIndicator = pbSig.wlInd;
-              phasebiasSat->Biases[ii].SignalDiscontinuityCounter      = pbSig.discCount;
+              phasebiasSat->Biases[ii].SignalIntegerIndicator = pbSig.intInd;
+              phasebiasSat->Biases[ii].SignalsWideLaneIntegerIndicator =
+                  pbSig.wlInd;
+              phasebiasSat->Biases[ii].SignalDiscontinuityCounter =
+                  pbSig.discCount;
             }
             else if (pbSig.type == "1P") {
-              int ii = phasebiasSat->NumberOfPhaseBiases; if (ii >= CLOCKORBIT_NUMBIAS) break;
+              int ii = phasebiasSat->NumberOfPhaseBiases;
+              if (ii >= CLOCKORBIT_NUMBIAS)
+                break;
               phasebiasSat->NumberOfPhaseBiases += 1;
               phasebiasSat->Biases[ii].Type = CODETYPEGLONASS_L1_P;
               phasebiasSat->Biases[ii].Bias = pbSig.bias;
-              phasebiasSat->Biases[ii].SignalIntegerIndicator          = pbSig.intInd;
-              phasebiasSat->Biases[ii].SignalsWideLaneIntegerIndicator = pbSig.wlInd;
-              phasebiasSat->Biases[ii].SignalDiscontinuityCounter      = pbSig.discCount;
+              phasebiasSat->Biases[ii].SignalIntegerIndicator = pbSig.intInd;
+              phasebiasSat->Biases[ii].SignalsWideLaneIntegerIndicator =
+                  pbSig.wlInd;
+              phasebiasSat->Biases[ii].SignalDiscontinuityCounter =
+                  pbSig.discCount;
             }
             else if (pbSig.type == "2C") {
-              int ii = phasebiasSat->NumberOfPhaseBiases; if (ii >= CLOCKORBIT_NUMBIAS) break;
+              int ii = phasebiasSat->NumberOfPhaseBiases;
+              if (ii >= CLOCKORBIT_NUMBIAS)
+                break;
               phasebiasSat->NumberOfPhaseBiases += 1;
               phasebiasSat->Biases[ii].Type = CODETYPEGLONASS_L2_CA;
               phasebiasSat->Biases[ii].Bias = pbSig.bias;
-              phasebiasSat->Biases[ii].SignalIntegerIndicator          = pbSig.intInd;
-              phasebiasSat->Biases[ii].SignalsWideLaneIntegerIndicator = pbSig.wlInd;
-              phasebiasSat->Biases[ii].SignalDiscontinuityCounter      = pbSig.discCount;
+              phasebiasSat->Biases[ii].SignalIntegerIndicator = pbSig.intInd;
+              phasebiasSat->Biases[ii].SignalsWideLaneIntegerIndicator =
+                  pbSig.wlInd;
+              phasebiasSat->Biases[ii].SignalDiscontinuityCounter =
+                  pbSig.discCount;
             }
             else if (pbSig.type == "2P") {
-              int ii = phasebiasSat->NumberOfPhaseBiases; if (ii >= CLOCKORBIT_NUMBIAS) break;
+              int ii = phasebiasSat->NumberOfPhaseBiases;
+              if (ii >= CLOCKORBIT_NUMBIAS)
+                break;
               phasebiasSat->NumberOfPhaseBiases += 1;
               phasebiasSat->Biases[ii].Type = CODETYPEGLONASS_L2_P;
               phasebiasSat->Biases[ii].Bias = pbSig.bias;
-              phasebiasSat->Biases[ii].SignalIntegerIndicator          = pbSig.intInd;
-              phasebiasSat->Biases[ii].SignalsWideLaneIntegerIndicator = pbSig.wlInd;
-              phasebiasSat->Biases[ii].SignalDiscontinuityCounter      = pbSig.discCount;
+              phasebiasSat->Biases[ii].SignalIntegerIndicator = pbSig.intInd;
+              phasebiasSat->Biases[ii].SignalsWideLaneIntegerIndicator =
+                  pbSig.wlInd;
+              phasebiasSat->Biases[ii].SignalDiscontinuityCounter =
+                  pbSig.discCount;
             }
           }
         }
-        if      (prn.system() == 'E') {
+        if (prn.system() == 'E') {
           QListIterator<phaseBiasSignal> it(phaseBiasList);
           while (it.hasNext()) {
             const phaseBiasSignal &pbSig = it.next();
-            if      (pbSig.type == "1A") {
-              int ii = phasebiasSat->NumberOfPhaseBiases; if (ii >= CLOCKORBIT_NUMBIAS) break;
+            if (pbSig.type == "1A") {
+              int ii = phasebiasSat->NumberOfPhaseBiases;
+              if (ii >= CLOCKORBIT_NUMBIAS)
+                break;
               phasebiasSat->NumberOfPhaseBiases += 1;
               phasebiasSat->Biases[ii].Type = CODETYPEGALILEO_E1_A;
               phasebiasSat->Biases[ii].Bias = pbSig.bias;
-              phasebiasSat->Biases[ii].SignalIntegerIndicator          = pbSig.intInd;
-              phasebiasSat->Biases[ii].SignalsWideLaneIntegerIndicator = pbSig.wlInd;
-              phasebiasSat->Biases[ii].SignalDiscontinuityCounter      = pbSig.discCount;
+              phasebiasSat->Biases[ii].SignalIntegerIndicator = pbSig.intInd;
+              phasebiasSat->Biases[ii].SignalsWideLaneIntegerIndicator =
+                  pbSig.wlInd;
+              phasebiasSat->Biases[ii].SignalDiscontinuityCounter =
+                  pbSig.discCount;
             }
             else if (pbSig.type == "1B") {
-              int ii = phasebiasSat->NumberOfPhaseBiases; if (ii >= CLOCKORBIT_NUMBIAS) break;
+              int ii = phasebiasSat->NumberOfPhaseBiases;
+              if (ii >= CLOCKORBIT_NUMBIAS)
+                break;
               phasebiasSat->NumberOfPhaseBiases += 1;
               phasebiasSat->Biases[ii].Type = CODETYPEGALILEO_E1_B;
               phasebiasSat->Biases[ii].Bias = pbSig.bias;
-              phasebiasSat->Biases[ii].SignalIntegerIndicator          = pbSig.intInd;
-              phasebiasSat->Biases[ii].SignalsWideLaneIntegerIndicator = pbSig.wlInd;
-              phasebiasSat->Biases[ii].SignalDiscontinuityCounter      = pbSig.discCount;
+              phasebiasSat->Biases[ii].SignalIntegerIndicator = pbSig.intInd;
+              phasebiasSat->Biases[ii].SignalsWideLaneIntegerIndicator =
+                  pbSig.wlInd;
+              phasebiasSat->Biases[ii].SignalDiscontinuityCounter =
+                  pbSig.discCount;
             }
             else if (pbSig.type == "1C") {
-              int ii = phasebiasSat->NumberOfPhaseBiases; if (ii >= CLOCKORBIT_NUMBIAS) break;
+              int ii = phasebiasSat->NumberOfPhaseBiases;
+              if (ii >= CLOCKORBIT_NUMBIAS)
+                break;
               phasebiasSat->NumberOfPhaseBiases += 1;
               phasebiasSat->Biases[ii].Type = CODETYPEGALILEO_E1_C;
               phasebiasSat->Biases[ii].Bias = pbSig.bias;
-              phasebiasSat->Biases[ii].SignalIntegerIndicator          = pbSig.intInd;
-              phasebiasSat->Biases[ii].SignalsWideLaneIntegerIndicator = pbSig.wlInd;
-              phasebiasSat->Biases[ii].SignalDiscontinuityCounter      = pbSig.discCount;
+              phasebiasSat->Biases[ii].SignalIntegerIndicator = pbSig.intInd;
+              phasebiasSat->Biases[ii].SignalsWideLaneIntegerIndicator =
+                  pbSig.wlInd;
+              phasebiasSat->Biases[ii].SignalDiscontinuityCounter =
+                  pbSig.discCount;
             }
             else if (pbSig.type == "5I") {
-              int ii = phasebiasSat->NumberOfPhaseBiases; if (ii >= CLOCKORBIT_NUMBIAS) break;
+              int ii = phasebiasSat->NumberOfPhaseBiases;
+              if (ii >= CLOCKORBIT_NUMBIAS)
+                break;
               phasebiasSat->NumberOfPhaseBiases += 1;
               phasebiasSat->Biases[ii].Type = CODETYPEGALILEO_E5A_I;
               phasebiasSat->Biases[ii].Bias = pbSig.bias;
-              phasebiasSat->Biases[ii].SignalIntegerIndicator          = pbSig.intInd;
-              phasebiasSat->Biases[ii].SignalsWideLaneIntegerIndicator = pbSig.wlInd;
-              phasebiasSat->Biases[ii].SignalDiscontinuityCounter      = pbSig.discCount;
+              phasebiasSat->Biases[ii].SignalIntegerIndicator = pbSig.intInd;
+              phasebiasSat->Biases[ii].SignalsWideLaneIntegerIndicator =
+                  pbSig.wlInd;
+              phasebiasSat->Biases[ii].SignalDiscontinuityCounter =
+                  pbSig.discCount;
             }
             else if (pbSig.type == "5Q") {
-              int ii = phasebiasSat->NumberOfPhaseBiases; if (ii >= CLOCKORBIT_NUMBIAS) break;
+              int ii = phasebiasSat->NumberOfPhaseBiases;
+              if (ii >= CLOCKORBIT_NUMBIAS)
+                break;
               phasebiasSat->NumberOfPhaseBiases += 1;
               phasebiasSat->Biases[ii].Type = CODETYPEGALILEO_E5A_Q;
               phasebiasSat->Biases[ii].Bias = pbSig.bias;
-              phasebiasSat->Biases[ii].SignalIntegerIndicator          = pbSig.intInd;
-              phasebiasSat->Biases[ii].SignalsWideLaneIntegerIndicator = pbSig.wlInd;
-              phasebiasSat->Biases[ii].SignalDiscontinuityCounter      = pbSig.discCount;
+              phasebiasSat->Biases[ii].SignalIntegerIndicator = pbSig.intInd;
+              phasebiasSat->Biases[ii].SignalsWideLaneIntegerIndicator =
+                  pbSig.wlInd;
+              phasebiasSat->Biases[ii].SignalDiscontinuityCounter =
+                  pbSig.discCount;
             }
             else if (pbSig.type == "7I") {
-              int ii = phasebiasSat->NumberOfPhaseBiases; if (ii >= CLOCKORBIT_NUMBIAS) break;
+              int ii = phasebiasSat->NumberOfPhaseBiases;
+              if (ii >= CLOCKORBIT_NUMBIAS)
+                break;
               phasebiasSat->NumberOfPhaseBiases += 1;
               phasebiasSat->Biases[ii].Type = CODETYPEGALILEO_E5B_I;
               phasebiasSat->Biases[ii].Bias = pbSig.bias;
-              phasebiasSat->Biases[ii].SignalIntegerIndicator          = pbSig.intInd;
-              phasebiasSat->Biases[ii].SignalsWideLaneIntegerIndicator = pbSig.wlInd;
-              phasebiasSat->Biases[ii].SignalDiscontinuityCounter      = pbSig.discCount;
+              phasebiasSat->Biases[ii].SignalIntegerIndicator = pbSig.intInd;
+              phasebiasSat->Biases[ii].SignalsWideLaneIntegerIndicator =
+                  pbSig.wlInd;
+              phasebiasSat->Biases[ii].SignalDiscontinuityCounter =
+                  pbSig.discCount;
             }
             else if (pbSig.type == "7Q") {
-              int ii = phasebiasSat->NumberOfPhaseBiases; if (ii >= CLOCKORBIT_NUMBIAS) break;
+              int ii = phasebiasSat->NumberOfPhaseBiases;
+              if (ii >= CLOCKORBIT_NUMBIAS)
+                break;
               phasebiasSat->NumberOfPhaseBiases += 1;
               phasebiasSat->Biases[ii].Type = CODETYPEGALILEO_E5B_Q;
               phasebiasSat->Biases[ii].Bias = pbSig.bias;
-              phasebiasSat->Biases[ii].SignalIntegerIndicator          = pbSig.intInd;
-              phasebiasSat->Biases[ii].SignalsWideLaneIntegerIndicator = pbSig.wlInd;
-              phasebiasSat->Biases[ii].SignalDiscontinuityCounter      = pbSig.discCount;
+              phasebiasSat->Biases[ii].SignalIntegerIndicator = pbSig.intInd;
+              phasebiasSat->Biases[ii].SignalsWideLaneIntegerIndicator =
+                  pbSig.wlInd;
+              phasebiasSat->Biases[ii].SignalDiscontinuityCounter =
+                  pbSig.discCount;
             }
             else if (pbSig.type == "8I") {
-              int ii = phasebiasSat->NumberOfPhaseBiases; if (ii >= CLOCKORBIT_NUMBIAS) break;
+              int ii = phasebiasSat->NumberOfPhaseBiases;
+              if (ii >= CLOCKORBIT_NUMBIAS)
+                break;
               phasebiasSat->NumberOfPhaseBiases += 1;
               phasebiasSat->Biases[ii].Type = CODETYPEGALILEO_E5_I;
               phasebiasSat->Biases[ii].Bias = pbSig.bias;
-              phasebiasSat->Biases[ii].SignalIntegerIndicator          = pbSig.intInd;
-              phasebiasSat->Biases[ii].SignalsWideLaneIntegerIndicator = pbSig.wlInd;
-              phasebiasSat->Biases[ii].SignalDiscontinuityCounter      = pbSig.discCount;
+              phasebiasSat->Biases[ii].SignalIntegerIndicator = pbSig.intInd;
+              phasebiasSat->Biases[ii].SignalsWideLaneIntegerIndicator =
+                  pbSig.wlInd;
+              phasebiasSat->Biases[ii].SignalDiscontinuityCounter =
+                  pbSig.discCount;
             }
             else if (pbSig.type == "8Q") {
-              int ii = phasebiasSat->NumberOfPhaseBiases; if (ii >= CLOCKORBIT_NUMBIAS) break;
+              int ii = phasebiasSat->NumberOfPhaseBiases;
+              if (ii >= CLOCKORBIT_NUMBIAS)
+                break;
               phasebiasSat->NumberOfPhaseBiases += 1;
               phasebiasSat->Biases[ii].Type = CODETYPEGALILEO_E5_Q;
               phasebiasSat->Biases[ii].Bias = pbSig.bias;
-              phasebiasSat->Biases[ii].SignalIntegerIndicator          = pbSig.intInd;
-              phasebiasSat->Biases[ii].SignalsWideLaneIntegerIndicator = pbSig.wlInd;
-              phasebiasSat->Biases[ii].SignalDiscontinuityCounter      = pbSig.discCount;
+              phasebiasSat->Biases[ii].SignalIntegerIndicator = pbSig.intInd;
+              phasebiasSat->Biases[ii].SignalsWideLaneIntegerIndicator =
+                  pbSig.wlInd;
+              phasebiasSat->Biases[ii].SignalDiscontinuityCounter =
+                  pbSig.discCount;
             }
             else if (pbSig.type == "6A") {
-              int ii = phasebiasSat->NumberOfPhaseBiases; if (ii >= CLOCKORBIT_NUMBIAS) break;
+              int ii = phasebiasSat->NumberOfPhaseBiases;
+              if (ii >= CLOCKORBIT_NUMBIAS)
+                break;
               phasebiasSat->NumberOfPhaseBiases += 1;
               phasebiasSat->Biases[ii].Type = CODETYPEGALILEO_E6_A;
               phasebiasSat->Biases[ii].Bias = pbSig.bias;
-              phasebiasSat->Biases[ii].SignalIntegerIndicator          = pbSig.intInd;
-              phasebiasSat->Biases[ii].SignalsWideLaneIntegerIndicator = pbSig.wlInd;
-              phasebiasSat->Biases[ii].SignalDiscontinuityCounter      = pbSig.discCount;
+              phasebiasSat->Biases[ii].SignalIntegerIndicator = pbSig.intInd;
+              phasebiasSat->Biases[ii].SignalsWideLaneIntegerIndicator =
+                  pbSig.wlInd;
+              phasebiasSat->Biases[ii].SignalDiscontinuityCounter =
+                  pbSig.discCount;
             }
             else if (pbSig.type == "6B") {
-              int ii = phasebiasSat->NumberOfPhaseBiases; if (ii >= CLOCKORBIT_NUMBIAS) break;
+              int ii = phasebiasSat->NumberOfPhaseBiases;
+              if (ii >= CLOCKORBIT_NUMBIAS)
+                break;
               phasebiasSat->NumberOfPhaseBiases += 1;
               phasebiasSat->Biases[ii].Type = CODETYPEGALILEO_E6_B;
               phasebiasSat->Biases[ii].Bias = pbSig.bias;
-              phasebiasSat->Biases[ii].SignalIntegerIndicator          = pbSig.intInd;
-              phasebiasSat->Biases[ii].SignalsWideLaneIntegerIndicator = pbSig.wlInd;
-              phasebiasSat->Biases[ii].SignalDiscontinuityCounter      = pbSig.discCount;
+              phasebiasSat->Biases[ii].SignalIntegerIndicator = pbSig.intInd;
+              phasebiasSat->Biases[ii].SignalsWideLaneIntegerIndicator =
+                  pbSig.wlInd;
+              phasebiasSat->Biases[ii].SignalDiscontinuityCounter =
+                  pbSig.discCount;
             }
             else if (pbSig.type == "6C") {
-              int ii = phasebiasSat->NumberOfPhaseBiases; if (ii >= CLOCKORBIT_NUMBIAS) break;
+              int ii = phasebiasSat->NumberOfPhaseBiases;
+              if (ii >= CLOCKORBIT_NUMBIAS)
+                break;
               phasebiasSat->NumberOfPhaseBiases += 1;
               phasebiasSat->Biases[ii].Type = CODETYPEGALILEO_E6_C;
               phasebiasSat->Biases[ii].Bias = pbSig.bias;
-              phasebiasSat->Biases[ii].SignalIntegerIndicator          = pbSig.intInd;
-              phasebiasSat->Biases[ii].SignalsWideLaneIntegerIndicator = pbSig.wlInd;
-              phasebiasSat->Biases[ii].SignalDiscontinuityCounter      = pbSig.discCount;
+              phasebiasSat->Biases[ii].SignalIntegerIndicator = pbSig.intInd;
+              phasebiasSat->Biases[ii].SignalsWideLaneIntegerIndicator =
+                  pbSig.wlInd;
+              phasebiasSat->Biases[ii].SignalDiscontinuityCounter =
+                  pbSig.discCount;
             }
           }
         }
-        if      (prn.system() == 'J') {
+        if (prn.system() == 'J') {
           QListIterator<phaseBiasSignal> it(phaseBiasList);
           while (it.hasNext()) {
             const phaseBiasSignal &pbSig = it.next();
-            if      (pbSig.type == "1C") {
-              int ii = phasebiasSat->NumberOfPhaseBiases; if (ii >= CLOCKORBIT_NUMBIAS) break;
+            if (pbSig.type == "1C") {
+              int ii = phasebiasSat->NumberOfPhaseBiases;
+              if (ii >= CLOCKORBIT_NUMBIAS)
+                break;
               phasebiasSat->NumberOfPhaseBiases += 1;
               phasebiasSat->Biases[ii].Type = CODETYPEQZSS_L1_CA;
               phasebiasSat->Biases[ii].Bias = pbSig.bias;
-              phasebiasSat->Biases[ii].SignalIntegerIndicator          = pbSig.intInd;
-              phasebiasSat->Biases[ii].SignalsWideLaneIntegerIndicator = pbSig.wlInd;
-              phasebiasSat->Biases[ii].SignalDiscontinuityCounter      = pbSig.discCount;
+              phasebiasSat->Biases[ii].SignalIntegerIndicator = pbSig.intInd;
+              phasebiasSat->Biases[ii].SignalsWideLaneIntegerIndicator =
+                  pbSig.wlInd;
+              phasebiasSat->Biases[ii].SignalDiscontinuityCounter =
+                  pbSig.discCount;
             }
             else if (pbSig.type == "1S") {
-              int ii = phasebiasSat->NumberOfPhaseBiases; if (ii >= CLOCKORBIT_NUMBIAS) break;
+              int ii = phasebiasSat->NumberOfPhaseBiases;
+              if (ii >= CLOCKORBIT_NUMBIAS)
+                break;
               phasebiasSat->NumberOfPhaseBiases += 1;
               phasebiasSat->Biases[ii].Type = CODETYPEQZSS_L1C_D;
               phasebiasSat->Biases[ii].Bias = pbSig.bias;
-              phasebiasSat->Biases[ii].SignalIntegerIndicator          = pbSig.intInd;
-              phasebiasSat->Biases[ii].SignalsWideLaneIntegerIndicator = pbSig.wlInd;
-              phasebiasSat->Biases[ii].SignalDiscontinuityCounter      = pbSig.discCount;
+              phasebiasSat->Biases[ii].SignalIntegerIndicator = pbSig.intInd;
+              phasebiasSat->Biases[ii].SignalsWideLaneIntegerIndicator =
+                  pbSig.wlInd;
+              phasebiasSat->Biases[ii].SignalDiscontinuityCounter =
+                  pbSig.discCount;
             }
             else if (pbSig.type == "1L") {
-              int ii = phasebiasSat->NumberOfPhaseBiases; if (ii >= CLOCKORBIT_NUMBIAS) break;
+              int ii = phasebiasSat->NumberOfPhaseBiases;
+              if (ii >= CLOCKORBIT_NUMBIAS)
+                break;
               phasebiasSat->NumberOfPhaseBiases += 1;
               phasebiasSat->Biases[ii].Type = CODETYPEQZSS_L1C_P;
               phasebiasSat->Biases[ii].Bias = pbSig.bias;
-              phasebiasSat->Biases[ii].SignalIntegerIndicator          = pbSig.intInd;
-              phasebiasSat->Biases[ii].SignalsWideLaneIntegerIndicator = pbSig.wlInd;
-              phasebiasSat->Biases[ii].SignalDiscontinuityCounter      = pbSig.discCount;
+              phasebiasSat->Biases[ii].SignalIntegerIndicator = pbSig.intInd;
+              phasebiasSat->Biases[ii].SignalsWideLaneIntegerIndicator =
+                  pbSig.wlInd;
+              phasebiasSat->Biases[ii].SignalDiscontinuityCounter =
+                  pbSig.discCount;
             }
             else if (pbSig.type == "1X") {
-              int ii = phasebiasSat->NumberOfPhaseBiases; if (ii >= CLOCKORBIT_NUMBIAS) break;
+              int ii = phasebiasSat->NumberOfPhaseBiases;
+              if (ii >= CLOCKORBIT_NUMBIAS)
+                break;
               phasebiasSat->NumberOfPhaseBiases += 1;
               phasebiasSat->Biases[ii].Type = CODETYPEQZSS_L1C_DP;
               phasebiasSat->Biases[ii].Bias = pbSig.bias;
-              phasebiasSat->Biases[ii].SignalIntegerIndicator          = pbSig.intInd;
-              phasebiasSat->Biases[ii].SignalsWideLaneIntegerIndicator = pbSig.wlInd;
-              phasebiasSat->Biases[ii].SignalDiscontinuityCounter      = pbSig.discCount;
+              phasebiasSat->Biases[ii].SignalIntegerIndicator = pbSig.intInd;
+              phasebiasSat->Biases[ii].SignalsWideLaneIntegerIndicator =
+                  pbSig.wlInd;
+              phasebiasSat->Biases[ii].SignalDiscontinuityCounter =
+                  pbSig.discCount;
             }
             else if (pbSig.type == "2S") {
-              int ii = phasebiasSat->NumberOfPhaseBiases; if (ii >= CLOCKORBIT_NUMBIAS) break;
+              int ii = phasebiasSat->NumberOfPhaseBiases;
+              if (ii >= CLOCKORBIT_NUMBIAS)
+                break;
               phasebiasSat->NumberOfPhaseBiases += 1;
               phasebiasSat->Biases[ii].Type = CODETYPEQZSS_L2_CM;
               phasebiasSat->Biases[ii].Bias = pbSig.bias;
-              phasebiasSat->Biases[ii].SignalIntegerIndicator          = pbSig.intInd;
-              phasebiasSat->Biases[ii].SignalsWideLaneIntegerIndicator = pbSig.wlInd;
-              phasebiasSat->Biases[ii].SignalDiscontinuityCounter      = pbSig.discCount;
+              phasebiasSat->Biases[ii].SignalIntegerIndicator = pbSig.intInd;
+              phasebiasSat->Biases[ii].SignalsWideLaneIntegerIndicator =
+                  pbSig.wlInd;
+              phasebiasSat->Biases[ii].SignalDiscontinuityCounter =
+                  pbSig.discCount;
             }
             else if (pbSig.type == "2L") {
-              int ii = phasebiasSat->NumberOfPhaseBiases; if (ii >= CLOCKORBIT_NUMBIAS) break;
+              int ii = phasebiasSat->NumberOfPhaseBiases;
+              if (ii >= CLOCKORBIT_NUMBIAS)
+                break;
               phasebiasSat->NumberOfPhaseBiases += 1;
               phasebiasSat->Biases[ii].Type = CODETYPEQZSS_L2_CL;
               phasebiasSat->Biases[ii].Bias = pbSig.bias;
-              phasebiasSat->Biases[ii].SignalIntegerIndicator          = pbSig.intInd;
-              phasebiasSat->Biases[ii].SignalsWideLaneIntegerIndicator = pbSig.wlInd;
-              phasebiasSat->Biases[ii].SignalDiscontinuityCounter      = pbSig.discCount;
+              phasebiasSat->Biases[ii].SignalIntegerIndicator = pbSig.intInd;
+              phasebiasSat->Biases[ii].SignalsWideLaneIntegerIndicator =
+                  pbSig.wlInd;
+              phasebiasSat->Biases[ii].SignalDiscontinuityCounter =
+                  pbSig.discCount;
             }
             else if (pbSig.type == "2X") {
-              int ii = phasebiasSat->NumberOfPhaseBiases; if (ii >= CLOCKORBIT_NUMBIAS) break;
+              int ii = phasebiasSat->NumberOfPhaseBiases;
+              if (ii >= CLOCKORBIT_NUMBIAS)
+                break;
               phasebiasSat->NumberOfPhaseBiases += 1;
               phasebiasSat->Biases[ii].Type = CODETYPEQZSS_L2_CML;
               phasebiasSat->Biases[ii].Bias = pbSig.bias;
-              phasebiasSat->Biases[ii].SignalIntegerIndicator          = pbSig.intInd;
-              phasebiasSat->Biases[ii].SignalsWideLaneIntegerIndicator = pbSig.wlInd;
-              phasebiasSat->Biases[ii].SignalDiscontinuityCounter      = pbSig.discCount;
+              phasebiasSat->Biases[ii].SignalIntegerIndicator = pbSig.intInd;
+              phasebiasSat->Biases[ii].SignalsWideLaneIntegerIndicator =
+                  pbSig.wlInd;
+              phasebiasSat->Biases[ii].SignalDiscontinuityCounter =
+                  pbSig.discCount;
             }
             else if (pbSig.type == "5I") {
-              int ii = phasebiasSat->NumberOfPhaseBiases; if (ii >= CLOCKORBIT_NUMBIAS) break;
+              int ii = phasebiasSat->NumberOfPhaseBiases;
+              if (ii >= CLOCKORBIT_NUMBIAS)
+                break;
               phasebiasSat->NumberOfPhaseBiases += 1;
               phasebiasSat->Biases[ii].Type = CODETYPEQZSS_L5_I;
               phasebiasSat->Biases[ii].Bias = pbSig.bias;
-              phasebiasSat->Biases[ii].SignalIntegerIndicator          = pbSig.intInd;
-              phasebiasSat->Biases[ii].SignalsWideLaneIntegerIndicator = pbSig.wlInd;
-              phasebiasSat->Biases[ii].SignalDiscontinuityCounter      = pbSig.discCount;
+              phasebiasSat->Biases[ii].SignalIntegerIndicator = pbSig.intInd;
+              phasebiasSat->Biases[ii].SignalsWideLaneIntegerIndicator =
+                  pbSig.wlInd;
+              phasebiasSat->Biases[ii].SignalDiscontinuityCounter =
+                  pbSig.discCount;
             }
             else if (pbSig.type == "5Q") {
-              int ii = phasebiasSat->NumberOfPhaseBiases; if (ii >= CLOCKORBIT_NUMBIAS) break;
+              int ii = phasebiasSat->NumberOfPhaseBiases;
+              if (ii >= CLOCKORBIT_NUMBIAS)
+                break;
               phasebiasSat->NumberOfPhaseBiases += 1;
               phasebiasSat->Biases[ii].Type = CODETYPEQZSS_L5_Q;
               phasebiasSat->Biases[ii].Bias = pbSig.bias;
-              phasebiasSat->Biases[ii].SignalIntegerIndicator          = pbSig.intInd;
-              phasebiasSat->Biases[ii].SignalsWideLaneIntegerIndicator = pbSig.wlInd;
-              phasebiasSat->Biases[ii].SignalDiscontinuityCounter      = pbSig.discCount;
+              phasebiasSat->Biases[ii].SignalIntegerIndicator = pbSig.intInd;
+              phasebiasSat->Biases[ii].SignalsWideLaneIntegerIndicator =
+                  pbSig.wlInd;
+              phasebiasSat->Biases[ii].SignalDiscontinuityCounter =
+                  pbSig.discCount;
             }
             else if (pbSig.type == "5X") {
-              int ii = phasebiasSat->NumberOfPhaseBiases; if (ii >= CLOCKORBIT_NUMBIAS) break;
+              int ii = phasebiasSat->NumberOfPhaseBiases;
+              if (ii >= CLOCKORBIT_NUMBIAS)
+                break;
               phasebiasSat->NumberOfPhaseBiases += 1;
               phasebiasSat->Biases[ii].Type = CODETYPEQZSS_L5_IQ;
               phasebiasSat->Biases[ii].Bias = pbSig.bias;
-              phasebiasSat->Biases[ii].SignalIntegerIndicator          = pbSig.intInd;
-              phasebiasSat->Biases[ii].SignalsWideLaneIntegerIndicator = pbSig.wlInd;
-              phasebiasSat->Biases[ii].SignalDiscontinuityCounter      = pbSig.discCount;
+              phasebiasSat->Biases[ii].SignalIntegerIndicator = pbSig.intInd;
+              phasebiasSat->Biases[ii].SignalsWideLaneIntegerIndicator =
+                  pbSig.wlInd;
+              phasebiasSat->Biases[ii].SignalDiscontinuityCounter =
+                  pbSig.discCount;
             }
             else if (pbSig.type == "6S") {
-              int ii = phasebiasSat->NumberOfPhaseBiases; if (ii >= CLOCKORBIT_NUMBIAS) break;
+              int ii = phasebiasSat->NumberOfPhaseBiases;
+              if (ii >= CLOCKORBIT_NUMBIAS)
+                break;
               phasebiasSat->NumberOfPhaseBiases += 1;
               phasebiasSat->Biases[ii].Type = CODETYPEQZSS_LEX_S;
               phasebiasSat->Biases[ii].Bias = pbSig.bias;
-              phasebiasSat->Biases[ii].SignalIntegerIndicator          = pbSig.intInd;
-              phasebiasSat->Biases[ii].SignalsWideLaneIntegerIndicator = pbSig.wlInd;
-              phasebiasSat->Biases[ii].SignalDiscontinuityCounter      = pbSig.discCount;
+              phasebiasSat->Biases[ii].SignalIntegerIndicator = pbSig.intInd;
+              phasebiasSat->Biases[ii].SignalsWideLaneIntegerIndicator =
+                  pbSig.wlInd;
+              phasebiasSat->Biases[ii].SignalDiscontinuityCounter =
+                  pbSig.discCount;
             }
             else if (pbSig.type == "6L") {
-              int ii = phasebiasSat->NumberOfPhaseBiases; if (ii >= CLOCKORBIT_NUMBIAS) break;
+              int ii = phasebiasSat->NumberOfPhaseBiases;
+              if (ii >= CLOCKORBIT_NUMBIAS)
+                break;
               phasebiasSat->NumberOfPhaseBiases += 1;
               phasebiasSat->Biases[ii].Type = CODETYPEQZSS_LEX_L;
               phasebiasSat->Biases[ii].Bias = pbSig.bias;
-              phasebiasSat->Biases[ii].SignalIntegerIndicator          = pbSig.intInd;
-              phasebiasSat->Biases[ii].SignalsWideLaneIntegerIndicator = pbSig.wlInd;
-              phasebiasSat->Biases[ii].SignalDiscontinuityCounter      = pbSig.discCount;
+              phasebiasSat->Biases[ii].SignalIntegerIndicator = pbSig.intInd;
+              phasebiasSat->Biases[ii].SignalsWideLaneIntegerIndicator =
+                  pbSig.wlInd;
+              phasebiasSat->Biases[ii].SignalDiscontinuityCounter =
+                  pbSig.discCount;
             }
             else if (pbSig.type == "6X") {
-              int ii = phasebiasSat->NumberOfPhaseBiases; if (ii >= CLOCKORBIT_NUMBIAS) break;
+              int ii = phasebiasSat->NumberOfPhaseBiases;
+              if (ii >= CLOCKORBIT_NUMBIAS)
+                break;
               phasebiasSat->NumberOfPhaseBiases += 1;
               phasebiasSat->Biases[ii].Type = CODETYPEQZSS_LEX_SL;
               phasebiasSat->Biases[ii].Bias = pbSig.bias;
-              phasebiasSat->Biases[ii].SignalIntegerIndicator          = pbSig.intInd;
-              phasebiasSat->Biases[ii].SignalsWideLaneIntegerIndicator = pbSig.wlInd;
-              phasebiasSat->Biases[ii].SignalDiscontinuityCounter      = pbSig.discCount;
+              phasebiasSat->Biases[ii].SignalIntegerIndicator = pbSig.intInd;
+              phasebiasSat->Biases[ii].SignalsWideLaneIntegerIndicator =
+                  pbSig.wlInd;
+              phasebiasSat->Biases[ii].SignalDiscontinuityCounter =
+                  pbSig.discCount;
             }
           }
         }
-        if      (prn.system() == 'S') {
+        if (prn.system() == 'S') {
           QListIterator<phaseBiasSignal> it(phaseBiasList);
           while (it.hasNext()) {
             const phaseBiasSignal &pbSig = it.next();
-            if      (pbSig.type == "1C") {
-              int ii = phasebiasSat->NumberOfPhaseBiases; if (ii >= CLOCKORBIT_NUMBIAS) break;
+            if (pbSig.type == "1C") {
+              int ii = phasebiasSat->NumberOfPhaseBiases;
+              if (ii >= CLOCKORBIT_NUMBIAS)
+                break;
               phasebiasSat->NumberOfPhaseBiases += 1;
               phasebiasSat->Biases[ii].Type = CODETYPE_SBAS_L1_CA;
               phasebiasSat->Biases[ii].Bias = pbSig.bias;
-              phasebiasSat->Biases[ii].SignalIntegerIndicator          = pbSig.intInd;
-              phasebiasSat->Biases[ii].SignalsWideLaneIntegerIndicator = pbSig.wlInd;
-              phasebiasSat->Biases[ii].SignalDiscontinuityCounter      = pbSig.discCount;
+              phasebiasSat->Biases[ii].SignalIntegerIndicator = pbSig.intInd;
+              phasebiasSat->Biases[ii].SignalsWideLaneIntegerIndicator =
+                  pbSig.wlInd;
+              phasebiasSat->Biases[ii].SignalDiscontinuityCounter =
+                  pbSig.discCount;
             }
             else if (pbSig.type == "5I") {
-              int ii = phasebiasSat->NumberOfPhaseBiases; if (ii >= CLOCKORBIT_NUMBIAS) break;
+              int ii = phasebiasSat->NumberOfPhaseBiases;
+              if (ii >= CLOCKORBIT_NUMBIAS)
+                break;
               phasebiasSat->NumberOfPhaseBiases += 1;
               phasebiasSat->Biases[ii].Type = CODETYPE_SBAS_L5_I;
               phasebiasSat->Biases[ii].Bias = pbSig.bias;
-              phasebiasSat->Biases[ii].SignalIntegerIndicator          = pbSig.intInd;
-              phasebiasSat->Biases[ii].SignalsWideLaneIntegerIndicator = pbSig.wlInd;
-              phasebiasSat->Biases[ii].SignalDiscontinuityCounter      = pbSig.discCount;
+              phasebiasSat->Biases[ii].SignalIntegerIndicator = pbSig.intInd;
+              phasebiasSat->Biases[ii].SignalsWideLaneIntegerIndicator =
+                  pbSig.wlInd;
+              phasebiasSat->Biases[ii].SignalDiscontinuityCounter =
+                  pbSig.discCount;
             }
             else if (pbSig.type == "5Q") {
-              int ii = phasebiasSat->NumberOfPhaseBiases; if (ii >= CLOCKORBIT_NUMBIAS) break;
+              int ii = phasebiasSat->NumberOfPhaseBiases;
+              if (ii >= CLOCKORBIT_NUMBIAS)
+                break;
               phasebiasSat->NumberOfPhaseBiases += 1;
               phasebiasSat->Biases[ii].Type = CODETYPE_SBAS_L5_Q;
               phasebiasSat->Biases[ii].Bias = pbSig.bias;
-              phasebiasSat->Biases[ii].SignalIntegerIndicator          = pbSig.intInd;
-              phasebiasSat->Biases[ii].SignalsWideLaneIntegerIndicator = pbSig.wlInd;
-              phasebiasSat->Biases[ii].SignalDiscontinuityCounter      = pbSig.discCount;
+              phasebiasSat->Biases[ii].SignalIntegerIndicator = pbSig.intInd;
+              phasebiasSat->Biases[ii].SignalsWideLaneIntegerIndicator =
+                  pbSig.wlInd;
+              phasebiasSat->Biases[ii].SignalDiscontinuityCounter =
+                  pbSig.discCount;
             }
             else if (pbSig.type == "5X") {
-              int ii = phasebiasSat->NumberOfPhaseBiases; if (ii >= CLOCKORBIT_NUMBIAS) break;
+              int ii = phasebiasSat->NumberOfPhaseBiases;
+              if (ii >= CLOCKORBIT_NUMBIAS)
+                break;
               phasebiasSat->NumberOfPhaseBiases += 1;
               phasebiasSat->Biases[ii].Type = CODETYPE_SBAS_L5_IQ;
               phasebiasSat->Biases[ii].Bias = pbSig.bias;
-              phasebiasSat->Biases[ii].SignalIntegerIndicator          = pbSig.intInd;
-              phasebiasSat->Biases[ii].SignalsWideLaneIntegerIndicator = pbSig.wlInd;
-              phasebiasSat->Biases[ii].SignalDiscontinuityCounter      = pbSig.discCount;
+              phasebiasSat->Biases[ii].SignalIntegerIndicator = pbSig.intInd;
+              phasebiasSat->Biases[ii].SignalsWideLaneIntegerIndicator =
+                  pbSig.wlInd;
+              phasebiasSat->Biases[ii].SignalDiscontinuityCounter =
+                  pbSig.discCount;
             }
           }
         }
-        if      (prn.system() == 'C') {
+        if (prn.system() == 'C') {
           QListIterator<phaseBiasSignal> it(phaseBiasList);
           while (it.hasNext()) {
             const phaseBiasSignal &pbSig = it.next();
-            if      (pbSig.type == "2I") {
-              int ii = phasebiasSat->NumberOfPhaseBiases; if (ii >= CLOCKORBIT_NUMBIAS) break;
+            if (pbSig.type == "2I") {
+              int ii = phasebiasSat->NumberOfPhaseBiases;
+              if (ii >= CLOCKORBIT_NUMBIAS)
+                break;
               phasebiasSat->NumberOfPhaseBiases += 1;
               phasebiasSat->Biases[ii].Type = CODETYPE_BDS_B1_I;
               phasebiasSat->Biases[ii].Bias = pbSig.bias;
-              phasebiasSat->Biases[ii].SignalIntegerIndicator          = pbSig.intInd;
-              phasebiasSat->Biases[ii].SignalsWideLaneIntegerIndicator = pbSig.wlInd;
-              phasebiasSat->Biases[ii].SignalDiscontinuityCounter      = pbSig.discCount;
+              phasebiasSat->Biases[ii].SignalIntegerIndicator = pbSig.intInd;
+              phasebiasSat->Biases[ii].SignalsWideLaneIntegerIndicator =
+                  pbSig.wlInd;
+              phasebiasSat->Biases[ii].SignalDiscontinuityCounter =
+                  pbSig.discCount;
             }
             else if (pbSig.type == "2Q") {
-              int ii = phasebiasSat->NumberOfPhaseBiases; if (ii >= CLOCKORBIT_NUMBIAS) break;
+              int ii = phasebiasSat->NumberOfPhaseBiases;
+              if (ii >= CLOCKORBIT_NUMBIAS)
+                break;
               phasebiasSat->NumberOfPhaseBiases += 1;
               phasebiasSat->Biases[ii].Type = CODETYPE_BDS_B1_Q;
               phasebiasSat->Biases[ii].Bias = pbSig.bias;
-              phasebiasSat->Biases[ii].SignalIntegerIndicator          = pbSig.intInd;
-              phasebiasSat->Biases[ii].SignalsWideLaneIntegerIndicator = pbSig.wlInd;
-              phasebiasSat->Biases[ii].SignalDiscontinuityCounter      = pbSig.discCount;
+              phasebiasSat->Biases[ii].SignalIntegerIndicator = pbSig.intInd;
+              phasebiasSat->Biases[ii].SignalsWideLaneIntegerIndicator =
+                  pbSig.wlInd;
+              phasebiasSat->Biases[ii].SignalDiscontinuityCounter =
+                  pbSig.discCount;
             }
             else if (pbSig.type == "2X") {
-              int ii = phasebiasSat->NumberOfPhaseBiases; if (ii >= CLOCKORBIT_NUMBIAS) break;
+              int ii = phasebiasSat->NumberOfPhaseBiases;
+              if (ii >= CLOCKORBIT_NUMBIAS)
+                break;
               phasebiasSat->NumberOfPhaseBiases += 1;
               phasebiasSat->Biases[ii].Type = CODETYPE_BDS_B1_IQ;
               phasebiasSat->Biases[ii].Bias = pbSig.bias;
-              phasebiasSat->Biases[ii].SignalIntegerIndicator          = pbSig.intInd;
-              phasebiasSat->Biases[ii].SignalsWideLaneIntegerIndicator = pbSig.wlInd;
-              phasebiasSat->Biases[ii].SignalDiscontinuityCounter      = pbSig.discCount;
+              phasebiasSat->Biases[ii].SignalIntegerIndicator = pbSig.intInd;
+              phasebiasSat->Biases[ii].SignalsWideLaneIntegerIndicator =
+                  pbSig.wlInd;
+              phasebiasSat->Biases[ii].SignalDiscontinuityCounter =
+                  pbSig.discCount;
             }
             else if (pbSig.type == "6I") {
-              int ii = phasebiasSat->NumberOfPhaseBiases; if (ii >= CLOCKORBIT_NUMBIAS) break;
+              int ii = phasebiasSat->NumberOfPhaseBiases;
+              if (ii >= CLOCKORBIT_NUMBIAS)
+                break;
               phasebiasSat->NumberOfPhaseBiases += 1;
               phasebiasSat->Biases[ii].Type = CODETYPE_BDS_B2_Q;
               phasebiasSat->Biases[ii].Bias = pbSig.bias;
-              phasebiasSat->Biases[ii].SignalIntegerIndicator          = pbSig.intInd;
-              phasebiasSat->Biases[ii].SignalsWideLaneIntegerIndicator = pbSig.wlInd;
-              phasebiasSat->Biases[ii].SignalDiscontinuityCounter      = pbSig.discCount;
+              phasebiasSat->Biases[ii].SignalIntegerIndicator = pbSig.intInd;
+              phasebiasSat->Biases[ii].SignalsWideLaneIntegerIndicator =
+                  pbSig.wlInd;
+              phasebiasSat->Biases[ii].SignalDiscontinuityCounter =
+                  pbSig.discCount;
             }
             else if (pbSig.type == "6Q") {
-              int ii = phasebiasSat->NumberOfPhaseBiases; if (ii >= CLOCKORBIT_NUMBIAS) break;
+              int ii = phasebiasSat->NumberOfPhaseBiases;
+              if (ii >= CLOCKORBIT_NUMBIAS)
+                break;
               phasebiasSat->NumberOfPhaseBiases += 1;
               phasebiasSat->Biases[ii].Type = CODETYPE_BDS_B2_I;
               phasebiasSat->Biases[ii].Bias = pbSig.bias;
-              phasebiasSat->Biases[ii].SignalIntegerIndicator          = pbSig.intInd;
-              phasebiasSat->Biases[ii].SignalsWideLaneIntegerIndicator = pbSig.wlInd;
-              phasebiasSat->Biases[ii].SignalDiscontinuityCounter      = pbSig.discCount;
+              phasebiasSat->Biases[ii].SignalIntegerIndicator = pbSig.intInd;
+              phasebiasSat->Biases[ii].SignalsWideLaneIntegerIndicator =
+                  pbSig.wlInd;
+              phasebiasSat->Biases[ii].SignalDiscontinuityCounter =
+                  pbSig.discCount;
             }
             else if (pbSig.type == "6X") {
-              int ii = phasebiasSat->NumberOfPhaseBiases; if (ii >= CLOCKORBIT_NUMBIAS) break;
+              int ii = phasebiasSat->NumberOfPhaseBiases;
+              if (ii >= CLOCKORBIT_NUMBIAS)
+                break;
               phasebiasSat->NumberOfPhaseBiases += 1;
               phasebiasSat->Biases[ii].Type = CODETYPE_BDS_B2_IQ;
               phasebiasSat->Biases[ii].Bias = pbSig.bias;
-              phasebiasSat->Biases[ii].SignalIntegerIndicator          = pbSig.intInd;
-              phasebiasSat->Biases[ii].SignalsWideLaneIntegerIndicator = pbSig.wlInd;
-              phasebiasSat->Biases[ii].SignalDiscontinuityCounter      = pbSig.discCount;
+              phasebiasSat->Biases[ii].SignalIntegerIndicator = pbSig.intInd;
+              phasebiasSat->Biases[ii].SignalsWideLaneIntegerIndicator =
+                  pbSig.wlInd;
+              phasebiasSat->Biases[ii].SignalDiscontinuityCounter =
+                  pbSig.discCount;
             }
             else if (pbSig.type == "7I") {
-              int ii = phasebiasSat->NumberOfPhaseBiases; if (ii >= CLOCKORBIT_NUMBIAS) break;
+              int ii = phasebiasSat->NumberOfPhaseBiases;
+              if (ii >= CLOCKORBIT_NUMBIAS)
+                break;
               phasebiasSat->NumberOfPhaseBiases += 1;
               phasebiasSat->Biases[ii].Type = CODETYPE_BDS_B3_Q;
               phasebiasSat->Biases[ii].Bias = pbSig.bias;
-              phasebiasSat->Biases[ii].SignalIntegerIndicator          = pbSig.intInd;
-              phasebiasSat->Biases[ii].SignalsWideLaneIntegerIndicator = pbSig.wlInd;
-              phasebiasSat->Biases[ii].SignalDiscontinuityCounter      = pbSig.discCount;
+              phasebiasSat->Biases[ii].SignalIntegerIndicator = pbSig.intInd;
+              phasebiasSat->Biases[ii].SignalsWideLaneIntegerIndicator =
+                  pbSig.wlInd;
+              phasebiasSat->Biases[ii].SignalDiscontinuityCounter =
+                  pbSig.discCount;
             }
             else if (pbSig.type == "7Q") {
-              int ii = phasebiasSat->NumberOfPhaseBiases; if (ii >= CLOCKORBIT_NUMBIAS) break;
+              int ii = phasebiasSat->NumberOfPhaseBiases;
+              if (ii >= CLOCKORBIT_NUMBIAS)
+                break;
               phasebiasSat->NumberOfPhaseBiases += 1;
               phasebiasSat->Biases[ii].Type = CODETYPE_BDS_B3_I;
               phasebiasSat->Biases[ii].Bias = pbSig.bias;
-              phasebiasSat->Biases[ii].SignalIntegerIndicator          = pbSig.intInd;
-              phasebiasSat->Biases[ii].SignalsWideLaneIntegerIndicator = pbSig.wlInd;
-              phasebiasSat->Biases[ii].SignalDiscontinuityCounter      = pbSig.discCount;
+              phasebiasSat->Biases[ii].SignalIntegerIndicator = pbSig.intInd;
+              phasebiasSat->Biases[ii].SignalsWideLaneIntegerIndicator =
+                  pbSig.wlInd;
+              phasebiasSat->Biases[ii].SignalDiscontinuityCounter =
+                  pbSig.discCount;
             }
             else if (pbSig.type == "7X") {
-              int ii = phasebiasSat->NumberOfPhaseBiases; if (ii >= CLOCKORBIT_NUMBIAS) break;
+              int ii = phasebiasSat->NumberOfPhaseBiases;
+              if (ii >= CLOCKORBIT_NUMBIAS)
+                break;
               phasebiasSat->NumberOfPhaseBiases += 1;
               phasebiasSat->Biases[ii].Type = CODETYPE_BDS_B3_IQ;
               phasebiasSat->Biases[ii].Bias = pbSig.bias;
-              phasebiasSat->Biases[ii].SignalIntegerIndicator          = pbSig.intInd;
-              phasebiasSat->Biases[ii].SignalsWideLaneIntegerIndicator = pbSig.wlInd;
-              phasebiasSat->Biases[ii].SignalDiscontinuityCounter      = pbSig.discCount;
+              phasebiasSat->Biases[ii].SignalIntegerIndicator = pbSig.intInd;
+              phasebiasSat->Biases[ii].SignalsWideLaneIntegerIndicator =
+                  pbSig.wlInd;
+              phasebiasSat->Biases[ii].SignalDiscontinuityCounter =
+                  pbSig.discCount;
             }
           }
         }
@@ -1526,18 +1865,17 @@ void bncRtnetUploadCaster::decodeRtnetStream(char* buffer, int bufLen) {
     }
   }
 
-
   QByteArray hlpBufferCo;
 
   // Orbit and Clock Corrections together
   // ------------------------------------
   if (_samplRtcmEphCorr == 0.0) {
-    if (co.NumberOfSat[CLOCKORBIT_SATGPS] > 0 ||
-        co.NumberOfSat[CLOCKORBIT_SATGLONASS] > 0 ||
-        co.NumberOfSat[CLOCKORBIT_SATGALILEO] > 0 ||
-        co.NumberOfSat[CLOCKORBIT_SATQZSS] > 0 ||
-        co.NumberOfSat[CLOCKORBIT_SATSBAS] > 0 ||
-        co.NumberOfSat[CLOCKORBIT_SATBDS] > 0) {
+    if (co.NumberOfSat[CLOCKORBIT_SATGPS] > 0
+        || co.NumberOfSat[CLOCKORBIT_SATGLONASS] > 0
+        || co.NumberOfSat[CLOCKORBIT_SATGALILEO] > 0
+        || co.NumberOfSat[CLOCKORBIT_SATQZSS] > 0
+        || co.NumberOfSat[CLOCKORBIT_SATSBAS] > 0
+        || co.NumberOfSat[CLOCKORBIT_SATBDS] > 0) {
       char obuffer[CLOCKORBIT_BUFFERSIZE];
       int len = MakeClockOrbit(&co, COTYPE_AUTO, 0, obuffer, sizeof(obuffer));
       if (len > 0) {
@@ -1553,14 +1891,16 @@ void bncRtnetUploadCaster::decodeRtnetStream(char* buffer, int bufLen) {
       char obuffer[CLOCKORBIT_BUFFERSIZE];
       if (fmod(epoTime.gpssec(), _samplRtcmEphCorr) == 0.0) {
         co.UpdateInterval = ephUpdInd;
-        int len1 = MakeClockOrbit(&co, COTYPE_GPSORBIT, 1, obuffer, sizeof(obuffer));
+        int len1 = MakeClockOrbit(&co, COTYPE_GPSORBIT, 1, obuffer,
+            sizeof(obuffer));
         co.UpdateInterval = clkUpdInd;
         if (len1 > 0) {
           hlpBufferCo += QByteArray(obuffer, len1);
         }
       }
       int mmsg = (co.NumberOfSat[CLOCKORBIT_SATGLONASS] > 0) ? 1 : 0;
-      int len2 = MakeClockOrbit(&co, COTYPE_GPSCLOCK, mmsg, obuffer, sizeof(obuffer));
+      int len2 = MakeClockOrbit(&co, COTYPE_GPSCLOCK, mmsg, obuffer,
+          sizeof(obuffer));
       if (len2 > 0) {
         hlpBufferCo += QByteArray(obuffer, len2);
       }
@@ -1569,14 +1909,16 @@ void bncRtnetUploadCaster::decodeRtnetStream(char* buffer, int bufLen) {
       char obuffer[CLOCKORBIT_BUFFERSIZE];
       if (fmod(epoTime.gpssec(), _samplRtcmEphCorr) == 0.0) {
         co.UpdateInterval = ephUpdInd;
-        int len1 = MakeClockOrbit(&co, COTYPE_GLONASSORBIT, 1, obuffer, sizeof(obuffer));
+        int len1 = MakeClockOrbit(&co, COTYPE_GLONASSORBIT, 1, obuffer,
+            sizeof(obuffer));
         co.UpdateInterval = clkUpdInd;
         if (len1 > 0) {
           hlpBufferCo += QByteArray(obuffer, len1);
         }
       }
       int mmsg = (co.NumberOfSat[CLOCKORBIT_SATGALILEO] > 0) ? 1 : 0;
-      int len2 = MakeClockOrbit(&co, COTYPE_GLONASSCLOCK, mmsg, obuffer, sizeof(obuffer));
+      int len2 = MakeClockOrbit(&co, COTYPE_GLONASSCLOCK, mmsg, obuffer,
+          sizeof(obuffer));
       if (len2 > 0) {
         hlpBufferCo += QByteArray(obuffer, len2);
       }
@@ -1585,14 +1927,16 @@ void bncRtnetUploadCaster::decodeRtnetStream(char* buffer, int bufLen) {
       char obuffer[CLOCKORBIT_BUFFERSIZE];
       if (fmod(epoTime.gpssec(), _samplRtcmEphCorr) == 0.0) {
         co.UpdateInterval = ephUpdInd;
-        int len1 = MakeClockOrbit(&co, COTYPE_GALILEOORBIT, 1, obuffer, sizeof(obuffer));
+        int len1 = MakeClockOrbit(&co, COTYPE_GALILEOORBIT, 1, obuffer,
+            sizeof(obuffer));
         co.UpdateInterval = clkUpdInd;
         if (len1 > 0) {
           hlpBufferCo += QByteArray(obuffer, len1);
         }
       }
       int mmsg = (co.NumberOfSat[CLOCKORBIT_SATQZSS] > 0) ? 1 : 0;
-      int len2 = MakeClockOrbit(&co, COTYPE_GALILEOCLOCK, mmsg, obuffer, sizeof(obuffer));
+      int len2 = MakeClockOrbit(&co, COTYPE_GALILEOCLOCK, mmsg, obuffer,
+          sizeof(obuffer));
       if (len2 > 0) {
         hlpBufferCo += QByteArray(obuffer, len2);
       }
@@ -1601,14 +1945,16 @@ void bncRtnetUploadCaster::decodeRtnetStream(char* buffer, int bufLen) {
       char obuffer[CLOCKORBIT_BUFFERSIZE];
       if (fmod(epoTime.gpssec(), _samplRtcmEphCorr) == 0.0) {
         co.UpdateInterval = ephUpdInd;
-        int len1 = MakeClockOrbit(&co, COTYPE_QZSSORBIT, 1, obuffer, sizeof(obuffer));
+        int len1 = MakeClockOrbit(&co, COTYPE_QZSSORBIT, 1, obuffer,
+            sizeof(obuffer));
         co.UpdateInterval = clkUpdInd;
         if (len1 > 0) {
           hlpBufferCo += QByteArray(obuffer, len1);
         }
       }
       int mmsg = (co.NumberOfSat[CLOCKORBIT_SATSBAS] > 0) ? 1 : 0;
-      int len2 = MakeClockOrbit(&co, COTYPE_QZSSCLOCK, mmsg, obuffer, sizeof(obuffer));
+      int len2 = MakeClockOrbit(&co, COTYPE_QZSSCLOCK, mmsg, obuffer,
+          sizeof(obuffer));
       if (len2 > 0) {
         hlpBufferCo += QByteArray(obuffer, len2);
       }
@@ -1617,14 +1963,16 @@ void bncRtnetUploadCaster::decodeRtnetStream(char* buffer, int bufLen) {
       char obuffer[CLOCKORBIT_BUFFERSIZE];
       if (fmod(epoTime.gpssec(), _samplRtcmEphCorr) == 0.0) {
         co.UpdateInterval = ephUpdInd;
-        int len1 = MakeClockOrbit(&co, COTYPE_SBASORBIT, 1, obuffer, sizeof(obuffer));
+        int len1 = MakeClockOrbit(&co, COTYPE_SBASORBIT, 1, obuffer,
+            sizeof(obuffer));
         co.UpdateInterval = clkUpdInd;
         if (len1 > 0) {
           hlpBufferCo += QByteArray(obuffer, len1);
         }
       }
       int mmsg = (co.NumberOfSat[CLOCKORBIT_SATBDS] > 0) ? 1 : 0;
-      int len2 = MakeClockOrbit(&co, COTYPE_SBASCLOCK, mmsg, obuffer, sizeof(obuffer));
+      int len2 = MakeClockOrbit(&co, COTYPE_SBASCLOCK, mmsg, obuffer,
+          sizeof(obuffer));
       if (len2 > 0) {
         hlpBufferCo += QByteArray(obuffer, len2);
       }
@@ -1633,13 +1981,15 @@ void bncRtnetUploadCaster::decodeRtnetStream(char* buffer, int bufLen) {
       char obuffer[CLOCKORBIT_BUFFERSIZE];
       if (fmod(epoTime.gpssec(), _samplRtcmEphCorr) == 0.0) {
         co.UpdateInterval = ephUpdInd;
-        int len1 = MakeClockOrbit(&co, COTYPE_BDSORBIT, 1, obuffer, sizeof(obuffer));
+        int len1 = MakeClockOrbit(&co, COTYPE_BDSORBIT, 1, obuffer,
+            sizeof(obuffer));
         co.UpdateInterval = clkUpdInd;
         if (len1 > 0) {
           hlpBufferCo += QByteArray(obuffer, len1);
         }
       }
-      int len2 = MakeClockOrbit(&co, COTYPE_BDSCLOCK, 0, obuffer, sizeof(obuffer));
+      int len2 = MakeClockOrbit(&co, COTYPE_BDSCLOCK, 0, obuffer,
+          sizeof(obuffer));
       if (len2 > 0) {
         hlpBufferCo += QByteArray(obuffer, len2);
       }
@@ -1649,12 +1999,12 @@ void bncRtnetUploadCaster::decodeRtnetStream(char* buffer, int bufLen) {
   // Code Biases
   // -----------
   QByteArray hlpBufferBias;
-  if (bias.NumberOfSat[CLOCKORBIT_SATGPS] > 0 ||
-      bias.NumberOfSat[CLOCKORBIT_SATGLONASS] > 0 ||
-      bias.NumberOfSat[CLOCKORBIT_SATGALILEO] > 0 ||
-      bias.NumberOfSat[CLOCKORBIT_SATQZSS] > 0 ||
-      bias.NumberOfSat[CLOCKORBIT_SATSBAS] > 0 ||
-      bias.NumberOfSat[CLOCKORBIT_SATBDS] > 0 ) {
+  if (bias.NumberOfSat[CLOCKORBIT_SATGPS] > 0
+      || bias.NumberOfSat[CLOCKORBIT_SATGLONASS] > 0
+      || bias.NumberOfSat[CLOCKORBIT_SATGALILEO] > 0
+      || bias.NumberOfSat[CLOCKORBIT_SATQZSS] > 0
+      || bias.NumberOfSat[CLOCKORBIT_SATSBAS] > 0
+      || bias.NumberOfSat[CLOCKORBIT_SATBDS] > 0) {
     char obuffer[CLOCKORBIT_BUFFERSIZE];
     int len = MakeCodeBias(&bias, BTYPE_AUTO, 0, obuffer, sizeof(obuffer));
     if (len > 0) {
@@ -1665,14 +2015,15 @@ void bncRtnetUploadCaster::decodeRtnetStream(char* buffer, int bufLen) {
   // Phase Biases
   // ------------
   QByteArray hlpBufferPhaseBias;
-  if (phasebias.NumberOfSat[CLOCKORBIT_SATGPS] > 0 ||
-      phasebias.NumberOfSat[CLOCKORBIT_SATGLONASS] > 0 ||
-      phasebias.NumberOfSat[CLOCKORBIT_SATGALILEO] > 0 ||
-      phasebias.NumberOfSat[CLOCKORBIT_SATQZSS] > 0 ||
-      phasebias.NumberOfSat[CLOCKORBIT_SATSBAS] > 0 ||
-      phasebias.NumberOfSat[CLOCKORBIT_SATBDS] > 0 ) {
+  if (phasebias.NumberOfSat[CLOCKORBIT_SATGPS] > 0
+      || phasebias.NumberOfSat[CLOCKORBIT_SATGLONASS] > 0
+      || phasebias.NumberOfSat[CLOCKORBIT_SATGALILEO] > 0
+      || phasebias.NumberOfSat[CLOCKORBIT_SATQZSS] > 0
+      || phasebias.NumberOfSat[CLOCKORBIT_SATSBAS] > 0
+      || phasebias.NumberOfSat[CLOCKORBIT_SATBDS] > 0) {
     char obuffer[CLOCKORBIT_BUFFERSIZE];
-    int len = MakePhaseBias(&phasebias, PBTYPE_AUTO, 0, obuffer, sizeof(obuffer));
+    int len = MakePhaseBias(&phasebias, PBTYPE_AUTO, 0, obuffer,
+        sizeof(obuffer));
     if (len > 0) {
       hlpBufferPhaseBias = QByteArray(obuffer, len);
     }
@@ -1689,19 +2040,16 @@ void bncRtnetUploadCaster::decodeRtnetStream(char* buffer, int bufLen) {
     }
   }
 
-  _outBuffer += hlpBufferCo + hlpBufferBias + hlpBufferPhaseBias + hlpBufferVtec;
+  _outBuffer += hlpBufferCo + hlpBufferBias + hlpBufferPhaseBias
+      + hlpBufferVtec;
 }
 
 //
 ////////////////////////////////////////////////////////////////////////////
 void bncRtnetUploadCaster::processSatellite(const t_eph* eph, int GPSweek,
-                                            double GPSweeks, const QString& prn,
-                                            const ColumnVector& rtnAPC,
-                                            double rtnClk,
-                                            const ColumnVector& rtnVel,
-                                            const ColumnVector& rtnCoM,
-                                            struct ClockOrbit::SatData* sd,
-                                            QString& outLine) {
+    double GPSweeks, const QString& prn, const ColumnVector& rtnAPC,
+    double rtnClk, const ColumnVector& rtnVel, const ColumnVector& rtnCoM,
+    struct ClockOrbit::SatData* sd, QString& outLine) {
 
   // Broadcast Position and Velocity
   // -------------------------------
@@ -1720,38 +2068,38 @@ void bncRtnetUploadCaster::processSatellite(const t_eph* eph, int GPSweek,
 
   // Difference in xyz
   // -----------------
-  ColumnVector dx = xB.Rows(1,3) - xP;
-  ColumnVector dv = vB           - rtnVel;
+  ColumnVector dx = xB.Rows(1, 3) - xP;
+  ColumnVector dv = vB - rtnVel;
 
   // Difference in RSW
   // -----------------
   ColumnVector rsw(3);
-  XYZ_to_RSW(xB.Rows(1,3), vB, dx, rsw);
+  XYZ_to_RSW(xB.Rows(1, 3), vB, dx, rsw);
 
   ColumnVector dotRsw(3);
-  XYZ_to_RSW(xB.Rows(1,3), vB, dv, dotRsw);
+  XYZ_to_RSW(xB.Rows(1, 3), vB, dv, dotRsw);
 
   // Clock Correction
   // ----------------
   double dClk = rtnClk - (xB(4) - dc) * t_CST::c;
 
   if (sd) {
-    sd->ID                       = prn.mid(1).toInt();
-    sd->IOD                      = eph->IOD();
-    sd->Clock.DeltaA0            = dClk;
-    sd->Clock.DeltaA1            = 0.0; // TODO
-    sd->Clock.DeltaA2            = 0.0; // TODO
-    sd->Orbit.DeltaRadial        = rsw(1);
-    sd->Orbit.DeltaAlongTrack    = rsw(2);
-    sd->Orbit.DeltaCrossTrack    = rsw(3);
-    sd->Orbit.DotDeltaRadial     = dotRsw(1);
+    sd->ID = prn.mid(1).toInt();
+    sd->IOD = eph->IOD();
+    sd->Clock.DeltaA0 = dClk;
+    sd->Clock.DeltaA1 = 0.0; // TODO
+    sd->Clock.DeltaA2 = 0.0; // TODO
+    sd->Orbit.DeltaRadial = rsw(1);
+    sd->Orbit.DeltaAlongTrack = rsw(2);
+    sd->Orbit.DeltaCrossTrack = rsw(3);
+    sd->Orbit.DotDeltaRadial = dotRsw(1);
     sd->Orbit.DotDeltaAlongTrack = dotRsw(2);
     sd->Orbit.DotDeltaCrossTrack = dotRsw(3);
   }
 
-  outLine.sprintf("%d %.1f %s  %3d  %10.3f  %8.3f %8.3f %8.3f\n",
-                  GPSweek, GPSweeks, eph->prn().toString().c_str(),
-                  eph->IOD(), dClk, rsw(1), rsw(2), rsw(3));
+  outLine.sprintf("%d %.1f %s  %3d  %10.3f  %8.3f %8.3f %8.3f\n", GPSweek,
+      GPSweeks, eph->prn().toString().c_str(), eph->IOD(), dClk, rsw(1), rsw(2),
+      rsw(3));
 
   double relativity = -2.0 * DotProduct(xP, rtnVel) / t_CST::c;
   double sp3Clk = (rtnClk - relativity) / t_CST::c;  // in seconds
@@ -1767,11 +2115,11 @@ void bncRtnetUploadCaster::processSatellite(const t_eph* eph, int GPSweek,
 // Transform Coordinates
 ////////////////////////////////////////////////////////////////////////////
 void bncRtnetUploadCaster::crdTrafo(int GPSWeek, ColumnVector& xyz,
-                                    double& dc) {
+    double& dc) {
 
   // Current epoch minus 2000.0 in years
   // ------------------------------------
-  double dt = (GPSWeek - (1042.0+6.0/7.0)) / 365.2422 * 7.0 + 2000.0 - _t0;
+  double dt = (GPSWeek - (1042.0 + 6.0 / 7.0)) / 365.2422 * 7.0 + 2000.0 - _t0;
 
   ColumnVector dx(3);
 
@@ -1791,40 +2139,40 @@ void bncRtnetUploadCaster::crdTrafo(int GPSWeek, ColumnVector& xyz,
   // ----------------------------------
   ColumnVector meanSta(3);
 
-  if      (_crdTrafo == "ETRF2000") {
-    meanSta(1) =  3661090.0;
-    meanSta(2) =   845230.0;
-    meanSta(3) =  5136850.0;
+  if (_crdTrafo == "ETRF2000") {
+    meanSta(1) = 3661090.0;
+    meanSta(2) = 845230.0;
+    meanSta(3) = 5136850.0;
   }
   else if (_crdTrafo == "NAD83") {
     meanSta(1) = -1092950.0;
     meanSta(2) = -4383600.0;
-    meanSta(3) =  4487420.0;
+    meanSta(3) = 4487420.0;
   }
   else if (_crdTrafo == "GDA94") {
     meanSta(1) = -4052050.0;
-    meanSta(2) =  4212840.0;
+    meanSta(2) = 4212840.0;
     meanSta(3) = -2545110.0;
   }
   else if (_crdTrafo == "SIRGAS2000") {
-    meanSta(1) =  3740860.0;
+    meanSta(1) = 3740860.0;
     meanSta(2) = -4964290.0;
     meanSta(3) = -1425420.0;
   }
   else if (_crdTrafo == "SIRGAS95") {
-    meanSta(1) =  3135390.0;
+    meanSta(1) = 3135390.0;
     meanSta(2) = -5017670.0;
     meanSta(3) = -2374440.0;
   }
   else if (_crdTrafo == "DREF91") {
-    meanSta(1) =  3959579.0;
-    meanSta(2) =   721719.0;
-    meanSta(3) =  4931539.0;
+    meanSta(1) = 3959579.0;
+    meanSta(2) = 721719.0;
+    meanSta(3) = 4931539.0;
   }
   else if (_crdTrafo == "Custom") {
-    meanSta(1) =        0.0; // TODO
-    meanSta(2) =        0.0; // TODO
-    meanSta(3) =        0.0; // TODO
+    meanSta(1) = 0.0; // TODO
+    meanSta(2) = 0.0; // TODO
+    meanSta(3) = 0.0; // TODO
   }
 
   // Clock correction proportional to topocentric distance to satellites
@@ -1832,16 +2180,16 @@ void bncRtnetUploadCaster::crdTrafo(int GPSWeek, ColumnVector& xyz,
   double rho = (xyz - meanSta).norm_Frobenius();
   dc = rho * (sc - 1.0) / sc / t_CST::c;
 
-  Matrix rMat(3,3);
-  rMat(1,1) = 1.0;
-  rMat(1,2) = -oz;
-  rMat(1,3) =  oy;
-  rMat(2,1) =  oz;
-  rMat(2,2) = 1.0;
-  rMat(2,3) = -ox;
-  rMat(3,1) = -oy;
-  rMat(3,2) =  ox;
-  rMat(3,3) = 1.0;
+  Matrix rMat(3, 3);
+  rMat(1, 1) = 1.0;
+  rMat(1, 2) = -oz;
+  rMat(1, 3) = oy;
+  rMat(2, 1) = oz;
+  rMat(2, 2) = 1.0;
+  rMat(2, 3) = -ox;
+  rMat(3, 1) = -oy;
+  rMat(3, 2) = ox;
+  rMat(3, 3) = 1.0;
 
   xyz = sc * rMat * xyz + dx;
 }
@@ -1887,5 +2235,5 @@ int bncRtnetUploadCaster::determineUpdateInd(double samplingRate) {
   else if (samplingRate == 10800.0) {
     return 15;
   }
-  return 2;// default
+  return 2;  // default
 }
