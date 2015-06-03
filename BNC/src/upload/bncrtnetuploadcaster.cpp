@@ -377,14 +377,14 @@ void bncRtnetUploadCaster::decodeRtnetStream(char* buffer, int bufLen) {
         in >> dummy >> vtec.Layers[ll].Degree >> vtec.Layers[ll].Order
             >> vtec.Layers[ll].Height;
         ii++;
-        for (unsigned iDeg = 0; iDeg < vtec.Layers[ll].Degree; iDeg++) {
-          for (unsigned iOrd = 0; iOrd < vtec.Layers[ll].Order; iOrd++) {
+        for (unsigned iDeg = 0; iDeg <= vtec.Layers[ll].Degree; iDeg++) {
+          for (unsigned iOrd = 0; iOrd <= vtec.Layers[ll].Order; iOrd++) {
             in >> vtec.Layers[ll].Cosinus[iDeg][iOrd];
           }
           ii++;
         }
-        for (unsigned iDeg = 0; iDeg < vtec.Layers[ll].Degree; iDeg++) {
-          for (unsigned iOrd = 0; iOrd < vtec.Layers[ll].Order; iOrd++) {
+        for (unsigned iDeg = 0; iDeg <= vtec.Layers[ll].Degree; iDeg++) {
+          for (unsigned iOrd = 0; iOrd <= vtec.Layers[ll].Order; iOrd++) {
             in >> vtec.Layers[ll].Sinus[iDeg][iOrd];
           }
           ii++;
