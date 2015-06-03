@@ -462,10 +462,10 @@ void RTCM3coDecoder::sendResults() {
       const VTEC::IonoLayers& ionoLayer = _vTEC.Layers[ii];
       t_vTecLayer layer;
       layer._height = ionoLayer.Height;
-      layer._C.ReSize(ionoLayer.Degree, ionoLayer.Order);
-      layer._S.ReSize(ionoLayer.Degree, ionoLayer.Order);
-      for (unsigned iDeg = 0; iDeg < ionoLayer.Degree; iDeg++) {
-        for (unsigned iOrd = 0; iOrd < ionoLayer.Order; iOrd++) {
+      layer._C.ReSize(ionoLayer.Degree+1, ionoLayer.Order+1);
+      layer._S.ReSize(ionoLayer.Degree+1, ionoLayer.Order+1);
+      for (unsigned iDeg = 0; iDeg <= ionoLayer.Degree; iDeg++) {
+        for (unsigned iOrd = 0; iOrd <= ionoLayer.Order; iOrd++) {
           layer._C[iDeg][iOrd] = ionoLayer.Cosinus[iDeg][iOrd];
           layer._S[iDeg][iOrd] = ionoLayer.Sinus[iDeg][iOrd];
         }

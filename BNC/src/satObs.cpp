@@ -298,8 +298,8 @@ void t_vTec::write(ostream* out, const t_vTec& vTec) {
   for (unsigned ii = 0; ii < vTec._layers.size(); ii++) {
     const t_vTecLayer& layer = vTec._layers[ii];
     *out << setw(2)  << ii+1 << ' '
-         << setw(2)  << layer._C.Nrows() << ' '    
-         << setw(2)  << layer._C.Ncols() << ' '    
+         << setw(2)  << layer._C.Nrows()-1 << ' '
+         << setw(2)  << layer._C.Ncols()-1 << ' '
          << setw(10) << setprecision(1) << layer._height << endl  
          << setw(10) << setprecision(4) << layer._C 
          << setw(10) << setprecision(4) << layer._S;
@@ -333,16 +333,16 @@ void t_vTec::read(const string& epoLine, istream& inStream, t_vTec& vTec) {
     int dummy, maxDeg, maxOrd;
     in >> dummy >> maxDeg >> maxOrd >> layer._height;
 
-    layer._C.ReSize(maxDeg, maxOrd);
-    layer._S.ReSize(maxDeg, maxOrd);
+    layer._C.ReSize(maxDeg+1, maxOrd+1);
+    layer._S.ReSize(maxDeg+1, maxOrd+1);
 
-    for (int iDeg = 0; iDeg < maxDeg; iDeg++) {
-      for (int iOrd = 0; iOrd < maxOrd; iOrd++) {
+    for (int iDeg = 0; iDeg <= maxDeg; iDeg++) {
+      for (int iOrd = 0; iOrd <= maxOrd; iOrd++) {
         inStream >> layer._C[iDeg][iOrd];
       }
     }
-    for (int iDeg = 0; iDeg < maxDeg; iDeg++) {
-      for (int iOrd = 0; iOrd < maxOrd; iOrd++) {
+    for (int iDeg = 0; iDeg <= maxDeg; iDeg++) {
+      for (int iOrd = 0; iOrd <= maxOrd; iOrd++) {
         inStream >> layer._S[iDeg][iOrd];
       }
     }
