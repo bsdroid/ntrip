@@ -162,7 +162,11 @@ t_ephGPS::t_ephGPS(float rnxVersion, const QStringList& lines) {
       double sec;
 
       QString prnStr;
-      in >> prnStr >> year >> month >> day >> hour >> min >> sec;
+      in >> prnStr;
+      if (prnStr.size() == 1) {
+        in >> prnStr;
+      }
+      in >> year >> month >> day >> hour >> min >> sec;
       if      (prnStr.at(0) == 'G') {
         _prn.set('G', prnStr.mid(1).toInt());
       }
@@ -439,7 +443,11 @@ t_ephGlo::t_ephGlo(float rnxVersion, const QStringList& lines) {
       double sec;
 
       QString prnStr;
-      in >> prnStr >> year >> month >> day >> hour >> min >> sec;
+      in >> prnStr;
+      if (prnStr.size() == 1) {
+        in >> prnStr;
+      }
+      in >> year >> month >> day >> hour >> min >> sec;
       if (prnStr.at(0) == 'R') {
         _prn.set('R', prnStr.mid(1).toInt());
       }
@@ -672,8 +680,11 @@ t_ephGal::t_ephGal(float rnxVersion, const QStringList& lines) {
 
     if      ( iLine == 0 ) {
       QTextStream in(line.left(pos[1]).toAscii());
-
-      in >> prnStr >> year >> month >> day >> hour >> min >> sec;
+      in >> prnStr;
+      if (prnStr.size() == 1) {
+        in >> prnStr;
+      }
+      in >> year >> month >> day >> hour >> min >> sec;
       if      (year <  80) {
         year += 2000;
       }
@@ -1041,9 +1052,13 @@ t_ephSBAS::t_ephSBAS(float rnxVersion, const QStringList& lines) {
 
       int    year, month, day, hour, min;
       double sec;
-      
+
       QString prnStr;
-      in >> prnStr >> year >> month >> day >> hour >> min >> sec;
+      in >> prnStr;
+      if (prnStr.size() == 1) {
+        in >> prnStr;
+      }
+      in >> year >> month >> day >> hour >> min >> sec;
       if (prnStr.at(0) == 'S') {
         _prn.set('S', prnStr.mid(1).toInt());
       }
@@ -1203,9 +1218,13 @@ t_ephBDS::t_ephBDS(float rnxVersion, const QStringList& lines) {
 
       int    year, month, day, hour, min;
       double sec;
-      
+
       QString prnStr;
-      in >> prnStr >> year >> month >> day >> hour >> min >> sec;
+      in >> prnStr;
+      if (prnStr.size() == 1) {
+        in >> prnStr;
+      }
+      in >> year >> month >> day >> hour >> min >> sec;
       if (prnStr.at(0) == 'C') {
         _prn.set('C', prnStr.mid(1).toInt());
       }
