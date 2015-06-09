@@ -60,13 +60,13 @@ t_pppWidgets::t_pppWidgets() {
   _antexFile    = new qtFileChooser(); _antexFile   ->setObjectName("PPP/antexFile");    _widgets << _antexFile;   
   _logFile      = new QLineEdit();     _logFile     ->setObjectName("PPP/logFilePPP");   _widgets << _logFile;     
   _nmeaFile     = new QLineEdit();     _nmeaFile    ->setObjectName("PPP/nmeaFile");     _widgets << _nmeaFile;    
-  _nmeaPort     = new QLineEdit();     _nmeaPort    ->setObjectName("PPP/nmeaPort");     _widgets << _nmeaPort;
   _snxtroFile   = new QLineEdit();     _snxtroFile  ->setObjectName("PPP/snxtroFile");   _widgets << _snxtroFile;
   _snxtroSampl  = new QSpinBox();      _snxtroSampl ->setObjectName("PPP/snxtroSampl");  _widgets << _snxtroSampl;
   _staTable     = new QTableWidget();  _staTable    ->setObjectName("PPP/staTable");     _widgets << _staTable;    
   _lcGPS        = new QComboBox();     _lcGPS       ->setObjectName("PPP/lcGPS");        _widgets << _lcGPS;       
   _lcGLONASS    = new QComboBox();     _lcGLONASS   ->setObjectName("PPP/lcGLONASS");    _widgets << _lcGLONASS;   
   _lcGalileo    = new QComboBox();     _lcGalileo   ->setObjectName("PPP/lcGalileo");    _widgets << _lcGalileo;   
+  _lcBDS        = new QComboBox();     _lcBDS       ->setObjectName("PPP/lcBDS");        _widgets << _lcBDS;
   _sigmaC1      = new QLineEdit();     _sigmaC1     ->setObjectName("PPP/sigmaC1");      _widgets << _sigmaC1;     
   _sigmaL1      = new QLineEdit();     _sigmaL1     ->setObjectName("PPP/sigmaL1");      _widgets << _sigmaL1;     
   _maxResC1     = new QLineEdit();     _maxResC1    ->setObjectName("PPP/maxResC1");     _widgets << _maxResC1;     
@@ -111,6 +111,9 @@ t_pppWidgets::t_pppWidgets() {
   _lcGalileo->setEditable(false);
   _lcGalileo->addItems(QString("no,P3,L3,P3&L3").split(","));
 
+  _lcBDS->setEditable(false);
+  _lcBDS->addItems(QString("no,P3,L3,P3&L3").split(","));
+
   _snxtroSampl->setMinimum(0);
   _snxtroSampl->setMaximum(300);
   _snxtroSampl->setSingleStep(30);
@@ -131,10 +134,10 @@ t_pppWidgets::t_pppWidgets() {
   _corrWaitTime->setSuffix(" sec");
   _corrWaitTime->setSpecialValueText("no");
 
-  _staTable->setColumnCount(9);
+  _staTable->setColumnCount(10);
   _staTable->setRowCount(0);
   _staTable->setHorizontalHeaderLabels(
-     QString("Station,Sigma N,Sigma E,Sigma H,Noise N,Noise E,Noise H,Tropo Sigma,Tropo Noise").split(","));
+     QString("Station,Sigma N,Sigma E,Sigma H,Noise N,Noise E,Noise H,Tropo Sigma,Tropo Noise, NMEA Port").split(","));
   _staTable->setSelectionMode(QAbstractItemView::ExtendedSelection);
   _staTable->setSelectionBehavior(QAbstractItemView::SelectRows);
   _staTable->horizontalHeader()->setResizeMode(QHeaderView::Interactive);
@@ -203,6 +206,10 @@ void t_pppWidgets::readOptions() {
   if (ii != -1) {
     _lcGalileo->setCurrentIndex(ii);
   }
+  ii = _lcBDS->findText(settings.value(_lcBDS->objectName()).toString());
+  if (ii != -1) {
+    _lcBDS->setCurrentIndex(ii);
+  }
 
   // FileChoosers
   // ------------
@@ -217,7 +224,6 @@ void t_pppWidgets::readOptions() {
   _corrMount  ->setText(settings.value(_corrMount  ->objectName()).toString());
   _logFile    ->setText(settings.value(_logFile    ->objectName()).toString());
   _nmeaFile   ->setText(settings.value(_nmeaFile   ->objectName()).toString());
-  _nmeaPort   ->setText(settings.value(_nmeaPort   ->objectName()).toString());
   _snxtroFile ->setText(settings.value(_snxtroFile ->objectName()).toString());
   _sigmaC1    ->setText(settings.value(_sigmaC1    ->objectName()).toString());
   _sigmaL1    ->setText(settings.value(_sigmaL1    ->objectName()).toString());
@@ -286,12 +292,12 @@ void t_pppWidgets::saveOptions() {
   settings.setValue(_antexFile   ->objectName(), _antexFile   ->fileName());
   settings.setValue(_logFile     ->objectName(), _logFile     ->text());
   settings.setValue(_nmeaFile    ->objectName(), _nmeaFile    ->text());
-  settings.setValue(_nmeaPort    ->objectName(), _nmeaPort    ->text());
   settings.setValue(_snxtroFile  ->objectName(), _snxtroFile  ->text());
   settings.setValue(_snxtroSampl ->objectName(), _snxtroSampl ->value());
   settings.setValue(_lcGPS       ->objectName(), _lcGPS       ->currentText());
   settings.setValue(_lcGLONASS   ->objectName(), _lcGLONASS   ->currentText());
   settings.setValue(_lcGalileo   ->objectName(), _lcGalileo   ->currentText());
+  settings.setValue(_lcBDS       ->objectName(), _lcBDS       ->currentText());
   settings.setValue(_sigmaC1     ->objectName(), _sigmaC1     ->text());
   settings.setValue(_sigmaL1     ->objectName(), _sigmaL1     ->text());
   settings.setValue(_corrWaitTime->objectName(), _corrWaitTime->value());
