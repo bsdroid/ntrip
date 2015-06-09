@@ -86,7 +86,7 @@ void t_pppClient::processEpoch(const vector<t_satObs*>& satObs, t_output* output
     }
 
     satData->tt       = obs->_time;
-    satData->prn      = QString(obs->_prn.toString().c_str());
+    satData->prn      = QString(obs->_prn.toInternalString().c_str());
     satData->slipFlag = false;
     satData->P1       = 0.0;
     satData->P2       = 0.0;
@@ -225,7 +225,7 @@ void t_pppClient::putNewObs(t_satData* satData) {
 ////////////////////////////////////////////////////////////////////////////
 void t_pppClient::putOrbCorrections(const std::vector<t_orbCorr*>& corr) {
   for (unsigned ii = 0; ii < corr.size(); ii++) {
-    QString prn = QString(corr[ii]->_prn.toString().c_str());
+    QString prn = QString(corr[ii]->_prn.toInternalString().c_str());
     t_eph* eLast = _ephUser->ephLast(prn);
     t_eph* ePrev = _ephUser->ephPrev(prn);
     if      (eLast && eLast->IOD() == corr[ii]->_iod) {
@@ -241,7 +241,7 @@ void t_pppClient::putOrbCorrections(const std::vector<t_orbCorr*>& corr) {
 ////////////////////////////////////////////////////////////////////////////
 void t_pppClient::putClkCorrections(const std::vector<t_clkCorr*>& corr) {
   for (unsigned ii = 0; ii < corr.size(); ii++) {
-    QString prn = QString(corr[ii]->_prn.toString().c_str());
+    QString prn = QString(corr[ii]->_prn.toInternalString().c_str());
     t_eph* eLast = _ephUser->ephLast(prn);
     t_eph* ePrev = _ephUser->ephPrev(prn);
     if      (eLast && eLast->IOD() == corr[ii]->_iod) {
