@@ -45,13 +45,13 @@ class t_pppWidgets : public QObject {
   qtFileChooser* _antexFile;
   QLineEdit*     _logFile;
   QLineEdit*     _nmeaFile;
-  QLineEdit*     _nmeaPort;
   QLineEdit*     _snxtroFile;
   QSpinBox*      _snxtroSampl;
   QTableWidget*  _staTable;
   QComboBox*     _lcGPS;
   QComboBox*     _lcGLONASS;
   QComboBox*     _lcGalileo;
+  QComboBox*     _lcBDS;
   QLineEdit*     _sigmaC1;
   QLineEdit*     _sigmaL1;
   QSpinBox*      _minObs;

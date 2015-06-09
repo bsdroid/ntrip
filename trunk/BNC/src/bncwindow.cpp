@@ -851,7 +851,6 @@ bncWindow::bncWindow() {
 
   // PPP
   // ---
-  _pppWidgets._nmeaPort->setMaximumWidth(8*ww);
   _pppWidgets._dataSource->setMaximumWidth(20*ww);
   _pppWidgets._corrMount->setMaximumWidth(20*ww);
 
@@ -861,7 +860,7 @@ bncWindow::bncWindow() {
   ++ir;     
   pppLayout1->addWidget(new QLabel("Data source"),           ir, 0);
   pppLayout1->addWidget(_pppWidgets._dataSource,             ir, 1);
-//pppLayout1->addItem(new QSpacerItem(4*ww, 0),              ir, 2);
+  pppLayout1->addItem(new QSpacerItem(4*ww, 0),              ir, 2);
   pppLayout1->addWidget(new QLabel("   RINEX Obs file(s)"),  ir, 3);
   pppLayout1->addWidget(_pppWidgets._rinexObs,               ir, 4);
   ++ir;
@@ -883,8 +882,6 @@ bncWindow::bncWindow() {
 
   pppLayout1->addWidget(new QLabel("   NMEA file"),          ir, 3);
   pppLayout1->addWidget(_pppWidgets._nmeaFile,               ir, 4);
-  pppLayout1->addWidget(new QLabel("   Port"),               ir, 5);
-  pppLayout1->addWidget(_pppWidgets._nmeaPort,               ir, 6); 
   ++ir;
   pppLayout1->addWidget(new QLabel("   SNX TRO file"),       ir, 3);
   pppLayout1->addWidget(_pppWidgets._snxtroFile,             ir, 4);
@@ -914,8 +911,6 @@ bncWindow::bncWindow() {
 
   _pppWidgets._nmeaFile->setWhatsThis(tr("<p>Specify the path to daily NMEA files using e.g. the following syntax (example):</p><p> ./PPP_$(STATION)_$(DATE).nmea</p><p>BNC will produce one daily NMEA file per station, mainly to save NMEA GGA sentences from the PPP solution. Variable $(STATION) stands for the affected station and $(DATE) stands for the date.</p>"));
 
-  _pppWidgets._nmeaPort->setWhatsThis(tr("<p>Text fehlt</p>"));
-
   _pppWidgets._snxtroFile->setWhatsThis(tr("<p>Specify the path to daily SINEX Troposphere files using e.g. the following syntax (example):</p><p> ./PPP_$(STATION)_$(DATE).tro</p><p>BNC will produce one daily troposphere file per station to save troposphere parameters from the PPP solution in SINEX Troposphere format. Variable $(STATION) stands for the affected station and $(DATE) stands for the date.</p>"));
 
   _pppWidgets._snxtroSampl->setWhatsThis(tr("<p>Select a 'Sampling' rate for saving troposphere paramers.</p>"));
@@ -941,6 +936,8 @@ bncWindow::bncWindow() {
   _pppWidgets._lcGLONASS->setWhatsThis(tr("<p>Specify on which kind of ionosphere-free linear combination of GLONASS observations you want to base ambiguity resolutions.</p><p><ul><li>Specifying 'P3' means that you request BNC to use the so-called P3 ionosphere-free linear combination of code observations.</li><li>'L3' means that you request BNC to use the so-called L3 ionosphere-free linear combination of phase observations.</li> <li>'P3&L3' means that you request BNC to use both, P3 and L3 ionosphere-free linear combination of code and phase observations.</li></ul></p><p>Specifying 'no' means that you don't want BNC to estimate ambiguities using linear combinations of GLONASS observations.</p>"));
 
   _pppWidgets._lcGalileo->setWhatsThis(tr("<p>Specify on which kind of ionosphere-free linear combination of Galileo observations you want to base ambiguity resolutions.</p><p><ul><li>Specifying 'P3' means that you request BNC to use the so-called P3 ionosphere-free linear combination of code observations.</li><li>'L3' means that you request BNC to use the so-called L3 ionosphere-free linear combination of phase observations.</li> <li>'P3&L3' means that you request BNC to use both, P3 and L3 ionosphere-free linear combination of code and phase observations.</li></ul></p><p>Specifying 'no' means that you don't want BNC to estimate ambiguities using linear combinations of Galileo observations.</p>"));
+
+  _pppWidgets._lcBDS->setWhatsThis(tr("<p>Specify on which kind of ionosphere-free linear combination of BDS observations you want to base ambiguity resolutions.</p><p><ul><li>Specifying 'P3' means that you request BNC to use the so-called P3 ionosphere-free linear combination of code observations.</li><li>'L3' means that you request BNC to use the so-called L3 ionosphere-free linear combination of phase observations.</li> <li>'P3&L3' means that you request BNC to use both, P3 and L3 ionosphere-free linear combination of code and phase observations.</li></ul></p><p>Specifying 'no' means that you don't want BNC to estimate ambiguities using linear combinations of BDS observations.</p>"));
 
   QVBoxLayout* pppLayout2 = new QVBoxLayout();
   pppLayout2->addWidget(new QLabel("Precise Point Positioning - Processed Stations.<br>"));
@@ -981,15 +978,17 @@ bncWindow::bncWindow() {
   pppLayout3->addWidget(new QLabel("Ele Wgt Phase"),        ir, 6, Qt::AlignLeft);
   pppLayout3->addWidget(_pppWidgets._eleWgtPhase,           ir, 7);
   ++ir;
-  pppLayout3->addWidget(new QLabel("Wait for corrections"), ir, 0, Qt::AlignLeft);
-  pppLayout3->addWidget(_pppWidgets._corrWaitTime,          ir, 1);
+  pppLayout3->addWidget(new QLabel("BDS LCs"),              ir, 0, Qt::AlignLeft);
+  pppLayout3->addWidget(_pppWidgets._lcBDS,                 ir, 1);
   pppLayout3->addWidget(new QLabel("Min # of Obs"),         ir, 3, Qt::AlignLeft);
   pppLayout3->addWidget(_pppWidgets._minObs,                ir, 4);
   pppLayout3->addWidget(new QLabel("Min Elevation"),        ir, 6, Qt::AlignLeft);
   pppLayout3->addWidget(_pppWidgets._minEle,                ir, 7);
   ++ir;
-  pppLayout3->addWidget(new QLabel("Seeding (sec)"),        ir, 0, Qt::AlignLeft);
-  pppLayout3->addWidget(_pppWidgets._seedingTime,           ir, 1);
+  pppLayout3->addWidget(new QLabel("Wait for corrections"), ir, 0, Qt::AlignLeft);
+  pppLayout3->addWidget(_pppWidgets._corrWaitTime,          ir, 1);
+  pppLayout3->addWidget(new QLabel("Seeding (sec)"),        ir, 3, Qt::AlignLeft);
+  pppLayout3->addWidget(_pppWidgets._seedingTime,           ir, 4);
   ++ir;
   pppLayout3->addWidget(new QLabel(""),                     ir, 8);
   pppLayout3->setColumnStretch(8, 999);
