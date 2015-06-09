@@ -653,7 +653,7 @@ bncWindow::bncWindow() {
   gLayout->setColumnMinimumWidth(0,14*ww);
   _onTheFlyComboBox->setMaximumWidth(9*ww);
 
-  gLayout->addWidget(new QLabel("General settings for logfile, file handling, configuration on-the-fly, and auto-start.<br>"),0, 0, 1, 50);
+  gLayout->addWidget(new QLabel("General settings for logfile, file handling, configuration on-the-fly, auto-start, and raw file output.<br>"),0, 0, 1, 50);
   gLayout->addWidget(new QLabel("Logfile (full path)"),          1, 0);
   gLayout->addWidget(_logFileLineEdit,                           1, 1, 1,20);
   gLayout->addWidget(new QLabel("Append files"),                 2, 0);
