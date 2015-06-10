@@ -1111,6 +1111,7 @@ t_ephSBAS::t_ephSBAS(float rnxVersion, const QStringList& lines) {
            readDbl(line, pos[3], fieldLen, iodn           ) ) {
         _checkState = bad;
         return;
+      } else {
         _IODN = int(iodn);
       }
     }
