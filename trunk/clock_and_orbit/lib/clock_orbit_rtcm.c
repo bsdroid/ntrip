@@ -564,10 +564,10 @@ int moremessagesfollow, char *buffer, size_t size)
 
   for(s = 0; s < CLOCKORBIT_SATNUM; ++s)
   {
-    if(b->NumberOfSat[s] && (type == PBTYPE_AUTO || type == corbase[s]+COBOFS_BIAS))
+    if(b->NumberOfSat[s] && (type == PBTYPE_AUTO || type == s+PBTYPE_BASE))
     {
       INITBLOCK
-      T_MESSAGE_NUMBER(corbase[s]+COBOFS_BIAS)
+      T_MESSAGE_NUMBER(s+PBTYPE_BASE)
       switch(s)
       {
       case CLOCKORBIT_SATGPS: case CLOCKORBIT_SATGALILEO:
