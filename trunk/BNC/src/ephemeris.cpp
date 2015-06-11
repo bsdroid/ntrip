@@ -756,6 +756,7 @@ t_ephGal::t_ephGal(float rnxVersion, const QStringList& lines) {
           _fnav = false;
           _inav = true;
         }
+        _TOEweek -= 1024.0;
       }
     }
 
@@ -1003,7 +1004,7 @@ QString t_ephGal::toString(double version) const {
   out << QString(fmt)
     .arg(_IDOT,              19, 'e', 12)
     .arg(double(dataSource), 19, 'e', 12)
-    .arg(_TOEweek,           19, 'e', 12)
+    .arg(_TOEweek + 1024.0,  19, 'e', 12)
     .arg(0.0,                19, 'e', 12);
 
   out << QString(fmt)
