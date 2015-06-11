@@ -609,7 +609,7 @@ int moremessagesfollow, char *buffer, size_t size)
         {
           T_SIGNAL_IDENTIFIER(b->Sat[i].Biases[j].Type)
           T_INTEGER_INDICATOR(b->Sat[i].Biases[j].SignalIntegerIndicator ? 1 : 0)
-          T_WIDE_LANE_INDICATOR(b->Sat[i].Biases[j].SignalsWideLaneIntegerIndicator ? 1 : 0)
+          T_WIDE_LANE_INDICATOR(b->Sat[i].Biases[j].SignalsWideLaneIntegerIndicator)
           T_DISCONTINUITY_COUNTER(b->Sat[i].Biases[j].SignalDiscontinuityCounter)
           T_PHASE_BIAS(b->Sat[i].Biases[j].Bias)
         }
