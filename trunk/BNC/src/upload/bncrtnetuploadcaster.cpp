@@ -370,24 +370,22 @@ void bncRtnetUploadCaster::decodeRtnetStream(char* buffer, int bufLen) {
       in >> dispInd >> mwInd;
       continue;
     }
+    // non-satellite specific parameters
     if (key.contains("VTEC", Qt::CaseSensitive)) {
       in >> vtec.UpdateInterval >> vtec.NumLayers;
       for (unsigned ll = 0; ll < vtec.NumLayers; ll++) {
         int dummy;
         in >> dummy >> vtec.Layers[ll].Degree >> vtec.Layers[ll].Order
             >> vtec.Layers[ll].Height;
-        ii++;
         for (unsigned iDeg = 0; iDeg <= vtec.Layers[ll].Degree; iDeg++) {
           for (unsigned iOrd = 0; iOrd <= vtec.Layers[ll].Order; iOrd++) {
             in >> vtec.Layers[ll].Cosinus[iDeg][iOrd];
           }
-          ii++;
         }
         for (unsigned iDeg = 0; iDeg <= vtec.Layers[ll].Degree; iDeg++) {
           for (unsigned iOrd = 0; iOrd <= vtec.Layers[ll].Order; iOrd++) {
             in >> vtec.Layers[ll].Sinus[iDeg][iOrd];
           }
-          ii++;
         }
       }
       continue;
@@ -406,7 +404,6 @@ void bncRtnetUploadCaster::decodeRtnetStream(char* buffer, int bufLen) {
     const t_eph* ephLast = _ephUser->ephLast(prnInternalStr);
     const t_eph* ephPrev = _ephUser->ephPrev(prnInternalStr);
     const t_eph* eph = ephLast;
-
     if (eph) {
 
       // Use previous ephemeris if the last one is too recent
