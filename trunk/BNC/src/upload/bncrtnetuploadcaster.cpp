@@ -370,7 +370,9 @@ void bncRtnetUploadCaster::decodeRtnetStream(char* buffer, int bufLen) {
     }
     // non-satellite specific parameters
     if (key.contains("VTEC", Qt::CaseSensitive)) {
-      in >> vtec.UpdateInterval >> vtec.NumLayers;
+      double ui;
+      in >> ui >> vtec.NumLayers;
+      vtec.UpdateInterval = (unsigned int) determineUpdateInd(ui);
       for (unsigned ll = 0; ll < vtec.NumLayers; ll++) {
         int dummy;
         in >> dummy >> vtec.Layers[ll].Degree >> vtec.Layers[ll].Order
