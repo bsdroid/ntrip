@@ -246,7 +246,13 @@ void bncRtnetUploadCaster::decodeRtnetStream(char* buffer, int bufLen) {
     _rtnetStreamBuffer.clear();
     return;
   }
-  _rtnetStreamBuffer = _rtnetStreamBuffer.mid(iEpoBeg);
+  int iEpoBegEarlier = _rtnetStreamBuffer.indexOf('*');
+  if (iEpoBegEarlier != -1 && iEpoBegEarlier < iEpoBeg) { // are there two epoch lines in buffer?
+	  _rtnetStreamBuffer = _rtnetStreamBuffer.mid(iEpoBegEarlier);
+  }
+  else {
+    _rtnetStreamBuffer = _rtnetStreamBuffer.mid(iEpoBeg);
+  }
 
   int iEpoEnd = _rtnetStreamBuffer.lastIndexOf("EOE"); // end   of last epoch
   if (iEpoEnd == -1) {
@@ -260,13 +266,6 @@ void bncRtnetUploadCaster::decodeRtnetStream(char* buffer, int bufLen) {
 
   if (lines.size() < 2) {
     return;
-  }
-
-  // Keep the last unfinished line in buffer
-  // ---------------------------------------
-  int iLastEOL = _rtnetStreamBuffer.lastIndexOf('\n');
-  if (iLastEOL != -1) {
-    _rtnetStreamBuffer = _rtnetStreamBuffer.mid(iLastEOL + 1);
   }
 
   // Read first line (with epoch time)
@@ -353,7 +352,6 @@ void bncRtnetUploadCaster::decodeRtnetStream(char* buffer, int bufLen) {
   phasebias.UpdateInterval = clkUpdInd;
 
   for (int ii = 1; ii < lines.size(); ii++) {
-
     QString key;  // prn or key VTEC, IND (phase bias indicators)
     ColumnVector rtnAPC;
     ColumnVector rtnVel;
