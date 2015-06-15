@@ -391,11 +391,11 @@ This chapter describes how to set the BNC program options. It explains the 'Top 
 &nbsp; &nbsp; &nbsp; 3.5.4. <a href=#ephvers>Version</a><br>
 3.6. <a href=#reqc>RINEX Editing & QC</a><br>
 &nbsp; &nbsp; &nbsp; 3.6.1 <a href=#reqcact>Action</a><br>
-&nbsp; &nbsp; &nbsp; 3.6.2 <a href=#reqcgnss>Sky Plots</a><br>
-&nbsp; &nbsp; &nbsp; 3.6.3 <a href=#reqcedit>Set Edit Options</a><br>
-&nbsp; &nbsp; &nbsp; 3.6.4 <a href=#reqcinput>Input Files</a><br>
-&nbsp; &nbsp; &nbsp; 3.6.5 <a href=#reqcoutput>Output Files</a><br>
-&nbsp; &nbsp; &nbsp; 3.6.6 <a href=#reqcplots>Directory for Plots</a><br>
+&nbsp; &nbsp; &nbsp; 3.6.2 <a href=#reqcinp>Input Files</a><br>
+&nbsp; &nbsp; &nbsp; 3.6.3 <a href=#reqcout>Output Files</a><br>
+&nbsp; &nbsp; &nbsp; 3.6.4 <a href=#reqclog>Logfiles</a><br>
+&nbsp; &nbsp; &nbsp; 3.6.5 <a href=#reqcplots>Plots for Signals</a><br>
+&nbsp; &nbsp; &nbsp; 3.6.6 <a href=#reqcedit>Set Edit Options</a><br>
 &nbsp; &nbsp; &nbsp; 3.6.7 <a href=#reqccommand>Command Line, No Window</a><br>
 3.7. <a href=#sp3comp>SP3 Comparison</a><br>
 &nbsp; &nbsp; &nbsp; 3.7.1 <a href=#sp3input>Input SP3 Files</a><br>
@@ -877,20 +877,19 @@ Note that this does not concern the Broadcast Ephemeris output through IP port w
 
 <p><a name="reqc"><h4>3.6. RINEX Editing & QC</h4></p>
 <p>
-Besides stream conversion from RTCM to RINEX, BNC allows editing RINEX files or concatenate their contents. RINEX Observation and Navigation files can be handled. BNC can also carry out a RINEX file quality check. In summary this functionality in BNC covers
+Besides stream conversion from RTCM to RINEX, BNC allows editing RINEX files or concatenate their contents. RINEX Observation and Navigation files can be handled. BNC can also carry out a RINEX file Quality Check. In summary  and besides Stream <u><b>T</b></u>ranslation this functionality in BNC covers
 <ul>
-<li>Stream <u>T</u>ranslation</li>
-<li>File <u>E</u>diting and concatenation</li>
-<li>File <u>Q</b></u>uality <u>C</u>heck</li>
+<li>File <u><b>E</b></u>diting and concatenation</li>
+<li>File <u><b>Q</b></u>uality <u><b>C</b></u>heck</li>
 <ul>
-<li>Multipath analysis sky plots (see Estey and Meertens 1999)</li>
+<li>Multipath analysis sky plots</li>
 <li>Signal-to-noise ratio sky plots</li>
 <li>Satellite availability plots</li>
 <li>Satellite elevation plots</li>
 <li>PDOP plots</li>
 </ul>
 </ul>
-and hence follows UNAVCO's famous 'TEQC' program. The remarkable thing about BNC in this context is that it supports RINEX Version 3 under GNU General Public License.
+and hence follows UNAVCO's famous TEQC program (see Estey and Meertens 1999). The remarkable thing about BNC in this context is that it supports RINEX Version 3 under GNU General Public License with full GUI support and instant graphics output.
 </p>
 
 <p><a name="reqcact"><h4>3.6.1 Action - optional</h4></p>
@@ -901,21 +900,43 @@ and hence follows UNAVCO's famous 'TEQC' program. The remarkable thing about BNC
 </ul>
 </p>
 
-<p><a name="reqcgnss"><h4>3.6.2 Sky Plots - mandatory if 'Action' is set to 'Analyze'</h4></p>
-
-<p>Once the 'Analyze' action is selected, you have to specify the GNSS system(s) whose observations you want to analyze for multipath and signal-to-noise ratio sky plots. Possible options are 'ALL', 'GPS', 'GLONASS', 'Galileo', 'SBAS', 'QZSS' and 'BDS'. Default is 'ALL', meaning that observations from all GNSS will be analyzed.
+<p><a name="reqcinp"><h4>3.6.2 Input Files - mandatory</h4></p>
+<p>
+Specify the full path to RINEX Obseration and RINEX Navigation file(s) to be processed. 
 </p>
 
+<p><a name="reqcout"><h4>3.6.3 Output Files - mandatory if 'Action' is set to 'Edit/Concatenate'</h4></p>
 <p>
+Specify the full path to RINEX Obseration and RINEX Navigation output file(s). Default are empty option fields, meaning that no RINEX Observation and RINEX Navigation output files will be generated.
+</p>
+
+<p><a name="reqclog"><h4>3.6.4 Logfile - optional</h4></p>
+<p>
+Specify the name of a logfile to save information on RINEX file Editing/Concatenation or Analysis. Default is an empty option field, meaning that no logfile will be saved.
+</p>
+<p>
+Note that logfiles may become quite large. Hence BNC provides an option 'Summary only' to limit this logfile contents to essential information only.
+</p>
+
+<p><a name="reqcplot"><h4>3.6.5 Plots for Signals - mandatory if 'Action' is set to 'Analyze'</h4></p>
+<p>
+Multipath and signal-to-noise sky plots as well as plots for satellite availability, elevation and PDOP are produced per GNSS system and frequency with the multipath analysis based on CnC observation types (n = band / frequency). BNC allows to specify the systems  (C = BDS, E = Galileo, G = GPS, J = QZSS, R = GLONASS, S = SBAS) and frequencies you want to use for the plots. The following string is an example for option field 'Plots of signals':
+<br>
+<pre>
+C:2&7 E:1&5 G:1&2 J:1&2 R:1&2 S:1&5
+</pre>
+This default configuration will present
 <ul>
-<li>CnC observation types (n = band / frequency) are used for the multipath analysis.</li>
-<li>GPS and GLONASS multipath plots are presented for L1 and L2 frequencies.</li>
-<li>Galileo multipath plots are presented for L1 and L5 frequencies.</li>
-<li>Multipath analysis for GPS L5, and Galileo L5, L7, and L8 is not yet implemented.
+<li>BDS plots for L2 and L7</li>
+<li>Galileo plots for L1 and L5</li>
+<li>GPS plots for L1 and L2</li>
+<li>QZSS plots for L1 and L2</li>
+<li>GLONASS plots for L1 and L2</li>
+<li>SBAS plots for L1 and L5</li>
 </ul>
 </p>
 
-<p><a name="reqcedit"><h4>3.6.3 Set Edit Options - mandatory if 'Edit/Concatenate' is set</h4></p>
+<p><a name="reqcedit"><h4>3.6.6 Set Edit Options - mandatory if 'Edit/Concatenate' is set</h4></p>
 <p>Once the 'Edit/Concatenate' action is selected, you have to 'Set Edit Options'. BNC lets you specify the RINEX version, sampling interval, begin and end of file, operator, observation codes, comment lines, and marker, antenna, receiver details. Note that some specification are only meaningful for RINEX Observation files but not for RINEX Navigation files.
 </p>
 <p>
