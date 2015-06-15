@@ -71,6 +71,7 @@ t_reqcEdit::t_reqcEdit(QObject* parent) : QThread(parent) {
   _samplingRate   = settings.value("reqcSampling").toInt();
   _begTime        = bncTime(settings.value("reqcStartDateTime").toString().toAscii().data());
   _endTime        = bncTime(settings.value("reqcEndDateTime").toString().toAscii().data());
+
 }
 
 // Destructor
@@ -574,6 +575,12 @@ void t_reqcEdit::editEphemerides() {
   // -------------------------
   for (int ii = 0; ii < _ephs.size(); ii++) {
     const t_eph* eph = _ephs[ii];
+    if (_begTime.valid() && eph->TOC() < _begTime) {
+      continue;
+    }
+    if (_endTime.valid() && eph->TOC() > _endTime) {
+      break;
+    }
     outNavFile.writeEph(eph);
   }
 }
