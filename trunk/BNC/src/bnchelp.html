@@ -395,8 +395,9 @@ This chapter describes how to set the BNC program options. It explains the 'Top 
 &nbsp; &nbsp; &nbsp; 3.6.3 <a href=#reqcout>Output Files</a><br>
 &nbsp; &nbsp; &nbsp; 3.6.4 <a href=#reqclog>Logfiles</a><br>
 &nbsp; &nbsp; &nbsp; 3.6.5 <a href=#reqcplots>Plots for Signals</a><br>
-&nbsp; &nbsp; &nbsp; 3.6.6 <a href=#reqcedit>Set Edit Options</a><br>
-&nbsp; &nbsp; &nbsp; 3.6.7 <a href=#reqccommand>Command Line, No Window</a><br>
+&nbsp; &nbsp; &nbsp; 3.6.6 <a href=#reqcdir>Directory for Plots</a><br>
+&nbsp; &nbsp; &nbsp; 3.6.7 <a href=#reqcedit>Set Edit Options</a><br>
+&nbsp; &nbsp; &nbsp; 3.6.8 <a href=#reqccommand>Command Line, No Window</a><br>
 3.7. <a href=#sp3comp>SP3 Comparison</a><br>
 &nbsp; &nbsp; &nbsp; 3.7.1 <a href=#sp3input>Input SP3 Files</a><br>
 &nbsp; &nbsp; &nbsp; 3.7.2 <a href=#sp3exclude>Exclude Satellites</a><br>
@@ -902,25 +903,176 @@ and hence follows UNAVCO's famous TEQC program (see Estey and Meertens 1999). Th
 
 <p><a name="reqcinp"><h4>3.6.2 Input Files - mandatory</h4></p>
 <p>
-Specify the full path to RINEX Obseration and RINEX Navigation file(s) to be processed. 
+Specify full path to input RINEX Observation file(s), and<br>
+specify full path to input RINEX Navigation file(s).
+</p>
+<p>
+When specifying several input files BNC will concatenate their contents. In case of RINEX Observation input files with different observation type header records, BNC will output only one specific set of adjustet observation type records in the RINEX header which fits to the whole file contents.
+</p>
+<p>
+Note that you may specify several RINEX Version 2 Navigation files for GPS and GLONASS. 
 </p>
 
-<p><a name="reqcout"><h4>3.6.3 Output Files - mandatory if 'Action' is set to 'Edit/Concatenate'</h4></p>
+<p><a name="reqcout"><h4>3.6.3 Output Files - optional if 'Action' is set to 'Edit/Concatenate'</h4></p>
 <p>
-Specify the full path to RINEX Obseration and RINEX Navigation output file(s). Default are empty option fields, meaning that no RINEX Observation and RINEX Navigation output files will be generated.
+If 'Edit/Concatenate' is selected, specifying the full path to output RINEX Observation file(s) and specifying the full path to output RINEX Navigation file(s) is optional. Default are empty option fields, meaning that no RINEX files will be saved on disk.
 </p>
 
 <p><a name="reqclog"><h4>3.6.4 Logfile - optional</h4></p>
 <p>
-Specify the name of a logfile to save information on RINEX file Editing/Concatenation or Analysis. Default is an empty option field, meaning that no logfile will be saved.
-</p>
-<p>
-Note that logfiles may become quite large. Hence BNC provides an option 'Summary only' to limit this logfile contents to essential information only.
+Specify the name of a logfile to save information on RINEX file Editing/Concatenation or Analysis. Default is an empty option fieled, meaning that no logfile will be saved.
 </p>
 
-<p><a name="reqcplot"><h4>3.6.5 Plots for Signals - mandatory if 'Action' is set to 'Analyze'</h4></p>
 <p>
-Multipath and signal-to-noise sky plots as well as plots for satellite availability, elevation and PDOP are produced per GNSS system and frequency with the multipath analysis based on CnC observation types (n = band / frequency). BNC allows to specify the systems  (C = BDS, E = Galileo, G = GPS, J = QZSS, R = GLONASS, S = SBAS) and frequencies you want to use for the plots. The following string is an example for option field 'Plots of signals':
+Note that logfiles from analyzing RINEX files may become quite large. Hence BNC provides an option 'Summary only' to limit this logfile contents to some essential information in case 'Action' is set to 'Analyze'. The following is an example for a RINEX quality check analysis logfile:
+<pre>
+QC Format Version : 1.0
+
+Navigation File(s): brdm1660.15p
+Ephemeris         : 6421 OK   4 BAD
+  Bad Ephemeris   : brdm1660.15p S27 2015 06 15 05 04 00 
+  Bad Ephemeris   : brdm1660.15p S27 2015 06 15 05 46 40 
+  Bad Ephemeris   : brdm1660.15p S27 2015 06 15 05 59 28 
+  Bad Ephemeris   : brdm1660.15p C08 2015 06 15 08 00 00-
+
+Observation File  : cut01660.15o
+RINEX Version     : 3.02
+Marker Name       : CUT0
+Marker Number     : 59945M001
+Receiver          : TRIMBLE NETR9
+Antenna           : TRM59800.00     SCIS
+Position XYZ      :  -2364337.2971   4870285.5843  -3360809.8188
+Antenna dH/dE/dN  :   0.0000   0.0000   0.0000
+Start Time        : 2015-06-15 00.00.00.0
+End Time          : 2015-06-15 23.59.30.0
+Interval          : 30
+Navigation Systems: 6    C E G J R S
+
+  C: Satellites: 13
+  C: Signals   : 3    2I 6I 7I
+
+      C:   2I: Observations      :  29094
+      C:   2I: Slips (file+found):    183 +     2
+      C:   2I: Gaps              :     31
+      C:   2I: Mean SNR          :   42.2
+      C:   2I: Mean Multipath    :   0.40
+
+      C:   6I: Observations      :  29048
+      C:   6I: Slips (file+found):    191 +     0
+      C:   6I: Gaps              :     57
+      C:   6I: Mean SNR          :   44.8
+      C:   6I: Mean Multipath    :   0.00
+
+      C:   7I: Observations      :  29048
+      C:   7I: Slips (file+found):    191 +     2
+      C:   7I: Gaps              :     57
+      C:   7I: Mean SNR          :   44.4
+      C:   7I: Mean Multipath    :   0.30
+
+  E: Satellites: 7
+  E: Signals   : 4    1X 5X 7X 8X
+
+      E:   1X: Observations      :   7440
+      E:   1X: Slips (file+found):    332 +     1
+      E:   1X: Gaps              :     11
+      E:   1X: Mean SNR          :   44.3
+      E:   1X: Mean Multipath    :   0.36
+...
+
+  G: Satellites: 31
+  G: Signals   : 4    1C 2W 2X 5X
+
+      G:   1C: Observations      :  31331
+      G:   1C: Slips (file+found):    959 +    20
+      G:   1C: Gaps              :     81
+      G:   1C: Mean SNR          :   44.2
+      G:   1C: Mean Multipath    :   0.69
+...
+
+  J: Satellites: 1
+  J: Signals   : 6    1C 1X 1Z 2X 5X 6X
+
+      J:   1C: Observations      :   2880
+      J:   1C: Slips (file+found):     43 +     0
+      J:   1C: Gaps              :      0
+      J:   1C: Mean SNR          :   44.0
+      J:   1C: Mean Multipath    :   0.60
+...
+
+  R: Satellites: 24
+  R: Signals   : 4    1C 1P 2C 2P
+
+      R:   1C: Observations      :  24500
+      R:   1C: Slips (file+found):    194 +    36
+      R:   1C: Gaps              :     76
+      R:   1C: Mean SNR          :   45.2
+      R:   1C: Mean Multipath    :   0.81
+...
+
+  S: Satellites: 4
+  S: Signals   : 2    1C 5I
+
+      S:   1C: Observations      :  11520
+      S:   1C: Slips (file+found):      5 +   145
+      S:   1C: Gaps              :      0
+      S:   1C: Mean SNR          :   41.1
+      S:   1C: Mean Multipath    :   0.91
+...
+
+> 2015 06 15 00 00  0.0000000 39  0.6
+G14   1.50   14.90   2  L1C s. 32.4  C1C  . 0.76
+G15  11.79  117.66   6  L1C .. 39.1  C1C  . 0.86  L2W .. 20.9  C2W  . 1.10  L2X .. 37.1  C2X  . 1.11
+G16  53.56 -107.67   4  L1C .. 48.8  C1C  . 0.31  L2W .. 39.9  C2W  . 0.26
+G18  72.61   84.24   4  L1C .. 50.0  C1C  . 0.29  L2W .. 43.1  C2W  . 0.26
+G19   6.07 -124.61   4  L1C .. 36.1  C1C  . 0.91  L2W .. 18.6  C2W  . 0.43
+G20   4.75  138.88   4  L1C s. 35.5  C1C  . 0.00  L2W s. 15.6  C2W  . 0.00
+G21  40.44  132.24   4  L1C .. 45.7  C1C  . 0.59  L2W .. 33.3  C2W  . 0.24
+G22  55.62  -12.81   4  L1C .. 51.6  C1C  . 0.44  L2W .. 41.7  C2W  . 0.26
+G26  56.96  -45.95   8  L1C .. 50.8  C1C  . 0.56  L2W .. 42.7  C2W  . 0.23  L2X .. 50.7  C2X  . 0.30  L5X .. 55.7  C5X  . 0.00
+G27  33.71 -136.99   8  L1C .. 46.9  C1C  . 0.51  L2W .. 35.5  C2W  . 0.34  L2X .. 45.9  C2X  . 0.36  L5X .. 52.0  C5X  . 0.00
+G29  15.74   68.66   6  L1C .. 41.3  C1C  . 0.93  L2W .. 22.8  C2W  . 0.44  L2X .. 38.1  C2X  . 0.37
+R01  52.20  117.58   8  L1C .. 52.5  C1C  . 0.42  L1P .. 50.5  C1P  . 0.39  L2C .. 43.8  C2C  . 0.49  L2P .. 43.5  C2P  . 0.39
+R02  47.13   19.13   8  L1C .. 53.3  C1C  . 0.31  L1P .. 52.0  C1P  . 0.45  L2C .. 47.9  C2C  . 0.39  L2P .. 47.6  C2P  . 0.39
+R03   3.03  -10.43   8  L1C .. 36.0  C1C  . 2.06  L1P .. 34.4  C1P  . 1.03  L2C .. 36.6  C2C  . 0.69  L2P .. 37.0  C2P  . 0.65
+R08   9.52  152.59   8  L1C .. 41.3  C1C  . 1.11  L1P .. 39.9  C1P  . 0.76  L2C .. 38.3  C2C  . 0.89  L2P .. 38.1  C2P  . 0.63
+R14  15.31  -50.83   8  L1C .. 39.0  C1C  . 1.16  L1P .. 37.4  C1P  . 0.78  L2C .. 34.3  C2C  . 0.63  L2P .. 34.0  C2P  . 0.57
+R15  22.97  -99.16   8  L1C .. 43.7  C1C  . 0.72  L1P .. 42.2  C1P  . 0.47  L2C .. 42.0  C2C  . 0.46  L2P .. 42.2  C2P  . 0.39
+R16   4.62 -152.37   8  L1C .. 40.4  C1C  . 1.24  L1P .. 39.1  C1P  . 0.89  L2C .. 35.3  C2C  . 0.73  L2P .. 33.9  C2P  . 0.57
+R17  42.68 -161.68   8  L1C .. 50.6  C1C  . 0.56  L1P .. 48.6  C1P  . 0.43  L2C .. 39.1  C2C  . 0.56  L2P .. 38.4  C2P  . 0.32
+R23  14.50   88.21   8  L1C .. 43.8  C1C  . 1.25  L1P .. 42.5  C1P  . 0.61  L2C .. 35.2  C2C  . 0.88  L2P .. 34.3  C2P  . 0.59
+R24  47.18  133.41   8  L1C .. 47.0  C1C  . 0.48  L1P .. 46.0  C1P  . 0.45  L2C .. 42.9  C2C  . 0.40  L2P .. 43.1  C2P  . 0.32
+E18   0.00    0.00   8  L1X .. 45.0  C1X  . 0.58  L5X .. 47.2  C5X  . 0.26  L7X .. 46.1  C7X  . 0.00  L8X .. 51.1  C8X  . 0.00
+J01  79.88   57.76  12  L1C .. 49.9  C1C  . 0.18  L1X .. 53.8  C1X  . 0.25  L1Z .. 51.3  C1Z  . 0.26  L2X .. 51.3  C2X  . 0.23  L5X .. 55.9  C5X  . 0.00  L6X .. 46.5  C6X  . 0.00
+S27  16.07  -73.59   4  L1C .. 36.8  C1C  . 0.92  L5I .. 41.7  C5I  . 0.75
+S28  38.67  -50.73   4  L1C s. 44.9  C1C  . 0.00  L5I s. 45.0  C5I  . 0.00
+S29  41.34   46.37   2  L1C .. 39.2  C1C  . 0.00
+S37  41.34   46.37   2  L1C .. 39.9  C1C  . 0.00
+C01 -14.73  163.85   6  L2I .. 42.5  C2I  . 0.47  L7I .. 46.6  C7I  . 0.23  L6I .. 45.5  C6I  . 0.00
+C02  33.21  145.93   6  L2I .. 37.9  C2I  . 0.29  L7I .. 43.0  C7I  . 0.18  L6I .. 43.3  C6I  . 0.00
+C03 -37.46  -58.16   6  L2I .. 44.1  C2I  . 0.21  L7I .. 46.6  C7I  . 0.21  L6I .. 47.3  C6I  . 0.00
+C04  64.99   -5.73   6  L2I .. 37.7  C2I  . 0.37  L7I .. 41.8  C7I  . 0.25  L6I .. 42.9  C6I  . 0.00
+C05 -42.36  -80.31   6  L2I .. 35.9  C2I  . 0.27  L7I .. 38.7  C7I  . 0.21  L6I .. 39.6  C6I  . 0.00
+C06 -15.26  -74.59   6  L2I .. 47.0  C2I  . 0.60  L7I .. 47.1  C7I  . 0.24  L6I .. 48.0  C6I  . 0.00
+C07  34.21   14.11   6  L2I .. 32.8  C2I  . 0.87  L7I .. 36.4  C7I  . 0.40  L6I .. 35.2  C6I  . 0.00
+C08  -0.07 -107.77   6  L2I .. 49.7  C2I  . 0.17  L7I .. 49.1  C7I  . 0.21  L6I .. 50.2  C6I  . 0.00
+C09 -10.42  107.30   6  L2I .. 41.6  C2I  . 0.54  L7I .. 42.6  C7I  . 0.37  L6I .. 42.3  C6I  . 0.00
+C10  32.77    7.17   6  L2I .. 36.9  C2I  . 0.87  L7I .. 36.7  C7I  . 0.58  L6I .. 36.0  C6I  . 0.00
+C11  33.14   61.19   6  L2I .. 43.1  C2I  . 0.57  L7I .. 44.0  C7I  . 0.52  L6I .. 43.6  C6I  . 0.00
+C14 -22.42  106.32   6  L2I .. 49.6  C2I  . 0.35  L7I .. 50.7  C7I  . 0.26  L6I .. 52.3  C6I  . 0.00
+> 2015 06 15 00 00 30.0000000 39  0.6
+...
+...
+
+</pre>
+</p>
+<p>
+Note that in addition to cycle slips recorded in the RINEX 'file', cycle slips identified by BNC are reported as 'found'.
+</p>
+
+<p><a name="reqcplots"><h4>3.6.5 Plots for Signals - mandatory if 'Action' is set to 'Analyze'</h4></p>
+<p>
+Multipath and signal-to-noise sky plots as well as plots for satellite availability, elevation and PDOP are produced per GNSS system and frequency with the multipath analysis based on CnC observation types (n = band / frequency). The 'Plots for signals' option lets you exactly specify the observation signals to be used for that and also enables the plot production. You can specify the navigation system (C = BDS, E = Galileo, G = GPS, J = QZSS, R = GLONASS, S = SBAS), the frequency, and the tracking mode or channel as defined in RINEX Version 3. Specifications for fequency and tracking mode or channel must be seperated by ampersand character '&'. Specifications for each navigation systems must be seperated by blank character ' '. The following string is an example for option field for 'Plots of signals':
+ts for signals' option lets you exactly specify the observation signals to be used for that and also enables the plot production. You can specify the navigation system, the frequency, and the tracking mode or channel as defined in RINEX Version 3. Specifications for fequency and tracking mode or channel must be seperated by ampersand character '&'. Specifications for each navigation systems must be seperated by blank character ' '.
 <br>
 <pre>
 C:2&7 E:1&5 G:1&2 J:1&2 R:1&2 S:1&5
@@ -936,15 +1088,18 @@ This default configuration will present
 </ul>
 </p>
 
-<p><a name="reqcedit"><h4>3.6.6 Set Edit Options - mandatory if 'Edit/Concatenate' is set</h4></p>
-<p>Once the 'Edit/Concatenate' action is selected, you have to 'Set Edit Options'. BNC lets you specify the RINEX version, sampling interval, begin and end of file, operator, observation codes, comment lines, and marker, antenna, receiver details. Note that some specification are only meaningful for RINEX Observation files but not for RINEX Navigation files.
+<p><a name="reqcdir"><h4>3.6.6 Directory for Plots - optional if 'Action' is set to 'Analyze'</h4></p>
+<p>
+If 'Analyze' is selected, specifying the path to a directory where plot files will be saved is optional. File names will be composed from the RINEX input file name(s) plus suffix 'PNG' to indicate the plot file format in use. Default is an empty option field, meaning that plots will not be saved on disk.
+</p>
+
+<p><a name="reqcedit"><h4>3.6.7 Set Edit Options - mandatory if 'Action' is set to 'Edit/Concatenate'</h4></p>
+<p>Once the 'Edit/Concatenate' action is selected, you have to 'Set Edit Options'. BNC lets you specify the RINEX version, a signal priority list when mapping RINEX Version 3 to Version 2, the sampling interval, begin and end of file, operator, observation types, comment lines, and marker, antenna, receiver details. Note that some specifications are only meaningful for RINEX Observation files but not for RINEX Navigation files.
 </p>
 <p>
-When converting RINEX Version 2 to RINEX Version 3 Observation files, the tracking mode or channel information in the (last character out of the three characters) observation code is left blank if unknown. When converting RINEX Version 3 to RINEX Version 2 Observation files:
 <ul>
-<li>C1P in RINEX Version 3 is mapped to P1 in RINEX Version 2</li>
-<li>C2P in RINEX Version 3 is mapped to P2 in RINEX Version 2</li>
-<li>If several observations in RINEX Version 3 come with the same observation type and same band/frequency but different tracking modes, BNC uses only the one provided first for creating RINEX Version 2 while ignoring others.</li>
+<li>The RINEX Version 2 format ignores signal generation attributes. Therefore, when converting <u>RINEX Version 3 to Version 2</u> Observation files, BNC is forced to somehow map RINEX Version 3 to RINEX Version 2 although this can't be done in one-to-one correspondance. Hence we introduce a 'Version 2 Signal Priority' list of attributes (characters, forming a string) for mapping Version 3 to Version 2, see details in section 'RINEX Obserations/Version 2'.</li>
+<li>When converting <u>RINEX Version 2 to Version 3</u> Observation files, the tracking mode or channel information in the (last character out of the three characters) observation code is left blank if unknown. This is a compromise, knowing that it is not in accordance with the RINEX Version 3 documentation. The default 'Version 2 Signal Priority' list of observation attributes when mapping RINEX Version 3 to Version 2 is 'CWPX_?', see again details in section 'RINEX Observations/Version 2'.</li>
 </ul>
 </p>
 
@@ -953,11 +1108,11 @@ Optionally you may specify a 'RUN BY' string to be included in the emerging new 
 </p>
 
 <p>
-Specifying comment line text to be added to the emerging new RINEX file header is another option. Any introduction of a newline through '\n' in this enforces the beginning of a further comment line. Comment line(s) will be added to the header immediately after the 'PGM / RUN BY / DATE' record. Default is an empty option field, meaning that no additional comment line will be added to the RINEX header.
+You can specify a list of observation codes in field 'Use Obs. Types' to limit the output file contents to specific observation codes. GNSS system characters in that list are followed by a colon and a two or three characters observation code. A two characters observation code would mean that all available tracking modes of the affected observation type and frequency will be accepted as part of the RINEX output file. Observation codes are separated by a blank character. Default is an empty option field, meaning that any input observation code will become part of the RINEX output file. 
 </p>
 
 <p>
-You can specify a list of observation codes in field 'Use Obs. Types' to limit the output file contents to specific observation codes. GNSS system characters in that list are followed by a colon and a two or three characters observation code. A two characters observation code would mean that all available tracking modes of the affected observation type and frequency will be accepted as part of the RINEX output file. Observation codes are separated by a blank character. Default is an empty option field, meaning that any input observation code will become part of the RINEX output file. 
+Specifying comment line text to be added to the emerging new RINEX file header is another option. Any introduction of a newline through '\n' in this enforces the beginning of a further comment line. Comment line(s) will be added to the header immediately after the 'PGM / RUN BY / DATE' record. Default is an empty option field, meaning that no additional comment line will be added to the RINEX header.
 </p>
 
 <p>
@@ -967,55 +1122,8 @@ If you specify a 'New' but no 'Old' marker/antenna/receiver name, the correspond
 <p><img src="IMG/screenshot27.png"/></p>
 <p><u>Figure 8:</u> Example for 'RINEX Editing Options' window.</p>
 
-<p><a name="reqcinput"><h4>3.6.4 Input Files - mandatory if 'Action' is set</h4></p>
-<p>
-Specify full path to input RINEX Observation file(s), and<br>
-specify full path to input RINEX Navigation file(s).
-</p>
-<p>
-When specifying several input files BNC will concatenate their contents. In case of RINEX Observation input files with different observation type header records, BNC will output only one specific set of adjustet observation type records in the RINEX header which fits to the whole file contents.
-</p>
-<p>
-Note that you may specify several RINEX Version 2 Navigation files for GPS and GLONASS. 
-
-</p>
-
-<p><a name="reqcoutput"><h4>3.6.5 Output Files - mandatory if 'Action' is set</h4></p>
-<p>
-If 'Edit/Concatenate' is selected, specifying the a path to output RINEX Observation file(s) and specifying a full path to output RINEX Navigation file(s) is mandatory.</p>
-
 <p><img src="IMG/screenshot25.png"/></p>
 <p><u>Figure 9:</u> Example for RINEX file editing with BNC in Post Processing mode.</p>
-
-<p>
-If 'Analyze' is selected, specifying a 'Log' file to output analysis results is mandatory. The following is a RINEX quality check analysis logfile example:
-<pre>
-Analyze File
-------------
-File:            cut02530.12o
-Marker name:     CUT0
-Receiver:        TRIMBLE NETR9
-Antenna:         TRM59800.00     SCIS
-Start time:      2012-09-09 00:00:00.000
-End time:        2012-09-09 23:59:30.000
-Interval:        30
-# Sat.:          56
-# Obs.:          54159
-# Slips (file):  295
-# Slips (found): 52
-Mean MP1:        0.25382
-Mean MP2:        0.163092
-Mean SNR1:       4.83739
-Mean SNR2:       5.09455
-</pre>
-</p>
-<p>
-In this logfile '# Slips (file)' stands for the number of cycle slips reported in the RINEX Observation file while '# Slips (found)' stands for additional cycle slips identified by BNC.
-</p>
-
-<p><a name="reqcplots"><h4>3.6.6 Directory for Plots - optional if 'Action' is set</h4></p>
-<p>
-If 'Analyze' is selected, specifying the path to a directory where plot files will be saved is optional. File names will be composed from the RINEX input file name(s) plus suffix 'PNG' to indicate the plot file format in use. </p>
 
 <p><img src="IMG/screenshot29.png"/></p>
 <p><u>Figure 10:</u> Example for creating RINEX quality check graphics output with BNC.</p>
@@ -1029,7 +1137,7 @@ If 'Analyze' is selected, specifying the path to a directory where plot files wi
 <p><img src="IMG/screenshot34.png"/></p>
 <p><u>Figure 13:</u> Sky plot examples for signal-to-noise ratio.</p>
 
-<p><a name="reqccommand"><h4>3.6.7 Command Line, No Window - optional</h4></p>
+<p><a name="reqccommand"><h4>3.6.8 Command Line, No Window - optional</h4></p>
 <p>
 BNC applies options from the configuration file but allows updating every one of them on the command line while the contents of the configuration file remains unchanged, see section on 'Command Line Options'. The syntax for that looks as follows
 </p>
