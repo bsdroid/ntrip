@@ -1218,10 +1218,10 @@ The following is a list of available key names for '<u>R</u>INEX <u>E</u>diting 
 
 <p><a name="sp3comp"><h4>3.7. SP3 Comparison</h4></p>
 <p>
-BNC allows to compare the contents of two files containing GNSS orbit and clock data in SP3 format. SP3 ASCII files basically contain a list of records over a certain period of time. Each record carries a time tag, the X,Y,Z position of the satellite's Center of Mass at that time and the corresponding satellite clock value. Both SP3 files may contain some records for different epochs. If so then BNC only compares records for identical epochs. BNC accepts that a specific GNSS system or a specific satellite is only available in one of the SP3 files. Note that BNC does not interpolate orbits when comparing SP3 files. 
+BNC allows to compare the contents of two files containing GNSS orbit and clock data in SP3 format. SP3 ASCII files basically contain a list of records over a certain period of time. Each record carries a time tag, the X,Y,Z position of the satellite's Center of Mass at that time and the corresponding satellite clock value. Both SP3 files may contain some records for different epochs. If so then BNC only compares records for identical epochs. BNC accepts that a specific GNSS system or a specific satellite is only available from one of the SP3 files. Note that BNC does not interpolate orbits when comparing SP3 files. 
 </p>
 <p>
-To compare satellite clocks provided by the two files BNC first converts coordinate differences dX,dY,dZ into along track, out-of-plane and radial compoments. It then corrects the clock differences for the radial components of the coordinate differences. RMS values of clock differences are finally calculated after introducing at first one offset 'per epoch for all satellites' plus a second offset 'per satellite for all epochs'.
+To compare satellite clocks provided by the two files BNC first converts coordinate differences dX,dY,dZ into along track, out-of-plane and radial compoments. It then corrects the clock differences for the radial components of coordinate differences. RMS values of clock differences are finally calculated after introducing at first one offset 'per epoch for all satellites' and secondly one offset 'per satellite for all epochs'.
 </p>
 
 <p><a name="sp3input"><h4>3.7.1 Input SP3 Files - optional</h4></p>
@@ -1249,33 +1249,8 @@ Default is an empty option field, meaning that no satellite will be excluded fro
 Specify a logfile name to save results of the SP3 file comparison.
 </p>
 <p>
-Below you find an example for a SP3 Comparsion logfile. In its firt part it uses the following abbreviations:<br>
+The following is an example for a SP3 Comparsion logfile:
 </p>
-<table>
-<tr><td>'MJD' &nbsp;</td><td>Modified Julian Date</td></tr>
-<tr><td>'PRN' &nbsp;</td><td>Satellit specification</td></tr>
-<tr><td>'radial' &nbsp;</td><td>Radial component of orbit coordinate difference [m]</td></tr>
-<tr><td>'along' &nbsp;</td><td>Along track component of orbit coordinate difference [m]</td></tr>
-<tr><td>'out' &nbsp;</td><td>Out-of-plane component of orbit coordinate difference [m]</td></tr>
-<tr><td>'clk' &nbsp;</td><td>Clock difference [m]</td></tr>
-<tr><td>'clkRed' &nbsp;</td><td>Clock difference reduced by radial component of orbit coordinate difference [m]</td></tr>
-<tr><td>'iPRN' &nbsp;</td><td>BNC internal sequence number</td></tr>
-</table>
-<p>
-The second part following string 'RMS' provides a summary of the comparison using the following abbreviations:<br>
-</p>
-<table>
-<tr><td>'PRN' &nbsp;</td><td>Satellite specification</td></tr>
-<tr><td>'radial' &nbsp;</td><td>RMS of radial component of orbit coordinate differences [m]</td></tr>
-<tr><td>'along' &nbsp;</td><td>RMS of along track component of orbit coordinate differences [m]</td></tr>
-<tr><td>'out' &nbsp;</td><td>RMS of out-of-plane component of orbit coordinate differences [m]</td></tr>
-<tr><td>'nOrb' &nbsp;</td><td>Number of epochs used in in orbit comparision</td></tr>
-<tr><td>'clk' &nbsp;</td><td>RMS of clock differences [m]</td></tr>
-<tr><td>'clkRed' &nbsp;</td><td>RMS of clock differences after reduction of radial orbit differences [m]</td></tr>
-<tr><td>'nClk' &nbsp;</td><td>Number of epochs use in clock comparisons</td></tr>
-<tr><td>'Offset' &nbsp;</td><td>Clock offset [m]</td></tr>
-</table>
-
 <pre>
 
 ! SP3 File 1: esr18283.sp3
@@ -1319,6 +1294,39 @@ The second part following string 'RMS' provides a summary of the comparison usin
 !
 ! Total  0.0262  0.0938  0.0492   5268  0.0620  0.0561   5268
 </pre>
+<p>
+The first part int this uses the following abbreviations:
+</p>
+
+<table>
+<tr><td>'MJD' &nbsp;</td><td>Modified Julian Date</td></tr>
+<tr><td>'PRN' &nbsp;</td><td>Satellit specification</td></tr>
+<tr><td>'radial' &nbsp;</td><td>Radial component of orbit coordinate difference [m]</td></tr>
+<tr><td>'along' &nbsp;</td><td>Along track component of orbit coordinate difference [m]</td></tr>
+<tr><td>'out' &nbsp;</td><td>Out-of-plane component of orbit coordinate difference [m]</td></tr>
+<tr><td>'clk' &nbsp;</td><td>Clock difference [m]</td></tr>
+<tr><td>'clkRed' &nbsp;</td><td>Clock difference reduced by radial component of orbit coordinate difference [m]</td></tr>
+<tr><td>'iPRN' &nbsp;</td><td>BNC internal sequence number</td></tr>
+</table>
+<p>
+The second part following string 'RMS' provides a summary of the comparison using the following abbreviations:<br>
+</p>
+<table>
+<tr><td>'PRN' &nbsp;</td><td>Satellite specification</td></tr>
+<tr><td>'radial' &nbsp;</td><td>RMS of radial component of orbit coordinate differences [m]</td></tr>
+<tr><td>'along' &nbsp;</td><td>RMS of along track component of orbit coordinate differences [m]</td></tr>
+<tr><td>'out' &nbsp;</td><td>RMS of out-of-plane component of orbit coordinate differences [m]</td></tr>
+<tr><td>'nOrb' &nbsp;</td><td>Number of epochs used in in orbit comparision</td></tr>
+<tr><td>'clk' &nbsp;</td><td>RMS of clock differences [m]</td></tr>
+<tr><td>'clkRed' &nbsp;</td><td>RMS of clock differences after reduction of radial orbit differences [m]</td></tr>
+<tr><td>'nClk' &nbsp;</td><td>Number of epochs use in clock comparisons</td></tr>
+<tr><td>'Offset' &nbsp;</td><td>Clock offset [m]</td></tr>
+</table>
+
+<br>
+
+<p><img src="IMG/screenshot36.png"/></p>
+<p><u>Figure 14:</u> BNC configuration example for comparing two SP3 files with satellite orbit and clock data.</p>
 
 <p><a name="correct"><h4>3.8. Broadcast Corrections</h4></p>
 <p>
@@ -1649,7 +1657,7 @@ Note that any socket connection of an application to BNC's synchronized or unsyn
 The following figure shows the screenshot of a BNC configuration where a number of streams is pulled from different NTRIP Broadcasters to feed a GNSS engine via IP port output.
 </p>
 <p><img src="IMG/screenshot12.png"/></p>
-<p><u>Figure 14:</u> Synchronized BNC output via IP port to feed a GNSS real-time engine.</p>
+<p><u>Figure 15:</u> Synchronized BNC output via IP port to feed a GNSS real-time engine.</p>
 
 <p><a name="syncport"><h4>3.9.1 Port - optional</h4></p>
 <p>
@@ -1691,14 +1699,14 @@ Note that receiving a VRS stream requires the receiver sending NMEA sentences (m
 </p>
 
 <p><img src="IMG/screenshot35.png"/></p>
-<p><u>Figure 15:</u> Flowcharts, BNC forwarding a stream to a serial connected receiver; sending NMEA sentences is mandatory for VRS streams.</p>
+<p><u>Figure 16:</u> Flowcharts, BNC forwarding a stream to a serial connected receiver; sending NMEA sentences is mandatory for VRS streams.</p>
 
 <p>
 The following figure shows the screenshot of an example situation where BNC pulls a VRS stream from an NTRIP Broadcaster to feed a serial connected RTK rover.
 </p>
 
 <p><img src="IMG/screenshot11.png"/></p>
-<p><u>Figure 16:</u> BNC pulling a VRS stream to feed a serial connected RTK rover.</p>
+<p><u>Figure 17:</u> BNC pulling a VRS stream to feed a serial connected RTK rover.</p>
 
 <p><a name="sermount"><h4>3.10.1 Mountpoint - optional</h4></p>
 <p>
@@ -1850,7 +1858,7 @@ This section describes several miscellaneous options which can be applied for a 
 The following figure shows RTCM message numbers and observation types contained in stream 'CUT07' and the message latencies recorded every 2 seconds.
 </p>
 <p><img src="IMG/screenshot14.png"/></p>
-<p><u>Figure 17:</u> RTCM message numbers, latencies and observation types.</p>
+<p><u>Figure 18:</u> RTCM message numbers, latencies and observation types.</p>
 
 
 <p><a name="miscmount"><h4>3.12.1 Mountpoint - optional </h4></p>
@@ -1946,10 +1954,10 @@ The following figure provides the screenshot of an example PPP session with BNC.
 </p>
 
 <p><img src="IMG/screenshot03.png"/></p>
-<p><u>Figure 18:</u> Precise Point Positioning with BNC, PPP Panel 1.</p>
+<p><u>Figure 19:</u> Precise Point Positioning with BNC, PPP Panel 1.</p>
 
 <p><img src="IMG/screenshot18.png"/></p>
-<p><u>Figure 19:</u> Precise Point Positioning with BNC, PPP Panel 2.</p>
+<p><u>Figure 20:</u> Precise Point Positioning with BNC, PPP Panel 2.</p>
 
 <p>
 PPP results are shown in the 'Log' tab on the bottom of BNC's main window. Depending on the processing options, the following values are shown about once per second (example):
@@ -2245,10 +2253,10 @@ You may need to create your own reference coordinate through running BNC for an 
 </p>
 
 <p><img src="IMG/screenshot17.png"/></p>
-<p><u>Figure 20:</u> BNC in 'Quick-Start' mode (PPP, Panel 1)</p>
+<p><u>Figure 21:</u> BNC in 'Quick-Start' mode (PPP, Panel 1)</p>
 
 <p><img src="IMG/screenshot22.png"/></p>
-<p><u>Figure 21:</u> BNC in 'Quick-Start' mode (PPP, Panel 2)</p>
+<p><u>Figure 22:</u> BNC in 'Quick-Start' mode (PPP, Panel 2)</p>
 
 <p><a name="pppgap"><h4>3.13.7.8 Maximal Solution Gap - optional if Quick-Start is set</h4></p>
 <p>
@@ -2326,7 +2334,7 @@ When in 'Post-Processing' mode you should not forget to specify a proxy under th
 
 <br>
 <p><img src="IMG/screenshot32.png"/></p>
-<p><u>Figure 22:</u> Track of positions from BNC with Google Maps in the background.</p>
+<p><u>Figure 23:</u> Track of positions from BNC with Google Maps in the background.</p>
 
 <p><a name="pppmap"><h4>3.13.10.1 Open Map - optional</h4></p>
 <p>
@@ -2441,13 +2449,13 @@ The following screenshots describe an example setup of BNC when combining Broadc
 
 <br>
 <p><img src="IMG/screenshot20.png"/></p>
-<p><u>Figure 23:</u> BNC combining Broadcast Correction streams.</p>
+<p><u>Figure 24:</u> BNC combining Broadcast Correction streams.</p>
 <p><br></p>
 <p><img src="IMG/screenshot21.png"/></p>
-<p><u>Figure 24:</u> BNC uploading the combined Broadcast Corrections stream.</p>
+<p><u>Figure 25:</u> BNC uploading the combined Broadcast Corrections stream.</p>
 <p></p>
 <p><img src="IMG/screenshot23.png"/></p>
-<p><u>Figure 25:</u> 'INTERNAL' PPP with BNC using combined Broadcast Corrections stream.</p>
+<p><u>Figure 26:</u> 'INTERNAL' PPP with BNC using combined Broadcast Corrections stream.</p>
 
 <p><a name="combimethod"><h4>3.13.1.2 Method - mandatory if 'Combine Corrections' table is populated</h4></p>
 <p>
@@ -2852,7 +2860,7 @@ Note that only when specifying a value of zereo '0' (default) for 'Sampling Orb'
 The following screenshot shows the encoding and uploading of a stream of precise orbits and clocks coming from a real-time engine in 'RTNET' ASCII format. The stream is uploaded to NTRIP Broadcaster 'products.igs-ip.net'. It is referred to APC and IGS08. Uploaded data are locally saved in SP3 and Clock RINEX format. The SSR Provider ID is set to 3. The SSR Solution ID is and the Issue of Data SSR are set to 1. Required Broadcast Ephemeris are received via stream 'RTCM3EPH'.
 </p>
 <p><img src="IMG/screenshot26.png"/></p>
-<p><u>Figure 26:</u> Producing Broadcast Corrections from incoming precise orbits and clocks and uploading them to an NTRIP Broadcaster.</p>
+<p><u>Figure 27:</u> Producing Broadcast Corrections from incoming precise orbits and clocks and uploading them to an NTRIP Broadcaster.</p>
 
 <p><a name="upeph"><h4>3.16. Upload Ephemeris</h4></p>
 <p>
@@ -2879,7 +2887,7 @@ Select the Broadcast Ephemeris repetition interval in seconds. Default is '5' me
 </p>
 
 <p><img src="IMG/screenshot28.png"/></p>
-<p><u>Figure 27:</u> Producing a Broadcast Ephemeris stream from navigation messages of globally distributed RTCM streams and uploading them in RTCM Version 3 format to an NTRIP Broadcaster.</p>
+<p><u>Figure 28:</u> Producing a Broadcast Ephemeris stream from navigation messages of globally distributed RTCM streams and uploading them in RTCM Version 3 format to an NTRIP Broadcaster.</p>
 
 <p><a name="streams"><h4>3.17. Streams</h4></p>
 <p>
@@ -2946,7 +2954,7 @@ The bandwidth consumption per stream is shown in the 'Throughput' tab in bits pe
 </p>
 
 <p><img src="IMG/screenshot08.png"/></p>
-<p><u>Figure 28:</u> Bandwidth consumption of incoming streams.</p>
+<p><u>Figure 29:</u> Bandwidth consumption of incoming streams.</p>
 
 <p><a name="latency"><h4>3.18.3 Latency</h4></p>
 <p>
@@ -2954,7 +2962,7 @@ The latency of observations in each incoming stream is shown in the 'Latency' ta
 </p>
 
 <p><img src="IMG/screenshot07.png"/></p>
-<p><u>Figure 29:</u> Latency of incoming streams.</p>
+<p><u>Figure 30:</u> Latency of incoming streams.</p>
 
 <p><a name="ppptab"><h4>3.18.4 PPP Plot</h4></p>
 <p>
@@ -2962,7 +2970,7 @@ Precise Point Positioning time series of North (red), East (green) and Up (blue)
 </p>
 
 <p><img src="IMG/screenshot13.png"/></p>
-<p><u>Figure 30:</u> Time series plot of PPP session.</p>
+<p><u>Figure 31:</u> Time series plot of PPP session.</p>
 
 <p><a name="bottom"><h4>3.19. Bottom Menu Bar</h4></p>
 <p>
@@ -2970,7 +2978,7 @@ The bottom menu bar allows to add or delete streams to BNC's configuration and t
 </p>
 
 <p><img src="IMG/screenshot06.png"/></p>
-<p><u>Figure 31:</u> Steam input communication links.</p>
+<p><u>Figure 32:</u> Steam input communication links.</p>
 
 <p><a name="streamadd"><h4>3.19.1 Add Stream</h4></p>
 <p>
@@ -2995,7 +3003,7 @@ It may be that you are not sure about your NTRIP Broadcasters host and port numb
 </p>
 <p><img src="IMG/screenshot04.png"/></p>
 
-<p><u>Figure 32:</u> Casters table.</p>
+<p><u>Figure 33:</u> Casters table.</p>
 
 <p><a name="streamuser"><h4>3.19.1.1.3 User and Password - mandatory for protected streams</h4></p>
 <p>
@@ -3013,7 +3021,7 @@ The contents of data field 'nmea' tells you whether a stream retrieval needs to 
 Hit 'OK' to return to the main window. If you wish you can click on 'Add Stream' and repeat the process again to retrieve streams from different casters.
 </p>
 <p><img src="IMG/screenshot05.png"/></p>
-<p><u>Figure 33:</u> Broadcaster source-table.</p>
+<p><u>Figure 34:</u> Broadcaster source-table.</p>
 
 <p><a name="ntripv"><h4>3.19.1.1.5 NTRIP Version - mandatory</h4></p>
 <p>
@@ -3043,7 +3051,7 @@ Button 'Map' opens a window to show a distribution map of the caster's streams. 
 </p>
 
 <p><img src="IMG/screenshot24.png"/></p>
-<p><u>Figure 34:</u> Stream distribution map derived from NTRIP Broadcaster source-table.</p>
+<p><u>Figure 35:</u> Stream distribution map derived from NTRIP Broadcaster source-table.</p>
 
 <p><a name="streamip"><h4>3.19.1.2 Add Stream - Coming from TCP/IP Port</h4></p>
 <p>
@@ -3117,7 +3125,7 @@ Streams received from a serial connected GNSS receiver show up with an 'S' (for 
 The following figure shows a BNC example setup for pulling a stream via serial port on a Linux operating system.
 </p>
 <p><img src="IMG/screenshot15.png"/></p>
-<p><u>Figure 35:</u> BNC setup for pulling a stream via serial port.</p>
+<p><u>Figure 36:</u> BNC setup for pulling a stream via serial port.</p>
 
 <p><a name="streamsdelete"><h4>3.19.2 Delete Stream</h4></p>
 <p>
