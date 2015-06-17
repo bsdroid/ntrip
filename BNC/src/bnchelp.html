@@ -1061,7 +1061,6 @@ C11  33.14   61.19   6  L2I .. 43.1  C2I  . 0.57  L7I .. 44.0  C7I  . 0.52  L6I 
 C14 -22.42  106.32   6  L2I .. 49.6  C2I  . 0.35  L7I .. 50.7  C7I  . 0.26  L6I .. 52.3  C6I  . 0.00
 > 2015 06 15 00 00 30.0000000 39  0.6
 ...
-...
 
 </pre>
 </p>
@@ -1077,14 +1076,14 @@ ts for signals' option lets you exactly specify the observation signals to be us
 <pre>
 C:2&7 E:1&5 G:1&2 J:1&2 R:1&2 S:1&5
 </pre>
-This default configuration will present
+This default configuration will present;
 <ul>
-<li>BDS plots for L2 and L7</li>
-<li>Galileo plots for L1 and L5</li>
-<li>GPS plots for L1 and L2</li>
-<li>QZSS plots for L1 and L2</li>
-<li>GLONASS plots for L1 and L2</li>
-<li>SBAS plots for L1 and L5</li>
+<li>BDS plots for L2 and L7,</li>
+<li>Galileo plots for L1 and L5,</li>
+<li>GPS plots for L1 and L2,</li>
+<li>QZSS plots for L1 and L2,</li>
+<li>GLONASS plots for L1 and L2,</li>
+<li>SBAS plots for L1 and L5.</li>
 </ul>
 </p>
 
@@ -1094,11 +1093,16 @@ If 'Analyze' is selected, specifying the path to a directory where plot files wi
 </p>
 
 <p><a name="reqcedit"><h4>3.6.7 Set Edit Options - mandatory if 'Action' is set to 'Edit/Concatenate'</h4></p>
-<p>Once the 'Edit/Concatenate' action is selected, you have to 'Set Edit Options'. BNC lets you specify the RINEX version, a signal priority list when mapping RINEX Version 3 to Version 2, the sampling interval, begin and end of file, operator, observation types, comment lines, and marker, antenna, receiver details. Note that some specifications are only meaningful for RINEX Observation files but not for RINEX Navigation files.
+<p>Once the 'Edit/Concatenate' action is selected, you have to 'Set Edit Options'. BNC lets you specify the RINEX version, a signal priority list when mapping RINEX Version 3 to Version 2, the sampling interval, begin and end of file, operator, observation types, comment lines, and marker, antenna, receiver details. Note that some of the specifications for editing and concatenation are only meaningful for RINEX Observation files but not for RINEX Navigation files.
 </p>
+
+<p>
+A note on converting RINEX Version 3 to RINEX Version 2 and vice versa:
+</p>
+
 <p>
 <ul>
-<li>The RINEX Version 2 format ignores signal generation attributes. Therefore, when converting <u>RINEX Version 3 to Version 2</u> Observation files, BNC is forced to somehow map RINEX Version 3 to RINEX Version 2 although this can't be done in one-to-one correspondance. Hence we introduce a 'Version 2 Signal Priority' list of attributes (characters, forming a string) for mapping Version 3 to Version 2, see details in section 'RINEX Obserations/Version 2'.</li>
+<li>The RINEX Version 2 format ignores signal generation attributes. Therefore, when converting <u>RINEX Version 3 to Version 2</u> Observation files, BNC is forced to somehow map signals with attributes to signals without attributes although this can't be done in one-to-one correspondance. Hence we introduce a 'Version 2 Signal Priority' list of attributes (characters, forming a string) for mapping Version 3 to Version 2, see details in section 'RINEX Obserations/Version 2'.</li>
 <li>When converting <u>RINEX Version 2 to Version 3</u> Observation files, the tracking mode or channel information in the (last character out of the three characters) observation code is left blank if unknown. This is a compromise, knowing that it is not in accordance with the RINEX Version 3 documentation. The default 'Version 2 Signal Priority' list of observation attributes when mapping RINEX Version 3 to Version 2 is 'CWPX_?', see again details in section 'RINEX Observations/Version 2'.</li>
 </ul>
 </p>
@@ -1123,19 +1127,19 @@ If you specify a 'New' but no 'Old' marker/antenna/receiver name, the correspond
 <p><u>Figure 8:</u> Example for 'RINEX Editing Options' window.</p>
 
 <p><img src="IMG/screenshot25.png"/></p>
-<p><u>Figure 9:</u> Example for RINEX file editing with BNC in Post Processing mode.</p>
+<p><u>Figure 9:</u> Example for RINEX file concatenation with BNC.</p>
 
 <p><img src="IMG/screenshot29.png"/></p>
-<p><u>Figure 10:</u> Example for creating RINEX quality check graphics output with BNC.</p>
+<p><u>Figure 10:</u> Example for creating RINEX quality check analysis graphics output with BNC.</p>
 
 <p><img src="IMG/screenshot30.png"/></p>
-<p><u>Figure 11:</u> Example for satellite availability, elevation and PDOP plots as a result of a RINEX quality check with BNC.</p>
+<p><u>Figure 11:</u> Example for satellite availability, elevation and PDOP plots as a result of a RINEX quality check analysis with BNC.</p>
 
 <p><img src="IMG/screenshot33.png"/></p>
-<p><u>Figure 12:</u> Sky plot examples for multipath.</p>
+<p><u>Figure 12:</u> Sky plot examples for multipath, part of RINEX quality check analysis with BNC..</p>
 
 <p><img src="IMG/screenshot34.png"/></p>
-<p><u>Figure 13:</u> Sky plot examples for signal-to-noise ratio.</p>
+<p><u>Figure 13:</u> Sky plot examples for signal-to-noise ratio, part of RINEX quality check analysis with BNC..</p>
 
 <p><a name="reqccommand"><h4>3.6.8 Command Line, No Window - optional</h4></p>
 <p>
@@ -3910,8 +3914,6 @@ The following table's left column is a list of options as contained in BNC's con
 <tr><td>reqcOldMarkerName=</td><td>Reqc: Old marker</td></tr>
 <tr><td>reqcOldReceiverName=</td><td>Reqc: Old receiver</td></tr>
 <tr><td>reqcOutLogFile=</td><td>Reqc: Output logfile</td></tr>
-<tr><td>reqcOutNavFile=</td><td>Reqc: Output navigation file</td></tr>
-<tr><td>reqcOutObsFile=</td><td>Reqc: Output observations file</td></tr>
 <tr><td>reqcPlotDir</td><td>Reqc: QC plots directory</td></tr>
 <tr><td>reqcRnxVersion=</td><td>Reqc: RINEX version</td></tr>
 <tr><td>reqcRunBy=</td><td>Reqc: Operators name</td></tr>
