@@ -264,15 +264,19 @@ void t_pppClient::putEphemeris(const t_eph* eph) {
   const t_ephGPS* ephGPS = dynamic_cast<const t_ephGPS*>(eph);
   const t_ephGlo* ephGlo = dynamic_cast<const t_ephGlo*>(eph);
   const t_ephGal* ephGal = dynamic_cast<const t_ephGal*>(eph);
+  const t_ephBDS* ephBDS = dynamic_cast<const t_ephBDS*>(eph);
   if      (ephGPS) {
-    _ephUser->putNewEph(new t_ephGPS(*ephGPS), false);
+    _ephUser->putNewEph(new t_ephGPS(*ephGPS), true);
   }
   else if (ephGlo) {
-    _ephUser->putNewEph(new t_ephGlo(*ephGlo), false);
+    _ephUser->putNewEph(new t_ephGlo(*ephGlo), true);
   }
   else if (ephGal) {
-    _ephUser->putNewEph(new t_ephGal(*ephGal), false);
+    _ephUser->putNewEph(new t_ephGal(*ephGal), true);
   }
+  else if (ephBDS) {
+      _ephUser->putNewEph(new t_ephBDS(*ephBDS), true);
+    }
 }
 
 // Satellite Position
