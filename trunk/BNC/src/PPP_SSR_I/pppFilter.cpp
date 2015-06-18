@@ -610,7 +610,7 @@ t_irc t_pppFilter::update(t_epoData* epoData) {
     }
     else if (par->type == t_pppParam::AMB_L3) {
       ++par->numEpo;
-      LOG << "\n    amb " << par->prn.toAscii().data() << " = "
+      LOG << "\n    amb " << par->prn.mid(0,3).toAscii().data() << " = "
           << setw(10) << setprecision(3) << par->xx 
           << " +- " << setw(6) << setprecision(3) 
           << sqrt(_QQ(par->index,par->index))
@@ -618,7 +618,7 @@ t_irc t_pppFilter::update(t_epoData* epoData) {
     }
     else if (par->type == t_pppParam::TROPO) {
       double aprTrp = delay_saast(M_PI/2.0);
-      LOG << "\n    trp     = " << par->prn.toAscii().data()
+      LOG << "\n    trp     = " << par->prn.mid(0,3).toAscii().data()
           << setw(7) << setprecision(3) << aprTrp << " "
           << setw(6) << setprecision(3) << showpos << par->xx << noshowpos
           << " +- " << setw(6) << setprecision(3) 
@@ -894,7 +894,7 @@ QByteArray t_pppFilter::printRes(int iPhase, const ColumnVector& vv,
     t_satData* satData = it.value();
     if (satData->obsIndex != 0) {
       str << _time.timestr(1)
-          << " RES " << satData->prn.toAscii().data() 
+          << " RES " << satData->prn.mid(0,3).toAscii().data()
           << (iPhase ? "   L3 " : "   P3 ")
           << setw(9) << setprecision(4) << vv(satData->obsIndex) << endl;
     }
