@@ -328,6 +328,12 @@ void bncRinex::writeHeader(const QByteArray& format, const bncTime& firstObsTime
   // -----------------
   int intHeaderVers = (Qt::CheckState(settings.value("rnxV3").toInt()) == Qt::Checked ? 3 : 2);
 
+  // Open the Output File
+  // --------------------
+  QDateTime datTimNom  = dateAndTimeFromGPSweek(firstObsTime.gpsw(),
+                                                floor(firstObsTime.gpssec()+0.5));
+  resolveFileName(datTimNom);
+
   // Read Skeleton Header
   // --------------------
   if (readSkeleton()) {
@@ -339,12 +345,6 @@ void bncRinex::writeHeader(const QByteArray& format, const bncTime& firstObsTime
     }
     _header.setDefault(_statID, intHeaderVers);
   }
-
-  // Open the Output File
-  // --------------------
-  QDateTime datTimNom  = dateAndTimeFromGPSweek(firstObsTime.gpsw(), 
-                                                floor(firstObsTime.gpssec()+0.5));
-  resolveFileName(datTimNom);
 
   // Append to existing file and return
   // ----------------------------------
