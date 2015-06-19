@@ -1467,6 +1467,7 @@ R03  59     1.8130     0.0000     0.0000
 ...
 R24  59     2.7409     0.0000     0.0000
 </pre>
+<p>
 The 'satellite records' in this block provide the following information:
 <ul>
 <li>GNSS Indicator and Satellite Vehicle Pseudo Random Number</li>
@@ -1475,6 +1476,7 @@ The 'satellite records' in this block provide the following information:
 <li>C1 polynomial coefficient for Clock Correction to Broadcast Ephemeris [m/s]</li>
 <li>C2 polynomial coefficient for Clock Correction to Broadcast Ephemeris [m/s**2]</li>
 </ul>
+</p>
 
 <p>
 <b>Example for block 'CODE_BIAS' carrying code biases</b>
@@ -1492,6 +1494,7 @@ R03    4   1C     2.4800   1P     2.2800   2C     3.7800   2P     3.7700
 ...
 R24    4   1C     2.7000   1P     2.7800   2C     3.9800   2P     4.6000
 </pre>
+<p>
 The 'satellite records' in this block provide the following information:
 <ul>
 <li>GNSS Indicator and Satellite Vehicle Pseudo Random Number</li>
@@ -1502,6 +1505,7 @@ The 'satellite records' in this block provide the following information:
 <li>Code Bias</li>
 <li>etc.</li>
 </ul>
+</p>
 
 <p>
 <b>Example for block 'PHASE_BIAS' carrying phase biases</b>
@@ -1515,8 +1519,28 @@ G03 281.95312500   0.00000000    3   1C     2.9327   1   2   4   2W     4.6382  
 ...
 G32 290.39062500   0.00000000    3   1C     1.2520   1   2   5   2W     2.0554   1   2   5   5I     0.0000   1   2   5
 </pre>
-The 'satellite records' in this block provide the following information:
+<p>
+The second record of the 'PHASE_BIAS' block contains two consistency parameters:
+<ul>
+<li>Dispersive bias consistency indicator</li>
+<li>Dispersive bias consistency indicator</li>
+</ul>
+The following 'satellite records' in this block provide the following information:
+<ul>
+<li>GNSS Indicator and Satellite Vehicle Pseudo Random Number</li>
+<li>Yaw angle</li>
+<li>Yaw rate</li>
+<li>Number of phase biases in this record, per signal:</li>
+<ul>
+<li>Signal and tracking mode indicator</li>
+<li>Phase bias</li>
+<li>Signal integer indicator</li>
+<li>Signal wide-lane integer indicator</li>
+<li>Signal discontinuity counter</li>
+</ul>
+</ul>
 </p>
+
 <p>
 <b>Example for block 'VTEC' carrying ionospheric corrections</b>
 </p>
@@ -1538,6 +1562,7 @@ The 'satellite records' in this block provide the following information:
     0.0000     0.5000     0.3050    -0.5700    -0.5250    -0.2750     0.0000
     0.0000     0.0850    -0.4700     0.0600     0.0700     0.1600     0.0400
 </pre>
+<p>
 The records in this block provide the following information:
 </p>
 
