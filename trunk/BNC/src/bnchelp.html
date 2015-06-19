@@ -1372,9 +1372,21 @@ While we have a plain ASCII standard for saving broadcast ephemeris in RINEX Nav
 </p>
 
 <p>
-Saved files contain blocks of records in plain ASCII format. The first record in each block contains the following 10 parameters:
+Broadcast Corrections files contain blocks of records in plain ASCII format. Each block contains a 'leading (first) record' followd by a number of 'satellite records' (exception: block VTEC).
 </p>
 <p>
+<b>Example for the 'leading record' of each block</b>
+</p>
+
+<p>
+The 'leading record' of each block contains 10 parameters. Example:
+</p>
+<pre>
+> ORBIT 2015 06 17 11 43 35.0 2 53 CLK93
+</pre>
+<p>
+Their meaning is as follows:
+</p>
 <ul>
 <li>SSR message type indicator:<br>ORBIT, CLOCK, CODE_BIAS, PHASE_BIAS, or VTEC</li>
 <li>Year, GPS time</li>
@@ -1403,9 +1415,10 @@ Saved files contain blocks of records in plain ASCII format. The first record in
 <li>15 = 10800 sec</li>
 </ul>
 <li>Number of following satellites (records) in this block</li>
-<li>Mountpoint, stream indicator</li>
+<li>Mountpoint, source/stream indicator</li>
 </ul>
 Each of the following 'satellite records' in such a block carries information for one specific satellite. Undefined parameters in the 'satellite records' could be set to zero &quot;0.000&quot;.
+
 <p>
 <b>Example for block 'ORBIT' carrying orbit corrections</b>
 </p>
@@ -1422,7 +1435,6 @@ R03  59     0.4635    -0.9104    -0.3832        0.0001     0.0001     0.0005
 ...
 R24  59     0.5935     2.0732    -0.6884       -0.0000     0.0004     0.0003
 </pre>
-
 <p>
 The 'satellite records' in this block provide the following information:
 <ul>
@@ -1438,61 +1450,51 @@ The 'satellite records' in this block provide the following information:
 </p>
 
 <p>
-TBC<br>
-In case of RTCM message types 1058 or 1064 (see Annex) the first five parameters in each record are followed by
+<b>Example for block 'CLOCK' carrying clock corrections</b>
 </p>
+
+<p>
+<pre>
+> CLOCK 2015 06 17 11 43 35.0 2 53 CLK93
+G01   9     0.5412     0.0000     0.0000
+G02  25    11.1811     0.0000     0.0000
+G03  79    45.0228     0.0000     0.0000
+...
+G32  82    -1.5324     0.0000     0.0000
+R01  59     4.2194     0.0000     0.0000
+R02  59     2.0535     0.0000     0.0000
+R03  59     1.8130     0.0000     0.0000
+...
+R24  59     2.7409     0.0000     0.0000
+</pre>
+The 'satellite records' in this block provide the following information:
 <ul>
-<li>IOD set to zero &quot;0&quot;</li>
+<li>GNSS Indicator and Satellite Vehicle Pseudo Random Number</li>
+<li>IOD referring to Broadcast Ephemeris set</li>
 <li>C0 polynomial coefficient for Clock Correction to Broadcast Ephemeris [m]</li>
 <li>C1 polynomial coefficient for Clock Correction to Broadcast Ephemeris [m/s]</li>
 <li>C2 polynomial coefficient for Clock Correction to Broadcast Ephemeris [m/s**2]</li>
 </ul>
-Example:
+
+<p>
+<b>Example for block 'CODE_BIAS' carrying code biases</b>
 </p>
 <pre>
+> CODE_BIAS 2015 06 17 11 43 35.0 2 53 CLK93
+G01    5   1C    -3.3100   1W    -3.7500   2W    -6.1900   2X    -5.7800   5I    -5.4200
+G02    5   1C     3.6000   1W     3.9300   2W     6.4800   2X     0.0000   5I     0.0000
+G03    5   1C    -2.1600   1W    -2.6500   2W    -4.3600   2X    -4.4800   5I    -5.3400
 ...
-1058 0 1538 211151.0 G18     1.846       0.000    0.000
-1058 0 1538 211151.0 G16     0.376       0.000    0.000
-1058 0 1538 211151.0 G22     2.727       0.000    0.000
+G32    5   1C    -1.5800   1W    -1.1000   2W    -1.8200   2X     0.0000   5I     0.0000
+R01    4   1C    -2.4900   1P    -2.4900   2C    -3.1500   2P    -4.1200
+R02    4   1C     0.3900   1P     0.2100   2C     0.4000   2P     0.3400
+R03    4   1C     2.4800   1P     2.2800   2C     3.7800   2P     3.7700
 ...
-1064 0 1538 211151.0 R08     8.956       0.000    0.000
-1064 0 1538 211151.0 R07    14.457       0.000    0.000
-1064 0 1538 211151.0 R23     6.436       0.000    0.000
-...
+R24    4   1C     2.7000   1P     2.7800   2C     3.9800   2P     4.6000
 </pre>
-</p>
-<p>
-In case of RTCM message types 1060 or 1066 (see Annex) the first five parameters in each record are followed by
-<p>
+The 'satellite records' in this block provide the following information:
 <ul>
-<li>IOD referring to Broadcast Ephemeris set</li>
-<li>C0 polynomial coefficient for Clock Correction to Broadcast Ephemeris [m]</li>
-<li>Radial Component of Orbit Correction to Broadcast Ephemeris [m]</li>
-<li>Along-track Component of Orbit Correction to Broadcast Ephemeris [m]</li>
-<li>Cross-track Component of Orbit Correction to Broadcast Ephemeris [m]</li>
-<li>C1 polynomial coefficient for Clock Correction to Broadcast Ephemeris [m]</li>
-<li>Velocity of Radial Component of Orbit Correction to Broadcast Ephemeris [m/s]</li>
-<li>Velocity of Along-track Component of Orbit Correction to Broadcast Ephemeris [m/s]</li>
-<li>Velocity of Cross-track Component of Orbit Correction to Broadcast Ephemeris [m/s]</li>
-<li>C2 polynomial coefficient for Clock Correction to Broadcast Ephemeris [m]</li>
-</ul>
-Example:
-</p>
-<pre>
-...
-1060 0 1538 211610.0 G30    82      2.533      0.635   -0.359   -0.598    0.000    0.000    0.000    0.000    0.000
-1060 0 1538 211610.0 G31     5     -4.218     -0.208    0.022    0.002    0.000    0.000    0.000    0.000    0.000
-1060 0 1538 211610.0 G32    28     -2.326      0.977   -0.576    0.142    0.000    0.000    0.000    0.000    0.000
-...
-1066 0 1538 211610.0 R22    27      1.585      2.024    2.615   -2.080    0.000    0.000    0.000    0.000    0.000
-1066 0 1538 211610.0 R23    27      6.277      2.853    4.181    1.304    0.000    0.000    0.000    0.000    0.000
-1066 0 1538 211610.0 R24    27      0.846      1.805   13.095    6.102    0.000    0.000    0.000    0.000    0.000
-...
-</pre>
-</p>
-<p>
-In case of RTCM message types 1059 or 1065 (see Annex) the first five parameters in each record are followed by
-<ul>
+<li>GNSS Indicator and Satellite Vehicle Pseudo Random Number</li>
 <li>Number of Code Biases</li>
 <li>Indicator to specify the signal and tracking mode</li>
 <li>Code Bias</li>
@@ -1500,15 +1502,44 @@ In case of RTCM message types 1059 or 1065 (see Annex) the first five parameters
 <li>Code Bias</li>
 <li>etc.</li>
 </ul>
-Example:
+
+<p>
+<b>Example for block 'PHASE_BIAS' carrying phase biases</b>
 </p>
 <pre>
+> PHASE_BIAS 2015 06 17 11 43 35.0 2 31 CLK93
+ 0   1
+G01 245.39062500   0.00000000    3   1C     3.9518   1   2   6   2W     6.3177   1   2   6   5I     6.8059   1   2   6
+G02 250.31250000   0.00000000    3   1C    -4.0900   1   2   5   2W    -6.7044   1   2   5   5I     0.0000   1   2   5
+G03 281.95312500   0.00000000    3   1C     2.9327   1   2   4   2W     4.6382   1   2   4   5I     5.4120   1   2   4
 ...
-1059 0 1538 211151.0 G18 2 0   -0.010 11   -0.750
-1059 0 1538 211151.0 G16 2 0   -0.040 11   -0.430
-1059 0 1538 211151.0 G22 2 0   -0.630 11   -2.400
-...
+G32 290.39062500   0.00000000    3   1C     1.2520   1   2   5   2W     2.0554   1   2   5   5I     0.0000   1   2   5
 </pre>
+The 'satellite records' in this block provide the following information:
+</p>
+<p>
+<b>Example for block 'VTEC' carrying ionospheric corrections</b>
+</p>
+<pre>
+> VTEC 2015 06 17 11 43 35.0 6 1 CLK93
+ 1  6  6   450000.0
+   17.6800     0.0000     0.0000     0.0000     0.0000     0.0000     0.0000
+    4.5200     8.8700     0.0000     0.0000     0.0000     0.0000     0.0000
+   -4.6850    -0.3050     1.1700     0.0000     0.0000     0.0000     0.0000
+   -2.2250    -1.3900    -1.0250    -0.1300     0.0000     0.0000     0.0000
+    0.8750    -0.3800     0.2700    -0.1300     0.0400     0.0000     0.0000
+    1.2150     0.9050    -1.0100     0.3700    -0.1450    -0.2450     0.0000
+   -0.8200     0.4850     0.2300    -0.1750     0.3400    -0.0900    -0.0400
+    0.0000     0.0000     0.0000     0.0000     0.0000     0.0000     0.0000
+    0.0000    -0.0700     0.0000     0.0000     0.0000     0.0000     0.0000
+    0.0000     0.5800    -1.4150     0.0000     0.0000     0.0000     0.0000
+    0.0000    -0.6200    -0.1500     0.2600     0.0000     0.0000     0.0000
+    0.0000     0.0700    -0.0900    -0.0550     0.1700     0.0000     0.0000
+    0.0000     0.5000     0.3050    -0.5700    -0.5250    -0.2750     0.0000
+    0.0000     0.0850    -0.4700     0.0600     0.0700     0.1600     0.0400
+</pre>
+The records in this block provide the following information:
+</p>
 
 <p><a name="corrdir"><h4>3.8.1 Directory, ASCII - optional</h4></p>
 <p>
@@ -1563,14 +1594,6 @@ The following is an example output for streams from mountpoints RTCMSSR, CLK10 a
 </p>
 <p>
 The source code for BNC comes with an example perl script 'test_tcpip_client.pl' that allows you to read BNC's Broadcast Corrections from the IP port.
-</p>
-
-<p><a name="corrwait"><h4>3.8.4 Wait for Full Corr Epoch - mandatory if 'Port' is set</h4></p>
-<p>
-When feeding a real-time GNSS network engine (see 'Feed Engine') waiting epoch by epoch for synchronized Broadcast Corrections, or when you 'Combine Corrections' BNC drops (only concerning IP port output) whatever is received later than 'Wait for full corr epoch' seconds. A value of 2 to 5 seconds could be an appropriate choice for that, depending on the latency of the incoming Broadcast Corrections stream and the delay acceptable by your application. A message such as &quot;COCK1: Correction over aged by 5 sec&quot; shows up in BNC's logfile if 'Wait for full corr epoch' is exceeded.
-</p>
-<p>
-Specifying a value of '0' means that BNC immediately outputs all incoming Broadcast Ephemeris Corrections and does not drop any of them for latency reasons.
 </p>
 
 <p><a name="syncout"><h4>3.9. Feed Engine</h4></p>
