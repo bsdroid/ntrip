@@ -1468,7 +1468,7 @@ R03  59     1.8130     0.0000     0.0000
 R24  59     2.7409     0.0000     0.0000
 </pre>
 <p>
-The 'satellite records' in this block provide the following information:
+The satellite specific records in this block provide the following information:
 <ul>
 <li>GNSS Indicator and Satellite Vehicle Pseudo Random Number</li>
 <li>IOD referring to Broadcast Ephemeris set</li>
@@ -1495,7 +1495,7 @@ R03    4   1C     2.4800   1P     2.2800   2C     3.7800   2P     3.7700
 R24    4   1C     2.7000   1P     2.7800   2C     3.9800   2P     4.6000
 </pre>
 <p>
-The 'satellite records' in this block provide the following information:
+The satellite specific records in this block provide the following information:
 <ul>
 <li>GNSS Indicator and Satellite Vehicle Pseudo Random Number</li>
 <li>Number of Code Biases</li>
@@ -1525,12 +1525,13 @@ The second record of the 'PHASE_BIAS' block contains two consistency parameters:
 <li>Dispersive bias consistency indicator</li>
 <li>MW consistency indicator</li>
 </ul>
-The following 'satellite records' in this block provide the following information:
+The following records contain satellite specific information:
 <ul>
 <li>GNSS Indicator and Satellite Vehicle Pseudo Random Number</li>
 <li>Yaw angle</li>
 <li>Yaw rate</li>
-<li>Number of phase biases in this record, per signal:</li>
+<li>Number of phase biases in this record<br><br>
+The following records contain phase specific information:<br><br></li>
 <ul>
 <li>Signal and tracking mode indicator</li>
 <li>Phase bias</li>
@@ -1572,7 +1573,7 @@ The second record of the 'VTEC' block containts the following four parameters:
 </ul>
 The following records in this block provide the following information:
 <ul>
-<li>Spherical harmonic coefficients C and S, sorted by degree and order 0 to max</li>
+<li>Spherical harmonic coefficients C and S, sorted by degree and order (0 to maximum)</li>
 </ul>
 </p>
 
