@@ -1523,7 +1523,7 @@ G32 290.39062500   0.00000000    3   1C     1.2520   1   2   5   2W     2.0554  
 The second record of the 'PHASE_BIAS' block contains two consistency parameters:
 <ul>
 <li>Dispersive bias consistency indicator</li>
-<li>Dispersive bias consistency indicator</li>
+<li>MW consistency indicator</li>
 </ul>
 The following 'satellite records' in this block provide the following information:
 <ul>
@@ -1563,7 +1563,17 @@ The following 'satellite records' in this block provide the following informatio
     0.0000     0.0850    -0.4700     0.0600     0.0700     0.1600     0.0400
 </pre>
 <p>
-The records in this block provide the following information:
+The second record of the 'VTEC' block containts the following four parameters:
+<ul>
+<li>Number of following records</li>
+<li>Maximum degree of spherical harmonics</li>
+<li>Maximum order of spherical harmonics</li>
+<li>Height of ionospheric layer</li>
+</ul>
+The following records in this block provide the following information:
+<ul>
+<li>Spherical harmonic coefficients C and S, sorted by degree and order 0 to max</li>
+</ul>
 </p>
 
 <p><a name="corrdir"><h4>3.8.1 Directory, ASCII - optional</h4></p>
