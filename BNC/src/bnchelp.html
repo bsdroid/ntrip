@@ -480,6 +480,7 @@ This chapter describes how to set the BNC program options. It explains the 'Top 
 &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 3.14.1.2 <a href=#combimethod>Method</a><br>
 &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 3.14.1.3 <a href=#combimax>Maximal Residuum</a><br>
 &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 3.14.1.4 <a href=#combismpl>Sampling</a><br>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 3.14.1.5 <a href=#combiGLO>Use GLONASS</a><br>
 3.15. <a href=#upclk>Upload Corrections</a><br>
 &nbsp; &nbsp; &nbsp; 3.15.1 <a href=#upadd>Add, Delete Row</a><br>
 &nbsp; &nbsp; &nbsp; 3.15.2 <a href=#uphost>Host, Port, Mountpoint, Password</a><br>
@@ -1230,7 +1231,7 @@ To compare satellite clocks provided by the two files BNC first converts coordin
 Specify the full path of two SP3 files separated by a comma.
 </p>
 
-<p><a name="sp3exclude"><h4>3.7.2 Exclude Satellites - optional if 'Input SP3 Files' is set</h4></p>
+<p><a name="sp3exclude"><h4>3.7.2 Exclude Satellites - optional</h4></p>
 <p>
 You may want to exclude one or more satellites in your SP3 files from the comparison. Or you may like to exclude all satellites of a specific GNSS system from the comparison. The following are example strings to be entered for excluding satellites from the comparison.
 <ul>
@@ -1847,7 +1848,7 @@ Select the number of 'Data bits' for the serial output link. Note that often '8'
 Select the number of 'Stop bits' for the serial output link. Note that often '1' stop bit is used.
 </p>
 
-<p><a name="serauto"><h4>3.10.8 NMEA - mandatory for VRS streams</h4></p>
+<p><a name="serauto"><h4>3.10.8 NMEA - mandatory if 'Mountpoint' is set</h4></p>
 <p>The 'NMEA' option supports the so-called 'Virtural Reference Station' (VRS) concept which requires the receiver to send approximate position information to the NTRIP Broadcaster. Select 'no' if you don't want BNC to forward or upload any NMEA message to the NTRIP broadcaster in support of VRS.
 </p>
 <p>Select 'Auto' to automatically forward NMEA messages of type GGA from your serial connected receiver to the NTRIP broadcaster and/or save them in a file.
@@ -1857,10 +1858,10 @@ Select the number of 'Stop bits' for the serial output link. Note that often '1'
 <p>Note that selecting 'Auto' or 'Manual' works only for VRS streams which show up under the 'Streams' canvas on BNC's main window with 'nmea' stream attribute set to 'yes'. This attribute is either extracted from the NTRIP broadcaster's sourcetable or introduced by the user through editing the BNC configuration file.
 </p>
 
-<p><a name="serfile"><h4>3.10.9 File - optional if 'Auto' NMEA is set</h4></p>
+<p><a name="serfile"><h4>3.10.9 File - optional if 'NMEA' is set to 'Auto'</h4></p>
 <p>Specify the full path to a file where NMEA messages coming from your serial connected receiver are saved. Default is an empty option field, meaning that no NMEA messages will be saved on disk.
 </p>
-<p><a name="serheight"><h4>3.10.10 Height - mandatory if 'Manual' NMEA is set</h4></p>
+<p><a name="serheight"><h4>3.10.10 Height - mandatory if 'NMEA' is set to 'Manual'</h4></p>
 <p>
 Specify an approximate 'Height' above mean sea level in meters for the reference station introduced through 'Mountpoint'. Together with the latitude and longitude from the NTRIP broadcaster sourcetable the height information is used to build GGA messages to be sent to the NTRIP broadcaster.
 </p>
@@ -1869,7 +1870,7 @@ Specify an approximate 'Height' above mean sea level in meters for the reference
 <p>This option is only relevant when option 'NMEA' is set to 'Manual GPGGA' or 'Manual GNGGA' respectively.
 </p>
 
-<p><a name="sersampl"><h4>3.10.11 Sampling - mandatory if 'Manual' NMEA is set</h4></p>
+<p><a name="sersampl"><h4>3.10.11 Sampling - mandatory if 'NMEA' is set to 'Manual'</h4></p>
 <p>
 Select a sampling interval in seconds for manual generation and upload of NMEA GGA sentences.
 </p>
@@ -1891,12 +1892,12 @@ At any time an incoming stream might become unavailable or corrupted. In such ca
 Outage and corruption events are reported in the 'Log' tab. They can also be passed on as parameters to a shell script or batch file to generate an advisory note to BNC operator or affected stream providers. This functionality lets users utilize BNC as a real-time performance monitor and alarm system for a network of GNSS reference stations.
 </p>
 
-<p><a name="obsrate"><h4>3.11.1 Observation Rate - mandatory if 'Failure threshold', 'Recovery threshold' and 'Script' is set</h4></p>
+<p><a name="obsrate"><h4>3.11.1 Observation Rate - optional</h4></p>
 <p>
 BNC can collect all returns (success or failure) coming from a decoder within a certain short time span to then decide whether a stream has an outage or its content is corrupted. This procedure needs a rough a priory estimate of the expected observation rate of the incoming streams.</p><p>An empty option field (default) means that you don't want explicit information from BNC about stream outages and incoming streams that cannot be decoded.
 </p>
 
-<p><a name="advfail"><h4>3.11.2 Failure Threshold - optional</h4></p>
+<p><a name="advfail"><h4>3.11.2 Failure Threshold - mandatory if 'Observation rate' is set</h4></p>
 <p>
 Event 'Begin_Failure' will be reported if no data is received continuously for longer than the 'Failure threshold' time. Similarly, event 'Begin_Corrupted' will be reported when corrupted data is detected by the decoder continuously for longer than this 'Failure threshold' time. The default value is set to 15 minutes and is recommended so not to inundate user with too many event reports.
 </p>
@@ -1904,7 +1905,7 @@ Event 'Begin_Failure' will be reported if no data is received continuously for l
 Note that specifying a value of zero '0' for the 'Failure threshold' will force BNC to report any stream failure immediately. Note also that for using this function you need to specify the 'Observation rate'.
 </p>
 
-<p><a name="advreco"><h4>3.11.3 Recovery Threshold - optional</h4></p>
+<p><a name="advreco"><h4>3.11.3 Recovery Threshold - mandatory if 'Observation rate' is set</h4></p>
 <p>
 Once a 'Begin_Failure' or 'Begin_Corrupted' event has been reported, BNC will check for when the stream again becomes available or uncorrupted. Event 'End_Failure' or 'End_Corrupted' will be reported as soon as valid observations are again detected continuously throughout the 'Recovery threshold' time span. The default value is set to 5 minutes and is recommended so not to inundate users with too many event reports.
 </p>
@@ -1912,7 +1913,7 @@ Once a 'Begin_Failure' or 'Begin_Corrupted' event has been reported, BNC will ch
 Note that specifying a value of zero '0' for the 'Recovery threshold' will force BNC to report any stream recovery immediately. Note also that for using this function you need to specify the 'Observation rate'.
 </p>
 
-<p><a name="advscript"><h4>3.11.4 Script - optional </h4></p>
+<p><a name="advscript"><h4>3.11.4 Script - optional if 'Observation rate' is set</h4></p>
 <p>
 As mentioned previously, BNC can trigger a shell script or a batch file to be executed when one of the events described are reported. This script can be used to email an advisory note to network operator or stream providers. To enable this feature, specify the full path to the script or batch file in the 'Script' field. The affected stream's mountpoint and type of event reported ('Begin_Outage', 'End_Outage', 'Begin_Corrupted' or 'End_Corrupted') will then be passed on to the script as command line parameters (%1 and %2 on Windows systems or $1 and $2 on Unix/Linux/Mac OS X systems) together with date and time information.
 </p>
@@ -1992,7 +1993,7 @@ Select a 'Log latency' interval to activate this function or select the empty op
 
 <p><a name="miscscan"><h4>3.12.3 Scan RTCM - optional</h4></p>
 <p>
-When configuring a GNSS receiver for RTCM stream generation, the firmware's setup interface may not provide details about RTCM message types observation types. As reliable information concerning stream contents should be available i.e. for NTRIP Broadcaster operators to maintain the broadcaster's source-table, BNC allows to scan RTCM streams for incoming message types and printout some of the contained meta-data. Contained observation types are also printed because such information is required a-priori to the conversion of RTCM Version 3 MSM streams to RINEX Version 3 files. The idea for this option arose from 'InspectRTCM', a comprehensive stream analyzing tool written by D. Stoecker.
+When configuring a GNSS receiver for RTCM stream generation, the firmware's setup interface may not provide details about RTCM message types and observation types. As reliable information concerning stream contents should be available i.e. for NTRIP Broadcaster operators to maintain the broadcaster's source-table, BNC allows to scan RTCM streams for incoming message types and printout some of the contained meta-data. Contained observation types are also printed because such information is required a-priori for the conversion of RTCM Version 3 MSM streams to RINEX Version 3 files. The idea for this option arose from 'inspectRTCM', a comprehensive stream analyzing tool written by D. Stoecker.
 </p>
 <p>
 Tick 'Scan RTCM' to scan RTCM Version 2 or 3 streams and log all contained
@@ -2004,7 +2005,7 @@ Tick 'Scan RTCM' to scan RTCM Version 2 or 3 streams and log all contained
 <li>Antenna height above marker</li>
 <li>Antenna descriptor.</li>
 </ul>
-In case of RTCM Version 3 MSM streams the output includes
+In case of RTCM Version 3 streams the output includes
 <ul>
 <li>RINEX Version 3 Observation Types</li>
 </ul>
@@ -2459,11 +2460,11 @@ With BNC in PPP post-processing mode you can specify the speed of computations a
 
 <p><a name="combi"><h4>3.14. Combine Corrections</h4></p>
 <p>
-BNC allows processing several orbit and clock correction streams in real-time to produce, encode, upload and save a combination of Broadcast Corrections from various providers. All corrections must refer to satellite Antenna Phase Centers (APC). It is so far only the satellite clock corrections which are combined while orbit corrections in the combination product as well as the product update rates are just taken over from one of the incoming Broadcast Correction streams. Combining only clock corrections using a fixed orbit reference has the possibility to introduce some analysis inconsistencies. We may therefore eventually consider improvements on this approach. The clock combination can be based either on a plain 'Single-Epoch' or on a 'Kalman' Filter approach.
+BNC allows processing several orbit and clock correction streams in real-time to produce, encode, upload and save a combination of Broadcast Corrections from various providers. All corrections must refer to satellite Antenna Phase Centers (APC). It is so far only the satellite clock corrections which are combined while orbit corrections in the combination product as well as the product update rates are just taken over from one of the incoming Broadcast Correction streams. Combining only clock corrections using a fixed orbit reference has the possibility to introduce some analysis inconsistencies. We may therefore eventually consider improvements on this approach. The clock combination can be based either on a plain 'Single-Epoch' or on a Kalman 'Filter' approach.
 </p>
 <p>
 In the Kalman Filter approach satellite clocks estimated by individual Analyses Centers (ACs) are used as pseudo observations within the adjustment process. Each observation is modeled as a linear function (actually a simple sum) of three estimated parameters: AC specific offset, satellite specific offset common to all ACs, and the actual satellite clock correction which represents the result of the combination. These three parameter types differ in their statistical properties. The satellite clock offsets are assumed to be static parameters while AC specific and satellite specific offsets are stochastic parameters with appropriate white noise.
- The solution is regularized by a set of minimal constraints. After a change of one of the values 'SSR Provider ID', 'SSR Solution ID', or 'IOD SSR' the satellite clock offsets belonging to the corresponding analysis center are reset in adjustment.
+ The solution is regularized by a set of minimal constraints. After a change of one of the three values 'SSR Provider ID', 'SSR Solution ID', or 'IOD SSR', the satellite clock offsets belonging to the corresponding analysis center are reset in the adjustment.
 </p>
 <p>
 Removing the AC-dependent biases as well as possible is a major issue with clock combinations. Since they vary in time, it can be tricky to do this. Otherwise, there will be artificial jumps in the combined clock stream if one or more AC contributions drop out for certain epochs. Here the Kalman Filter approach is expected to do better than the Single-Epoch approach.
@@ -2484,9 +2485,7 @@ In view of IGS real-time products, the 'Combine Corrections' functionality has b
 <p>
 Note that the combination process requires real-time access to Broadcast Ephemeris. So, in addition to the orbit and clock correction streams BNC must pull a stream carrying Broadcast Ephemeris in the form of RTCM Version 3 messages. Stream 'RTCM3EPH' on caster <u>products.igs-ip.net</u> is an example for that.
 </p>
-<p>
-Note further that you need to tick the 'Use GLONASS' option which is part of the 'PPP (2)' panel in case you want to produce an GPS plus GLONASS combination.
-</p>
+
 <p>
 A combination is carried out following a specified sampling interval. If incoming streams have different rates, only epochs that correspond to the sampling interval are used.
 </p>
@@ -2512,7 +2511,7 @@ Step 5: If that is less than a threshold, the conclusion is that we don't have a
 Step 6: If that is greater than a threshold, then corrections of the affiliated AC are ignored for the affected epoch and the outlier detection restarts with step 1.
 </p>
 <p>
-Note that BNC can produce an internal PPP solution from combined Broadcast Corrections. For that you have to specify the keyword 'INTERNAL' as 'Corrections Mountpoint' in the PPP (1) panel.
+Note that BNC can produce an internal PPP solution from combined Broadcast Corrections. For that you have to specify the keyword 'INTERNAL' as 'Corrections' mountpoint in the PPP (1) panel.
 </p>
 <p>
 The part of BNC which enables the combination of Broadcast Corrections is not intended for publication under GNU General Public License (GPL). However, pre-compiled BNC binaries which support the 'Combine Corrections' option are made available.
@@ -2520,18 +2519,15 @@ The part of BNC which enables the combination of Broadcast Corrections is not in
 
 <p><a name="combimounttab"><h4>3.14.1 Combine Corrections Table - optional</h4></p>
 <p>
-Hit the 'Add Row' button, double click on the 'Mountpoint' field, enter a Broadcast Corrections mountpoint from the 'Streams' section and hit Enter. Then double click on the 'AC Name' field to enter your choice of an abbreviation for the Analysis Center (AC) providing the Antenna Phase Center (APC) related stream. Finally, double click on the 'Weight' field to enter a weight to be applied to this stream in the combination. The stream processing can already be started with only one corrections stream configured for combination.
-</p>
-<p>
-Note that an appropriate 'Wait for full corr epoch' value needs to be specified for the combination under the 'Broadcast Corrections' tab. To give an example: a value of 15 sec would make sense if the update rate of incoming clock corrections is 10 sec.
+Hit the 'Add Row' button, double click on the 'Mountpoint' field, enter a Broadcast Corrections mountpoint from the 'Streams' section and hit Enter. Then double click on the 'AC Name' field to enter your choice of an abbreviation for the Analysis Center (AC) providing the Antenna Phase Center (APC) related stream. Finally, double click on the 'Weight' field to enter a weight to be applied to this stream in the combination. 
 </p>
 <p>
 The sequence of entries in the 'Combine Corrections' table is not of importance. Note that the orbit information in the final combination stream is just copied from one of the incoming streams. The stream used for providing the orbits may vary over time: if the orbit providing stream has an outage then BNC switches to the next remaining stream for getting hold of the orbit information.</p>
 <p>
-Default is an empty 'Combine Corrections' table meaning that you don't want BNC to combine orbit and clock correction streams.
+It is possible to specify only one Broadcast Ephemeris corrections stream in the 'Combine Corrections' table. Instead of combining corrections from several sources, BNC will then merge the single corrections stream with Broadcast Ephemeris to save results in SP3 and/or Clock RINEX format when specified accordingly under the 'Upload Corrections' tab. Note that in such a BNC application you must not pull more than one Broadcast Ephemeris corrections stream even if a second stream would provide the same corrections from a backup caster.
 </p>
 <p>
-It is possible to specify only one Broadcast Ephemeris corrections stream in the 'Combine Corrections' table. Instead of combining corrections from several sources, BNC will then merge the single corrections stream with Broadcast Ephemeris to save results in SP3 and/or Clock RINEX format when specified accordingly under the 'Upload Corrections' tab. Note that in such a BNC application you must not pull more than one Broadcast Ephemeris corrections stream even if a second stream would provide the same corrections from a backup caster.
+Default is an empty 'Combine Corrections' table meaning that you don't want BNC to combine orbit and clock correction streams.
 </p>
 
 <p><a name="combiadd"><h4>3.14.1.1 Add Row, Delete - optional</h4></p>
@@ -2540,7 +2536,7 @@ Hit 'Add Row' button to add another row to the 'Combine Corrections' table or hi
 </p>
 
 <p>
-The following screenshots describe an example setup of BNC when combining Broadcast Correction streams and uploading them to an NTRIP Broadcaster. Note that it requires specifying options under tabs 'Combine Corrections' and 'Upload Corrections'. The example uses the combination product to simultaneously carry out an 'INTERNAL' PPP solution in 'Quick-Start' mode which allows monitoring the quality of the combination product in the space domain.
+The following screenshots describe an example setup of BNC when combining Broadcast Correction streams and uploading them to an NTRIP Broadcaster. Note that this application requires specifying options under tabs 'Combine Corrections' and 'Upload Corrections'. The example uses the combination product to simultaneously carry out an 'INTERNAL' PPP solution which allows monitoring the quality of the combination product in the space domain.
 </p>
 
 <br>
@@ -2561,12 +2557,16 @@ Select a clock combination method. Available options are Kalman 'Filter' and 'Si
 <p><a name="combimax"><h4>3.14.1.3 Maximal Residuum - mandatory if 'Combine Corrections' table is populated</h4></p>
 
 <p>BNC combines all incoming clocks according to specified weights. Individual clock estimates that differ by more than 'Maximal Residuum' meters from the average of all clocks will be ignored.<p>
-</p>It is suggested to specify a value of about 0.2 m for the Kalman filter combination approach and a value of about 3.0 meters for the Single-Epoch combination approach.</p>
+</p>It is suggested to specify a value of about 0.2 m for the Kalman Filter combination approach and a value of about 3.0 meters for the Single-Epoch combination approach.</p>
 <p>Default is a 'Maximal Residuum' of 999.0 meters</p>
 
 <p><a name="combismpl"><h4>3.14.1.4 Sampling - mandatory if 'Combine Corrections' table is populated</h4></p>
 <p>Specify a combination sampling interval. Orbit and clock corrections will be produced following that interval. A value of 10 sec may be an appropriate choice.</p>
 
+<p><a name="combiGLO"><h4>3.14.1.5 Use GLONASS - optional</h4></p>
+<p>
+You may tick the 'Use GLONASS' option in case you want to produce an GPS plus GLONASS combination and both systems are supported by the Broadcast Correction streams participating in the combination.
+</p>
 
 <p><a name="upclk"><h4>3.15. Upload Corrections</h4></p>
 <p>
