@@ -1368,18 +1368,18 @@ The orbit and clock corrections do not include local effects like Ocean Loading,
 </p>
 
 <p>
-While we have a plain ASCII standard for saving broadcast ephemeris in RINEX Navigation files, we don't have an equivalent standard for corrections to broadcast ephemeris. Hence BNC saves Broadcast Corrections files following its own format definition. The file name convention for Broadcast Correction files follows the convention for RINEX Version 2 files except for the last character of the file name suffix which is set to &quot;C&quot;.
+While we have a plain ASCII standard for saving broadcast ephemeris in RINEX Navigation files, we don't have an equivalent standard for corrections to broadcast ephemeris. Hence BNC saves Broadcast Correction files following its own format definition. The file name convention for Broadcast Correction files follows the convention for RINEX Version 2 files except for the last character of the file name suffix which is set to 'C'.
 </p>
 
 <p>
-Broadcast Corrections files contain blocks of records in plain ASCII format. Each block contains a 'leading (first) record' followd by a number of 'satellite records' (exception: block VTEC).
+Broadcast Correction files contain blocks of records in plain ASCII format. Each block covers information about one sprecific topic and starts with an epoch record with special character '&#62;' being the first character (as we have it in RINEX Version 3).
 </p>
 <p>
-<b>Example for the 'leading record' of each block</b>
+<b>The epoch record of a Broadcast Corrections block</b>
 </p>
 
 <p>
-The 'leading record' of each block contains 10 parameters. Example:
+The leading epoch record of each block contains 10 parameters. Example:
 </p>
 <pre>
 > ORBIT 2015 06 17 11 43 35.0 2 53 CLK93
@@ -1388,7 +1388,7 @@ The 'leading record' of each block contains 10 parameters. Example:
 Their meaning is as follows:
 </p>
 <ul>
-<li>SSR message type indicator:<br>ORBIT, CLOCK, CODE_BIAS, PHASE_BIAS, or VTEC</li>
+<li>SSR message or topic descriptor, valid descriptors are:<br>ORBIT, CLOCK, CODE_BIAS, PHASE_BIAS, or VTEC</li>
 <li>Year, GPS time</li>
 <li>Month, GPS time</li>
 <li>Day, GPS time</li>
@@ -1414,7 +1414,7 @@ Their meaning is as follows:
 <li>14 = 7200 sec</li>
 <li>15 = 10800 sec</li>
 </ul>
-<li>Number of following satellites (records) in this block</li>
+<li>Number of following records in this block</li>
 <li>Mountpoint, source/stream indicator</li>
 </ul>
 Each of the following 'satellite records' in such a block carries information for one specific satellite. Undefined parameters in the 'satellite records' could be set to zero &quot;0.000&quot;.
@@ -1436,7 +1436,7 @@ R03  59     0.4635    -0.9104    -0.3832        0.0001     0.0001     0.0005
 R24  59     0.5935     2.0732    -0.6884       -0.0000     0.0004     0.0003
 </pre>
 <p>
-The 'satellite records' in this block provide the following information:
+Records in this block provide the following satellite specific information:
 <ul>
 <li>GNSS Indicator and Satellite Vehicle Pseudo Random Number</li>
 <li>IOD referring to Broadcast Ephemeris set</li>
@@ -1468,7 +1468,7 @@ R03  59     1.8130     0.0000     0.0000
 R24  59     2.7409     0.0000     0.0000
 </pre>
 <p>
-The satellite specific records in this block provide the following information:
+Records in this block provide the following satellite specific information:
 <ul>
 <li>GNSS Indicator and Satellite Vehicle Pseudo Random Number</li>
 <li>IOD referring to Broadcast Ephemeris set</li>
@@ -1495,15 +1495,17 @@ R03    4   1C     2.4800   1P     2.2800   2C     3.7800   2P     3.7700
 R24    4   1C     2.7000   1P     2.7800   2C     3.9800   2P     4.6000
 </pre>
 <p>
-The satellite specific records in this block provide the following information:
+Records in this block provide the following satellite specific information:
 <ul>
 <li>GNSS Indicator and Satellite Vehicle Pseudo Random Number</li>
-<li>Number of Code Biases</li>
+<li>Number of Code Biases, succeeded by code specific information:</li>
+<ul>
 <li>Indicator to specify the signal and tracking mode</li>
-<li>Code Bias</li>
+<li>Code Bias [m]</li>
 <li>Indicator to specify the signal and tracking mode</li>
-<li>Code Bias</li>
+<li>Code Bias [m]</li>
 <li>etc.</li>
+</ul>
 </ul>
 </p>
 
@@ -1520,21 +1522,20 @@ G03 281.95312500   0.00000000    3   1C     2.9327   1   2   4   2W     4.6382  
 G32 290.39062500   0.00000000    3   1C     1.2520   1   2   5   2W     2.0554   1   2   5   5I     0.0000   1   2   5
 </pre>
 <p>
-The second record of the 'PHASE_BIAS' block contains two consistency parameters:
+The second record in this block provides the following consistency information:
 <ul>
 <li>Dispersive bias consistency indicator</li>
 <li>MW consistency indicator</li>
 </ul>
-The following records contain satellite specific information:
+Following records provide satellite specific information:
 <ul>
 <li>GNSS Indicator and Satellite Vehicle Pseudo Random Number</li>
-<li>Yaw angle</li>
-<li>Yaw rate</li>
-<li>Number of phase biases in this record<br><br>
-The following records contain phase specific information:<br><br></li>
+<li>Yaw angle [&deg;]</li>
+<li>Yaw rate [&deg;/s]</li>
+<li>Number of phase biases in this record, succeeded by phase specific information:</li>
 <ul>
 <li>Signal and tracking mode indicator</li>
-<li>Phase bias</li>
+<li>Phase bias [m]</li>
 <li>Signal integer indicator</li>
 <li>Signal wide-lane integer indicator</li>
 <li>Signal discontinuity counter</li>
@@ -1564,14 +1565,14 @@ The following records contain phase specific information:<br><br></li>
     0.0000     0.0850    -0.4700     0.0600     0.0700     0.1600     0.0400
 </pre>
 <p>
-The second record of the 'VTEC' block containts the following four parameters:
+The second record in this block provides four parameters:
 <ul>
 <li>Number of following records</li>
 <li>Maximum degree of spherical harmonics</li>
 <li>Maximum order of spherical harmonics</li>
-<li>Height of ionospheric layer</li>
+<li>Height of ionospheric layer [m]</li>
 </ul>
-The following records in this block provide the following information:
+Subsequent records in this block provide the following information:
 <ul>
 <li>Spherical harmonic coefficients C and S, sorted by degree and order (0 to maximum)</li>
 </ul>
