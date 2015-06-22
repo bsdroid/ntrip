@@ -424,6 +424,7 @@ This chapter describes how to set the BNC program options. It explains the 'Top 
 &nbsp; &nbsp; &nbsp; 3.10.8. <a href=#serauto>NMEA</a><br>
 &nbsp; &nbsp; &nbsp; 3.10.9. <a href=#serfile>File</a><br>
 &nbsp; &nbsp; &nbsp; 3.10.10. <a href=#serheight>Height</a><br>
+&nbsp; &nbsp; &nbsp; 3.10.11. <a href=#sersampl>Sampling</a><br>
 3.11. <a href=#advnote>Outages</a><br>
 &nbsp; &nbsp; &nbsp; 3.11.1. <a href=#obsrate>Observation Rate</a><br>
 &nbsp; &nbsp; &nbsp; 3.11.2. <a href=#advfail>Failure Threshold</a><br>
@@ -1734,7 +1735,7 @@ COCO0 C10  C2I   35632229.616 L2I  185546695.648 704 D2I        327.212 S2I   49
 ...
 </pre>
 <p>
-The source code for BNC comes with a perl script called 'test_tcpip_client.pl' that allows you to read BNC's (synchronized or unsynchronized) ASCII observation output from the IP port and print it on standard output.
+The source code for BNC comes with a perl script named 'test_tcpip_client.pl' that allows you to read BNC's (synchronized or unsynchronized) ASCII observation output from the IP port and print it on standard output.
 </p>
 
 <p>
@@ -1783,7 +1784,7 @@ BNC can produce unsynchronized observations from all configured streams in ASCII
 You may use BNC to feed a serial connected device like a GNSS receiver. For that an incoming stream can be forwarded to a serial port. Depending on the stream contents the receiver may use it for Differential GNSS, Precise Point Positioning or any other purpose supported by its firmware.
 </p>
 <p>
-Note that receiving a VRS stream requires the receiver sending NMEA sentences (mode 'Manual' or 'Auto') to the Ntrip Broadcaster. The following figure shows the data flow when pulling a VRS stream or a none VRS stream.
+Note that receiving a VRS stream requires the receiver sending NMEA sentences (mode 'Manual' or 'Auto') to the Ntrip Broadcaster. The following figure shows the data flow when pulling a VRS stream or a physical (none-VRS) stream.
 </p>
 
 <p><img src="IMG/screenshot35.png"/></p>
@@ -1847,29 +1848,36 @@ Select the number of 'Stop bits' for the serial output link. Note that often '1'
 </p>
 
 <p><a name="serauto"><h4>3.10.8 NMEA - mandatory for VRS streams</h4></p>
-<p>
-Select 'Auto' to automatically forward all NMEA-GGA messages coming from your serial connected GNSS receiver to the NTRIP Broadcaster and/or save them in a file.
+<p>The 'NMEA' option supports the so-called 'Virtural Reference Station' (VRS) concept which requires the receiver to send approximate position information to the NTRIP Broadcaster. Select 'no' if you don't want BNC to forward or upload any NMEA message to the NTRIP broadcaster in support of VRS.
 </p>
-<p>
-Forwarding valid NMEA-GGA messages to the NTRIP Broadcaster is required for receiving 'Virtual Reference Station' (VRS) streams. Thus, in case your serial connected receiver is not capable to provide them, the alternative for VRS streams is a 'Manual' simulation of an initial NMEA-GGA message. Its content is based on the approximate (editable) latitude/longitude from the broadcaster's source-table and an approximate VRS height to be specified.
+<p>Select 'Auto' to automatically forward NMEA messages of type GGA from your serial connected receiver to the NTRIP broadcaster and/or save them in a file.
 </p>
-<p>
-In summary: select 'Manual' only when handling a VRS stream and your serial connected GNSS receiver doesn't generate NMEA-GGA messages. Select 'Auto' otherwise.
+<p>Select 'Manual GPGGA' or 'Manual GNGGA' if you want BNC to produce and upload GPGGA or GNGGA NMEA messages to the NTRIP broadcaster because your serial connected receiver doesn't generate these messages. A Talker ID 'GP' preceding the GGA string stands for GPS solutions while a Talker ID 'GN' stands for multi constellation solutions.
+</p>
+<p>Note that selecting 'Auto' or 'Manual' works only for VRS streams which show up under the 'Streams' canvas on BNC's main window with 'nmea' stream attribute set to 'yes'. This attribute is either extracted from the NTRIP broadcaster's sourcetable or introduced by the user through editing the BNC configuration file.
 </p>
 
 <p><a name="serfile"><h4>3.10.9 File - optional if 'Auto' NMEA is set</h4></p>
-<p>Specify the full path to a file where NMEA messages coming from your serial connected receiver are saved.
+<p>Specify the full path to a file where NMEA messages coming from your serial connected receiver are saved. Default is an empty option field, meaning that no NMEA messages will be saved on disk.
 </p>
 <p><a name="serheight"><h4>3.10.10 Height - mandatory if 'Manual' NMEA is set</h4></p>
 <p>
-Specify an approximate 'Height' above mean sea level in meter for your VRS to simulate an initial NMEA-GGA message. Latitude and longitude for that (editable) are taken from the broadcaster's source-table.
+Specify an approximate 'Height' above mean sea level in meters for the reference station introduced through 'Mountpoint'. Together with the latitude and longitude from the NTRIP broadcaster sourcetable the height information is used to build GGA messages to be sent to the NTRIP broadcaster.
+</p>
+<p>For adjusting latitude and longitude values of a VRS stream given in the 'Streams' canvas you can double click the latitude/longitude data fields, specify appropriate values and then hit Enter.
+</p>
+<p>This option is only relevant when option 'NMEA' is set to 'Manual GPGGA' or 'Manual GNGGA' respectively.
+</p>
+
+<p><a name="sersampl"><h4>3.10.11 Sampling - mandatory if 'Manual' NMEA is set</h4></p>
+<p>
+Select a sampling interval in seconds for manual generation and upload of NMEA GGA sentences.
 </p>
 <p>
-This option concerns only 'Virtual Reference Stations' (VRS). Its setting is ignored in case of streams coming from physical reference stations.
+A sampling rate of '0' means, that a GGA sentence will be send only once to initialize the requested VRS stream. Note that some VRS systems need GGA sentences at regular intervals.
 </p>
 
 <p><a name="advnote"><h4>3.11. Outages</h4></p>
-
 <p>
 At any time an incoming stream might become unavailable or corrupted. In such cases, it is important that the BNC operator and/or the stream providers become aware of the situation so that necessary measures can be taken to restore the stream. Furthermore, continuous attempts to decode a corrupted stream can generate unnecessary workload for BNC. Outages and corruptions are handled by BNC as follows:
 </p>
@@ -1939,7 +1947,7 @@ Note the sleep command in this script which causes the system to wait for a rand
 
 <p><a name="misc"><h4>3.12. Miscellaneous</h4></p>
 <p>
-This section describes several miscellaneous options which can be applied for a single stream (mountpoint) or for all configured streams.
+This section describes several miscellaneous options which can be applied to a single stream (mountpoint) or to all configured streams.
 </p>
 
 <p>
@@ -2022,7 +2030,7 @@ Please note further that RTCM Version 3 message types 1084 for GLONASS don't con
 BNC can output streams related to the above specified 'Mountpoint' through a TCP/IP port of your local host. Enter a port number to activate this function. The stream contents remains untouched. BNC does not decode or reformat the data.
 </p>
 <p>
-Be careful when keyword 'ALL' is specified as 'Mountpoint' for involving all incoming streams together because the affiliation of data  to certain streams gets lost in the output.
+Be careful when keyword 'ALL' is specified as 'Mountpoint' for involving all incoming streams together because the affiliation of data to certain streams gets lost in the output.
 </p>
 <p>
  An empty option field (default) means that you don't want BNC to apply the TCP/IP port output option.
