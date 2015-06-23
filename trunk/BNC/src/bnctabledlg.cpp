@@ -100,7 +100,7 @@ bncTableDlg::bncTableDlg(QWidget* parent) : QDialog(parent) {
 
   _buttonCasterTable = new QPushButton(tr("Show"), this);
   connect(_buttonCasterTable, SIGNAL(clicked()), this, SLOT(slotCasterTable()));
-  _buttonCasterTable->setMaximumWidth(5*ww);
+  _buttonCasterTable->setMaximumWidth(6*ww);
 
   // WhatsThis
   // ---------
