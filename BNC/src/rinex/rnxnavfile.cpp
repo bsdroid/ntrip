@@ -283,7 +283,7 @@ void t_rnxNavFile::writeHeader(const QMap<QString, QString>* txtMap) {
              << "RINEX VERSION / TYPE\n";
   }
   else {
-    *_stream << QString("%1           Navigation data     Mixed")
+    *_stream << QString("%1           N: GNSS NAV DATA    M: MIXED")
       .arg(_header._version, 9, 'f', 2)
       .leftJustified(60)
              << "RINEX VERSION / TYPE\n";
