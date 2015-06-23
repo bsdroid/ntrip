@@ -363,6 +363,7 @@ void t_rnxObsHeader::set(const t_rnxObsHeader& header, int version,
   _antennaName     = header._antennaName; 
   _markerName      = header._markerName;  
   _markerNumber    = header._markerNumber;  
+  _markerType      = header._markerType;
   _antNEU          = header._antNEU;      
   _antXYZ          = header._antXYZ;      
   _antBSG          = header._antBSG;      
@@ -568,7 +569,7 @@ void t_rnxObsHeader::write(QTextStream* stream,
     .arg(_markerType, -60)
     .leftJustified(60)
            << "MARKER TYPE\n";
-
+           
   *stream << QString("%1%2")
     .arg(_observer, -20)
     .arg(_agency,   -40)
