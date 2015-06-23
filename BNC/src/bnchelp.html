@@ -2595,7 +2595,7 @@ Then, epoch by epoch:
 The orbit and clock corrections to Broadcast Ephemeris are usually referred to the latest set of broadcast messages, which are generally also received in real-time by a GNSS rover. However, the use of the latest broadcast message is delayed for a period of 60 seconds, measured from the time of complete reception of ephemeris and clock parameters, in order to accommodate rover applications to obtain the same set of broadcast orbital and clock parameters. This procedure is recommended in the RTCM SSR standard.
 </p>
 </p>
-Because the encoding process may put a significant load on the communication link between BNC and the real-time GNSS engine, it is recommended to run both programs on the same host. However, doing so is not compulsory.
+Because the stream delivery process may put a significant load on the communication link between BNC and the real-time GNSS engine, it is recommended to run both programs on the same host. However, doing so is not compulsory.
 </p>
 <p>
 The usual handling of BNC when uploading a stream with Broadcast Corrections is that you first specify Broadcast Ephemeris and Broadcast Correction streams. You then specify an NTRIP Broadcaster for stream upload before you start the program.
@@ -2678,15 +2678,15 @@ When using clocks from Broadcast Ephemeris (with or without applied corrections)
 </p>
 
 <p><a name="upadd"><h4>3.15.1 Add, Delete Row - optional</h4></p>
-<p>Hit 'Add Row' button to add another row to the stream 'Upload Table' or hit the 'Delete' button to delete the highlighted row(s).
+<p>Hit 'Add Row' button to add a row to the stream 'Upload Table' or hit the 'Delete' button to delete the highlighted row(s).
 </p>
 <p>
 Having an empty 'Upload Table' is default and means that you don't want BNC to upload orbit and clock correction streams to any NTRIP Broadcaster.
 </p>
 
-<p><a name="uphost"><h4>3.15.2 Host, Port, Mountpoint, Password - mandatory if 'Upload Table' entries specified</h4></p>
+<p><a name="uphost"><h4>3.15.2 Host, Port, Mountpoint, Password - optional</h4></p>
 
-<p>Specify the domain name or IP number of an NTRIP Broadcaster for uploading the stream. Furthermore, specify the caster's listening IP port, an upload mountpoint and an upload password. Note that NTRIP Broadcasters are often configured to provide access on more than one port, usually port 80 and 2101. If you experience communication problems on port 80, you should try to use the alternative port(s).
+<p>Specify the domain name or IP number of an NTRIP Broadcaster for uploading the stream. Furthermore, specify the caster's listening IP port, an upload mountpoint and an upload password. Note that NTRIP Broadcasters are often configured to provide access through more than one port, usually ports 80 and 2101. If you experience communication problems on port 80, you should try to use the alternative port(s).
 </p>
 <p>
 BNC uploads a stream to the NNTRIP Broadcaster by referring to a dedicated mountpoint that has been set by its operator. Specify here the mountpoint based on the details you received for your stream from the operator. It is often a four character ID (capital letters) plus an integer number.</p>
@@ -2844,7 +2844,7 @@ To: 1995.4
 </p>
 
 <p>
-<u>DREF91:</u> 'Referenzkoordinaten für SAPOS, Empfehlungen der Projektgruppe SAPOS-Koordinatenmonitoring 2008', Personal communication with Peter Franke, BKG, Germany. The following 14 Helmert Transformation Parameters were introduced:
+<u>DREF91:</u> 'Referenzkoordinaten fuer SAPOS, Empfehlungen der Projektgruppe SAPOS-Koordinatenmonitoring 2008', Personal communication with Peter Franke, BKG, Germany. The following 14 Helmert Transformation Parameters were introduced:
 </p>
 <p>
 <pre>
@@ -2870,9 +2870,12 @@ To: 2000.0
 <u>Custom:</u> Feel free to specify your own 14 Helmert Transformation parameters for transformations from IGS08/ITRF2008 into your own target system.
 </p>
 
+<p><img src="IMG/screenshot38.png"/></p>
+<p><u>Figure 28:</u> Setting Custom Transformation Parameters window, example for 'ITRF2008->GDA94'.</p>
+
 <p><a name="upcom"><h4>3.15.4 Center of Mass - optional</h4></p>
 <p>
-BNC allows to either referring Broadcast Corrections to the satellite's Center of Mass (CoM) or to the satellite's Antenna Phase Center (APC). By default corrections refer to APC. Tick 'Center of Mass' to refer uploaded corrections to CoM.
+BNC allows to either refer Broadcast Corrections to the satellite's Center of Mass (CoM) or to the satellite's Antenna Phase Center (APC). By default corrections refer to APC. Tick 'Center of Mass' to refer uploaded corrections to CoM.
 </p>
 
 <p><a name="upsp3"><h4>3.15.5 SP3 File - optional</h4></p>
@@ -2910,10 +2913,10 @@ Note further that clocks in the Clock RINEX files are not corrected for the conv
 Select the length of Clock RINEX files and SP3 Orbit files. The default value is 1 day.
 </p>
 
-<p><a name="upclksmpl"><h4>3.15.8 Sampling - mandatory if 'Upload Table' entries specified</h4></p>
+<p><a name="upclksmpl"><h4>3.15.8 Sampling</h4></p>
 <p>BNC requires an orbit corrections sampling interval for the stream to be uploaded and sampling intervals for SP3 and Clock RINEX files. The outgoing stream's clock correction sampling interval follows that of incoming corrections and is therefore nothing to be specified here.</p>
 
-<p><a name="upclkorb"><h4>3.15.8.1 Orbits - mandatory if 'Upload Table' entries specified</h4></p>
+<p><a name="upclkorb"><h4>3.15.8.1 Orbits (Orb) - mandatory if 'Upload Table' entries specified</h4></p>
 <p>Select the stream's orbit correction sampling interval in seconds. A value of 60 sec may be appropriate.</p>
 <p> A value of zero '0' tells BNC to upload all orbit correction samples coming in from the real-time GNSS engine along with the clock correction samples to produce combined orbit and clock corrections to Broadcast Ephemeris (1060 for GPS, 1066 for GLONASS).
 </p>
@@ -2947,7 +2950,7 @@ Note that only when specifying a value of zereo '0' (default) for 'Sampling Orb'
 <p><a name="upclksp3"><h4>3.15.8.2 SP3 - mandatory if 'SP3 File' is specified</h4></p>
 <p>Select the SP3 orbit file sampling interval in minutes. A value of 15 min may be appropriate. A value of zero '0' tells BNC to store all available samples into SP3 orbit files.</p>
 
-<p><a name="upclkrnx"><h4>3.15.8.3 RINEX - mandatory if 'RNX File' is specified</h4></p>
+<p><a name="upclkrnx"><h4>3.15.8.3 RINEX (RNX) - mandatory if 'RNX File' is specified</h4></p>
 <p>Select the Clock RINEX file sampling interval in seconds. A value of 10 sec may be appropriate. A value of zero '0' tells BNC to store all available samples into Clock RINEX files.</p>
 
 <p><a name="upcustom"><h4>3.15.9 Custom Trafo - optional if 'Upload Table' entries specified</h4></p>
@@ -3941,7 +3944,6 @@ The following table's left column is a list of options as contained in BNC's con
 <tr><td>corrPath=</td><td>Broadcast Corrections: Directory, ASCII </td></tr>
 <tr><td>corrIntr=</td><td>Broadcast Corrections: Interval</td></tr>
 <tr><td>corrPort=</td><td>Broadcast Corrections: Port</td></tr>
-<tr><td>corrTime=</td><td>Broadcast Corrections: Wait for full corr epoch</td></tr>
 
 <tr><td>outPort=</td><td>Feed Engine: Port</td></tr>
 <tr><td>waitTime=</td><td>Feed Engine: Wait for full obs epoch</td></tr>
