@@ -2487,8 +2487,9 @@ Note that the combination process requires real-time access to Broadcast Ephemer
 </p>
 
 <p>
-A combination is carried out following a specified sampling interval. If incoming streams have different rates, only epochs that correspond to the sampling interval are used.
+A combination is carried out following a specified sampling interval. BNC waits for incoming Broadcast Corrections for the period of one such intervall. Corrections received later than that will be ignored. If incoming streams have different rates, only epochs that correspond to the sampling interval are used. 
 </p>
+
 <p>
 With respect to IGS, it is important to understand that a major effect in the combination of GNSS orbit and clock correction streams is the selection of ACs to include. It is likely that a combination product could be improved in accuracy by using only the best two or three ACs. However, with only a few ACs to depend on, the reliability of the combination product could suffer and the risk of total failures increases. So there is an important tradeoff here that must be considered when selecting streams for a combination. The major strength of a combination product is its reliability and stable median performance which can be much better than that of any single AC product.
 </p>
@@ -2601,7 +2602,7 @@ The usual handling of BNC when uploading a stream with Broadcast Corrections is 
 </p>
 <p>
 <u>'RTNET' Stream Format</u><br>
-When uploading an SSR stream generated according to b. then  BNC requires precise GNSS orbits and clocks in the IGS Earth-Centered-Earth-Fixed (ECEF) reference system and in a specific ASCII format named 'RTNET' because the data may come from a real-time engine such as RTNET. The sampling interval for data transmission should not exceed 15 sec. Note that otherwise tools involved in IP streaming such as NTRIP Broadcasters or NTRIP Clients may respond with a timeout.
+When uploading an SSR stream generated according to b. then BNC requires precise GNSS orbits and clocks in the IGS Earth-Centered-Earth-Fixed (ECEF) reference system and in a specific ASCII format named 'RTNET' because the data may come from a real-time engine such as RTNET. The sampling interval for data transmission should not exceed 15 sec. Note that otherwise tools involved in IP streaming such as NTRIP Broadcasters or NTRIP Clients may respond with a timeout.
 </p>
 <p>
 Below you find an example for the 'RTNET' ASCII format coming from a real-time GNSS engine. Each epoch begins with an asterisk character followed by the time as year, month, day of month, hour, minute and second. Subsequent records can provide 
