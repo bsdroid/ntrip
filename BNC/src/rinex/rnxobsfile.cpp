@@ -95,6 +95,9 @@ t_irc t_rnxObsHeader::read(QTextStream* stream, int maxLines) {
     else if (key == "MARKER NAME") {
       _markerName = value;
     }
+    else if (key == "MARKER TYPE") {
+      _markerType = value;
+    }
     else if (key == "MARKER NUMBER") {
       _markerNumber = line.mid(0,20).trimmed();
     }
@@ -530,7 +533,7 @@ void t_rnxObsHeader::write(QTextStream* stream,
     }
   }
 
-  *stream << QString("%1           Observation data    Mixed")
+  *stream << QString("%1           OBSERVATION DATA    M")
     .arg(_version, 9, 'f', 2)
     .leftJustified(60)
            << "RINEX VERSION / TYPE\n";
@@ -560,6 +563,11 @@ void t_rnxObsHeader::write(QTextStream* stream,
       .leftJustified(60)
              << "MARKER NUMBER\n";
   }
+
+  *stream << QString("%1")
+    .arg(_markerType, -60)
+    .leftJustified(60)
+           << "MARKER TYPE\n";
 
   *stream << QString("%1%2")
     .arg(_observer, -20)

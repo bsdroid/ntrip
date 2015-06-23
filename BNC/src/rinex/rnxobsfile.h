@@ -77,6 +77,7 @@ class t_rnxObsHeader {
   QString         _antennaName;
   QString         _markerName;
   QString         _markerNumber;
+  QString         _markerType;
   QString         _observer;
   QString         _agency;
   QString         _receiverNumber;
