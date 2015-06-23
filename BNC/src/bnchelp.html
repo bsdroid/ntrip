@@ -2075,7 +2075,7 @@ More detailed PPP results are saved in BNC's logfile. Depending on the selected 
 <li>time offset between GPS time and Galileo time in [m],
 <li>L3 biases, also known as 'floated ambiguities', given per satellite.
 </ul>
-These parameters are saved together with their standard deviation. The following is an example extract from a log file when BNC was in 'Single Point Positioning' (SPP) mode:
+These parameters are saved together with their standard deviation. The following is an example extract from a logfile when BNC was in 'Single Point Positioning' (SPP) mode:
 </p>
 <p>
 <pre>
@@ -2302,7 +2302,7 @@ T(z) = T_apr(z) + dT / cos(z)
 where T_apr is the a-priori tropospheric delay derived from Saastamoinen model.
 </p>
 <p>
-By default BNC does not estimate troposphere parameters. Tick 'Estimate tropo' to estimate troposphere parameters together with the coordinates and save T_apr and dT/cos(z) in BNC's log file.
+By default BNC does not estimate troposphere parameters. Tick 'Estimate tropo' to estimate troposphere parameters together with the coordinates and save T_apr and dT/cos(z) in BNC's logfile.
 </p>
 
 <p><a name="pppglo"><h4>3.13.7.3 Use GLONASS - optional</h4></p>
@@ -2328,7 +2328,7 @@ Default is an empty option field, meaning that you want BNC to process observati
 
 <p><a name="pppaverage"><h4>3.13.7.6 Averaging - optional if XYZ is set</h4></p>
 <p>
-Enter the length of a sliding time window in minutes. BNC will continuously output moving average values and their RMS as computed from those individual values obtained most recently throughout this period. RMS values presented for XYZ coordinates and tropospheric zenith path delays are bias reduced while RMS values for North/East/Up (NEU) displacements are not. Averaged values for XYZ coordinates and their RMS are marked with string &quot;AVE-XYZ&quot; in BNC's log file and 'Log' section while averaged values for NEU displacements and their RMS are marked with string &quot;AVE-NEU&quot; and averaged values for the tropospheric delays and their RMS are marked with string &quot;AVE-TRP&quot;. Example:
+Enter the length of a sliding time window in minutes. BNC will continuously output moving average values and their RMS as computed from those individual values obtained most recently throughout this period. RMS values presented for XYZ coordinates and tropospheric zenith path delays are bias reduced while RMS values for North/East/Up (NEU) displacements are not. Averaged values for XYZ coordinates and their RMS are marked with string &quot;AVE-XYZ&quot; in BNC's logfile and 'Log' section while averaged values for NEU displacements and their RMS are marked with string &quot;AVE-NEU&quot; and averaged values for the tropospheric delays and their RMS are marked with string &quot;AVE-TRP&quot;. Example:
 </p>
 <pre>
 10-09-08 09:13:05 FFMJ1  AVE-XYZ 09:13:04.0   4053455.948 +-  0.284     617730.422 +-  0.504    4869397.692 +-  0.089
@@ -2336,7 +2336,7 @@ Enter the length of a sliding time window in minutes. BNC will continuously outp
 10-09-08 09:13:05 FFMJ1  AVE-TRP 09:13:04.0         2.336 +-  0.002
 </pre>
 <p>
-Entering any positive value up to 1440 (24h mean value) is allowed. An empty option field (default) means that you don't want BNC to output moving average positions into the log file and the 'Log' section. Note that averaging positions makes only sense for a stationary receiver.
+Entering any positive value up to 1440 (24h mean value) is allowed. An empty option field (default) means that you don't want BNC to output moving average positions into the logfile and the 'Log' section. Note that averaging positions makes only sense for a stationary receiver.
 </p>
 
 <p><a name="pppquick"><h4>3.13.7.7 Quick-Start - optional if XYZ is set</h4></p>
@@ -2960,7 +2960,7 @@ Note that only when specifying a value of zereo '0' (default) for 'Sampling Orb'
 The following screenshot shows the encoding and uploading of a stream of precise orbits and clocks coming from a real-time engine in 'RTNET' ASCII format. The stream is uploaded to NTRIP Broadcaster 'products.igs-ip.net'. It is referred to APC and IGS08. Uploaded data are locally saved in SP3 and Clock RINEX format. The SSR Provider ID is set to 3. The SSR Solution ID is and the Issue of Data SSR are set to 1. Required Broadcast Ephemeris are received via stream 'RTCM3EPH'.
 </p>
 <p><img src="IMG/screenshot26.png"/></p>
-<p><u>Figure 28:</u> Producing Broadcast Corrections from incoming precise orbits and clocks and uploading them to an NTRIP Broadcaster.</p>
+<p><u>Figure 29:</u> Producing Broadcast Corrections from incoming precise orbits and clocks and uploading them to an NTRIP Broadcaster.</p>
 
 <p><a name="upeph"><h4>3.16. Upload Ephemeris</h4></p>
 <p>
@@ -2969,11 +2969,10 @@ BNC can upload a stream carrying Broadcast Ephemeris in RTCM Version 3 format to
 
 <p><a name="brdcserver"><h4>3.16.1 Host &amp; Port - optional</h4></p>
 <p>
-Specify the 'Host' IP name or number of an NTRIP Broadcaster to upload the stream. An empty option field means that you don't want to upload Broadcast Ephemeris.
+Specify the 'Host' IP number or URL of an NTRIP Broadcaster to upload the stream. An empty option field means that you don't want to upload Broadcast Ephemeris.
 </p>
 <p>
-Enter the NTRIP Broadcaster's IP 'Port' number for stream upload. Note that NTRIP Broadcasters are often configured to provide access on more than one port, usually
-port 80 and 2101. If you experience communication problems on port 80, you should try to use the alternative port(s).
+Enter the NTRIP Broadcaster's IP 'Port' number for stream upload. Note that NTRIP Broadcasters are often configured to provide access through more than one port, usually ports 80 and 2101. If you experience communication problems on port 80, you should try to use the alternative port(s).
 </p>
 
 <p><a name="brdcmount"><h4>3.16.2 Mountpoint &amp; Password - mandatory if 'Host' is set</h4></p>
@@ -2987,11 +2986,11 @@ Select the Broadcast Ephemeris repetition interval in seconds. Default is '5' me
 </p>
 
 <p><img src="IMG/screenshot28.png"/></p>
-<p><u>Figure 29:</u> Producing a Broadcast Ephemeris stream from navigation messages of globally distributed RTCM streams and uploading them in RTCM Version 3 format to an NTRIP Broadcaster.</p>
+<p><u>Figure 30:</u> Producing a Broadcast Ephemeris stream from navigation messages of globally distributed RTCM streams and uploading them in RTCM Version 3 format to an NTRIP Broadcaster.</p>
 
 <p><a name="streams"><h4>3.17. Streams</h4></p>
 <p>
-Each stream on an NTRIP Broadcaster (and consequently on BNC) is defined using a unique source ID called mountpoint. An NTRIP Client like BNC accesses the desired stream by referring to its mountpoint. Information about streams and their mountpoints is available through the source-table maintained by the NTRIP Broadcaster. Note that mountpoints could show up in BNC more than once when retrieving streams from several NTRIP Broadcasters.
+Each stream on an NTRIP Broadcaster (and consequently on BNC) is defined using a unique source ID called mountpoint. An NTRIP Client like BNC accesses the desired stream by referring to its mountpoint. Information about streams and their mountpoints is available through the source-table maintained by the NTRIP Broadcaster.
 </p>
 
 <p>
@@ -3016,12 +3015,12 @@ Streams selected for retrieval are listed under the 'Streams' canvas on BNC's ma
 BNC automatically allocates one of its internal decoders to a stream based on the stream's 'format' and 'format-details' as given in the source-table. However, there might be cases where you need to override the automatic selection due to incorrect source-table for example. BNC allows users to manually select the required decoder by editing the decoder string. Double click on the 'decoder' field, enter your preferred decoder and then hit Enter. The accepted decoder strings are 'RTCM_2.x', 'RTCM_3.x' and 'RTNET'.
 </li>
 <li>
-In case you need to log the raw data as is, BNC allows users to by-pass its decoders and directly save the input in daily log files. To do this, specify the decoder string as 'ZERO'. The generated file names are created from the characters of the streams mountpoints plus two-digit numbers each for year, month, and day. Example: Setting the 'decoder' string for mountpoint WTZZ0 to 'ZERO' and running BNC on March 29, 2007 would save the raw data in a file named WTZZ0_070329.
+In case you need to log the raw data as is, BNC allows users to by-pass its decoders and directly save the input in daily logfiles. To do this, specify the decoder string as 'ZERO'. The generated file names are created from the characters of the streams mountpoints plus two-digit numbers each for year, month, and day. Example: Setting the 'decoder' string for mountpoint WTZZ0 to 'ZERO' and running BNC on March 29, 2007 would save the raw data in a file named WTZZ0_070329.
 </li>
 <li>
 BNC can also retrieve streams from virtual reference stations (VRS). To initiate these streams, an approximate rover position needs to be sent in NMEA format to the NTRIP Broadcaster. In return, a user-specific data stream is generated, typically by Network-RTK software. VRS streams are indicated by a 'yes' in the source-table as well as in the 'nmea' column on the 'Streams' canvas in BNC's main window. They are customized exactly to the latitude and longitude transmitted to the NTRIP Broadcaster via NMEA-GGA messages.
 <br>If NMEA-GGA messages are not coming from a serial connected GNSS rover, BNC simulates them from the default latitude and longitude of the source-table as shown in the 'lat' and 'long' columns on the 'Streams' canvas. However, in most cases you would probably want to change these defaults according to your requirement. Double-click on 'lat' and 'long' fields, enter the values you wish to send and then hit Enter. The format is in positive north latitude degrees (e.g. for northern hemisphere: 52.436, for southern hemisphere: -24.567) and eastern longitude degrees (example: 358.872 or -1.128). Only streams with a 'yes' in their 'nmea' column can be edited. The position must preferably be a point within the VRS service area of the network. RINEX files generated from these streams will contain an additional COMMENT line in the header beginning with 'NMEA' showing the 'lat' and 'long' used.
-<br>Note that when running BNC in a Local Area Network (LAN), NMEA strings may be blocked by a proxy server, firewall or virus scanner when not using the NTRIP Version 2 transport protocol..
+<br>Note that when running BNC in a Local Area Network (LAN), NMEA strings may be blocked by a proxy server, firewall or virus scanner when not using the NTRIP Version 2 transport protocol.
 </li>
 </ul>
 
@@ -3054,7 +3053,7 @@ The bandwidth consumption per stream is shown in the 'Throughput' tab in bits pe
 </p>
 
 <p><img src="IMG/screenshot08.png"/></p>
-<p><u>Figure 30:</u> Bandwidth consumption of incoming streams.</p>
+<p><u>Figure 31:</u> Bandwidth consumption of incoming streams.</p>
 
 <p><a name="latency"><h4>3.18.3 Latency</h4></p>
 <p>
@@ -3062,7 +3061,7 @@ The latency of observations in each incoming stream is shown in the 'Latency' ta
 </p>
 
 <p><img src="IMG/screenshot07.png"/></p>
-<p><u>Figure 31:</u> Latency of incoming streams.</p>
+<p><u>Figure 32:</u> Latency of incoming streams.</p>
 
 <p><a name="ppptab"><h4>3.18.4 PPP Plot</h4></p>
 <p>
@@ -3070,7 +3069,7 @@ Precise Point Positioning time series of North (red), East (green) and Up (blue)
 </p>
 
 <p><img src="IMG/screenshot13.png"/></p>
-<p><u>Figure 32:</u> Time series plot of PPP session.</p>
+<p><u>Figure 33:</u> Time series plot of PPP session.</p>
 
 <p><a name="bottom"><h4>3.19. Bottom Menu Bar</h4></p>
 <p>
@@ -3078,11 +3077,11 @@ The bottom menu bar allows to add or delete streams to BNC's configuration and t
 </p>
 
 <p><img src="IMG/screenshot06.png"/></p>
-<p><u>Figure 33:</u> Steam input communication links.</p>
+<p><u>Figure 34:</u> Steam input communication links.</p>
 
 <p><a name="streamadd"><h4>3.19.1 Add Stream</h4></p>
 <p>
-Button 'Add Stream' allows you to pull streams either from an NTRIP Broadcaster or from a TCP/IP port, a UPD port, or a serial port.
+Button 'Add Stream' allows you to pull streams either from a NTRIP Broadcaster or from a TCP/IP port, UPD port, or serial port.
 </p>
 
 <p><a name="streamcaster"><h4>3.19.1.1 Add Stream - Coming from Caster</h4></p>
@@ -3103,11 +3102,11 @@ It may be that you are not sure about your NTRIP Broadcasters host and port numb
 </p>
 <p><img src="IMG/screenshot04.png"/></p>
 
-<p><u>Figure 34:</u> Casters table.</p>
+<p><u>Figure 35:</u> Casters table.</p>
 
 <p><a name="streamuser"><h4>3.19.1.1.3 User and Password - mandatory for protected streams</h4></p>
 <p>
-Some streams on NTRIP Broadcasters may be restricted. Enter a valid 'User' ID and 'Password' for access to protected streams. Accounts are usually provided per NTRIP Broadcaster through a registration procedure. Register through <u>http://igs.bkg.bund.de/ntrip/registeruser</u> for access to protected streams from EUREF and IGS.
+Some streams on NTRIP Broadcasters may be restricted. Enter a valid 'User' ID and 'Password' for access to protected streams. Accounts are usually provided per NTRIP Broadcaster through a registration procedure. Register through <u>http://register.rtcm-ntrip.org</u> for access to protected streams from EUREF and IGS.
 </p>
 
 <p><a name="gettable"><h4>3.19.1.1.4 Get Table</h4></p>
@@ -3121,7 +3120,7 @@ The contents of data field 'nmea' tells you whether a stream retrieval needs to 
 Hit 'OK' to return to the main window. If you wish you can click on 'Add Stream' and repeat the process again to retrieve streams from different casters.
 </p>
 <p><img src="IMG/screenshot05.png"/></p>
-<p><u>Figure 35:</u> Broadcaster source-table.</p>
+<p><u>Figure 36:</u> Broadcaster source-table.</p>
 
 <p><a name="ntripv"><h4>3.19.1.1.5 NTRIP Version - mandatory</h4></p>
 <p>
@@ -3151,7 +3150,7 @@ Button 'Map' opens a window to show a distribution map of the caster's streams. 
 </p>
 
 <p><img src="IMG/screenshot24.png"/></p>
-<p><u>Figure 36:</u> Stream distribution map derived from NTRIP Broadcaster source-table.</p>
+<p><u>Figure 37:</u> Stream distribution map derived from NTRIP Broadcaster source-table.</p>
 
 <p><a name="streamip"><h4>3.19.1.2 Add Stream - Coming from TCP/IP Port</h4></p>
 <p>
@@ -3225,7 +3224,7 @@ Streams received from a serial connected GNSS receiver show up with an 'S' (for 
 The following figure shows a BNC example setup for pulling a stream via serial port on a Linux operating system.
 </p>
 <p><img src="IMG/screenshot15.png"/></p>
-<p><u>Figure 37:</u> BNC setup for pulling a stream via serial port.</p>
+<p><u>Figure 38:</u> BNC setup for pulling a stream via serial port.</p>
 
 <p><a name="streamsdelete"><h4>3.19.2 Delete Stream</h4></p>
 <p>
