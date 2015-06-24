@@ -575,10 +575,16 @@ void t_reqcEdit::editEphemerides() {
   // -------------------------
   for (int ii = 0; ii < _ephs.size(); ii++) {
     const t_eph* eph = _ephs[ii];
-    if (_begTime.valid() && eph->TOC() < _begTime) {
+    bncTime begTime = _begTime;
+    bncTime endTime = _endTime;
+    if (eph->type() == t_eph::BDS) {
+      begTime += 14;
+      endTime += 14;
+    }
+    if (begTime.valid() && eph->TOC() < begTime) {
       continue;
     }
-    if (_endTime.valid() && eph->TOC() > _endTime) {
+    if (endTime.valid() && eph->TOC() > endTime) {
       break;
     }
     outNavFile.writeEph(eph);
