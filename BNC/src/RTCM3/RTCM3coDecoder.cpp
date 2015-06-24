@@ -436,6 +436,8 @@ void RTCM3coDecoder::sendResults() {
     satPhaseBias._dispBiasConstistInd = _phaseBias.DispersiveBiasConsistencyIndicator;
     satPhaseBias._MWConsistInd        = _phaseBias.MWConsistencyIndicator;
     satPhaseBias._yawDeg     = _phaseBias.Sat[ii].YawAngle * 180.0 / M_PI;
+    if (satPhaseBias._yawDeg >  180.0) {satPhaseBias._yawDeg -= 180.0;}
+    if (satPhaseBias._yawDeg < -180.0) {satPhaseBias._yawDeg += 180.0;}
     satPhaseBias._yawDegRate = _phaseBias.Sat[ii].YawRate * 180.0 / M_PI;
     for (unsigned jj = 0; jj < _phaseBias.Sat[ii].NumberOfPhaseBiases; jj++) {
       const PhaseBias::PhaseBiasSat::PhaseBiasEntry& biasEntry = _phaseBias.Sat[ii].Biases[jj];
