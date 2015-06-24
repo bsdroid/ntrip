@@ -494,6 +494,7 @@ This chapter describes how to set the BNC program options. It explains the 'Top 
 &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 3.15.8.2 <a href=#upclksp3>SP3</a><br>
 &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 3.15.8.3 <a href=#upclkrnx>RINEX </a><br>
 &nbsp; &nbsp; &nbsp; 3.15.9 <a href=#upcustom>Custom Trafo</a><br>
+&nbsp; &nbsp; &nbsp; 3.15.10 <a href=#upantex>ANTEX File</a><br>
 3.16. <a href=#upeph>Upload Ephemeris</a><br>
 &nbsp; &nbsp; &nbsp; 3.16.1 <a href=#brdcserver>Host &amp; Port</a><br>
 &nbsp; &nbsp; &nbsp; 3.16.2 <a href=#brdcmount>Mountpoint &amp; Password</a><br>
@@ -2884,7 +2885,7 @@ BNC allows to either refer Broadcast Corrections to the satellite's Center of Ma
 Default is an empty option field, meaning that you don't want BNC to save the uploaded stream contents in daily SP3 files.
 </p>
 <p>
-As an SP3 file contents should be referred to the satellites Center of Mass (CoM) while Broadcast Corrections are referred to the satellites APC, an offset has to be applied which is available from an IGS ANTEX file (see section 'ANTEX File'). You should therefore specify the 'ANTEX File' path under tab 'PPP (2)' if you want to save the stream contents in SP3 format. If you don't specify an 'ANTEX File' path there, the SP3 file contents will be referred to the satellites APCs.
+As an SP3 file contents should be referred to the satellites Center of Mass (CoM) while Broadcast Corrections are referred to the satellites APC, an offset has to be applied which is available from an IGS ANTEX file (see option 'ANTEX File' below). Hence you should specify the 'ANTEX File' path there if you want to save the stream contents in SP3 format. If you don't specify an 'ANTEX File' path, the SP3 file contents will be referred to the satellites APCs.
 </p>
 <p>
 The file names for the daily SP3 files follow the convention for SP3 file names. The first three characters of each file name are set to 'BNC'. Note that clocks in the SP3 orbit files are not corrected for the conventional periodic relativistic effect.
@@ -2961,6 +2962,11 @@ The following screenshot shows the encoding and uploading of a stream of precise
 </p>
 <p><img src="IMG/screenshot26.png"/></p>
 <p><u>Figure 29:</u> Producing Broadcast Corrections from incoming precise orbits and clocks and uploading them to an NTRIP Broadcaster.</p>
+
+<p><a name="upantex"><h4>3.15.10 ANTEX File - mantatory if 'SP3 File' is specified</h4></p>
+<p>
+IGS provides a file containing absolute phase center variations for GNSS satellite and receiver antennas in ANTEX format. Entering the full path to such an ANTEX file is required here for referring the SP3 file contents to the satellite's Center of Mass (CoM). If you don't specify a ANTEX file the SP3 file will contain orbit information which is referred to Antenna Phase Center (APC) instead of CoM.
+</p>
 
 <p><a name="upeph"><h4>3.16. Upload Ephemeris</h4></p>
 <p>
@@ -3106,7 +3112,7 @@ It may be that you are not sure about your NTRIP Broadcasters host and port numb
 
 <p><a name="streamuser"><h4>3.19.1.1.3 User and Password - mandatory for protected streams</h4></p>
 <p>
-Some streams on NTRIP Broadcasters may be restricted. Enter a valid 'User' ID and 'Password' for access to protected streams. Accounts are usually provided per NTRIP Broadcaster through a registration procedure. Register through <u>http://register.rtcm-ntrip.org</u> for access to protected streams from EUREF and IGS.
+Streams on NTRIP Broadcasters may be protected. Enter a valid 'User' ID and 'Password' for access to protected streams. Accounts are usually provided per NTRIP Broadcaster through a registration procedure. Register through <u>http://register.rtcm-ntrip.org</u> for access to protected streams from EUREF and IGS.
 </p>
 
 <p><a name="gettable"><h4>3.19.1.1.4 Get Table</h4></p>
@@ -3138,6 +3144,7 @@ If NTRIP Version 2 is supported by the broadcaster:
 </p>
 <ul>
 <li>Try using option '2' if your streams are otherwise blocked by a proxy server operated in front of BNC.</li>
+<li>When using NTRIP Version 2 via SSL (option '2s') you need to specify the appropriate 'Caster port' for that. It's usually port number 443.</li>
 <li>Option 'R' or 'U' may be selected if latency is more important than completeness for your application. Note that the latency reduction is likely to be in the order of 0.5 sec or less. Note further that options 'R' (RTSP/RTP mode) and 'U' (UDP mode) are not accepted by proxy servers and a mobile Internet Service Provider may not support it.</li>
 </ul>
 <p>
@@ -3355,7 +3362,7 @@ EUREF as well as IGS adhere to an open data policy. Streams are made available t
 Once BNC has been started, many of its configuration options cannot be changed as long as it is stopped. See chapter 'Reread Configuration' for on-the-fly configuration exceptions.
 </li>
 <li>
-Drag and drop of configuration file is currently not supported on Mac OS X.
+Drag and drop of configuration files is currently not supported on Mac OS X. On such system you have to start BNC via command line.
 </li>
 
 </ul>
