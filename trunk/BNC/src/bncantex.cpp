@@ -241,7 +241,7 @@ t_irc bncAntex::satCoMcorrection(const QString& prn, double Mjd,
     frqType = t_frequency::R1;
   }
 
-  QMap<QString, t_antMap*>::const_iterator it = _maps.find(prn);
+  QMap<QString, t_antMap*>::const_iterator it = _maps.find(prn.mid(0,3));
   if (it != _maps.end()) {
     t_antMap* map = it.value();
     if (map->frqMap.find(frqType) != map->frqMap.end()) {
