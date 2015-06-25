@@ -384,7 +384,7 @@ void bncComb::slotNewClkCorrections(QList<t_clkCorr> clkCorrections) {
     const t_eph* ephLast = _ephUser.ephLast(prn);
     const t_eph* ephPrev = _ephUser.ephPrev(prn);
     if (ephLast == 0) {
-      emit newMessage("bncComb: eph not found "  + prn.toAscii(), true);
+      emit newMessage("bncComb: eph not found "  + prn.mid(0,3).toAscii(), true);
       delete newCorr;
       continue;
     }
@@ -397,7 +397,7 @@ void bncComb::slotNewClkCorrections(QList<t_clkCorr> clkCorrections) {
         switchToLastEph(ephLast, newCorr);
       }
       else {
-        emit newMessage("bncComb: eph not found "  + prn.toAscii() + 
+        emit newMessage("bncComb: eph not found "  + prn.mid(0,3).toAscii() +
                         QString(" %1").arg(newCorr->_iod).toAscii(), true);
         delete newCorr;
         continue;
@@ -622,13 +622,13 @@ t_irc bncComb::processEpoch_filter(QTextStream& out,
     out.setRealNumberPrecision(3);  
     out << _resTime.datestr().c_str() << " " << _resTime.timestr().c_str()
         << " Maximum Residuum " << maxRes << ' '
-        << corrs()[maxResIndex-1]->_acName << ' ' << corrs()[maxResIndex-1]->_prn;
+        << corrs()[maxResIndex-1]->_acName << ' ' << corrs()[maxResIndex-1]->_prn.mid(0,3);
     if (maxRes > _MAXRES) {
       for (int iPar = 1; iPar <= _params.size(); iPar++) {
         cmbParam* pp = _params[iPar-1];
         if (pp->type == cmbParam::offACSat            && 
             pp->AC   == corrs()[maxResIndex-1]->_acName &&
-            pp->prn  == corrs()[maxResIndex-1]->_prn) { 
+            pp->prn  == corrs()[maxResIndex-1]->_prn.mid(0,3)) {
           QQ_sav.Row(iPar)    = 0.0;
           QQ_sav.Column(iPar) = 0.0;
           QQ_sav(iPar,iPar)   = pp->sig0 * pp->sig0;
@@ -647,7 +647,7 @@ t_irc bncComb::processEpoch_filter(QTextStream& out,
     	const cmbCorr* corr = corrs()[ii];
         out << _resTime.datestr().c_str() << ' '
             << _resTime.timestr().c_str() << " "
-            << corr->_acName << ' ' << corr->_prn;
+            << corr->_acName << ' ' << corr->_prn.mid(0,3);
         out.setFieldWidth(10);
         out <<  " res = " << vv[ii] << endl;
         out.setFieldWidth(0);
@@ -677,7 +677,7 @@ void bncComb::printResults(QTextStream& out,
       out << _resTime.datestr().c_str() << " " 
           << _resTime.timestr().c_str() << " ";
       out.setFieldWidth(3);
-      out << "Full Clock " << corr->_prn << " " << corr->_iod << " ";
+      out << "Full Clock " << corr->_prn.mid(0,3) << " " << corr->_iod << " ";
       out.setFieldWidth(14);
       out << (xc(4) + corr->_dClkResult) * t_CST::c << endl;
       out.setFieldWidth(0);
@@ -1025,7 +1025,7 @@ t_irc bncComb::processEpoch_singleEpoch(QTextStream& out,
         const cmbCorr* corr = corrs()[ii];
         out << _resTime.datestr().c_str() << ' ' 
             << _resTime.timestr().c_str() << " "
-            << corr->_acName << ' ' << corr->_prn;
+            << corr->_acName << ' ' << corr->_prn.mid(0,3);
         out.setFieldWidth(6);
         out << " res = " << vv[ii] << endl;
         out.setFieldWidth(0);
@@ -1055,12 +1055,12 @@ t_irc bncComb::checkOrbits(QTextStream& out) {
     const t_eph* ephPrev = _ephUser.ephPrev(prn);
 
     if      (ephLast == 0) {
-      out << "checkOrbit: missing eph (not found) " << corr->_prn << endl;
+      out << "checkOrbit: missing eph (not found) " << corr->_prn.mid(0,3) << endl;
       delete corr;
       im.remove();
     }
     else if (corr->_eph == 0) {
-      out << "checkOrbit: missing eph (zero) " << corr->_prn << endl;
+      out << "checkOrbit: missing eph (zero) " << corr->_prn.mid(0,3) << endl;
       delete corr;
       im.remove();
     }
@@ -1069,7 +1069,7 @@ t_irc bncComb::checkOrbits(QTextStream& out) {
         switchToLastEph(ephLast, corr);
       }
       else {
-        out << "checkOrbit: missing eph (deleted) " << corr->_prn << endl;
+        out << "checkOrbit: missing eph (deleted) " << corr->_prn.mid(0,3) << endl;
         delete corr;
         im.remove();
       }
