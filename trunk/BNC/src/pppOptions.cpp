@@ -61,11 +61,15 @@ t_pppOptions::~t_pppOptions() {
 // 
 //////////////////////////////////////////////////////////////////////////////
 const std::vector<t_lc::type>& t_pppOptions::LCs(char system) const {
+
   if      (system == 'R') {
     return _LCsGLONASS;
   }
   else if (system == 'E') {
     return _LCsGalileo;
+  }
+  else if (system == 'C') {
+    return  _LCsBDS;
   }
   else {
     return _LCsGPS;
@@ -90,6 +94,7 @@ vector<char> t_pppOptions::systems() const {
   if (_LCsGPS.size()     > 0) answ.push_back('G');
   if (_LCsGLONASS.size() > 0) answ.push_back('R');
   if (_LCsGalileo.size() > 0) answ.push_back('E');
+  if (_LCsBDS.size()     > 0) answ.push_back('C');
   return answ;
 }
 
