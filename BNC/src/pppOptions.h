@@ -48,11 +48,13 @@ class t_pppOptions {
   double                  _noiseClk;
   double                  _aprSigTrp;
   double                  _noiseTrp;
+  int                     _nmeaPort;
   double                  _aprSigAmb;
   double                  _seedingTime;
   std::vector<t_lc::type> _LCsGPS;
   std::vector<t_lc::type> _LCsGLONASS;
   std::vector<t_lc::type> _LCsGalileo;
+  std::vector<t_lc::type> _LCsBDS;
 };
 
 }
