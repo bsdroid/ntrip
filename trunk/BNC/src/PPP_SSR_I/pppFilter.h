@@ -63,10 +63,12 @@ class t_satData {
   double       P1;
   double       P2;
   double       P5;
+  double       P7;
   double       P3;
   double       L1;
   double       L2;
   double       L5;
+  double       L7;
   double       L3;
   ColumnVector xx;
   ColumnVector vv;

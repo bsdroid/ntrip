@@ -91,9 +91,11 @@ void t_pppClient::processEpoch(const vector<t_satObs*>& satObs, t_output* output
     satData->P1       = 0.0;
     satData->P2       = 0.0;
     satData->P5       = 0.0;
+    satData->P7       = 0.0;
     satData->L1       = 0.0;
     satData->L2       = 0.0;
     satData->L5       = 0.0;
+    satData->L7       = 0.0;
     for (unsigned ifrq = 0; ifrq < obs->_obs.size(); ifrq++) {
       t_frqObs* frqObs = obs->_obs[ifrq];
       if      (frqObs->_rnxType2ch[0] == '1') {
@@ -111,6 +113,11 @@ void t_pppClient::processEpoch(const vector<t_satObs*>& satObs, t_output* output
         if (frqObs->_phaseValid) satData->L5       = frqObs->_phase;
         if (frqObs->_slip)       satData->slipFlag = true;
       }
+      else if (frqObs->_rnxType2ch[0] == '7') {
+              if (frqObs->_codeValid)  satData->P7       = frqObs->_code;
+              if (frqObs->_phaseValid) satData->L7       = frqObs->_phase;
+              if (frqObs->_slip)       satData->slipFlag = true;
+            }
     }
     putNewObs(satData);
   }
@@ -238,6 +245,29 @@ void t_pppClient::putNewObs(t_satData* satData) {
       satData->lambda3 = a1 * t_CST::c / f1 + a5 * t_CST::c / f5;
       satData->lkA     = a1;
       satData->lkB     = a5;
+      _epoData->satData[satData->prn] = satData;
+    }
+    else {
+      delete satData;
+    }
+  }
+
+  // Set Observations BDS
+  // ---------------------
+  else if (satData->system() == 'C' && _opt->useSystem('C')) {
+    if (satData->P2 != 0.0 && satData->P7 != 0.0 &&
+        satData->L2 != 0.0 && satData->L7 != 0.0 ) {
+      double f2 = t_CST::freq(t_frequency::C2, 0);
+      double f7 = t_CST::freq(t_frequency::C7, 0);
+      double a2 =   f2 * f2 / (f2 * f2 - f7 * f7);
+      double a7 = - f7 * f7 / (f2 * f2 - f7 * f7);
+      satData->L2      = satData->L2 * t_CST::c / f2;
+      satData->L7      = satData->L7 * t_CST::c / f7;
+      satData->P3      = a2 * satData->P2 + a7 * satData->P7;
+      satData->L3      = a2 * satData->L2 + a7 * satData->L7;
+      satData->lambda3 = a2 * t_CST::c / f2 + a7 * t_CST::c / f7;
+      satData->lkA     = a2;
+      satData->lkB     = a7;
       _epoData->satData[satData->prn] = satData;
     }
     else {
