@@ -97,6 +97,9 @@ t_pppRun::t_pppRun(const t_pppOptions* opt) {
     connect(BNC_CORE, SIGNAL(newGalileoEph(t_ephGal)),
             this, SLOT(slotNewGalileoEph(t_ephGal)),conType);
 
+    connect(BNC_CORE, SIGNAL(newBDSEph(t_ephBDS)),
+            this, SLOT(slotNewBDSEph(t_ephBDS)),conType);
+
     connect(BNC_CORE, SIGNAL(newOrbCorrections(QList<t_orbCorr>)),
             this, SLOT(slotNewOrbCorrections(QList<t_orbCorr>)),conType);
 
@@ -193,6 +196,13 @@ void t_pppRun::slotNewGlonassEph(t_ephGlo eph) {
 // 
 ////////////////////////////////////////////////////////////////////////////
 void t_pppRun::slotNewGalileoEph(t_ephGal eph) {
+  QMutexLocker locker(&_mutex);
+  _pppClient->putEphemeris(&eph);
+}
+
+//
+////////////////////////////////////////////////////////////////////////////
+void t_pppRun::slotNewBDSEph(t_ephBDS eph) {
   QMutexLocker locker(&_mutex);
   _pppClient->putEphemeris(&eph);
 }

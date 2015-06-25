@@ -38,6 +38,7 @@ class t_pppRun : public QObject {
   void slotNewGPSEph(t_ephGPS);
   void slotNewGlonassEph(t_ephGlo);
   void slotNewGalileoEph(t_ephGal);
+  void slotNewBDSEph(t_ephBDS);
   void slotNewOrbCorrections(QList<t_orbCorr> orbCorr);
   void slotNewClkCorrections(QList<t_clkCorr> clkCorr);
   void slotNewCodeBiases(QList<t_satCodeBias> codeBiases);
