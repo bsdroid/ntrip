@@ -159,9 +159,34 @@ void t_pppClient::processEpoch(const vector<t_satObs*>& satObs, t_output* output
 ////////////////////////////////////////////////////////////////////////////
 void t_pppClient::putNewObs(t_satData* satData) {
 
-  // Set Observations GPS and Glonass
-  // --------------------------------
-  if      (satData->system() == 'G' || satData->system() == 'R') {
+  // Set Observations GPS
+  // --------------------
+  if      (satData->system() == 'G') {
+    if (satData->P1 != 0.0 && satData->P2 != 0.0 &&
+        satData->L1 != 0.0 && satData->L2 != 0.0 ) {
+      t_frequency::type fType1 = t_lc::toFreq(satData->system(), t_lc::l1);
+      t_frequency::type fType2 = t_lc::toFreq(satData->system(), t_lc::l2);
+      double f1 = t_CST::freq(fType1, 0);
+      double f2 = t_CST::freq(fType2, 0);
+      double a1 =   f1 * f1 / (f1 * f1 - f2 * f2);
+      double a2 = - f2 * f2 / (f1 * f1 - f2 * f2);
+      satData->L1      = satData->L1 * t_CST::c / f1;
+      satData->L2      = satData->L2 * t_CST::c / f2;
+      satData->P3      = a1 * satData->P1 + a2 * satData->P2;
+      satData->L3      = a1 * satData->L1 + a2 * satData->L2;
+      satData->lambda3 = a1 * t_CST::c / f1 + a2 * t_CST::c / f2;
+      satData->lkA     = a1;
+      satData->lkB     = a2;
+      _epoData->satData[satData->prn] = satData;
+    }
+    else {
+      delete satData;
+    }
+  }
+
+  // Set Observations Glonass
+  // ------------------------
+  if      (satData->system() == 'R' && _opt->useSystem('R')) {
     if (satData->P1 != 0.0 && satData->P2 != 0.0 && 
         satData->L1 != 0.0 && satData->L2 != 0.0 ) {
 
@@ -199,7 +224,7 @@ void t_pppClient::putNewObs(t_satData* satData) {
 
   // Set Observations Galileo
   // ------------------------
-  else if (satData->system() == 'E') {
+  else if (satData->system() == 'E' && _opt->useSystem('E')) {
     if (satData->P1 != 0.0 && satData->P5 != 0.0 && 
         satData->L1 != 0.0 && satData->L5 != 0.0 ) {
       double f1 = t_CST::freq(t_frequency::E1, 0);
