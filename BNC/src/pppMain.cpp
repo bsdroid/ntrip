@@ -123,7 +123,6 @@ void t_pppMain::readOptions() {
 
   _logFile  = settings.value("PPP/logFilePPP").toString();
   _nmeaFile = settings.value("PPP/nmeaFile").toString();
-  _nmeaPort = settings.value("PPP/nmeaPort").toInt();
   _snxtroFile = settings.value("PPP/snxtroFile").toString();
   _snxtroSampling = settings.value("PPP/snxtroSampl").toInt();
 
@@ -142,7 +141,7 @@ void t_pppMain::readOptions() {
   while (iSta.hasNext()) {
     QStringList hlp = iSta.next().split(",");
 
-    if (hlp.size() < 9) {
+    if (hlp.size() < 10) {
       throw t_except("pppMain: wrong option staTable");
     }
 
@@ -158,6 +157,7 @@ void t_pppMain::readOptions() {
     opt->_noiseCrd[2]  = hlp[6].toDouble();
     opt->_aprSigTrp    = hlp[7].toDouble();
     opt->_noiseTrp     = hlp[8].toDouble();
+    opt->_nmeaPort     = hlp[9].toInt();
 
     if (_realTime) {
       opt->_corrMount = settings.value("PPP/corrMount").toString().toAscii().data();
@@ -206,6 +206,17 @@ void t_pppMain::readOptions() {
     else if (settings.value("PPP/lcGalileo").toString() == "P3&L3") {
       opt->_LCsGalileo.push_back(t_lc::cIF);
       opt->_LCsGalileo.push_back(t_lc::lIF);
+    }
+
+    if      (settings.value("PPP/lcBDS").toString() == "P3") {
+      opt->_LCsBDS.push_back(t_lc::cIF);
+    }
+    else if (settings.value("PPP/lcBDS").toString() == "L3") {
+      opt->_LCsBDS.push_back(t_lc::lIF);
+    }
+    else if (settings.value("PPP/lcBDS").toString() == "P3&L3") {
+      opt->_LCsBDS.push_back(t_lc::cIF);
+      opt->_LCsBDS.push_back(t_lc::lIF);
     }
 
     // Information from the coordinate file
