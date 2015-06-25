@@ -186,7 +186,7 @@ void t_pppClient::putNewObs(t_satData* satData) {
 
   // Set Observations Glonass
   // ------------------------
-  if      (satData->system() == 'R' && _opt->useSystem('R')) {
+  else if (satData->system() == 'R' && _opt->useSystem('R')) {
     if (satData->P1 != 0.0 && satData->P2 != 0.0 && 
         satData->L1 != 0.0 && satData->L2 != 0.0 ) {
 
