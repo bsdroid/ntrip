@@ -232,10 +232,10 @@ void t_pppFilter::reset() {
   }
   if (OPT->useSystem('E')) {
     _params.push_back(new t_pppParam(t_pppParam::GALILEO_OFFSET, ++nextPar, ""));
-  }/*
+  }
   if (OPT->useSystem('C')) {
     _params.push_back(new t_pppParam(t_pppParam::BDS_OFFSET, ++nextPar, ""));
-  }*/
+  }
 
   _QQ.ReSize(_params.size()); 
   _QQ = 0.0;
@@ -527,8 +527,10 @@ void t_pppFilter::predict(int iPhase, t_epoData* epoData) {
         _QQ(iPar,iPar) += 0.1 * 0.1;
       }
 
+      // BDS Offset
+      // ----------
       else if (pp->type == t_pppParam::BDS_OFFSET) {
-        _QQ(iPar,iPar) += 0.1 * 0.1;//TODO
+       _QQ(iPar,iPar) += 0.1 * 0.1; //TODO 
       }
     }
   }
@@ -725,16 +727,16 @@ QString t_pppFilter::outlierDetection(int iPhase, const ColumnVector& vv,
 
   if      (iPhase == 1) {
     if      (maxResGlo > 2.98 * OPT->_maxResL1) { 
-      LOG << "Outlier Phase " << prnGlo.toAscii().data() << ' ' << maxResGlo << endl;
+      LOG << "Outlier Phase " << prnGlo.mid(0,3).toAscii().data() << ' ' << maxResGlo << endl;
       return prnGlo;
     }
     else if (maxResGPS > 2.98 * OPT->_maxResL1) { 
-      LOG << "Outlier Phase " << prnGPS.toAscii().data() << ' ' << maxResGPS << endl;
+      LOG << "Outlier Phase " << prnGPS.mid(0,3).toAscii().data() << ' ' << maxResGPS << endl;
       return prnGPS;
     }
   }
   else if (iPhase == 0 && maxResGPS > 2.98 * OPT->_maxResC1) {
-    LOG << "Outlier Code  " << prnGPS.toAscii().data() << ' ' << maxResGPS << endl;
+    LOG << "Outlier Code  " << prnGPS.mid(0,3).toAscii().data() << ' ' << maxResGPS << endl;
     return prnGPS;
   }
 
