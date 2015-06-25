@@ -83,10 +83,13 @@ class t_lc {
       if      (sys == 'G') return t_frequency::G1;
       else if (sys == 'R') return t_frequency::R1;
       else if (sys == 'E') return t_frequency::E1;
+      else if (sys == 'C') return t_frequency::C2;
       else                 return t_frequency::dummy;
     case l2: case c2:
       if      (sys == 'G') return t_frequency::G2;
       else if (sys == 'R') return t_frequency::R2;
+      else if (sys == 'E') return t_frequency::E5;
+      else if (sys == 'C') return t_frequency::C7;
       else                 return t_frequency::dummy;
     case lIF: case cIF: case MW: case CL: 
       return t_frequency::dummy;
