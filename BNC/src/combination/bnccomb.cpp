@@ -449,7 +449,7 @@ void bncComb::switchToLastEph(const t_eph* lastEph, cmbCorr* corr) {
   ColumnVector dDotRAO(3);
   XYZ_to_RSW(newXC.Rows(1,3), newVV, dV, dDotRAO);
 
-  QString msg = "switch corr " + corr->_prn 
+  QString msg = "switch corr " + corr->_prn.mid(0,3)
     + QString(" %1 -> %2 %3").arg(corr->_iod,3).arg(lastEph->IOD(),3).arg(dC*t_CST::c, 8, 'f', 4);
 
   emit newMessage(msg.toAscii(), false);
@@ -1149,7 +1149,7 @@ t_irc bncComb::checkOrbits(QTextStream& out) {
               << _resTime.timestr().c_str()    << " "
               << "Orbit Outlier: " 
               << corr->_acName.toAscii().data() << " " 
-              << prn.toAscii().data()           << " "
+              << prn.mid(0,3).toAscii().data()           << " "
               << corr->_iod                     << " " 
               << norm                           << endl;
           delete corr;
