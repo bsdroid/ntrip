@@ -130,7 +130,7 @@ class t_epoData {
 class t_pppParam {
  public:
   enum parType {CRD_X, CRD_Y, CRD_Z, RECCLK, TROPO, AMB_L3, 
-                GLONASS_OFFSET, GALILEO_OFFSET};
+                GLONASS_OFFSET, GALILEO_OFFSET, BDS_OFFSET};
   t_pppParam(parType typeIn, int indexIn, const QString& prn);
   ~t_pppParam();
   double partial(t_satData* satData, bool phase);
@@ -196,7 +196,15 @@ class t_pppFilter {
     }
     return 0.0;
   }
-
+  double Bds_offset() const {
+    for (int ii = 0; ii < _params.size(); ++ii) {
+      t_pppParam* pp = _params[ii];
+      if (pp->type == t_pppParam::BDS_OFFSET) {
+        return pp->xx;
+      }
+    }
+    return 0.0;
+  }
  private:
   void   reset();
   t_irc  cmpBancroft(t_epoData* epoData);

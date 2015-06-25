@@ -58,6 +58,7 @@ const double   MAXRES_CODE           = 2.98 * 3.0;
 const double   MAXRES_PHASE_GPS      = 2.98 * 0.03;
 const double   MAXRES_PHASE_GLONASS  = 2.98 * 0.03;
 const double   GLONASS_WEIGHT_FACTOR = 1.0;
+const double   BDS_WEIGHT_FACTOR     = 2.0;
 
 #define LOG (_pppClient->log())
 #define OPT (_pppClient->opt())
@@ -124,6 +125,17 @@ double t_pppParam::partial(t_satData* satData, bool phase) {
   // --------------
   else if (type == GALILEO_OFFSET) {
     if (satData->prn[0] == 'E') {
+      return 1.0;
+    }
+    else {
+      return 0.0;
+    }
+  }
+
+  // BDS Offset
+  // ----------
+  else if (type == BDS_OFFSET) {
+    if (satData->prn[0] == 'C') {
       return 1.0;
     }
     else {
@@ -220,7 +232,10 @@ void t_pppFilter::reset() {
   }
   if (OPT->useSystem('E')) {
     _params.push_back(new t_pppParam(t_pppParam::GALILEO_OFFSET, ++nextPar, ""));
-  }
+  }/*
+  if (OPT->useSystem('C')) {
+    _params.push_back(new t_pppParam(t_pppParam::BDS_OFFSET, ++nextPar, ""));
+  }*/
 
   _QQ.ReSize(_params.size()); 
   _QQ = 0.0;
@@ -241,6 +256,9 @@ void t_pppFilter::reset() {
       _QQ(iPar,iPar) = 1000.0 * 1000.0;
     }
     else if (pp->type == t_pppParam::GALILEO_OFFSET) {
+      _QQ(iPar,iPar) = 1000.0 * 1000.0;
+    }
+    else if (pp->type == t_pppParam::BDS_OFFSET) {
       _QQ(iPar,iPar) = 1000.0 * 1000.0;
     }
   }
@@ -339,7 +357,11 @@ double t_pppFilter::cmpValue(t_satData* satData, bool phase) {
     //frqA = t_frequency::E1; as soon as available
     //frqB = t_frequency::E5; -"-
   }
-
+  else if (satData->prn[0] == 'C') {
+    offset = Bds_offset();
+    //frqA = t_frequency::C2; as soon as available
+    //frqB = t_frequency::C7; -"-
+  }
   double phaseCenter = 0.0;
   if (_antex) { 
     bool found;
@@ -504,12 +526,17 @@ void t_pppFilter::predict(int iPhase, t_epoData* epoData) {
       else if (pp->type == t_pppParam::GALILEO_OFFSET) {
         _QQ(iPar,iPar) += 0.1 * 0.1;
       }
+
+      else if (pp->type == t_pppParam::BDS_OFFSET) {
+        _QQ(iPar,iPar) += 0.1 * 0.1;//TODO
+      }
     }
   }
 
   // Add New Ambiguities if necessary
   // --------------------------------
-  if (OPT->ambLCs('G').size() || OPT->ambLCs('R').size() || OPT->ambLCs('E').size()) {
+  if (OPT->ambLCs('G').size() || OPT->ambLCs('R').size() ||
+      OPT->ambLCs('E').size() || OPT->ambLCs('C').size()) {
 
     // Make a copy of QQ and xx, set parameter indices
     // -----------------------------------------------
@@ -632,6 +659,11 @@ t_irc t_pppFilter::update(t_epoData* epoData) {
     else if (par->type == t_pppParam::GALILEO_OFFSET) {
       LOG << "\n    offGal  = " << setw(10) << setprecision(3) << par->xx 
           << " +- " << setw(6) << setprecision(3) 
+          << sqrt(_QQ(par->index,par->index));
+    }
+    else if (par->type == t_pppParam::BDS_OFFSET) {
+      LOG << "\n    offBds  = " << setw(10) << setprecision(3) << par->xx
+          << " +- " << setw(6) << setprecision(3)
           << sqrt(_QQ(par->index,par->index));
     }
   }
@@ -856,6 +888,9 @@ void t_pppFilter::addObs(int iPhase, unsigned& iObs, t_satData* satData,
     if (satData->system() == 'R') {
       sigL3 *= GLONASS_WEIGHT_FACTOR;
     }
+    if  (satData->system() == 'C') {
+      sigL3 *= BDS_WEIGHT_FACTOR;
+    }
     PP(iObs,iObs) = 1.0 / (sigL3 * sigL3) / (ellWgtCoef * ellWgtCoef);
     for (int iPar = 1; iPar <= _params.size(); iPar++) {
       if (_params[iPar-1]->type == t_pppParam::AMB_L3 &&
@@ -965,7 +1000,7 @@ t_irc t_pppFilter::update_p(t_epoData* epoData) {
     // First update using code observations, then phase observations
     // -------------------------------------------------------------      
     bool usePhase = OPT->ambLCs('G').size() || OPT->ambLCs('R').size() ||
-                    OPT->ambLCs('E').size();
+                    OPT->ambLCs('E').size() || OPT->ambLCs('C').size() ;
 
     for (int iPhase = 0; iPhase <= (usePhase ? 1 : 0); iPhase++) {
     
