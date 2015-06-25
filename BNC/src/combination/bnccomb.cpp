@@ -311,7 +311,7 @@ void bncComb::slotNewClkCorrections(QList<t_clkCorr> clkCorrections) {
   for (int ii = 0; ii < clkCorrections.size(); ii++) {
     t_clkCorr& clkCorr = clkCorrections[ii];
     QString    staID(clkCorr._staID.c_str());
-    QString    prn(clkCorr._prn.toString().c_str());
+    QString    prn(clkCorr._prn.toInternalString().c_str());
 
     // Set the last time
     // -----------------
