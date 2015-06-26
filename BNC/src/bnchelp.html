@@ -1533,7 +1533,7 @@ The second record in this block provides the following consistency information:
 Following records provide satellite specific information:
 <ul>
 <li>GNSS Indicator and Satellite Vehicle Pseudo Random Number</li>
-<li>Yaw angle [&deg;], restricted to be in [-180&deg, 180&deg]</li>
+<li>Yaw angle [&deg;], restricted to be in [0&deg, 360&deg]</li>
 <li>Yaw rate [&deg;/s]</li>
 <li>Number of phase biases in this record, succeeded by phase specific information:</li>
 <ul>
@@ -2627,7 +2627,7 @@ The following satellite specific keys and values are currently specified in BNC:
 <tr><td>Vel</td><td>Satellite velocity in meters per second</td></tr>
 <tr><td>CoM</td><td>Satellite Center of Mass coordinates in meters</td></tr>
 <tr><td>CodeBias</td><td>Satellite Code Biases in meters with two characters for frequency and tracking mode per bias as defined in RINEX 3 and preceded by total number of biases</td></tr>
-<tr><td>YawAngle</td><td>Satellite Yaw Angle in radian, restricted to be in [-&#960, &#960], which shall be used for the computation of phase wind-up correction</td></tr>
+<tr><td>YawAngle</td><td>Satellite Yaw Angle in radian, restricted to be in [0, 2&#960], which shall be used for the computation of phase wind-up correction</td></tr>
 <tr><td>YawRate</td><td>Satellite Yaw Rate in radian per second, which is the rate of Yaw Angle</td></tr>
 <tr><td>PhaseBias</td><td>Satellite Phase Biases in meters with two characters for frequency and tracking mode per bias as defined in RINEX 3, preceded by total number of biases and followed by Signal Wilde-Lane Integer Indicator as well as Signal Discontinuity Counter</td></tr>
 </table>
