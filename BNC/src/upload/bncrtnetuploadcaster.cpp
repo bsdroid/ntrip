@@ -485,6 +485,12 @@ void bncRtnetUploadCaster::decodeRtnetStream(char* buffer, int bufLen) {
         }
         else if (key == "YawAngle") {
           in >> numVal >> pbSat.yA;
+          if      (pbSat.yA < 0.0) {
+            pbSat.yA += (2*M_PI);
+          }
+          else if (pbSat.yA > 2*M_PI) {
+            pbSat.yA -= (2*M_PI);
+          }
         }
         else if (key == "YawRate") {
           in >> numVal >> pbSat.yR;
