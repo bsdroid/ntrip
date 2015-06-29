@@ -153,7 +153,12 @@ t_irc bncEphUser::putNewEph(t_eph* eph, bool check) {
 
   const t_eph* ephOld = ephLast(prn);
 
-  if (ephOld == 0 || newEph->isNewerThan(ephOld)) {
+  if (ephOld && ephOld->checkState() == t_eph::bad) {
+    ephOld = 0;
+  }
+  
+  if ((ephOld == 0 || newEph->isNewerThan(ephOld)) &&
+      eph->checkState() != t_eph::bad) {
     deque<t_eph*>& qq = _eph[prn];
     qq.push_back(newEph);
     if (qq.size() > _maxQueueSize) {
@@ -195,6 +200,45 @@ void bncEphUser::checkEphemeris(t_eph* eph) {
     return;
   }
 
+  // Check whether the epoch is too far away the current time
+  // --------------------------------------------------------
+  bncTime   toc = eph->TOC();
+  QDateTime now = currentDateAndTimeGPS();
+  bncTime currentTime(now.toString(Qt::ISODate).toStdString());
+  double timeDiff = fabs(toc - currentTime);
+
+  if      (eph->type() == t_eph::GPS  || t_eph::Galileo) {
+    if (timeDiff > 4*3600) { // data sets are valid for 4 hours
+      eph->setCheckState(t_eph::bad);
+      return;
+    }
+  }
+  else if (eph->type() == t_eph::GLONASS) {
+    if (timeDiff > 1*3600) { // updated every 30 minutes
+      eph->setCheckState(t_eph::bad);
+      return;
+    }
+  }
+  else if (eph->type() == t_eph::QZSS) {
+    if (timeDiff > 1*3600) {
+      eph->setCheckState(t_eph::bad);
+      return;
+    }
+  }
+  else if (eph->type() == t_eph::SBAS) {
+    if (timeDiff > 300) { // maximum update interval
+      eph->setCheckState(t_eph::bad);
+      return;
+    }
+  }
+  else if (eph->type() == t_eph::BDS) {
+    if (timeDiff > 6*3600) { // updates 1 (GEO) up to 6 hours
+      eph->setCheckState(t_eph::bad);
+      return;
+    }
+  }
+
+
   // Check consistency with older ephemerides
   // ----------------------------------------
   const double MAXDIFF = 1000.0;
@@ -208,8 +252,28 @@ void bncEphUser::checkEphemeris(t_eph* eph) {
     double dt   = eph->TOC() - ephL->TOC();
     double diff = (xc.Rows(1,3) - xcL.Rows(1,3)).norm_Frobenius();
 
+    // some lines to allow update of ephemeris data sets after outage
+    if      ((eph->type() == t_eph::GPS ||
+              eph->type() == t_eph::Galileo)  && dt > 4*3600) {
+      ephL->setCheckState(t_eph::bad);
+      return;
+    }
+    else if ((eph->type() == t_eph::GLONASS ||
+              eph->type() == t_eph::QZSS)     && dt > 2*3600) {
+      ephL->setCheckState(t_eph::bad);
+      return;
+    }
+    else if  (eph->type() == t_eph::SBAS      && dt > 1*3600)   {
+      ephL->setCheckState(t_eph::bad);
+      return;
+    }
+    else if  (eph->type() == t_eph::BDS       && dt > 6*3600)   {
+      ephL->setCheckState(t_eph::bad);
+      return;
+    }
+
     if (diff < MAXDIFF) {
-      if(dt != 0.0) {
+      if (dt != 0.0) {
         eph->setCheckState(t_eph::ok);
         ephL->setCheckState(t_eph::ok);
       }

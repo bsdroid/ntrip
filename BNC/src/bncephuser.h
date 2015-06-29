@@ -31,6 +31,7 @@
 
 #include "bncconst.h"
 #include "bnctime.h"
+#include "bncutils.h"
 #include "ephemeris.h"
 
 class bncEphUser : public QObject {
