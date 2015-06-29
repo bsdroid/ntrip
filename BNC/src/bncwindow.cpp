@@ -2283,18 +2283,11 @@ void bncWindow::slotBncTextChanged(){
   // Enable/disable Broadcast Ephemerides
   // ------------------------------------
   if (sender() == 0 || sender() == _uploadEphHostLineEdit) {
-    if (!_uploadEphHostLineEdit->text().isEmpty()) {
-      enableWidget(enable, _uploadEphPortLineEdit);
-      enableWidget(enable, _uploadEphMountpointLineEdit);
-      enableWidget(enable, _uploadEphPasswordLineEdit);
-      enableWidget(enable, _uploadEphSampleSpinBox);
-    } 
-    else {
-      enableWidget(false, _uploadEphPortLineEdit);
-      enableWidget(false, _uploadEphMountpointLineEdit);
-      enableWidget(false, _uploadEphPasswordLineEdit);
-      enableWidget(false, _uploadEphSampleSpinBox);
-    }
+    enable = !_uploadEphHostLineEdit->text().isEmpty();
+    enableWidget(enable, _uploadEphPortLineEdit);
+    enableWidget(enable, _uploadEphMountpointLineEdit);
+    enableWidget(enable, _uploadEphPasswordLineEdit);
+    enableWidget(enable, _uploadEphSampleSpinBox);
   }
 
   // Combine Corrections
