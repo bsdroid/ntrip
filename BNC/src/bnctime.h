@@ -52,8 +52,8 @@ class bncTime {
    * @param month month in year (1..12)
    * @param day day of month (1..31)
    * @param hour hour of day (0..23)
-   * @param min minute of hopur (0..59)
-   * @param sec second of minutte (0..59,60)
+   * @param min minute of hour (0..59)
+   * @param sec second of minute (0..59,60)
    * @return reference to current instance
    */
   bncTime &setBDS (int year, int month, int day, int hour, int min, double sec);
