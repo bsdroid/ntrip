@@ -330,7 +330,6 @@ void t_pppRun::slotNewOrbCorrections(QList<t_orbCorr> orbCorr) {
   vector<t_orbCorr*> corrections;
   for (int ii = 0; ii < orbCorr.size(); ii++) {
     corrections.push_back(new t_orbCorr(orbCorr[ii]));
-    _lastClkCorrTime = orbCorr[ii]._time;
   }
 
   _pppClient->putOrbCorrections(corrections); 
@@ -351,8 +350,8 @@ void t_pppRun::slotNewClkCorrections(QList<t_clkCorr> clkCorr) {
   vector<t_clkCorr*> corrections;
   for (int ii = 0; ii < clkCorr.size(); ii++) {
     corrections.push_back(new t_clkCorr(clkCorr[ii]));
+    _lastClkCorrTime = clkCorr[ii]._time;
   }
-
   _pppClient->putClkCorrections(corrections); 
 }
 
