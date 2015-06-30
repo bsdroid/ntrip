@@ -907,11 +907,11 @@ bncWindow::bncWindow() {
 
   _pppWidgets._corrFile->setWhatsThis(tr("<p>Specify the Broadcast Ephemeris Corrections file(s) as saved beforehand using BNC.</p><p>If you don't specify corrections through this option, BNC will fall back to Single Point Positioning (SPP, positioning from RINEX Obs and RINEX Nav files only) instead of doing PPP.</p>"));
 
-  _pppWidgets._logFile->setWhatsThis(tr("<p>Specify the path to daily PPP logfiles using e.g. the following syntax (example):</p><p> ./PPP_$(STATION)_$(DATE).log</p><p>BNC will produce one daily PPP logfile per station. Variable $(STATION) stands for the affected station and $(DATE) stands for the date.</p>"));
+  _pppWidgets._logFile->setWhatsThis(tr("<p>Specify the path to daily PPP logfiles using e.g. the following syntax (example):</p><p> ./PPP_${STATION}_${DATE}.log</p><p>BNC will produce one daily PPP logfile per station. Variable ${STATION} stands for the affected station and ${DATE} stands for the date.</p>"));
 
-  _pppWidgets._nmeaFile->setWhatsThis(tr("<p>Specify the path to daily NMEA files using e.g. the following syntax (example):</p><p> ./PPP_$(STATION)_$(DATE).nmea</p><p>BNC will produce one daily NMEA file per station, mainly to save NMEA GGA sentences from the PPP solution. Variable $(STATION) stands for the affected station and $(DATE) stands for the date.</p>"));
+  _pppWidgets._nmeaFile->setWhatsThis(tr("<p>Specify the path to daily NMEA files using e.g. the following syntax (example):</p><p> ./PPP_${STATION}_${DATE}.nmea</p><p>BNC will produce one daily NMEA file per station, mainly to save NMEA GGA sentences from the PPP solution. Variable ${STATION} stands for the affected station and ${DATE} stands for the date.</p>"));
 
-  _pppWidgets._snxtroFile->setWhatsThis(tr("<p>Specify the path to daily SINEX Troposphere files using e.g. the following syntax (example):</p><p> ./PPP_$(STATION)_$(DATE).tro</p><p>BNC will produce one daily troposphere file per station to save troposphere parameters from the PPP solution in SINEX Troposphere format. Variable $(STATION) stands for the affected station and $(DATE) stands for the date.</p>"));
+  _pppWidgets._snxtroFile->setWhatsThis(tr("<p>Specify the path to daily SINEX Troposphere files using e.g. the following syntax (example):</p><p> ./PPP_${STATION}${DOY}.${YY}.zpd</p><p>BNC will produce one daily troposphere file per station to save troposphere parameters from the PPP solution in SINEX Troposphere format. Variable ${STATION} stands for the affected station, ${DOY} stands for the Day Of Year, and ${YY} for the year.</p>"));
 
   _pppWidgets._snxtroSampl->setWhatsThis(tr("<p>Select a 'Sampling' rate for saving troposphere paramers.</p>"));
 
@@ -985,7 +985,7 @@ bncWindow::bncWindow() {
   pppLayout3->addWidget(new QLabel("Min Elevation"),        ir, 6, Qt::AlignLeft);
   pppLayout3->addWidget(_pppWidgets._minEle,                ir, 7);
   ++ir;
-  pppLayout3->addWidget(new QLabel("Wait for corrections"), ir, 0, Qt::AlignLeft);
+  pppLayout3->addWidget(new QLabel("Wait for clock corr."), ir, 0, Qt::AlignLeft);
   pppLayout3->addWidget(_pppWidgets._corrWaitTime,          ir, 1);
   pppLayout3->addWidget(new QLabel("Seeding (sec)"),        ir, 3, Qt::AlignLeft);
   pppLayout3->addWidget(_pppWidgets._seedingTime,           ir, 4);
