@@ -602,6 +602,29 @@ The following defines general settings for BNC's logfile, file handling, reconfi
 <p>
 Records of BNC's activities are shown in the 'Log' tab on the bottom of the main window. These logs can be saved into a file when a valid path is specified in the 'Logfile (full path)' field. The logfile name will automatically be extended by a string '_YYMMDD' carrying the current date. This leads to series of daily logfiles when running BNC continuously for extended. Message logs cover the communication status between BNC and the NTRIP Broadcaster as well as problems that may occur in the communication link, stream availability, stream delay, stream conversion etc. All times are given in UTC. The default value for 'Logfile (full path)' is an empty option field, meaning that BNC logs will not be saved into a file.
 </p>
+<p>
+The following is an example for the contents of a logfile written by BNC when operated in Single Point Positioning (SPP) mode:
+</p>
+<pre>
+15-06-30 11:40:17 ========== Start BNC v2.12 (MAC) ==========
+15-06-30 11:40:17 Panel 'PPP' active
+15-06-30 11:40:17 CUT07: Get data in RTCM 3.x format
+15-06-30 11:40:17 RTCM3EPH: Get data in RTCM 3.x format
+15-06-30 11:40:17 Configuration read: PPP.conf, 2 stream(s)
+
+15-06-30 11:40:21 2015-06-30_11:40:19.000 CUT07 X = -2364337.6814 Y = 4870283.8110 Z = -3360808.3085 NEU:  -0.0000  -0.0000  -0.0000 TRP:  +2.4026  -0.0001
+15-06-30 11:40:22 2015-06-30_11:40:20.000 CUT07 X = -2364337.6853 Y = 4870283.8130 Z = -3360808.3082 NEU:  +1.1639  +0.6988  -2.1178 TRP:  +2.4018  +0.0003
+15-06-30 11:40:23 2015-06-30_11:40:21.000 CUT07 X = -2364337.6862 Y = 4870283.8155 Z = -3360808.3107 NEU:  +0.1317  -0.4655  -4.4614 TRP:  +2.4009  +0.0009
+15-06-30 11:40:24 2015-06-30_11:40:22.000 CUT07 X = -2364337.6864 Y = 4870283.8106 Z = -3360808.3099 NEU:  +0.1543  +0.2121  -1.0190 TRP:  +2.4022  +0.0009
+15-06-30 11:40:25 2015-06-30_11:40:23.000 CUT07 X = -2364337.6861 Y = 4870283.8111 Z = -3360808.3105 NEU:  -0.9782  +0.0916  -2.3544 TRP:  +2.4017  +0.0013
+15-06-30 11:40:26 2015-06-30_11:40:24.000 CUT07 X = -2364337.6884 Y = 4870283.8123 Z = -3360808.3103 NEU:  -0.5606  -0.0938  -1.9498 TRP:  +2.4018  +0.0016
+15-06-30 11:40:27 2015-06-30_11:40:25.000 CUT07 X = -2364337.6913 Y = 4870283.8133 Z = -3360808.3122 NEU:  -0.1799  -0.1525  -4.8142 TRP:  +2.4007  +0.0025
+15-06-30 11:40:28 2015-06-30_11:40:26.000 CUT07 X = -2364337.6919 Y = 4870283.8171 Z = -3360808.3184 NEU:  +0.7497  +0.7994  -2.0363 TRP:  +2.4018  +0.0032
+15-06-30 11:40:29 2015-06-30_11:40:27.000 CUT07 X = -2364337.6923 Y = 4870283.8196 Z = -3360808.3230 NEU:  +0.8099  +0.5592  -2.8552 TRP:  +2.4015  +0.0039
+15-06-30 11:40:30 2015-06-30_11:40:28.000 CUT07 X = -2364337.6960 Y = 4870283.8219 Z = -3360808.3222 NEU:  -0.2952  +1.9737  -4.5565 TRP:  +2.4008  +0.0047
+15-06-30 11:40:31 2015-06-30_11:40:29.000 CUT07 X = -2364337.6982 Y = 4870283.8209 Z = -3360808.3209 NEU:  +0.3563  +2.1067  -5.5327 TRP:  +2.4005  +0.0057
+...
+</pre>
 
 <p><a name="genapp"><h4>3.3.2 Append Files - optional</h4></p>
 <p>
@@ -2093,74 +2116,44 @@ These parameters are saved together with their standard deviation. The following
 </p>
 <p>
 <pre>
-13-11-25 11:07:04 Single Point Positioning of Epoch 11:07:01.0
---------------------------------------------------------------
 
-11:07:01.0 RES E12   P3   -0.0206
-11:07:01.0 RES E19   P3   -1.4706
-11:07:01.0 RES E20   P3    1.1018
-11:07:01.0 RES G01   P3   -0.3704
-11:07:01.0 RES G03   P3   -0.2806
-11:07:01.0 RES G06   P3    0.3635
-11:07:01.0 RES G11   P3    0.1940
-11:07:01.0 RES G14   P3    0.0357
-11:07:01.0 RES G18   P3   -2.1105
-11:07:01.0 RES G19   P3    0.4660
-11:07:01.0 RES G22   P3    1.9451
-11:07:01.0 RES G27   P3   -0.7073
-11:07:01.0 RES G28   P3   -0.3382
-11:07:01.0 RES G32   P3    0.5999
-11:07:01.0 RES E12   L3    0.0204
-11:07:01.0 RES E19   L3   -0.0152
-11:07:01.0 RES E20   L3   -0.0119
-11:07:01.0 RES G01   L3   -0.0055
-11:07:01.0 RES G03   L3    0.0172
-11:07:01.0 RES G06   L3   -0.0144
-11:07:01.0 RES G11   L3    0.0140
-11:07:01.0 RES G14   L3    0.0258
-11:07:01.0 RES G18   L3    0.0192
-11:07:01.0 RES G19   L3   -0.0004
-11:07:01.0 RES G22   L3   -0.0272
-11:07:01.0 RES G27   L3   -0.0022
-11:07:01.0 RES G28   L3   -0.0040
-11:07:01.0 RES G32   L3   -0.0130
-11:07:01.0 RES R02   L3   -0.0576
-11:07:01.0 RES R03   L3   -0.0054
-11:07:01.0 RES R09   L3    0.0168
-11:07:01.0 RES R10   L3   -0.0339
-11:07:01.0 RES R17   L3    0.0122
-11:07:01.0 RES R18   L3    0.0593
+Results of Epoch 2015-06-30_10:37:00.000
+--------------------------------------
+2015-06-30_10:37:00.000 BANCROFT:   -2364339.137    4870286.804   -3360814.597     -24882.876
 
-    clk     =     -8.985 +-  0.513
-    trp     =   2.184 -0.032 +-  0.002
-    offGlo  =      0.175 +- 32.547
-    offGal  =      4.711 +-  1.057
-    amb E20 =    286.385 +-  0.925   nEpo = 914
-    amb G01 =   -121.366 +-  0.513   nEpo = 914
-    amb G18 =     -9.270 +-  0.513   nEpo = 914
-    amb G32 =   -132.475 +-  0.513   nEpo = 914
-    amb G27 =    -32.002 +-  0.513   nEpo = 640
-    amb G14 =     45.672 +-  0.513   nEpo = 608
-    amb E19 =    126.492 +-  0.925   nEpo = 360
-    amb R03 =    -91.230 +- 32.551   nEpo = 360
-    amb R09 =     29.258 +- 32.551   nEpo = 340
-    amb G22 =   -113.167 +-  0.513   nEpo = 335
-    amb E12 =   -122.721 +-  0.925   nEpo = 313
-    amb G06 =     17.432 +-  0.513   nEpo = 303
-    amb G11 =   -182.885 +-  0.513   nEpo = 279
-    amb R10 =   -268.896 +- 32.551   nEpo = 202
-    amb R02 =    198.251 +- 32.551   nEpo = 185
-    amb G28 =     26.367 +-  0.513   nEpo = 94
-    amb R17 =     30.320 +- 32.551   nEpo = 86
-    amb R18 =   -256.708 +- 32.551   nEpo = 86
-    amb G19 =     32.690 +-  0.513   nEpo = 71
-    amb G03 =    137.912 +-  0.513   nEpo = 47
+2015-06-30_10:37:00.000 RES cIF G05   1.5881
+2015-06-30_10:37:00.000 RES cIF G07   2.7378
+2015-06-30_10:37:00.000 RES cIF G10  -0.7913
+2015-06-30_10:37:00.000 RES cIF G13  -0.8838
+2015-06-30_10:37:00.000 RES cIF G28  -2.2195
+2015-06-30_10:37:00.000 RES cIF G30   1.1955
+2015-06-30_10:37:00.000 RES lIF G05  -0.0137
+2015-06-30_10:37:00.000 RES lIF G07   0.0069
+2015-06-30_10:37:00.000 RES lIF G10   0.0206
+2015-06-30_10:37:00.000 RES lIF G13   0.0061
+2015-06-30_10:37:00.000 RES lIF G28  -0.0167
+2015-06-30_10:37:00.000 RES lIF G30   0.0002
+2015-06-30_10:37:00.000 RES lIF R05   0.0114
+2015-06-30_10:37:00.000 RES lIF R06   0.0038
+2015-06-30_10:37:00.000 RES lIF R07  -0.0169
+2015-06-30_10:37:00.000 RES lIF R09   0.0106
+2015-06-30_10:37:00.000 RES lIF R16  -0.0109
 
-13-11-25 11:07:04 WTZ27  PPP 11:07:01.0 20    4075534.903 +-  0.019     931822.501 +-  0.015    4801609.005 +-  0.024  NEU    0.055    0.063   -0.146
-
-13-11-25 11:07:04 WTZ27  AVE-XYZ 11:07:01.0   4075534.918 +-  0.008     931822.503 +-  0.003    4801608.994 +-  0.014
-13-11-25 11:07:04 WTZ27  AVE-NEU 11:07:01.0         0.035 +-  0.010          0.062 +-  0.002         -0.145 +-  0.012
-13-11-25 11:07:04 WTZ27  AVE-TRP 11:07:01.0         2.150 +-  0.002
+2015-06-30_10:37:00.000 CLK             0.0000    -2.9038 +-   0.6250
+2015-06-30_10:37:00.000 AMB lIF G05  2569.0000   +25.6866 +-   5.6947 el =  44.28 epo =   27
+2015-06-30_10:37:00.000 AMB lIF G07   960.0000   +25.4561 +-   5.6987 el =  39.75 epo =   27
+2015-06-30_10:37:00.000 AMB lIF G10  1266.0000   +24.7084 +-   5.6950 el =  53.91 epo =   27
+2015-06-30_10:37:00.000 AMB lIF G13 -3098.0000   +25.4074 +-   5.8291 el =  22.07 epo =   27
+2015-06-30_10:37:00.000 AMB lIF G28  1741.0000   +25.4311 +-   5.6952 el =  54.09 epo =   27
+2015-06-30_10:37:00.000 AMB lIF G30  -601.0000   +25.6923 +-   5.6987 el =  65.78 epo =   27
+2015-06-30_10:37:00.000 AMB lIF R05  -500.0000    +6.5369 +-  35.3675 el =  30.11 epo =   24
+2015-06-30_10:37:00.000 AMB lIF R06  -505.0000    +5.5080 +-  35.3072 el =  87.28 epo =    5
+2015-06-30_10:37:00.000 AMB lIF R07  -768.0000    -1.2722 +-  35.4211 el =  34.99 epo =    6
+2015-06-30_10:37:00.000 AMB lIF R09   343.0000    -2.1249 +-  35.3255 el =  51.23 epo =   27
+2015-06-30_10:37:00.000 AMB lIF R16   -78.0000    -2.0550 +-  35.3383 el =  55.29 epo =   27
+2015-06-30_10:37:00.000 OGG            -4.1622    +2.2266 +-   3.7714
+2015-06-30_10:37:00.000 TRP             2.4018    -0.0078 +-   0.0997
+2015-06-30_10:37:00.000 CUT07 X = -2364337.4403 +- 0.0262 Y = 4870285.6044 +- 0.0403 Z = -3360809.6277 +- 0.0315 dN = -0.0004 +- 0.0200 dE = 0.0000 +- 0.0200 dU = -0.0012 +- 0.0500
 </pre>
 </p>
 
@@ -2251,6 +2244,30 @@ The NMEA sentences generated about once per second are pairs of
 <p>
 Specify the full path to a file where Point Positioning results are saved as NMEA messages. The default value for 'NMEA file' is an empty option field, meaning that BNC will not saved NMEA messages into a file.
 </p>
+<p>
+The following is an example for an NMEA output file from BNC.
+</p>
+<pre>
+$GPRMC,112348,A,3200.233,S,11553.688,E,,,300615,,*A
+$GPGGA,112348,3200.2332035,S,11553.6880127,E,1,13,1.4,23.971,M,0.0,M,,*5D
+$GPRMC,112349,A,3200.233,S,11553.688,E,,,300615,,*B
+$GPGGA,112349,3200.2332035,S,11553.6880127,E,1,13,1.4,23.971,M,0.0,M,,*5C
+$GPRMC,112350,A,3200.233,S,11553.688,E,,,300615,,*3
+$GPGGA,112350,3200.2332035,S,11553.6880127,E,1,13,1.4,23.971,M,0.0,M,,*54
+$GPRMC,112351,A,3200.233,S,11553.688,E,,,300615,,*2
+$GPGGA,112351,3200.2332035,S,11553.6880127,E,1,13,1.4,23.971,M,0.0,M,,*55
+$GPRMC,112352,A,3200.233,S,11553.688,E,,,300615,,*1
+$GPGGA,112352,3200.2332035,S,11553.6880127,E,1,13,1.4,23.971,M,0.0,M,,*56
+$GPRMC,112353,A,3200.233,S,11553.688,E,,,300615,,*0
+$GPGGA,112353,3200.2332035,S,11553.6880127,E,1,13,1.4,23.971,M,0.0,M,,*57
+$GPRMC,112354,A,3200.233,S,11553.688,E,,,300615,,*7
+$GPGGA,112354,3200.2332035,S,11553.6880127,E,1,13,1.4,23.971,M,0.0,M,,*50
+$GPRMC,112355,A,3200.233,S,11553.688,E,,,300615,,*6
+$GPGGA,112355,3200.2332035,S,11553.6880127,E,1,13,1.4,23.971,M,0.0,M,,*51
+$GPRMC,112356,A,3200.233,S,11553.688,E,,,300615,,*5
+$GPGGA,112356,3200.2332035,S,11553.6880127,E,1,13,1.4,23.971,M,0.0,M,,*52
+...
+</pre>
 
 <p><a name="pppnmeaport"><h4>3.13.4.2 NMEA Port - optional</h4></p>
 <p>
@@ -2318,6 +2335,67 @@ where T_apr is the a-priori tropospheric delay derived from Saastamoinen model.
 <p>
 By default BNC does not estimate troposphere parameters. Tick 'Estimate tropo' to estimate troposphere parameters together with the coordinates and save T_apr and dT/cos(z) in BNC's logfile.
 </p>
+<p>
+The following is an example for a SINEX Troposphere file, see <u>https://igscb.jpl.nasa.gov/igscb/data/format/sinex_tropo.txt</u> for a complete documentation.
+</p>
+<pre>
+%=TRO 0.01 BNC 15:181:38193 BNC 15:181:38193 15:181:84600 P CUT0
++FILE/REFERENCE
+ DESCRIPTION        BNC generated SINEX TRO file
+ OUTPUT             Total Troposphere Zenith Path Delay Product
+ SOFTWARE           BNC 2.12
+ HARDWARE           MAC
+ INPUT              Orbit and Clock information used from BRDC and RTCM-SSR streams
+-FILE/REFERENCE
+
++TROP/DESCRIPTION
+*KEYWORD______________________ VALUE(S)______________
+ SAMPLING INTERVAL                                  1
+ SAMPLING TROP                                      1
+ ELEVATION CUTOFF ANGLE                            10
+ TROP MAPPING FUNCTION         Saastamoinen
+ SOLUTION_FIELDS_1             TROTOT STDEV
+-TROP/DESCRIPTION
+
++TROP/STA_COORDINATES
+*SITE PT SOLN T STA_X_______ STA_Y_______ STA_Z_______ SYSTEM REMARK
+ CUT0  A    1 P -2364337.441  4870285.605 -3360809.628 ITRF08
+-TROP/STA_COORDINATES
+
++TROP/SOLUTION
+*SITE EPOCH_______ TROTOT STDEV
+ CUT0 15:181:38193    0.0   0.0
+ CUT0 15:181:38194 2402.0 100.0
+ CUT0 15:181:38195 2402.0 100.0
+ CUT0 15:181:38196 2402.1 100.0
+ CUT0 15:181:38197 2402.0 100.0
+ CUT0 15:181:38198 2401.8 100.0
+ CUT0 15:181:38199 2401.6  99.9
+ CUT0 15:181:38200 2401.7  99.9
+ CUT0 15:181:38201 2401.6  99.9
+ CUT0 15:181:38202 2401.5  99.9
+ CUT0 15:181:38203 2401.3  99.9
+ CUT0 15:181:38204 2401.0  99.9
+ CUT0 15:181:38205 2400.8  99.9
+ CUT0 15:181:38206 2400.5  99.9
+ CUT0 15:181:38207 2400.3  99.9
+ CUT0 15:181:38208 2399.8  99.9
+ CUT0 15:181:38209 2399.6  99.9
+ CUT0 15:181:38210 2399.3  99.9
+ CUT0 15:181:38211 2398.9  99.8
+ CUT0 15:181:38212 2398.5  99.8
+ CUT0 15:181:38213 2397.9  99.8
+ CUT0 15:181:38214 2397.3  99.8
+ CUT0 15:181:38215 2396.7  99.8
+ CUT0 15:181:38216 2396.2  99.8
+ CUT0 15:181:38217 2395.6  99.8
+ CUT0 15:181:38218 2395.1  99.7
+ CUT0 15:181:38219 2394.6  99.7
+ CUT0 15:181:38220 2394.0  99.7
+ CUT0 15:181:38221 2393.2  99.7
+-TROP/SOLUTION
+%=ENDTROP
+</pre>
 
 <p><a name="pppglo"><h4>3.13.7.3 Use GLONASS - optional</h4></p>
 <p>
