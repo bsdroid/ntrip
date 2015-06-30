@@ -40,6 +40,10 @@ public:
     _flags  = flags;
   }
 
+  void setFlags(int flags) {
+    _flags  = flags;
+  }
+
   void set(const std::string& str);
 
   char system() const {
