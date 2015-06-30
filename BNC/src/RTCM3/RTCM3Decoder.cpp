@@ -1294,7 +1294,7 @@ bool RTCM3Decoder::DecodeGalileoEphemeris(unsigned char* data, int size)
     GETFLOATSIGN(eph._BGD_1_5A, 10, 1.0/(double)(1<<30)/(double)(1<<2))
     if(eph._inav)
     {
-      /* set usused F/NAV values */
+      /* set unused F/NAV values */
       eph._E5aHS = 0.0;
       eph._e5aDataInValid = false;
 
@@ -1306,7 +1306,7 @@ bool RTCM3Decoder::DecodeGalileoEphemeris(unsigned char* data, int size)
     }
     else
     {
-      /* set usused I/NAV values */
+      /* set unused I/NAV values */
       eph._BGD_1_5B = 0.0;
       eph._E5bHS = 0.0;
       eph._E1_bHS = 0.0;
