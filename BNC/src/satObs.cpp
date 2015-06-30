@@ -63,6 +63,9 @@ void t_clkCorr::readEpoch(const string& epoLine, istream& inStream, QList<t_clkC
     istringstream in(line.c_str());
     
     in >> corr._prn >> corr._iod >> corr._dClk >> corr._dotDClk >> corr._dotDotDClk;
+    if (corr._prn.system() == 'E') {
+      corr._prn.setFlags(1);// I/NAV
+    }
 
     corr._dClk       /= t_CST::c;
     corr._dotDClk    /= t_CST::c;
@@ -130,10 +133,13 @@ void t_orbCorr::readEpoch(const string& epoLine, istream& inStream, QList<t_orbC
     getline(inStream, line);
     istringstream in(line.c_str());
     
-    in >> corr._prn      >> corr._iod 
+    in >> corr._prn      >> corr._iod
        >> corr._xr[0]    >> corr._xr[1]    >> corr._xr[2]   
        >> corr._dotXr[0] >> corr._dotXr[1] >> corr._dotXr[2];
 
+    if (corr._prn.system() == 'E') {
+      corr._prn.setFlags(1);// I/NAV
+    }
     corrList.push_back(corr);
   }
 }
