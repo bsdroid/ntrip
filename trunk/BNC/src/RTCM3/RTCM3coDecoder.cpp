@@ -223,6 +223,7 @@ void RTCM3coDecoder::sendResults() {
                             + _clkOrb.NumberOfSat[CLOCKORBIT_SATBDS];
     ii++) {
     char sysCh = ' ';
+    int flag = 0;
     if      (ii < _clkOrb.NumberOfSat[CLOCKORBIT_SATGPS]) {
       sysCh = 'G';
     }
@@ -233,6 +234,7 @@ void RTCM3coDecoder::sendResults() {
     else if (ii >= CLOCKORBIT_OFFSETGALILEO &&
         ii < CLOCKORBIT_OFFSETGALILEO + _clkOrb.NumberOfSat[CLOCKORBIT_SATGALILEO]) {
       sysCh = 'E';
+      flag = 1; // I/NAV clock has been chosen as reference clock for Galileo SSR corrections
     }
     else if (ii >= CLOCKORBIT_OFFSETQZSS &&
         ii < CLOCKORBIT_OFFSETQZSS + _clkOrb.NumberOfSat[CLOCKORBIT_SATQZSS]) {
@@ -265,7 +267,7 @@ void RTCM3coDecoder::sendResults() {
          _clkOrb.messageType == COTYPE_BDSORBIT ) {
 
       t_orbCorr orbCorr;
-      orbCorr._prn.set(sysCh, _clkOrb.Sat[ii].ID);
+      orbCorr._prn.set(sysCh, _clkOrb.Sat[ii].ID, flag);
       orbCorr._staID     = _staID.toStdString();
       orbCorr._iod       = _clkOrb.Sat[ii].IOD;
       orbCorr._time      = _lastTime;
@@ -299,7 +301,8 @@ void RTCM3coDecoder::sendResults() {
          _clkOrb.messageType == COTYPE_BDSCLOCK) {
 
       t_clkCorr clkCorr;
-      clkCorr._prn.set(sysCh, _clkOrb.Sat[ii].ID);
+      clkCorr._prn.set(sysCh, _clkOrb.Sat[ii].ID, flag);
+
       clkCorr._staID      = _staID.toStdString();
       clkCorr._time       = _lastTime;
       clkCorr._updateInt  = _clkOrb.UpdateInterval;
@@ -323,8 +326,7 @@ void RTCM3coDecoder::sendResults() {
          _clkOrb.messageType == COTYPE_QZSSHR ||
          _clkOrb.messageType == COTYPE_SBASHR ||
          _clkOrb.messageType == COTYPE_BDSHR) {
-
-      t_prn prn(sysCh, _clkOrb.Sat[ii].ID);
+      t_prn prn(sysCh, _clkOrb.Sat[ii].ID, flag);
       if (_lastClkCorrections.contains(prn)) {
         t_clkCorr clkCorr;
         clkCorr            = _lastClkCorrections[prn];
