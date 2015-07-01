@@ -867,9 +867,9 @@ bncWindow::bncWindow() {
   pppLayout1->addWidget(new QLabel("   RINEX Nav file(s)"),  ir, 3);
   pppLayout1->addWidget(_pppWidgets._rinexNav,               ir, 4);
   ++ir;
-  pppLayout1->addWidget(new QLabel("Corrections"),           ir, 0);
+  pppLayout1->addWidget(new QLabel("Corrections stream"),    ir, 0);
   pppLayout1->addWidget(_pppWidgets._corrMount,              ir, 1);
-  pppLayout1->addWidget(new QLabel("   Corrections"),        ir, 3);
+  pppLayout1->addWidget(new QLabel("   Correction file(s)"), ir, 3);
   pppLayout1->addWidget(_pppWidgets._corrFile,               ir, 4);
   ++ir;
   pppLayout1->addWidget(new QLabel("Coordinates"),           ir, 0);
