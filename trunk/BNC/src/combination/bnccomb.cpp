@@ -115,10 +115,10 @@ QString bncComb::cmbParam::toString() const {
     outStr = "AC offset GLO " + AC;
   }
   else if (type == offACSat) {
-    outStr = "Sat Offset " + AC + " " + prn;
+    outStr = "Sat Offset " + AC + " " + prn.mid(0,3);
   }
   else if (type == clkSat) {
-    outStr = "Clk Corr " + prn;
+    outStr = "Clk Corr " + prn.mid(0,3);
   }
 
   return outStr;
@@ -195,26 +195,26 @@ bncComb::bncComb() : _ephUser(true) {
       cmbAC* AC = it.next();
       _params.push_back(new cmbParam(cmbParam::offACgps, ++nextPar, AC->name, ""));
       for (unsigned iGps = 1; iGps <= t_prn::MAXPRN_GPS; iGps++) {
-        QString prn = QString("G%1").arg(iGps, 2, 10, QChar('0'));
+        QString prn = QString("G%1_0").arg(iGps, 2, 10, QChar('0'));
         _params.push_back(new cmbParam(cmbParam::offACSat, ++nextPar, 
                                        AC->name, prn));
       }
       if (_useGlonass) {
         _params.push_back(new cmbParam(cmbParam::offACglo, ++nextPar, AC->name, ""));
         for (unsigned iGlo = 1; iGlo <= t_prn::MAXPRN_GLONASS; iGlo++) {
-          QString prn = QString("R%1").arg(iGlo, 2, 10, QChar('0'));
+          QString prn = QString("R%1_0").arg(iGlo, 2, 10, QChar('0'));
           _params.push_back(new cmbParam(cmbParam::offACSat, ++nextPar, 
                                          AC->name, prn));
         }
       }
     }
     for (unsigned iGps = 1; iGps <= t_prn::MAXPRN_GPS; iGps++) {
-      QString prn = QString("G%1").arg(iGps, 2, 10, QChar('0'));
+      QString prn = QString("G%1_0").arg(iGps, 2, 10, QChar('0'));
       _params.push_back(new cmbParam(cmbParam::clkSat, ++nextPar, "", prn));
     }
     if (_useGlonass) {
       for (unsigned iGlo = 1; iGlo <= t_prn::MAXPRN_GLONASS; iGlo++) {
-        QString prn = QString("R%1").arg(iGlo, 2, 10, QChar('0'));
+        QString prn = QString("R%1_0").arg(iGlo, 2, 10, QChar('0'));
         _params.push_back(new cmbParam(cmbParam::clkSat, ++nextPar, "", prn));
       }
     }
@@ -277,7 +277,7 @@ void bncComb::slotNewOrbCorrections(QList<t_orbCorr> orbCorrections) {
   for (int ii = 0; ii < orbCorrections.size(); ii++) {
     t_orbCorr& orbCorr = orbCorrections[ii];
     QString    staID(orbCorr._staID.c_str());
-    QString    prn(orbCorr._prn.toString().c_str());
+    QString    prn(orbCorr._prn.toInternalString().c_str());
 
     // Find/Check the AC Name
     // ----------------------
@@ -349,7 +349,7 @@ void bncComb::slotNewClkCorrections(QList<t_clkCorr> clkCorrections) {
     // Check Correction Age
     // --------------------
     if (_resTime.valid() && clkCorr._time <= _resTime) {
-      emit newMessage("bncComb: old correction: " + acName.toAscii() + " " + prn.toAscii(), true);
+      emit newMessage("bncComb: old correction: " + acName.toAscii() + " " + prn.mid(0,3).toAscii(), true);
       continue;
     }
   
