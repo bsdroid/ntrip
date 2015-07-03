@@ -381,8 +381,8 @@ void bncComb::slotNewClkCorrections(QList<t_clkCorr> clkCorrections) {
 
     // Check the Ephemeris
     //--------------------
-    const t_eph* ephLast = _ephUser.ephLast(prn);
-    const t_eph* ephPrev = _ephUser.ephPrev(prn);
+    t_eph* ephLast = _ephUser.ephLast(prn);
+    t_eph* ephPrev = _ephUser.ephPrev(prn);
     if (ephLast == 0) {
       emit newMessage("bncComb: eph not found "  + prn.mid(0,3).toAscii(), true);
       delete newCorr;
@@ -425,7 +425,7 @@ void bncComb::slotNewClkCorrections(QList<t_clkCorr> clkCorrections) {
 
 // Change the correction so that it refers to last received ephemeris 
 ////////////////////////////////////////////////////////////////////////////
-void bncComb::switchToLastEph(const t_eph* lastEph, cmbCorr* corr) {
+void bncComb::switchToLastEph(t_eph* lastEph, cmbCorr* corr) {
 
   if (corr->_eph == lastEph) {
     return;
@@ -713,8 +713,16 @@ void bncComb::dumpResults(const QMap<QString, cmbCorr*>& resCorr) {
 
     ColumnVector xc(4);
     ColumnVector vv(3);
-    corr->_eph->getCrd(_resTime, xc, vv, false);
-    
+    t_orbCorr orbCorr2Use(corr->_orbCorr);
+    t_clkCorr clkCorr2Use(corr->_clkCorr);
+    clkCorr2Use._dClk       = corr->_dClkResult *  t_CST::c;
+    clkCorr2Use._dotDClk    = 0.0;
+    clkCorr2Use._dotDotDClk = 0.0;
+
+    corr->_eph->setClkCorr(dynamic_cast<const t_clkCorr*>(&clkCorr2Use));
+    corr->_eph->setOrbCorr(dynamic_cast<const t_orbCorr*>(&orbCorr2Use));
+    corr->_eph->getCrd(_resTime, xc, vv, true);
+
     // Correction Phase Center --> CoM
     // -------------------------------
     ColumnVector dx(3); dx = 0.0;
@@ -725,15 +733,15 @@ void bncComb::dumpResults(const QMap<QString, cmbCorr*>& resCorr) {
         _log += "antenna not found " + corr->_prn.mid(0,3).toAscii() + '\n';
       }
     }
-    
-    outLines += corr->_prn;
+
+    outLines += corr->_prn.mid(0,3);
     QString hlp;
     hlp.sprintf(" APC 3 %15.4f %15.4f %15.4f"
                 " Clk 1 %15.4f"
                 " Vel 3 %15.4f %15.4f %15.4f"
                 " CoM 3 %15.4f %15.4f %15.4f\n",
-                xc(1), xc(2), xc(3), 
-                xc(4)*t_CST::c, 
+                xc(1), xc(2), xc(3),
+                xc(4) *  t_CST::c,
                 vv(1), vv(2), vv(3),
                 xc(1)-dx(1), xc(2)-dx(2), xc(3)-dx(3));
     outLines += hlp;
@@ -747,7 +755,7 @@ void bncComb::dumpResults(const QMap<QString, cmbCorr*>& resCorr) {
                  "   %10.5f %10.5f %10.5f %10.5f"
                  "   %10.5f INTERNAL",
                  messageType, updateInt, _resTime.gpsw(), _resTime.gpssec(),
-                 corr->_prn.toAscii().data(),
+                 corr->_prn.mid(0,3).toAscii().data(),
                  corr->_iod,
                  corr->_dClkResult * t_CST::c,
                  corr->_orbCorr._xr[0],
@@ -1051,8 +1059,8 @@ t_irc bncComb::checkOrbits(QTextStream& out) {
     cmbCorr* corr = im.next();
     QString  prn  = corr->_prn;
 
-    const t_eph* ephLast = _ephUser.ephLast(prn);
-    const t_eph* ephPrev = _ephUser.ephPrev(prn);
+    t_eph* ephLast = _ephUser.ephLast(prn);
+    t_eph* ephPrev = _ephUser.ephPrev(prn);
 
     if      (ephLast == 0) {
       out << "checkOrbit: missing eph (not found) " << corr->_prn.mid(0,3) << endl;
