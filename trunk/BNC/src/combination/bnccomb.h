@@ -73,7 +73,7 @@ class bncComb : public QObject {
     QString      _prn;
     bncTime      _time;
     int          _iod;
-    const t_eph* _eph;
+    t_eph*       _eph;
     t_orbCorr    _orbCorr;
     t_clkCorr    _clkCorr;
     QString      _acName; 
@@ -103,7 +103,7 @@ class bncComb : public QObject {
                    const ColumnVector& x0, QMap<QString, cmbCorr*>& resCorr);
   void  dumpResults(const QMap<QString, cmbCorr*>& resCorr);
   void  printResults(QTextStream& out, const QMap<QString, cmbCorr*>& resCorr);
-  void  switchToLastEph(const t_eph* lastEph, cmbCorr* corr);
+  void  switchToLastEph(t_eph* lastEph, cmbCorr* corr);
   t_irc checkOrbits(QTextStream& out);
   QVector<cmbCorr*>& corrs() {return _buffer[_resTime].corrs;}
 
