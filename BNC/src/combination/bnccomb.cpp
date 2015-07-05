@@ -711,16 +711,21 @@ void bncComb::dumpResults(const QMap<QString, cmbCorr*>& resCorr) {
     it.next();
     cmbCorr* corr = it.value();
 
+    t_orbCorr orbCorr(corr->_orbCorr);
+    orbCorr._staID = "INTERNAL";
+    orbCorrections.push_back(orbCorr);
+
+    t_clkCorr clkCorr(corr->_clkCorr);
+    clkCorr._staID      = "INTERNAL";
+    clkCorr._dClk       = corr->_dClkResult;
+    clkCorr._dotDClk    = 0.0;
+    clkCorr._dotDotDClk = 0.0;
+    clkCorrections.push_back(clkCorr);
+
     ColumnVector xc(4);
     ColumnVector vv(3);
-    t_orbCorr orbCorr2Use(corr->_orbCorr);
-    t_clkCorr clkCorr2Use(corr->_clkCorr);
-    clkCorr2Use._dClk       = corr->_dClkResult *  t_CST::c;
-    clkCorr2Use._dotDClk    = 0.0;
-    clkCorr2Use._dotDotDClk = 0.0;
-
-    corr->_eph->setClkCorr(dynamic_cast<const t_clkCorr*>(&clkCorr2Use));
-    corr->_eph->setOrbCorr(dynamic_cast<const t_orbCorr*>(&orbCorr2Use));
+    corr->_eph->setClkCorr(dynamic_cast<const t_clkCorr*>(&clkCorr));
+    corr->_eph->setOrbCorr(dynamic_cast<const t_orbCorr*>(&orbCorr));
     corr->_eph->getCrd(_resTime, xc, vv, true);
 
     // Correction Phase Center --> CoM
@@ -767,17 +772,6 @@ void bncComb::dumpResults(const QMap<QString, cmbCorr*>& resCorr) {
                  corr->_orbCorr._dotXr[2],
                  0.0);
     corrLines << line;
-
-    t_orbCorr orbCorr(corr->_orbCorr);
-    orbCorr._staID = "INTERNAL";
-    orbCorrections.push_back(orbCorr);
-
-    t_clkCorr clkCorr(corr->_clkCorr);
-    clkCorr._staID      = "INTERNAL";
-    clkCorr._dClk       = corr->_dClkResult;
-    clkCorr._dotDClk    = 0.0;
-    clkCorr._dotDotDClk = 0.0;
-    clkCorrections.push_back(clkCorr);
 
     delete corr;
   }
