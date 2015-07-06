@@ -77,10 +77,7 @@ t_irc t_eph::getCrd(const bncTime& tt, ColumnVector& xc, ColumnVector& vv, bool 
       if (_clkCorr->_updateInt) {
         dtC -= (0.5 * updateInt[_clkCorr->_updateInt]);
       }
-      xc[3] += (( _clkCorr->_dClk +
-                  _clkCorr->_dotDClk * dtC +
-                  _clkCorr->_dotDotDClk * dtC * dtC
-                ) / t_CST::c);
+      xc[3] += _clkCorr->_dClk + _clkCorr->_dotDClk * dtC + _clkCorr->_dotDotDClk * dtC * dtC;
     }
     else {
       return failure;

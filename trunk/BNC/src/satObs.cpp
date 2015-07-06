@@ -66,6 +66,10 @@ void t_clkCorr::readEpoch(const string& epoLine, istream& inStream, QList<t_clkC
     if (corr._prn.system() == 'E') {
       corr._prn.setFlags(1);// I/NAV
     }
+    corr._dClk       /= t_CST::c;
+    corr._dotDClk    /= t_CST::c;
+    corr._dotDotDClk /= t_CST::c;
+
     corrList.push_back(corr);
   }
 }

@@ -306,9 +306,9 @@ void RTCM3coDecoder::sendResults() {
       clkCorr._staID      = _staID.toStdString();
       clkCorr._time       = _lastTime;
       clkCorr._updateInt  = _clkOrb.UpdateInterval;
-      clkCorr._dClk       = _clkOrb.Sat[ii].Clock.DeltaA0;
-      clkCorr._dotDClk    = _clkOrb.Sat[ii].Clock.DeltaA1;
-      clkCorr._dotDotDClk = _clkOrb.Sat[ii].Clock.DeltaA2;
+      clkCorr._dClk       = _clkOrb.Sat[ii].Clock.DeltaA0 / t_CST::c;
+      clkCorr._dotDClk    = _clkOrb.Sat[ii].Clock.DeltaA1 / t_CST::c;
+      clkCorr._dotDotDClk = _clkOrb.Sat[ii].Clock.DeltaA2 / t_CST::c;
 
       _lastClkCorrections[clkCorr._prn] = clkCorr;
 
