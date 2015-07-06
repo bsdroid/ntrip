@@ -2164,7 +2164,7 @@ If you don't specify a 'Corrections stream' BNC will fall back from a PPP soluti
 
 <p><a name="pppmarkcoor"><h4>3.13.1.6 Coordinates - mandatory</h4></p>
 <p>
-Enter the full path to an ASCII file which specifies all streams or files from stationary or mobile receivers you potentially may want to process. The 'Coordinates' file must contain one record per file or stream with the following parameters separated by blank characters:
+Enter the full path to an ASCII file which specifies all streams or files from stationary or mobile receivers you potentially may want to process. The 'Coordinates' file must contain one record per stream or file with the following parameters separated by blank characters:
 </p>
 <p>
 <ul>
@@ -2174,23 +2174,22 @@ Enter the full path to an ASCII file which specifies all streams or files from s
 </li>
 <li>the first four characters of the RINEX observations file (when in post processing PPP mode).</li>
 </ul>
-Having this parameter first in each record is mandatory. BNC will carry out PPP solutions only for streams or files specified here.</li><br>
+Having this parameter first in each record is mandatory. BNC can carry out PPP solutions only for streams or files specified here.</li><br>
 <li>Only for static observations from a stationary receiver:<br>Approximate a-priori X,Y,Z coordinate [m] of the station's marker; specify '0.0 0.0 0.0' if unknown or when observations come from a mobile receiver.</li><br>
 <li>Nort, East and Up component [m] of antenna excentricity which is the difference between Antenna Reference Point (ARP) and a nearby marker position; when specifying the antenna excentricity BNC will produce coordinates referring to the marker position and not referring to ARP; specify '0.0 0.0 0.0' if excentricity is unknown or the ARP itself is understood as the marker.</li><br>
-<li>Receiver's antenna name as defined in your ANTEX file (see below); Observations will be corrected for the Antenna Phase Center's (APC) offset and variation which may result in a reduction of a few centimeters at max; the specified name must consist of 20 characters; add trailing blanks if the antenna name has less than 20 characters, examples:<br><pre>
+<li>Receiver's antenna name as defined in your ANTEX file (see below); Observations will be corrected for the Antenna Phase Center (APC) offsets and variations which may result in a reduction of a few centimeters at max; the specified name must consist of 20 characters; add trailing blanks if the antenna name has less than 20 characters; examples:<br><pre>
 &nbsp; &nbsp;'JPSREGANT_SD_E      ' (no radome)
 &nbsp; &nbsp;'LEIAT504        NONE' (no radome)
 &nbsp; &nbsp;'LEIAR25.R3      LEIT' (radome)</pre>
-Leave blank if you don't want to correct observations for antenna phase center offsets.</li>
+Leave antenna name blank if you don't want to correct observations for APC offsets and variations or if you don't know the antenna name.</li>
 </ul>
 </p>
 <p>
 Records in the 'Coordinates' file with exclamation mark '!' in the first column or blank records will be understood as comment lines and ignored.
 </p>
 <p>
-The following is an example contents for a 'Coordinates' file. Here each record describes the mountpoint of a stream available from the
-global stationary IGS real-time network. A-prioriy coordinates are followed by North/East/Up excentricity components of the ARP 
-followed by the antenna type and radom in use.
+The following is an example contents for a 'Coordinates' file. Here each record describes the mountpoint of a stream available from the global IGS real-time reference station network. A-priory coordinates are followed by North/East/Up excentricity components of the ARP 
+followed by the antenna name and radom in use.
 </p>
 <pre>
 !
@@ -2236,7 +2235,7 @@ WUH27     -2267749.9761   5009154.5504   3221294.4429       0.0000     0.0000   
 YELL7     -1224452.8796  -2689216.1863   5633638.2832       0.0000     0.0000     0.1000 AOAD/M_T        NONE
 </pre>
 <p>
-Note that the only mandatory parameter in this is the 'Station' parameter standing for an observation's mountpoint or RINEX file name.
+Note that the only mandatory parameter in this is the 'Station' parameter standing for an observation stream's mountpoint or RINEX file name.
 The following shows further valid examples for records of a 'Coordinates' file.
 </p>
 
@@ -2254,10 +2253,10 @@ SASS1         0.0          0.0           0.0     0.000  0.000  0.031 TPSCR3_GGD 
 In this file
 </p>
 <ul>
-<li> Record 'FFMJ1' describes a stream from a stationary receiver with known a-priory marker coordinate and antenna excentricity but unknown antenna type and radom.</li>
-<li> Record 'TITZ1' describes a stream coming from a stationary receiver where an a-priory marker coordinate is known but antenna excentricity, type and radom are unknown.</li>
-<li>The 4-character station ID 'WARN' indicates that a RINEX observations file for post processing PPP is available for station 'WARN' but an a-priory marker coordinate as well as antenna excentricity, type and radom are unknown.</li>
-<li>Record 'SASS1' stands for a mountpoint where the stream comes from a mobile rover receiver. Hence an a-priory coordinate is unknown although antenna excentricity, type and radom are known.</li>
+<li> Record 'FFMJ1' describes a stream from a stationary receiver with known a-priory marker coordinate and antenna excentricity but unknown antenna name and radom.</li>
+<li> Record 'TITZ1' describes a stream coming from a stationary receiver where an a-priory marker coordinate is known but antenna excentricity, name and radom are unknown.</li>
+<li>The 4-character station ID 'WARN' indicates that a RINEX observations file for post processing PPP is available for station 'WARN' but an a-priory marker coordinate as well as antenna excentricity, name and radom are unknown.</li>
+<li>Record 'SASS1' stands for a mountpoint where the stream comes from a mobile rover receiver. Hence an a-priory coordinate is unknown although antenna excentricity, name and radom are known.</li>
 </ul>
 </p>
 
