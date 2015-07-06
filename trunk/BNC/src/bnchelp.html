@@ -297,7 +297,7 @@ Unless it runs offline, BNC
 </p>
 
 <p>
-The main window of BNC shows a 'Top menu bar' section, a 'Settings' sections with tabs to set processing options, a 'Streams' section, a section for 'Log' tabs, and a 'Bottom menu bar' section, see figure below.
+The main window of BNC shows a 'Top menu bar' section, a 'Settings' sections with panels to set processing options, a 'Streams' section, a section for 'Log' tabs, and a 'Bottom menu bar' section, see figure below.
 </p>
 <p><img src="IMG/screenshot09.png"/></p>
 <p><u>Figure 5:</u> Sections on BNC's main window.</p>
@@ -311,9 +311,9 @@ producing plots, you need to make sure that at least a virtual X-Server like
 </p>
 
 <p>
-The usual handling of BNC is that you first select a number of streams ('Add Stream'). Any stream configured to BNC shows up on the 'Streams' canvas in the middle of BNC's main window. You then go through BNC's various configuration tabs to select a combination of input, processing and output options before you start the program ('Start'). Most configuration tabs are dedicated to a certain functionality of BNC. If the first option field on such a configuration tab is empty, the affected functionality is - apart from a few exceptions - deactivated.</p>
+The usual handling of BNC is that you first select a number of streams ('Add Stream'). Any stream configured to BNC shows up on the 'Streams' canvas in the middle of BNC's main window. You then go through BNC's various configuration panels to select a combination of input, processing and output options before you start the program ('Start'). Most configuration panels are dedicated to a certain functionality of BNC. If the first option field on such a configuration panel is empty, the affected functionality is - apart from a few exceptions - deactivated.</p>
 
-Records of BNC's activities are shown in the 'Log' tab. The bandwidth consumption per stream, the latency of incoming observations and a PPP time series for coordinates are shown in the 'Throughput', 'Latency' and 'PPP Plot' tabs of the main window.
+Records of BNC's activities are shown in the 'Log' tab. The bandwidth consumption per stream, the latency of incoming observations and a PPP time series for coordinates are shown in the 'Throughput', 'Latency' and 'PPP Plot' tabs.
 </p>
 
 <p><a name="optconfig"><h3>2.1 Configuration Management</h3></p>
@@ -436,44 +436,41 @@ This chapter describes how to set the BNC program options. It explains the 'Top 
 &nbsp; &nbsp; &nbsp; 3.12.3. <a href=#miscscan>Scan RTCM</a><br>
 &nbsp; &nbsp; &nbsp; 3.12.4. <a href=#miscport>Port</a><br>
 3.13. <a href=#pppclient>PPP Client</a><br>
-&nbsp; &nbsp; &nbsp; 3.13.1 <a href=#pppmode>Mode & Mountpoints</a><br>
-&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 3.13.1.1 <a href=#pppmodus>Mode</a><br>
-&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 3.13.1.2 <a href=#pppobsmount>Obs Mountpoint</a><br>
-&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 3.13.1.3 <a href=#pppcorrmount>Corr Mountpoint</a><br>
-&nbsp; &nbsp; &nbsp; 3.13.2 <a href=#pppxyz>Marker Coordinates</a><br>
-&nbsp; &nbsp; &nbsp; 3.13.3 <a href=#pppneu>Antenna Eccentricity</a><br>
-&nbsp; &nbsp; &nbsp; 3.13.4 <a href=#pppoutput>NMEA & Plot Output</a><br>
-&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 3.13.4.1 <a href=#pppnmeafile>NMEA File</a><br>
-&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 3.13.4.2 <a href=#pppnmeaport>NMEA Port</a><br>
-&nbsp; &nbsp; &nbsp; 3.13.5 <a href=#ppppost>Post Processing</a><br>
-&nbsp; &nbsp; &nbsp; 3.13.6 <a href=#ppprecant>Antennas</a><br>
-&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 3.13.6.1 <a href=#pppantex>ANTEX File</a><br>
-&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 3.13.6.2 <a href=#ppprecantenna>Antenna Name</a><br>
-&nbsp; &nbsp; &nbsp; 3.13.7 <a href=#pppbasics>Basics</a><br>
-&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 3.13.7.1 <a href=#pppphase>Use Phase Obs</a><br>
-&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 3.13.7.2 <a href=#ppptropo>Estimate Tropo</a><br>
-&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 3.13.7.3 <a href=#pppglo>Use GLONASS</a><br>
-&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 3.13.7.4 <a href=#pppgal>Use Galileo</a><br>
-&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 3.13.7.5 <a href=#pppsync>Sync Corr</a><br>
-&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 3.13.7.6 <a href=#pppaverage>Averaging</a><br>
-&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 3.13.7.7 <a href=#pppquick>Quick-Start</a><br>
-&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 3.13.7.8 <a href=#pppgap>Maximal Solution Gap</a><br>
-&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 3.13.7.9 <a href=#pppaudio>Audio Response</a><br>
-&nbsp; &nbsp; &nbsp; 3.13.8 <a href=#pppsigmas>Sigmas</a><br>
-&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 3.13.8.1 <a href=#pppsigc>Code</a><br>
-&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 3.13.8.2 <a href=#pppsigp>Phase</a><br>
-&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 3.13.8.3 <a href=#pppsigxyzi>XYZ Init</a><br>
-&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 3.13.8.4 <a href=#pppsigxyzn>XYZ White Noise</a><br>
-&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 3.13.8.5 <a href=#pppsigtrpi>Tropo Init</a><br>
-&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 3.13.8.6 <a href=#pppsigtrpn>Tropo White Noise</a><br>
-&nbsp; &nbsp; &nbsp; 3.13.9 <a href=#pppplots>PPP Plot</a><br>
-&nbsp; &nbsp; &nbsp; 3.13.10 <a href=#ppptracepos>Track Plot</a><br>
-&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 3.13.10.1 <a href=#pppmap>Open Map</a><br>
-&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 3.13.10.2 <a href=#pppmaptype>Google/OSM</a><br>
-&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 3.13.10.3 <a href=#pppdot>Dot Size</a><br>
-&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 3.13.10.4 <a href=#pppcolor>Dot Color</a><br>
-&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 3.13.10.5 <a href=#pppspeed>Speed</a><br>
-
+&nbsp; &nbsp; &nbsp; 3.13.1 <a href=#pppInp>PPP (1): Input and Output</a><br>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 3.13.1.1 <a href=#pppdatasource>Data Source</a><br>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 3.13.1.2 <a href=#ppprnxobs>RINEX Observation File</a><br>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 3.13.1.3 <a href=#ppprnxnav>RINEX Navigation File</a><br>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 3.13.1.4 <a href=#pppcorrfile>Correction File</a><br>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 3.13.1.5 <a href=#pppcorrstream>Corrections Stream</a><br>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 3.13.1.6 <a href=#pppmarkcoor>Coordinates</a><br>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 3.13.1.7 <a href=#ppplogfile>Logfile</a><br>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 3.13.1.8 <a href=#pppantexfile>ANTEX File</a><br>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 3.13.1.9 <a href=#pppnmeafile>NMEA File</a><br>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 3.13.1.10 <a href=#pppsnxtrofile>SNX TRO File</a><br>
+&nbsp; &nbsp; &nbsp; 3.13.2 <a href=#pppStation>PPP (2): Processed Stations</a><br>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 3.13.2.1 <a href=#pppnehsigma>Sigma North/East/Height</a><br>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 3.13.2.2 <a href=#pppnehnoise>Noise North/East/Height</a><br>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 3.13.2.3 <a href=#ppptropsigma>Tropo Sigma</a><br>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 3.13.2.4 <a href=#ppptropnoise>Tropo Noise</a><br>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 3.13.2.5 <a href=#pppnmeaport>NMEA Port</a><br>
+&nbsp; &nbsp; &nbsp; 3.13.3 <a href=#pppOptions>PPP (3): Processing Options</a><br>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 3.13.3.1 <a href=#ppplinecombi>Linear Combinations</a><br>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 3.13.3.2 <a href=#pppcodeobs>Code Observations</a><br>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 3.13.3.3 <a href=#pppphaseobs>Phase Observations</a><br>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 3.13.3.4 <a href=#pppeleweight>Elevation Depending Weighting</a><br>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 3.13.3.5 <a href=#pppminobs>Minimum Number of Observations</a><br>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 3.13.3.6 <a href=#pppmineleva>Minimum Elevation</a><br>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 3.13.3.7 <a href=#pppwaitclockcorr>Wait for Clock Corrections</a><br>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 3.13.3.8 <a href=#pppseeding>Seeding</a><br>
+&nbsp; &nbsp; &nbsp; 3.13.4 <a href=#pppPlots>PPP (4): Plots</a><br>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 3.13.4.1 <a href=#ppptimeseries>PPP Plot</a><br>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 3.13.4.2 <a href=#pppaudioresp>Audio Response</a><br>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 3.13.4.3 <a href=#ppptrackmap>Track Map</a><br>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 3.13.4.3.1 <a href=#pppmaptype>Google/OSM</a><br>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 3.13.4.4 <a href=#pppdotprop>Dot-properties</a><br>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 3.13.4.4.1 <a href=#pppdotsize>Size</a><br>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 3.13.4.4.2 <a href=#pppdotcolor>Color</a><br>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 3.13.4.5 <a href=#pppspeed>Post Processing Speed</a><br>
 3.14. <a href=#combi>Combine Corrections</a><br>
 &nbsp; &nbsp; &nbsp; 3.14.1 <a href=#combimounttab>Combine Corrections Table</a><br>
 &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 3.14.1.1 <a href=#combiadd>Add Row, Delete</a><br>
@@ -2076,27 +2073,201 @@ Be careful when keyword 'ALL' is specified as 'Mountpoint' for involving all inc
 <p>
 BNC can derive coordinates for a rover position following the Precise Point Positioning (PPP) approach. It uses either code or code plus phase data from one or more GNSS systems in ionosphere free linear combinations P3 or L3. Besides pulling a stream of observations from a dual frequency GNSS receiver, this also
 <ul>
-<li>requires pulling in addition a stream carrying satellite orbit and clock corrections to Broadcast Ephemeris in the form of RTCM Version 3 'State Space Representation' (SSR) messages. Note that for BNC these Broadcast Corrections need to be referred to the satellite's Antenna Phase Center (APC). Streams providing such messages are listed on <u>http://igs.bkg.bund.de/ntrip/orbits</u>. Stream 'CLK11' on NTRIP Broadcaster 'products.igs-ip.net:2101' is an example.</li>
-<li>may require pulling a stream carrying Broadcast Ephemeris available as RTCM Version 3 message types 1019, 1020, 1043, 1044, 1045, 1046 and 63 (tentative). This is a must only when the stream coming from the receiver does not contain Broadcast Ephemeris or provides them only at very low repetition rate. Streams providing such messages are listed on <u>http://igs.bkg.bund.de/ntrip/ephemeris</u>. Stream 'RTCM3EPH' on caster 'products.igs-ip.net:2101' is an example.</li>
+<li>Requires pulling in addition a stream carrying satellite orbit and clock corrections to Broadcast Ephemeris in the form of RTCM Version 3 'State Space Representation' (SSR) messages. Note that for BNC these Broadcast Corrections need to be referred to the satellite's Antenna Phase Center (APC). Streams providing such messages are listed on <u>http://igs.bkg.bund.de/ntrip/orbits</u>. Stream 'CLK11' on NTRIP Broadcaster 'products.igs-ip.net:2101' is an example.</li>
+<li>May require pulling a stream carrying Broadcast Ephemeris available as RTCM Version 3 message types 1019, 1020, 1043, 1044, 1045, 1046 and 63 (tentative). This becomes a must only when the stream coming from the receiver does not contain Broadcast Ephemeris or provides them only at very low repetition rate. Streams providing such messages are listed on <u>http://igs.bkg.bund.de/ntrip/ephemeris</u>. Stream 'RTCM3EPH' on caster 'products.igs-ip.net:2101' is an example.</li>
+</ul>
+</p>
+
+<p>When using the PPP option, it is important to understand which effects are corrected by BNC.
+</p>
+<ul>
+<li>BNC does correct for Solid Earth Tides and Phase Windup.</li>
+<li>Satellite antenna phase center offsets are corrected.</li>
+<li>Satellite antenna phase center variations are neglected because this is a small effect usually less than 2 centimeters.</li>
+<li>Observations can be corrected for a Receiver Antenna Offset. Depending on whether or not this correction is applied, the estimated position is either that of the receiver's antenna phase center or that of the receiver's Antenna Reference Point.</li>
+<li>Receiver antenna phase center variations are not included in the model. The bias caused by this neglect depends on the receiver antenna type. For most antennas it is smaller than a few centimeters.</li>
+<li>Ocean and atmospheric loading is neglected. Atmospheric loading is pretty small. Ocean loading is usually also a small effect but may reach up to about 10 centimeters for coastal stations.</li>
+<li>Rotational deformation due to polar motion (Polar Tides) is not corrected because this is a small effect usually less than 2 centimeters.</li>
 </ul>
 </p>
 <p>
-The following figure provides the screenshot of an example PPP session with BNC.
+The provider of an orbit/clock corrections stream may switch with his service at any time from a duty to a backup server installation. This shall be noted in the SSR stream through a change of the Issue Of Data (IOD SSR) parameter. The PPP option in BNC will immediately reset all ambiguities in such a situation.
+</p>
+<p>
+PPP options are specified in BNC through the following four panels.
+<ul>
+<li>PPP (1): Input and output, sprecifying real-time or post processing mode and associated data sources</li>
+<li>PPP (2): Processed stations, specifying sigmas and noise of a-priori coordinates and NMEA stream output</li>
+<li>PPP (3): Processing options, specifying general PPP processing options</li>
+<li>PPP (4): Plots, specifying visualization through time series and track maps</li>
+</ul>
 </p>
 
-<p><img src="IMG/screenshot03.png"/></p>
-<p><u>Figure 20:</u> Real-time Precise Point Positioning with BNC, PPP Panel 1.</p>
+<p><a name="pppInp"><h4>3.13.1 PPP (1): Input and Output</h4></p>
+<p>
+This panel provides options for specifying the input and output streams and files required by BNC for real-time or post processing PPP.
+</p>
 
-<p><img src="IMG/screenshot17.png"/></p>
-<p><u>Figure 21:</u> Precise Point Positioning with BNC, PPP Panel 2.</p>
+<p><a name="pppdatasource"><h4>3.13.1.1 Data Source - optional</h4></p>
+<p>
+Choose between input from 'Real-time Streams' or 'RINEX Files' for PPP with BNC in real-time or post processing mode.
+</p>
 
-<p><img src="IMG/screenshot18.png"/></p>
-<p><u>Figure 22:</u> Precise Point Positioning with BNC, PPP Panel 3.</p>
+<p>
+<u>Real-time Streams</u><br>
+When choosing 'Real-time Streams' BNC will do a PPP solutions in real-time. This requires pulling an GNSS observations stream, Broadcast Ephemeris messages and a stream containing corrections to Broadcast Ephemeris. Streams must come in RTCM Version 2 or RTCM Version 3 format.
+</p>
+<p>
+If you don't pull Broadcast Corrections BNC will switch with its solution to 'Single Point Positioning' (SPP) mode.
+</p>
 
+<p>
+<u>RINEX Files</u><br>
+This input mode allows you to specify RINEX Observation, RINEX Navigation and Broadcast Correction files. BNC accepts RINEX Version 2 as well as RINEX Version 3 Observation or Navigation file formats. Files carrying Broadcast Corrections must have the format produced by BNC through the 'Broadcast Corrections' panel. 
+</p>
+<p>
+Specifying only a RINEX Observation and a RINEX Navigation file and no Broadcast Corrections file leads BNC to a 'Single Point Positioning' (SPP) solution.
+<p>
+<u>Debugging</u><br>
+Note that for debugging purposes BNC's real-time PPP functionality can also be used offline. Apply the 'File Mode' 'Command Line' option for that to read a file containing synchronized observations, orbit and clock correctors, and Broadcast Ephemeris. Example:<br><br>
+bnc.exe --conf c:\temp\PPP.bnc --file c:\temp\RAW<br><br>
+Such a file (here: 'RAW') must be saved beforehand using BNC's 'Raw output file' option.
+</li>
+</ul>
+</p> 
+
+<p><a name="ppprnxobs"><h4>3.13.1.2 RINEX Observation File - mandatory if 'Data source' is set to 'RINEX Files'</h4></p>
+<p>
+Specify one or more RINEX Observation files. The file format can be RINEX Version 2 or RINEX Version 3.
+</p>
+
+<p><a name="ppprnxnav"><h4>3.13.1.3 RINEX Navigation File - mandatory if 'Data source' is set to 'RINEX Files'</h4></p>
+<p>
+Specify one or more RINEX Navigation files. The file format can be RINEX Version 2 or RINEX Version 3.
+</p>
+
+<p><a name="pppcorrfile"><h4>3.13.1.4 Correction File - optional if 'Data source' is set to 'RINEX Files'</h4></p>
+<p>
+Specify one or more Broadcast 'Correction files' as saved beforehand using BNC. The file contents is basically the ASCII representation of a RTCM Version 3 Broadcast Correction (SSR) stream.
+</p>
+<p>
+If you don't specify a 'Correction file' BNC will fall back from a PPP solution to a Single Point Positioning (SPP) solution.
+</p>
+
+<p><a name="pppcorrstream"><h4>3.13.1.5 Corrections Stream - optional if 'Data source' is set to 'Real-Time Streams'</h4></p>
+<p>
+Specify a Broadcast Ephemeris 'Corrections stream' from the list of selected 'Streams' you are pulling if you want BNC to correct your satellite ephemeris accordingly. Note that the stream's orbit and clock corrections must refer to the satellite Antenna Phase Center (APC). Streams providing such corrections are made availabel e.g. through the International GNSS Service (IGS) and listed on <u>http://igs.bkg.bund.de/ntrip/orbits</u>. The stream format must be RTCM Version 3 containing so-called SSR messages. Streams 'IGS03' and 'CLK11' supporting GPS plus GLONASS are examples.
+</p>
+<p>
+If you don't specify a 'Corrections stream' BNC will fall back from a PPP solution to a Single Point Positioning (SPP) solution.
+</p>
+
+<p><a name="pppmarkcoor"><h4>3.13.1.6 Coordinates - mandatory</h4></p>
+<p>
+Enter the full path to an ASCII file which specifies all streams or files from stationary or mobile receivers you potentially may want to process. The 'Coordinates' file must contain one record per file or stream with the following parameters separated by blank characters:
+</p>
+<p>
+<ul>
+<li>Input data source, to be specifiedy either through
+<ul>
+<li>the 'Mountpoint' of an RTCM stream (when in real-time PPP mode), or
+</li>
+<li>the first four characters of the RINEX observations file (when in post processing PPP mode).</li>
+</ul>
+Having this parameter first in each record is mandatory. BNC will carry out PPP solutions only for streams or files specified here.</li><br>
+<li>Only for static observations from a stationary receiver:<br>Approximate a-priori X,Y,Z coordinate [m] of the station's marker; specify '0.0 0.0 0.0' if unknown or when observations come from a mobile receiver.</li><br>
+<li>Nort, East and Up component [m] of antenna excentricity which is the difference between Antenna Reference Point (ARP) and a nearby marker position; when specifying the antenna excentricity BNC will produce coordinates referring to the marker position and not referring to ARP; specify '0.0 0.0 0.0' if excentricity is unknown or the ARP itself is understood as the marker.</li><br>
+<li>Receiver's antenna name as defined in your ANTEX file (see below); Observations will be corrected for the Antenna Phase Center's (APC) offset and variation which may result in a reduction of a few centimeters at max; the specified name must consist of 20 characters; add trailing blanks if the antenna name has less than 20 characters, examples:<br><pre>
+&nbsp; &nbsp;'JPSREGANT_SD_E      ' (no radome)
+&nbsp; &nbsp;'LEIAT504        NONE' (no radome)
+&nbsp; &nbsp;'LEIAR25.R3      LEIT' (radome)</pre>
+Leave blank if you don't want to correct observations for antenna phase center offsets.</li>
+</ul>
+</p>
+<p>
+Records in the 'Coordinates' file with exclamation mark '!' in the first column or blank records will be understood as comment lines and ignored.
+</p>
+<p>
+The following is an example contents for a 'Coordinates' file. Here each record describes the mountpoint of a stream available from the
+global stationary IGS real-time network. A-prioriy coordinates are followed by North/East/Up excentricity components of the ARP 
+followed by the antenna type and radom in use.
+</p>
+<pre>
+!
+! Station        X[m]           Y[m]           Z[m]         North[m]   EAST[m]    UP[m]  Antenna        Radom
+! -----------------------------------------------------------------------------------------------------------
+ADIS0      4913652.6612   3945922.7678    995383.4359       0.0000     0.0000     0.0010 TRM29659.00     NONE
+ALIC0     -4052052.5593   4212836.0078  -2545104.8289       0.0000     0.0000     0.0015 LEIAR25.R3      NONE
+BELF0      3685257.8823   -382908.8992   5174311.1067       0.0000     0.0000     0.0000 LEIAT504GG      LEIS
+BNDY0     -5125977.4106   2688801.2966  -2669890.4345       0.0000     0.0000     0.0000 ASH701945E_M    NONE
+BRAZ0      4115014.0678  -4550641.6105  -1741443.8244       0.0000     0.0000     0.0080 LEIAR10         NONE
+CAGZ0      4893379.8326    772650.6854   4004180.1625       0.0000     0.0000     0.0945 JPSREGANT_DD_E  NONE
+CALG0     -1635378.1748  -3665371.5746   4941664.3370       0.0000     0.0000     0.0000 SOK702          NONE
+CONZ0      1492004.6119  -4887911.2671  -3803640.2397       0.0000     0.0000     0.0574 LEIAR25.R3      LEIT
+CTWN0      5023564.4285   1677795.7211  -3542025.8392       0.0000     0.0000     0.0000 ASH701941.B     NONE
+CUT07     -2364337.4408   4870285.6055  -3360809.6280       0.0000     0.0000     0.0000 TRM59800.00     SCIS
+DHLG3     -2319099.4261  -4799846.4583   3490090.4018       0.0000     0.0000     0.1224 ASH701945B_M    SCIS
+FAA10     -5247393.4678  -3076866.6580  -1911521.1749       0.0000     0.0000     0.1262 LEIAR25.R4      NONE
+GANP0      3929181.3480   1455236.9105   4793653.9880       0.0000     0.0000     0.3830 TRM55971.00     NONE
+HLFX0      2018905.6037  -4069070.5095   4462415.4771       0.0000     0.0000     0.1000 TPSCR.G3        NONE
+KIRU0      2251420.6255    862817.3340   5885476.8395       0.0000     0.0000     0.0620 ASH701945C_M    SNOW
+LHAZ0      -106941.9272   5549269.8041   3139215.1564       0.0000     0.0000     0.1330 ASH701941.B     NONE
+LMMF7      2993387.3587  -5399363.8649   1596748.0983       0.0000     0.0000     0.0000 TRM57971.00     NONE
+MAO07     -5466067.0979  -2404333.0198   2242123.1929       0.0000     0.0000     0.0000 LEIAR25.R3      LEIT
+NICO0      4359415.5252   2874117.1872   3650777.9614       0.0000     0.0000     0.0650 LEIAR25.R4      LEIT
+NKLG7      6287385.7320   1071574.7606     39133.1088      -0.0015    -0.0025     3.0430 TRM59800.00     SCIS
+NURK7      5516756.5103   3196624.9684   -215027.1315       0.0000     0.0000     0.1300 TPSCR3_GGD      NONE
+OHIX7      1525809.2353  -2432478.7568  -5676166.2639       0.0000     0.0000     0.0660 LEIAR25.R4      LEIT
+ONSA0      3370658.3928    711877.2903   5349787.0603       0.0000     0.0000     0.9950 AOAD/M_B        OSOD
+PDEL0      4551595.9072  -2186892.9495   3883410.9685       0.0000     0.0000     0.0000 LEIAT504GG      NONE
+RCMN0      5101056.6270   3829074.4206   -135016.1589       0.0000     0.0000     0.0000 LEIAT504GG      LEIS
+REUN0      3364098.9668   4907944.6121  -2293466.7379       0.0000     0.0000     0.0610 TRM55971.00     NONE
+REYK7      2587384.0890  -1043033.5433   5716564.1301       0.0000     0.0000     0.0570 LEIAR25.R4      LEIT
+RIO27      1429907.8578  -3495354.8953  -5122698.5595       0.0000     0.0000     0.0350 ASH700936C_M    SNOW
+SMR50       927077.1096  -2195043.5597  -5896521.1344       0.0000     0.0000     0.0000 TRM41249.00     TZGD
+SUWN0     -3062023.1604   4055447.8946   3841818.1684       0.0000     0.0000     1.5700 TRM29659.00     DOME
+TASH7      1695944.9208   4487138.6220   4190140.7391       0.0000     0.0000     0.1206 JAV_RINGANT_G3T NONE
+UFPR0      3763751.6731  -4365113.9039  -2724404.5331       0.0000     0.0000     0.1000 TRM55971.00     NONE
+UNB30      1761287.9724  -4078238.5659   4561417.8448       0.0000     0.0000     0.3145 TRM57971.00     NONE
+VILL0      4849833.5863   -335048.8133   4116015.0652       0.0000     0.0000     0.0437 AOAD/M_T        NONE
+WIND7      5633708.8016   1732017.9297  -2433985.5795       0.0000     0.0000     0.0460 ASH700936C_M    SNOW
+WTZR0      4075580.3797    931853.9767   4801568.2360       0.0000     0.0000     0.0710 LEIAR25.R3      LEIT
+WUH27     -2267749.9761   5009154.5504   3221294.4429       0.0000     0.0000     0.1206 JAV_RINGANT_G3T NONE
+YELL7     -1224452.8796  -2689216.1863   5633638.2832       0.0000     0.0000     0.1000 AOAD/M_T        NONE
+</pre>
+<p>
+Note that the only mandatory parameter in this is the 'Station' parameter standing for an observation's mountpoint or RINEX file name.
+The following shows further valid examples for records of a 'Coordinates' file.
+</p>
+
+<pre>
+!
+! Station     X[m]         Y[m]          Z[m]    N[m]   E[m]   U[m]  Antenna        Radom
+! ---------------------------------------------------------------------------------------
+FFMJ1   4053455.7384  617729.8393  4869395.8214  0.000  0.000  0.045
+TITZ1   3993780.4501  450206.8969  4936136.9886
+WARN
+SASS1         0.0          0.0           0.0     0.000  0.000  0.031 TPSCR3_GGD      CONE
+</pre>
+
+<p>
+In this file
+</p>
+<ul>
+<li> Record 'FFMJ1' describes a stream from a stationary receiver with known a-priory marker coordinate and antenna excentricity but unknown antenna type and radom.</li>
+<li> Record 'TITZ1' describes a stream coming from a stationary receiver where an a-priory marker coordinate is known but antenna excentricity, type and radom are unknown.</li>
+<li>The 4-character station ID 'WARN' indicates that a RINEX observations file for post processing PPP is available for station 'WARN' but an a-priory marker coordinate as well as antenna excentricity, type and radom are unknown.</li>
+<li>Record 'SASS1' stands for a mountpoint where the stream comes from a mobile rover receiver. Hence an a-priory coordinate is unknown although antenna excentricity, type and radom are known.</li>
+</ul>
+</p>
+
+<p><a name="ppplogfile"><h4>3.13.1.7 Logfile - optional</h4></p>
 <p>
 PPP results are shown in the 'Log' tab on the bottom of BNC's main window. Depending on the processing options, the following values are shown about once per second (example):
 <pre>
-10-09-08 09:14:06 FFMJ1  PPP 09:14:04.0 12    4053457.429 +-  2.323     617730.551 +-  1.630    4869395.266 +-  2.951
+15-06-30 11:40:24 2015-06-30_11:40:22.000 CUT07 X = -2364337.6864 Y = 4870283.8106 Z = -3360808.3099 NEU:  +0.1543  +0.2121  -1.0190 TRP:  +2.4022  +0.0009
+15-06-30 11:40:25 2015-06-30_11:40:23.000 CUT07 X = -2364337.6861 Y = 4870283.8111 Z = -3360808.3105 NEU:  -0.9782  +0.0916  -2.3544 TRP:  +2.4017  +0.0013
+15-06-30 11:40:26 2015-06-30_11:40:24.000 CUT07 X = -2364337.6884 Y = 4870283.8123 Z = -3360808.3103 NEU:  -0.5606  -0.0938  -1.9498 TRP:  +2.4018  +0.0016
 </pre>
 </p>
 <p>
@@ -2157,83 +2328,15 @@ Results of Epoch 2015-06-30_10:37:00.000
 </pre>
 </p>
 
+<p><a name="pppantexfile"><h4>3.13.1.8 ANTEX File - optional</h4></p>
 <p>
-Note that for debugging or Post Processing purposes BNC's 'PPP' functionality option can also be used offline.
-<ul>
-<li>
-<u>Debugging:</u> Apply the 'File Mode' 'Command Line' option for that to read a file containing synchronized observations, orbit and clock correctors, and Broadcast Ephemeris. Such a file must be generated before using BNC's 'Raw output file' option. Example:<br>
-bnc.exe --conf c:\temp\PPP.bnc --file c:\temp\FFMJ1
-</li>
-<li>
-<u>Post Processing:</u> Apply the 'Post Processing' option as described below.
-</li>
-</ul>
+IGS provides a file containing absolute phase center corrections for GNSS satellite and receiver antennas in ANTEX format. Entering the full path to such an ANTEX file is required for correcting observations for antenna phase center offsets and variations. It allows you to specify the name of your receiver's antenna (as contained in the ANTEX file) to apply such corrections.
+</p>
+<p>
+Default is an empty option field, meaning that you don't want to correct observations for antenna phase center offsets and variations.
 </p>
 
-<p>When using the PPP option, it is important to understand which effects are corrected by BNC.
-</p>
-<ul>
-<li>BNC does correct for Solid Earth Tides and Phase Windup.</li>
-<li>Satellite antenna phase center offsets are corrected.</li>
-<li>Satellite antenna phase center variations are neglected because this is a small effect usually less than 2 centimeters.</li>
-<li>Observations can be corrected for a Receiver Antenna Offset. Depending on whether or not this correction is applied, the estimated position is either that of the receiver's antenna phase center or that of the receiver's Antenna Reference Point.</li>
-<li>Receiver antenna phase center variations are not included in the model. The bias caused by this neglect depends on the receiver antenna type. For most antennas it is smaller than a few centimeters.</li>
-<li>Ocean and atmospheric loading is neglected. Atmospheric loading is pretty small. Ocean loading is usually also a small effect but may reach up to about 10 centimeters for coastal stations.</li>
-<li>Rotational deformation due to polar motion (Polar Tides) is not corrected because this is a small effect usually less than 2 centimeters.</li>
-</ul>
-</p>
-<p>
-The provider of an orbit/clock corrections stream may switch with his service at any time from a duty to a backup server installation. This shall be noted in the SSR stream through a change of the Issue Of Data (IOD SSR) parameter. The PPP option in BNC will immediately reset all ambiguities in such a situation.
-</p>
-
-<p><a name="pppmode"><h4>3.13.1 Mode & Mountpoints - optional</h4></p>
-<p>
-Specify the Point Positioning mode you want to apply and the mountpoints for observations and Broadcast Corrections.
-</p>
-
-<p><a name="pppmodus"><h4>3.13.1.1 Mode - optional</h4></p>
-<p>
-Choose between plain Single Point Positioning (SPP) and Precise Point Positioning (PPP) in 'Realtime' or 'Post-Processing' mode. Options are 'Realtime-PPP', 'Realtime-SPP', and 'Post-Processing'.
-</p>
-
-<p><a name="pppobsmount"><h4>3.13.1.2 Obs Mountpoint - optional</h4></p>
-<p>
-Specify an 'Observations Mountpoint' from the list of selected 'Streams' you are pulling if you want BNC to derive coordinates for the affected rover position through a Point Positioning solution.
-</p>
-
-<p><a name="pppcorrmount"><h4>3.13.1.3 Corr Mountpoint - optional</h4></p>
-<p>
-Specify a Broadcast Ephemeris 'Corrections Mountpoint' from the list of selected 'Streams' you are pulling if you want BNC to correct your positioning solution accordingly. Not that the stream's corrections must refer to the satellite Antenna Phase Center (APC).
-</p>
-
-<p><a name="pppxyz"><h4>3.13.2 Marker Coordinates - optional</h4></p>
-<p>
-Enter the reference coordinate XYZ of the receiver's position in meters if known. This option makes only sense for static observations. Defaults are empty option fields, meaning that the antenna's XYZ position is unknown.
-</p>
-<p>
-Once a XYZ coordinate is defined, the 'PPP' line in BNC's logfile is extended by North, East and Up displacements to (example):
-</p>
-<pre>
-10-08-09 06:01:56 FFMJ1  PPP 06:02:09.0 11    4053457.628 +-  2.639     617729.438 +-  1.180    4869396.447 +-  1.921  NEU   -0.908   -0.571    1.629
-</pre>
-<p>
-The parameters following the 'NEU' string provide North, East and Up components of the current coordinate displacement in meters.
-</p>
-
-<p><a name="pppneu"><h4>3.13.3 Antenna Eccentricity - optional</h4></p>
-<p>
-You may like to specify North, East and Up components of an antenna eccentricity which is the difference between a nearby marker position and the antenna phase center. If you do so BNC will produce coordinates referring to the marker position and not referring to the antenna phase center.
-</p>
-
-<p><a name="pppoutput"><h4>3.13.4 NMEA Output - optional</h4></p>
-<p>
-BNC allows to output results from Precise Point Positioning in NMEA format.
-</p>
-<p>
-Note that Tomoji Takasu has written a program called RTKPLOT for visualizing NMEA strings. It is available from <u>http://www.rtklib.com</u> and compatible with the NMEA file and port output of BNC's 'PPP' client option.
-</p>
-
-<p><a name="pppnmeafile"><h4>3.13.4.1 NMEA File - optional</h4></p>
+<p><a name="pppnmeafile"><h4>3.13.1.9 NMEA File - optional</h4></p>
 <p>
 The NMEA sentences generated about once per second are pairs of
 <ul>
@@ -2269,62 +2372,7 @@ $GPGGA,112356,3200.2332035,S,11553.6880127,E,1,13,1.4,23.971,M,0.0,M,,*52
 ...
 </pre>
 
-<p><a name="pppnmeaport"><h4>3.13.4.2 NMEA Port - optional</h4></p>
-<p>
-Specify the IP port number of a local port where Point Positioning results become available as NMEA messages. The default value for 'NMEA Port' is an empty option field, meaning that BNC does not provide NMEA messages vi IP port. Note that the NMEA file output and the NMEA IP port output are the same.
-</p>
-<p>
-NASA's 'World Wind' software (see <u>http://worldwindcentral.com/wiki/NASA_World_Wind_Download</u>) can be used for real-time visualization of positions provided through BNC's NMEA IP output port. You need the 'GPS Tracker' plug-in available from <u>http://worldwindcentral.com/wiki/GPS_Tracker</u> for that. The 'Word Wind' map resolution is not meant for showing centimeter level details.
-</p>
-
-<p><a name="ppppost"><h4>3.13.5 Post Processing - optional</h4></p>
-<p>When in 'Post-Processing' mode
-<ul>
-<li>Specifying a RINEX Observation, a RINEX Navigation and a Broadcast Corrections file leads to a PPP solution.</li>
-<li>Specifying only a RINEX Observation and a RINEX Navigation file and no Broadcast Corrections file leads to a SPP solution.</li>
-</ul>
-</p>
-<p>BNC accepts RINEX Version 2 as well as RINEX Version 3 Observation or Navigation file formats. Files carrying Broadcast Corrections must have the format produced by BNC through the 'Broadcast Corrections' tab.
-<p>
-Post Processing PPP results can be saved in a specific output file.
-</p>
-
-<p><a name="ppprecant"><h4>3.13.6 Antennas - optional</h4></p>
-<p>
-BNC allows correcting observations for antenna phase center offsets and variations.
-</p>
-
-<p><a name="pppantex"><h4>3.13.6.1 ANTEX File - optional</h4></p>
-<p>
-IGS provides a file containing absolute phase center corrections for GNSS satellite and receiver antennas in ANTEX format. Entering the full path to such an ANTEX file is required for correcting observations for antenna phase center offsets and variations. It allows you to specify the name of your receiver's antenna (as contained in the ANTEX file) to apply such corrections.
-</p>
-<p>
-Default is an empty option field, meaning that you don't want to correct observations for antenna phase center offsets and variations.
-</p>
-
-<p><a name="ppprecantenna"><h4>3.13.6.2 Receiver Antenna Name - optional if 'ANTEX File' is set</h4></p>
-<p>
-Specify the receiver's antenna name as defined in your ANTEX file. Observations will be corrected for the antenna phase center's offset which may result in a reduction of a few centimeters at max. Corrections for phase center variations are not yet applied by BNC. The specified name must consist of 20 characters. Add trailing blanks if the antenna name has less than 20 characters. Examples:
-<pre>
-'JPSREGANT_SD_E      ' (no radome)
-'LEIAT504        NONE' (no radome)
-'LEIAR25.R3      LEIT' (radome)
-</pre>
-</p>
-<p>
-Default is an empty option field, meaning that you don't want to correct observations for antenna phase center offsets.
-</p>
-
-<p><a name="pppbasics"><h4>3.13.7 Basics</h4></p>
-<p>BNC allows using different Point Positioning processing options depending on the capability of the involved receiver and the application in mind. It also allows introducing specific sigmas for code and phase observations as well as for reference coordinates and troposphere estimates. You may also like to carry out your PPP solution in Quick-Start mode or enforce BNC to restart a solution if the length of an outage exceeds a certain threshold.
-</p>
-
-<p><a name="pppphase"><h4>3.13.7.1 Use Phase Obs - optional</h4></p>
-<p>
-By default BNC applies a Point Positioning solution using an ionosphere free P3 linear combination of code observations. Tick 'Use phase obs' for an ionosphere free L3 linear combination of phase observations.
-</p>
-
-<p><a name="ppptropo"><h4>3.13.7.2 Estimate Tropo - optional</h4></p>
+<p><a name="pppsnxtrofile"><h4>3.13.1.10 SNX TRO File - optional</h4></p>
 <p>
 BNC estimates the tropospheric delay according to equation
 <pre>
@@ -2397,75 +2445,60 @@ The following is an example for a SINEX Troposphere file, see <u>https://igscb.j
 %=ENDTROP
 </pre>
 
-<p><a name="pppglo"><h4>3.13.7.3 Use GLONASS - optional</h4></p>
+<p><a name="pppStation"><h4>3.13.2 PPP (2): Processed Stations</h4></p>
+
+<p><a name="pppnehsigma"><h4>3.13.2.1 Sigma North/East/Height - mandatory</h4></p>
+<p>
+Enter a sigma in meters for the initial XYZ coordinate. A value of 100.0 (default) may be an appropriate choice. However, this value may be significantly smaller (i.e. 0.01) when starting for example from a station with known XZY position in Quick-Start mode.
+</p>
+
+<p><a name="pppnehnoise"><h4>3.13.2.2 Noise North/East/Height - mandatory</h4></p>
+<p>
+Enter a sigma in meters for the 'White Noise' of estimated XYZ coordinate components. A value of 100.0 (default) may be appropriate when considering possible sudden movements of a rover.
+</p>
+
+<p><a name="ppptropsigma"><h4>3.13.2.3 Tropo Sigma - mandatory if 'Estimate tropo' is set</h4></p>
+<p>
+Enter a sigma in meters for the a-priory model based tropospheric delay estimation. A value of 0.1 (default) may be an appropriate choice.
+</p>
+
+<p><a name="ppptropnoise"><h4>3.13.2.4 Tropo Noise - mandatory if 'Estimate tropo' is set</h4></p>
+<p>
+Enter a sigma in meters per second to describe the expected variation of the tropospheric effect. Supposing 1Hz observation data, a value of 3e-6 (default) would mean that the tropospheric effect may vary for 3600 * 3e-6 = 0.01 meters per hour.
+</p>
+
+<p><a name="pppnmeaport"><h4>3.13.2.5 NMEA Port - optional</h4></p>
+Specify the IP port number of a local port where Point Positioning results become available as NMEA messages. The default value for 'NMEA Port' is an empty option field, meaning that BNC does not provide NMEA messages vi IP port. Note that the NMEA file output and the NMEA IP port output are the same.
+</p>
+<p>
+NASA's 'World Wind' software (see <u>http://worldwindcentral.com/wiki/NASA_World_Wind_Download</u>) can be used for real-time visualization of positions provided through BNC's NMEA IP output port. You need the 'GPS Tracker' plug-in available from <u>http://worldwindcentral.com/wiki/GPS_Tracker</u> for that. The 'Word Wind' map resolution is not meant for showing centimeter level details.
+</p>
+<p>
+Note that Tomoji Takasu has written a program called RTKPLOT for visualizing NMEA strings. It is available from <u>http://www.rtklib.com</u> and compatible with the NMEA file and port output of BNC's 'PPP' client option.
+</p>
+
+<p><a name="pppOptions"><h4>3.13.3 PPP (3): Processing Options</h4></p>
+<p>BNC allows using different Point Positioning processing options depending on the capability of the involved receiver and the application in mind. It also allows introducing specific sigmas for code and phase observations as well as for reference coordinates and troposphere estimates. You may also like to carry out your PPP solution in Quick-Start mode or enforce BNC to restart a solution if the length of an outage exceeds a certain threshold.
+</p>
+
+<p><a name="ppplinecombi"><h4>3.13.3.1 Linear Combinations - mandatory</h4></p>
+<p>
+By default BNC applies a Point Positioning solution using an ionosphere free P3 linear combination of code observations. Tick 'Use phase obs' for an ionosphere free L3 linear combination of phase observations.
+</p>
+
 <p>
 By default BNC does not process GLONASS but only GPS observations when in Point Positioning mode. Tick 'Use GLONASS' to use GLONASS observations in addition to GPS (and Galileo if specified) for estimating coordinates in Point Positioning mode.
 </p>
-
-<p><a name="pppgal"><h4>3.12.7.4 Use Galileo - optional</h4></p>
 <p>
 By default BNC does not process Galileo but only GPS observations when in Point Positioning mode. Tick 'Use Galileo' to use Galileo observations in addition to GPS (and GLONASS if specified) for estimating coordinates in Point Positioning mode.
 </p>
 
-<p><a name="pppsync"><h4>3.13.7.5 Sync Corr - optional</h4></p>
-<p>
-Zero value (or empty field) means that BNC processes each epoch of data immediately after its arrival using satellite clock corrections available at that time. Non-zero value 'Sync Corr' means that the epochs of data are buffered and the processing of each epoch is postponed till the satellite clock corrections not older than 'Sync Corr' are available. Specifying a value of half the update rate of the clock corrections as 'Sync Corr' (i.e. 5 sec) may be appropriate. Note that this causes an additional delay of the PPP solutions in the amount of half of the update rate.
-</p>
-<p>
-Using observations in sync with the corrections can avoid a possible high frequency noise of PPP solutions. Such noise could result from processing observations regardless of how late after a clock correction they were received. Note that applying the 'Sync Corr' option significantly reduces the PPP computation effort for BNC.
-</p>
-<p>
-Default is an empty option field, meaning that you want BNC to process observations immediately after their arrival through applying the latest received clock correction.
-</p>
-
-<p><a name="pppaverage"><h4>3.13.7.6 Averaging - optional if XYZ is set</h4></p>
-<p>
-Enter the length of a sliding time window in minutes. BNC will continuously output moving average values and their RMS as computed from those individual values obtained most recently throughout this period. RMS values presented for XYZ coordinates and tropospheric zenith path delays are bias reduced while RMS values for North/East/Up (NEU) displacements are not. Averaged values for XYZ coordinates and their RMS are marked with string &quot;AVE-XYZ&quot; in BNC's logfile and 'Log' section while averaged values for NEU displacements and their RMS are marked with string &quot;AVE-NEU&quot; and averaged values for the tropospheric delays and their RMS are marked with string &quot;AVE-TRP&quot;. Example:
-</p>
-<pre>
-10-09-08 09:13:05 FFMJ1  AVE-XYZ 09:13:04.0   4053455.948 +-  0.284     617730.422 +-  0.504    4869397.692 +-  0.089
-10-09-08 09:13:05 FFMJ1  AVE-NEU 09:13:04.0    1.043 +-  0.179    0.640 +-  0.456    1.624 +-  0.331
-10-09-08 09:13:05 FFMJ1  AVE-TRP 09:13:04.0         2.336 +-  0.002
-</pre>
-<p>
-Entering any positive value up to 1440 (24h mean value) is allowed. An empty option field (default) means that you don't want BNC to output moving average positions into the logfile and the 'Log' section. Note that averaging positions makes only sense for a stationary receiver.
-</p>
-
-<p><a name="pppquick"><h4>3.13.7.7 Quick-Start - optional if XYZ is set</h4></p>
-<p>
-Enter the length of a startup period in seconds for which you want to fix the PPP solution to a known XYZ coordinate. Constraining coordinates is done in BNC through setting the 'XYZ White Noise' temporarily to zero.
-</p>
-<p>
-This so-called Quick-Start option allows the PPP solutions to rapidly converge after startup. It requires that the antenna remains unmoved on the know position throughout the defined period. A value of 60 is likely to be an appropriate choice for 'Quick-Start'. Default is an empty option field, meaning that you don't want BNC to start in 'Quick-Start' mode.
-<p>
-You may need to create your own reference coordinate through running BNC for an hour in normal mode before applying the 'Quick-Start' option. Don't forget to introduce a realistic sigma 'XYZ Ini' according to the coordinate's precision.
-</p>
-
-<p><img src="IMG/screenshot22.png"/></p>
-<p><u>Figure 23:</u> BNC in 'Quick-Start' mode (PPP, Panel 2)</p>
-
-<p><a name="pppgap"><h4>3.13.7.8 Maximal Solution Gap - optional if Quick-Start is set</h4></p>
-<p>
-Specify a 'Maximum Solution Gap' in seconds. Should the time span between two consecutive solutions exceed this limit, the algorithm returns into the 'Quick-Start' mode and fixes the introduced reference coordinate for the specified 'Quick-Start' period. A value of '60' seconds could be an appropriate choice.
-</p>
-<p>
-This option makes only sense for a stationary operated receiver where solution convergence can be enforced because a good approximation for the rover position is known. Default is an empty option field, meaning that you don't want BNC to return into the 'Quick-Start' mode after failures caused i.e. by longer lasting outages.
-</p>
-
-<p><a name="pppaudio"><h4>3.13.7.9 Audio Response - optional if Quick-Start is set</h4></p>
-<p>
-For natural hazard prediction and monitoring it may be appropriate to generate audio alerts. For that you can specify an 'Audio response' threshold in meters. A beep is produced by BNC whenever a horizontal PPP coordinate component differs by more than the threshold value from the specified marker coordinate.
-</p>
-<p>
-Default is an empty option field, meaning that you don't want BNC to produce acoustic warning signals.
-</p>
-
-<p><a name="pppsigmas"><h4>3.13.8 Sigmas</h4></p>
+<p><a name="pppcodeobs"><h4>3.13.3.2 Code Observations - mandatory</h4></p>
 <p>
 You may like to introduce specific sigmas for code and phase observations and for the estimation of troposphere parameters.
 </p>
 
-<p><a name="pppsigc"><h4>3.13.8.1 Code - mandatory if 'Use Phase Obs' is set</h4></p>
+<p><a name="pppphaseobs"><h4>3.13.3.3 Phase Observations - mandatory if 'Use Phase Obs' is set</h4></p>
 <p>
 When 'Use phase obs' is set in BNC, the PPP solution will be carried out using both, code and phase observations. A sigma of 10.0 m for code observations and a sigma of 0.02 m for phase observations (defaults) are used to combine both types of observations. As the convergence characteristic of a PPP solution can be influenced by the ratio of the sigmas for code and phase, you may like to introduce you own sigmas for code and phase observations which differ from the default values.
 <ul>
@@ -2477,74 +2510,109 @@ When 'Use phase obs' is set in BNC, the PPP solution will be carried out using b
 Specify a sigma for code observations. Default is 10.0 m.
 </p>
 
-<p><a name="pppsigp"><h4>3.13.8.2 Phase - mandatory if 'Use Phase Obs' is set</h4></p>
 <p>
 Specify a sigma for phase observations. Default is 0.02 m.
 </p>
 
-<p><a name="pppsigxyzi"><h4>3.13.8.3 XYZ Init - mandatory</h4></p>
+<p><a name="pppeleweight"><h4>3.13.3.4 Elevation Depending Weighting - optional</h4></p>
+
+<p><a name="pppminobs"><h4>3.13.3.5 Minimum Number of Observations - optional</h4></p>
+
+<p><a name="pppmineleva"><h4>3.13.3.6 Minimum Elevation - optional</h4></p>
+
+<p><a name="pppwaitclockcorr"><h4>3.13.3.7 Wait for Clock Corrections - optional</h4></p>
 <p>
-Enter a sigma in meters for the initial XYZ coordinate. A value of 100.0 (default) may be an appropriate choice. However, this value may be significantly smaller (i.e. 0.01) when starting for example from a station with known XZY position in Quick-Start mode.
+Zero value (or empty field) means that BNC processes each epoch of data immediately after its arrival using satellite clock corrections available at that time. Non-zero value 'Sync Corr' means that the epochs of data are buffered and the processing of each epoch is postponed till the satellite clock corrections not older than 'Sync Corr' are available. Specifying a value of half the update rate of the clock corrections as 'Sync Corr' (i.e. 5 sec) may be appropriate. Note that this causes an additional delay of the PPP solutions in the amount of half of the update rate.
+</p>
+<p>
+Using observations in sync with the corrections can avoid a possible high frequency noise of PPP solutions. Such noise could result from processing observations regardless of how late after a clock correction they were received. Note that applying the 'Sync Corr' option significantly reduces the PPP computation effort for BNC.
+</p>
+<p>
+Default is an empty option field, meaning that you want BNC to process observations immediately after their arrival through applying the latest received clock correction.
 </p>
 
-<p><a name="pppsigxyzn"><h4>3.13.8.4 XYZ White Noise - mandatory</h4></p>
+<p><a name="pppseeding"><h4>3.13.3.8 Seeding - optional if XYZ is set</h4></p>
 <p>
-Enter a sigma in meters for the 'White Noise' of estimated XYZ coordinate components. A value of 100.0 (default) may be appropriate when considering possible sudden movements of a rover.
+Enter the length of a startup period in seconds for which you want to fix the PPP solution to a known XYZ coordinate. Constraining coordinates is done in BNC through setting the 'XYZ White Noise' temporarily to zero.
+</p>
+<p>
+This so-called Quick-Start option allows the PPP solutions to rapidly converge after startup. It requires that the antenna remains unmoved on the know position throughout the defined period. A value of 60 is likely to be an appropriate choice for 'Quick-Start'. Default is an empty option field, meaning that you don't want BNC to start in 'Quick-Start' mode.
+<p>
+You may need to create your own reference coordinate through running BNC for an hour in normal mode before applying the 'Quick-Start' option. Don't forget to introduce a realistic sigma 'XYZ Ini' according to the coordinate's precision.
 </p>
 
-<p><a name="pppsigtrpi"><h4>3.13.8.5 Tropo Init - mandatory if 'Estimate tropo' is set</h4></p>
 <p>
-Enter a sigma in meters for the a-priory model based tropospheric delay estimation. A value of 0.1 (default) may be an appropriate choice.
+The following figure provides the screenshot of an example PPP session with BNC.
 </p>
 
-<p><a name="pppsigtrpn"><h4>3.13.8.6 Tropo White Noise - mandatory if 'Estimate tropo' is set</h4></p>
-<p>
-Enter a sigma in meters per second to describe the expected variation of the tropospheric effect. Supposing 1Hz observation data, a value of 3e-6 (default) would mean that the tropospheric effect may vary for 3600 * 3e-6 = 0.01 meters per hour.
-</p>
+<p><img src="IMG/screenshot03.png"/></p>
+<p><u>Figure 20:</u> Real-time Precise Point Positioning with BNC, PPP Panel 1.</p>
 
-<p><a name="pppplots"><h4>3.13.9 PPP Plot - optional</h4></p>
+<p><img src="IMG/screenshot17.png"/></p>
+<p><u>Figure 21:</u> Precise Point Positioning with BNC, PPP Panel 2.</p>
+
+<p><img src="IMG/screenshot18.png"/></p>
+<p><u>Figure 22:</u> Precise Point Positioning with BNC, PPP Panel 3.</p>
+
+<p><img src="IMG/screenshot22.png"/></p>
+<p><u>Figure 23:</u> BNC in 'Quick-Start' mode (PPP, Panel 2)</p>
+
+<p><a name="pppaverage"><h4>3.13.3.NN Averaging - optional if XYZ is set</h4></p>
+<p><a name="pppgap"><h4>3.13.3.NN Maximal Solution Gap - optional if Quick-Start is set</h4></p>
+
+<p><a name="pppPlots"><h4>3.13.4 PPP (4): Plots</h4></p>
+
+<p><a name="ppptimeseries"><h4>3.13.4.1 PPP Plot - optional</h4></p>
 <p>
-PPP time series of North (red), East (green) and Up (blue) displacements will be plotted in the 'PPP Plot' tab when this option is ticked. Values will be either referred to an XYZ reference coordinate (if specified) or referred to the first estimated XYZ coordinate. The sliding PPP time series window will cover the period of the latest 5 minutes.
+You make like to track your rover position using Google Maps or Open StreetMap as a background map. Track maps can be produced with BNC in 'Real-time Streams' mode or in 'RINEX Files' post processing mode with data coming from files.
+</p>
+<p>
+When in 'Post Processing' mode you should not forget to specify a proxy under the 'Network' panel if that is operated in front of BNC.
+</p>
+<p>
+PPP time series of North (red), East (green) and Up (blue) displacements will be plotted in the 'PPP Plot' panel when this option is ticked. Values will be either referred to an XYZ reference coordinate (if specified) or referred to the first estimated XYZ coordinate. The sliding PPP time series window will cover the period of the latest 5 minutes.
 </p>
 <p>
 Note that a PPP time series makes only sense for a stationary operated receiver.
 </p>
 
-<p><a name="ppptracepos"><h4>3.13.10 Track Plot</h4></p>
+<p><a name="pppaudioresp"><h4>3.13.4.2 Audio Response - optional if Quick-Start is set</h4></p>
 <p>
-You make like to track your rover position using Google Maps or Open StreetMap as a background map. Track maps can be produced with BNC in 'Realtime-PPP', 'Realtime-SPP' and 'Post-Processing' PPP mode.
+For natural hazard prediction and monitoring it may be appropriate to generate audio alerts. For that you can specify an 'Audio response' threshold in meters. A beep is produced by BNC whenever a horizontal PPP coordinate component differs by more than the threshold value from the specified marker coordinate.
 </p>
 <p>
-When in 'Post-Processing' mode you should not forget to specify a proxy under the 'Network' tab if that is operated in front of BNC.
+Default is an empty option field, meaning that you don't want BNC to produce acoustic warning signals.
 </p>
 
 <br>
 <p><img src="IMG/screenshot32.png"/></p>
 <p><u>Figure 24:</u> Track of positions from BNC with Google Maps in the background.</p>
 
-<p><a name="pppmap"><h4>3.13.10.1 Open Map - optional</h4></p>
+<p><a name="ppptrackmap"><h4>3.13.4.3 Track Map - optional</h4></p>
 <p>
 The 'Open Map' button opens a windows showing a map according to options specified below.
 </p>
 
-<p><a name="pppmaptype"><h4>3.13.10.2 Google/OSM - mandatory before pushing 'Open Map'</h4></p>
+<p><a name="pppmaptype"><h4>3.13.4.3.1 Google/OSM - mandatory before pushing 'Open Map'</h4></p>
 <p>
 Specify either 'Google' or 'OSM' as the background for your rover positions.
 </p>
 
-<p><a name="pppdot"><h4>3.13.10.3 Dot Size - mandatory before pushing 'Open Map'</h4></p>
+<p><a name="pppdotprop"><h4>3.13.4.4 Dot-properties - mandatory before pushing 'Open Map'</h4></p>
+
+<p><a name="pppdotsize"><h4>3.13.4.4.1 Size - mandatory before pushing 'Open Map'</h4></p>
 <p>
 Specify the size of dots showing the rover position. A dot size of '3' may be appropriate. The maximum possible dot size is '10'. An empty option field or a size of '0' would mean that you don't want BNC to show the rover's track on the map.
 </p>
 
-<p><a name="pppcolor"><h4>3.13.10.4 Dot Color - mandatory before pushing 'Open Map'</h4></p>
+<p><a name="pppdotcolor"><h4>3.13.4.4.2 Color - mandatory before pushing 'Open Map'</h4></p>
 <p>
 Specify the color of dots showing the rover track.
 </p>
 
-<p><a name="pppspeed"><h4>3.13.10.5 Speed - mandatory before pushing 'Open Map'</h4></p>
+<p><a name="pppspeed"><h4>3.13.4.5 Post Processing Speed - mandatory before pushing 'Open Map'</h4></p>
 <p>
-With BNC in PPP post-processing mode you can specify the speed of computations as appropriate for visualization. Note that you can adjust 'Speed' on-the-fly while BNC is processing your observatins.
+With BNC in PPP post processing mode you can specify the speed of computations as appropriate for visualization. Note that you can adjust 'Speed' on-the-fly while BNC is processing your observatins.
 </p>
 
 <p><a name="combi"><h4>3.14. Combine Corrections</h4></p>
@@ -2614,7 +2682,7 @@ Hit the 'Add Row' button, double click on the 'Mountpoint' field, enter a Broadc
 <p>
 The sequence of entries in the 'Combine Corrections' table is not of importance. Note that the orbit information in the final combination stream is just copied from one of the incoming streams. The stream used for providing the orbits may vary over time: if the orbit providing stream has an outage then BNC switches to the next remaining stream for getting hold of the orbit information.</p>
 <p>
-It is possible to specify only one Broadcast Ephemeris corrections stream in the 'Combine Corrections' table. Instead of combining corrections from several sources, BNC will then merge the single corrections stream with Broadcast Ephemeris to save results in SP3 and/or Clock RINEX format when specified accordingly under the 'Upload Corrections' tab. Note that in such a BNC application you must not pull more than one Broadcast Ephemeris corrections stream even if a second stream would provide the same corrections from a backup caster.
+It is possible to specify only one Broadcast Ephemeris corrections stream in the 'Combine Corrections' table. Instead of combining corrections from several sources, BNC will then merge the single corrections stream with Broadcast Ephemeris to save results in SP3 and/or Clock RINEX format when specified accordingly under the 'Upload Corrections' panel. Note that in such a BNC application you must not pull more than one Broadcast Ephemeris corrections stream even if a second stream would provide the same corrections from a backup caster.
 </p>
 <p>
 Default is an empty 'Combine Corrections' table meaning that you don't want BNC to combine orbit and clock correction streams.
@@ -2626,7 +2694,7 @@ Hit 'Add Row' button to add another row to the 'Combine Corrections' table or hi
 </p>
 
 <p>
-The following screenshots describe an example setup of BNC when combining Broadcast Correction streams and uploading them to an NTRIP Broadcaster. Note that this application requires specifying options under tabs 'Combine Corrections' and 'Upload Corrections'. The example uses the combination product to simultaneously carry out an 'INTERNAL' PPP solution which allows monitoring the quality of the combination product in the space domain.
+The following screenshots describe an example setup of BNC when combining Broadcast Correction streams and uploading them to an NTRIP Broadcaster. Note that this application requires specifying options under panels 'Combine Corrections' and 'Upload Corrections'. The example uses the combination product to simultaneously carry out an 'INTERNAL' PPP solution which allows monitoring the quality of the combination product in the space domain.
 </p>
 
 <br>
@@ -3134,7 +3202,7 @@ The streams selection can be changed on-the-fly without interrupting uninvolved 
 
 <p><a name="logs"><h4>3.18. Logging</h4></p>
 <p>
-A tabs section on the bottom of the main window provides online control of BNC's activities. Tabs are available to show the records saved in a logfile, for a plot to control the bandwidth consumption, for a plot showing stream latencies, and for time series plots of PPP results.
+The section on the bottom of the main window provides online control of BNC's activities. Tabs are available to show the records saved in a logfile, for a plot to control the bandwidth consumption, for a plot showing stream latencies, and for time series plots of PPP results.
 </p>
 <p><a name="logfile"><h4>3.18.1 Log</h4></p>
 <p>
@@ -3513,7 +3581,7 @@ Drag and drop of configuration files is currently not supported on Mac OS X. On 
 
 <tr>
 <td>Nov 2009 &nbsp;</td><td>Version 1.7 &nbsp;</td>
-<td>[Bug] RINEX Navigation file format<br> [Add] Upgrade to Qt Version 4.5.2<br> [Add] Support of NTRIP v2<br> [Add] Rover support via serial port<br> [Add] Show broadcaster table from www.rtcm-ntrip.org<br> [Add] Enable/disable tab widgets<br> [Add] User defined configuration file name<br> [Mod] Switch to configuration files in ini-Format<br> [Add] Daily logfile rotation<br> [Add] Read from TCP/IP port, by-pass NTRIP transport protocol<br> [Add] Save NMEA messages coming from rover<br> [Add] Auto start<br> [Add] Drag and drop ini files<br> [Add] Read from serial port, by-pass NTRIP transport protocol<br> [Mod] Update of SSR messages following RTCM 091-2009-SC104-542<br> [Add] Read from UPD port, by-pass NTRIP transport protocol<br> [Mod] Output format of Broadcast Corrections<br> [Add] Throughput plot<br> [Add] Latency plot</td>
+<td>[Bug] RINEX Navigation file format<br> [Add] Upgrade to Qt Version 4.5.2<br> [Add] Support of NTRIP v2<br> [Add] Rover support via serial port<br> [Add] Show broadcaster table from www.rtcm-ntrip.org<br> [Add] Enable/disable panel widgets<br> [Add] User defined configuration file name<br> [Mod] Switch to configuration files in ini-Format<br> [Add] Daily logfile rotation<br> [Add] Read from TCP/IP port, by-pass NTRIP transport protocol<br> [Add] Save NMEA messages coming from rover<br> [Add] Auto start<br> [Add] Drag and drop ini files<br> [Add] Read from serial port, by-pass NTRIP transport protocol<br> [Mod] Update of SSR messages following RTCM 091-2009-SC104-542<br> [Add] Read from UPD port, by-pass NTRIP transport protocol<br> [Mod] Output format of Broadcast Corrections<br> [Add] Throughput plot<br> [Add] Latency plot</td>
 </tr>
 
 <tr>
@@ -3543,12 +3611,12 @@ Drag and drop of configuration files is currently not supported on Mac OS X. On 
 
 <tr>
 <td>Dec 2010 &nbsp;</td><td>Version 2.4 &nbsp;</td>
-<td>[Add] Output of averaged positions when in PPP mode<br> [Mod] Use always the latest received set of Broadcast Ephemeris<br> [Add] QuickStart PPP option<br> [Mod] Improvement of data sharing efficiency among different threads<br> [Mod] Design of PPP tab section<br> [Add] Sigmas for observations and parameters<br> [Add] Stream distribution map<br> [Bug] GPS Ephemeris in RINEX v3 format</td>
+<td>[Add] Output of averaged positions when in PPP mode<br> [Mod] Use always the latest received set of Broadcast Ephemeris<br> [Add] QuickStart PPP option<br> [Mod] Improvement of data sharing efficiency among different threads<br> [Mod] Design of PPP panel section<br> [Add] Sigmas for observations and parameters<br> [Add] Stream distribution map<br> [Bug] GPS Ephemeris in RINEX v3 format</td>
 </tr>
 
 <tr>
 <td>Feb 2011 &nbsp;</td><td>Version 2.5 &nbsp;</td>
-<td>[Add] PPP option for sync of clock observations and corrections<br> [Add] Drafted RTCMv3 Galileo ephemeris messages 1045<br> [Add] Drafted RTCMv3 Multiple Signal Messages<br> [Add] Optional specification of sigmas for coordinates and troposphere in PPP<br> [Add] Include Galileo in SPP<br> [Add] Include Galileo observations in output via IP port<br> [Add] Include Galileo observations in output via RINEXv3 files<br> [Mod] Interface format for feeding a real-time engine with observations<br> [Add] Correct observations for antenna phase center offsets<br> [Add] Combine orbit/clock correction streams<br> [Add] Specify corrections mountpoint in PPP tab</td>
+<td>[Add] PPP option for sync of clock observations and corrections<br> [Add] Drafted RTCMv3 Galileo ephemeris messages 1045<br> [Add] Drafted RTCMv3 Multiple Signal Messages<br> [Add] Optional specification of sigmas for coordinates and troposphere in PPP<br> [Add] Include Galileo in SPP<br> [Add] Include Galileo observations in output via IP port<br> [Add] Include Galileo observations in output via RINEXv3 files<br> [Mod] Interface format for feeding a real-time engine with observations<br> [Add] Correct observations for antenna phase center offsets<br> [Add] Combine orbit/clock correction streams<br> [Add] Specify corrections mountpoint in PPP panel</td>
 </tr>
 
 <tr>
@@ -3907,7 +3975,7 @@ Some BNC options require antenna phase center variations as made available from 
 </p>
 
 <p>
-The example configurations assume that no proxy protects your BNC host. Should a proxy be operated in front of BNC then you need to introduce its IP and port in the 'Network' tab.
+The example configurations assume that no proxy protects your BNC host. Should a proxy be operated in front of BNC then you need to introduce its IP and port in the 'Network' panel.
 </p>
 
 <p>
@@ -3956,7 +4024,7 @@ The purpose of this configuration is Precise Point Positioning in Post Processin
 </li><br>
 
 <li>File 'PPPGoogleMaps.bnc'<br>
-The purpose of this configuration is to track BNC's point positioning solution using Google Maps or Open StreetMap as background. BNC reads a RINEX Observation file and a RINEX Navigation file to carry out a 'Standard Point Positioning' solution in post-processing mode. Although this is not a real-time application it requires the BNC host to be connected to the Internet. Specify a computation speed, then hit button 'Open Map' to open the track map, then hit 'Start' to visualize receiver positions on top of GM/OSM maps.
+The purpose of this configuration is to track BNC's point positioning solution using Google Maps or Open StreetMap as background. BNC reads a RINEX Observation file and a RINEX Navigation file to carry out a 'Standard Point Positioning' solution in post processing mode. Although this is not a real-time application it requires the BNC host to be connected to the Internet. Specify a computation speed, then hit button 'Open Map' to open the track map, then hit 'Start' to visualize receiver positions on top of GM/OSM maps.
 </li><br>
 
 <li>File 'SPPQuickStartGal.bnc'<br>
@@ -4005,8 +4073,8 @@ The following table's left column is a list of options as contained in BNC's con
 <tr></tr>
 <tr><td><b>Option</b></td><td><b>Affiliation</b></td></tr>
 <tr><td>[General]</td><td>Settings: Group</td></tr>
-<tr><td>startTab=</td><td>Internal: Top tab index</td></tr>
-<tr><td>statusTab=</td><td>Internal: Bottom tab index</td></tr>
+<tr><td>startTab=</td><td>Internal: Top panel index</td></tr>
+<tr><td>statusTab=</td><td>Internal: Bottom panel index</td></tr>
 <tr><td>font=</td><td>Internal: Used font</td></tr>
 <tr><td>casterUrlList=</td><td>Internal: Visited URLs</td></tr>
 <tr><td>mountPoints=</td><td>Add Streams: broadcaster:port/mountpoint</td></tr>
