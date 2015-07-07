@@ -449,11 +449,12 @@ This chapter describes how to set the BNC program options. It explains the 'Top 
 &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 3.13.1.10 <a href=#pppsnxtrofile>SNX TRO File</a><br>
 &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 3.13.1.10.1 <a href=#pppsnxtrosampl>Sampling</a><br>
 &nbsp; &nbsp; &nbsp; 3.13.2 <a href=#pppStation>PPP (2): Processed Stations</a><br>
-&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 3.13.2.1 <a href=#pppnehsigma>Sigma North/East/Height</a><br>
-&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 3.13.2.2 <a href=#pppnehnoise>Noise North/East/Height</a><br>
-&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 3.13.2.3 <a href=#ppptropsigma>Tropo Sigma</a><br>
-&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 3.13.2.4 <a href=#ppptropnoise>Tropo Noise</a><br>
-&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 3.13.2.5 <a href=#pppnmeaport>NMEA Port</a><br>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 3.13.2.1 <a href=#pppstation>Station</a><br>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 3.13.2.2 <a href=#pppnehsigma>Sigma North/East/Up</a><br>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 3.13.2.3 <a href=#pppnehnoise>Noise North/East/Up</a><br>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 3.13.2.4 <a href=#ppptropsigma>Tropo Sigma</a><br>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 3.13.2.5 <a href=#ppptropnoise>Tropo Noise</a><br>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 3.13.2.6 <a href=#pppnmeaport>NMEA Port</a><br>
 &nbsp; &nbsp; &nbsp; 3.13.3 <a href=#pppOptions>PPP (3): Processing Options</a><br>
 &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 3.13.3.1 <a href=#ppplinecombi>Linear Combinations</a><br>
 &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 3.13.3.2 <a href=#pppcodeobs>Code Observations</a><br>
@@ -1242,7 +1243,7 @@ The following is a list of available key names for '<u>R</u>INEX <u>E</u>diting 
 
 <p><a name="sp3comp"><h4>3.7. SP3 Comparison</h4></p>
 <p>
-BNC allows to compare the contents of two files containing GNSS orbit and clock data in SP3 format. SP3 ASCII files basically contain a list of records over a certain period of time. Each record carries a time tag, the X,Y,Z position of the satellite's Center of Mass at that time and the corresponding satellite clock value. Both SP3 files may contain some records for different epochs. If so then BNC only compares records for identical epochs. BNC accepts that a specific GNSS system or a specific satellite is only available from one of the SP3 files. Note that BNC does not interpolate orbits when comparing SP3 files. 
+BNC allows to compare the contents of two files containing GNSS orbit and clock data in SP3 format. SP3 ASCII files basically contain a list of records over a certain period of time. Each record carries a time tag, the XYZ position of the satellite's Center of Mass at that time and the corresponding satellite clock value. Both SP3 files may contain some records for different epochs. If so then BNC only compares records for identical epochs. BNC accepts that a specific GNSS system or a specific satellite is only available from one of the SP3 files. Note that BNC does not interpolate orbits when comparing SP3 files. 
 </p>
 <p>
 To compare satellite clocks provided by the two files BNC first converts coordinate differences dX,dY,dZ into along track, out-of-plane and radial compoments. It then corrects the clock differences for the radial components of coordinate differences. RMS values of clock differences are finally calculated after introducing at first one offset 'per epoch for all satellites' and secondly one offset 'per satellite for all epochs'.
@@ -2176,7 +2177,7 @@ Enter the full path to an ASCII file which specifies all streams or files from s
 <li>the first four characters of the RINEX observations file (when in post processing PPP mode).</li>
 </ul>
 Having this parameter first in each record is mandatory. BNC can carry out PPP solutions only for streams or files specified here.</li><br>
-<li>Only for static observations from a stationary receiver:<br>Approximate a-priori X,Y,Z coordinate [m] of the station's marker; specify '0.0 0.0 0.0' if unknown or when observations come from a mobile receiver.</li><br>
+<li>Only for static observations from a stationary receiver:<br>Approximate a-priori XYZ coordinate [m] of the station's marker; specify '0.0 0.0 0.0' if unknown or when observations come from a mobile receiver.</li><br>
 <li>Nort, East and Up component [m] of antenna excentricity which is the difference between Antenna Reference Point (ARP) and a nearby marker position; when specifying the antenna excentricity BNC will produce coordinates referring to the marker position and not referring to ARP; specify '0.0 0.0 0.0' if excentricity is unknown or the ARP itself is understood as the marker.</li><br>
 <li>Receiver's antenna name as defined in your ANTEX file (see below); Observations will be corrected for the Antenna Phase Center (APC) offsets and variations which may result in a reduction of a few centimeters at max; the specified name must consist of 20 characters; add trailing blanks if the antenna name has less than 20 characters; examples:<br><pre>
 &nbsp; &nbsp;'JPSREGANT_SD_E      ' (no radome)
@@ -2274,7 +2275,7 @@ First of all, PPP results are shown in the 'Log' tab on the bottom of BNC's main
 </pre>
 </p>
 <p>
-Each row reports the PPP result of one epoch. It begins with a UTC time stamp (yy-mm-dd hh:mm:ss) which tells us when the result was produced. A second time stamp (yyyy-mm-dd_hh:mm:ss) describes the PPP's epoch in 'GPS Time'. It is followed by the derived X,Y,Z position in [m], its North, East and Up displacement compared to an introduced a-priory coordinate and the estimated tropospheric delay [m] (model plus correction).
+Each row reports the PPP result of one epoch. It begins with a UTC time stamp (yy-mm-dd hh:mm:ss) which tells us when the result was produced. A second time stamp (yyyy-mm-dd_hh:mm:ss) describes the PPP's epoch in 'GPS Time'. It is followed by the derived XYZ position in [m], its North, East and Up displacement compared to an introduced a-priory coordinate and the estimated tropospheric delay [m] (model plus correction).
 </p>
 <p>
 If you require more information, you can specify the full path to daily PPP 'Logfile' per PPP solution to save additional processing details on disk. Example:
@@ -2338,7 +2339,7 @@ Results of Epoch 2015-06-30_10:37:00.000
 <li>AMB: L3 biases, also known as 'floated ambiguities'<br>Given per satellite with 'el'  = satellite elevation angle, 'epo' = number of epochs since last ambiguity reset
 <li>OGG: Time offset between GPS time and Galileo time in [m],
 <li>TRP: A-priori and correction values of tropospheric zenith delay in [m],
-<li>MOUNTPOINT: Here 'CUT07' with X,Y,Z position in [m] and dN/dE/dU in [m] for North, East, and Up displacements comparted to a-priory marker coordinates.</li>
+<li>MOUNTPOINT: Here 'CUT07' with XYZ position in [m] and dN/dE/dU in [m] for North, East, and Up displacements comparted to a-priory marker coordinates.</li>
 </ul>
 Estimated parameters are presented together with their formal errors as derived from the implemented filter. The PPP algorithm includes outlier and cycle slip detection.
 </p>
@@ -2412,7 +2413,7 @@ You can specify the full path to daily SINEX Troposphere files to save troposphe
 <pre>
 /Users/pppDir/PPP_${STATION}${DOY}_${YY}.zpd
 </pre>
-In this '${STATION}' stands for the observation's mountpoint or RINEX file, '${DOY}' for the Day Of Year, and '${YY} for the year. For a RINEX observations file 'CUT0' it would lead to a logfile named 'PPP_CUT01810.15.zpd with the following contents (example):
+In this '${STATION}' stands for the observation's mountpoint or RINEX file, '${DOY}' for the Day Of Year, and '${YY}' for the year. For a RINEX observations file 'CUT0' it would lead to a troposphere file named 'PPP_CUT01810.15.zpd' with the following contents (example):
 </p>
 
 <pre>
@@ -2478,37 +2479,44 @@ In this '${STATION}' stands for the observation's mountpoint or RINEX file, '${D
 The default value for 'SNX TRO File' is an empty option field, meaning that BNC will not saved SINEX Troposphere files.
 </p>
 
-<p><a name="pppsnxtrosampl"><h4>3.13.1.10.1 Sampling - optional if 'SINEX TRO File' is set</h4></p>
+<p><a name="pppsnxtrosampl"><h4>3.13.1.10.1 Sampling - mandatory if 'SINEX TRO File' is set</h4></p>
 <p>
-Select a 'Sampling' rate for saving troposphere parameters.
+Select a 'Sampling' rate in seconds for saving troposphere parameters.
 </p>
 <p>
-Default 'Sampling' rate is '0', meaning that any estimated troposphere parameter will be save on disk.
+Default 'Sampling' rate is '0', meaning that all troposphere estimates will be save on disk.
 </p>
 
 <p><a name="pppStation"><h4>3.13.2 PPP (2): Processed Stations</h4></p>
 
-<p><a name="pppnehsigma"><h4>3.13.2.1 Sigma North/East/Height - mandatory</h4></p>
 <p>
-Enter a sigma in meters for the initial XYZ coordinate. A value of 100.0 (default) may be an appropriate choice. However, this value may be significantly smaller (i.e. 0.01) when starting for example from a station with known XZY position in Quick-Start mode.
+This panel allows to enter parameters specific to each PPP process. Individual sigmas for a-priori coordinates and a noise for coordinate variations over time can be introduced. Furthermore, a sigma for model based troposphere estimates and the corresponding noise for troposphere variations can be specified. Finally, local IP ports can be defined for output of NMEA streams carrying PPP results.
 </p>
 
-<p><a name="pppnehnoise"><h4>3.13.2.2 Noise North/East/Height - mandatory</h4></p>
+<p><a name="pppstation"><h4>3.13.2.1 Station - mandatory</h4></p>
+
+
+<p><a name="pppnehsigma"><h4>3.13.2.2 Sigma North/East/Up - mandatory</h4></p>
 <p>
-Enter a sigma in meters for the 'White Noise' of estimated XYZ coordinate components. A value of 100.0 (default) may be appropriate when considering possible sudden movements of a rover.
+Enter a sigmas in meters for the initial coordinate compoments. A value of 100.0 (default) may be an appropriate choice. However, this value may be significantly smaller (i.e. 0.01) when starting for example from a station with known position - so-called Quick-Start mode.
 </p>
 
-<p><a name="ppptropsigma"><h4>3.13.2.3 Tropo Sigma - mandatory if 'Estimate tropo' is set</h4></p>
+<p><a name="pppnehnoise"><h4>3.13.2.3 Noise North/East/Up - mandatory</h4></p>
+<p>
+Enter a sigma in meters for the 'White Noise' of estimated coordinate components. A value of 100.0 (default) may be appropriate when considering possible sudden movements of a rover.
+</p>
+
+<p><a name="ppptropsigma"><h4>3.13.2.4 Tropo Sigma - mandatory</h4></p>
 <p>
 Enter a sigma in meters for the a-priory model based tropospheric delay estimation. A value of 0.1 (default) may be an appropriate choice.
 </p>
 
-<p><a name="ppptropnoise"><h4>3.13.2.4 Tropo Noise - mandatory if 'Estimate tropo' is set</h4></p>
+<p><a name="ppptropnoise"><h4>3.13.2.5 Tropo Noise - mandatory</h4></p>
 <p>
 Enter a sigma in meters per second to describe the expected variation of the tropospheric effect. Supposing 1Hz observation data, a value of 3e-6 (default) would mean that the tropospheric effect may vary for 3600 * 3e-6 = 0.01 meters per hour.
 </p>
 
-<p><a name="pppnmeaport"><h4>3.13.2.5 NMEA Port - optional</h4></p>
+<p><a name="pppnmeaport"><h4>3.13.2.6 NMEA Port - optional</h4></p>
 Specify the IP port number of a local port where Point Positioning results become available as NMEA messages. The default value for 'NMEA Port' is an empty option field, meaning that BNC does not provide NMEA messages vi IP port. Note that the NMEA file output and the NMEA IP port output are the same.
 </p>
 <p>
