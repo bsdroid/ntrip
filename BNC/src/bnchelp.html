@@ -50,7 +50,7 @@ Prague, Czech Republic
 </p>
 
 <p>
-While work on BNC startet in June 2005, Prof. Mervart's sole responsibility for the progam code and concept lasted till February 2015. Since March 2015 the expert in charge for further develoments is 
+While work on BNC startet in June 2005, Prof. Mervart's sole responsibility for the progam code and concept lasted till February 2015. Since March 2015 the expert in charge at BKG for further develoments is 
 </p>
 
 <p>
@@ -2071,7 +2071,7 @@ Be careful when keyword 'ALL' is specified as 'Mountpoint' for involving all inc
 
 <p><a name="pppclient"><h4>3.13. PPP Client</h4></p>
 <p>
-BNC can derive coordinates for a rover position following the Precise Point Positioning (PPP) approach. It uses either code or code plus phase data from one or more GNSS systems in ionosphere free linear combinations P3 or L3. Besides pulling a stream of observations from a dual frequency GNSS receiver, this also
+BNC can derive coordinates for a rover position following the Precise Point Positioning (PPP) approach. It uses either code or code plus phase data from one or more GNSS systems in ionosphere-free linear combinations P3 or L3. Besides pulling a stream of observations from a dual frequency GNSS receiver, this also
 <ul>
 <li>Requires pulling in addition a stream carrying satellite orbit and clock corrections to Broadcast Ephemeris in the form of RTCM Version 3 'State Space Representation' (SSR) messages. Note that for BNC these Broadcast Corrections need to be referred to the satellite's Antenna Phase Center (APC). Streams providing such messages are listed on <u>http://igs.bkg.bund.de/ntrip/orbits</u>. Stream 'CLK11' on NTRIP Broadcaster 'products.igs-ip.net:2101' is an example.</li>
 <li>May require pulling a stream carrying Broadcast Ephemeris available as RTCM Version 3 message types 1019, 1020, 1043, 1044, 1045, 1046 and 63 (tentative). This becomes a must only when the stream coming from the receiver does not contain Broadcast Ephemeris or provides them only at very low repetition rate. Streams providing such messages are listed on <u>http://igs.bkg.bund.de/ntrip/ephemeris</u>. Stream 'RTCM3EPH' on caster 'products.igs-ip.net:2101' is an example.</li>
@@ -2261,31 +2261,34 @@ In this file
 
 <p><a name="ppplogfile"><h4>3.13.1.7 Logfile - optional</h4></p>
 <p>
-PPP results are shown in the 'Log' tab on the bottom of BNC's main window. Depending on the processing options, the following values are shown about once per second (example):
+First of all, PPP results are shown in the 'Log' tab on the bottom of BNC's main window. Depending on the processing options, the following values are presented about once per second (example):
 <pre>
-15-06-30 11:40:24 2015-06-30_11:40:22.000 CUT07 X = -2364337.6864 Y = 4870283.8106 Z = -3360808.3099 NEU:  +0.1543  +0.2121  -1.0190 TRP:  +2.4022  +0.0009
-15-06-30 11:40:25 2015-06-30_11:40:23.000 CUT07 X = -2364337.6861 Y = 4870283.8111 Z = -3360808.3105 NEU:  -0.9782  +0.0916  -2.3544 TRP:  +2.4017  +0.0013
-15-06-30 11:40:26 2015-06-30_11:40:24.000 CUT07 X = -2364337.6884 Y = 4870283.8123 Z = -3360808.3103 NEU:  -0.5606  -0.0938  -1.9498 TRP:  +2.4018  +0.0016
+...
+15-07-07 08:33:30 2015-07-07_08:33:45.000 FFMJ1 X = 4053455.7609 Y = 617729.8466 Z = 4869395.8584 NEU:  +0.0059  +0.0038  +0.0434 TRP:  +2.3453  +0.0485
+15-07-07 08:33:31 2015-07-07_08:33:47.000 FFMJ1 X = 4053455.7565 Y = 617729.8451 Z = 4869395.8560 NEU:  +0.0078  +0.0030  +0.0386 TRP:  +2.3453  +0.0522
+15-07-07 08:33:34 2015-07-07_08:33:49.000 FFMJ1 X = 4053455.7565 Y = 617729.8542 Z = 4869395.8479 NEU:  +0.0015  +0.0120  +0.0332 TRP:  +2.3453  +0.0583
+15-07-07 08:33:36 2015-07-07_08:33:51.000 FFMJ1 X = 4053455.7592 Y = 617729.8517 Z = 4869395.8562 NEU:  +0.0051  +0.0091  +0.0411 TRP:  +2.3453  +0.0628
+15-07-07 08:33:37 2015-07-07_08:33:53.000 FFMJ1 X = 4053455.7576 Y = 617729.8562 Z = 4869395.8466 NEU:  -0.0004  +0.0138  +0.0331 TRP:  +2.3453  +0.0670
+...
 </pre>
 </p>
 <p>
-The selected mountpoint in that is followed by a PPP time stamp in GPS Time, the number of processed satellites, and XYZ coordinates with their formal errors as derived from the implemented filter in [m]. The implemented algorithm includes outlier and cycle slip detection. The maximum for accepted residuals is hard coded to 10 meters for code observations and 10 centimeters for phase observations.
+Each row reports the PPP result of one epoch. It begins with a UTC time stamp (yy-mm-dd hh:mm:ss) which tells us when the result was produced. A second time stamp (yyyy-mm-dd_hh:mm:ss) describes the PPP's epoch in 'GPS Time'. It is followed by the derived X,Y,Z position in [m], its North, East and Up displacement compared to an introduced a-priory coordinate and the estimated tropospheric delay [m] (model plus correction).
+</p>
+<p>
+If you require more information, you can specify the full path to daily PPP logfiles per PPP solution to save additional processing details on disk. Example:
 </p>
 
+<pre>
+/Users/pppDir/PPP_${STATION}_${DATE}.log
+</pre>
+
 <p>
-More detailed PPP results are saved in BNC's logfile. Depending on the selected processing options you find
-<ul>
-<li>code and phase residuals for GPS and GLONASS and Galileo in [m], </li>
-<li>receiver clock errors in [m], </li>
-<li>a-priori and correction values of tropospheric zenith delay in [m],
-<li>time offset between GPS time and Galileo time in [m],
-<li>L3 biases, also known as 'floated ambiguities', given per satellite.
-</ul>
-These parameters are saved together with their standard deviation. The following is an example extract from a logfile when BNC was in 'Single Point Positioning' (SPP) mode:
+In this '${STATION}' stands for the observation's mountpoint or RINEX file and '${DATE}' for the date. For an observation's stream 'FFMJ1' it would lead to a logfile named 'PPP_FFMJ1_2015-07-07.log with the following contents per epoch (example):
 </p>
+
 <p>
 <pre>
-
 Results of Epoch 2015-06-30_10:37:00.000
 --------------------------------------
 2015-06-30_10:37:00.000 BANCROFT:   -2364339.137    4870286.804   -3360814.597     -24882.876
@@ -2326,26 +2329,44 @@ Results of Epoch 2015-06-30_10:37:00.000
 </pre>
 </p>
 
+<p>
+ Depending on selected processing options you find 'GPS Time' stampes (yyyy-mm-dd_hh:mm:ss.sss) followed by
+<ul>
+<li>RES: Code and phase residuals for contributing GNSS systems in [m]<br>Given per satellite with cIF/lIF for ionosphere-free linear combination of code/phase observations</li>
+<li>CLK: Receiver clock errors in [m], </li>
+<li>AMB: L3 biases, also known as 'floated ambiguities'<br>Given per satellite with 'el'  = satellite elevation angle, 'epo' = number of epochs since last ambiguity reset
+<li>OGG: Time offset between GPS time and Galileo time in [m],
+<li>TRP: A-priori and correction values of tropospheric zenith delay in [m],
+<li>MOUNTPOINT: Here 'CUT07' with X,Y,Z position in [m] and dN/dE/dU in [m] for North, East, and Up displacements comparted to a-priory marker coordinates.</li>
+</ul>
+Estimated parameters are presented together with their formal errors as derived from the implemented filter. The PPP algorithm includes outlier and cycle slip detection.
+</p>
+
 <p><a name="pppantexfile"><h4>3.13.1.8 ANTEX File - optional</h4></p>
 <p>
-IGS provides a file containing absolute phase center corrections for GNSS satellite and receiver antennas in ANTEX format. Entering the full path to such an ANTEX file is required for correcting observations for antenna phase center offsets and variations. It allows you to specify the name of your receiver's antenna (as contained in the ANTEX file) to apply such corrections.
+IGS provides a file containing absolute phase center corrections for GNSS satellite and receiver antennas in ANTEX format. Entering the full path to such an ANTEX file is required for correcting observations in PPP for antenna phase center offsets and variations. Note that for appyling such corrections you need to specify the receiver's antenna name and radom in BNC's 'Coordinates' file.
 </p>
 <p>
-Default is an empty option field, meaning that you don't want to correct observations for antenna phase center offsets and variations.
+Default value for 'ANTEX file' is an empty option field, meaning that you don't want to correct observations for antenna phase center offsets and variations.
 </p>
 
 <p><a name="pppnmeafile"><h4>3.13.1.9 NMEA File - optional</h4></p>
 <p>
-The NMEA sentences generated about once per second are pairs of
+You can specify the full path to daily NMEA files per PPP solution where Point Positioning results are saved as NMEA sentences. Example:
+</p>
+
+<pre>
+/Users/pppDir/PPP_${STATION}_${DATE}.nmea
+</pre>
+<p>
+In this '${STATION}' stands for the observation's mountpoint or RINEX file and '${DATE}' for the date. For an observation's stream 'FFMJ1' it would lead to a NMEA file named 'PPP_FFMJ1_2015-07-07.nmea'. Its contents would be NMEA sentences generated about once per second with pairs of
+</p>
+<p>
 <ul>
 <li> GPGGA sentences which mainly carry the estimated latitude, longitude, and height values, plus</li>
 <li> GPRMC sentences which mainly carry date and time information.</li>
 </ul>
 </p>
-<p>
-Specify the full path to a file where Point Positioning results are saved as NMEA messages. The default value for 'NMEA file' is an empty option field, meaning that BNC will not saved NMEA messages into a file.
-</p>
-<p>
 The following is an example for an NMEA output file from BNC.
 </p>
 <pre>
@@ -2369,6 +2390,9 @@ $GPRMC,112356,A,3200.233,S,11553.688,E,,,300615,,*5
 $GPGGA,112356,3200.2332035,S,11553.6880127,E,1,13,1.4,23.971,M,0.0,M,,*52
 ...
 </pre>
+<p>
+The default value for 'NMEA file' is an empty option field, meaning that BNC will not saved NMEA messages into a file.
+</p>
 
 <p><a name="pppsnxtrofile"><h4>3.13.1.10 SNX TRO File - optional</h4></p>
 <p>
@@ -2481,7 +2505,7 @@ Note that Tomoji Takasu has written a program called RTKPLOT for visualizing NME
 
 <p><a name="ppplinecombi"><h4>3.13.3.1 Linear Combinations - mandatory</h4></p>
 <p>
-By default BNC applies a Point Positioning solution using an ionosphere free P3 linear combination of code observations. Tick 'Use phase obs' for an ionosphere free L3 linear combination of phase observations.
+By default BNC applies a Point Positioning solution using an ionosphere-free P3 linear combination of code observations. Tick 'Use phase obs' for an ionosphere-free L3 linear combination of phase observations.
 </p>
 
 <p>
