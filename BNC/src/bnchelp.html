@@ -447,6 +447,7 @@ This chapter describes how to set the BNC program options. It explains the 'Top 
 &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 3.13.1.8 <a href=#pppantexfile>ANTEX File</a><br>
 &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 3.13.1.9 <a href=#pppnmeafile>NMEA File</a><br>
 &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 3.13.1.10 <a href=#pppsnxtrofile>SNX TRO File</a><br>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 3.13.1.10.1 <a href=#pppsnxtrosampl>Sampling</a><br>
 &nbsp; &nbsp; &nbsp; 3.13.2 <a href=#pppStation>PPP (2): Processed Stations</a><br>
 &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 3.13.2.1 <a href=#pppnehsigma>Sigma North/East/Height</a><br>
 &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 3.13.2.2 <a href=#pppnehnoise>Noise North/East/Height</a><br>
@@ -2276,7 +2277,7 @@ First of all, PPP results are shown in the 'Log' tab on the bottom of BNC's main
 Each row reports the PPP result of one epoch. It begins with a UTC time stamp (yy-mm-dd hh:mm:ss) which tells us when the result was produced. A second time stamp (yyyy-mm-dd_hh:mm:ss) describes the PPP's epoch in 'GPS Time'. It is followed by the derived X,Y,Z position in [m], its North, East and Up displacement compared to an introduced a-priory coordinate and the estimated tropospheric delay [m] (model plus correction).
 </p>
 <p>
-If you require more information, you can specify the full path to daily PPP logfiles per PPP solution to save additional processing details on disk. Example:
+If you require more information, you can specify the full path to daily PPP 'Logfile' per PPP solution to save additional processing details on disk. Example:
 </p>
 
 <pre>
@@ -2341,6 +2342,9 @@ Results of Epoch 2015-06-30_10:37:00.000
 </ul>
 Estimated parameters are presented together with their formal errors as derived from the implemented filter. The PPP algorithm includes outlier and cycle slip detection.
 </p>
+<p>
+Default value for 'Logfile' is an empty option field, meaning that you don't want to save daily PPP logfiles on disk.
+</p>
 
 <p><a name="pppantexfile"><h4>3.13.1.8 ANTEX File - optional</h4></p>
 <p>
@@ -2400,14 +2404,17 @@ BNC estimates the tropospheric delay according to equation
 <pre>
 T(z) = T_apr(z) + dT / cos(z)
 </pre>
-where T_apr is the a-priori tropospheric delay derived from Saastamoinen model.
+where T_apr is the a-priori tropospheric delay derived from Saastamoinen model. 
 </p>
+
 <p>
-By default BNC does not estimate troposphere parameters. Tick 'Estimate tropo' to estimate troposphere parameters together with the coordinates and save T_apr and dT/cos(z) in BNC's logfile.
+You can specify the full path to daily SINEX Troposphere files to save troposphere parameters on disk, see <u>https://igscb.jpl.nasa.gov/igscb/data/format/sinex_tropo.txt</u> for a documentation of the file format. Example:
+<pre>
+/Users/pppDir/PPP_${STATION}${DOY}_${YY}.zpd
+</pre>
+In this '${STATION}' stands for the observation's mountpoint or RINEX file, '${DOY}' for the Day Of Year, and '${YY} for the year. For a RINEX observations file 'CUT0' it would lead to a logfile named 'PPP_CUT01810.15.zpd with the following contents (example):
 </p>
-<p>
-The following is an example for a SINEX Troposphere file, see <u>https://igscb.jpl.nasa.gov/igscb/data/format/sinex_tropo.txt</u> for a complete documentation.
-</p>
+
 <pre>
 %=TRO 0.01 BNC 15:181:38193 BNC 15:181:38193 15:181:84600 P CUT0
 +FILE/REFERENCE
@@ -2466,6 +2473,18 @@ The following is an example for a SINEX Troposphere file, see <u>https://igscb.j
 -TROP/SOLUTION
 %=ENDTROP
 </pre>
+
+<p>
+The default value for 'SNX TRO File' is an empty option field, meaning that BNC will not saved SINEX Troposphere files.
+</p>
+
+<p><a name="pppsnxtrosampl"><h4>3.13.1.10.1 Sampling - optional if 'SINEX TRO File' is set</h4></p>
+<p>
+Select a 'Sampling' rate for saving troposphere parameters.
+</p>
+<p>
+Default 'Sampling' rate is '0', meaning that any estimated troposphere parameter will be save on disk.
+</p>
 
 <p><a name="pppStation"><h4>3.13.2 PPP (2): Processed Stations</h4></p>
 
