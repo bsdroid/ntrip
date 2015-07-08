@@ -424,7 +424,15 @@ void t_bncCore::printEph(const t_eph& eph, bool printFile) {
   QString strV2 = eph.toString(t_rnxNavFile::defaultRnxNavVersion2);
   QString strV3 = eph.toString(t_rnxObsHeader::defaultRnxObsVersion3);
 
-  printOutputEph(printFile, _ephStreamGlonass, strV2, strV3);
+  if     (_rinexVers == 2 && eph.type() == t_eph::GLONASS) {
+    printOutputEph(printFile, _ephStreamGlonass, strV2, strV3);
+  }
+  else if(_rinexVers == 2 && eph.type() == t_eph::GPS)  {
+    printOutputEph(printFile, _ephStreamGPS, strV2, strV3);
+  }
+  else if (_rinexVers == 3) {
+    printOutputEph(printFile, _ephStreamGPS, strV2, strV3);
+  }
 }
 
 // Output
