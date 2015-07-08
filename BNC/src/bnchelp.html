@@ -449,7 +449,7 @@ This chapter describes how to set the BNC program options. It explains the 'Top 
 &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 3.13.1.10 <a href=#pppsnxtrofile>SNX TRO File</a><br>
 &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 3.13.1.10.1 <a href=#pppsnxtrosampl>Sampling</a><br>
 &nbsp; &nbsp; &nbsp; 3.13.2 <a href=#pppStation>PPP (2): Processed Stations</a><br>
-&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 3.13.2.1 <a href=#pppstation>Station</a><br>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 3.13.2.1 <a href=#pppsite>Station</a><br>
 &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 3.13.2.2 <a href=#pppnehsigma>Sigma North/East/Up</a><br>
 &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 3.13.2.3 <a href=#pppnehnoise>Noise North/East/Up</a><br>
 &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 3.13.2.4 <a href=#ppptropsigma>Tropo Sigma</a><br>
@@ -2398,6 +2398,9 @@ $GPGGA,112356,3200.2332035,S,11553.6880127,E,1,13,1.4,23.971,M,0.0,M,,*52
 <p>
 The default value for 'NMEA file' is an empty option field, meaning that BNC will not saved NMEA messages into a file.
 </p>
+<p>
+Note that Tomoji Takasu has written a program named RTKPLOT for visualizing NMEA sentences from IP ports or files. It is available from http://www.rtklib.com and compatible with the 'NMEA file' and port output of BNC's 'PPP' client option.
+</p>
 
 <p><a name="pppsnxtrofile"><h4>3.13.1.10 SNX TRO File - optional</h4></p>
 <p>
@@ -2490,20 +2493,28 @@ Default 'Sampling' rate is '0', meaning that all troposphere estimates will be s
 <p><a name="pppStation"><h4>3.13.2 PPP (2): Processed Stations</h4></p>
 
 <p>
-This panel allows to enter parameters specific to each PPP process. Individual sigmas for a-priori coordinates and a noise for coordinate variations over time can be introduced. Furthermore, a sigma for model based troposphere estimates and the corresponding noise for troposphere variations can be specified. Finally, local IP ports can be defined for output of NMEA streams carrying PPP results.
+This panel allows to enter parameters specific to each PPP process or thread. Individual sigmas for a-priori coordinates and a noise for coordinate variations over time can be introduced. Furthermore, a sigma for model based troposphere estimates and the corresponding noise for troposphere variations can be specified. Finally, local IP server ports can be defined for output of NMEA streams carrying PPP results.
+</p>
+<p>
+BNC offers to create a table with one line per PPP process or thread to specify the station sprecific parameters. Hit the 'Add Station' button to create a table or add a new line to it. To remove a line from the table, highlight it by clicking it and hit the 'Delete Station' button. You can also remove multiple lines simultaneously by highlighting them using +Shift and +Ctrl.</p>
+</p>
+<p>
+BNC will only produce PPP solutions for stations which are listed in the 'Station' column of this table.
 </p>
 
-<p><a name="pppstation"><h4>3.13.2.1 Station - mandatory</h4></p>
-
+<p><a name="pppsite"><h4>3.13.2.1 Station - mandatory</h4></p>
+<p>
+Hit the 'Add Station' button, double click on the 'Station' field, then specify an observation's mountpoint from the 'Streams' section or introduce the 4-character Station ID of your RINEX observation file and hit Enter. Again, BNC will only produce PPP solutions for stations listed in this table.
+</p>
 
 <p><a name="pppnehsigma"><h4>3.13.2.2 Sigma North/East/Up - mandatory</h4></p>
 <p>
-Enter a sigmas in meters for the initial coordinate compoments. A value of 100.0 (default) may be an appropriate choice. However, this value may be significantly smaller (i.e. 0.01) when starting for example from a station with known position - so-called Quick-Start mode.
+Enter a sigmas in meters for the initial coordinate compoments. A value of 100.0 (default) may be an appropriate choice. However, this value may be significantly smaller (i.e. 0.01) when starting for example from a station with well known position - so-called Quick-Start mode.
 </p>
 
 <p><a name="pppnehnoise"><h4>3.13.2.3 Noise North/East/Up - mandatory</h4></p>
 <p>
-Enter a sigma in meters for the 'White Noise' of estimated coordinate components. A value of 100.0 (default) may be appropriate when considering possible sudden movements of a rover.
+Enter a white 'Noise' in meters for estimated coordinate components. A value of 100.0 (default) may be appropriate when considering possible sudden movements of a rover.
 </p>
 
 <p><a name="ppptropsigma"><h4>3.13.2.4 Tropo Sigma - mandatory</h4></p>
@@ -2513,21 +2524,24 @@ Enter a sigma in meters for the a-priory model based tropospheric delay estimati
 
 <p><a name="ppptropnoise"><h4>3.13.2.5 Tropo Noise - mandatory</h4></p>
 <p>
-Enter a sigma in meters per second to describe the expected variation of the tropospheric effect. Supposing 1Hz observation data, a value of 3e-6 (default) would mean that the tropospheric effect may vary for 3600 * 3e-6 = 0.01 meters per hour.
+Enter a white 'Noise' in meters per second to describe the expected variation of the tropospheric effect. Supposing 1Hz observation data, a value of 3e-6 (default) would mean that the tropospheric effect may vary for 3600 * 3e-6 = 0.01 meters per hour.
 </p>
 
 <p><a name="pppnmeaport"><h4>3.13.2.6 NMEA Port - optional</h4></p>
 Specify the IP port number of a local port where Point Positioning results become available as NMEA messages. The default value for 'NMEA Port' is an empty option field, meaning that BNC does not provide NMEA messages vi IP port. Note that the NMEA file output and the NMEA IP port output are the same.
 </p>
 <p>
-NASA's 'World Wind' software (see <u>http://worldwindcentral.com/wiki/NASA_World_Wind_Download</u>) can be used for real-time visualization of positions provided through BNC's NMEA IP output port. You need the 'GPS Tracker' plug-in available from <u>http://worldwindcentral.com/wiki/GPS_Tracker</u> for that. The 'Word Wind' map resolution is not meant for showing centimeter level details.
+Note that Tomoji Takasu has written a program named RTKPLOT for visualizing NMEA sentences from IP ports or files. It is available from <u>http://www.rtklib.com</u> and compatible with the NMEA file and port output of BNC's 'PPP' client option.
 </p>
 <p>
-Note that Tomoji Takasu has written a program called RTKPLOT for visualizing NMEA strings. It is available from <u>http://www.rtklib.com</u> and compatible with the NMEA file and port output of BNC's 'PPP' client option.
+Furthermore, NASA's 'World Wind' software (see <u>http://worldwindcentral.com/wiki/NASA_World_Wind_Download</u>) can be used for real-time visualization of positions provided through BNC's NMEA IP output port. You need the 'GPS Tracker' plug-in available from <u>http://worldwindcentral.com/wiki/GPS_Tracker</u> for that. The 'Word Wind' map resolution is not meant for showing centimeter level details.
 </p>
 
 <p><a name="pppOptions"><h4>3.13.3 PPP (3): Processing Options</h4></p>
 <p>BNC allows using different Point Positioning processing options depending on the capability of the involved receiver and the application in mind. It also allows introducing specific sigmas for code and phase observations as well as for reference coordinates and troposphere estimates. You may also like to carry out your PPP solution in Quick-Start mode or enforce BNC to restart a solution if the length of an outage exceeds a certain threshold.
+</p>
+<p>
+The intention of this panel is to specify general processing options which are to be applied to all PPP threads carried out in one BNC job.
 </p>
 
 <p><a name="ppplinecombi"><h4>3.13.3.1 Linear Combinations - mandatory</h4></p>
