@@ -2110,6 +2110,9 @@ PPP options are specified in BNC through the following four panels.
 This panel provides options for specifying the input and output streams and files required by BNC for real-time or post processing PPP.
 </p>
 
+<p><img src="IMG/screenshot03.png"/></p>
+<p><u>Figure 20:</u> Real-time Precise Point Positioning with BNC, PPP Panel 1.</p>
+
 <p><a name="pppdatasource"><h4>3.13.1.1 Data Source - optional</h4></p>
 <p>
 Choose between input from 'Real-time Streams' or 'RINEX Files' for PPP with BNC in real-time or post processing mode.
@@ -2502,6 +2505,9 @@ BNC offers to create a table with one line per PPP process or thread to specify 
 BNC will only produce PPP solutions for stations which are listed in the 'Station' column of this table.
 </p>
 
+<p><img src="IMG/screenshot17.png"/></p>
+<p><u>Figure 21:</u> Precise Point Positioning with BNC, PPP Panel 2.</p>
+
 <p><a name="pppsite"><h4>3.13.2.1 Station - mandatory</h4></p>
 <p>
 Hit the 'Add Station' button, double click on the 'Station' field, then specify an observation's mountpoint from the 'Streams' section or introduce the 4-character Station ID of your RINEX observation file and hit Enter. Again, BNC will only produce PPP solutions for stations listed in this table.
@@ -2543,6 +2549,9 @@ Furthermore, NASA's 'World Wind' software (see <u>http://worldwindcentral.com/wi
 <p>
 The intention of this panel is to specify general processing options to be applied to all PPP threads in one BNC job.
 </p>
+
+<p><img src="IMG/screenshot18.png"/></p>
+<p><u>Figure 22:</u> Precise Point Positioning with BNC, PPP Panel 3.</p>
 
 <p><a name="ppplinecombi"><h4>3.13.3.1 Linear Combinations - mandatory</h4></p>
 <p>
@@ -2595,7 +2604,7 @@ BNC allows elevation dependent weighting when processing GNSS observations. A we
 <p>&nbsp; &nbsp; &nbsp; P = cos&sup2; * z</p>
 
 <p>
-with 'z' being the zenith distance to the involved satellites can be applied instead of the simple weight function 'P = 1'.
+with 'z' being the zenith distance to the involved satellite can be applied instead of the simple weight function 'P = 1'.
 </p>
 <ul>
 <li>Tick 'Ele Wgt Code' if you want Elevation Dependant Weighting for code observations.</li>
@@ -2606,8 +2615,17 @@ Default is using the plain weight function 'P = 1' for code and phase observatio
 </p>
 
 <p><a name="pppminobs"><h4>3.13.3.5 Minimum Number of Observations - mandatory</h4></p>
+<p>
+Select the minimum number of observations you want to use per epoch. The minimum for parameter 'Min # of Obs' is '4'. This is also the default.
+</p>
 
 <p><a name="pppmineleva"><h4>3.13.3.6 Minimum Elevation - mandatory</h4></p>
+<p>
+Select a minimum for satellite elevation angles. Selecting '10 deg' for option 'Min Elevation' may be an appropriate choice.
+</p>
+<p>
+Default is '0 deg' meaning that any observation will be used regardless of the involved satellite elevation angle.
+</p>
 
 <p><a name="pppwaitclockcorr"><h4>3.13.3.7 Wait for Clock Corrections - optional</h4></p>
 <p>
@@ -2633,15 +2651,6 @@ You may need to create your own reference coordinate beforehand through running 
 <p>
 The following figure provides the screenshot of an example PPP session with BNC.
 </p>
-
-<p><img src="IMG/screenshot03.png"/></p>
-<p><u>Figure 20:</u> Real-time Precise Point Positioning with BNC, PPP Panel 1.</p>
-
-<p><img src="IMG/screenshot17.png"/></p>
-<p><u>Figure 21:</u> Precise Point Positioning with BNC, PPP Panel 2.</p>
-
-<p><img src="IMG/screenshot18.png"/></p>
-<p><u>Figure 22:</u> Precise Point Positioning with BNC, PPP Panel 3.</p>
 
 <p><img src="IMG/screenshot22.png"/></p>
 <p><u>Figure 23:</u> BNC in 'Quick-Start' mode (PPP, Panel 2)</p>
@@ -2670,10 +2679,6 @@ For natural hazard prediction and monitoring landslides it may be appropriate to
 Default is an empty option field, meaning that you don't want BNC to produce acoustic warnings.
 </p>
 
-<br>
-<p><img src="IMG/screenshot32.png"/></p>
-<p><u>Figure 24:</u> Track of positions from BNC with Google Maps in the background.</p>
-
 <p><a name="ppptrackmap"><h4>3.13.4.3 Track Map - optional</h4></p>
 <p>
 You may like to track your rover position using Google Maps or Open StreetMap as a background map. Track maps can be produced with BNC in 'Real-time Streams' mode or in 'RINEX Files' post processing mode with data coming from files.
@@ -2684,6 +2689,9 @@ When in 'RINEX Files' post processing mode you should not forget to go online wi
 <p>
 The 'Open Map' button opens a windows showing a map according to the selected 'Google/OSM' option.
 </p>
+
+<p><img src="IMG/screenshot32.png"/></p>
+<p><u>Figure 24:</u> Track of positions from BNC with Google Maps in the background.</p>
 
 <p><a name="pppmaptype"><h4>3.13.4.3.1 Google/OSM - mandatory before pushing 'Open Map'</h4></p>
 <p>
@@ -2795,7 +2803,7 @@ The following screenshots describe an example setup of BNC when combining Broadc
 <br>
 <p><img src="IMG/screenshot20.png"/></p>
 <p><u>Figure 25:</u> BNC combining Broadcast Correction streams.</p>
-<p><br></p>
+<p></p>
 <p><img src="IMG/screenshot21.png"/></p>
 <p><u>Figure 26:</u> BNC uploading the combined Broadcast Corrections stream.</p>
 <p></p>
