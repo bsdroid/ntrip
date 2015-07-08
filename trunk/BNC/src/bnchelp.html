@@ -2634,16 +2634,13 @@ The following figure provides the screenshot of an example PPP session with BNC.
 <p><a name="pppgap"><h4>3.13.3.NN Maximal Solution Gap - optional if Quick-Start is set</h4></p>
 
 <p><a name="pppPlots"><h4>3.13.4 PPP (4): Plots</h4></p>
+<p>
+This panel presents options for visualizing PPP results as a time series plot or as a track map with PPP tracks on top of OSM or Google maps.
+</p>
 
 <p><a name="ppptimeseries"><h4>3.13.4.1 PPP Plot - optional</h4></p>
 <p>
-You make like to track your rover position using Google Maps or Open StreetMap as a background map. Track maps can be produced with BNC in 'Real-time Streams' mode or in 'RINEX Files' post processing mode with data coming from files.
-</p>
-<p>
-When in 'Post Processing' mode you should not forget to specify a proxy under the 'Network' panel if that is operated in front of BNC.
-</p>
-<p>
-PPP time series of North (red), East (green) and Up (blue) displacements will be plotted in the 'PPP Plot' panel when this option is ticked. Values will be either referred to an XYZ reference coordinate (if specified) or referred to the first estimated XYZ coordinate. The sliding PPP time series window will cover the period of the latest 5 minutes.
+PPP time series of North (red), East (green) and Up (blue) displacements will be plotted under the 'PPP Plot' tab when this option is ticked. Values will be either referred to an XYZ reference coordinate (if specified, see 'Coordinates') or referred to the first estimated positionn. The sliding PPP time series window will cover the period of the latest 5 minutes.
 </p>
 <p>
 Note that a PPP time series makes only sense for a stationary operated receiver.
@@ -2654,7 +2651,7 @@ Note that a PPP time series makes only sense for a stationary operated receiver.
 For natural hazard prediction and monitoring it may be appropriate to generate audio alerts. For that you can specify an 'Audio response' threshold in meters. A beep is produced by BNC whenever a horizontal PPP coordinate component differs by more than the threshold value from the specified marker coordinate.
 </p>
 <p>
-Default is an empty option field, meaning that you don't want BNC to produce acoustic warning signals.
+Default is an empty option field, meaning that you don't want BNC to produce acoustic warnings.
 </p>
 
 <br>
@@ -2663,15 +2660,24 @@ Default is an empty option field, meaning that you don't want BNC to produce aco
 
 <p><a name="ppptrackmap"><h4>3.13.4.3 Track Map - optional</h4></p>
 <p>
-The 'Open Map' button opens a windows showing a map according to options specified below.
+You make like to track your rover position using Google Maps or Open StreetMap as background map. Track maps can be produced with BNC in 'Real-time Streams' mode or in 'RINEX Files' post processing mode with data coming from files.
+</p>
+<p>
+When in 'RINEX Files' post processing mode you should not forget to go online with your host and specify a proxy under the 'Network' panel if that is operated in front of BNC.
+</p>
+<p>
+The 'Open Map' button opens a windows showing a map according to the specified 'Google/OSM' option.
 </p>
 
 <p><a name="pppmaptype"><h4>3.13.4.3.1 Google/OSM - mandatory before pushing 'Open Map'</h4></p>
 <p>
-Specify either 'Google' or 'OSM' as the background for your rover positions.
+Select either 'Google' or 'OSM' as the background map for your rover positions.
 </p>
 
 <p><a name="pppdotprop"><h4>3.13.4.4 Dot-properties - mandatory before pushing 'Open Map'</h4></p>
+<p>
+PPP tracks are presented on maps through plotting one colored dot per epoch.
+</p>
 
 <p><a name="pppdotsize"><h4>3.13.4.4.1 Size - mandatory before pushing 'Open Map'</h4></p>
 <p>
@@ -2680,12 +2686,12 @@ Specify the size of dots showing the rover position. A dot size of '3' may be ap
 
 <p><a name="pppdotcolor"><h4>3.13.4.4.2 Color - mandatory before pushing 'Open Map'</h4></p>
 <p>
-Specify the color of dots showing the rover track.
+Select the color of dots showing the rover track.
 </p>
 
 <p><a name="pppspeed"><h4>3.13.4.5 Post Processing Speed - mandatory before pushing 'Open Map'</h4></p>
 <p>
-With BNC in PPP post processing mode you can specify the speed of computations as appropriate for visualization. Note that you can adjust 'Speed' on-the-fly while BNC is processing your observatins.
+With BNC in 'RINEX File' post processing mode for PPP you can specify the speed of computations as appropriate for visualization. Note that you can adjust 'Post-processing speed' on-the-fly while BNC is already processing your observations.
 </p>
 
 <p><a name="combi"><h4>3.14. Combine Corrections</h4></p>
