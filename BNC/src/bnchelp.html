@@ -2158,7 +2158,7 @@ If you don't specify a 'Correction file' BNC will fall back from a PPP solution 
 
 <p><a name="pppcorrstream"><h4>3.13.1.5 Corrections Stream - optional if 'Data source' is set to 'Real-Time Streams'</h4></p>
 <p>
-Specify a Broadcast Ephemeris 'Corrections stream' from the list of selected 'Streams' you are pulling if you want BNC to correct your satellite ephemeris accordingly. Note that the stream's orbit and clock corrections must refer to the satellite Antenna Phase Center (APC). Streams providing such corrections are made availabel e.g. through the International GNSS Service (IGS) and listed on <u>http://igs.bkg.bund.de/ntrip/orbits</u>. The stream format must be RTCM Version 3 containing so-called SSR messages. Streams 'IGS03' and 'CLK11' supporting GPS plus GLONASS are examples.
+Specify a Broadcast 'Corrections stream' from the list of selected 'Streams' you are pulling if you want BNC to correct your satellite ephemeris accordingly. Note that the stream's orbit and clock corrections must refer to the satellite Antenna Phase Center (APC). Streams providing such corrections are made availabel e.g. through the International GNSS Service (IGS) and listed on <u>http://igs.bkg.bund.de/ntrip/orbits</u>. The stream format must be RTCM Version 3 containing so-called SSR messages. Streams 'IGS03' and 'CLK11' supporting GPS plus GLONASS are examples.
 </p>
 <p>
 If you don't specify a 'Corrections stream' BNC will fall back from a PPP solution to a Single Point Positioning (SPP) solution.
@@ -2538,54 +2538,64 @@ Furthermore, NASA's 'World Wind' software (see <u>http://worldwindcentral.com/wi
 </p>
 
 <p><a name="pppOptions"><h4>3.13.3 PPP (3): Processing Options</h4></p>
-<p>BNC allows using different Point Positioning processing options depending on the capability of the involved receiver and the application in mind. It also allows introducing specific sigmas for code and phase observations as well as for reference coordinates and troposphere estimates. You may also like to carry out your PPP solution in Quick-Start mode or enforce BNC to restart a solution if the length of an outage exceeds a certain threshold.
+<p>BNC allows using various Point Positioning processing options depending on the capability of the involved receiver and the application in mind. It also allows introducing specific sigmas for code and phase observations as well as for reference coordinates and troposphere estimates. You may also like to carry out your PPP solution in Quick-Start mode or enforce BNC to restart a solution if the length of an outage exceeds a certain threshold.
 </p>
 <p>
-The intention of this panel is to specify general processing options which are to be applied to all PPP threads carried out in one BNC job.
+The intention of this panel is to specify general processing options to be applied to all PPP threads carried out in one BNC job.
 </p>
 
 <p><a name="ppplinecombi"><h4>3.13.3.1 Linear Combinations - mandatory</h4></p>
 <p>
-By default BNC applies a Point Positioning solution using an ionosphere-free P3 linear combination of code observations. Tick 'Use phase obs' for an ionosphere-free L3 linear combination of phase observations.
-</p>
-
 <p>
-By default BNC does not process GLONASS but only GPS observations when in Point Positioning mode. Tick 'Use GLONASS' to use GLONASS observations in addition to GPS (and Galileo if specified) for estimating coordinates in Point Positioning mode.
+Select on which kind of ionosphere-free Linear Combinations (LCs) of observations you want to base ambiguity resolutions. This implicitly defines the kind of GNSS observations you want to use. The selections is to be done per GNSS system ('GPS LCs', 'GLONASS LCs', 'Galileo LCs', 'BDS LCs').
 </p>
 <p>
-By default BNC does not process Galileo but only GPS observations when in Point Positioning mode. Tick 'Use Galileo' to use Galileo observations in addition to GPS (and GLONASS if specified) for estimating coordinates in Point Positioning mode.
+<ul>
+<li>Selecting 'P3' means that you request BNC to use code data and the so-called P3 ionosphere-free linear combinations of code observations.</li>
+<li>'L3' means that you request BNC to use phase data and the so-called L3 ionosphere-free linear combinations of phase observations.</li>
+<li>'P3&L3' means that you request BNC to use both, code and phase data and the so-called P3 and L3 ionosphere-free linear combinations of code and phase observations.
+</li>
+</ul>
+</p>
+<p>Note that most geodetic GPS receivers support the observation of both, code and phase data. Hence specifying 'P3&L3' would be a good choice for GPS when processing data from such a receiver. If multi-GNSS data processing is your intention, make sure your receiver supports GLONASS and/or Galileo and/or BDS observations besides GPS. Note also that the Broadcast Corrections stream or file which is required for PPP also supports all the systems you have in mind.
+</p>
+<p>Specifying 'no' means that you don't at all want BNC to use observations from the affected GNSS system.
 </p>
 
 <p><a name="pppcodeobs"><h4>3.13.3.2 Code Observations - mandatory</h4></p>
+</p>
+Enter a 'Sigma C1' for C1 code observations in meters. The higher the sigma you enter, the less the contribution of C1 code observations to a PPP solution based on a combination of code and phase data. 2.0 is likely to be an appropriate choice.
+</p>
 <p>
-You may like to introduce specific sigmas for code and phase observations and for the estimation of troposphere parameters.
+Specify a maximum for residuals 'Max Res C1' for C1 code observations in a PPP solution. '3.0' meters may be an appropriate choise for that. If the maximum is exceeded, contributions from the corresponding observation will be ignored in the PPP solution.
 </p>
 
-<p><a name="pppphaseobs"><h4>3.13.3.3 Phase Observations - mandatory if 'Use Phase Obs' is set</h4></p>
+
+<p><a name="pppphaseobs"><h4>3.13.3.3 Phase Observations - mandatory</h4></p>
 <p>
-When 'Use phase obs' is set in BNC, the PPP solution will be carried out using both, code and phase observations. A sigma of 10.0 m for code observations and a sigma of 0.02 m for phase observations (defaults) are used to combine both types of observations. As the convergence characteristic of a PPP solution can be influenced by the ratio of the sigmas for code and phase, you may like to introduce you own sigmas for code and phase observations which differ from the default values.
+Enter a 'Sigma L1' for L1 phase observations in meters. The higher the sigma you enter, the less the contribution of L1 phase observations to a PPP solutions based on a combination of code and phase data. 0.01 is likely to be an appropriate choice.
+</p>
+<p>
+Specify a maximum for residuals 'Max Res L1' for L1 phase observations in a PPP solution. '0.03' meters may be an appropriate choise for that. If the maximum is exceeded, contributions from the corresponding observation will be ignored in the PPP solution.
+</p>
+
+<p>
+As the convergence characteristic of a PPP solution can be influenced by the ratio of sigmas for code and phase, you may like to introduce sigmas which differ from the default values.
 <ul>
 <li>Introducing a smaller sigma (higher accuracy) for code observations or a larger sigma for phase observations leads to better results shortly after program start. However, it may take more time till you finally get the best possible solution.</li>
 <li>Introducing a larger sigma (lower accuracy) for code observations or a smaller sigma for phase observations may lead to less accurate results shortly after program start and thus a prolonged period of convergence but could provide better positions in the long run.</li>
 </ul>
 </p>
-<p>
-Specify a sigma for code observations. Default is 10.0 m.
-</p>
 
-<p>
-Specify a sigma for phase observations. Default is 0.02 m.
-</p>
+<p><a name="pppeleweight"><h4>3.13.3.4 Elevation Depending Weighting - mandatory</h4></p>
 
-<p><a name="pppeleweight"><h4>3.13.3.4 Elevation Depending Weighting - optional</h4></p>
+<p><a name="pppminobs"><h4>3.13.3.5 Minimum Number of Observations - mandatory</h4></p>
 
-<p><a name="pppminobs"><h4>3.13.3.5 Minimum Number of Observations - optional</h4></p>
-
-<p><a name="pppmineleva"><h4>3.13.3.6 Minimum Elevation - optional</h4></p>
+<p><a name="pppmineleva"><h4>3.13.3.6 Minimum Elevation - mandatory</h4></p>
 
 <p><a name="pppwaitclockcorr"><h4>3.13.3.7 Wait for Clock Corrections - optional</h4></p>
 <p>
-Zero value (or empty field) means that BNC processes each epoch of data immediately after its arrival using satellite clock corrections available at that time. Non-zero value 'Sync Corr' means that the epochs of data are buffered and the processing of each epoch is postponed till the satellite clock corrections not older than 'Sync Corr' are available. Specifying a value of half the update rate of the clock corrections as 'Sync Corr' (i.e. 5 sec) may be appropriate. Note that this causes an additional delay of the PPP solutions in the amount of half of the update rate.
+Zero value (or 'no') for 'Wait for clock corr.' means that BNC processes each epoch of data immediately after its arrival using satellite clock corrections available at that time. Non-zero value means that epochs of data are buffered and the processing of each epoch is postponed till satellite clock corrections not older than 'Wait for clock corr' are available. Specifying a value of half the update rate of the clock corrections (i.e. 5 sec) may be appropriate. Note that this causes an additional delay of the PPP solutions in the amount of half of the update rate.
 </p>
 <p>
 Using observations in sync with the corrections can avoid a possible high frequency noise of PPP solutions. Such noise could result from processing observations regardless of how late after a clock correction they were received. Note that applying the 'Sync Corr' option significantly reduces the PPP computation effort for BNC.
@@ -2594,14 +2604,14 @@ Using observations in sync with the corrections can avoid a possible high freque
 Default is an empty option field, meaning that you want BNC to process observations immediately after their arrival through applying the latest received clock correction.
 </p>
 
-<p><a name="pppseeding"><h4>3.13.3.8 Seeding - optional if XYZ is set</h4></p>
+<p><a name="pppseeding"><h4>3.13.3.8 Seeding - optional if a-prioriy coordinates specified in 'Coordinates'</h4></p>
 <p>
-Enter the length of a startup period in seconds for which you want to fix the PPP solution to a known XYZ coordinate. Constraining coordinates is done in BNC through setting the 'XYZ White Noise' temporarily to zero.
+Enter the length of a startup period in seconds for which you want to fix the PPP solution to an known position, see option 'Coordinates'. Constraining a-priory coordinates is done in BNC through setting their white 'Noise' temporarily to zero.
 </p>
 <p>
-This so-called Quick-Start option allows the PPP solutions to rapidly converge after startup. It requires that the antenna remains unmoved on the know position throughout the defined period. A value of 60 is likely to be an appropriate choice for 'Quick-Start'. Default is an empty option field, meaning that you don't want BNC to start in 'Quick-Start' mode.
+This so-called Quick-Start option allows the PPP solutions to rapidly converge after startup. It requires that the antenna remains unmoved on the know position throughout the defined period. A value of 60 is likely to be an appropriate choice for 'Seeding'. Default is an empty option field, meaning that you don't want BNC to start in Quick-Start mode.
 <p>
-You may need to create your own reference coordinate through running BNC for an hour in normal mode before applying the 'Quick-Start' option. Don't forget to introduce a realistic sigma 'XYZ Ini' according to the coordinate's precision.
+You may need to create your own reference coordinate beforehand through running BNC for an hour in normal mode before applying the 'Seeding' option. Don't forget to introduce realistic North/East/Up sigmas under panel 'PPP (2)' according to the coordinate's precision.
 </p>
 
 <p>
