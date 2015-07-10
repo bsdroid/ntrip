@@ -58,11 +58,21 @@ t_pppClient::t_pppClient(const t_pppOptions* opt) {
   _epoData = new t_epoData();
   _log     = new ostringstream();
   _ephUser = new bncEphUser(false);
+
+  for (unsigned ii = 0; ii <= t_prn::MAXPRN; ii++) {
+    _satCodeBiases[ii] = 0;
+  }
+
 }
 
 // Destructor
 ////////////////////////////////////////////////////////////////////////////
 t_pppClient::~t_pppClient() {
+
+  for (unsigned ii = 0; ii <= t_prn::MAXPRN; ii++) {
+    delete _satCodeBiases[ii];
+  }
+
   delete _filter;
   delete _epoData;
   delete _opt;
@@ -79,14 +89,15 @@ void t_pppClient::processEpoch(const vector<t_satObs*>& satObs, t_output* output
   _epoData->clear();
   for (unsigned ii = 0; ii < satObs.size(); ii++) {
     const t_satObs* obs     = satObs[ii]; 
-    t_satData*      satData = new t_satData();
+    t_prn prn = obs->_prn;
+    t_satData*   satData = new t_satData();
 
     if (_epoData->tt.undef()) {
       _epoData->tt = obs->_time;
     }
 
     satData->tt       = obs->_time;
-    satData->prn      = QString(obs->_prn.toInternalString().c_str());
+    satData->prn      = QString(prn.toInternalString().c_str());
     satData->slipFlag = false;
     satData->P1       = 0.0;
     satData->P2       = 0.0;
@@ -98,26 +109,36 @@ void t_pppClient::processEpoch(const vector<t_satObs*>& satObs, t_output* output
     satData->L7       = 0.0;
     for (unsigned ifrq = 0; ifrq < obs->_obs.size(); ifrq++) {
       t_frqObs* frqObs = obs->_obs[ifrq];
+      double cb = 0.0;
+      const t_satCodeBias* satCB = satCodeBias(prn);
+      if (satCB && satCB->_bias.size()) {
+        for (unsigned ii = 0; ii < satCB->_bias.size(); ii++) {
+          const t_frqCodeBias& bias = satCB->_bias[ii];
+          if (frqObs && frqObs->_rnxType2ch == bias._rnxType2ch) {
+            cb  = bias._value;
+          }
+        }
+      }
       if      (frqObs->_rnxType2ch[0] == '1') {
-        if (frqObs->_codeValid)  satData->P1       = frqObs->_code;
+        if (frqObs->_codeValid)  satData->P1       = frqObs->_code + cb;
         if (frqObs->_phaseValid) satData->L1       = frqObs->_phase;
         if (frqObs->_slip)       satData->slipFlag = true;
       }
       else if (frqObs->_rnxType2ch[0] == '2') {
-        if (frqObs->_codeValid)  satData->P2       = frqObs->_code;
+        if (frqObs->_codeValid)  satData->P2       = frqObs->_code + cb;
         if (frqObs->_phaseValid) satData->L2       = frqObs->_phase;
         if (frqObs->_slip)       satData->slipFlag = true;
       }
       else if (frqObs->_rnxType2ch[0] == '5') {
-        if (frqObs->_codeValid)  satData->P5       = frqObs->_code;
+        if (frqObs->_codeValid)  satData->P5       = frqObs->_code + cb;
         if (frqObs->_phaseValid) satData->L5       = frqObs->_phase;
         if (frqObs->_slip)       satData->slipFlag = true;
       }
       else if (frqObs->_rnxType2ch[0] == '7') {
-              if (frqObs->_codeValid)  satData->P7       = frqObs->_code;
-              if (frqObs->_phaseValid) satData->L7       = frqObs->_phase;
-              if (frqObs->_slip)       satData->slipFlag = true;
-            }
+        if (frqObs->_codeValid)  satData->P7       = frqObs->_code + cb;
+        if (frqObs->_phaseValid) satData->L7       = frqObs->_phase;
+        if (frqObs->_slip)       satData->slipFlag = true;
+      }
     }
     putNewObs(satData);
   }
@@ -310,7 +331,10 @@ void t_pppClient::putClkCorrections(const std::vector<t_clkCorr*>& corr) {
 
 // 
 //////////////////////////////////////////////////////////////////////////////
-void t_pppClient::putCodeBiases(const std::vector<t_satCodeBias*>& /* satCodeBias */) {
+void t_pppClient::putCodeBiases(const std::vector<t_satCodeBias*>& satCodeBias) {
+  for (unsigned ii = 0; ii < satCodeBias.size(); ii++) {
+    putCodeBias(new t_satCodeBias(*satCodeBias[ii]));
+  }
 }
 
 // 
@@ -384,3 +408,8 @@ t_irc t_pppClient::cmpToT(t_satData* satData) {
   return failure;
 }
 
+void t_pppClient::putCodeBias(t_satCodeBias* satCodeBias) {
+  int iPrn = satCodeBias->_prn.toInt();
+  delete _satCodeBiases[iPrn];
+  _satCodeBiases[iPrn] = satCodeBias;
+}
