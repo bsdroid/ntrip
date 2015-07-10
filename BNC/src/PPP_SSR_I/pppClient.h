@@ -48,12 +48,16 @@ class t_pppClient : public interface_pppClient {
   void                putCodeBiases(const std::vector<t_satCodeBias*>& satCodeBias);   
   std::ostringstream& log() {return *_log;}
   const t_pppOptions* opt() const {return _opt;}
-
+  void putCodeBias(t_satCodeBias* satCodeBias);
+  const t_satCodeBias* satCodeBias(const t_prn& prn) const {
+    return _satCodeBiases[prn.toInt()];
+  }
  private:
   t_irc getSatPos(const bncTime& tt, const QString& prn, ColumnVector& xc, ColumnVector& vv);
   void  putNewObs(t_satData* satData);
   t_irc cmpToT(t_satData* satData);
 
+  t_satCodeBias*       _satCodeBiases[t_prn::MAXPRN+1];
   bncEphUser*         _ephUser;
   t_pppOptions*       _opt;
   t_epoData*          _epoData;
