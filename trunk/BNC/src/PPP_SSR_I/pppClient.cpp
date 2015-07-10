@@ -90,6 +90,7 @@ void t_pppClient::processEpoch(const vector<t_satObs*>& satObs, t_output* output
   for (unsigned ii = 0; ii < satObs.size(); ii++) {
     const t_satObs* obs     = satObs[ii]; 
     t_prn prn = obs->_prn;
+    if (prn.system() == 'E') {prn.setFlags(1);} // force I/NAV usage
     t_satData*   satData = new t_satData();
 
     if (_epoData->tt.undef()) {
@@ -113,6 +114,7 @@ void t_pppClient::processEpoch(const vector<t_satObs*>& satObs, t_output* output
       const t_satCodeBias* satCB = satCodeBias(prn);
       if (satCB && satCB->_bias.size()) {
         for (unsigned ii = 0; ii < satCB->_bias.size(); ii++) {
+
           const t_frqCodeBias& bias = satCB->_bias[ii];
           if (frqObs && frqObs->_rnxType2ch == bias._rnxType2ch) {
             cb  = bias._value;

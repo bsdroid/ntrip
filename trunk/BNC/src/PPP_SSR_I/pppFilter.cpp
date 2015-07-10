@@ -530,7 +530,7 @@ void t_pppFilter::predict(int iPhase, t_epoData* epoData) {
       // BDS Offset
       // ----------
       else if (pp->type == t_pppParam::BDS_OFFSET) {
-       _QQ(iPar,iPar) += 0.1 * 0.1; //TODO 
+        _QQ(iPar,iPar) += 0.1 * 0.1;    //TODO: TEST
       }
     }
   }
@@ -612,11 +612,11 @@ t_irc t_pppFilter::update(t_epoData* epoData) {
   _time = epoData->tt; // current epoch time
 
   if (OPT->useOrbClkCorr()) {
-    LOG << "Precise Point Positioning of Epoch " << _time.timestr(1)
+    LOG << "Precise Point Positioning of Epoch " << _time.datestr() <<  "_" << _time.timestr(1)
         << "\n---------------------------------------------------------------\n";
   }
   else {
-    LOG << "Single Point Positioning of Epoch " << _time.timestr(1)
+    LOG << "Single Point Positioning of Epoch " << _time.datestr() <<  "_" << _time.timestr(1)
         << "\n--------------------------------------------------------------\n";
   }
 
@@ -721,8 +721,8 @@ QString t_pppFilter::outlierDetection(int iPhase, const ColumnVector& vv,
 
   QString prnGPS;
   QString prnGlo;
-  double  maxResGPS = 0.0;
-  double  maxResGlo = 0.0;
+  double  maxResGPS = 0.0; // all the other systems except GLONASS
+  double  maxResGlo = 0.0; // GLONASS
   findMaxRes(vv, satData, prnGPS, prnGlo, maxResGPS, maxResGlo);
 
   if      (iPhase == 1) {
@@ -884,6 +884,7 @@ void t_pppFilter::addObs(int iPhase, unsigned& iObs, t_satData* satData,
 
   // Phase Observations
   // ------------------
+
   if (iPhase == 1) {
     ll(iObs)      = satData->L3 - cmpValue(satData, true);
     double sigL3 = 2.98 * OPT->_sigmaL1;
@@ -1071,12 +1072,12 @@ t_irc t_pppFilter::update_p(t_epoData* epoData) {
           if (_outlierGPS.size() > 0 || _outlierGlo.size() > 0) {
             LOG << "Neglected PRNs: ";
             if (!_outlierGPS.isEmpty()) {
-              LOG << _outlierGPS.last().toAscii().data() << ' ';
+              LOG << _outlierGPS.last().mid(0,3).toAscii().data() << ' ';
             }
             QStringListIterator itGlo(_outlierGlo);
             while (itGlo.hasNext()) {
               QString prn = itGlo.next();
-              LOG << prn.toAscii().data() << ' ';
+              LOG << prn.mid(0,3).toAscii().data() << ' ';
             }
           }
           LOG << strResCode.data() << strResPhase.data();
