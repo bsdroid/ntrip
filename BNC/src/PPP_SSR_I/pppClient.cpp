@@ -152,12 +152,13 @@ void t_pppClient::processEpoch(const vector<t_satObs*>& satObs, t_output* output
     it.next();
     QString    prn     = it.key();
     t_satData* satData = it.value();
-
+    
     if (cmpToT(satData) != success) {
       delete satData;
       it.remove();
       continue;
     }
+
   }
 
   // Filter Solution
@@ -342,21 +343,22 @@ void t_pppClient::putCodeBiases(const std::vector<t_satCodeBias*>& satCodeBias) 
 // 
 //////////////////////////////////////////////////////////////////////////////
 void t_pppClient::putEphemeris(const t_eph* eph) {
+  bool check = _opt->_realTime;
   const t_ephGPS* ephGPS = dynamic_cast<const t_ephGPS*>(eph);
   const t_ephGlo* ephGlo = dynamic_cast<const t_ephGlo*>(eph);
   const t_ephGal* ephGal = dynamic_cast<const t_ephGal*>(eph);
   const t_ephBDS* ephBDS = dynamic_cast<const t_ephBDS*>(eph);
   if      (ephGPS) {
-    _ephUser->putNewEph(new t_ephGPS(*ephGPS), true);
+    _ephUser->putNewEph(new t_ephGPS(*ephGPS), check);
   }
   else if (ephGlo) {
-    _ephUser->putNewEph(new t_ephGlo(*ephGlo), true);
+    _ephUser->putNewEph(new t_ephGlo(*ephGlo), check);
   }
   else if (ephGal) {
-    _ephUser->putNewEph(new t_ephGal(*ephGal), true);
+    _ephUser->putNewEph(new t_ephGal(*ephGal), check);
   }
   else if (ephBDS) {
-      _ephUser->putNewEph(new t_ephBDS(*ephBDS), true);
+      _ephUser->putNewEph(new t_ephBDS(*ephBDS), check);
     }
 }
 
