@@ -208,7 +208,7 @@ void bncEphUser::checkEphemeris(t_eph* eph) {
   double timeDiff = fabs(toc - currentTime);
 
   if      (eph->type() == t_eph::GPS  || t_eph::Galileo) {
-    if (timeDiff > 4*3600) { // data sets are valid for 4 hours
+    if (timeDiff > 4*3600) { // update interval: 2h, data sets are valid for 4 hours
       eph->setCheckState(t_eph::bad);
       return;
     }
@@ -220,13 +220,13 @@ void bncEphUser::checkEphemeris(t_eph* eph) {
     }
   }
   else if (eph->type() == t_eph::QZSS) {
-    if (timeDiff > 1*3600) {
+    if (timeDiff > 1*1800) {
       eph->setCheckState(t_eph::bad);
       return;
     }
   }
   else if (eph->type() == t_eph::SBAS) {
-    if (timeDiff > 300) { // maximum update interval
+    if (timeDiff > 600) { // maximum update interval: 300 sec
       eph->setCheckState(t_eph::bad);
       return;
     }
