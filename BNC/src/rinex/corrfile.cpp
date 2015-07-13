@@ -97,7 +97,7 @@ void t_corrFile::syncRead(const bncTime& tt) {
       QListIterator<t_orbCorr> it(orbCorrList);
       while (it.hasNext()) {
         const t_orbCorr& corr = it.next();
-        _corrIODs[QString(corr._prn.toString().c_str())] = corr._iod;
+        _corrIODs[QString(corr._prn.toInternalString().c_str())] = corr._iod;
       }
       emit newOrbCorrections(orbCorrList);
     }
