@@ -225,7 +225,7 @@ t_eph* t_rnxNavFile::getNextEph(const bncTime& tt,
       while (it != _ephs.end()) {
         t_eph* eph = *it;
         double dt = eph->TOC() - tt;
-        if (dt < 8*3600.0 && QString(eph->prn().toString().c_str()) == prn && eph->IOD() == iod) {
+        if (dt < 8*3600.0 && QString(eph->prn().toInternalString().c_str()) == prn && eph->IOD() == iod) {
           it = _ephs.erase(it);
           return eph;
         }
