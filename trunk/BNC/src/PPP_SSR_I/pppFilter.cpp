@@ -1015,12 +1015,7 @@ t_irc t_pppFilter::update_p(t_epoData* epoData) {
       // --------------------------
       unsigned nPar = _params.size();
       unsigned nObs = 0;
-      if (iPhase == 0) {
-        nObs = epoData->sizeAll() - epoData->sizeSys('R'); // Glonass code not used
-      }
-      else {
-        nObs = epoData->sizeAll();
-      }
+      nObs = epoData->sizeAll();
       
       // Prepare first-design Matrix, vector observed-computed
       // -----------------------------------------------------
@@ -1033,10 +1028,8 @@ t_irc t_pppFilter::update_p(t_epoData* epoData) {
       while (it.hasNext()) {
         it.next();
         t_satData* satData = it.value();
-        if (iPhase == 1 || satData->system() != 'R') {
-          QString prn = satData->prn;
-          addObs(iPhase, iObs, satData, AA, ll, PP);
-        }
+        QString prn = satData->prn;
+        addObs(iPhase, iObs, satData, AA, ll, PP);
       }
 
       // Compute Filter Update
