@@ -1006,7 +1006,7 @@ t_irc t_pppFilter::update_p(t_epoData* epoData) {
                     OPT->ambLCs('E').size() || OPT->ambLCs('C').size() ;
 
     for (int iPhase = 0; iPhase <= (usePhase ? 1 : 0); iPhase++) {
-    
+
       // Status Prediction
       // -----------------
       predict(iPhase, epoData);
@@ -1016,6 +1016,15 @@ t_irc t_pppFilter::update_p(t_epoData* epoData) {
       unsigned nPar = _params.size();
       unsigned nObs = 0;
       nObs = epoData->sizeAll();
+      bool useObs = false;
+      char additionalSys[] ={'R', 'E', 'C'};
+      for (unsigned ii = 0; ii < sizeof(additionalSys); ii++) {
+        const char s = additionalSys[ii];
+        (iPhase == 0) ? useObs = OPT->codeLCs(s).size() : useObs = OPT->ambLCs(s).size();
+        if (!useObs) {
+          nObs -= epoData->sizeSys(s);
+        }
+      }
       
       // Prepare first-design Matrix, vector observed-computed
       // -----------------------------------------------------
@@ -1029,7 +1038,11 @@ t_irc t_pppFilter::update_p(t_epoData* epoData) {
         it.next();
         t_satData* satData = it.value();
         QString prn = satData->prn;
-        addObs(iPhase, iObs, satData, AA, ll, PP);
+        char sys =   satData->system();
+        (iPhase == 0) ? useObs = OPT->codeLCs(sys).size() : useObs = OPT->ambLCs(sys).size();
+        if (sys == 'G' || useObs) {
+          addObs(iPhase, iObs, satData, AA, ll, PP);
+        }
       }
 
       // Compute Filter Update
