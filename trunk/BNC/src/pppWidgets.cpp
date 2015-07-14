@@ -225,11 +225,35 @@ void t_pppWidgets::readOptions() {
   _logFile    ->setText(settings.value(_logFile    ->objectName()).toString());
   _nmeaFile   ->setText(settings.value(_nmeaFile   ->objectName()).toString());
   _snxtroFile ->setText(settings.value(_snxtroFile ->objectName()).toString());
-  _sigmaC1    ->setText(settings.value(_sigmaC1    ->objectName()).toString());
-  _sigmaL1    ->setText(settings.value(_sigmaL1    ->objectName()).toString());
-  _maxResC1   ->setText(settings.value(_maxResC1   ->objectName()).toString());
-  _maxResL1   ->setText(settings.value(_maxResL1   ->objectName()).toString());
   _seedingTime->setText(settings.value(_seedingTime->objectName()).toString());
+
+  if (!settings.value(_sigmaC1->objectName()).toString().isEmpty()) {
+    _sigmaC1->setText(settings.value(_sigmaC1->objectName()).toString());
+  }
+  else {
+    _sigmaC1->setText("2.0");
+  }
+
+  if (!settings.value(_sigmaL1->objectName()).toString().isEmpty()) {
+    _sigmaL1->setText(settings.value(_sigmaL1->objectName()).toString());
+  }
+  else {
+    _sigmaL1->setText("0.01");
+  }
+
+  if (!settings.value(_maxResC1->objectName()).toString().isEmpty()) {
+    _maxResC1->setText(settings.value(_maxResC1->objectName()).toString());
+  }
+  else {
+    _maxResC1->setText("3.0");
+  }
+
+  if (!settings.value(_maxResL1->objectName()).toString().isEmpty()) {
+    _maxResL1->setText(settings.value(_maxResL1->objectName()).toString());
+  }
+  else { 
+    _maxResL1->setText("0.03");
+  }
 
   // CheckBoxes
   // ----------
