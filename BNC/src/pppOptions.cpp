@@ -121,3 +121,27 @@ vector<t_lc::type> t_pppOptions::ambLCs(char system) const {
 
   return answ;
 }
+
+//
+/////////////////////////////////////////////////////////////////////////////
+vector<t_lc::type> t_pppOptions::codeLCs(char system) const {
+
+  const vector<t_lc::type>& allLCs = LCs(system);
+  vector<t_lc::type>        codeLCs;
+  for (unsigned ii = 0; ii < allLCs.size(); ii++) {
+    if (t_lc::includesCode(allLCs[ii])) {
+      codeLCs.push_back(allLCs[ii]);
+    }
+  }
+
+  vector<t_lc::type> answ;
+  if      (codeLCs.size() == 1) {
+    answ.push_back(codeLCs[0]);
+  }
+  else if (codeLCs.size() >  1) {
+    answ.push_back(t_lc::c1);
+    answ.push_back(t_lc::c2);
+  }
+
+  return answ;
+}

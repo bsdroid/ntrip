@@ -16,6 +16,7 @@ class t_pppOptions {
   std::vector<char>              systems() const;
   const std::vector<t_lc::type>& LCs(char system) const;
   std::vector<t_lc::type>        ambLCs(char system) const;
+  std::vector<t_lc::type>        codeLCs(char system) const;
   bool useSystem(char system) const {return LCs(system).size() > 0;}
   bool useOrbClkCorr() const;
   bool estTrp() const {return _aprSigTrp > 0.0 || _noiseTrp > 0.0;}
