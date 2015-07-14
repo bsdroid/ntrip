@@ -915,13 +915,13 @@ bncWindow::bncWindow() {
 
   _pppWidgets._snxtroSampl->setWhatsThis(tr("<p>Select a 'Sampling' rate for saving troposphere paramers.</p>"));
 
-  _pppWidgets._sigmaC1->setWhatsThis(tr("<p>Enter a sigma for your GNSS C1 code observations in meters.</p><p>The higher the sigma you enter, the less the contribution of C1 code observations to a PPP solution based on a combination of code and phase data. 2.0 is likely to be an appropriate choice.</p>"));
+  _pppWidgets._sigmaC1->setWhatsThis(tr("<p>Enter a sigma for your GNSS C1 code observations in meters.</p><p>The higher the sigma you enter, the less the contribution of C1 code observations to a PPP solution based on a combination of code and phase data. 2.0 is likely to be an appropriate choice.</p><p>Default is an empty option field, meaning<br>'Sigma C1 = 2.0'</p>"));
 
-  _pppWidgets._sigmaL1->setWhatsThis(tr("<p>Enter a sigma for your GNSS L1 phase observations in meters.</p><p>The higher the sigma you enter, the less the contribution of L1 phase observations to a PPP solutions based on a combination of code and phase data. 0.01 is likely to be an appropriate choice.</p>"));
+  _pppWidgets._sigmaL1->setWhatsThis(tr("<p>Enter a sigma for your GNSS L1 phase observations in meters.</p><p>The higher the sigma you enter, the less the contribution of L1 phase observations to a PPP solutions based on a combination of code and phase data. 0.01 is likely to be an appropriate choice.</p><p>Default is an empty option field,meaning<br>'Sigma L1 = 0.01'</p>"));
 
-  _pppWidgets._maxResC1->setWhatsThis(tr("<p>Specify a maximum for residuals from C1 code observations in a PPP solution. '3.0' meters may be an appropriate choise for that.</p><p>If the maximum is exceeded, contributions from the corresponding observation will be ignored in the PPP solution.</p>"));
+  _pppWidgets._maxResC1->setWhatsThis(tr("<p>Specify a maximum for residuals from C1 code observations in a PPP solution. '3.0' meters may be an appropriate choise for that.</p><p>If the maximum is exceeded, contributions from the corresponding observation will be ignored in the PPP solution.</p><p>Default is an empty option field, meaning<br>'Max Rex C1 = 3.0'</p>"));
 
-  _pppWidgets._maxResL1->setWhatsThis(tr("<p>Specify a maximum for residuals from L1 code observations in a PPP solution. '0.03' meters may be an appropriate choise for that.</p><p>If the maximum is exceeded, contributions from the corresponding observation will be ignored in the PPP solution.</p>"));
+  _pppWidgets._maxResL1->setWhatsThis(tr("<p>Specify a maximum for residuals from L1 code observations in a PPP solution. '0.03' meters may be an appropriate choise for that.</p><p>If the maximum is exceeded, contributions from the corresponding observation will be ignored in the PPP solution.</p><p>Default is an empty option field, meaning<br>'Max Rex L1 = 0.03'</p>"));
 
   _pppWidgets._eleWgtCode->setWhatsThis(tr("<p>Tic 'Ele Wgt Code' to use satellite Elevation depending Weights for Code observations in the PPP solution.</p>"));
 
