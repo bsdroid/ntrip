@@ -276,10 +276,10 @@ void RTCM2Decoder::translateCorr2Obs(vector<string>& errmsg) {
     char sys;
     if (corr->PRN < 200) {
       sys = 'G';
-      prn = sys + QString("%1").arg(corr->PRN, 2, 10, QChar('0'));
+      prn = sys + QString("%1_0").arg(corr->PRN, 2, 10, QChar('0'));
     } else {
       sys = 'R';
-      prn = sys + QString("%1").arg(corr->PRN - 200, 2, 10, QChar('0'));
+      prn = sys + QString("%1_0").arg(corr->PRN - 200, 2, 10, QChar('0'));
     }
 
     double L1 = 0;
