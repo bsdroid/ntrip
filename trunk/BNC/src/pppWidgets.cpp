@@ -387,7 +387,16 @@ void t_pppWidgets::slotAddStation() {
   int iRow = _staTable->rowCount();
   _staTable->insertRow(iRow);
   for (int iCol = 0; iCol < _staTable->columnCount(); iCol++) {
-    _staTable->setItem(iRow, iCol, new QTableWidgetItem(""));
+     if (iCol == 0) _staTable->setItem(iRow, iCol, new QTableWidgetItem(""));
+     if (iCol == 1) _staTable->setItem(iRow, iCol, new QTableWidgetItem("100.0"));
+     if (iCol == 2) _staTable->setItem(iRow, iCol, new QTableWidgetItem("100.0"));
+     if (iCol == 3) _staTable->setItem(iRow, iCol, new QTableWidgetItem("100.0"));
+     if (iCol == 4) _staTable->setItem(iRow, iCol, new QTableWidgetItem("100.0"));
+     if (iCol == 5) _staTable->setItem(iRow, iCol, new QTableWidgetItem("100.0"));
+     if (iCol == 6) _staTable->setItem(iRow, iCol, new QTableWidgetItem("100.0"));
+     if (iCol == 7) _staTable->setItem(iRow, iCol, new QTableWidgetItem("0.1"));
+     if (iCol == 8) _staTable->setItem(iRow, iCol, new QTableWidgetItem("3e-6"));
+     if (iCol == 9) _staTable->setItem(iRow, iCol, new QTableWidgetItem(""));
   }
 }
 
