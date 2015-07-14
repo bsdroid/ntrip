@@ -1819,6 +1819,7 @@ void bncWindow::slotStart() {
     enableStartStop();
     _caster = new bncCaster(); BNC_CORE->setCaster(_caster);
     BNC_CORE->startPPP();
+    _bncFigurePPP->reset();
   }
   else if ( !_reqcActionComboBox->currentText().isEmpty() ) {
     if (_reqcActionComboBox->currentText() == "Analyze") {
