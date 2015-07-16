@@ -866,3 +866,21 @@ int indexFromAccuracy(double accuracy, t_eph::e_type type) {
 
   return (type == t_eph::Galileo) ? 255 : 15;
 }
+
+// Returns CRC24
+////////////////////////////////////////////////////////////////////////////
+unsigned long CRC24(long size, const unsigned char *buf) {
+  unsigned long crc = 0;
+  int ii;
+  while (size--) {
+    crc ^= (*buf++) << (16);
+    for(ii = 0; ii < 8; ii++) {
+      crc <<= 1;
+      if (crc & 0x1000000) {
+        crc ^= 0x01864cfb;
+      }
+    }
+  }
+  return crc;
+}
+
