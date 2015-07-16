@@ -70,7 +70,7 @@ Q_OBJECT
   VTEC                                  _vTEC;
   int                                   _providerID[3];
   bncTime                               _lastTime;
-  QMap<t_prn, unsigned short>           _IODs;
+  QMap<t_prn, unsigned long>            _IODs;
   QMap<bncTime, QList<t_orbCorr> >      _orbCorrections;
   QMap<bncTime, QList<t_clkCorr> >      _clkCorrections;
   QMap<t_prn, t_clkCorr>                _lastClkCorrections;
