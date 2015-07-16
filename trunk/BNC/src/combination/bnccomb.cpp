@@ -755,7 +755,7 @@ void bncComb::dumpResults(const QMap<QString, cmbCorr*>& resCorr) {
     int messageType   = COTYPE_GPSCOMBINED;
     int updateInt     = 0;
     line.sprintf("%d %d %d %.1f %s"
-                 "   %3d"
+                 "   %lu"
                  "   %8.3f %8.3f %8.3f %8.3f"
                  "   %10.5f %10.5f %10.5f %10.5f"
                  "   %10.5f INTERNAL",

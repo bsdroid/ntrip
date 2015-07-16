@@ -70,15 +70,15 @@ class bncComb : public QObject {
       _dClkResult = 0.0;
     }
     ~cmbCorr() {}
-    QString      _prn;
-    bncTime      _time;
-    int          _iod;
-    t_eph*       _eph;
-    t_orbCorr    _orbCorr;
-    t_clkCorr    _clkCorr;
-    QString      _acName; 
-    double       _dClkResult;
-    ColumnVector _diffRao;
+    QString       _prn;
+    bncTime       _time;
+    unsigned long _iod;
+    t_eph*        _eph;
+    t_orbCorr     _orbCorr;
+    t_clkCorr     _clkCorr;
+    QString       _acName;
+    double        _dClkResult;
+    ColumnVector  _diffRao;
     QString ID() {return _acName + "_" + _prn;}
   };
 

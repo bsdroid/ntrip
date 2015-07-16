@@ -38,7 +38,7 @@ class t_corrFile : public QObject {
   t_corrFile(QString fileName);
   ~t_corrFile();
   void syncRead(const bncTime& tt);
-  const QMap<QString, int>& corrIODs() const {return _corrIODs;}
+  const QMap<QString, unsigned long>& corrIODs() const {return _corrIODs;}
 
  signals:
   void newOrbCorrections(QList<t_orbCorr>);
@@ -48,10 +48,10 @@ class t_corrFile : public QObject {
   void newTec(t_vTec);
 
  private:
-  std::ifstream      _stream;
-  std::string        _lastLine;
-  bncTime            _lastEpoTime;
-  QMap<QString, int> _corrIODs;
+  std::ifstream                _stream;
+  std::string                  _lastLine;
+  bncTime                      _lastEpoTime;
+  QMap<QString, unsigned long> _corrIODs;
 };
 
 #endif
