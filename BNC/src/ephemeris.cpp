@@ -644,9 +644,9 @@ ColumnVector t_ephGlo::glo_deriv(double /* tt */, const ColumnVector& xv,
 
 // IOD of Glonass Ephemeris (virtual)
 ////////////////////////////////////////////////////////////////////////////
-int t_ephGlo::IOD() const {
+unsigned long t_ephGlo::IOD() const {
   bncTime tMoscow = _TOC - _gps_utc + 3 * 3600.0;
-  return int(tMoscow.daysec() / 900);
+  return (unsigned long)tMoscow.daysec() / 900;
 }
 
 // Constructor
@@ -1129,6 +1129,32 @@ t_ephSBAS::t_ephSBAS(float rnxVersion, const QStringList& lines) {
   _z_acceleration *= 1.e3; 
 }
 
+// IOD of SBAS Ephemeris (virtual)
+////////////////////////////////////////////////////////////////////////////
+
+unsigned long t_ephSBAS::IOD() const {
+  unsigned char buffer[80];
+  int size = 0;
+  int numbits = 0;
+  long long bitbuffer = 0;
+  unsigned char *startbuffer = buffer;
+
+  SBASADDBITSFLOAT(30, this->_x_pos, 0.08)
+  SBASADDBITSFLOAT(30, this->_y_pos, 0.08)
+  SBASADDBITSFLOAT(25, this->_z_pos, 0.4)
+  SBASADDBITSFLOAT(17, this->_x_velocity, 0.000625)
+  SBASADDBITSFLOAT(17, this->_y_velocity, 0.000625)
+  SBASADDBITSFLOAT(18, this->_z_velocity, 0.004)
+  SBASADDBITSFLOAT(10, this->_x_acceleration, 0.0000125)
+  SBASADDBITSFLOAT(10, this->_y_acceleration, 0.0000125)
+  SBASADDBITSFLOAT(10, this->_z_acceleration, 0.0000625)
+  SBASADDBITSFLOAT(12, this->_agf0, 1.0/static_cast<double>(1<<30)/static_cast<double>(1<<1))
+  SBASADDBITSFLOAT(8, this->_agf1, 1.0/static_cast<double>(1<<30)/static_cast<double>(1<<10))
+  SBASADDBITS(5,0); // the last byte is filled by 0-bits to obtain a length of an integer multiple of 8
+
+  return CRC24(size, startbuffer);
+}
+
 // Compute SBAS Satellite Position (virtual)
 ////////////////////////////////////////////////////////////////////////////
 t_irc t_ephSBAS::position(int GPSweek, double GPSweeks, double* xc, double* vv) const {
@@ -1330,6 +1356,39 @@ t_ephBDS::t_ephBDS(float rnxVersion, const QStringList& lines) {
   // remark: actually should be computed from second_tot
   //         but it seems to be unreliable in RINEX files
   //_TOT = _TOC.bdssec();
+}
+
+// IOD of BDS Ephemeris (virtual)
+////////////////////////////////////////////////////////////////////////////
+unsigned long t_ephBDS::IOD() const {
+  unsigned char buffer[80];
+  int size = 0;
+  int numbits = 0;
+  long long bitbuffer = 0;
+  unsigned char *startbuffer = buffer;
+
+  BDSADDBITSFLOAT(14, this->_IDOT, M_PI/static_cast<double>(1<<30)/static_cast<double>(1<<13))
+  BDSADDBITSFLOAT(11, this->_clock_driftrate, 1.0/static_cast<double>(1<<30)
+      /static_cast<double>(1<<30)/static_cast<double>(1<<6))
+  BDSADDBITSFLOAT(22, this->_clock_drift, 1.0/static_cast<double>(1<<30)/static_cast<double>(1<<20))
+  BDSADDBITSFLOAT(24, this->_clock_bias, 1.0/static_cast<double>(1<<30)/static_cast<double>(1<<3))
+  BDSADDBITSFLOAT(18, this->_Crs, 1.0/static_cast<double>(1<<6))
+  BDSADDBITSFLOAT(16, this->_Delta_n, M_PI/static_cast<double>(1<<30)/static_cast<double>(1<<13))
+  BDSADDBITSFLOAT(32, this->_M0, M_PI/static_cast<double>(1<<30)/static_cast<double>(1<<1))
+  BDSADDBITSFLOAT(18, this->_Cuc, 1.0/static_cast<double>(1<<30)/static_cast<double>(1<<1))
+  BDSADDBITSFLOAT(32, this->_e, 1.0/static_cast<double>(1<<30)/static_cast<double>(1<<3))
+  BDSADDBITSFLOAT(18, this->_Cus, 1.0/static_cast<double>(1<<30)/static_cast<double>(1<<1))
+  BDSADDBITSFLOAT(32, this->_sqrt_A, 1.0/static_cast<double>(1<<19))
+  BDSADDBITSFLOAT(18, this->_Cic, 1.0/static_cast<double>(1<<30)/static_cast<double>(1<<1))
+  BDSADDBITSFLOAT(32, this->_OMEGA0, M_PI/static_cast<double>(1<<30)/static_cast<double>(1<<1))
+  BDSADDBITSFLOAT(18, this->_Cis, 1.0/static_cast<double>(1<<30)/static_cast<double>(1<<1))
+  BDSADDBITSFLOAT(32, this->_i0, M_PI/static_cast<double>(1<<30)/static_cast<double>(1<<1))
+  BDSADDBITSFLOAT(18, this->_Crc, 1.0/static_cast<double>(1<<6))
+  BDSADDBITSFLOAT(32, this->_omega, M_PI/static_cast<double>(1<<30)/static_cast<double>(1<<1))
+  BDSADDBITSFLOAT(24, this->_OMEGADOT, M_PI/static_cast<double>(1<<30)/static_cast<double>(1<<13))
+  BDSADDBITS(5, 0)  // the last byte is filled by 0-bits to obtain a length of an integer multiple of 8
+
+  return CRC24(size, startbuffer);
 }
 
 // Compute BDS Satellite Position (virtual)
