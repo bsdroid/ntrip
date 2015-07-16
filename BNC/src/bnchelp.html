@@ -2143,17 +2143,17 @@ Such a file (here: 'RAW') must be saved beforehand using BNC's 'Raw output file'
 
 <p><a name="ppprnxobs"><h4>3.13.1.2 RINEX Observation File - mandatory if 'Data source' is set to 'RINEX Files'</h4></p>
 <p>
-Specify one or more RINEX Observation files. The file format can be RINEX Version 2 or RINEX Version 3.
+Specify a RINEX Observation file. The file format can be RINEX Version 2 or RINEX Version 3.
 </p>
 
 <p><a name="ppprnxnav"><h4>3.13.1.3 RINEX Navigation File - mandatory if 'Data source' is set to 'RINEX Files'</h4></p>
 <p>
-Specify one or more RINEX Navigation files. The file format can be RINEX Version 2 or RINEX Version 3.
+Specify a RINEX Navigation file. The file format can be RINEX Version 2 or RINEX Version 3.
 </p>
 
 <p><a name="pppcorrfile"><h4>3.13.1.4 Correction File - optional if 'Data source' is set to 'RINEX Files'</h4></p>
 <p>
-Specify one or more Broadcast 'Correction files' as saved beforehand using BNC. The file contents is basically the ASCII representation of a RTCM Version 3 Broadcast Correction (SSR) stream.
+Specify a Broadcast 'Correction files' as saved beforehand using BNC. The file contents is basically the ASCII representation of a RTCM Version 3 Broadcast Correction (SSR) stream.
 </p>
 <p>
 If you don't specify a 'Correction file' BNC will fall back from a PPP solution to a Single Point Positioning (SPP) solution.
@@ -2167,9 +2167,9 @@ Specify a Broadcast 'Corrections stream' from the list of selected 'Streams' you
 If you don't specify a 'Corrections stream' BNC will fall back from a PPP solution to a Single Point Positioning (SPP) solution.
 </p>
 
-<p><a name="pppmarkcoor"><h4>3.13.1.6 Coordinates - mandatory</h4></p>
+<p><a name="pppmarkcoor"><h4>3.13.1.6 Coordinates - optional </h4></p>
 <p>
-Enter the full path to an ASCII file which specifies all streams or files from stationary or mobile receivers you potentially may want to process. The 'Coordinates' file must contain one record per stream or file with the following parameters separated by blank characters:
+Enter the full path to an ASCII file which specifies all streams or files from stationary or mobile receivers you potentially may want to process. Specifying a 'Coordinates' file is optional. If it exists, it should contain one record per stream or file with the following parameters separated by blank characters:
 </p>
 <p>
 <ul>
