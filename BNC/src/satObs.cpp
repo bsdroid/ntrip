@@ -34,7 +34,7 @@ void t_clkCorr::writeEpoch(ostream* out, const QList<t_clkCorr>& corrList) {
           <<  corr._updateInt <<  " "
            << corrList.size() << ' ' << corr._staID << endl;
     }
-    *out << corr._prn.toString() << ' ' << setw(3) << corr._iod << ' '
+    *out << corr._prn.toString() << ' ' << setw(11) << corr._iod << ' '
          << setw(10) << setprecision(4) << corr._dClk       * t_CST::c << ' '
          << setw(10) << setprecision(4) << corr._dotDClk    * t_CST::c << ' '
          << setw(10) << setprecision(4) << corr._dotDotDClk * t_CST::c << endl;
@@ -101,7 +101,7 @@ void t_orbCorr::writeEpoch(ostream* out, const QList<t_orbCorr>& corrList) {
            << corr._updateInt <<  " "
            << corrList.size() << ' ' << corr._staID << endl;
     }
-    *out << corr._prn.toString() << ' ' << setw(3) << corr._iod << ' '
+    *out << corr._prn.toString() << ' ' << setw(11) << corr._iod << ' '
          << setw(10) << setprecision(4) << corr._xr[0]     << ' '
          << setw(10) << setprecision(4) << corr._xr[1]     << ' '
          << setw(10) << setprecision(4) << corr._xr[2]     << "    "
