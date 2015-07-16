@@ -229,7 +229,6 @@ void t_pppWidgets::readOptions() {
   _logFile    ->setText(settings.value(_logFile    ->objectName()).toString());
   _nmeaFile   ->setText(settings.value(_nmeaFile   ->objectName()).toString());
   _snxtroFile ->setText(settings.value(_snxtroFile ->objectName()).toString());
-  _seedingTime->setText(settings.value(_seedingTime->objectName()).toString());
 
   if (!settings.value(_sigmaC1->objectName()).toString().isEmpty()) {
     _sigmaC1->setText(settings.value(_sigmaC1->objectName()).toString());
@@ -249,7 +248,7 @@ void t_pppWidgets::readOptions() {
     _maxResC1->setText(settings.value(_maxResC1->objectName()).toString());
   }
   else {
-    _maxResC1->setText("3.0");
+    _maxResC1->setText("4.0");
   }
 
   if (!settings.value(_maxResL1->objectName()).toString().isEmpty()) {
@@ -257,6 +256,13 @@ void t_pppWidgets::readOptions() {
   }
   else { 
     _maxResL1->setText("0.03");
+  }
+
+  if (!settings.value(_seedingTime->objectName()).toString().isEmpty()) {
+    _seedingTime->setText(settings.value(_seedingTime->objectName()).toString());
+  }
+  else {
+    _seedingTime->setText("30");
   }
 
   // CheckBoxes
