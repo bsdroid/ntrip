@@ -861,15 +861,15 @@ bncWindow::bncWindow() {
   pppLayout1->addWidget(new QLabel("Data source"),           ir, 0);
   pppLayout1->addWidget(_pppWidgets._dataSource,             ir, 1);
   pppLayout1->addItem(new QSpacerItem(4*ww, 0),              ir, 2);
-  pppLayout1->addWidget(new QLabel("   RINEX Obs file(s)"),  ir, 3);
+  pppLayout1->addWidget(new QLabel("   RINEX Obs file"),     ir, 3);
   pppLayout1->addWidget(_pppWidgets._rinexObs,               ir, 4);
   ++ir;
-  pppLayout1->addWidget(new QLabel("   RINEX Nav file(s)"),  ir, 3);
+  pppLayout1->addWidget(new QLabel("   RINEX Nav file"),     ir, 3);
   pppLayout1->addWidget(_pppWidgets._rinexNav,               ir, 4);
   ++ir;
   pppLayout1->addWidget(new QLabel("Corrections stream"),    ir, 0);
   pppLayout1->addWidget(_pppWidgets._corrMount,              ir, 1);
-  pppLayout1->addWidget(new QLabel("   Correction file(s)"), ir, 3);
+  pppLayout1->addWidget(new QLabel("   Correction file"),    ir, 3);
   pppLayout1->addWidget(_pppWidgets._corrFile,               ir, 4);
   ++ir;
   pppLayout1->addWidget(new QLabel("Coordinates"),           ir, 0);
@@ -901,11 +901,11 @@ bncWindow::bncWindow() {
 
   _pppWidgets._antexFile->setWhatsThis(tr("<p>Observations in RTCM streams or RINEX files should be referred to the receiver's and to the satellite's Antenna Phase Center (APC) and therefore be corrected for<ul><li>Receiver APC offsets</li><li>Receiver APC variations</li><li>Satellite APC offsets.</li></ul> Specify the full path to an IGS 'ANTEX file' which contains APC offsets and variations.</p><p>If you don't specify an 'ANTEX file' then observations will not be corrected for APC offsets and variations.</p>"));
 
-  _pppWidgets._rinexObs->setWhatsThis(tr("<p>Specify the RINEX observations file(s).</p>"));
+  _pppWidgets._rinexObs->setWhatsThis(tr("<p>Specify the RINEX observations file.</p>"));
 
-  _pppWidgets._rinexNav->setWhatsThis(tr("<p>Specify the RINEX navigation file(s).</p>"));
+  _pppWidgets._rinexNav->setWhatsThis(tr("<p>Specify the RINEX navigation file.</p>"));
 
-  _pppWidgets._corrFile->setWhatsThis(tr("<p>Specify the Broadcast Ephemeris Corrections file(s) as saved beforehand using BNC.</p><p>If you don't specify corrections through this option, BNC will fall back to Single Point Positioning (SPP, positioning from RINEX Obs and RINEX Nav files only) instead of doing PPP.</p>"));
+  _pppWidgets._corrFile->setWhatsThis(tr("<p>Specify the Broadcast Ephemeris Corrections file as saved beforehand using BNC.</p><p>If you don't specify corrections through this option, BNC will fall back to Single Point Positioning (SPP, positioning from RINEX Obs and RINEX Nav files only) instead of doing PPP.</p>"));
 
   _pppWidgets._logFile->setWhatsThis(tr("<p>Specify the path to daily PPP logfiles using e.g. the following syntax (example):</p><p> ./PPP_${STATION}_${DATE}.log</p><p>BNC will produce one daily PPP logfile per station. Variable ${STATION} stands for the affected station and ${DATE} stands for the date.</p>"));
 
