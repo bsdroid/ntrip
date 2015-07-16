@@ -133,4 +133,78 @@ double       accuracyFromIndex(int index, t_eph::e_type type);
 
 int          indexFromAccuracy(double accuracy, t_eph::e_type type);
 
+
+// CRC24Q checksum calculation function (only full bytes supported).
+///////////////////////////////////////////////////////////////////
+unsigned long CRC24(long size, const unsigned char *buf);
+
+// RTCM3 GPS EPH encoding
+//////////////////////////////////////////////////////////
+#define GPSTOINT(type, value) static_cast<type>(round(value))
+
+#define GPSADDBITS(a, b) {bitbuffer = (bitbuffer<<(a)) \
+                       |(GPSTOINT(long long,b)&((1ULL<<a)-1)); \
+                       numbits += (a); \
+                       while(numbits >= 8) { \
+                       buffer[size++] = bitbuffer>>(numbits-8);numbits -= 8;}}
+
+#define GPSADDBITSFLOAT(a,b,c) {long long i = GPSTOINT(long long,(b)/(c)); \
+                             GPSADDBITS(a,i)};
+
+// RTCM3 GLONASS EPH encoding
+//////////////////////////////////////////////////////////
+#define GLONASSTOINT(type, value) static_cast<type>(round(value))
+#define GLONASSADDBITS(a, b) {bitbuffer = (bitbuffer<<(a)) \
+                       |(GLONASSTOINT(long long,b)&((1ULL<<(a))-1)); \
+                       numbits += (a); \
+                       while(numbits >= 8) { \
+                       buffer[size++] = bitbuffer>>(numbits-8);numbits -= 8;}}
+#define GLONASSADDBITSFLOATM(a,b,c) {int s; long long i; \
+                       if(b < 0.0) \
+                       { \
+                         s = 1; \
+                         i = GLONASSTOINT(long long,(-b)/(c)); \
+                         if(!i) s = 0; \
+                       } \
+                       else \
+                       { \
+                         s = 0; \
+                         i = GLONASSTOINT(long long,(b)/(c)); \
+                       } \
+                       GLONASSADDBITS(1,s) \
+                       GLONASSADDBITS(a-1,i)}
+
+// RTCM3 Galileo EPH encoding
+//////////////////////////////////////////////////////////
+#define GALILEOTOINT(type, value) static_cast<type>(round(value))
+#define GALILEOADDBITS(a, b) {bitbuffer = (bitbuffer<<(a)) \
+                       |(GALILEOTOINT(long long,b)&((1LL<<a)-1)); \
+                       numbits += (a); \
+                       while(numbits >= 8) { \
+                       buffer[size++] = bitbuffer>>(numbits-8);numbits -= 8;}}
+#define GALILEOADDBITSFLOAT(a,b,c) {long long i = GALILEOTOINT(long long,(b)/(c)); \
+                             GALILEOADDBITS(a,i)};
+
+// RTCM3 SBAS EPH encoding
+//////////////////////////////////////////////////////////
+#define SBASTOINT(type, value) static_cast<type>(round(value))
+#define SBASADDBITS(a, b) {bitbuffer = (bitbuffer<<(a)) \
+                       |(SBASTOINT(long long,b)&((1ULL<<a)-1)); \
+                       numbits += (a); \
+                       while(numbits >= 8) { \
+                       buffer[size++] = bitbuffer>>(numbits-8);numbits -= 8;}}
+#define SBASADDBITSFLOAT(a,b,c) {long long i = SBASTOINT(long long,(b)/(c)); \
+                             SBASADDBITS(a,i)};
+
+// RTCM3 BDS EPH encoding
+//////////////////////////////////////////////////////////
+#define BDSTOINT(type, value) static_cast<type>(round(value))
+#define BDSADDBITS(a, b) {bitbuffer = (bitbuffer<<(a)) \
+                       |(BDSTOINT(long long,b)&((1ULL<<a)-1)); \
+                       numbits += (a); \
+                       while(numbits >= 8) { \
+                       buffer[size++] = bitbuffer>>(numbits-8);numbits -= 8;}}
+#define BDSADDBITSFLOAT(a,b,c) {long long i = BDSTOINT(long long,(b)/(c)); \
+                             BDSADDBITS(a,i)};
+
 #endif

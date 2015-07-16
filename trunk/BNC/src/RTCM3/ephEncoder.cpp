@@ -3,36 +3,9 @@
 
 using namespace std;
 
-// Returns CRC24
-////////////////////////////////////////////////////////////////////////////
-static unsigned long CRC24(long size, const unsigned char *buf) {
-  unsigned long crc = 0;
-  int ii;
-  while (size--) {
-    crc ^= (*buf++) << (16);
-    for(ii = 0; ii < 8; ii++) {
-      crc <<= 1;
-      if (crc & 0x1000000) {
-        crc ^= 0x01864cfb;
-      }
-    }
-  }
-  return crc;
-}
 
 // build up RTCM3 for GPS
 ////////////////////////////////////////////////////////////////////////////
-#define GPSTOINT(type, value) static_cast<type>(round(value))
-
-#define GPSADDBITS(a, b) {bitbuffer = (bitbuffer<<(a)) \
-                       |(GPSTOINT(long long,b)&((1ULL<<a)-1)); \
-                       numbits += (a); \
-                       while(numbits >= 8) { \
-                       buffer[size++] = bitbuffer>>(numbits-8);numbits -= 8;}}
-
-#define GPSADDBITSFLOAT(a,b,c) {long long i = GPSTOINT(long long,(b)/(c)); \
-                             GPSADDBITS(a,i)};
-
 int t_ephEncoder::RTCM3(const t_ephGPS& eph, unsigned char *buffer) {
 
   unsigned char *startbuffer = buffer;
@@ -137,28 +110,6 @@ int t_ephEncoder::RTCM3(const t_ephGPS& eph, unsigned char *buffer) {
 
 // build up RTCM3 for GLONASS
 ////////////////////////////////////////////////////////////////////////////
-#define GLONASSTOINT(type, value) static_cast<type>(round(value))
-
-#define GLONASSADDBITS(a, b) {bitbuffer = (bitbuffer<<(a)) \
-                       |(GLONASSTOINT(long long,b)&((1ULL<<(a))-1)); \
-                       numbits += (a); \
-                       while(numbits >= 8) { \
-                       buffer[size++] = bitbuffer>>(numbits-8);numbits -= 8;}}
-#define GLONASSADDBITSFLOATM(a,b,c) {int s; long long i; \
-                       if(b < 0.0) \
-                       { \
-                         s = 1; \
-                         i = GLONASSTOINT(long long,(-b)/(c)); \
-                         if(!i) s = 0; \
-                       } \
-                       else \
-                       { \
-                         s = 0; \
-                         i = GLONASSTOINT(long long,(b)/(c)); \
-                       } \
-                       GLONASSADDBITS(1,s) \
-                       GLONASSADDBITS(a-1,i)}
-
 int t_ephEncoder::RTCM3(const t_ephGlo& eph, unsigned char *buffer)
 {
 
@@ -224,16 +175,6 @@ int t_ephEncoder::RTCM3(const t_ephGlo& eph, unsigned char *buffer)
 
 // build up RTCM3 for Galileo
 ////////////////////////////////////////////////////////////////////////////
-#define GALILEOTOINT(type, value) static_cast<type>(round(value))
-
-#define GALILEOADDBITS(a, b) {bitbuffer = (bitbuffer<<(a)) \
-                       |(GALILEOTOINT(long long,b)&((1LL<<a)-1)); \
-                       numbits += (a); \
-                       while(numbits >= 8) { \
-                       buffer[size++] = bitbuffer>>(numbits-8);numbits -= 8;}}
-#define GALILEOADDBITSFLOAT(a,b,c) {long long i = GALILEOTOINT(long long,(b)/(c)); \
-                             GALILEOADDBITS(a,i)};
-
 int t_ephEncoder::RTCM3(const t_ephGal& eph, unsigned char *buffer) {
   int size = 0;
   int numbits = 0;
@@ -308,16 +249,6 @@ int t_ephEncoder::RTCM3(const t_ephGal& eph, unsigned char *buffer) {
 
 // build up RTCM3 for SBAS
 ////////////////////////////////////////////////////////////////////////////
-#define SBASTOINT(type, value) static_cast<type>(round(value))
-
-#define SBASADDBITS(a, b) {bitbuffer = (bitbuffer<<(a)) \
-                       |(SBASTOINT(long long,b)&((1ULL<<a)-1)); \
-                       numbits += (a); \
-                       while(numbits >= 8) { \
-                       buffer[size++] = bitbuffer>>(numbits-8);numbits -= 8;}}
-#define SBASADDBITSFLOAT(a,b,c) {long long i = SBASTOINT(long long,(b)/(c)); \
-                             SBASADDBITS(a,i)};
-
 int t_ephEncoder::RTCM3(const t_ephSBAS& eph, unsigned char* buffer) {
   int size = 0;
   int numbits = 0;
@@ -357,16 +288,6 @@ int t_ephEncoder::RTCM3(const t_ephSBAS& eph, unsigned char* buffer) {
 
 // build up RTCM3 for BDS
 ////////////////////////////////////////////////////////////////////////////
-#define BDSTOINT(type, value) static_cast<type>(round(value))
-
-#define BDSADDBITS(a, b) {bitbuffer = (bitbuffer<<(a)) \
-                       |(BDSTOINT(long long,b)&((1ULL<<a)-1)); \
-                       numbits += (a); \
-                       while(numbits >= 8) { \
-                       buffer[size++] = bitbuffer>>(numbits-8);numbits -= 8;}}
-#define BDSADDBITSFLOAT(a,b,c) {long long i = BDSTOINT(long long,(b)/(c)); \
-                             BDSADDBITS(a,i)};
-
 int t_ephEncoder::RTCM3(const t_ephBDS& eph, unsigned char* buffer) {
   int size = 0;
   int numbits = 0;
@@ -417,3 +338,4 @@ int t_ephEncoder::RTCM3(const t_ephBDS& eph, unsigned char* buffer) {
   size += 3;
   return size;
 }
+
