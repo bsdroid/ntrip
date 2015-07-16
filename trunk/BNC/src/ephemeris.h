@@ -10,6 +10,7 @@
 #include "t_prn.h"
 #include "gnss.h"
 
+
 class t_orbCorr;
 class t_clkCorr;
 
@@ -23,7 +24,7 @@ class t_eph {
 
   virtual e_type  type() const = 0;
   virtual QString toString(double version) const = 0;
-  virtual int     IOD() const = 0;
+  virtual unsigned long IOD() const = 0;
   virtual int     slotNum() const {return 0;}
   bncTime TOC() const {return _TOC;}
   bool    isNewerThan(const t_eph* eph) const {return earlierTime(eph, this);}
@@ -59,7 +60,7 @@ class t_ephGPS : public t_eph {
 
   virtual e_type type() const {return (_prn.system() == 'J' ? t_eph::QZSS : t_eph::GPS); }
   virtual QString toString(double version) const;
-  virtual int  IOD() const { return static_cast<int>(_IODC); }
+  virtual unsigned long  IOD() const { return static_cast<unsigned long>(_IODC); }
   double TGD() const {return _TGD;} // Timing Group Delay (P1-P2 DCB)
 
  private:
@@ -113,7 +114,7 @@ class t_ephGlo : public t_eph {
 
   virtual e_type type() const {return t_eph::GLONASS;}
   virtual QString toString(double version) const;
-  virtual int  IOD() const;
+  virtual unsigned long  IOD() const;
   virtual int slotNum() const {return int(_frequency_number);}
 
  private:
@@ -154,7 +155,7 @@ class t_ephGal : public t_eph {
 
   virtual QString toString(double version) const;
   virtual e_type type() const {return t_eph::Galileo;}
-  virtual int  IOD() const { return static_cast<int>(_IODnav); }
+  virtual unsigned long  IOD() const { return static_cast<unsigned long>(_IODnav); }
 
  private:
   virtual t_irc position(int GPSweek, double GPSweeks, double* xc, double* vv) const;
@@ -216,7 +217,7 @@ class t_ephSBAS : public t_eph {
   virtual ~t_ephSBAS() {}
 
   virtual e_type  type() const {return t_eph::SBAS;}
-  virtual int     IOD() const {return _IODN;}
+  virtual unsigned long IOD() const;
   virtual QString toString(double version) const;
 
  private:
@@ -252,7 +253,7 @@ class t_ephBDS : public t_eph {
   virtual ~t_ephBDS() {}
 
   virtual e_type  type() const {return t_eph::BDS;}
-  virtual int     IOD() const {return _AODC;}
+  virtual unsigned long IOD() const;
   virtual QString toString(double version) const;
 
  private:
