@@ -262,7 +262,7 @@ void t_pppWidgets::readOptions() {
     _seedingTime->setText(settings.value(_seedingTime->objectName()).toString());
   }
   else {
-    _seedingTime->setText("30");
+    _seedingTime->setText("0");
   }
 
   // CheckBoxes
