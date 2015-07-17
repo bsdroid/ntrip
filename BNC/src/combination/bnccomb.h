@@ -25,8 +25,8 @@ class bncComb : public QObject {
 
  signals:
   void newMessage(QByteArray msg, bool showOnScreen);
-  void newClkCorrections(QList<t_clkCorr> clkCorrections);
-  void newOrbCorrections(QList<t_orbCorr> orbCorrections);
+  void newOrbCorrections(QList<t_orbCorr>);
+  void newClkCorrections(QList<t_clkCorr>);
 
  private:
   enum e_method{singleEpoch, filter};
