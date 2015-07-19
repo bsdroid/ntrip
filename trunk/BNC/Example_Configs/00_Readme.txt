@@ -119,7 +119,14 @@ observations of a rover receiver. The configuration reads RTCM Version 3
 observations, a Broadcast Ephemeris stream and a stream with Broadcast 
 Corrections. Positions are saved in the logfile. 
 
-9. File 'PPPQuickStart.bnc'
+9. File 'PPPNet.bnc'
+The purpose of this configuration is siumultaneous Precise Point Positioning 
+from observations of several rover receivers or a network of reference 
+stations. The configuration reads several RTCM Version 3 observation streams, 
+a Broadcast Ephemeris stream and a stream with Broadcast Corrections. 
+Positions are saved per station in the logfile. 
+
+10. File 'PPPQuickStart.bnc'
 The purpose of this configuration is Precise Point Positioning in Quick-Start 
 mode from observations of a static receiver with precisely known position. The 
 configuration reads RTCM Version 3 observations, Broadcast Corrections and a 
@@ -127,7 +134,7 @@ Broadcast Ephemeris stream. Positions are saved in NMEA format on disc.
 Positions are also output through IP port for real-time visualization with 
 tools like RTKPLOT. Positions are also saved in the logfile. 
 
-10. File 'PPPPostProc.bnc'
+11. File 'PPPPostProc.bnc'
 The purpose of this configuration is Precise Point Positioning in Post 
 Processing mode. BNC reads a RINEX Observation and a RINEX Version 3 Navigation 
 files and a Broadcast Corrections file. PPP processing options are set to 
@@ -135,7 +142,7 @@ support the Quick-Start mode. The output is saved in a specific Post Processing
 logfile and contains the coordinates derived over time following the 
 implemented PPP filter algorithm. 
 
-11. File 'PPPGoogleMaps.bnc'
+12. File 'PPPGoogleMaps.bnc'
 The purpose of this configuration is to track BNC's point positioning
 solution using Google Maps or Open StreetMap as background. BNC reads a
 RINEX Observation file and a RINEX Navigation file to carry out a
@@ -145,20 +152,20 @@ to the Internet. Specify a computation speed, then hit button 'Open Map'
 to open the track map, then hit 'Start' to visualize receiver positions
 on top of GM/OSM maps.
 
-12. File 'SPPQuickStartGal.bnc'
+13. File 'SPPQuickStartGal.bnc'
 The purpose of this configuration is Single Point Positioning in Quick-Start 
 mode from observations of a static receiver with precisely known position. The 
 configuration uses GPS, GLONASS and Galileo observations and a Broadcast 
 Ephemeris stream. 
 
-13. File 'SaveSp3.bnc'
+14. File 'SaveSp3.bnc'
 The purpose of this configuration is to produce SP3 files from a Broadcast 
 Ephemeris stream and a Broadcast Corrections stream. The Broadcast Corrections 
 stream is formally introduced in BNC's 'Combine Corrections' table. Note that 
 producing SP3 requires an ANTEX file because SP3 file contents should be 
 referred to CoM. 
 
-14. File 'Sp3ETRF2000PPP.bnc'
+15. File 'Sp3ETRF2000PPP.bnc'
 The purpose of this configuration is to produce SP3 files from a Broadcast 
 Ephemeris stream and a stream carrying ETRF2000 Broadcast Corrections. The 
 Broadcast Corrections stream is formally introduced in BNC's 'Combine 
@@ -167,7 +174,7 @@ to ETRF2000. Pulling in addition observations from a reference station at
 precisely known ETRF2000 position allows comparing an 'INTERNAL' PPP solution 
 with ETRF2000 reference coordinates. 
 
-15. File 'Upload.bnc'
+16. File 'Upload.bnc'
 The purpose of this configuration is to upload orbits and clocks from a 
 real-time GNSS engine to an NTRIP Broadcaster. For that the configuration reads 
 precise orbits and clocks in RTNET format. It also reads a stream carrying 
@@ -177,14 +184,14 @@ an NTRIP Broadcaster. The Broadcast Corrections stream is referred to satellite
 Antenna Phase Center (APC) and IGS08. Orbits are saved on disk in SP3 format 
 and clocks in Clock RINEX format. 
 
-16. File 'UploadPPP.bnc'
+17. File 'UploadPPP.bnc'
 This configuration equals the 'Upload.bnc' configuration. However, the 
 Broadcast Corrections are in addition used for an 'INTERNAL' PPP solution based 
 on observations from a static reference station with known precise coordinates. 
 This allows a continuous quality check of the Broadcast Corrections through 
 observing coordinate displacements. 
 
-17. File 'Combi.bnc'
+18. File 'Combi.bnc'
 The purpose of this configuration is to pull several streams carrying Broadcast 
 Corrections and a Broadcast Ephemeris stream from an NTRIP Broadcaster to 
 produce a combined Broadcast Corrections stream. BNC encodes the combination 
@@ -193,26 +200,26 @@ Broadcaster. The Broadcast Corrections stream is not referred to satellite
 Center of Mass (CoM). It is referred to IGS08. Orbits are saved in SP3 format 
 and clocks in Clock RINEX format. 
 
-18. File 'CombiPPP.bnc'
+19. File 'CombiPPP.bnc'
 This configuration equals the 'Combi.bnc' configuration. However, the combined 
 Broadcast Corrections are in addition used for an 'INTERNAL' PPP solutions 
 based on observations from a static reference station with known precise 
 coordinates. This allows a continuous quality check of the combination product 
 through observing coordinate displacements. 
 
-19. File 'UploadEph.bnc'
+20. File 'UploadEph.bnc'
 The purpose of this configuration is to pull a number of streams from reference 
 stations to get hold of contained Broadcast Ephemeris messages. These are 
 encoded then in a RTCM Version 3 stream which only provides Broadcast Ephemeris 
 with an update rate of 5 seconds. 
 
-20. File 'CompareSp3.bnc'
+21. File 'CompareSp3.bnc'
 The purpose of this configuration is to compare two SP3 files to calculate 
 RMS values for orbit and clock differences. GPS satellite G05 and GLONASS 
 satellite R18 are excluded from this comparison. Comparison results are saved 
 in a logfile. 
 
-21. File 'Empty.bnc'
+22. File 'Empty.bnc'
 The purpose of this example is to provide an empty configuration file for BNC
 which only contains the default settings.
 
