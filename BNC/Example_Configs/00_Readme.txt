@@ -151,7 +151,7 @@ mode from observations of a static receiver with precisely known position. The
 configuration uses GPS, GLONASS and Galileo observations and a Broadcast 
 Ephemeris stream. 
 
-13. File 'Sp3.bnc'
+13. File 'saveSp3.bnc'
 The purpose of this configuration is to produce SP3 files from a Broadcast 
 Ephemeris stream and a Broadcast Corrections stream. The Broadcast Corrections 
 stream is formally introduced in BNC's 'Combine Corrections' table. Note that 
@@ -206,10 +206,16 @@ stations to get hold of contained Broadcast Ephemeris messages. These are
 encoded then in a RTCM Version 3 stream which only provides Broadcast Ephemeris 
 with an update rate of 5 seconds. 
 
-20. File 'Empty.bnc'
+20. File 'compareSp3.bnc'
+The purpose of this configuration is to compare two SP3 files to calculate 
+RMS values for orbit and clock differences. GPS satellite G05 and GLONASS 
+satellite R18 are excluded from this comparison. Comparison results are saved 
+in a logfile. 
+
+21. File 'Empty.bnc'
 The purpose of this example is to provide an empty configuration file for BNC
 which only contains the default settings.
 
 Georg Weber, BKG
-Frankfurt, November 2013
+Frankfurt, August 2015
 igs-ip@bkg.bund.de
