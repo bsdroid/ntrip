@@ -1141,14 +1141,14 @@ bncWindow::bncWindow() {
   _sp3CompFileChooser->setMaximumWidth(40*ww);
 
   _sp3CompExclude = new QLineEdit(settings.value("sp3CompExclude").toString());
-  _sp3CompExclude->setMinimumWidth(15*ww);
-  _sp3CompExclude->setMaximumWidth(15*ww);
+  _sp3CompExclude->setMinimumWidth(18*ww);
+  _sp3CompExclude->setMaximumWidth(18*ww);
   _sp3CompExclude->setWhatsThis(tr("<p>Specify satellites to exclude them from orbit and clock comparision. Example:<p>G04,G31,R</p><p>This excludes GPS satellites RPN 4 and 31 as well as all GLONASS satellites from the comparision.</p><p>Default is an empty option field, meaning that no satellite is excluded from the comparison.</p>"));
 
   _sp3CompLogLineEdit = new QLineEdit(settings.value("sp3CompOutLogFile").toString());
   _sp3CompLogLineEdit->setWhatsThis(tr("<p>Specify the full path to a logfile to save comparison results.</p><p>Specifying a logfile is mandatory. Comparing SP3 files and not saving the results on disk would be meaningless.</p>"));
-  _sp3CompLogLineEdit->setMinimumWidth(15*ww);
-  _sp3CompLogLineEdit->setMaximumWidth(15*ww);
+  _sp3CompLogLineEdit->setMinimumWidth(18*ww);
+  _sp3CompLogLineEdit->setMaximumWidth(18*ww);
 
   ir = 0;
   sp3CompLayout->addWidget(new QLabel("Orbit and clock comparison.<br>"),  ir, 0, 1, 40);
