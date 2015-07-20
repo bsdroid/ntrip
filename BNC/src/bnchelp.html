@@ -4277,155 +4277,200 @@ The following table's left column is a list of options as contained in BNC's con
 </p>
 <table>
 <tr></tr>
-<tr><td><b>Option</b></td><td><b>Affiliation</b></td></tr>
-<tr><td>[General]</td><td>Settings: Group</td></tr>
-<tr><td>startTab=</td><td>Internal: Top panel index</td></tr>
-<tr><td>statusTab=</td><td>Internal: Bottom panel index</td></tr>
-<tr><td>font=</td><td>Internal: Used font</td></tr>
-<tr><td>casterUrlList=</td><td>Internal: Visited URLs</td></tr>
-<tr><td>mountPoints=</td><td>Add Streams: broadcaster:port/mountpoint</td></tr>
-<tr><td>ntripVersion=</td><td>Add Stream: NTRIP Version</td></tr>
+<tr><td><br><b>Internal</b></td><td><br><b>Meaning</b></td></tr>
+<tr><td>startTab</td><td>Top panel index</td></tr>
+<tr><td>statusTab</td><td>Bottom panel index</td></tr>
+<tr><td>font</td><td>Used font</td></tr>
+<tr><td>casterUrlList</td><td>Visited URLs</td></tr>
 
-<tr><td>proxyHost=</td><td>Network: Proxy host</td></tr>
-<tr><td>proxyPort=</td><td>Network: Proxy port</td></tr>
-<tr><td>sslCaCertPath=</td><td>Network: Path to SSL certificates</td></tr>
-<tr><td>ignoreSslErrors=</td><td>Network: Ignore ssl authorization errors</td></tr>
+<tr><td><br><b>Network Panel</b></td><td><br><b>Meaning</b></td></tr>
+<tr><td>proxyHost</td><td>Proxy host</td></tr>
+<tr><td>proxyPort</td><td>Proxy port</td></tr>
+<tr><td>sslCaCertPath</td><td>Path to SSL certificates</td></tr>
+<tr><td>ignoreSslErrors</td><td>Ignore ssl authorization errors</td></tr>
 
-<tr><td>logFile=</td><td>General: Logfile (full path)</td></tr>
-<tr><td>rnxAppend=</td><td>General: Append files</td></tr>
-<tr><td>onTheFlyInterval=</td><td>General: Reread configuration</td></tr>
-<tr><td>autoStart=</td><td>General: Auto start</td></tr>
-<tr><td>rawOutFile=</td><td>General: Raw output file (full path)</td></tr>
+<tr><td><br><b>General Panel</b></td><td><br><b>Meaning</b></td></tr>
+<tr><td>logFile</td><td>Logfile (full path)</td></tr>
+<tr><td>rnxAppend</td><td>Append files</td></tr>
+<tr><td>onTheFlyInterval</td><td>Reread configuration</td></tr>
+<tr><td>autoStart</td><td>Auto start</td></tr>
+<tr><td>rawOutFile</td><td>Raw output file (full path)</td></tr>
 
-<tr><td>rnxPath=</td><td>RINEX Observations: Directory</td></tr>
-<tr><td>rnxIntr=</td><td>RINEX Observations: Interval</td></tr>
-<tr><td>rnxSample=</td><td>RINEX Observations: Sampling</td></tr>
-<tr><td>rnxSkel=</td><td>RINEX Observations: Skeleton extension</td></tr>
-<tr><td>rnxScript=</td><td>RINEX Observations: Uplod script</td></tr>
-<tr><td>rnxV3=</td><td>RINEX Observation: Version 3</td></tr>
+<tr><td><br><b>RINEX Observations Panel</b></td><td><br><b>Meaning</b></td></tr>
+<tr><td>rnxPath</td><td>Directory</td></tr>
+<tr><td>rnxIntr</td><td>Interval</td></tr>
+<tr><td>rnxSample</td><td>Sampling</td></tr>
+<tr><td>rnxSkel</td><td>Skeleton extension</td></tr>
+<tr><td>rnxOnlyWithSKL</td><td>Skeleton is mandadory</td></tr>
+<tr><td>rnxScript</td><td>Uplod script</td></tr>
+<tr><td>rnxV2Priority</td><td>Signal priority</td></tr>
+<tr><td>rnxV3</td><td>ersion 3</td></tr>
 
-<tr><td>ephPath=</td><td>RINEX Ephemeris: Directory</td></tr>
-<tr><td>ephIntr=</td><td>RINEX Ephemeris: Interval</td></tr>
-<tr><td>outEphPort=</td><td>RINEX Ephemeris: Port</td></tr>
-<tr><td>ephV3=</td><td>RINEX Ephemeris: Version 3</td></tr>
+<tr><td><br><b>RINEX Ephemeris Panel</b></td><td><br><b>Meaning</b></td></tr>
+<tr><td>ephPath</td><td>Directory</td></tr>
+<tr><td>ephIntr</td><td>Interval</td></tr>
+<tr><td>outEphPort</td><td>Port</td></tr>
+<tr><td>ephV3</td><td>Version 3</td></tr>
 
-<tr><td>corrPath=</td><td>Broadcast Corrections: Directory, ASCII </td></tr>
-<tr><td>corrIntr=</td><td>Broadcast Corrections: Interval</td></tr>
-<tr><td>corrPort=</td><td>Broadcast Corrections: Port</td></tr>
+<tr><td><br><b>RINEX Editing and QC Panel</b></td><td><br><b>Meaning</b></td></tr>
+<tr><td>reqcAction</td><td>Action
+<tr><td>reqcObsFile</td><td>Input observations file
+<tr><td>reqcNavFile</td><td>Input navigation file
+<tr><td>reqcOutObsFile</td><td>Output observations file
+<tr><td>reqcOutNavFile</td><td>Output navigation file
+<tr><td>reqcOutLogFile</td><td>Output logfile
+<tr><td>reqcLogSummaryOnly</td><td>Summary output logfile
+<tr><td>reqcSkyPlotSignals</td><td>Plots for signals 
+<tr><td>reqcPlotDir</td><td>QC plots directory
+<tr><td>reqcRnxVersion</td><td>RINEX version
+<tr><td>reqcSampling</td><td>RINEX sampling
+<tr><td>reqcV2Priority</td><td>Version 2 signal priority
+<tr><td>reqcStartDateTime</td><td>Start time
+<tr><td>reqcEndDateTime</td><td>Stop time
+<tr><td>reqcRunBy</td><td>Operators name
+<tr><td>reqcUseObsTypes</td><td>Use observation types
+<tr><td>reqcComment</td><td>Additional comments
+<tr><td>reqcOldMarkerName</td><td>Old marker name
+<tr><td>reqcNewMarkerName</td><td>New marker name
+<tr><td>reqcOldAntennaName</td><td>Old antenna name
+<tr><td>reqcNewAntennaName</td><td>New antenna name
+<tr><td>reqcOldAntennaNumber</td><td>Old antenna number
+<tr><td>reqcNewAntennaNumber</td><td>New antenna number
+<tr><td>reqcOldAntennadN</td><td>Old north excentritity
+<tr><td>reqcNewAntennadN</td><td>New north excentricity
+<tr><td>reqcOldAntennadE</td><td>Old east excentritity
+<tr><td>reqcNewAntennadE</td><td>New east excentricity
+<tr><td>reqcOldAntennadU</td><td>Old up excentritity
+<tr><td>reqcNewAntennadU</td><td>New up excentricity
+<tr><td>reqcOldReceiverName</td><td>Old receiver name
+<tr><td>reqcNewReceiverName</td><td>New receiver name
+<tr><td>reqcOldReceiverNumber</td><td>Old receiver number
+<tr><td>reqcNewReceiverNumber</td><td>New receiver number
 
-<tr><td>outPort=</td><td>Feed Engine: Port</td></tr>
-<tr><td>waitTime=</td><td>Feed Engine: Wait for full obs epoch</td></tr>
-<tr><td>binSampl=</td><td>Feed Engine: Sampling</td></tr>
-<tr><td>outFile=</td><td>Feed Engine: File (full path)</td></tr>
-<tr><td>outUPort=</td><td>Feed Engine: Port (unsynchronized)</td></tr>
+<tr><td><br><b>SP3 Comparison Panel</b></td><td><br><b>Meaning</b></td></tr>
+<tr><td>sp3CompFile</td><td>SP3 input files
+<tr><td>sp3CompExclude</td><td>Satellite exclusion list 
+<tr><td>sp3CompOutLogFile</td><td>Output logfile
 
-<tr><td>serialMountPoint=</td><td>Serial Output: Mountpoint</td></tr>
-<tr><td>serialPortName=</td><td>Serial Output: Port name</td></tr>
-<tr><td>serialBaudRate=</td><td>Serial Output: Baud rate</td></tr>
-<tr><td>serialFlowControl=</td><td>Serial Output: Flow control</td></tr>
-<tr><td>serialDataBits=</td><td>Serial Output: Data bits</td></tr>
-<tr><td>serialParity=</td><td>Serial Output: Parity</td></tr>
-<tr><td>serialStopBits=</td><td>Serial Output: Stop bits</td></tr>
-<tr><td>serialAutoNMEA=</td><td>Serial Output: NMEA</td></tr>
-<tr><td>serialFileNMEA=</td><td>Serial Output: NMEA file name</td></tr>
-<tr><td>serialHeightNMEA=</td><td>Serial Output: Height</td></tr>
+<tr><td><br><b>Broadcast Corrections Panel</b></td><td><br><b>Meaning</b></td></tr>
+<tr><td>corrPath</td><td>Directory, ASCII </td></tr>
+<tr><td>corrIntr</td><td>Interval</td></tr>
+<tr><td>corrPort</td><td>Port</td></tr>
 
-<tr><td>obsRate=</td><td>Outages: Observation rate</td></tr>
-<tr><td>adviseFail=</td><td>Outages: Failure threshold</td></tr>
-<tr><td>adviseReco=</td><td>Outages: Recovery threshold</td></tr>
-<tr><td>adviseScript=</td><td>Outages: Script (full path)</td></tr>
+<tr><td><br><b>Feed Engine Panel</b></td><td><br><b>Meaning</b></td></tr>
+<tr><td>outPort</td><td>Port</td></tr>
+<tr><td>waitTime</td><td>Wait for full obs epoch</td></tr>
+<tr><td>binSampl</td><td>Sampling</td></tr>
+<tr><td>outFile</td><td>File (full path)</td></tr>
+<tr><td>outUPort</td><td>Port (unsynchronized)</td></tr>
 
-<tr><td>miscMount=</td><td>Miscellaneous: Mountpoint</td></tr>
-<tr><td>perfIntr=</td><td>Miscellaneous: Log latency</td></tr>
-<tr><td>scanRTCM=</td><td>Miscellaneous: Scan RTCM</td></tr>
+<tr><td><br><b>Serial Output Panel</b></td><td><br><b>Meaning</b></td></tr>
+<tr><td>serialMountPoint</td><td>Mountpoint</td></tr>
+<tr><td>serialPortName</td><td>Port name</td></tr>
+<tr><td>serialBaudRate</td><td>Baud rate</td></tr>
+<tr><td>serialFlowControl</td><td>Flow control</td></tr>
+<tr><td>serialDataBits</td><td>Data bits</td></tr>
+<tr><td>serialParity</td><td>Parity</td></tr>
+<tr><td>serialStopBits</td><td>Stop bits</td></tr>
+<tr><td>serialAutoNMEA</td><td>NMEA</td></tr>
+<tr><td>serialFileNMEA</td><td>NMEA file name</td></tr>
+<tr><td>serialHeightNMEA</td><td>Height</td></tr>
 
-<tr><td>pppSPP=</td><td>PPP Client: PPP/SPP</td></tr>
-<tr><td>pppMount=</td><td>PPP Client: Observations Mountpoint</td></tr>
-<tr><td>pppCorrMount=</td><td>PPP Client: Corrections Mountpoint</td></tr>
-<tr><td>pppRefCrdX=</td><td>PPP Client: X coordinate of plot origin</td></tr>
-<tr><td>pppRefCrdY=</td><td>PPP Client: Y coordinate of plot origin</td></tr>
-<tr><td>pppRefCrdZ=</td><td>PPP Client: Z coordinate of plot origin</td></tr>
-<tr><td>pppRefdN=</td><td>PPP Client: North eccentricity</td></tr>
-<tr><td>pppRefdE=</td><td>PPP Client: East eccentricity</td></tr>
-<tr><td>pppRefdU=</td><td>PPP Client: Up eccentricity</td></tr>
-<tr><td>nmeaFile=</td><td>PPP Client: NMEA outputfile</td></tr>
-<tr><td>nmeaPort=</td><td>PPP Client: NMEA IP output port</td></tr>
-<tr><td>pppPlotCoordinates=</td><td>PPP Client: Plot NEU time series</td></tr>
-<tr><td>postObsFile=</td><td>PPP Client: Observations file</td></tr>
-<tr><td>postNavFile=</td><td>PPP Client: Navigation file</td></tr>
-<tr><td>postCorrFile=</td><td>PPP Client: Corrections file</td></tr>
-<tr><td>postOutFile=</td><td>PPP Client: Output file</td></tr>
-<tr><td>pppAntenna=</td><td>PPP Client: Antenna name</td></tr>
-<tr><td>pppAntex=</td><td>PPP Client: Path to ANTEX file</td></tr>
-<tr><td>pppUsePhase=</td><td>PPP Client: Use phase data </td></tr>
-<tr><td>pppEstTropo=</td><td>PPP Client: Estimate troposphere</td></tr>
-<tr><td>pppGLONASS=</td><td>PPP Client: Use GLONASS</td></tr>
-<tr><td>pppGalileo=</td><td>PPP Client: Use Galileo</td></tr>
-<tr><td>pppSync=</td><td>PPP Client: Sync observations and corrections</td></tr>
-<tr><td>pppAverage=</td><td>PPP Client: Lenght of time window for moving average</td></tr>
-<tr><td>pppQuickStart=</td><td>PPP Client: Quick-Start period</td></tr>
-<tr><td>pppMaxSolGap=</td><td>PPP Client: Maximal Solution Gap</td></tr>
-<tr><td>pppSigmaCode=</td><td>PPP Client: Sigma for Code observations</td></tr>
-<tr><td>pppSigmaPhase=</td><td>PPP Client: Sigma for Phase observations</td></tr>
-<tr><td>pppSigmaCrd0=</td><td>PPP Client: Sigma for initial XYZ coordinate</td></tr>
-<tr><td>pppSigmaCrdP=</td><td>PPP Client: White noise for XYZ</td></tr>
-<tr><td>pppSigmaTrp0=</td><td>PPP Client: Sigma for initial tropospheric delay</td></tr>
-<tr><td>pppSigmaTrpP=</td><td>PPP Client: White noise for tropospheric delay</td></tr>
-<tr><td>pppAudioResponse=</td><td>PPP Client: Threshold for audio response</td></tr>
-<tr><td>mapSpeed=</td><td>PPP Client: Offline processing speed for mapping</td></tr>
-<tr><td>mapWinDotColor=</td><td>PPP Client: Color of dots and cross hair on map</td></tr>
-<tr><td>mapWinDotSize=</td><td>PPP Client: Size of dots on map</td></tr>
-<tr><td>useOsmMap=</td><td>PPP Client: Select Google maps or OSM</td></tr>
+<tr><td><br><b>Outages Panel</b></td><td><br><b>Meaning</b></td></tr>
+<tr><td>obsRate</td><td>Observation rate</td></tr>
+<tr><td>adviseFail</td><td>Failure threshold</td></tr>
+<tr><td>adviseReco</td><td>Recovery threshold</td></tr>
+<tr><td>adviseScript</td><td>Script (full path)</td></tr>
 
-<tr><td>reqcAction=</td><td>Reqc: Action</td></tr>
-<tr><td>reqcComment=</td><td>Reqc: Additional comments</td></tr>
-<tr><td>reqcEndDateTime=</td><td>Reqc: Stop time</td></tr>
-<tr><td>reqcNavFile=</td><td>Reqc: Navigation file</td></tr>
-<tr><td>reqcNewAntennaName=</td><td>Reqc: New antenna</td></tr>
-<tr><td>reqcNewMarkerName=</td><td>Reqc: New marker</td></tr>
-<tr><td>reqcNewReceiverName=</td><td>Reqc: New receiver</td></tr>
-<tr><td>reqcObsFile=</td><td>Reqc: Observations file</td></tr>
-<tr><td>reqcOldAntennaName=</td><td>Reqc: Old antenna</td></tr>
-<tr><td>reqcOldMarkerName=</td><td>Reqc: Old marker</td></tr>
-<tr><td>reqcOldReceiverName=</td><td>Reqc: Old receiver</td></tr>
-<tr><td>reqcOutLogFile=</td><td>Reqc: Output logfile</td></tr>
-<tr><td>reqcPlotDir</td><td>Reqc: QC plots directory</td></tr>
-<tr><td>reqcRnxVersion=</td><td>Reqc: RINEX version</td></tr>
-<tr><td>reqcRunBy=</td><td>Reqc: Operators name</td></tr>
-<tr><td>reqcSampling=</td><td>Reqc: RINEX sampling</td></tr>
-<tr><td>reqcSkyPlotSystem=</td><td>Reqc: GNSS system specification</td></tr>
-<tr><td>reqcStartDateTime=</td><td>Reqc: Start time</td></tr>
+<tr><td><br><b>Miscellaneous</b></td><td><br><b>Meaning</b></td></tr>
+<tr><td>miscMount</td><td>Mountpoint</td></tr>
+<tr><td>perfIntr</td><td>Log latency</td></tr>
+<tr><td>scanRTCM</td><td>Scan RTCM</td></tr>
+<tr><td>miscPort</td><td>Mountpoint</td></tr>
 
-<tr><td>combineStreams=</td><td>Combination: List of correction streams</td></tr>
-<tr><td>cmbMethod=Filter</td><td>Combination: Approach</td></tr>
-<tr><td>cmbMaxres=</td><td>Combination: Clock outlier threshold</td></tr>
-<tr><td>cmbSampl=</td><td>Combination: Orbit and clock sampling</td></tr>
+<tr><td><br><b>PPP Client Panel 1</b></td><td><br><b>Meaning</b></td></tr>
+<tr><td>dataSource</td><td>Switch between real-time and post processing</td></tr>
+<tr><td>rinexObs</td><td>RINEX observation file</td></tr>
+<tr><td>rinexNav</td><td>RINEX navigation file</td></tr>
+<tr><td>corrMount</td><td>Corrections mountpoint</td></tr>
+<tr><td>corrFile</td><td>Corrections file</td></tr>
+<tr><td>crdFile</td><td>Coordinates file</td></tr>
+<tr><td>logFilePPP</td><td>PPP logfile</td></tr>
+<tr><td>antexFile</td><td>ANTEX file</td></tr>
+<tr><td>nmeaFile</td><td>NMEA output file</td></tr>
+<tr><td>snxtroFile</td><td>SINEX troposphere output file name</td></tr>
+<tr><td>snxtroSampl</td><td>SINEX troposphere sampling rage</td></tr>
 
-<tr><td>uploadIntr=</td><td>Upload Corrections: File interval</td></tr>
-<tr><td>uploadMountpointsOut=</td><td>Upload Corrections: Upload streams</td></tr>
-<tr><td>uploadSamplClkRnx=</td><td>Upload Corrections: Clock sampling</td></tr>
-<tr><td>uploadSamplSp3=</td><td>Upload Corrections: Orbit sampling</td></tr>
-<tr><td>uploadSamplRtcmEphCorr=</td><td>Upload Corrections: Orbit sampling</td></tr>
-<tr><td>trafo_dx=</td><td>Upload Corrections: Translation X</td></tr>
-<tr><td>trafo_dy=</td><td>Upload Corrections: Translation Y</td></tr>
-<tr><td>trafo_dz=</td><td>Upload Corrections: Translation Z</td></tr>
-<tr><td>trafo_dxr=</td><td>Upload Corrections: Translation change X</td></tr>
-<tr><td>trafo_dyr=</td><td>Upload Corrections: Translation change Y</td></tr>
-<tr><td>trafo_dzr=</td><td>Upload Corrections: Translation change Z</td></tr>
-<tr><td>trafo_ox=</td><td>Upload Corrections: Rotation X</td></tr>
-<tr><td>trafo_oy=</td><td>Upload Corrections: Rotation Y</td></tr>
-<tr><td>trafo_oz=</td><td>Upload Corrections: Rotation Z</td></tr>
-<tr><td>trafo_oxr=</td><td>Upload Corrections: Rotation change X</td></tr>
-<tr><td>trafo_oyr=</td><td>Upload Corrections: Rotation change Y</td></tr>
-<tr><td>trafo_ozr=</td><td>Upload Corrections: Rotation change Z</td></tr>
-<tr><td>trafo_sc=</td><td>Upload Corrections: Scale</td></tr>
-<tr><td>trafo_scr=</td><td>Upload Corrections: Scale change</td></tr>
-<tr><td>trafo_t0=</td><td>Upload Corrections: Reference year</td></tr>
-<tr><td>uploadEphHost=</td><td>Upload Ephemeris: Host</td></tr>
-<tr><td>uploadEphPort=</td><td>Upload Ephemeris: Port</td></tr>
-<tr><td>uploadEphMountpoint=</td><td>Upload Ephemeris: Moutpoint</td></tr>
-<tr><td>uploadEphPassword=</td><td>Upload Ephemeris: Password</td></tr>
-<tr><td>uploadEphSample=</td><td>Upload Ephemeris: Sampling</td></tr>
+<tr><td><br><b>PPP Client Panel 2</b></td><td><br><b>Meaning</b></td></tr>
+<tr><td>staTable</td><td>Stations table</td></tr>
+
+<tr><td><br><b>PPP Client Panel 3</b></td><td><br><b>Meaning</b></td></tr>
+<tr><td>lcGPS</td><td>Linear combination from GPS code data</td></tr>
+<tr><td>lcGLONASS</td><td>Linear combination from GLONASS code data</td></tr>
+<tr><td>lcGalileo</td><td>Linear combination from Galileo code data</td></tr>
+<tr><td>lcBDS</td><td>Linear combination from BDS code data</td></tr>
+<tr><td>sigmaC1</td><td>Sigma for code observations</td></tr>
+<tr><td>sigmaL1</td><td>Sigma for phase observations</td></tr>
+<tr><td>maxResC1</td><td>Maximal residuum for code observations</td></tr>
+<tr><td>maxResL1</td><td>Maximal residuum for phase observations</td></tr>
+<tr><td>eleWgtCode</td><td>Elevation dependent waiting of code observations</td></tr>
+<tr><td>eleWgtPhase</td><td>Elevation dependent waiting of phase observations</td></tr>
+<tr><td>minObs</td><td>Minimum number of observations</td></tr>
+<tr><td>minEle</td><td>Minimum elevation</td></tr>
+<tr><td>corrWaitTime</td><td>Wait for clock corrections</td></tr>
+<tr><td>seedingTime</td><td>Seeding time span for Quick Start</td></tr>
+
+<tr><td><br><b>PPP Client Panel 4</b></td><td><br><b>Meaning</b></td></tr>
+<tr><td>plotCoordinates</td><td>Mountpoint for time series plot</td></tr>
+<tr><td>audioResponse</td><td>Audio response</td></tr>
+<tr><td>useOpenStreetMap</td><td>OSM track map</td></tr>
+<tr><td>useGoogleMap</td><td>Google track map</td></tr>
+<tr><td>mapWinDotSize</td><td>Size of dots on map</td></tr>
+<tr><td>mapWinDotColor</td><td>Color of dots and cross hair on map</td></tr>
+<tr><td>mapSpeedSlider</td><td>Offline processing speed for mapping</td></tr>
+
+<tr><td><br><b>Combine Corrections Panel</b></td><td><br><b>Meaning</b></td></tr>
+<tr><td>combineStreams</td><td>Table of correction streams</td></tr>
+<tr><td>cmbMethodFilter</td><td>Approach</td></tr>
+<tr><td>cmbMaxres</td><td>Clock outlier threshold</td></tr>
+<tr><td>cmbSampl</td><td>Orbit and clock sampling</td></tr>
+<tr><td>cmbUseGlonass</td><td>Use GLONASS in combination</td></tr>
+
+<tr><td><br><b>Upload Corrections Panel</b></td><td><br><b>Meaning</b></td></tr>
+<tr><td>uploadMountpointsOut</td><td>Upload corrections table</td></tr>
+<tr><td>uploadIntr</td><td>File interval</td></tr>
+<tr><td>uploadSamplRtcmEphCorr</td><td>Orbit sampling</td></tr>
+<tr><td>uploadSamplSp3</td><td>Orbit sampling</td></tr>
+<tr><td>uploadSamplClkRnx</td><td>Clock sampling</td></tr>
+
+<tr><td><br><b>Custom Trafo</b></td><td><br><b>Meaning</b></td></tr>
+<tr><td>trafo_dx</td><td>Translation X</td></tr>
+<tr><td>trafo_dy</td><td>Translation Y</td></tr>
+<tr><td>trafo_dz</td><td>Translation Z</td></tr>
+<tr><td>trafo_dxr</td><td>Translation change X</td></tr>
+<tr><td>trafo_dyr</td><td>Translation change Y</td></tr>
+<tr><td>trafo_dzr</td><td>Translation change Z</td></tr>
+<tr><td>trafo_ox</td><td>Rotation X</td></tr>
+<tr><td>trafo_oy</td><td>Rotation Y</td></tr>
+<tr><td>trafo_oz</td><td>Rotation Z</td></tr>
+<tr><td>trafo_oxr</td><td>Rotation change X</td></tr>
+<tr><td>trafo_oyr</td><td>Rotation change Y</td></tr>
+<tr><td>trafo_ozr</td><td>Rotation change Z</td></tr>
+<tr><td>trafo_sc</td><td>Scale</td></tr>
+<tr><td>trafo_scr</td><td>Scale change</td></tr>
+<tr><td>trafo_t0</td><td>Reference year</td></tr>
+
+<tr><td><br><b>Upload Ephemeris Panel</b></td><td><br><b>Meaning</b></td></tr>
+<tr><td>uploadEphHost</td><td>Host</td></tr>
+<tr><td>uploadEphPort</td><td>Port</td></tr>
+<tr><td>uploadEphMountpoint</td><td>Moutpoint</td></tr>
+<tr><td>uploadEphPassword</td><td>Password</td></tr>
+<tr><td>uploadEphSample</td><td>Sampling</td></tr>
+
+<tr><td><br><b>Add Stream</b></td><td><br><b>Meaning</b></td></tr>
+<tr><td>mountPoints</td><td>Add stream coming from ...</td></tr>
+<tr><td>ntripVersion</td><td>NTRIP Version</td></tr>
+
 </table>
 </p>
 <p>
