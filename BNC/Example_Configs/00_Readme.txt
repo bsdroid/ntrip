@@ -120,11 +120,13 @@ observations, a Broadcast Ephemeris stream and a stream with Broadcast
 Corrections. Positions are saved in the logfile. 
 
 9. File 'PPPNet.bnc'
-The purpose of this configuration is siumultaneous Precise Point Positioning 
-from observations of several rover receivers or a network of reference 
-stations. The configuration reads several RTCM Version 3 observation streams, 
-a Broadcast Ephemeris stream and a stream with Broadcast Corrections. 
-Positions are saved per station in the logfile. 
+The purpose of this configuration is to demonstrate siumultaneous Precise 
+Point Positioning for several rovers or several receivers from a network of 
+reference stations in one BNC job. The possible maximum number of PPP solutions 
+per job depends on the processing power of the hosting computer. This example 
+configuration reads two RTCM Version 3 observation streams, a Broadcast 
+Ephemeris stream and a stream with Broadcast Corrections. PPP Results for the 
+two stations are saved in PPP logfiles. 
 
 10. File 'PPPQuickStart.bnc'
 The purpose of this configuration is Precise Point Positioning in Quick-Start 
