@@ -851,7 +851,7 @@ t_irc bncComb::createAmat(Matrix& AA, ColumnVector& ll, DiagonalMatrix& PP,
     }
     int iCond = 1;
     for (unsigned iGps = 1; iGps <= t_prn::MAXPRN_GPS; iGps++) {
-      QString prn = QString("G%1").arg(iGps, 2, 10, QChar('0'));
+      QString prn = QString("G%1_0").arg(iGps, 2, 10, QChar('0'));
       ++iCond;
       PP(nObs+iCond) = Ph;
       for (int iPar = 1; iPar <= _params.size(); iPar++) {
@@ -865,7 +865,7 @@ t_irc bncComb::createAmat(Matrix& AA, ColumnVector& ll, DiagonalMatrix& PP,
     }
 //    if (_useGlonass) {
 //      for (int iGlo = 1; iGlo <= t_prn::MAXPRN_GLONASS; iGlo++) {
-//        QString prn = QString("R%1").arg(iGlo, 2, 10, QChar('0'));
+//        QString prn = QString("R%1_0").arg(iGlo, 2, 10, QChar('0'));
 //        ++iCond;
 //        PP(nObs+iCond) = Ph;
 //        for (int iPar = 1; iPar <= _params.size(); iPar++) {
