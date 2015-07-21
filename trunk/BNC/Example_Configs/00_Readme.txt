@@ -74,17 +74,19 @@ http://igs.bkg.bund.de/ntrip/observations for observation stream resources.
 
 2. File 'RinexEph.bnc'
 The purpose of this configuration is showing how to convert a RTCM stream 
-carrying navigation messages to a RINEX Navigation files. The configuration 
-pulls an RTCM Version 3 stream with Broadcast Ephemeris coming from the 
-real-time EUREF and IGS networks. It saves hourly RINEX Version 3 Navigation 
-files. See http://igs.bkg.bund.de/ntrip/ephemeris for further real-time 
-Broadcast Ephemeris resources. 
+carrying navigation messages to RINEX Navigation files. The configuration 
+pulls a RTCM Version 3 stream with Broadcast Ephemeris coming from the 
+real-time EUREF, IGS and M-GEX networks. It saves hourly RINEX Version 3 
+Navigation files. See http://igs.bkg.bund.de/ntrip/ephemeris for further 
+real-time Broadcast Ephemeris resources. 
 
 3. File 'BrdcCorr.bnc'
 The purpose of this configuration is to save Broadcast Corrections from RTCM 
-SSR messages in a plain ASCII format as hourly files. See 
-http://igs.bkg.bund.de/ntrip/orbits for further real-time IGS or EUREF 
-orbit/clock products. 
+SSR messages in a plain ASCII format as hourly files. Depending on the 
+Broadcast Corrections stream the file may contain orbit and clock 
+corrections as well as code and phase biases. Information on correction 
+streams from IGS and EUREF resources is available from 
+http://igs.bkg.bund.de/ntrip/orbits. 
 
 4. File 'RinexConcat.bnc'
 The purpose of this configuration is to concatenate RINEX Version 3 files to 
