@@ -65,13 +65,18 @@ t_irc t_eph::getCrd(const bncTime& tt, ColumnVector& xc, ColumnVector& vv, bool 
       dx[1] = _orbCorr->_xr[1] + _orbCorr->_dotXr[1] * dtO;
       dx[2] = _orbCorr->_xr[2] + _orbCorr->_dotXr[2] * dtO;
 
-      if (_orbCorr->_system == 'R') {
-        RSW_to_XYZ(xc.Rows(1,3), vv.Rows(1,3), dx, dx);
-      }
+      RSW_to_XYZ(xc.Rows(1,3), vv.Rows(1,3), dx, dx);
 
       xc[0] -= dx[0];
       xc[1] -= dx[1];
       xc[2] -= dx[2];
+
+      ColumnVector dv(3);
+      RSW_to_XYZ(xc.Rows(1,3), vv.Rows(1,3), _orbCorr->_dotXr, dv);
+
+      vv[0] -= dv[0];
+      vv[1] -= dv[1];
+      vv[2] -= dv[2];
 
       double dtC = tt - _clkCorr->_time;
       if (_clkCorr->_updateInt) {
