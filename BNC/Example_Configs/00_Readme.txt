@@ -66,10 +66,11 @@ engine.
 
 1. File 'RinexObs.bnc'
 The purpose of this configuration is showing how to convert RTCM streams to 
-RINEX Observation files. The configuration pulls streams from Ntrip 
-Broadcasters using Ntrip version 1 to generate 15min 1Hz RINEX Version 3 
-Observation files. See http://igs.bkg.bund.de/ntrip/observations for observation 
-stream resources. 
+RINEX. The configuration pulls two streams from Ntrip Broadcasters using 
+Ntrip version 2 to generate 15min 1Hz RINEX Version 3 observation files. 
+Note that network option 'Ignore SSL authorization errors' is set in order 
+to allow pulling RINEX skeleton files via HTTPS when necessary. See 
+http://igs.bkg.bund.de/ntrip/observations for observation stream resources. 
 
 2. File 'RinexEph.bnc'
 The purpose of this configuration is showing how to convert a RTCM stream 
