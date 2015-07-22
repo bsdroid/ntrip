@@ -162,14 +162,14 @@ t_ephGPS::t_ephGPS(float rnxVersion, const QStringList& lines) {
 
     if      ( iLine == 0 ) {
       QTextStream in(line.left(pos[1]).toAscii());
-
       int    year, month, day, hour, min;
       double sec;
 
-      QString prnStr;
+      QString prnStr, n;
       in >> prnStr;
       if (prnStr.size() == 1) {
-        in >> prnStr;
+        in >> n;
+        prnStr.append(n);
       }
       in >> year >> month >> day >> hour >> min >> sec;
       if      (prnStr.at(0) == 'G') {
@@ -447,10 +447,11 @@ t_ephGlo::t_ephGlo(float rnxVersion, const QStringList& lines) {
       int    year, month, day, hour, min;
       double sec;
 
-      QString prnStr;
+      QString prnStr, n;
       in >> prnStr;
       if (prnStr.size() == 1) {
-        in >> prnStr;
+        in >> n;
+        prnStr.append(n);
       }
       in >> year >> month >> day >> hour >> min >> sec;
       if (prnStr.at(0) == 'R') {
@@ -685,9 +686,11 @@ t_ephGal::t_ephGal(float rnxVersion, const QStringList& lines) {
 
     if      ( iLine == 0 ) {
       QTextStream in(line.left(pos[1]).toAscii());
+      QString prnStr, n;
       in >> prnStr;
       if (prnStr.size() == 1) {
-        in >> prnStr;
+        in >> n;
+        prnStr.append(n);
       }
       in >> year >> month >> day >> hour >> min >> sec;
       if      (year <  80) {
@@ -1059,10 +1062,11 @@ t_ephSBAS::t_ephSBAS(float rnxVersion, const QStringList& lines) {
       int    year, month, day, hour, min;
       double sec;
 
-      QString prnStr;
+      QString prnStr, n;
       in >> prnStr;
       if (prnStr.size() == 1) {
-        in >> prnStr;
+        in >> n;
+        prnStr.append(n);
       }
       in >> year >> month >> day >> hour >> min >> sec;
       if (prnStr.at(0) == 'S') {
@@ -1252,10 +1256,11 @@ t_ephBDS::t_ephBDS(float rnxVersion, const QStringList& lines) {
       int    year, month, day, hour, min;
       double sec;
 
-      QString prnStr;
+      QString prnStr, n;
       in >> prnStr;
       if (prnStr.size() == 1) {
-        in >> prnStr;
+        in >> n;
+        prnStr.append(n);
       }
       in >> year >> month >> day >> hour >> min >> sec;
       if (prnStr.at(0) == 'C') {
