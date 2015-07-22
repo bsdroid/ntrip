@@ -686,7 +686,7 @@ t_ephGal::t_ephGal(float rnxVersion, const QStringList& lines) {
 
     if      ( iLine == 0 ) {
       QTextStream in(line.left(pos[1]).toAscii());
-      QString prnStr, n;
+      QString n;
       in >> prnStr;
       if (prnStr.size() == 1) {
         in >> n;
@@ -790,7 +790,7 @@ t_ephGal::t_ephGal(float rnxVersion, const QStringList& lines) {
         _E5bHS = double((int(SVhealth) >> 7) & 0x3);
 
         if (prnStr.at(0) == 'E') {
-          _prn.set('E', prnStr.mid(1,2).toInt(), _inav ? 1 : 0);
+          _prn.set('E', prnStr.mid(1).toInt(), _inav ? 1 : 0);
         }
       }
     }
