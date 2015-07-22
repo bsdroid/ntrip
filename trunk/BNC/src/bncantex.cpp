@@ -138,7 +138,11 @@ t_irc bncAntex::readFile(const QString& fileName) {
     else if (newAntMap) {
       if      (line.indexOf("TYPE / SERIAL NO") == 60) {
         if (line.indexOf("BLOCK I") == 0 ||
-            line.indexOf("GLONASS") == 0) {
+            line.indexOf("GLONASS") == 0 ||
+            line.indexOf("QZSS") == 0 ||
+            line.indexOf("BEIDOU") == 0 ||
+            line.indexOf("GALILEO") == 0 ||
+            line.indexOf("IRNSS") == 0 ){
           newAntMap->antName = line.mid(20,3);
         }
         else {
@@ -290,7 +294,6 @@ double bncAntex::rcvCorr(const string& antName, t_frequency::type frqType,
   }
 
   t_antMap* map = _maps[antNameQ];
-
   if (map->frqMap.find(frqType) == map->frqMap.end()) {
     found = false;
     return 0.0;
