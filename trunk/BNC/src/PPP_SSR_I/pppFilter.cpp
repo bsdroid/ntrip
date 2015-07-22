@@ -530,7 +530,7 @@ void t_pppFilter::predict(int iPhase, t_epoData* epoData) {
       // BDS Offset
       // ----------
       else if (pp->type == t_pppParam::BDS_OFFSET) {
-        _QQ(iPar,iPar) += 0.1 * 0.1;    //TODO: TEST
+        _QQ(iPar,iPar) = 1000.0 * 1000.0;    //TODO: TEST
       }
     }
   }
@@ -847,6 +847,9 @@ void t_pppFilter::cmpEle(t_satData* satData) {
 ///////////////////////////////////////////////////////////////////////////
 void t_pppFilter::addAmb(t_satData* satData) {
   Tracer tracer("t_pppFilter::addAmb");
+  if (!OPT->ambLCs(satData->system()).size()){
+    return;
+  }
   bool    found = false;
   for (int iPar = 1; iPar <= _params.size(); iPar++) {
     if (_params[iPar-1]->type == t_pppParam::AMB_L3 && 
@@ -908,6 +911,9 @@ void t_pppFilter::addObs(int iPhase, unsigned& iObs, t_satData* satData,
   // -----------------
   else {
     double sigP3 = 2.98 * OPT->_sigmaC1;
+    if  (satData->system() == 'C') {
+      sigP3 *= BDS_WEIGHT_FACTOR;
+    }
     ll(iObs)      = satData->P3 - cmpValue(satData, false);
     PP(iObs,iObs) = 1.0 / (sigP3 * sigP3) / (ellWgtCoef * ellWgtCoef);
     for (int iPar = 1; iPar <= _params.size(); iPar++) {
@@ -925,12 +931,15 @@ QByteArray t_pppFilter::printRes(int iPhase, const ColumnVector& vv,
 
   ostringstream str;
   str.setf(ios::fixed);
+  bool useObs;
         
   QMapIterator<QString, t_satData*> it(satDataMap);
   while (it.hasNext()) {
     it.next();
     t_satData* satData = it.value();
-    if (satData->obsIndex != 0) {
+    (iPhase == 0) ? useObs = OPT->codeLCs(satData->system()).size() :
+                    useObs = OPT->ambLCs(satData->system()).size();
+    if (satData->obsIndex != 0 && useObs) {
       str << _time.timestr(1)
           << " RES " << satData->prn.mid(0,3).toAscii().data()
           << (iPhase ? "   L3 " : "   P3 ")
@@ -1017,9 +1026,9 @@ t_irc t_pppFilter::update_p(t_epoData* epoData) {
       unsigned nObs = 0;
       nObs = epoData->sizeAll();
       bool useObs = false;
-      char additionalSys[] ={'R', 'E', 'C'};
-      for (unsigned ii = 0; ii < sizeof(additionalSys); ii++) {
-        const char s = additionalSys[ii];
+      char sys[] ={'G', 'R', 'E', 'C'};
+      for (unsigned ii = 0; ii < sizeof(sys); ii++) {
+        const char s = sys[ii];
         (iPhase == 0) ? useObs = OPT->codeLCs(s).size() : useObs = OPT->ambLCs(s).size();
         if (!useObs) {
           nObs -= epoData->sizeSys(s);
@@ -1038,9 +1047,9 @@ t_irc t_pppFilter::update_p(t_epoData* epoData) {
         it.next();
         t_satData* satData = it.value();
         QString prn = satData->prn;
-        char sys =   satData->system();
-        (iPhase == 0) ? useObs = OPT->codeLCs(sys).size() : useObs = OPT->ambLCs(sys).size();
-        if (sys == 'G' || useObs) {
+        (iPhase == 0) ? useObs = OPT->codeLCs(satData->system()).size() :
+                        useObs = OPT->ambLCs(satData->system()).size();
+        if (useObs) {
           addObs(iPhase, iObs, satData, AA, ll, PP);
         }
       }
@@ -1053,7 +1062,7 @@ t_irc t_pppFilter::update_p(t_epoData* epoData) {
       
       // Print Residuals
       // ---------------
-      if (iPhase == 0) {
+      if      (iPhase == 0) {
         strResCode  = printRes(iPhase, vv, epoData->satData);
       }
       else {
