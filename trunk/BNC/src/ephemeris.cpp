@@ -1358,6 +1358,8 @@ t_ephBDS::t_ephBDS(float rnxVersion, const QStringList& lines) {
     }
   }
 
+  _TOE.setBDS(int(_TOEweek), _TOEsec);
+
   // remark: actually should be computed from second_tot
   //         but it seems to be unreliable in RINEX files
   //_TOT = _TOC.bdssec();
@@ -1443,7 +1445,6 @@ t_irc t_ephBDS::position(int GPSweek, double GPSweeks, double* xc, double* vv) c
   double xp     = r*cos(u);
   double yp     = r*sin(u);
   double toesec = (_TOE.gpssec() - 14.0);
-
   double sinom = 0;
   double cosom = 0;
   double sini  = 0;
