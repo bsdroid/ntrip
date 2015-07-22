@@ -50,6 +50,28 @@ bncTime& bncTime::set(int gpsw, double gpssec) {
   return *this;
 }
 
+
+//
+//////////////////////////////////////////////////////////////////////////////
+bncTime& bncTime::setBDS(int gpsw, double gpssec) {
+  int  deltad;
+  int  dow = 0;
+  gpssec += 14.0;
+  gpsw   += 1356.0;
+  while ( gpssec >= 86400 ) {
+    gpssec-=86400;
+    dow++;
+  }
+  while ( gpssec <  0 ) {
+    gpssec+=86400;
+    dow--;
+  }
+  deltad = gpsw*7 + dow;
+  _mjd = 44244 + deltad;
+  _sec = gpssec;
+  return *this;
+}
+
 // 
 //////////////////////////////////////////////////////////////////////////////
 bncTime &bncTime::set(int msec) {

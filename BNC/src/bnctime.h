@@ -57,6 +57,7 @@ class bncTime {
    * @return reference to current instance
    */
   bncTime &setBDS (int year, int month, int day, int hour, int min, double sec);
+  bncTime &setBDS(int gpsw, double gpssec);
 
   void         reset() {_mjd = 0; _sec = 0;}
   unsigned int mjd()    const;
