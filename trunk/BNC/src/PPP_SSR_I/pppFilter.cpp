@@ -932,7 +932,6 @@ QByteArray t_pppFilter::printRes(int iPhase, const ColumnVector& vv,
   ostringstream str;
   str.setf(ios::fixed);
   bool useObs;
-        
   QMapIterator<QString, t_satData*> it(satDataMap);
   while (it.hasNext()) {
     it.next();
@@ -1051,6 +1050,8 @@ t_irc t_pppFilter::update_p(t_epoData* epoData) {
                         useObs = OPT->ambLCs(satData->system()).size();
         if (useObs) {
           addObs(iPhase, iObs, satData, AA, ll, PP);
+        } else {
+          satData->obsIndex = 0;
         }
       }
 
