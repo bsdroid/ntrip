@@ -199,6 +199,18 @@ t_irc bncAntex::readFile(const QString& fileName) {
           else if (line.indexOf("E08") == 3) {
             frqType = t_frequency::E8;
           }
+          else if (line.indexOf("J01") == 3) {
+            frqType = t_frequency::J1;
+          }
+          else if (line.indexOf("J02") == 3) {
+            frqType = t_frequency::J2;
+          }
+          else if (line.indexOf("J05") == 3) {
+            frqType = t_frequency::J5;
+          }
+          else if (line.indexOf("J06") == 3) {
+            frqType = t_frequency::J6;
+          }
           else if (line.indexOf("C02") == 3) {
             frqType = t_frequency::C2;
           }
@@ -262,6 +274,7 @@ t_irc bncAntex::satCoMcorrection(const QString& prn, double Mjd,
                                  const ColumnVector& xSat, ColumnVector& dx) {
 
   t_frequency::type frqType = t_frequency::dummy;
+
   if      (prn[0] == 'G') {
     frqType = t_frequency::G1;
   }
