@@ -184,6 +184,30 @@ t_irc bncAntex::readFile(const QString& fileName) {
           else if (line.indexOf("R02") == 3) {
             frqType = t_frequency::R2;
           }
+          else if (line.indexOf("E01") == 3) {
+            frqType = t_frequency::E1;
+          }
+          else if (line.indexOf("E05") == 3) {
+            frqType = t_frequency::E5;
+          }
+          else if (line.indexOf("E06") == 3) {
+            frqType = t_frequency::E6;
+          }
+          else if (line.indexOf("E07") == 3) {
+            frqType = t_frequency::E7;
+          }
+          else if (line.indexOf("E08") == 3) {
+            frqType = t_frequency::E8;
+          }
+          else if (line.indexOf("C02") == 3) {
+            frqType = t_frequency::C2;
+          }
+          else if (line.indexOf("C06") == 3) {
+            frqType = t_frequency::C6;
+          }
+          else if (line.indexOf("C07") == 3) {
+            frqType = t_frequency::C7;
+          }
           if (frqType != t_frequency::dummy) {
             if (newAntMap->frqMap.find(frqType) != newAntMap->frqMap.end()) {
               delete newAntMap->frqMap[frqType];
