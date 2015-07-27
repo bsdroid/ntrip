@@ -155,17 +155,7 @@ t_irc bncRinex::downloadSkeleton() {
       }
     }
 
-    bncNetQuery* query;
-    if      (_ntripVersion == "2s") {
-      query = new bncNetQueryV2(true);
-    }
-    else if (_ntripVersion == "2") {
-      query = new bncNetQueryV2(false);
-    }
-    else {
-      query = new bncNetQueryV1;
-    }
-
+    bncNetQuery* query = new bncNetQueryV2(true);
     QByteArray outData;
     query->waitForRequestResult(url, outData);
     if (query->status() == bncNetQuery::finished) {
