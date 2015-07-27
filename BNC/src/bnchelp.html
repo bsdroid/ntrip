@@ -1,4 +1,5 @@
 <META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
+
 <h3>BKG Ntrip Client (BNC) Version 2.12.0 Manual</h3>
 
 <p>
@@ -2646,6 +2647,10 @@ Enter the length of a startup period in seconds for which you want to fix the PP
 This so-called Quick-Start option allows the PPP solutions to rapidly converge after startup. It requires that the antenna remains unmoved on the known position throughout the defined period. A value of '60' seconds is likely to be an appropriate choice for 'Seeding'. Default is an empty option field, meaning that you don't want BNC to start in Quick-Start mode.
 <p>
 You may need to create your own reference coordinate beforehand through running BNC for an hour in normal mode before applying the 'Seeding' option. Don't forget to introduce realistic North/East/Up sigmas under panel 'PPP (2)' according to the coordinate's precision.
+</p>
+
+<p>
+'Seeding' has also a function for bridging gaps in PPP solutions from failures caused i.e. by longer lasting outages. Should the time span between two consecutive solutions exceed the limit of 60 seconds (maximum solution gap, hard-wired), the algorithm fixes the latest derived coordinate for a period of 'Seeding' seconds. This option avoids time-consuming reconvergences and makes especially sense for stationary operated receivers where convergence can be enforced because a good approximation for the receiver position is known.  
 </p>
 
 <p>
