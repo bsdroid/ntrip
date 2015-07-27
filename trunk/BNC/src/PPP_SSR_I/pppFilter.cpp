@@ -438,7 +438,7 @@ void t_pppFilter::predict(int iPhase, t_epoData* epoData) {
 
   if (iPhase == 0) {
 
-    const double maxSolGap = 0.0;
+    const double maxSolGap = 60.0;
 
     bool firstCrd = false;
     if (!_lastTimeOK.valid() || (maxSolGap > 0.0 && _time - _lastTimeOK > maxSolGap)) {
