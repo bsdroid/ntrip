@@ -590,8 +590,21 @@ Note that IP streaming is often not allowed in a LAN. In this case you need to a
 </p>
 
 <p><a name="ssl"><h4>3.2.2 SSL - Transport Layer Security</h4></p>
-<p>Communication with an NTRIP Broadcaster over SSL requires the exchange of client and/or server certificates. Specify the path to a directory where you save certificates on your system. You may like to check out <u>http://software.rtcm-ntrip.org/wiki/Certificates</u> for a list of known NTRIP Server certificates. You may also just try communication via SSL to check out whether this is supported by the involved NTRIP Broadcaster. </p>
-<p>SSL communication may involve queries coming from the NTRIP Broadcaster. Tick 'Ignore SSL authorization errors' if you don't want to be bothered with this. Note that SSL communication is usually done over port 443.</p>
+<p>Communication with an NTRIP Broadcaster over Secure Sockets Layer (SSL) as well as the download of RINEX skeleton files when available from HTTPS websites require the exchange of client and/or server certificates. Specify the path to a directory where you save certificates on your system. You may like to check out <u>http://software.rtcm-ntrip.org/wiki/Certificates</u> for a list of known NTRIP Server certificates. You may also just try communication via SSL to check out whether this is supported by the involved NTRIP Broadcaster. </p>
+<p>SSL communication may involve queries coming from the NTRIP Broadcaster or from a HTTPS website hosting RINEX skeletons. Such a query could show up under BNC's 'Log' tab as follows:
+<pre>
+SSL Error
+Server Certificate Issued by:
+GNSS Data Center
+BKG (Bundesamt fuer Geodaesie und Kartographie)
+Cannot be verified
+
+The issuer certificate of a locally looked up certificate could not be found
+The root CA certificate is not trusted for this purpose
+No certificates could be verified
+</pre>
+ Tick 'Ignore SSL authorization errors' if you generally trust the server and don't want to be bothered with this. Note that SSL communication is usually done over port 443.
+</p>
 
 <p><a name="general"><h4>3.3. General</h4></p>
 <p>
@@ -738,10 +751,10 @@ Select the RINEX Observation sampling interval in seconds. A value of zero '0' t
 
 <p><a name="rnxskl"><h4>3.4.5 Skeleton Extension - optional</h4></p>
 <p>
-Whenever BNC starts generating RINEX Observation files (and then once every day at midnight), it first tries to retrieve information needed for RINEX headers from so-called public RINEX header skeleton files which are derived from sitelogs. A HTTP or HTTPS link to a directory containing these skeleton files may be available through data field number 7 of the affected NET record in the source-table. See <u>http://www.epncb.oma.be:80/stations/log/skl/brus.skl</u> for an example of a public RINEX header skeleton file for the Brussels EPN station.
+Whenever BNC starts generating RINEX Observation files (and then once every day at midnight), it first tries to retrieve information needed for RINEX headers from so-called public RINEX header skeleton files which are derived from sitelogs. A HTTP or HTTPS link to a directory containing these skeleton files may be available through data field number 7 of the affected NET record in the source-table. See <u>http://www.epncb.oma.be:80/stations/log/skl/brus.skl</u> for an example of a public RINEX header skeleton file for EPN station Brussels. Note that the download of RINEX skeleton files from HTTPS websites requires the exchange of client and/or server certificates. Clarify 'SSL' options offered in panel 'Network' for details.
 </p>
 <p>
-However, sometimes public RINEX header skeleton files are not available, their contents is not up to date, or you need to put additional/optional records in the RINEX header. For that BNC allows using personal skeleton files that contain the header records you would like to include. You can derive a personal RINEX header skeleton file from the information given in an up to date sitelog. A file in the RINEX Observations 'Directory' with a 'Skeleton extension' suffix is interpreted by BNC as a personal RINEX header skeleton file for the corresponding stream.
+Sometimes public RINEX header skeleton files are not available, their contents is not up to date, or you need to put additional/optional records in the RINEX header. For that BNC allows using personal skeleton files that contain the header records you would like to include. You can derive a personal RINEX header skeleton file from the information given in an up to date sitelog. A file in the RINEX Observations 'Directory' with a 'Skeleton extension' suffix is interpreted by BNC as a personal RINEX header skeleton file for the corresponding stream.
 </p>
 <p>
 Examples for personal skeleton file name convention: RINEX Observation files for mountpoints WETTZELL, FRANKFURT and FRANCE (same 4Char Station ID), BRUS0 from <u>www.euref-ip.net</u> and BRUS0 from <u>www.igs-ip.net</u> (same 4Char Station ID, identical mountpoint stings) would accept personal skeleton files named</p>
@@ -3396,19 +3409,25 @@ Hit 'OK' to return to the main window. If you wish you can click on 'Add Stream'
 <p>
 Some limitations and deficiencies of the NTRIP Version 1 stream transport protocol are solved in NTRIP Version 2. Improvements mainly concern a full HTTP compatibility in view of requirements coming from proxy servers. Version 2 is backwards compatible to Version 1. Options implemented in BNC are:
 </p>
+
 <p>
-&nbsp; 1:&nbsp; NTRIP Version 1, TCP/IP.<br>
-&nbsp; 2:&nbsp; NTRIP Version 2 in TCP/IP mode.<br>
-&nbsp; 2s:&nbsp; NTRIP Version 2 in TCP/IP mode via SSL.<br>
-&nbsp; R:&nbsp; NTRIP Version 2 in RTSP/RTP mode.<br>
-&nbsp; U:&nbsp; NTRIP Version 2 in UDP mode.
+<table>
+<tr></tr>
+<tr><td><b>Option &nbsp;  &nbsp; </b></td><td><b>Meaning</b></td></tr>
+<tr><td>&nbsp; &nbsp; 1</td><td>NTRIP Version 1, TCP/IP</td></tr>
+<tr><td>&nbsp; &nbsp; 2</td><td>NTRIP Version 2 in TCP/IP mode</td></tr>
+<tr><td>&nbsp; &nbsp; 2s</td><td>NTRIP Version 2 in TCP/IP mode via SSL</td></tr>
+<tr><td>&nbsp; &nbsp; R</td><td>NTRIP Version 2 in RTSP/RTP mode</td></tr>
+<tr><td>&nbsp; &nbsp; U</td><td>NTRIP Version 2 in UDP mode</td></tr>
+</table>
 </p>
+
 <p>
 If NTRIP Version 2 is supported by the broadcaster:
 </p>
 <ul>
 <li>Try using option '2' if your streams are otherwise blocked by a proxy server operated in front of BNC.</li>
-<li>When using NTRIP Version 2 via SSL (option '2s') you need to specify the appropriate 'Caster port' for that. It's usually port number 443.</li>
+<li>When using NTRIP Version 2 via SSL (option '2s') you need to specify the appropriate 'Caster port' for that. It's usually port number 443. Clarify 'SSL' options offered in panel 'Network'.</li>
 <li>Option 'R' or 'U' may be selected if latency is more important than completeness for your application. Note that the latency reduction is likely to be in the order of 0.5 sec or less. Note further that options 'R' (RTSP/RTP mode) and 'U' (UDP mode) are not accepted by proxy servers and a mobile Internet Service Provider may not support it.</li>
 </ul>
 <p>
