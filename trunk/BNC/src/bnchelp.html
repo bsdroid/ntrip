@@ -1,6 +1,6 @@
 <META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
 
-<h3>BKG Ntrip Client (BNC) Version 2.12.0 Manual</h3>
+<h3>BKG Ntrip Client (BNC) Version 2.12.0</h3>
 
 <p>
 The BKG Ntrip Client (BNC) is a program for simultaneously retrieving, decoding, converting and processing real-time GNSS data streams. It has been developed within the framework of the IAG sub-commission for Europe (EUREF) and the International GNSS Service (IGS). Although meant as a real-time tool, it comes with some Post Processing functionality. You may like to use it for data coming from NTRIP Broadcasters like
@@ -16,31 +16,23 @@ The BKG Ntrip Client (BNC) is a program for simultaneously retrieving, decoding,
 BNC has been written under GNU General Public License (GPL). Source code is available from Subversion software archive <u>http://software.rtcm-ntrip.org/svn/trunk/BNC.</u> Binaries for BNC are available for Windows, Linux, and Mac OS X systems. We used the MinGW Version 4.4.0 compiler to create the Windows binaries. It is likely that BNC can be compiled on other systems where a GNU compiler and Qt Version 4.8.4 or any later version are installed. Please ensure that you always use the latest precompiled version of BNC available from <u>http://igs.bkg.bund.de/ntrip/download</u>. Note that static and shared builds of BNC are made available. A <u>static</u> build would be sufficient in case you don't want BNC to trace PPP results using Google Map (GM) or Open StreetMap (OSM). However, GM/OSM usage requires the QtWebKit library which can only be part of BNC builds from <u>shared</u> libraries. Using a shared library BNC build requires that you first install your own shared Qt library. The 'README.txt' file which comes with the BNC source code describes how to install Qt on Windows, Linux and Mac systems.
 </p>
 <p>
-Feel free to send us comments, suggestions or bug reports. Your contribution would be appreciated.
-</p>
-
-<p><b>Contents</b><br>
-<a href="#purpose">1. Purpose</a><br>
-<a href="#opthandling">2. Handling</a><br>
-<a href="#optsettings">3. Settings</a><br>
-<a href="#limits">4. Limitations</a><br>
-<a href="#annex">5. Annex</a>
+Feel free to send us comments, suggestions or bug reports. Any contribution would be appreciated.
 </p>
 
 <p>
-<b><a name="authors">Authors</b><br>
+<b><a name="authors">Authors</b><br><br>
 The BKG Ntrip Client (BNC) and its Qt Graphical User Interface (GUI) has been developed for
 </p>
 <p>
 Federal Agency for Cartography and Geodesy (BKG)<br>
-c/o Dr. Georg Weber<br>
-Department of Geodesy<br>
+Department of Geodesy, Section Navigation<br>
+c/o Dr. Axel R&uuml;lke<br>
 Frankfurt, Germany<br>
-[euref-ip@bkg.bund.de] or [igs-ip@bkg.bund.de]
+[axel.ruelke@bkg.bund.de]
 </p>
 
 <p>
-BNC was written by
+The BNC software has been written by
 </p>
 
 <p>
@@ -51,16 +43,11 @@ Prague, Czech Republic
 </p>
 
 <p>
-While work on BNC started in June 2005, Prof. Mervart's sole responsibility for the program code and concept lasted till February 2015. Since March 2015 the expert in charge at BKG for further developments is 
+Prof. Mervart started working on BNC in June 2005. His sole responsibility for the program code ended February 2015. Since March 2015 the expert in charge at BKG for further BNC programming is Dipl.-Ing. Andrea St&uuml;rze [andrea.stuerze@bkg.bund.de].
 </p>
 
 <p>
-Dipl.-Ing. Andrea St&uuml;rze<br>
-Federal Agency for Cartography and Geodesy (BKG)<br>
-Department of Geodesy<br>
-Section Navigation<br>
-Frankfurt, Germany<br>
-[andrea.stuerze@bkg.bund.de]
+BNC provides context-sensitive online help (Shift+F1: <i>'What's This'</i>) related to specific objects. It furthermore comes with this software documentation which is available as an integral part of the software and as a PDF file. Responsible for online and offline documentation, example configurations (and till February 2014 the overall BNC concept) is Dr. Georg Weber [georg.weber@bkg.bund.de].
 </p>
 
 <p>
@@ -71,7 +58,7 @@ BNC includes the following GNU GPL software components:
 </ul>
 </p>
 <p>
-Note that some figures presented in this documentation show screenshots from earlier versions of BNC. If so then there is either no relevant change compared to the current appearance of the program or no change at all.
+Note that some figures presented in this documentation may show screenshots from earlier versions of BNC. If so then there is either no relevant change compared to the current appearance of the program or no change at all.
 </p>
 
 <p>
@@ -102,6 +89,66 @@ Denis Laurichesse, Centre National d'Etudes Spatiales (CNES), suggested synchron
 Lennard Huisman, Kadaster Netherlands, and Rolf Dach, Astronomical Institute University of Bern, assisted in handling satellite clocks in transformations from ITRF to regional reference frames.
 </li>
 </ul>
+</p>
+
+<p><b>Contents</b><br>
+<a href="#purpose">1. Purpose</a><br>
+<a href="#opthandling">2. Handling</a><br>
+<a href="#optsettings">3. Settings</a><br>
+<a href="#limits">4. Limitations</a><br>
+<a href="#annex">5. Annex</a>
+<br><br>
+</p>
+
+<p><b>List of Figures</b><br><br>
+<table>
+<tr><td><b>Fig.&nbsp;&nbsp;</b></td><td><b>Title</b></td><td><b>Chapter</b></td></tr>
+<tr><td>1</td><td>Flowchart, BNC connected to a GNSS rover for Precise Point Positioning</b></td><td>1.2</td></tr>
+<tr><td>2</td><td>Flowchart, BNC converting RTCM streams to RINEX batches</td><td>1.2</td></tr>
+<tr><td>3</td><td>Flowchart, BNC feeding a real-time GNSS engine and uploading encoded Broadcast Corrections</td><td>1.2</td></tr>
+<tr><td>4</td><td>Flowchart, BNC combining Broadcast Correction streams</td><td>1.2</td></tr>
+<tr><td>5</td><td>Sections on BNC's main window</td><td>2</td></tr>
+<tr><td>6</td><td>Management of configuration options in BNC</td><td>2.1</td></tr>
+<tr><td>7</td><td>BNC translating incoming streams to 15 min RINEX Version 3 files</td><td>3.4</td></tr>
+<tr><td>8</td><td>Example for 'RINEX Editing Options' window</td><td>3.6.7</td></tr>
+<tr><td>9</td><td>Example for RINEX file concatenation with BNC</td><td>3.6.7</td></tr>
+<tr><td>10</td><td>Example for creating RINEX quality check analysis graphics output with BNC</td><td>3.6.7</td></tr>
+<tr><td>11</td><td>Example for satellite availability, elevation and PDOP plots as a result of a RINEX quality check analysis with BNC</td><td>3.6.7</td></tr>
+<tr><td>12</td><td>Sky plot examples for multipath, part of RINEX quality check analysis with BNC</td><td>3.6.7</td></tr>
+<tr><td>13</td><td>Sky plot examples for signal-to-noise ratio, part of RINEX quality check analysis with BNC</td><td>3.6.7</td></tr>
+<tr><td>14</td><td>BNC configuration example for comparing two SP3 files with satellite orbit and clock data</td><td>3.7.3</td></tr>
+<tr><td>15</td><td>BNC configuration example for pulling, saving and output of Broadcast Corrections</td><td>3.8.3</td></tr>
+<tr><td>16</td><td>Synchronized BNC output via IP port to feed a GNSS real-time engine</td><td>3.9</td></tr>
+<tr><td>17</td><td>Flowcharts, BNC forwarding a stream to a serial connected receiver; sending NMEA sentences is mandatory for VRS streams</td><td>3.10</td></tr>
+<tr><td>18</td><td>BNC pulling a VRS stream to feed a serial connected RTK rover</td><td>3.10</td></tr>
+<tr><td>19</td><td>RTCM message numbers, latencies and observation types</td><td>3.12</td></tr>
+<tr><td>20</td><td>Real-time Precise Point Positioning with BNC, PPP Panel 1</td><td>3.13.1</td></tr>
+<tr><td>21</td><td>Precise Point Positioning with BNC, PPP Panel 2</td><td>3.13.2</td></tr>
+<tr><td>22</td><td>Precise Point Positioning with BNC, PPP Panel 3</td><td>3.13.3</td></tr>
+<tr><td>23</td><td>BNC in 'Quick-Start' mode (PPP, Panel 2)</td><td>3.13.3.8</td></tr>
+<tr><td>24</td><td>Track of positions from BNC with Google Maps in the background</td><td>3.13.4.3</td></tr>
+<tr><td>25</td><td>BNC combining Broadcast Correction streams</td><td>3.14.1.1</td></tr>
+<tr><td>26</td><td>BNC uploading the combined Broadcast Corrections stream</td><td>3.14.1.1</td></tr>
+<tr><td>27</td><td>'INTERNAL' PPP with BNC using combined Broadcast Corrections stream</td><td>3.14.1.1</td></tr>
+<tr><td>28</td><td>Setting Custom Transformation Parameters window, example for 'ITRF2008->GDA94'</td><td>3.15.3</td></tr>
+<tr><td>29</td><td>Producing Broadcast Corrections from incoming precise orbits and clocks and uploading them to an NTRIP Broadcaster</td><td>3.15.9</td></tr>
+<tr><td>30</td><td>Producing a Broadcast Ephemeris stream from navigation messages of globally distributed RTCM streams and uploading them in RTCM Version 3 format to an NTRIP Broadcaster</td><td>3.16.3</td></tr>
+<tr><td>31</td><td>Bandwidth consumption of incoming streams</td><td>3.18.2</td></tr>
+<tr><td>32</td><td>Latency of incoming streams</td><td>3.18.3</td></tr>
+<tr><td>33</td><td>Time series plot of PPP session</td><td>3.18.4</td></tr>
+<tr><td>34</td><td>Steam input communication links</td><td>3.19</td></tr>
+<tr><td>35</td><td>Casters table</td><td>3.19.1.1.2</td></tr>
+<tr><td>36</td><td>Broadcaster source-table</td><td>3.19.1.1.4</td></tr>
+<tr><td>37</td><td>Stream distribution map derived from NTRIP Broadcaster source-table</td><td>3.19.1.1.6</td></tr>
+<tr><td>38</td><td>BNC setup for pulling a stream via serial port</td><td>3.19.1.4</td></tr>
+</table>
+</p>
+
+<p><b>List of Tables</b><br><br>
+<table>
+<tr><td><b>Tab.&nbsp;&nbsp;</b></td><td><b>Title</b></td><td><b>Chapter</b></td></tr>
+<tr><td>1</td><td>Status of RTCM Version 3 message implementations in BNC supporting various GNSS systems</b></td><td>1.1</td></tr>
+</table>
 </p>
 
 <p><a name="purpose"><h3>1. Purpose</h3></p>
@@ -171,8 +218,7 @@ BNC is permanently completed to finally support all existing GNSS systems throug
 </ul>
 The table mentions if a message implementation in BNC could so far only be based on a 'RTCM Proposal'.
 </p>
-<p><u>Table:</u> Status of RTCM Version 3 message implementations in BNC supporting various GNSS systems</p>
-
+<p><u>Table 1:</u> Status of RTCM Version 3 message implementations in BNC supporting various GNSS systems</p>
 <p></p>
 <table border="1" rules="rows" frame="box" bgcolor="#FFF5EE" style="font-size:13">
 
@@ -338,7 +384,6 @@ BNC maintains configuration options at three different levels:
 <p><img src="IMG/screenshot31.png"/></p>
 <p><u>Figure 6:</u> Management of configuration options in BNC:<br>
 <table>
-<tr></tr>
 <tr><td>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; </td><td>Left:</td><td>BNC in graphics mode; active configuration options are introduced through GUI input fields and finally saved on disk.</td></tr>
 <tr><td>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; </td><td>Middle:</td><td>BNC in 'no window' mode; active configuration options are read from disk.</td></tr>
 <tr><td>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; </td><td>Right:</td><td>BNC in 'no window' mode without configuration file; default configuration options can be replaced via command line options.</td></tr>
@@ -1176,10 +1221,10 @@ If you specify a 'New' but no 'Old' marker/antenna/receiver name, the correspond
 <p><u>Figure 11:</u> Example for satellite availability, elevation and PDOP plots as a result of a RINEX quality check analysis with BNC.</p>
 
 <p><img src="IMG/screenshot33.png"/></p>
-<p><u>Figure 12:</u> Sky plot examples for multipath, part of RINEX quality check analysis with BNC..</p>
+<p><u>Figure 12:</u> Sky plot examples for multipath, part of RINEX quality check analysis with BNC.</p>
 
 <p><img src="IMG/screenshot34.png"/></p>
-<p><u>Figure 13:</u> Sky plot examples for signal-to-noise ratio, part of RINEX quality check analysis with BNC..</p>
+<p><u>Figure 13:</u> Sky plot examples for signal-to-noise ratio, part of RINEX quality check analysis with BNC.</p>
 
 <p><a name="reqccommand"><h4>3.6.8 Command Line, No Window - optional</h4></p>
 <p>
@@ -4299,8 +4344,10 @@ which only contains the default settings.
 </p>
 
 <p>
-The following table's left column is a list of options as contained in BNC's configuration files (default: BNC.bnc).
+The following table shows a list of options contained in BNC's configuration files (default file name: BNC.bnc).
 </p>
+
+<p><u>Table 2:</u> BNC configuration options<br>
 <table>
 <tr></tr>
 <tr><td><br><b>Internal</b></td><td><br><b>Meaning</b></td></tr>
@@ -4496,9 +4543,9 @@ The following table's left column is a list of options as contained in BNC's con
 <tr><td><br><b>Add Stream</b></td><td><br><b>Meaning</b></td></tr>
 <tr><td>mountPoints</td><td>Add stream coming from ...</td></tr>
 <tr><td>ntripVersion</td><td>NTRIP Version</td></tr>
-
 </table>
 </p>
+
 <p>
 Note that the following configuration options saved on disk can be changed/edited on-the-fly while BNC is already processing data:
 </p>
