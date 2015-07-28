@@ -795,13 +795,14 @@ void bncGetThread::scanRTCM() {
       if (decoder()->_gloFrq.size()) {
         bool allFound = true;
         QString slot = decoder()->_gloFrq;
+        slot.replace("  "," ").replace(" ",":");
         if (_gloSlots.indexOf(slot) == -1) {
           _gloSlots.append(slot);
           allFound = false;
         }
         if (!allFound) {
           _gloSlots.sort();
-          emit(newMessage(_staID + ": GLONASS slots "  + _gloSlots.join(" ").toAscii(), true));
+          emit(newMessage(_staID + ": GLONASS Slot:Freq "  + _gloSlots.join(" ").toAscii(), true));
         }
       }
     }
