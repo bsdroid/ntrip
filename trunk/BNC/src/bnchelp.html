@@ -124,8 +124,9 @@ Lennard Huisman, Kadaster Netherlands, and Rolf Dach, Astronomical Institute Uni
 <li>Generate ephemeris and synchronized or unsynchronized observations epoch by epoch through an IP port to support real-time GNSS network engines;</li>
 <li>Feed a stream into a GNSS receiver via serial communication link;</li>
 <li>Monitor the performance of a network of real-time GNSS data streams to generate advisory notes in case of outages or corrupted streams;</li>
-<li>Scan RTCM streams for incoming antenna information as well as observation types and message types and their repetition rates and latencies;</li>
+<li>Scan RTCM streams for incoming antenna information, observation types, message types and repetition rates and latencies and GLONASS slot numbers and frequency channels;</li>
 <li>Carry out real-time Precise Point Positioning to determine GNSS rover positions;</li>
+<li>Enable multi-station Precise Point Positioning for simultaneous processing of observations from a whole network of receivers;</li>
 <li>Plot positions derived via PPP from RTCM streams or RINEX files on maps from Google Map or Open StreetMap;</li>
 <li>Simultaneously process several Broadcast Correction streams to produce, encode and upload combined Broadcast Corrections;</li>
 <li>Read GNSS orbits and clocks in a plain ASCII format from an IP port. They can be produced by a real-time GNSS engine such as RTNET and should be referenced to the IGS Earth-Centered-Earth-Fixed (ECEF) reference system. BNC will then</li>
@@ -336,11 +337,12 @@ BNC maintains configuration options at three different levels:
 
 <p><img src="IMG/screenshot31.png"/></p>
 <p><u>Figure 6:</u> Management of configuration options in BNC:<br>
-&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; Left: BNC in graphics mode where active configuration options are introduced through<br>
-&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; GUI input fields and finally saved on disk.<br>
-&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; Middle: BNC in 'no window' mode where active configuration options are read from disk.<br>
-&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; Right: BNC in 'no window' mode without configuration file where default configuration<br>
-&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; options can be replaced via command line options.</p>
+<table>
+<tr></tr>
+<tr><td>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; </td><td>Left:</td><td>BNC in graphics mode; active configuration options are introduced through GUI input fields and finally saved on disk.</td></tr>
+<tr><td>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; </td><td>Middle:</td><td>BNC in 'no window' mode; active configuration options are read from disk.</td></tr>
+<tr><td>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; </td><td>Right:</td><td>BNC in 'no window' mode without configuration file; default configuration options can be replaced via command line options.</td></tr>
+</table>
 
 <p>
 Configuration options are usually specified using GUI input fields (1) after launching BNC. When hitting the 'Start' button, configuration options are transferred one level down to become BNC's active configuration (2), allowing the program to begin its operation. Pushing the 'Stop' button ends data processing so that the user can finally terminate BNC through 'File'->'Quit'->'Save Options' which saves processing options in a configuration file to disk (3). It is important to understand that:
@@ -603,7 +605,7 @@ The issuer certificate of a locally looked up certificate could not be found
 The root CA certificate is not trusted for this purpose
 No certificates could be verified
 </pre>
- Tick 'Ignore SSL authorization errors' if you generally trust the server and don't want to be bothered with this. Note that SSL communication is usually done over port 443.
+Tick 'Ignore SSL authorization errors' if you generally trust the server and don't want to be bothered with this. Note that SSL communication is usually done over port 443.
 </p>
 
 <p><a name="general"><h4>3.3. General</h4></p>
@@ -654,7 +656,7 @@ When operating BNC online in 'no window' mode (command line option -nw), some co
 You may like to auto-start BNC at startup time in window mode with pre-assigned configuration options. This may be required i.e. immediately after booting your system. Tick 'Auto start' to supersede the usage of the 'Start' button. Make sure that you maintain a link to BNC for that in your Autostart directory (Windows systems) or call BNC in a script below directory /etc/init.d (Unix/Linux/Mac OS X systems).
 </p>
 <p>
- See BNC's command line option -nw for an auto-start of BNC in 'no window' mode.
+See BNC's command line option -nw for an auto-start of BNC in 'no window' mode.
 </p>
 
 <p><a name="rawout"><h4>3.3.5 Raw Output File - optional</h4></p>
@@ -685,9 +687,9 @@ It is important to understand that converting RTCM streams to RINEX files requir
 C    9 C2I L2I S2I C6I L6I S6I C7I L7I S7I                  SYS / # / OBS TYPES
 E   12 C1X L1X SX1 C5X L5X SX5 C7X L7X SX7 C8X L8X SX8      SYS / # / OBS TYPES
 G   15 C1C L1C S1C C1W L1W S1W C2X L2X S2X C2W L2W S2W C5X  SYS / # / OBS TYPES
-       L5X S5X                                              SYS / # / OBS TYPES
+L5X S5X                                              SYS / # / OBS TYPES
 J   15 C1C L1C S1C C1W L1W S1W C2X L2X S2X C2W L2W S2W C5X  SYS / # / OBS TYPES
-       L5X S5X                                              SYS / # / OBS TYPES
+L5X S5X                                              SYS / # / OBS TYPES
 R    6 C1C L1C S1C C2P L2P S2P                              SYS / # / OBS TYPES
 S    9 C1C L1C S1C C5I L5I S5I C5Q L5Q S5Q                  SYS / # / OBS TYPES
 </pre>
@@ -806,24 +808,24 @@ The following is a skeleton example for a RINEX file:
 </p>
 <p>
 <pre>
-                    OBSERVATION DATA    M (MIXED)           RINEX VERSION / TYPE
+	    OBSERVATION DATA    M (MIXED)           RINEX VERSION / TYPE
 CUT0                                                        MARKER NAME         
 59945M001                                                   MARKER NUMBER       
 5023K67889          TRIMBLE NETR9       5.01                REC # / TYPE / VERS 
 4928353386          TRM59800.00     SCIS                    ANT # / TYPE        
- -2364337.2699  4870285.5624 -3360809.8398                  APPROX POSITION XYZ 
-        0.0000        0.0000        0.0000                  ANTENNA: DELTA H/E/N
+-2364337.2699  4870285.5624 -3360809.8398                  APPROX POSITION XYZ 
+0.0000        0.0000        0.0000                  ANTENNA: DELTA H/E/N
 gnss@curtin.edu.au  CUT                                     OBSERVER / AGENCY   
 C   10 C1I L1I D1I S1I C6I L6I S6I C7I L7I S7I              SYS / # / OBS TYPES
 E   13 C1X L1X D1X S1X C5X L5X S5X C7X L7X S7X C8X L8X S8X  SYS / # / OBS TYPES
 G   13 C1C L1C D1C S1C C2W L2W S2W C2X L2X S2X C5X L5X S5X  SYS / # / OBS TYPES
 J   19 C1C L1C D1C S1C C1X L1X S1X C1Z L1Z S1Z C2X L2X S2X  SYS / # / OBS TYPES
-       C5X L5X S5X C6L L6L S6L                              SYS / # / OBS TYPES
+C5X L5X S5X C6L L6L S6L                              SYS / # / OBS TYPES
 R   13 C1C L1C D1C S1C C1P L1P S1P C2C L2C S2C C2P L2P S2P  SYS / # / OBS TYPES
 S    7 C1C L1C D1C S1C C5I L5I S5I                          SYS / # / OBS TYPES
 PORTIONS OF THIS HEADER GENERATED BY THE IGS CB FROM        COMMENT             
 SITELOG cut0_20150507.log                                   COMMENT             
-                                                            END OF HEADER
+						    END OF HEADER
 </pre>
 <p>
 
@@ -969,10 +971,10 @@ QC Format Version : 1.0
 
 Navigation File(s): brdm1660.15p
 Ephemeris         : 6421 OK   4 BAD
-  Bad Ephemeris   : brdm1660.15p S27 2015 06 15 05 04 00 
-  Bad Ephemeris   : brdm1660.15p S27 2015 06 15 05 46 40 
-  Bad Ephemeris   : brdm1660.15p S27 2015 06 15 05 59 28 
-  Bad Ephemeris   : brdm1660.15p C08 2015 06 15 08 00 00-
+Bad Ephemeris   : brdm1660.15p S27 2015 06 15 05 04 00 
+Bad Ephemeris   : brdm1660.15p S27 2015 06 15 05 46 40 
+Bad Ephemeris   : brdm1660.15p S27 2015 06 15 05 59 28 
+Bad Ephemeris   : brdm1660.15p C08 2015 06 15 08 00 00-
 
 Observation File  : cut01660.15o
 RINEX Version     : 3.02
@@ -987,75 +989,75 @@ End Time          : 2015-06-15 23.59.30.0
 Interval          : 30
 Navigation Systems: 6    C E G J R S
 
-  C: Satellites: 13
-  C: Signals   : 3    2I 6I 7I
+C: Satellites: 13
+C: Signals   : 3    2I 6I 7I
 
-      C:   2I: Observations      :  29094
-      C:   2I: Slips (file+found):    183 +     2
-      C:   2I: Gaps              :     31
-      C:   2I: Mean SNR          :   42.2
-      C:   2I: Mean Multipath    :   0.40
+C:   2I: Observations      :  29094
+C:   2I: Slips (file+found):    183 +     2
+C:   2I: Gaps              :     31
+C:   2I: Mean SNR          :   42.2
+C:   2I: Mean Multipath    :   0.40
 
-      C:   6I: Observations      :  29048
-      C:   6I: Slips (file+found):    191 +     0
-      C:   6I: Gaps              :     57
-      C:   6I: Mean SNR          :   44.8
-      C:   6I: Mean Multipath    :   0.00
+C:   6I: Observations      :  29048
+C:   6I: Slips (file+found):    191 +     0
+C:   6I: Gaps              :     57
+C:   6I: Mean SNR          :   44.8
+C:   6I: Mean Multipath    :   0.00
 
-      C:   7I: Observations      :  29048
-      C:   7I: Slips (file+found):    191 +     2
-      C:   7I: Gaps              :     57
-      C:   7I: Mean SNR          :   44.4
-      C:   7I: Mean Multipath    :   0.30
+C:   7I: Observations      :  29048
+C:   7I: Slips (file+found):    191 +     2
+C:   7I: Gaps              :     57
+C:   7I: Mean SNR          :   44.4
+C:   7I: Mean Multipath    :   0.30
 
-  E: Satellites: 7
-  E: Signals   : 4    1X 5X 7X 8X
+E: Satellites: 7
+E: Signals   : 4    1X 5X 7X 8X
 
-      E:   1X: Observations      :   7440
-      E:   1X: Slips (file+found):    332 +     1
-      E:   1X: Gaps              :     11
-      E:   1X: Mean SNR          :   44.3
-      E:   1X: Mean Multipath    :   0.36
+E:   1X: Observations      :   7440
+E:   1X: Slips (file+found):    332 +     1
+E:   1X: Gaps              :     11
+E:   1X: Mean SNR          :   44.3
+E:   1X: Mean Multipath    :   0.36
 ...
 
-  G: Satellites: 31
-  G: Signals   : 4    1C 2W 2X 5X
+G: Satellites: 31
+G: Signals   : 4    1C 2W 2X 5X
 
-      G:   1C: Observations      :  31331
-      G:   1C: Slips (file+found):    959 +    20
-      G:   1C: Gaps              :     81
-      G:   1C: Mean SNR          :   44.2
-      G:   1C: Mean Multipath    :   0.69
+G:   1C: Observations      :  31331
+G:   1C: Slips (file+found):    959 +    20
+G:   1C: Gaps              :     81
+G:   1C: Mean SNR          :   44.2
+G:   1C: Mean Multipath    :   0.69
 ...
 
-  J: Satellites: 1
-  J: Signals   : 6    1C 1X 1Z 2X 5X 6X
+J: Satellites: 1
+J: Signals   : 6    1C 1X 1Z 2X 5X 6X
 
-      J:   1C: Observations      :   2880
-      J:   1C: Slips (file+found):     43 +     0
-      J:   1C: Gaps              :      0
-      J:   1C: Mean SNR          :   44.0
-      J:   1C: Mean Multipath    :   0.60
+J:   1C: Observations      :   2880
+J:   1C: Slips (file+found):     43 +     0
+J:   1C: Gaps              :      0
+J:   1C: Mean SNR          :   44.0
+J:   1C: Mean Multipath    :   0.60
 ...
 
-  R: Satellites: 24
-  R: Signals   : 4    1C 1P 2C 2P
+R: Satellites: 24
+R: Signals   : 4    1C 1P 2C 2P
 
-      R:   1C: Observations      :  24500
-      R:   1C: Slips (file+found):    194 +    36
-      R:   1C: Gaps              :     76
-      R:   1C: Mean SNR          :   45.2
-      R:   1C: Mean Multipath    :   0.81
+R:   1C: Observations      :  24500
+R:   1C: Slips (file+found):    194 +    36
+R:   1C: Gaps              :     76
+R:   1C: Mean SNR          :   45.2
+R:   1C: Mean Multipath    :   0.81
 ...
 
-  S: Satellites: 4
-  S: Signals   : 2    1C 5I
+S: Satellites: 4
+S: Signals   : 2    1C 5I
 
-      S:   1C: Observations      :  11520
-      S:   1C: Slips (file+found):      5 +   145
-      S:   1C: Gaps              :      0
-      S:   1C: Mean SNR          :   41.1
-      S:   1C: Mean Multipath    :   0.91
+S:   1C: Observations      :  11520
+S:   1C: Slips (file+found):      5 +   145
+S:   1C: Gaps              :      0
+S:   1C: Mean SNR          :   41.1
+S:   1C: Mean Multipath    :   0.91
 ...
 
 > 2015 06 15 00 00  0.0000000 39  0.6
@@ -2087,7 +2089,7 @@ Be careful when keyword 'ALL' is specified as 'Mountpoint' for involving all inc
 
 <p><a name="pppclient"><h4>3.13. PPP Client</h4></p>
 <p>
-BNC can derive coordinates for a rover position following the Precise Point Positioning (PPP) approach. It uses either code or code plus phase data from one or more GNSS systems in ionosphere-free linear combinations P3 or L3. Besides pulling a stream of observations from a dual frequency GNSS receiver, this also
+BNC can derive coordinates for rover positions following the Precise Point Positioning (PPP) approach. It uses either code or code plus phase data from one or more GNSS systems in ionosphere-free linear combinations P3 or L3. Besides pulling streams of observations from dual frequency GNSS receiver, this also
 <ul>
 <li>Requires pulling in addition a stream carrying satellite orbit and clock corrections to Broadcast Ephemeris in the form of RTCM Version 3 'State Space Representation' (SSR) messages. Note that for BNC these Broadcast Corrections need to be referred to the satellite's Antenna Phase Center (APC). Streams providing such messages are listed on <u>http://igs.bkg.bund.de/ntrip/orbits</u>. Stream 'CLK11' on NTRIP Broadcaster 'products.igs-ip.net:2101' is an example.</li>
 <li>May require pulling a stream carrying Broadcast Ephemeris available as RTCM Version 3 message types 1019, 1020, 1043, 1044, 1045, 1046 and 63 (tentative). This becomes a must only when the stream coming from the receiver does not contain Broadcast Ephemeris or provides them only at very low repetition rate. Streams providing such messages are listed on <u>http://igs.bkg.bund.de/ntrip/ephemeris</u>. Stream 'RTCM3EPH' on caster 'products.igs-ip.net:2101' is an example.</li>
@@ -2134,7 +2136,7 @@ Choose between input from 'Real-time Streams' or 'RINEX Files' for PPP with BNC 
 
 <p>
 <u>Real-time Streams</u><br>
-When choosing 'Real-time Streams' BNC will do a PPP solutions in real-time. This requires pulling an GNSS observations stream, Broadcast Ephemeris messages and a stream containing corrections to Broadcast Ephemeris. Streams must come in RTCM Version 2 or RTCM Version 3 format.
+When choosing 'Real-time Streams' BNC will do PPP solutions in real-time. This requires pulling GNSS observation streams, Broadcast Ephemeris messages and a stream containing corrections to Broadcast Ephemeris. Streams must come in RTCM Version 2 or RTCM Version 3 format.
 </p>
 <p>
 If you don't pull Broadcast Corrections BNC will switch with its solution to 'Single Point Positioning' (SPP) mode.
@@ -2254,7 +2256,7 @@ WUH27     -2267749.9761   5009154.5504   3221294.4429       0.0000     0.0000   
 YELL7     -1224452.8796  -2689216.1863   5633638.2832       0.0000     0.0000     0.1000 AOAD/M_T        NONE
 </pre>
 <p>
-Note that the only mandatory parameters in this file are the 'Station' parameters, each standing for an observation stream's mountpoint or a 4-character station ID of a RINEX file name. The following shows further valid examples for records of a 'Coordinates' file.
+Note that the only mandatory parameters in this file are the 'Station' parameters, each standing for an observation stream's mountpoint or the 4-character station ID of a RINEX file name. The following shows further valid examples for records of a 'Coordinates' file.
 </p>
 
 <pre>
@@ -2513,10 +2515,10 @@ Default 'Sampling' rate is '0', meaning that all troposphere estimates will be s
 This panel allows to enter parameters specific to each PPP process or thread. Individual sigmas for a priori coordinates and a noise for coordinate variations over time can be introduced. Furthermore, a sigma for model based troposphere estimates and the corresponding noise for troposphere variations can be specified. Finally, local IP server ports can be defined for output of NMEA streams carrying PPP results.
 </p>
 <p>
-BNC offers to create a table with one line per PPP process or thread to specify the station specific parameters. Hit the 'Add Station' button to create a table or add a new line to it. To remove a line from the table, highlight it by clicking it and hit the 'Delete Station' button. You can also remove multiple lines simultaneously by highlighting them using +Shift and +Ctrl.</p>
+BNC offers to create a table with one line per PPP process or thread to specify station-specific parameters. Hit the 'Add Station' button to create a table or add a new line to it. To remove a line from the table, highlight it by clicking it and hit the 'Delete Station' button. You can also remove multiple lines simultaneously by highlighting them using +Shift and +Ctrl.</p>
 </p>
 <p>
-BNC will only produce PPP solutions for stations which are listed in the 'Station' column of this table.
+BNC will simultaneously produce PPP solutions for all stations listed in the 'Station' column of this table.
 </p>
 
 <p><img src="IMG/screenshot17.png"/></p>
@@ -2524,7 +2526,7 @@ BNC will only produce PPP solutions for stations which are listed in the 'Statio
 
 <p><a name="pppsite"><h4>3.13.2.1 Station - mandatory</h4></p>
 <p>
-Hit the 'Add Station' button, double click on the 'Station' field, then specify an observation's mountpoint from the 'Streams' section or introduce the 4-character Station ID of your RINEX observation file and hit Enter. Again, BNC will only produce PPP solutions for stations listed in this table.
+Hit the 'Add Station' button, double click on the 'Station' field, then specify an observation's mountpoint from the 'Streams' section or introduce the 4-character Station ID of your RINEX observation file and hit Enter. BNC will only produce PPP solutions for stations listed in this table.
 </p>
 
 <p><a name="pppnehsigma"><h4>3.13.2.2 Sigma North/East/Up - mandatory</h4></p>
