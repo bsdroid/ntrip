@@ -47,7 +47,7 @@ Prof. Mervart started working on BNC in June 2005. His sole responsibility for w
 </p>
 
 <p>
-BNC provides context-sensitive online help (Shift+F1: <i>'What's This'</i>) related to specific objects. It furthermore comes with this software documentation, available as an integral part of the software and as a PDF file. Responsible for online and offline documentation, example configurations (and till February 2014 the overall BNC concept) is Dr. Georg Weber [georg.weber@bkg.bund.de].
+BNC provides context-sensitive online help (Shift+F1: <i>What's This</i>) related to specific objects. It furthermore comes with the here presented documentation, available as an integral part of the software and as a PDF file. Responsible for online and offline documentation, example configurations (and till February 2014 the overall BNC policy concept) is Dr. Georg Weber [georg.weber@bkg.bund.de].
 </p>
 
 <p>
@@ -360,9 +360,9 @@ producing plots, you need to make sure that at least a virtual X-Server like
 </p>
 
 <p>
-The usual handling of BNC is that you first select a number of streams ('Add Stream'). Any stream configured to BNC shows up on the 'Streams' canvas in the middle of BNC's main window. You then go through BNC's various configuration panels to select a combination of input, processing and output options before you start the program ('Start'). Most configuration panels are dedicated to a certain functionality of BNC. If the first option field on such a configuration panel is empty, the affected functionality is - apart from a few exceptions - deactivated.</p>
+The usual handling of BNC is that you first select a number of streams ('Add Stream'). Any stream configured to BNC shows up on the 'Streams' canvas in the middle of BNC's main window. You then go through BNC's various configuration panels to set a combination of input, processing and output options before you start the program ('Start'). Most configuration panels are dedicated to a certain functionality of BNC. If the first option field on such a configuration panel is empty, the affected functionality is deactivated.</p>
 
-Records of BNC's activities are shown in the 'Log' tab. The bandwidth consumption per stream, the latency of incoming observations and a PPP time series for coordinates are shown in the 'Throughput', 'Latency' and 'PPP Plot' tabs.
+Records of BNC's activities are shown in the 'Log' tab whis is part of the 'Log' canvas. The bandwidth consumption per stream, the latency of incoming observations and a PPP time series for coordinate displacements are also part of that canvas and shown in the 'Throughput', 'Latency' and 'PPP Plot' tabs.
 </p>
 
 <p><a name="optconfig"><h3>2.1 Configuration Management</h3></p>
@@ -585,7 +585,7 @@ This chapter describes how to set the BNC program options. It explains the 'Top 
 
 <p><a name="topmenu"><h4>3.1. Top Menu Bar</h4></p>
 <p>
-The top menu bar allows selecting a font for the BNC windows, save configured options, or quit the program execution. It also provides access to program documentation.
+The top menu bar allows selecting a font for the BNC windows, save configured options, or quit the program execution. It also provides access to the program's documentation.
 </p>
 
 <p><a name="file"><h4>3.1.1 File</h4></p>
@@ -623,7 +623,7 @@ Close the 'About BNC' window to continue working with BNC.
 </ul>
 </p>
 <p>
-BNC comes with a help system providing online information about its functionality and usage. Short descriptions are available for any widget. Focus to the relevant widget and press Shift+F1 to request help information. A help text appears immediately; it disappears as soon as the user does something else. The dialogs on some operating systems may provide a &quot;?&quot; button that users can click; click the relevant widget to pop up the help text.
+BNC comes with a <i>What's This</i> help system providing online information about its functionality and usage. Short descriptions are available for any widget and program option. Focus to the relevant object and press Shift+F1 to request help information. A help text appears immediately; it disappears as soon as the user does something else. The dialogs on some operating systems may provide a '?' button that users can click; click the relevant widget to pop up the help text.
 </p>
 
 <p><a name="network"><h4>3.2. Network</h4></p>
@@ -653,6 +653,9 @@ No certificates could be verified
 </pre>
 Tick 'Ignore SSL authorization errors' if you generally trust the server and don't want to be bothered with this. Note that SSL communication is usually done over port 443.
 </p>
+
+<p><img src="IMG/screenshot40.png"/></p>
+<p><u>Figure 7:</u> BNC's 'Network' panel configured to ignore eventually occuring SSL error messages.</p>
 
 <p><a name="general"><h4>3.3. General</h4></p>
 <p>
@@ -724,32 +727,29 @@ The default value for 'Raw output file' is an empty option field, meaning that B
 
 <p><a name="rinex"><h4>3.4. RINEX Observations</h4></p>
 <p>
-Observations will be converted to RINEX if they come in either RTCM Version 2 or RTCM Version 3 format. Depending on the RINEX version and incoming RTCM message types, files generated by BNC may contain data from GPS, GLONASS, Galileo, SBAS, QZSS and/or BDS (BeiDou). In case an observation type is listed in the RINEX header but the corresponding observation is unavailable, its value is set to zero '0.000'. Note that the 'RINEX TYPE' field in the RINEX Version 3 Observation file header is always set to 'M(MIXED)' or 'Mixed' even if the file only contains data from one system.
+Observations will be converted to RINEX if they come in either RTCM Version 2 or RTCM Version 3 format. Depending on the RINEX version and incoming RTCM message types, files generated by BNC may contain data from GPS, GLONASS, Galileo, SBAS, QZSS and/or BDS (BeiDou). In case an observation type is listed in the RINEX header but the corresponding observation is unavailable, its value is set to zero '0.000' or left blank. Note that the 'RINEX TYPE' field in the RINEX Version 3 Observation file header is always set to 'M(MIXED)' or 'Mixed' even if the file only contains data from one system.
 </p>
 <p>
-It is important to understand that converting RTCM streams to RINEX files requires a priori information on observation types for specifying a complete RINEX header. Regarding the RINEX Version 2 file header, BNC simply introduces all observation types defined in the Version 2 standard and later reports "0.000" for all observations which are not received. However, following this approach is not possible for RINEX Version 3 files from RTCM Version 3 MSM streams because of the huge number of observation types which might in principle show up. The solution implemented in BNC is to start with RINEX Version 3 observation type records from skeleton files (see section 'Skeleton Extension' and 'Skeleton Mandatory') and switch to a default selection of observation types when such skeleton file is not available or does not contain the required information. The following is a default selection of observation types specified for a RINEX Version 3 file:
+It is important to understand that converting RTCM streams to RINEX files requires a priori information on observation types for specifying a complete RINEX header. Regarding the RINEX Version 2 file header, BNC simply introduces all observation types defined in the Version 2 standard and later reports "0.000" for all observations which are not received. However, following this approach is not possible for RINEX Version 3 files from RTCM Version 3 MSM streams because of the huge number of observation types which might in principle show up. The solution implemented in BNC is to start with RINEX Version 3 observation type records from skeleton files (see section 'Skeleton Extension' and 'Skeleton Mandatory') and switch to a default selection of observation types when such skeleton file is not available or does not contain the required information. The following is the default selection of observation types specified for a RINEX Version 3 file:
 </p>
 <pre>
-C    9 C2I L2I S2I C6I L6I S6I C7I L7I S7I                  SYS / # / OBS TYPES
-E   12 C1X L1X SX1 C5X L5X SX5 C7X L7X SX7 C8X L8X SX8      SYS / # / OBS TYPES
-G   15 C1C L1C S1C C1W L1W S1W C2X L2X S2X C2W L2W S2W C5X  SYS / # / OBS TYPES
-L5X S5X                                              SYS / # / OBS TYPES
-J   15 C1C L1C S1C C1W L1W S1W C2X L2X S2X C2W L2W S2W C5X  SYS / # / OBS TYPES
-L5X S5X                                              SYS / # / OBS TYPES
-R    6 C1C L1C S1C C2P L2P S2P                              SYS / # / OBS TYPES
-S    9 C1C L1C S1C C5I L5I S5I C5Q L5Q S5Q                  SYS / # / OBS TYPES
+C    8 C1  C1P L1  S1  C2  C2P L2  S2                       SYS / # / OBS TYPES
+E    8 C1  C1P L1  S1  C2  C2P L2  S2                       SYS / # / OBS TYPES
+G    8 C1  C1W L1  S1  C2  C2W L2  S2                       SYS / # / OBS TYPES
+J    8 C1  C1P L1  S1  C2  C2P L2  S2                       SYS / # / OBS TYPES
+R    8 C1  C1P L1  S1  C2  C2P L2  S2                       SYS / # / OBS TYPES
+S    8 C1  C1P L1  S1  C2  C2P L2  S2                       SYS / # / OBS TYPES
 </pre>
 
 <p>
 Please note that RTCM Version 3 messages 1084 for GLONASS observations don't contain the channel numbers. However, these messages can only be converted to RINEX when you add messages which include the channel numbers. This could be done though an additional stream carrying 1087 GLONASS observation messages or an additional stream carrying 1020 GLONASS ephemeris messages. You could also consider setting up a streams which contains both, the 1084 and the 1020 messages.
 </p>
 <p>
-The screenshot below shows an example setup of BNC when converting streams to RINEX. Streams are coming from various NTRIP Broadcasters as well as from a serial communication link. Specifying a decoder string 'ZERO' means to not convert the affected stream but save its contents as received. 
+The screenshot below shows an example setup of BNC when converting streams to RINEX. Streams are coming from various NTRIP Broadcasters as well as from a serial communication link. Specifying a decoder string 'ZERO' means to not convert the affected stream but save its contents as received. The 'SSL Error' recorded in the 'Log' tab is caused by the fact that observation stream downloads from IGS and MGEX Broadcasters initiate the download of a RINEX skeleton file from a HTTPS (TLS/SSL) website and BNC has been configured in this example to ignore SSL errors as shown in the preceding 'Network' panel sreenshot.
 </p>
 
 <p><img src="IMG/screenshot16.png"/></p>
-<p><u>Figure 7:</u> BNC translating incoming streams to 15 min RINEX Version 3 files.</p>
-
+<p><u>Figure 8:</u> BNC translating incoming streams to 15 min RINEX Version 3 files.</p>
 
 <p><a name="rnxname"><h4>3.4.1 RINEX File Names</h4></p>
 <p>
@@ -854,24 +854,24 @@ The following is a skeleton example for a RINEX file:
 </p>
 <p>
 <pre>
-	    OBSERVATION DATA    M (MIXED)           RINEX VERSION / TYPE
+	            OBSERVATION DATA    M (MIXED)           RINEX VERSION / TYPE
 CUT0                                                        MARKER NAME         
 59945M001                                                   MARKER NUMBER       
 5023K67889          TRIMBLE NETR9       5.01                REC # / TYPE / VERS 
 4928353386          TRM59800.00     SCIS                    ANT # / TYPE        
--2364337.2699  4870285.5624 -3360809.8398                  APPROX POSITION XYZ 
-0.0000        0.0000        0.0000                  ANTENNA: DELTA H/E/N
+ -2364337.2699  4870285.5624 -3360809.8398                  APPROX POSITION XYZ 
+        0.0000        0.0000        0.0000                  ANTENNA: DELTA H/E/N
 gnss@curtin.edu.au  CUT                                     OBSERVER / AGENCY   
 C   10 C1I L1I D1I S1I C6I L6I S6I C7I L7I S7I              SYS / # / OBS TYPES
 E   13 C1X L1X D1X S1X C5X L5X S5X C7X L7X S7X C8X L8X S8X  SYS / # / OBS TYPES
 G   13 C1C L1C D1C S1C C2W L2W S2W C2X L2X S2X C5X L5X S5X  SYS / # / OBS TYPES
 J   19 C1C L1C D1C S1C C1X L1X S1X C1Z L1Z S1Z C2X L2X S2X  SYS / # / OBS TYPES
-C5X L5X S5X C6L L6L S6L                              SYS / # / OBS TYPES
+       C5X L5X S5X C6L L6L S6L                              SYS / # / OBS TYPES
 R   13 C1C L1C D1C S1C C1P L1P S1P C2C L2C S2C C2P L2P S2P  SYS / # / OBS TYPES
 S    7 C1C L1C D1C S1C C5I L5I S5I                          SYS / # / OBS TYPES
 PORTIONS OF THIS HEADER GENERATED BY THE IGS CB FROM        COMMENT             
 SITELOG cut0_20150507.log                                   COMMENT             
-						    END OF HEADER
+                                                            END OF HEADER
 </pre>
 <p>
 
@@ -1210,22 +1210,22 @@ If you specify a 'New' but no 'Old' marker/antenna/receiver name, the correspond
 </p>
 
 <p><img src="IMG/screenshot27.png"/></p>
-<p><u>Figure 8:</u> Example for 'RINEX Editing Options' window.</p>
+<p><u>Figure 9:</u> Example for 'RINEX Editing Options' window.</p>
 
 <p><img src="IMG/screenshot25.png"/></p>
-<p><u>Figure 9:</u> Example for RINEX file concatenation with BNC.</p>
+<p><u>Figure 10:</u> Example for RINEX file concatenation with BNC.</p>
 
 <p><img src="IMG/screenshot29.png"/></p>
-<p><u>Figure 10:</u> Example for creating RINEX quality check analysis graphics output with BNC.</p>
+<p><u>Figure 11:</u> Example for creating RINEX quality check analysis graphics output with BNC.</p>
 
 <p><img src="IMG/screenshot30.png"/></p>
-<p><u>Figure 11:</u> Example for satellite availability, elevation and PDOP plots as a result of a RINEX quality check analysis with BNC.</p>
+<p><u>Figure 12:</u> Example for satellite availability, elevation and PDOP plots as a result of a RINEX quality check analysis with BNC.</p>
 
 <p><img src="IMG/screenshot33.png"/></p>
-<p><u>Figure 12:</u> Sky plot examples for multipath, part of RINEX quality check analysis with BNC.</p>
+<p><u>Figure 13:</u> Sky plot examples for multipath, part of RINEX quality check analysis with BNC.</p>
 
 <p><img src="IMG/screenshot34.png"/></p>
-<p><u>Figure 13:</u> Sky plot examples for signal-to-noise ratio, part of RINEX quality check analysis with BNC.</p>
+<p><u>Figure 14:</u> Sky plot examples for signal-to-noise ratio, part of RINEX quality check analysis with BNC.</p>
 
 <p><a name="reqccommand"><h4>3.6.8 Command Line, No Window - optional</h4></p>
 <p>
@@ -1413,7 +1413,7 @@ abbreviations:<br>
 <br>
 
 <p><img src="IMG/screenshot36.png"/></p>
-<p><u>Figure 14:</u> BNC configuration example for comparing two SP3 files with satellite orbit and clock data.</p>
+<p><u>Figure 15:</u> BNC configuration example for comparing two SP3 files with satellite orbit and clock data.</p>
 
 <p><a name="correct"><h4>3.8. Broadcast Corrections</h4></p>
 <p>
@@ -1761,7 +1761,7 @@ The source code for BNC comes with an example Perl script 'test_tcpip_client.pl'
 </p>
 
 <p><img src="IMG/screenshot37.png"/></p>
-<p><u>Figure 15:</u> BNC configuration example for pulling, saving and output of Broadcast Corrections.</p>
+<p><u>Figure 16:</u> BNC configuration example for pulling, saving and output of Broadcast Corrections.</p>
 
 <p><a name="syncout"><h4>3.9. Feed Engine</h4></p>
 <p>
@@ -1842,7 +1842,7 @@ Note that any socket connection of an application to BNC's synchronized or unsyn
 The following figure shows the screenshot of a BNC configuration where a number of streams is pulled from different NTRIP Broadcasters to feed a GNSS engine via IP port output.
 </p>
 <p><img src="IMG/screenshot12.png"/></p>
-<p><u>Figure 16:</u> Synchronized BNC output via IP port to feed a GNSS real-time engine.</p>
+<p><u>Figure 17:</u> Synchronized BNC output via IP port to feed a GNSS real-time engine.</p>
 
 <p><a name="syncport"><h4>3.9.1 Port - optional</h4></p>
 <p>
@@ -1884,14 +1884,14 @@ Note that receiving a VRS stream requires the receiver sending NMEA sentences (m
 </p>
 
 <p><img src="IMG/screenshot35.png"/></p>
-<p><u>Figure 17:</u> Flowcharts, BNC forwarding a stream to a serial connected receiver; sending NMEA sentences is mandatory for VRS streams.</p>
+<p><u>Figure 18:</u> Flowcharts, BNC forwarding a stream to a serial connected receiver; sending NMEA sentences is mandatory for VRS streams.</p>
 
 <p>
 The following figure shows the screenshot of an example situation where BNC pulls a VRS stream from an NTRIP Broadcaster to feed a serial connected RTK rover.
 </p>
 
 <p><img src="IMG/screenshot11.png"/></p>
-<p><u>Figure 18:</u> BNC pulling a VRS stream to feed a serial connected RTK rover.</p>
+<p><u>Figure 19:</u> BNC pulling a VRS stream to feed a serial connected RTK rover.</p>
 
 <p><a name="sermount"><h4>3.10.1 Mountpoint - optional</h4></p>
 <p>
@@ -2050,7 +2050,7 @@ This section describes several miscellaneous options which can be applied to a s
 The following figure shows RTCM message numbers and observation types contained in stream 'CUT07' and the message latencies recorded every 2 seconds.
 </p>
 <p><img src="IMG/screenshot14.png"/></p>
-<p><u>Figure 19:</u> RTCM message numbers, latencies and observation types.</p>
+<p><u>Figure 20:</u> RTCM message numbers, latencies and observation types.</p>
 
 
 <p><a name="miscmount"><h4>3.12.1 Mountpoint - optional </h4></p>
@@ -2173,7 +2173,7 @@ This panel provides options for specifying the input and output streams and file
 </p>
 
 <p><img src="IMG/screenshot03.png"/></p>
-<p><u>Figure 20:</u> Real-time Precise Point Positioning with BNC, PPP Panel 1.</p>
+<p><u>Figure 21:</u> Real-time Precise Point Positioning with BNC, PPP Panel 1.</p>
 
 <p><a name="pppdatasource"><h4>3.13.1.1 Data Source - optional</h4></p>
 <p>
@@ -2568,7 +2568,7 @@ BNC will simultaneously produce PPP solutions for all stations listed in the 'St
 </p>
 
 <p><img src="IMG/screenshot17.png"/></p>
-<p><u>Figure 21:</u> Precise Point Positioning with BNC, PPP Panel 2.</p>
+<p><u>Figure 22:</u> Precise Point Positioning with BNC, PPP Panel 2.</p>
 
 <p><a name="pppsite"><h4>3.13.2.1 Station - mandatory</h4></p>
 <p>
@@ -2613,7 +2613,7 @@ The intention of this panel is to specify general processing options to be appli
 </p>
 
 <p><img src="IMG/screenshot18.png"/></p>
-<p><u>Figure 22:</u> Precise Point Positioning with BNC, PPP Panel 3.</p>
+<p><u>Figure 23:</u> Precise Point Positioning with BNC, PPP Panel 3.</p>
 
 <p><a name="ppplinecombi"><h4>3.13.3.1 Linear Combinations - mandatory</h4></p>
 <p>
@@ -2719,7 +2719,7 @@ The following figure provides the screenshot of an example PPP session with BNC.
 </p>
 
 <p><img src="IMG/screenshot22.png"/></p>
-<p><u>Figure 23:</u> BNC in 'Quick-Start' mode (PPP, Panel 2)</p>
+<p><u>Figure 24:</u> BNC in 'Quick-Start' mode (PPP, Panel 2)</p>
 
 <p><a name="pppaverage"><h4>3.13.3.NN Averaging - optional if XYZ is set</h4></p>
 <p><a name="pppgap"><h4>3.13.3.NN Maximal Solution Gap - optional if Quick-Start is set</h4></p>
@@ -2757,7 +2757,7 @@ The 'Open Map' button opens a windows showing a map according to the selected 'G
 </p>
 
 <p><img src="IMG/screenshot32.png"/></p>
-<p><u>Figure 24:</u> Track of positions from BNC with Google Maps in the background.</p>
+<p><u>Figure 25:</u> Track of positions from BNC with Google Maps in the background.</p>
 
 <p><a name="pppmaptype"><h4>3.13.4.3.1 Google/OSM - mandatory before pushing 'Open Map'</h4></p>
 <p>
@@ -2868,13 +2868,13 @@ The following screenshots describe an example setup of BNC when combining Broadc
 
 <br>
 <p><img src="IMG/screenshot20.png"/></p>
-<p><u>Figure 25:</u> BNC combining Broadcast Correction streams.</p>
+<p><u>Figure 26:</u> BNC combining Broadcast Correction streams.</p>
 <p></p>
 <p><img src="IMG/screenshot21.png"/></p>
-<p><u>Figure 26:</u> BNC uploading the combined Broadcast Corrections stream.</p>
+<p><u>Figure 27:</u> BNC uploading the combined Broadcast Corrections stream.</p>
 <p></p>
 <p><img src="IMG/screenshot23.png"/></p>
-<p><u>Figure 27:</u> 'INTERNAL' PPP with BNC using combined Broadcast Corrections stream.</p>
+<p><u>Figure 28:</u> 'INTERNAL' PPP with BNC using combined Broadcast Corrections stream.</p>
 
 <p><a name="combimethod"><h4>3.13.1.2 Method - mandatory if 'Combine Corrections' table is populated</h4></p>
 <p>
@@ -3197,7 +3197,7 @@ To: 2000.0
 </p>
 
 <p><img src="IMG/screenshot38.png"/></p>
-<p><u>Figure 28:</u> Setting Custom Transformation Parameters window, example for 'ITRF2008->GDA94'.</p>
+<p><u>Figure 29:</u> Setting Custom Transformation Parameters window, example for 'ITRF2008->GDA94'.</p>
 
 <p><a name="upcom"><h4>3.15.4 Center of Mass - optional</h4></p>
 <p>
@@ -3286,7 +3286,7 @@ Note that only when specifying a value of zero '0' (default) for 'Sampling Orb',
 The following screenshot shows the encoding and uploading of a stream of precise orbits and clocks coming from a real-time engine in 'RTNET' ASCII format. The stream is uploaded to NTRIP Broadcaster 'products.igs-ip.net'. It is referred to APC and IGS08. Uploaded data are locally saved in SP3 and Clock RINEX format. The SSR Provider ID is set to 3. The SSR Solution ID is and the Issue of Data SSR are set to 1. Required Broadcast Ephemeris are received via stream 'RTCM3EPH'.
 </p>
 <p><img src="IMG/screenshot26.png"/></p>
-<p><u>Figure 29:</u> Producing Broadcast Corrections from incoming precise orbits and clocks and uploading them to an NTRIP Broadcaster.</p>
+<p><u>Figure 30:</u> Producing Broadcast Corrections from incoming precise orbits and clocks and uploading them to an NTRIP Broadcaster.</p>
 
 <p><a name="upantex"><h4>3.15.10 ANTEX File - mantatory if 'SP3 File' is specified</h4></p>
 <p>
@@ -3317,7 +3317,7 @@ Select the Broadcast Ephemeris repetition interval in seconds. Default is '5' me
 </p>
 
 <p><img src="IMG/screenshot28.png"/></p>
-<p><u>Figure 30:</u> Producing a Broadcast Ephemeris stream from navigation messages of globally distributed RTCM streams and uploading them in RTCM Version 3 format to an NTRIP Broadcaster.</p>
+<p><u>Figure 31:</u> Producing a Broadcast Ephemeris stream from navigation messages of globally distributed RTCM streams and uploading them in RTCM Version 3 format to an NTRIP Broadcaster.</p>
 
 <p><a name="streams"><h4>3.17. Streams</h4></p>
 <p>
@@ -3384,7 +3384,7 @@ The bandwidth consumption per stream is shown in the 'Throughput' tab in bits pe
 </p>
 
 <p><img src="IMG/screenshot08.png"/></p>
-<p><u>Figure 31:</u> Bandwidth consumption of incoming streams.</p>
+<p><u>Figure 32:</u> Bandwidth consumption of incoming streams.</p>
 
 <p><a name="latency"><h4>3.18.3 Latency</h4></p>
 <p>
@@ -3392,7 +3392,7 @@ The latency of observations in each incoming stream is shown in the 'Latency' ta
 </p>
 
 <p><img src="IMG/screenshot07.png"/></p>
-<p><u>Figure 32:</u> Latency of incoming streams.</p>
+<p><u>Figure 33:</u> Latency of incoming streams.</p>
 
 <p><a name="ppptab"><h4>3.18.4 PPP Plot</h4></p>
 <p>
@@ -3400,7 +3400,7 @@ Precise Point Positioning time series of North (red), East (green) and Up (blue)
 </p>
 
 <p><img src="IMG/screenshot13.png"/></p>
-<p><u>Figure 33:</u> Time series plot of PPP session.</p>
+<p><u>Figure 34:</u> Time series plot of PPP session.</p>
 
 <p><a name="bottom"><h4>3.19. Bottom Menu Bar</h4></p>
 <p>
@@ -3408,7 +3408,7 @@ The bottom menu bar allows to add or delete streams to BNC's configuration and t
 </p>
 
 <p><img src="IMG/screenshot06.png"/></p>
-<p><u>Figure 34:</u> Steam input communication links.</p>
+<p><u>Figure 35:</u> Steam input communication links.</p>
 
 <p><a name="streamadd"><h4>3.19.1 Add Stream</h4></p>
 <p>
@@ -3433,7 +3433,7 @@ It may be that you are not sure about your NTRIP Broadcasters host and port numb
 </p>
 <p><img src="IMG/screenshot04.png"/></p>
 
-<p><u>Figure 35:</u> Casters table.</p>
+<p><u>Figure 36:</u> Casters table.</p>
 
 <p><a name="streamuser"><h4>3.19.1.1.3 User and Password - mandatory for protected streams</h4></p>
 <p>
@@ -3451,7 +3451,7 @@ The contents of data field 'nmea' tells you whether a stream retrieval needs to 
 Hit 'OK' to return to the main window. If you wish you can click on 'Add Stream' and repeat the process again to retrieve streams from different casters.
 </p>
 <p><img src="IMG/screenshot05.png"/></p>
-<p><u>Figure 36:</u> Broadcaster source-table.</p>
+<p><u>Figure 37:</u> Broadcaster source-table.</p>
 
 <p><a name="ntripv"><h4>3.19.1.1.5 NTRIP Version - mandatory</h4></p>
 <p>
@@ -3488,7 +3488,7 @@ Button 'Map' opens a window to show a distribution map of the caster's streams. 
 </p>
 
 <p><img src="IMG/screenshot24.png"/></p>
-<p><u>Figure 37:</u> Stream distribution map derived from NTRIP Broadcaster source-table.</p>
+<p><u>Figure 38:</u> Stream distribution map derived from NTRIP Broadcaster source-table.</p>
 
 <p><a name="streamip"><h4>3.19.1.2 Add Stream - Coming from TCP/IP Port</h4></p>
 <p>
@@ -3562,7 +3562,7 @@ Streams received from a serial connected GNSS receiver show up with an 'S' (for 
 The following figure shows a BNC example setup for pulling a stream via serial port on a Linux operating system.
 </p>
 <p><img src="IMG/screenshot15.png"/></p>
-<p><u>Figure 38:</u> BNC setup for pulling a stream via serial port.</p>
+<p><u>Figure 39:</u> BNC setup for pulling a stream via serial port.</p>
 
 <p><a name="streamsdelete"><h4>3.19.2 Delete Stream</h4></p>
 <p>
