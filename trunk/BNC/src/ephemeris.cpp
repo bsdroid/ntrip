@@ -650,7 +650,7 @@ ColumnVector t_ephGlo::glo_deriv(double /* tt */, const ColumnVector& xv,
 
 // IOD of Glonass Ephemeris (virtual)
 ////////////////////////////////////////////////////////////////////////////
-unsigned long t_ephGlo::IOD() const {
+unsigned int t_ephGlo::IOD() const {
   bncTime tMoscow = _TOC - _gps_utc + 3 * 3600.0;
   return (unsigned long)tMoscow.daysec() / 900;
 }
@@ -1141,7 +1141,7 @@ t_ephSBAS::t_ephSBAS(float rnxVersion, const QStringList& lines) {
 // IOD of SBAS Ephemeris (virtual)
 ////////////////////////////////////////////////////////////////////////////
 
-unsigned long t_ephSBAS::IOD() const {
+unsigned int t_ephSBAS::IOD() const {
   unsigned char buffer[80];
   int size = 0;
   int numbits = 0;
@@ -1372,7 +1372,7 @@ t_ephBDS::t_ephBDS(float rnxVersion, const QStringList& lines) {
 
 // IOD of BDS Ephemeris (virtual)
 ////////////////////////////////////////////////////////////////////////////
-unsigned long t_ephBDS::IOD() const {
+unsigned int t_ephBDS::IOD() const {
   unsigned char buffer[80];
   int size = 0;
   int numbits = 0;

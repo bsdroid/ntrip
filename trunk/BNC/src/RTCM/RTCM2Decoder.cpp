@@ -307,7 +307,7 @@ void RTCM2Decoder::translateCorr2Obs(vector<string>& errmsg) {
     vector<string> missingIOD;
     vector<string> hasIOD;
     for (unsigned ii = 0; ii < 4; ii++) {
-      unsigned long IODcorr = 0;
+      unsigned int IODcorr = 0;
       double corrVal = 0;
       const t_eph* eph = 0;
       double* obsVal = 0;

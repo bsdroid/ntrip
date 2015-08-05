@@ -86,7 +86,7 @@ class t_orbCorr {
   static void readEpoch(const std::string& epoLine, std::istream& in, QList<t_orbCorr>& corrList);
   std::string    _staID;
   t_prn          _prn;
-  unsigned long  _iod;
+  unsigned int   _iod;
   bncTime        _time;
   unsigned int   _updateInt;
   char           _system;
@@ -101,7 +101,7 @@ class t_clkCorr {
   static void readEpoch(const std::string& epoLine, std::istream& in, QList<t_clkCorr>& corrList);
   std::string    _staID;
   t_prn          _prn;
-  unsigned long  _iod;
+  unsigned int   _iod;
   bncTime        _time;
   unsigned int   _updateInt;
   double         _dClk;

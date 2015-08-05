@@ -2100,7 +2100,7 @@ void bncRtnetUploadCaster::processSatellite(const t_eph* eph, int GPSweek,
     sd->Orbit.DotDeltaCrossTrack = dotRsw(3);
   }
 
-  outLine.sprintf("%d %.1f %s  %lu  %10.3f  %8.3f %8.3f %8.3f\n", GPSweek,
+  outLine.sprintf("%d %.1f %s  %u  %10.3f  %8.3f %8.3f %8.3f\n", GPSweek,
       GPSweeks, eph->prn().toString().c_str(), eph->IOD(), dClk, rsw(1), rsw(2),
       rsw(3));
 
