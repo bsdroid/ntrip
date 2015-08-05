@@ -245,6 +245,9 @@ bncWindow::bncWindow() {
   _ephV3CheckBox = new QCheckBox();
   _ephV3CheckBox->setCheckState(Qt::CheckState(settings.value("ephV3").toInt()));
 
+  _ephV3filenameCheckBox = new QCheckBox();
+  _ephV3filenameCheckBox->setCheckState(Qt::CheckState(settings.value("ephV3filenames").toInt()));
+
   connect(_outEphPortLineEdit, SIGNAL(textChanged(const QString &)),
           this, SLOT(slotBncTextChanged()));
 
@@ -721,6 +724,8 @@ bncWindow::bncWindow() {
   eLayout->addWidget(_outEphPortLineEdit,                         3, 1);
   eLayout->addWidget(new QLabel("Version 3"),                     4, 0);
   eLayout->addWidget(_ephV3CheckBox,                              4, 1);
+  eLayout->addWidget(new QLabel("Version 3 file names"),          4, 2);
+  eLayout->addWidget(_ephV3filenameCheckBox,                      4, 3);
   eLayout->setRowStretch(5, 999);
 
   egroup->setLayout(eLayout);
@@ -1719,10 +1724,11 @@ void bncWindow::saveOptions() {
   settings.setValue("rnxV3",       _rnxV3CheckBox->checkState());
   settings.setValue("rnxV2Priority",_rnxV2Priority->text());
 // RINEX Ephemeris
-  settings.setValue("ephPath",     _ephPathLineEdit->text());
-  settings.setValue("ephIntr",     _ephIntrComboBox->currentText());
-  settings.setValue("outEphPort",  _outEphPortLineEdit->text());
-  settings.setValue("ephV3",       _ephV3CheckBox->checkState());
+  settings.setValue("ephPath",       _ephPathLineEdit->text());
+  settings.setValue("ephIntr",       _ephIntrComboBox->currentText());
+  settings.setValue("outEphPort",    _outEphPortLineEdit->text());
+  settings.setValue("ephV3",         _ephV3CheckBox->checkState());
+  settings.setValue("ephV3filenames", _ephV3filenameCheckBox->checkState());
 // Broadcast Corrections
   settings.setValue("corrPath",    _corrPathLineEdit->text());
   settings.setValue("corrIntr",    _corrIntrComboBox->currentText());
@@ -2232,6 +2238,7 @@ void bncWindow::slotBncTextChanged(){
     enable = !_ephPathLineEdit->text().isEmpty() || !_outEphPortLineEdit->text().isEmpty();
     enableWidget(enable, _ephIntrComboBox);
     enableWidget(enable, _ephV3CheckBox);
+    enableWidget(enable, _ephV3filenameCheckBox);
   }
 
   // Broadcast Corrections
