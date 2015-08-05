@@ -93,11 +93,13 @@ void bncSettings::reRead() {
     setValue_p("rnxV2Priority",       "");
     setValue_p("rnxScript",           "");
     setValue_p("rnxV3",               "0");
+    setValue_p("rnxV3filenames",      "0");
     // RINEX Ephemeris
     setValue_p("ephPath",             "");
     setValue_p("ephIntr",             "1 day");
     setValue_p("outEphPort",          "");
     setValue_p("ephV3",               "0");
+    setValue_p("ephV3filenames",      "0");
     // Reqc
     setValue_p("reqcAction",          "");
     setValue_p("reqcObsFile",         "");
