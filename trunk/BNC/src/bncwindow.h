@@ -159,6 +159,7 @@ class bncWindow : public QMainWindow {
     QCheckBox* _ephV3CheckBox;
     QLineEdit* _rnxSkelLineEdit;
     QCheckBox* _rnxFileCheckBox;
+    QCheckBox* _rnxV3filenameCheckBox;
     QLineEdit* _rnxScrpLineEdit;
     QLineEdit* _logFileLineEdit;
     QLineEdit* _rawOutFileLineEdit;

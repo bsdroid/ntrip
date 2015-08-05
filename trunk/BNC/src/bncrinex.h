@@ -68,6 +68,7 @@ class bncRinex {
    QString         _userName;
    QString         _sklName;
    bool            _writeRinexFileOnlyWithSkl;
+   bool            _rinexV3filenames;
    QByteArray      _latitude;
    QByteArray      _longitude;
    QByteArray      _nmea;
