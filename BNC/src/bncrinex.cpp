@@ -92,6 +92,8 @@ bncRinex::bncRinex(const QByteArray& statID, const QUrl& mountPoint,
   _samplingRate = settings.value("rnxSampl").toInt();
 
   _writeRinexFileOnlyWithSkl = settings.value("rnxOnlyWithSKL").toBool();
+
+  _rinexV3filenames = settings.value("rnxV3filenames").toBool();
 }
 
 // Destructor

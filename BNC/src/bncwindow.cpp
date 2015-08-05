@@ -212,6 +212,8 @@ bncWindow::bncWindow() {
   _rnxSamplSpinBox->setValue(settings.value("rnxSampl").toInt());
   _rnxFileCheckBox = new QCheckBox();
   _rnxFileCheckBox->setCheckState(Qt::CheckState(settings.value("rnxOnlyWithSKL").toInt()));
+  _rnxV3filenameCheckBox = new QCheckBox();
+  _rnxV3filenameCheckBox->setCheckState(Qt::CheckState(settings.value("rnxV3filenames").toInt()));
   _rnxSamplSpinBox->setSuffix(" sec");
   _rnxSkelLineEdit    = new QLineEdit(settings.value("rnxSkel").toString());
   _rnxSkelLineEdit->setMaximumWidth(5*ww);
@@ -696,6 +698,8 @@ bncWindow::bncWindow() {
   oLayout->addWidget(new QLabel("Signal priority"),                5, 2);
   oLayout->addWidget(new QLabel("Version 3"),                      6, 0);
   oLayout->addWidget(_rnxV3CheckBox,                               6, 1);
+  oLayout->addWidget(new QLabel("Version 3 file names"),           6, 2);
+  oLayout->addWidget(_rnxV3filenameCheckBox,                       6, 3);
   oLayout->addWidget(new QLabel(""),                               7, 1);
   oLayout->setRowStretch(8, 999);
 
@@ -1710,6 +1714,7 @@ void bncWindow::saveOptions() {
   settings.setValue("rnxSampl",    _rnxSamplSpinBox->value());
   settings.setValue("rnxSkel",     _rnxSkelLineEdit->text());
   settings.setValue("rnxOnlyWithSKL",_rnxFileCheckBox->checkState());
+  settings.setValue("rnxV3filenames",_rnxV3filenameCheckBox->checkState());
   settings.setValue("rnxScript",   _rnxScrpLineEdit->text());
   settings.setValue("rnxV3",       _rnxV3CheckBox->checkState());
   settings.setValue("rnxV2Priority",_rnxV2Priority->text());
