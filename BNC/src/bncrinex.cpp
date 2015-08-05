@@ -195,6 +195,8 @@ bool bncRinex::readSkeleton() {
         readDone = true;
       }
       _skeletonDate = currDate;
+    } else if (_skeletonDate.isValid()) {
+      readDone = true;
     }
   }
 
@@ -322,6 +324,7 @@ void bncRinex::writeHeader(const QByteArray& format, const bncTime& firstObsTime
   // --------------------
   QDateTime datTimNom  = dateAndTimeFromGPSweek(firstObsTime.gpsw(),
                                                 floor(firstObsTime.gpssec()+0.5));
+
   resolveFileName(datTimNom);
 
   // Read Skeleton Header
@@ -347,6 +350,7 @@ void bncRinex::writeHeader(const QByteArray& format, const bncTime& firstObsTime
   }
   else {
     _out.open(_fName.data());
+    _addComments.clear();
   }
 
   _out.setf(ios::showpoint | ios::fixed);
@@ -495,6 +499,7 @@ void bncRinex::dumpEpoch(const QByteArray& format, const bncTime& maxTime) {
 // Close the Old RINEX File
 ////////////////////////////////////////////////////////////////////////////
 void bncRinex::closeFile() {
+
   if (_header.version() == 3) {
     _out << ">                              4  1" << endl;
     _out << "END OF FILE" << endl;
