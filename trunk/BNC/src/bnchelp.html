@@ -47,7 +47,7 @@ Prof. Mervart started working on BNC in June 2005. His sole responsibility for w
 </p>
 
 <p>
-BNC provides context-sensitive online help (Shift+F1: <i>What's This</i>) related to specific objects. It furthermore comes with the here presented documentation, available as an integral part of the software and as a PDF file. Responsible for online and offline documentation, example configurations (and till February 2014 the overall BNC policy concept) is Dr. Georg Weber [georg.weber@bkg.bund.de].
+BNC provides context-sensitive online help (<i>What's This</i>) related to specific objects. It furthermore comes with the here presented documentation, available as an integral part of the software and as a PDF file. Responsible for online and offline documentation, example configurations (and till February 2014 the overall BNC policy concept) is Dr. Georg Weber [georg.weber@bkg.bund.de].
 </p>
 
 <p>
@@ -747,7 +747,7 @@ S    8 C1  C1P L1  S1  C2  C2P L2  S2                       SYS / # / OBS TYPES
 Please note that RTCM Version 3 messages 1084 for GLONASS observations don't contain the channel numbers. However, these messages can only be converted to RINEX when you add messages which include the channel numbers. This could be done though an additional stream carrying 1087 GLONASS observation messages or an additional stream carrying 1020 GLONASS ephemeris messages. You could also consider setting up a streams which contains both, the 1084 and the 1020 messages.
 </p>
 <p>
-The screenshot below shows an example setup of BNC when converting streams to RINEX. Streams are coming from various NTRIP Broadcasters as well as from a serial communication link. Specifying a decoder string 'ZERO' means to not convert the affected stream but save its contents as received. The 'SSL Error' recorded in the 'Log' tab is caused by the fact that observation stream downloads from IGS and MGEX Broadcasters initiate the download of a RINEX skeleton file from a HTTPS (TLS/SSL) website and BNC has been configured in this example to ignore SSL errors as shown in the preceding 'Network' panel sreenshot.
+The screenshot below shows an example setup of BNC when converting streams to RINEX. Streams are coming from various NTRIP Broadcasters as well as from a serial communication link. Specifying a decoder string 'ZERO' means to not convert the affected stream but save its contents as received. The 'SSL Error' recorded in the 'Log' tab is caused by the fact that observation stream downloads from IGS and MGEX Broadcasters initiate the download of RINEX skeleton files from a HTTPS (TLS/SSL) website and BNC has been configured in this example to ignore SSL errors as shown in the preceding 'Network' panel sreenshot.
 </p>
 
 <p><img src="IMG/screenshot16.png"/></p>
