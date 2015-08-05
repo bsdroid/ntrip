@@ -24,7 +24,7 @@ class t_eph {
 
   virtual e_type  type() const = 0;
   virtual QString toString(double version) const = 0;
-  virtual unsigned long IOD() const = 0;
+  virtual unsigned int IOD() const = 0;
   virtual int     slotNum() const {return 0;}
   bncTime TOC() const {return _TOC;}
   bool    isNewerThan(const t_eph* eph) const {return earlierTime(eph, this);}
@@ -60,7 +60,7 @@ class t_ephGPS : public t_eph {
 
   virtual e_type type() const {return (_prn.system() == 'J' ? t_eph::QZSS : t_eph::GPS); }
   virtual QString toString(double version) const;
-  virtual unsigned long  IOD() const { return static_cast<unsigned long>(_IODC); }
+  virtual unsigned int  IOD() const { return static_cast<unsigned int>(_IODC); }
   double TGD() const {return _TGD;} // Timing Group Delay (P1-P2 DCB)
 
  private:
@@ -114,7 +114,7 @@ class t_ephGlo : public t_eph {
 
   virtual e_type type() const {return t_eph::GLONASS;}
   virtual QString toString(double version) const;
-  virtual unsigned long  IOD() const;
+  virtual unsigned int  IOD() const;
   virtual int slotNum() const {return int(_frequency_number);}
 
  private:
@@ -155,7 +155,7 @@ class t_ephGal : public t_eph {
 
   virtual QString toString(double version) const;
   virtual e_type type() const {return t_eph::Galileo;}
-  virtual unsigned long  IOD() const { return static_cast<unsigned long>(_IODnav); }
+  virtual unsigned int  IOD() const { return static_cast<unsigned long>(_IODnav); }
 
  private:
   virtual t_irc position(int GPSweek, double GPSweeks, double* xc, double* vv) const;
@@ -217,7 +217,7 @@ class t_ephSBAS : public t_eph {
   virtual ~t_ephSBAS() {}
 
   virtual e_type  type() const {return t_eph::SBAS;}
-  virtual unsigned long IOD() const;
+  virtual unsigned int IOD() const;
   virtual QString toString(double version) const;
 
  private:
@@ -253,7 +253,7 @@ class t_ephBDS : public t_eph {
   virtual ~t_ephBDS() {}
 
   virtual e_type  type() const {return t_eph::BDS;}
-  virtual unsigned long IOD() const;
+  virtual unsigned int IOD() const;
   virtual QString toString(double version) const;
 
  private:

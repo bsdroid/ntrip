@@ -435,7 +435,7 @@ void t_pppRun::processFiles() {
     // Get Ephemerides
     // ----------------
     t_eph* eph = 0;
-    const QMap<QString, unsigned long>* corrIODs = _corrFile ? &_corrFile->corrIODs() : 0;
+    const QMap<QString, unsigned int>* corrIODs = _corrFile ? &_corrFile->corrIODs() : 0;
     while ( (eph = _rnxNavFile->getNextEph(epo->tt, corrIODs)) != 0 ) {
       _pppClient->putEphemeris(eph);
       delete eph; eph = 0;

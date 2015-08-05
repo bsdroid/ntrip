@@ -54,7 +54,7 @@ class t_rnxNavFile {
  public:
   t_rnxNavFile(const QString& fileName, e_inpOut inpOut);
   ~t_rnxNavFile();
-  t_eph* getNextEph(const bncTime& tt, const QMap<QString, unsigned long>* corrIODs);
+  t_eph* getNextEph(const bncTime& tt, const QMap<QString, unsigned int>* corrIODs);
   const std::vector<t_eph*> ephs() const {return _ephs;}
   double version() const {return _header._version;}
   void   setVersion(double version) {_header._version = version;}

@@ -211,16 +211,16 @@ void t_rnxNavFile::read(QTextStream* stream) {
 // Read Next Ephemeris
 ////////////////////////////////////////////////////////////////////////////
 t_eph* t_rnxNavFile::getNextEph(const bncTime& tt, 
-                                const QMap<QString, unsigned long>* corrIODs) {
+                                const QMap<QString, unsigned int>* corrIODs) {
 
   // Get Ephemeris according to IOD
   // ------------------------------
   if (corrIODs) {
-    QMapIterator<QString, unsigned long> itIOD(*corrIODs);
+    QMapIterator<QString, unsigned int> itIOD(*corrIODs);
     while (itIOD.hasNext()) {
       itIOD.next();
       QString prn = itIOD.key();
-      unsigned long iod = itIOD.value();
+      unsigned int iod = itIOD.value();
       vector<t_eph*>::iterator it = _ephs.begin();
       while (it != _ephs.end()) {
         t_eph* eph = *it;
