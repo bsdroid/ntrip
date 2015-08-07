@@ -290,7 +290,7 @@ void bncTableDlg::slotGetTable() {
     for (int nRow = 0; nRow < lines.size(); nRow++) {
       QStringList columns = lines[nRow].split(";");
       for (int ic = 1; ic < columns.size(); ic++) {
-        if (ic == 11) { 
+            if (ic == 11) {
           if (columns[ic] == "0") { 
             columns[ic] = "no"; 
           } else { 
@@ -372,18 +372,19 @@ void bncTableDlg::select() {
   QStringList* mountPoints = new QStringList;
   if (_table) {
     for (int ir = 0; ir < _table->rowCount(); ir++) {
-      QTableWidgetItem* item   = _table->item(ir,0);
+      QTableWidgetItem*   item = _table->item(ir,0);
       QString             site = _table->item(ir,0)->text();
       QString           format = _table->item(ir,2)->text();
+      QString          country = _table->item(ir,7)->text();
       QString         latitude = _table->item(ir,8)->text();
       QString        longitude = _table->item(ir,9)->text();
       QString             nmea = _table->item(ir,10)->text();
       format.replace(" ", "_");
       if (_table->isItemSelected(item)) {
         url.setPath(item->text());
-        mountPoints->push_back(url.toString() + " " + format + " " + latitude
+        mountPoints->push_back(url.toString() + " " + format + " " + country + " " + latitude
                         + " " + longitude + " " + nmea + " " + ntripVersion);
-         
+
         site.resize(4);
       }
     }

@@ -111,7 +111,7 @@ bncWindow::bncWindow() {
 
   int ww = QFontMetrics(this->font()).width('w');
   
-  static const QStringList labels = QString("account, Streams:   resource loader / mountpoint, decoder, lat, long, nmea, ntrip, bytes").split(",");
+  static const QStringList labels = QString("account, Streams:   resource loader / mountpoint, decoder, country, lat, long, nmea, ntrip, bytes").split(",");
 
   setMinimumSize(100*ww, 70*ww);
 
@@ -399,14 +399,15 @@ bncWindow::bncWindow() {
 
   // Streams
   // -------
-  _mountPointsTable   = new QTableWidget(0,8);
+  _mountPointsTable   = new QTableWidget(0,9);
 
   _mountPointsTable->horizontalHeader()->resizeSection(1,34*ww);
   _mountPointsTable->horizontalHeader()->resizeSection(2,9*ww);
-  _mountPointsTable->horizontalHeader()->resizeSection(3,7*ww); 
-  _mountPointsTable->horizontalHeader()->resizeSection(4,7*ww); 
-  _mountPointsTable->horizontalHeader()->resizeSection(5,5*ww); 
-  _mountPointsTable->horizontalHeader()->resizeSection(6,5*ww); 
+  _mountPointsTable->horizontalHeader()->resizeSection(3,9*ww);
+  _mountPointsTable->horizontalHeader()->resizeSection(4,7*ww);
+  _mountPointsTable->horizontalHeader()->resizeSection(5,7*ww);
+  _mountPointsTable->horizontalHeader()->resizeSection(6,5*ww);
+  _mountPointsTable->horizontalHeader()->resizeSection(7,5*ww);
   _mountPointsTable->horizontalHeader()->setResizeMode(QHeaderView::Interactive);
   _mountPointsTable->horizontalHeader()->setStretchLastSection(true);
   _mountPointsTable->horizontalHeader()->setDefaultAlignment(Qt::AlignLeft);
@@ -1405,14 +1406,14 @@ void bncWindow::populateMountPointsTable() {
     QUrl    url(hlp[0]);
 
     QString fullPath = url.host() + QString(":%1").arg(url.port()) + url.path();
-    QString format(hlp[1]); QString latitude(hlp[2]); QString longitude(hlp[3]);
-    QString nmea(hlp[4]);
-    if (hlp[5] == "S") {
+    QString format(hlp[1]); QString country(hlp[2]); QString latitude(hlp[3]); QString longitude(hlp[4]);
+    QString nmea(hlp[5]);
+    if (hlp[6] == "S") {
       fullPath = hlp[0].replace(0,2,"");
     }
     QString ntripVersion = "2";
-    if (hlp.size() >= 6) {
-      ntripVersion = (hlp[5]);
+    if (hlp.size() >= 7) {
+      ntripVersion = (hlp[6]);
     }
 
     QTableWidgetItem* it;
@@ -1427,31 +1428,35 @@ void bncWindow::populateMountPointsTable() {
     it = new QTableWidgetItem(format);
     _mountPointsTable->setItem(iRow, 2, it);
 
+    it = new QTableWidgetItem(country);
+    _mountPointsTable->setItem(iRow, 3, it);
+
     if      (nmea == "yes") {
-    it = new QTableWidgetItem(latitude);
-    _mountPointsTable->setItem(iRow, 3, it);
-    it = new QTableWidgetItem(longitude);
-    _mountPointsTable->setItem(iRow, 4, it);
+      it = new QTableWidgetItem(latitude);
+      _mountPointsTable->setItem(iRow, 4, it);
+      it = new QTableWidgetItem(longitude);
+      _mountPointsTable->setItem(iRow, 5, it);
     } else {
-    it = new QTableWidgetItem(latitude);
-    it->setFlags(it->flags() & ~Qt::ItemIsEditable);
-    _mountPointsTable->setItem(iRow, 3, it);
-    it = new QTableWidgetItem(longitude);
-    it->setFlags(it->flags() & ~Qt::ItemIsEditable);
-    _mountPointsTable->setItem(iRow, 4, it);
+      it = new QTableWidgetItem(latitude);
+      it->setFlags(it->flags() & ~Qt::ItemIsEditable);
+      _mountPointsTable->setItem(iRow, 4, it);
+
+      it = new QTableWidgetItem(longitude);
+      it->setFlags(it->flags() & ~Qt::ItemIsEditable);
+      _mountPointsTable->setItem(iRow, 5, it);
     }
 
     it = new QTableWidgetItem(nmea);
     it->setFlags(it->flags() & ~Qt::ItemIsEditable);
-    _mountPointsTable->setItem(iRow, 5, it);
+    _mountPointsTable->setItem(iRow, 6, it);
 
     it = new QTableWidgetItem(ntripVersion);
     ////    it->setFlags(it->flags() & ~Qt::ItemIsEditable);
-    _mountPointsTable->setItem(iRow, 6, it);
+    _mountPointsTable->setItem(iRow, 7, it);
 
     bncTableItem* bncIt = new bncTableItem();
     bncIt->setFlags(bncIt->flags() & ~Qt::ItemIsEditable);
-    _mountPointsTable->setItem(iRow, 7, bncIt);
+    _mountPointsTable->setItem(iRow, 8, bncIt);
 
     iRow++;
   }
@@ -1561,14 +1566,14 @@ void bncWindow::slotNewMountPoints(QStringList* mountPoints) {
     QStringList hlp = it.next().split(" ");
     QUrl    url(hlp[0]);
     QString fullPath = url.host() + QString(":%1").arg(url.port()) + url.path();
-    QString format(hlp[1]); QString latitude(hlp[2]); QString longitude(hlp[3]);
-    QString nmea(hlp[4]);
-    if (hlp[5] == "S") {
+    QString format(hlp[1]); QString country(hlp[2]); QString latitude(hlp[3]); QString longitude(hlp[4]);
+    QString nmea(hlp[5]);
+    if (hlp[6] == "S") {
       fullPath = hlp[0].replace(0,2,"");
     }
     QString ntripVersion = "2";
-    if (hlp.size() >= 6) {
-      ntripVersion = (hlp[5]);
+    if (hlp.size() >= 7) {
+      ntripVersion = (hlp[6]);
     }
 
     _mountPointsTable->insertRow(iRow);
@@ -1585,30 +1590,33 @@ void bncWindow::slotNewMountPoints(QStringList* mountPoints) {
     it = new QTableWidgetItem(format);
     _mountPointsTable->setItem(iRow, 2, it);
 
+    it = new QTableWidgetItem(country);
+    _mountPointsTable->setItem(iRow, 3, it);
+
     if      (nmea == "yes") {
     it = new QTableWidgetItem(latitude);
-    _mountPointsTable->setItem(iRow, 3, it);
-    it = new QTableWidgetItem(longitude);
     _mountPointsTable->setItem(iRow, 4, it);
+    it = new QTableWidgetItem(longitude);
+    _mountPointsTable->setItem(iRow, 5, it);
     } else {
     it = new QTableWidgetItem(latitude);
     it->setFlags(it->flags() & ~Qt::ItemIsEditable);
-    _mountPointsTable->setItem(iRow, 3, it);
+    _mountPointsTable->setItem(iRow, 4, it);
     it = new QTableWidgetItem(longitude);
     it->setFlags(it->flags() & ~Qt::ItemIsEditable);
-    _mountPointsTable->setItem(iRow, 4, it);
+    _mountPointsTable->setItem(iRow, 5, it);
     }
 
     it = new QTableWidgetItem(nmea);
     it->setFlags(it->flags() & ~Qt::ItemIsEditable);
-    _mountPointsTable->setItem(iRow, 5, it);
-
-    it = new QTableWidgetItem(ntripVersion);
-    it->setFlags(it->flags() & ~Qt::ItemIsEditable);
     _mountPointsTable->setItem(iRow, 6, it);
 
+    it = new QTableWidgetItem(ntripVersion);
+    ////it->setFlags(it->flags() & ~Qt::ItemIsEditable);
+    _mountPointsTable->setItem(iRow, 7, it);
+
     bncTableItem* bncIt = new bncTableItem();
-    _mountPointsTable->setItem(iRow, 7, bncIt);
+    _mountPointsTable->setItem(iRow, 8, bncIt);
 
     iRow++;
   }
@@ -1643,7 +1651,8 @@ void bncWindow::saveOptions() {
                  + " " + _mountPointsTable->item(iRow, 3)->text()
                  + " " + _mountPointsTable->item(iRow, 4)->text()
                  + " " + _mountPointsTable->item(iRow, 5)->text()
-                 + " " + _mountPointsTable->item(iRow, 6)->text());
+                 + " " + _mountPointsTable->item(iRow, 6)->text()
+                 + " " + _mountPointsTable->item(iRow, 7)->text());
     } else {
       mountPoints.append( 
                   "//" + _mountPointsTable->item(iRow, 1)->text()
@@ -1651,7 +1660,8 @@ void bncWindow::saveOptions() {
                  + " " + _mountPointsTable->item(iRow, 3)->text()
                  + " " + _mountPointsTable->item(iRow, 4)->text()
                  + " " + _mountPointsTable->item(iRow, 5)->text()
-                 + " " + _mountPointsTable->item(iRow, 6)->text());
+                 + " " + _mountPointsTable->item(iRow, 6)->text()
+                 + " " + _mountPointsTable->item(iRow, 7)->text());
     }
   }
 
@@ -2058,9 +2068,9 @@ void bncWindow::slotMountPointsRead(QList<bncGetThread*> threads) {
       QUrl url( "//" + _mountPointsTable->item(iRow, 0)->text() + 
                 "@"  + _mountPointsTable->item(iRow, 1)->text() );
       if (url                                      == thread->mountPoint() &&
-          _mountPointsTable->item(iRow, 3)->text() == thread->latitude()   &&
-          _mountPointsTable->item(iRow, 4)->text() == thread->longitude() ) {
-        ((bncTableItem*) _mountPointsTable->item(iRow, 7))->setGetThread(thread);
+          _mountPointsTable->item(iRow, 4)->text() == thread->latitude()   &&
+          _mountPointsTable->item(iRow, 5)->text() == thread->longitude() ) {
+        ((bncTableItem*) _mountPointsTable->item(iRow, 8))->setGetThread(thread);
         disconnect(thread, SIGNAL(newBytes(QByteArray, double)),
                   _bncFigure, SLOT(slotNewData(QByteArray, double)));
         connect(thread, SIGNAL(newBytes(QByteArray, double)),

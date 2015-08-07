@@ -427,10 +427,10 @@ void bncCaster::readMountPoints() {
     // ----------------
     if (!existFlg) {
       QByteArray format    = hlp[1].toAscii();
-      QByteArray latitude  = hlp[2].toAscii();
-      QByteArray longitude = hlp[3].toAscii();
-      QByteArray nmea      = hlp[4].toAscii();
-      QByteArray ntripVersion = hlp[5].toAscii();
+      QByteArray latitude  = hlp[3].toAscii();
+      QByteArray longitude = hlp[4].toAscii();
+      QByteArray nmea      = hlp[5].toAscii();
+      QByteArray ntripVersion = hlp[6].toAscii();
       
       bncGetThread* getThread = new bncGetThread(url, format, latitude, 
                                         longitude, nmea, ntripVersion);
