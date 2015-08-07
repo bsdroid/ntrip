@@ -72,7 +72,7 @@ void bncSettings::reRead() {
                                << "http://user:pass@products.igs-ip.net:2101"
                                << "http://user:pass@mgex.igs-ip.net:2101"));
     setValue_p("mountPoints",         "");
-    setValue_p("ntripVersion",        "1");
+    setValue_p("ntripVersion",        "2");
     // Network
     setValue_p("proxyHost",           "");
     setValue_p("proxyPort",           "");
