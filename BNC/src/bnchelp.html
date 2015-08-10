@@ -435,11 +435,13 @@ This chapter describes how to set the BNC program options. It explains the 'Top 
 &nbsp; &nbsp; &nbsp; 3.4.7. <a href=#rnxscript>Script</a><br>
 &nbsp; &nbsp; &nbsp; 3.4.8. <a href=#rnxvers2>Version 2</a><br>
 &nbsp; &nbsp; &nbsp; 3.4.9. <a href=#rnxvers3>Version 3</a><br>
+&nbsp; &nbsp; &nbsp; 3.4.10. <a href=#rnxvers3File>Version 3 File Names</a><br>
 3.5. <a href=#ephemeris>RINEX Ephemeris</a><br>
 &nbsp; &nbsp; &nbsp; 3.5.1. <a href=#ephdir>Directory</a><br>
 &nbsp; &nbsp; &nbsp; 3.5.2. <a href=#ephint>Interval</a><br>
 &nbsp; &nbsp; &nbsp; 3.5.3. <a href=#ephport>Port</a><br>
 &nbsp; &nbsp; &nbsp; 3.5.4. <a href=#ephvers>Version</a><br>
+&nbsp; &nbsp; &nbsp; 3.5.5. <a href=#ephversFile>Version 3 File Names</a><br>
 3.6. <a href=#reqc>RINEX Editing & QC</a><br>
 &nbsp; &nbsp; &nbsp; 3.6.1 <a href=#reqcact>Action</a><br>
 &nbsp; &nbsp; &nbsp; 3.6.2 <a href=#reqcinp>Input Files</a><br>
@@ -755,33 +757,60 @@ The screenshot below shows an example setup of BNC when converting streams to RI
 
 <p><a name="rnxname"><h4>3.4.1 RINEX File Names</h4></p>
 <p>
-RINEX file names in BNC follow the convention of RINEX Version 2.11. So far BNC does not support extended file names as defined in RINEX Version 3.02. File names are derived by BNC from the first 4 characters of the corresponding stream's mountpoint (4Char Station ID). For example, data from mountpoints FRANKFURT and WETTZELL will have hourly RINEX Observation files named</p>
-<p>
-FRAN{ddd}{h}.{yy}O<br>
+The default for RINEX file names in BNC follows the convention of RINEX Version 2. However, the software provides options to alternatively follow the file name convention of RINEX Version 3. RINEX Version 2 file names are derived by BNC from the first 4 characters of the corresponding stream's mountpoint (4Char Station ID). For example, data from mountpoints FRANKFURT and WETTZELL will have hourly RINEX Observation files named</p>
+
+<pre>
+FRAN{ddd}{h}.{yy}O
 WETT{ddd}{h}.{yy}O
-</p>
+</pre>
 <p>
 where 'ddd' is the day of year, 'h' is a letter which corresponds to an hour long UTC time block and 'yy' is the year.
 </p>
 <p>
-If there is more than one stream with identical 4Char Station ID (same first 4 characters for their mountpoints), the mountpoint strings are split into two sub-strings and both become part of the RINEX file name. For example, when simultaneously retrieving data from mountpoints FRANKFURT and FRANCE, their hourly RINEX Observation files are named as</p>
+If there is more than one stream with identical 4Char Station ID (same first 4 characters for their mountpoints), the mountpoint strings are split into two sub-strings and both become part of the RINEX file name. For example, when simultaneously retrieving data from mountpoints FRANKFURT and FRANCE, their hourly RINEX Version 2 Observation files are named as</p>
+<pre>
+FRAN{ddd}{h}_KFURT.{yy}O
+FRAN{ddd}{h}_CE.{yy}O
+</pre>
 <p>
-FRAN{ddd}{h}_KFURT.{yy}O<br>
-FRAN{ddd}{h}_CE.{yy}O.
-</p>
+If several streams show exactly the same mountpoint name (example: BRUS0 from <u>www.euref-ip.net</u> and BRUS0 from <u>www.igs-ip.net</u>), BNC adds an integer number to the file name leading i.e. to hourly RINEX Version 2 Observation files like</p>
+<pre>
+BRUS{ddd}{h}_0.{yy}O
+BRUS{ddd}{h}_1.{yy}O
+</pre>
 <p>
-If several streams show exactly the same mountpoint name (example: BRUS0 from <u>www.euref-ip.net</u> and BRUS0 from <u>www.igs-ip.net</u>), BNC adds an integer number to the file name leading i.e. to hourly RINEX Observation files like</p>
-<p>
-BRUS{ddd}{h}_0.{yy}O<br>
-BRUS{ddd}{h}_1.{yy}O.
-</p>
-<p>
-Note that RINEX file names for all intervals less than 1 hour follow the file name convention for 15 minutes RINEX Observation files i.e.</p>
-<p>
+Note that RINEX Version 2 file names for all intervals less than 1 hour follow the file name convention for 15 minutes RINEX Version 2 Observation files i.e.</p>
+<pre>
 FRAN{ddd}{h}{mm}.{yy}O
-</p>
+</pre>
 <p>
 where 'mm' is the starting minute within the hour.
+</p>
+
+<p>
+In case of RINEX Version 3 file names, the following convention holds:
+
+<p>
+<table>
+<tr><td><b>Parameter</b></td><td><b>&nbsp; # Char.</b></td><td><b>&nbsp; Meaning</b></td></tr>
+<tr><td>Name</td><td>&nbsp; 9</td><td>&nbsp; Site, station and country code</td></tr>
+<tr><td>S</td><td>&nbsp; 1</td><td>&nbsp; Data source</td></tr>
+<tr><td>Start Time</td><td>&nbsp; 11</td><td>&nbsp; YYYYDDDHHMM</td></tr>
+<tr><td>Period</td><td>&nbsp; 3</td><td>&nbsp; File period</td></tr>
+<tr><td>Obs. Freq.</td><td>&nbsp; 3</td><td>&nbsp; Observation frequency</td></tr>
+<tr><td>Content</td><td>&nbsp; 2</td><td>&nbsp; Content type</td></tr>
+<tr><td>Format</td><td>&nbsp; 3</td><td>&nbsp; File format</td></tr>
+<tr><td>Compression</td><td>&nbsp; 2-3</td><td>&nbsp; Compression method (optional)</td></tr>
+</table>
+</p>
+<p>
+Example for Mixed RINEX Version 3 GNSS observation file name, file containing 1 hour of data, one observation every second, 'MO' standing for 'Mixed Observations':
+<pre>
+ALGO00CAN_R_20121601000_01H_01S_MO.rnx
+</pre>
+</p>
+<p>
+Note that file name details are produced from the streams mountpoint as well as corresponding BNC settings and meta data from the Ntrip Broadcaster source-table.
 </p>
 
 <p><a name="rnxdir"><h4>3.4.2 Directory - optional</h4></p>
@@ -801,19 +830,19 @@ Select the RINEX Observation sampling interval in seconds. A value of zero '0' t
 
 <p><a name="rnxskl"><h4>3.4.5 Skeleton Extension - optional</h4></p>
 <p>
-Whenever BNC starts generating RINEX Observation files (and then once every day at midnight), it first tries to retrieve information needed for RINEX headers from so-called public RINEX header skeleton files which are derived from sitelogs. A HTTP or HTTPS link to a directory containing these skeleton files may be available through data field number 7 of the affected NET record in the source-table. See <u>http://www.epncb.oma.be:80/stations/log/skl/brus.skl</u> for an example of a public RINEX header skeleton file for EPN station Brussels. Note that the download of RINEX skeleton files from HTTPS websites requires the exchange of client and/or server certificates. Clarify 'SSL' options offered in panel 'Network' for details.
+Whenever BNC starts generating RINEX Observation files (and then once every day at midnight), it first tries to retrieve information needed for RINEX headers from so-called public RINEX header skeleton files which are derived from sitelogs. A HTTP or HTTPS link to a directory containing these skeleton files may be available through data field number 7 of the affected NET record in the source-table. See <u>http://www.epncb.oma.be:80/stations/log/skl/brus.skl</u> for an example of a public RINEX header skeleton file for EPN station Brussels. Note that the download of RINEX skeleton files from HTTPS websites requires the exchange of client and/or server certificates. Clarify 'SSL' options offered through panel 'Network' for details.
 </p>
 <p>
 Sometimes public RINEX header skeleton files are not available, their contents is not up to date, or you need to put additional/optional records in the RINEX header. For that BNC allows using personal skeleton files that contain the header records you would like to include. You can derive a personal RINEX header skeleton file from the information given in an up to date sitelog. A file in the RINEX Observations 'Directory' with a 'Skeleton extension' suffix is interpreted by BNC as a personal RINEX header skeleton file for the corresponding stream.
 </p>
 <p>
-Examples for personal skeleton file name convention: RINEX Observation files for mountpoints WETTZELL, FRANKFURT and FRANCE (same 4Char Station ID), BRUS0 from <u>www.euref-ip.net</u> and BRUS0 from <u>www.igs-ip.net</u> (same 4Char Station ID, identical mountpoint stings) would accept personal skeleton files named</p>
-<p>
-WETT.skl<br>
-FRAN_KFURT.skl<br>
-FRAN_CE.skl<br>
-BRUS_0.skl<br>
-BRUS_1.skl</p>
+When producing RINEX Observation files from mountpoints (examples) 'BRUS0', 'FRANKFURT'; and 'WETTZELL' the following skeleton file names would be accepted
+</p>
+<pre>
+BRUS.skl
+FRAN.skl
+WETT.skl
+</pre>
 <p>
 if 'Skeleton extension' is set to 'skl'.
 </p>
@@ -834,7 +863,7 @@ BNC will complete this line and include it in the RINEX file header.</li>
 <br>- &nbsp; APPROX POSITION XYZ
 <br>- &nbsp; ANTENNA: DELTA H/E/N
 <br>- &nbsp; WAVELENGTH FACT L1/2 (RINEX Version 2)</li>
-<br>- &nbsp; SYS / # / OBS TYPES (RINEX Version 3, will be ignored when writing Version 2 files)</li>
+<br>- &nbsp; SYS / # / OBS TYPES (for RINEX Version 3 files, will be ignored when writing Version 2 files)</li>
 <li>They may contain any other optional complete header record as defined in the RINEX documentation.</li>
 <li>They should also contain an empty header records of type
 <br>- &nbsp; # / TYPES OF OBSERV (only RINEX Version 2, will be ignored when writing RINEX Version 3 files)
@@ -926,14 +955,29 @@ The default format for RINEX Observation files is RINEX Version 2.11. Select RIN
 Note that it is possible to force a RTCM Version 2 stream to be saved in RINEX Version 3 file format. However, this is not recommended because such stream cannot be precisely mapped to RINEX Version 3 as the required information on tracking modes (observation attributes) is not part of RTCM Version 2.
 </p>
 
+<p><a name="rnxvers3File"><h4>3.4.10 Version 3 File Names - optional</h4></p>
+<p>
+Tick check box 'Version 3 file names' to let BNC create so-called extended file names following the RINEX Version 3 standard.
+</p>
+<p>Default is an empty check box, meaning to still use file names following the RINEX Version 2 standard although the file contents is saved in RINEX Version 3 format.
+</p>
+
 <p><a name="ephemeris"><h4>3.5. RINEX Ephemeris</h4></p>
 <p>
-Broadcast Ephemeris can be saved as RINEX Navigation files when received via RTCM Version 3 e.g. as message types 1019 (GPS) or 1020 (GLONASS) or 1044 (QZSS) or 1043 (SBAS) or 1045 and 1046 (Galileo) or 63 (tentative, BDS/BeiDou). The file name convention follows the details given in section 'RINEX File Names' except that the first four characters are 'BRDC' and the last character is
+Broadcast Ephemeris can be saved as RINEX Navigation files when received via RTCM Version 3 e.g. as message types 1019 (GPS) or 1020 (GLONASS) or 1044 (QZSS) or 1043 (SBAS) or 1045 and 1046 (Galileo) or 63 (tentative, BDS/BeiDou). The file name convention follows the details given in section 'RINEX File Names' except that the first four characters are 'BRDC'.
 </p>
-<ul>
-<li>'N' or 'G' for GPS or GLONASS ephemeris in two separate RINEX Version 2.11 Navigation files, or</li>
-<li>'P' for GPS plus GLONASS, Galileo, SBAS, QZSS, and BDS ephemeris, saved together in one RINEX Version 3 Navigation file.
-</ul>
+<p>
+For RINEX Version 2 Navigation files the last character is 'N' or 'G' for GPS or GLONASS ephemeris in two separate files.
+</p>
+<p>
+Regarding RINEX Version 3 you will find all ephemeris data for GPS, GLONASS, Galileo, SBAS, QZSS, and BDS saved together in one Navigation file.
+</p>
+<p>
+The following is an example for a RINEX Version 3 Navigation file name. The file contains one days data. 'MN' stands for 'Multi Constellation Navigation' data.
+<pre>
+BRDC00DEU_S_20121600000_01D_MN.rnx
+</pre>
+</p>
 
 <p>
 Note that streams dedicated to carry Broadcast Ephemeris messages in RTCM Version 3 format in high repetition rates are listed on <u>http://igs.bkg.bund.de/ntrip/ephemeris</u>.
@@ -963,6 +1007,13 @@ Default format for RINEX Navigation files containing Broadcast Ephemeris is RINE
 </p>
 <p>
 Note that this does not concern the Broadcast Ephemeris output through IP port which is always in RINEX Version 3 format.
+</p>
+
+<p><a name="ephversFile"><h4>3.5.5 Version 3 File Names - optional</h4></p>
+<p>
+Tick check box 'Version 3 file names' to let BNC create so-called extended file names following the RINEX Version 3 standard.
+</p>
+<p>Default is an empty check box, meaning to still use file names following the RINEX Version 2 standard although the file contents is saved in RINEX Version 3 format.
 </p>
 
 <p><a name="reqc"><h4>3.6. RINEX Editing & QC</h4></p>
