@@ -124,7 +124,6 @@ t_bncCore::t_bncCore() : _ephUser(false) {
   qRegisterMetaType<QList<t_satCodeBias> >  ("QList<t_satCodeBias>");
   qRegisterMetaType<QList<t_satPhaseBias> > ("QList<t_satPhaseBias>");
   qRegisterMetaType<t_vTec>                 ("t_vTec");
-
 }
 
 // Destructor
@@ -290,17 +289,35 @@ void t_bncCore::printEphHeader() {
 
     QDateTime datTim = currentDateAndTimeGPS();
 
-    QString ephFileNameGPS = _ephPath + "BRDC" + 
-               QString("%1").arg(datTim.date().dayOfYear(), 3, 10, QChar('0'));
+    QString ephFileNameGPS = _ephPath + "BRDC";
+
+    bool ephV3filenames = settings.value("ephV3filenames").toBool();
 
     QString hlpStr = bncRinex::nextEpochStr(datTim, 
-                         settings.value("ephIntr").toString());
+                         settings.value("ephIntr").toString(), ephV3filenames);
 
     if (_rinexVers == 3) {
-      ephFileNameGPS += hlpStr + datTim.toString(".yyP");
+      if (ephV3filenames) {
+        QString country = "WLD";
+        QString monNum = "0";
+        QString recNum = "0";
+        ephFileNameGPS += QString("%1").arg(monNum, 1, 10) +
+                          QString("%1").arg(recNum, 1, 10) +
+                          country +
+                          "_S_" +     // stream
+                          QString("%1").arg(datTim.date().year()) +
+                          QString("%1").arg(datTim.date().dayOfYear(), 3, 10, QChar('0')) +
+                          hlpStr +   // HMS_period
+                          "_MN.rnx"; // mixed BRDC
+      }
+      else { // RNX v3 with old filenames
+        ephFileNameGPS +=  QString("%1").arg(datTim.date().dayOfYear(), 3, 10, QChar('0')) +
+                           hlpStr + datTim.toString(".yyP");
+      }
     }
-    else {
-      ephFileNameGPS += hlpStr + datTim.toString(".yyN");
+    else { // RNX v2.11
+      ephFileNameGPS += QString("%1").arg(datTim.date().dayOfYear(), 3, 10, QChar('0')) +
+                        hlpStr + datTim.toString(".yyN");
     }
 
     if (_ephFileNameGPS == ephFileNameGPS) {

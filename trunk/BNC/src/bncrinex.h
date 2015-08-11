@@ -46,6 +46,7 @@ class bncRinex {
 
    static QString nextEpochStr(const QDateTime& datTim,
                                const QString& intStr, 
+                               bool rnxV3filenames,
                                QDateTime* nextEpoch = 0);
    static std::string asciiSatLine(const t_satObs& obs);
 
