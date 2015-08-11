@@ -212,14 +212,14 @@ bncWindow::bncWindow() {
   _rnxSamplSpinBox->setValue(settings.value("rnxSampl").toInt());
   _rnxFileCheckBox = new QCheckBox();
   _rnxFileCheckBox->setCheckState(Qt::CheckState(settings.value("rnxOnlyWithSKL").toInt()));
-  _rnxV3filenameCheckBox = new QCheckBox();
-  _rnxV3filenameCheckBox->setCheckState(Qt::CheckState(settings.value("rnxV3filenames").toInt()));
   _rnxSamplSpinBox->setSuffix(" sec");
   _rnxSkelLineEdit    = new QLineEdit(settings.value("rnxSkel").toString());
   _rnxSkelLineEdit->setMaximumWidth(5*ww);
   _rnxScrpLineEdit    = new QLineEdit(settings.value("rnxScript").toString());
   _rnxV3CheckBox      = new QCheckBox();
   _rnxV3CheckBox->setCheckState(Qt::CheckState(settings.value("rnxV3").toInt()));
+  _rnxV3filenameCheckBox = new QCheckBox();
+  _rnxV3filenameCheckBox->setCheckState(Qt::CheckState(settings.value("rnxV3filenames").toInt()));
   QString hlp = settings.value("rnxV2Priority").toString();
   if (hlp.isEmpty()) {
     hlp = "CWPX_?";
@@ -1733,14 +1733,18 @@ void bncWindow::saveOptions() {
   settings.setValue("rnxOnlyWithSKL",_rnxFileCheckBox->checkState());
   settings.setValue("rnxV3filenames",_rnxV3filenameCheckBox->checkState());
   settings.setValue("rnxScript",   _rnxScrpLineEdit->text());
-  settings.setValue("rnxV3",       _rnxV3CheckBox->checkState());
+  (_rnxV3filenameCheckBox->checkState()) ?
+    settings.setValue("rnxV3",       _rnxV3filenameCheckBox->checkState()) :
+    settings.setValue("rnxV3",       _rnxV3CheckBox->checkState());
   settings.setValue("rnxV2Priority",_rnxV2Priority->text());
 // RINEX Ephemeris
   settings.setValue("ephPath",       _ephPathLineEdit->text());
   settings.setValue("ephIntr",       _ephIntrComboBox->currentText());
   settings.setValue("outEphPort",    _outEphPortLineEdit->text());
-  settings.setValue("ephV3",         _ephV3CheckBox->checkState());
   settings.setValue("ephV3filenames", _ephV3filenameCheckBox->checkState());
+  (_ephV3filenameCheckBox->checkState()) ?
+    settings.setValue("ephV3",       _ephV3filenameCheckBox->checkState()) :
+    settings.setValue("ephV3",       _ephV3CheckBox->checkState());
 // Broadcast Corrections
   settings.setValue("corrPath",    _corrPathLineEdit->text());
   settings.setValue("corrIntr",    _corrIntrComboBox->currentText());

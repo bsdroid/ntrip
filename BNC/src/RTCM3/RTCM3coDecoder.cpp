@@ -123,7 +123,7 @@ void RTCM3coDecoder::reopen() {
     QDateTime datTim = currentDateAndTimeGPS();
 
     QString hlpStr = bncRinex::nextEpochStr(datTim,
-                                      settings.value("corrIntr").toString());
+                                      settings.value("corrIntr").toString(), false);
 
     QString fileNameHlp = _fileNameSkl
       + QString("%1").arg(datTim.date().dayOfYear(), 3, 10, QChar('0'))
