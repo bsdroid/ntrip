@@ -1402,7 +1402,7 @@ void bncWindow::populateMountPointsTable() {
   int iRow = 0;
   while (it.hasNext()) {
     QStringList hlp = it.next().split(" ");
-    if (hlp.size() < 5) continue;
+    if (hlp.size() < 7) continue;
     _mountPointsTable->insertRow(iRow);
 
     QUrl    url(hlp[0]);

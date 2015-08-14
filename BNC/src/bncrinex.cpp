@@ -333,7 +333,7 @@ void bncRinex::resolveFileName(const QDateTime& datTim) {
     QListIterator<QString> it(settings.value("mountPoints").toStringList());
     while (it.hasNext()) {
       QStringList hlp = it.next().split(" ");
-      if (hlp.size() <= 1)
+      if (hlp.size() < 7)
         continue;
       if (hlp.join(" ").indexOf(_statID, 0) != -1) {
         country = hlp[2];
