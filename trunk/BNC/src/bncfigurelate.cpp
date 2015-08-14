@@ -73,6 +73,7 @@ void bncFigureLate::updateMountPoints() {
   QListIterator<QString> it(settings.value("mountPoints").toStringList());
   while (it.hasNext()) {
     QStringList hlp   = it.next().split(" ");
+    if (hlp.size() <= 1) continue;
     QUrl        url(hlp[0]);
     QByteArray  staID = url.path().mid(1).toAscii();
     _latency[staID] = 0.0;

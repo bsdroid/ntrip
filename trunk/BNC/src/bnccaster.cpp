@@ -384,7 +384,7 @@ void bncCaster::readMountPoints() {
   while (it.hasNext()) {
     ++iMount;
     QStringList hlp = it.next().split(" ");
-    if (hlp.size() <= 1) continue;
+    if (hlp.size() < 7) continue;
     QUrl url(hlp[0]);
 
     // Does it already exist?
