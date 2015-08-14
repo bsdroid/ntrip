@@ -127,6 +127,35 @@ void bncGetThread::initialize() {
   _miscMount     = settings.value("miscMount").toString();
   _decoder   = 0;
 
+  // NMEA Port
+  // -----------
+  QListIterator<QString> iSta(settings.value("PPP/staTable").toStringList());
+  int nmeaPort = 0;
+  while (iSta.hasNext()) {
+    QStringList hlp = iSta.next().split(",");
+    if (hlp.size() < 10) {continue;}
+    QByteArray mp = hlp[0].toAscii();
+    if (_staID == mp) {
+      nmeaPort = hlp[9].toInt();
+    }
+  }
+  if (nmeaPort != 0) {
+    _nmeaServer = new QTcpServer;
+    if ( !_nmeaServer->listen(QHostAddress::Any, nmeaPort) ) {
+      emit newMessage("bncCaster: Cannot listen on port", true);
+    }
+    else {
+      connect(_nmeaServer, SIGNAL(newConnection()), this, SLOT(slotNewNMEAConnection()));
+      connect(BNC_CORE, SIGNAL(newNMEAstr(QByteArray, QByteArray)),
+              this, SLOT(slotNewNMEAstr(QByteArray, QByteArray)));
+      _nmeaSockets = new QList<QTcpSocket*>;
+      _nmeaPortsMap[_staID] = nmeaPort;
+    }
+  } else {
+    _nmeaServer = 0;
+    _nmeaSockets = 0;
+  }
+
   // Serial Port
   // -----------
   _serialNMEA    = NO_NMEA;
@@ -370,6 +399,9 @@ void bncGetThread::terminate() {
   if (!isRunning()) {
     delete this;
   }
+  _nmeaPortsMap.remove(_staID);
+  delete _nmeaServer;
+  delete _nmeaSockets;
 }
 
 // Run
@@ -874,6 +906,33 @@ void bncGetThread::slotSerialReadyRead() {
       if (_serialOutFile) {
         _serialOutFile->write(data);
         _serialOutFile->flush();
+      }
+    }
+  }
+}
+
+void bncGetThread::slotNewNMEAConnection() {
+  _nmeaSockets->push_back(_nmeaServer->nextPendingConnection());
+  emit( newMessage(QString("New PPP client on port: # %1")
+                   .arg(_nmeaSockets->size()).toAscii(), true) );
+}
+
+//
+////////////////////////////////////////////////////////////////////////////
+void bncGetThread::slotNewNMEAstr(QByteArray staID, QByteArray str) {
+  if (_nmeaPortsMap.contains(staID)) {
+    int nmeaPort = _nmeaPortsMap.value(staID);
+    QMutableListIterator<QTcpSocket*> is(*_nmeaSockets);
+    while (is.hasNext()) {
+      QTcpSocket* sock = is.next();
+      if (sock->localPort() == nmeaPort) {
+        if (sock->state() == QAbstractSocket::ConnectedState) {
+          sock->write(str);
+        }
+        else if (sock->state() != QAbstractSocket::ConnectingState) {
+          delete sock;
+          is.remove();
+        }
       }
     }
   }
