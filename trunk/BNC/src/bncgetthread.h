@@ -88,8 +88,12 @@ class bncGetThread : public QThread {
  public:
    virtual void run();
 
+ public slots:
+   void slotNewNMEAstr(QByteArray staID, QByteArray str);
+
  private slots:
    void slotSerialReadyRead();
+   void slotNewNMEAConnection();
 
  private:
    enum t_serialNMEA {NO_NMEA, MANUAL_NMEA, AUTO_NMEA};
@@ -127,6 +131,9 @@ class bncGetThread : public QThread {
    QMap<QString, long>        _prnLastEpo;
    QMap<char, QVector<QString> > _rnxTypes;
    QStringList                _gloSlots;
+   QList<QTcpSocket*>*        _nmeaSockets;
+   QMap<QByteArray, int>      _nmeaPortsMap;
+   QTcpServer*                _nmeaServer;
 };
 
 #endif

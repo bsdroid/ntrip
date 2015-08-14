@@ -95,22 +95,6 @@ bncCaster::bncCaster() {
     _uSockets = 0;
   }
 
-  int nmeaPort = settings.value("PPP/nmeaPort").toInt();
-  if (nmeaPort != 0) {
-    _nmeaServer = new QTcpServer;
-    if ( !_nmeaServer->listen(QHostAddress::Any, nmeaPort) ) {
-      emit newMessage("bncCaster: Cannot listen on port", true);
-    }
-    connect(_nmeaServer, SIGNAL(newConnection()), this, SLOT(slotNewNMEAConnection()));
-    connect(BNC_CORE, SIGNAL(newNMEAstr(QByteArray, QByteArray)), 
-            this,     SLOT(slotNewNMEAstr(QByteArray, QByteArray)));
-    _nmeaSockets = new QList<QTcpSocket*>;
-  }
-  else {
-    _nmeaServer  = 0;
-    _nmeaSockets = 0;
-  }
-
   _samplingRate = settings.value("binSampl").toInt();
   _waitTime     = settings.value("waitTime").toDouble();
   if (_waitTime <= 0.0) {
@@ -153,8 +137,6 @@ bncCaster::~bncCaster() {
   delete _sockets;
   delete _uServer;
   delete _uSockets;
-  delete _nmeaServer;
-  delete _nmeaSockets;
   delete _miscServer;
   delete _miscSockets;
 }
@@ -255,12 +237,6 @@ void bncCaster::slotNewUConnection() {
                    .arg(_uSockets->size()).toAscii(), true) );
 }
 
-void bncCaster::slotNewNMEAConnection() {
-  _nmeaSockets->push_back( _nmeaServer->nextPendingConnection() );
-  emit( newMessage(QString("New PPP client on port: # %1")
-                   .arg(_nmeaSockets->size()).toAscii(), true) );
-}
-
 // Add New Thread
 ////////////////////////////////////////////////////////////////////////////
 void bncCaster::addGetThread(bncGetThread* getThread, bool noNewThread) {
@@ -336,7 +312,7 @@ void bncCaster::dumpEpochs(const bncTime& maxTime) {
           if (firstObs) { 
             firstObs = false;
             oStr << "> " << obs._time.gpsw() << ' ' 
-                 << setprecision(7) << obs._time.gpssec() << endl;;
+                 << setprecision(7) << obs._time.gpssec() << endl;
           }
           oStr << obs._staID << ' ' << bncRinex::asciiSatLine(obs) << endl;
           if (!it.hasNext()) { 
@@ -435,6 +411,7 @@ void bncCaster::readMountPoints() {
       bncGetThread* getThread = new bncGetThread(url, format, latitude, 
                                         longitude, nmea, ntripVersion);
       addGetThread(getThread);
+
     }
   }
 
@@ -518,24 +495,6 @@ int bncCaster::myWrite(QTcpSocket* sock, const char* buf, int bufLen) {
     }
   }
   return -1;
-}
-
-// 
-////////////////////////////////////////////////////////////////////////////
-void bncCaster::slotNewNMEAstr(QByteArray /* staID */, QByteArray str) {
-  if (_nmeaSockets) {
-    QMutableListIterator<QTcpSocket*> is(*_nmeaSockets);
-    while (is.hasNext()) {
-      QTcpSocket* sock = is.next();
-      if (sock->state() == QAbstractSocket::ConnectedState) {
-	sock->write(str);
-      }
-      else if (sock->state() != QAbstractSocket::ConnectingState) {
-        delete sock;
-        is.remove();
-      }
-    }
-  }
 }
 
 // 
