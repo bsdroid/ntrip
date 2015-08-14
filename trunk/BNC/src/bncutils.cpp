@@ -414,7 +414,7 @@ double Frac (double x) {
   return x-floor(x); 
 }
 
-// 
+//
 ////////////////////////////////////////////////////////////////////////////
 double Modulo (double x, double y) { 
   return y*Frac(x/y); 
@@ -425,6 +425,32 @@ double Modulo (double x, double y) {
 double nint(double val) {
   return ((val < 0.0) ? -floor(fabs(val)+0.5) : floor(val+0.5));
 }
+
+//
+////////////////////////////////////////////////////////////////////////////
+int factorial(int n) {
+  if (n == 0) {
+    return 1;
+  }
+  else {
+    return (n * factorial(n - 1));
+  }
+}
+
+//
+////////////////////////////////////////////////////////////////////////////
+double associatedLegendreFunction(int n, int m, double t) {
+  double sum = 0.0;
+  int    r   = (int) floor((n - m) / 2);
+  for (int k = 0; k <= r; k++) {
+      sum += (pow(-1.0, (double)k) * factorial(2*n - 2*k)
+              / (factorial(k) * factorial(n-k) * factorial(n-m-2*k))
+              * pow(t, (double)n-m-2*k));
+  }
+  double fac = pow(2.0,(double) -n) * pow((1 - t*t), (double)m/2);
+  return sum *= fac;
+}
+
 
 // Jacobian XYZ --> NEU 
 ////////////////////////////////////////////////////////////////////////////
