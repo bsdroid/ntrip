@@ -64,24 +64,24 @@ class bncCaster : public QObject {
    static int myWrite(QTcpSocket* sock, const char* buf, int bufLen);
    void reopenOutFile();
 
-   QFile*                                 _outFile;
-   QTextStream*                           _out;
-   QMap<bncTime, QList<t_satObs> >        _epochs;
-   bncTime                                _lastDumpTime;
-   QTcpServer*                            _server;
-   QTcpServer*                            _uServer;
-   QList<QTcpSocket*>*                    _sockets;
-   QList<QTcpSocket*>*                    _uSockets;
-   QList<QByteArray>                      _staIDs;
-   QList<bncGetThread*>                   _threads;
-   int                                    _samplingRate;
-   double                                 _waitTime;
-   QMutex                                 _mutex;
-   int                                    _confInterval;
-   QString                                _miscMount;
-   int                                    _miscPort;
-   QTcpServer*                            _miscServer;
-   QList<QTcpSocket*>*                    _miscSockets;
+   QFile*                          _outFile;
+   QTextStream*                    _out;
+   QMap<bncTime, QList<t_satObs> > _epochs;
+   bncTime                         _lastDumpTime;
+   QTcpServer*                     _server;
+   QTcpServer*                     _uServer;
+   QList<QTcpSocket*>*             _sockets;
+   QList<QTcpSocket*>*             _uSockets;
+   QList<QByteArray>               _staIDs;
+   QList<bncGetThread*>            _threads;
+   int                             _samplingRate;
+   double                          _waitTime;
+   QMutex                          _mutex;
+   int                             _confInterval;
+   QString                         _miscMount;
+   int                             _miscPort;
+   QTcpServer*                     _miscServer;
+   QList<QTcpSocket*>*             _miscSockets;
 };
 
 #endif
