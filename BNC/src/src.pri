@@ -116,20 +116,21 @@ exists(combination/bnccomb.h) {
   SOURCES += combination/bnccomb.cpp
 }
 
-exists(PPP) {
-  INCLUDEPATH += PPP
-  HEADERS += PPP/pppClient.h    PPP/pppObsPool.h   PPP/pppEphPool.h   \
-             PPP/pppStation.h   PPP/pppFilter.h    PPP/pppParlist.h   \
-             PPP/pppSatObs.h           
-  SOURCES += PPP/pppClient.cpp  PPP/pppObsPool.cpp PPP/pppEphPool.cpp \
-             PPP/pppStation.cpp PPP/pppFilter.cpp  PPP/pppParlist.cpp \
-             PPP/pppSatObs.cpp      
+exists(PPP_AR) {
+  INCLUDEPATH += PPP_AR
+  DEFINES += USE_PPP_AR
+  HEADERS += PPP_AR/pppClient.h    PPP_AR/pppObsPool.h   PPP_AR/pppEphPool.h   \
+             PPP_AR/pppStation.h   PPP_AR/pppFilter.h    PPP_AR/pppParlist.h   \
+             PPP_AR/pppSatObs.h           
+  SOURCES += PPP_AR/pppClient.cpp  PPP_AR/pppObsPool.cpp PPP_AR/pppEphPool.cpp \
+             PPP_AR/pppStation.cpp PPP_AR/pppFilter.cpp  PPP_AR/pppParlist.cpp \ 
+             PPP_AR/pppSatObs.cpp      
 }
 else {
-  INCLUDEPATH += PPP_SSR_I
-  DEFINES += USE_PPP_SSR_I
-  HEADERS += PPP_SSR_I/pppClient.h   PPP_SSR_I/pppFilter.h
-  SOURCES += PPP_SSR_I/pppClient.cpp PPP_SSR_I/pppFilter.cpp
+  INCLUDEPATH += PPP
+  DEFINES += USE_PPP
+  HEADERS += PPP/pppClient.h   PPP/pppFilter.h
+  SOURCES += PPP/pppClient.cpp PPP/pppFilter.cpp
 }
 
 # Check QtWebKit Library Existence
