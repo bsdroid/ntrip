@@ -3,7 +3,7 @@
 <h3>BKG Ntrip Client (BNC) Version 2.12.0</h3>
 
 <p>
-The BKG Ntrip Client (BNC) is a program for simultaneously retrieving, decoding, converting and processing real-time GNSS data streams. It has been developed within the framework of the IAG sub-commission for Europe (EUREF) and the International GNSS Service (IGS). Although meant as a real-time tool, it comes with some Post Processing functionality. You may like to use it for data coming from NTRIP Broadcasters like
+The BKG Ntrip Client (BNC) is a program for simultaneously retrieving, decoding, converting and processing or analyzing real-time GNSS data streams applying the 'Networked Transport of RTCM via Internet Protocol' (Ntrip) standard. It has been developed within the framework of the IAG sub-commission for Europe (EUREF) and the International GNSS Service (IGS). Although meant as a real-time tool, it comes with some Post Processing functionality. You may like to use it for data coming from NTRIP Broadcasters like
 <ul>
 <li><u>http://www.euref-ip.net/home</u>,</li>
 <li><u>http://www.igs-ip.net/home</u>,</li>
@@ -3902,10 +3902,39 @@ Drag and drop of configuration files is currently not supported on Mac OS X. On 
 [Bug] Saastamoinen tropospheric correction for very high elevation receivers<br>
 [Add] Comparison of SP3 files<br>
 [Add] RTCMv3 SBAS Broadcast Ephemeris message 1043<br>
-[Add] RTCMv3 BeiDou Broadcast Ephemeris message 63, tentative<br>
+[Add] RTCMv3 BDS Broadcast Ephemeris message 63 (tentative)<br>
 [Bug] VRS support in sending NMEA in Auto/Manual mode to NTRIP Broadcaster<br>
 [Add] Forwarding NMEA GNGGA to NTRIP Broadcaster<br>
 [Bug] Stream failure/recovery reports<br>
+[Add] Compute IODs from CRC over broadcast ephemeris and clock parameters<br>
+[Mod] PPP default options<br>
+[Add] Example configuration for SP3 file comparison<br>
+[Add] Chose between code and phase observations when in PPP SSR I mode<br>
+[Bug] Reset time series plot when restarting PPP in post processing mode<br>
+[Add] Broadcast ephemeris check regarding allowed age of data sets<br>
+[Add] Code bias usage for PPP SSR I mode<br>
+[Add] Allow GPS-only and GLONASS-only RINEX Version 2 Navigation files<br>
+[Mod] SSR clock correction converted to seconds to be consistent with broadcast values<br>
+[Add] Support Galileo I/NAV broadcast ephemeris<br>
+[Add] Extended RINEX Version 3 filenames<br>
+[Add] Stream's country added to configuration string 'mountPoints'<br>
+[Add] Set TOE from BDS week and second<br>
+[Add] Use BDS observations in PPP SSR I mode<br>
+[Add] Considering that yaw angle restricted to -180 to +180 deg<br>
+[Mod] Read local RINEX skeleton files<br>
+[Add] Update intevall for VTEC in RTNET stream format<br>
+[Bug] SBAS IODN<br>
+[Bug] Galileo week number<br>
+[Add] Phase shift records in RINEX Version 3 headers<br>
+[Add] Output GLONASS slot numbers from scanning stream contents<br>
+[Add] Decoder interface for PPP SSR I+II messages for Galileo/QZSS/SBAS/BDS<br>
+[Mod] Renaming BDS first frequency from '1' to '2'<br>
+[Add] RINEX QC, receiver/antenna information editable<br>
+[Add] Switch to port 443 for skeleton file donwload from https website<br>
+[Mod] Default observation types for RINEX Version 3 files<br>
+[Bug] RTCM Version 2 decoder<br>
+[Add] SINEX Troposphere file output<br>
+[Add] String for Operating System in logfile output<br>
 </td>
 </tr>
 
@@ -4435,12 +4464,14 @@ The following table shows a list of options contained in BNC's configuration fil
 <tr><td>rnxScript</td><td>Upload script</td></tr>
 <tr><td>rnxV2Priority</td><td>Signal priority</td></tr>
 <tr><td>rnxV3</td><td>Version 3</td></tr>
+<tr><td>rnxV3filenames</td><td>Version 3 file names</td></tr>
 
 <tr><td><br><b>RINEX Ephemeris Panel</b></td><td><br><b>Meaning</b></td></tr>
 <tr><td>ephPath</td><td>Directory</td></tr>
 <tr><td>ephIntr</td><td>Interval</td></tr>
 <tr><td>outEphPort</td><td>Port</td></tr>
 <tr><td>ephV3</td><td>Version 3</td></tr>
+<tr><td>ephV3filenames</td><td>Version 3 file names</td></tr>
 
 <tr><td><br><b>RINEX Editing and QC Panel</b></td><td><br><b>Meaning</b></td></tr>
 <tr><td>reqcAction</td><td>Action
