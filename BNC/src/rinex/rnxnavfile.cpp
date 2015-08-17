@@ -199,7 +199,9 @@ void t_rnxNavFile::read(QTextStream* stream) {
       }
       eph = new t_ephBDS(version(), lines);
     }
-    if (eph && eph->checkState() != t_eph::bad) {
+    if (eph &&
+        eph->checkState() != t_eph::bad &&
+        eph->checkState() != t_eph::outdated) {
       _ephs.push_back(eph);
     }
     else {

@@ -153,12 +153,15 @@ t_irc bncEphUser::putNewEph(t_eph* eph, bool check) {
 
   const t_eph* ephOld = ephLast(prn);
 
-  if (ephOld && ephOld->checkState() == t_eph::bad) {
+  if (ephOld &&
+      (ephOld->checkState() == t_eph::bad ||
+       ephOld->checkState() == t_eph::outdated)) {
     ephOld = 0;
   }
   
   if ((ephOld == 0 || newEph->isNewerThan(ephOld)) &&
-      eph->checkState() != t_eph::bad) {
+      (eph->checkState() != t_eph::bad ||
+       eph->checkState() != t_eph::outdated)) {
     deque<t_eph*>& qq = _eph[prn];
     qq.push_back(newEph);
     if (qq.size() > _maxQueueSize) {
@@ -209,31 +212,31 @@ void bncEphUser::checkEphemeris(t_eph* eph) {
 
   if      (eph->type() == t_eph::GPS  || t_eph::Galileo) {
     if (timeDiff > 4*3600) { // update interval: 2h, data sets are valid for 4 hours
-      eph->setCheckState(t_eph::bad);
+      eph->setCheckState(t_eph::outdated);
       return;
     }
   }
   else if (eph->type() == t_eph::GLONASS) {
     if (timeDiff > 1*3600) { // updated every 30 minutes
-      eph->setCheckState(t_eph::bad);
+      eph->setCheckState(t_eph::outdated);
       return;
     }
   }
   else if (eph->type() == t_eph::QZSS) {
     if (timeDiff > 1*1800) {
-      eph->setCheckState(t_eph::bad);
+      eph->setCheckState(t_eph::outdated);
       return;
     }
   }
   else if (eph->type() == t_eph::SBAS) {
     if (timeDiff > 600) { // maximum update interval: 300 sec
-      eph->setCheckState(t_eph::bad);
+      eph->setCheckState(t_eph::outdated);
       return;
     }
   }
   else if (eph->type() == t_eph::BDS) {
     if (timeDiff > 6*3600) { // updates 1 (GEO) up to 6 hours
-      eph->setCheckState(t_eph::bad);
+      eph->setCheckState(t_eph::outdated);
       return;
     }
   }
@@ -255,20 +258,20 @@ void bncEphUser::checkEphemeris(t_eph* eph) {
     // some lines to allow update of ephemeris data sets after outage
     if      ((eph->type() == t_eph::GPS ||
               eph->type() == t_eph::Galileo)  && dt > 4*3600) {
-      ephL->setCheckState(t_eph::bad);
+      ephL->setCheckState(t_eph::outdated);
       return;
     }
     else if ((eph->type() == t_eph::GLONASS ||
               eph->type() == t_eph::QZSS)     && dt > 2*3600) {
-      ephL->setCheckState(t_eph::bad);
+      ephL->setCheckState(t_eph::outdated);
       return;
     }
     else if  (eph->type() == t_eph::SBAS      && dt > 1*3600)   {
-      ephL->setCheckState(t_eph::bad);
+      ephL->setCheckState(t_eph::outdated);
       return;
     }
     else if  (eph->type() == t_eph::BDS       && dt > 6*3600)   {
-      ephL->setCheckState(t_eph::bad);
+      ephL->setCheckState(t_eph::outdated);
       return;
     }
 
