@@ -1394,7 +1394,7 @@ bool RTCM3Decoder::DecodeAntenna(unsigned char* data, int size)
   int antnum;
   uint64_t numbits = 0, bitfield = 0;
 
-  data += 3; /* header */
+  data += 4; /* header */
   size -= 6; /* header + crc */
 
   SKIPBITS(12)
