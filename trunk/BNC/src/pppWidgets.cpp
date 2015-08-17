@@ -103,8 +103,8 @@ t_pppWidgets::t_pppWidgets() {
   slotEnableWidgets();
 
   _lcGPS->setEditable(false);
-#ifdef USE_PPP_SSR_I
-  _lcGPS->addItems(QString("no,P3,P3&L3").split(","));
+#ifdef USE_PPP
+  _lcGPS->addItems(QString("P3,P3&L3").split(","));
 #else
   _lcGPS->addItems(QString("no,P3,L3,P3&L3").split(","));
 #endif
