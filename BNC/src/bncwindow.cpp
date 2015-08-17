@@ -417,6 +417,7 @@ bncWindow::bncWindow() {
   _mountPointsTable->setSelectionMode(QAbstractItemView::ExtendedSelection);
   _mountPointsTable->setSelectionBehavior(QAbstractItemView::SelectRows);
   _mountPointsTable->hideColumn(0);
+  _mountPointsTable->hideColumn(3);
   connect(_mountPointsTable, SIGNAL(itemSelectionChanged()), 
           SLOT(slotSelectionChanged()));
   populateMountPointsTable();
@@ -1623,6 +1624,7 @@ void bncWindow::slotNewMountPoints(QStringList* mountPoints) {
     iRow++;
   }
   _mountPointsTable->hideColumn(0);
+  _mountPointsTable->hideColumn(3);
   _mountPointsTable->sortItems(1);
   delete mountPoints;
 
