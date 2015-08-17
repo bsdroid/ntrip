@@ -211,12 +211,10 @@ QString bncRinex::nextEpochStr(const QDateTime& datTim,
                                const QString& intStr, bool rnxV3filenames,
                                QDateTime* nextEpoch) {
 
-  QString epoStr;
+  QString epoStr = "";
 
   QTime nextTime;
   QDate nextDate;
-
-  (rnxV3filenames) ? epoStr = "" : epoStr = "A";
 
   int indHlp = intStr.indexOf("min");
 
@@ -224,7 +222,10 @@ QString bncRinex::nextEpochStr(const QDateTime& datTim,
     int step = intStr.left(indHlp-1).toInt();
     if (rnxV3filenames) {
       epoStr +=  QString("%1").arg(datTim.time().hour(), 2, 10, QChar('0')); // H
+    } else {
+      epoStr +=  'A' + datTim.time().hour();
     }
+
     if (datTim.time().minute() >= 60-step) {
       epoStr += QString("%1").arg(60-step, 2, 10, QChar('0'));               // M
       if (datTim.time().hour() < 23) {
@@ -254,10 +255,12 @@ QString bncRinex::nextEpochStr(const QDateTime& datTim,
   else if (intStr == "1 hour") {
     int step = intStr.left(indHlp-1).toInt();
     if (rnxV3filenames) {
-      epoStr +=  QString("%1").arg(datTim.time().hour(), 2, 10, QChar('0')); // H
+      epoStr += QString("%1").arg(datTim.time().hour(), 2, 10, QChar('0'));  // H
       epoStr += QString("%1").arg(0, 2, 10, QChar('0'));                     // M
       epoStr += QString("%1").arg(0, 2, 10, QChar('0'));                     // S
       epoStr += QString("_%1H").arg(step+1, 2, 10, QChar('0'));              // period
+    } else {
+      epoStr +=  'A' + datTim.time().hour();
     }
     if (datTim.time().hour() < 23) {
       nextTime.setHMS(datTim.time().hour() + 1 , 0, 0);
