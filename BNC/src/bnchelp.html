@@ -369,9 +369,9 @@ Records of BNC's activities are shown in the 'Log' tab whis is part of the 'Log'
 
 <p><a name="optconfig"><h3>2.1 Configuration Management</h3></p>
 <p>
-As a default, configuration files for running BNC on Unix/Linux/Mac OS X systems are saved in directory '${HOME}/.config/BKG'. On Windows systems, they are typically saved in directory 'C:/Documents and Settings/Username/.config/BKG'. The default configuration file name is 'BNC.bnc'.</p>
+As a default, configuration files for running BNC on Unix/Linux/Mac OS X systems are saved in directory '${HOME}/.config/BKG'. On Windows systems, they are typically saved in directory 'C:/Documents and Settings/Username/.config/BKG'. The default configuration filename is 'BNC.bnc'.</p>
 <p>
-The default file name 'BNC.bnc' can be changed and the file contents can easily be edited. On graphical user interfaces it is possible to Drag &amp; Drop a configuration file icon to start BNC (not on Mac OS X systems). Some configuration options can be changed on-the-fly. See annexed 'Configuration Examples' for a complete set of configuration options. It is also possible to start and configure BNC via command line.
+The default filename 'BNC.bnc' can be changed and the file contents can easily be edited. On graphical user interfaces it is possible to Drag &amp; Drop a configuration file icon to start BNC (not on Mac OS X systems). Some configuration options can be changed on-the-fly. See annexed 'Configuration Examples' for a complete set of configuration options. It is also possible to start and configure BNC via command line.
 </p>
 
 <p>
@@ -426,7 +426,7 @@ This chapter describes how to set the BNC program options. It explains the 'Top 
 &nbsp; &nbsp; &nbsp; 3.3.4. <a href=#genstart>Auto Start</a><br>
 &nbsp; &nbsp; &nbsp; 3.3.5. <a href=#rawout>Raw Output File</a><br>
 3.4. <a href=#rinex>RINEX Observations</a><br>
-&nbsp; &nbsp; &nbsp; 3.4.1. <a href=#rnxname>File Names</a><br>
+&nbsp; &nbsp; &nbsp; 3.4.1. <a href=#rnxname>Filenames</a><br>
 &nbsp; &nbsp; &nbsp; 3.4.2. <a href=#rnxdir>Directory</a><br>
 &nbsp; &nbsp; &nbsp; 3.4.3. <a href=#rnxinterval>File Interval</a><br>
 &nbsp; &nbsp; &nbsp; 3.4.4. <a href=#rnxsample>Sampling</a><br>
@@ -435,13 +435,13 @@ This chapter describes how to set the BNC program options. It explains the 'Top 
 &nbsp; &nbsp; &nbsp; 3.4.7. <a href=#rnxscript>Script</a><br>
 &nbsp; &nbsp; &nbsp; 3.4.8. <a href=#rnxvers2>Version 2</a><br>
 &nbsp; &nbsp; &nbsp; 3.4.9. <a href=#rnxvers3>Version 3</a><br>
-&nbsp; &nbsp; &nbsp; 3.4.10. <a href=#rnxvers3File>Version 3 File Names</a><br>
+&nbsp; &nbsp; &nbsp; 3.4.10. <a href=#rnxvers3File>Version 3 Filenames</a><br>
 3.5. <a href=#ephemeris>RINEX Ephemeris</a><br>
 &nbsp; &nbsp; &nbsp; 3.5.1. <a href=#ephdir>Directory</a><br>
 &nbsp; &nbsp; &nbsp; 3.5.2. <a href=#ephint>Interval</a><br>
 &nbsp; &nbsp; &nbsp; 3.5.3. <a href=#ephport>Port</a><br>
 &nbsp; &nbsp; &nbsp; 3.5.4. <a href=#ephvers>Version</a><br>
-&nbsp; &nbsp; &nbsp; 3.5.5. <a href=#ephversFile>Version 3 File Names</a><br>
+&nbsp; &nbsp; &nbsp; 3.5.5. <a href=#ephversFile>Version 3 Filenames</a><br>
 3.6. <a href=#reqc>RINEX Editing & QC</a><br>
 &nbsp; &nbsp; &nbsp; 3.6.1 <a href=#reqcact>Action</a><br>
 &nbsp; &nbsp; &nbsp; 3.6.2 <a href=#reqcinp>Input Files</a><br>
@@ -755,9 +755,9 @@ The screenshot below shows an example setup of BNC when converting streams to RI
 <p><img src="IMG/screenshot16.png"/></p>
 <p><u>Figure 8:</u> BNC translating incoming observation streams to 15 min RINEX Version 3 Observation files.</p>
 
-<p><a name="rnxname"><h4>3.4.1 RINEX File Names</h4></p>
+<p><a name="rnxname"><h4>3.4.1 RINEX Filenames</h4></p>
 <p>
-The default for RINEX file names in BNC follows the convention of RINEX Version 2. However, the software provides options to alternatively follow the file name convention of RINEX Version 3. RINEX Version 2 file names are derived by BNC from the first 4 characters of the corresponding stream's mountpoint (4Char Station ID). For example, data from mountpoints FRANKFURT and WETTZELL will have hourly RINEX Observation files named</p>
+The default for RINEX filenames in BNC follows the convention of RINEX Version 2. However, the software provides options to alternatively follow the filename convention of RINEX Version 3. RINEX Version 2 filenames are derived by BNC from the first 4 characters of the corresponding stream's mountpoint (4Char Station ID). For example, data from mountpoints FRANKFURT and WETTZELL will have hourly RINEX Observation files named</p>
 
 <pre>
 FRAN{ddd}{h}.{yy}O
@@ -767,19 +767,19 @@ WETT{ddd}{h}.{yy}O
 where 'ddd' is the day of year, 'h' is a letter which corresponds to an hour long UTC time block and 'yy' is the year.
 </p>
 <p>
-If there is more than one stream with identical 4Char Station ID (same first 4 characters for their mountpoints), the mountpoint strings are split into two sub-strings and both become part of the RINEX file name. For example, when simultaneously retrieving data from mountpoints FRANKFURT and FRANCE, their hourly RINEX Version 2 Observation files are named as</p>
+If there is more than one stream with identical 4Char Station ID (same first 4 characters for their mountpoints), the mountpoint strings are split into two sub-strings and both become part of the RINEX filename. For example, when simultaneously retrieving data from mountpoints FRANKFURT and FRANCE, their hourly RINEX Version 2 Observation files are named as</p>
 <pre>
 FRAN{ddd}{h}_KFURT.{yy}O
 FRAN{ddd}{h}_CE.{yy}O
 </pre>
 <p>
-If several streams show exactly the same mountpoint name (example: BRUS0 from <u>www.euref-ip.net</u> and BRUS0 from <u>www.igs-ip.net</u>), BNC adds an integer number to the file name leading i.e. to hourly RINEX Version 2 Observation files like</p>
+If several streams show exactly the same mountpoint name (example: BRUS0 from <u>www.euref-ip.net</u> and BRUS0 from <u>www.igs-ip.net</u>), BNC adds an integer number to the filename leading i.e. to hourly RINEX Version 2 Observation files like</p>
 <pre>
 BRUS{ddd}{h}_0.{yy}O
 BRUS{ddd}{h}_1.{yy}O
 </pre>
 <p>
-Note that RINEX Version 2 file names for all intervals less than 1 hour follow the file name convention for 15 minutes RINEX Version 2 Observation files i.e.</p>
+Note that RINEX Version 2 filenames for all intervals less than 1 hour follow the filename convention for 15 minutes RINEX Version 2 Observation files i.e.</p>
 <pre>
 FRAN{ddd}{h}{mm}.{yy}O
 </pre>
@@ -788,7 +788,7 @@ where 'mm' is the starting minute within the hour.
 </p>
 
 <p>
-In case of RINEX Version 3 file names, the following convention holds:
+In case of RINEX Version 3 filenames, the following convention holds:
 
 <p>
 <table>
@@ -804,13 +804,13 @@ In case of RINEX Version 3 file names, the following convention holds:
 </table>
 </p>
 <p>
-Example for Mixed RINEX Version 3 GNSS observation file name, file containing 1 hour of data, one observation every second, 'MO' standing for 'Mixed Observations':
+Example for Mixed RINEX Version 3 GNSS observation filename, file containing 1 hour of data, one observation every second, 'MO' standing for 'Mixed Observations':
 <pre>
 ALGO00CAN_R_20121601000_01H_01S_MO.rnx
 </pre>
 </p>
 <p>
-Note that file name details are produced from the streams mountpoint as well as corresponding BNC settings and meta data from the Ntrip Broadcaster source-table.
+Note that filename details are produced from the streams mountpoint as well as corresponding BNC settings and meta data from the Ntrip Broadcaster source-table.
 </p>
 
 <p><a name="rnxdir"><h4>3.4.2 Directory - optional</h4></p>
@@ -836,7 +836,7 @@ Whenever BNC starts generating RINEX Observation files (and then once every day 
 Sometimes public RINEX header skeleton files are not available, their contents is not up to date, or you need to put additional/optional records in the RINEX header. For that BNC allows using personal skeleton files that contain the header records you would like to include. You can derive a personal RINEX header skeleton file from the information given in an up to date sitelog. A file in the RINEX Observations 'Directory' with a 'Skeleton extension' suffix is interpreted by BNC as a personal RINEX header skeleton file for the corresponding stream.
 </p>
 <p>
-When producing RINEX Observation files from mountpoints (examples) 'BRUS0', 'FRANKFURT'; and 'WETTZELL' the following skeleton file names would be accepted
+When producing RINEX Observation files from mountpoints (examples) 'BRUS0', 'FRANKFURT'; and 'WETTZELL' the following skeleton filenames would be accepted
 </p>
 <pre>
 BRUS.skl
@@ -955,16 +955,16 @@ The default format for RINEX Observation files is RINEX Version 2.11. Select RIN
 Note that it is possible to force a RTCM Version 2 stream to be saved in RINEX Version 3 file format. However, this is not recommended because such stream cannot be precisely mapped to RINEX Version 3 as the required information on tracking modes (observation attributes) is not part of RTCM Version 2.
 </p>
 
-<p><a name="rnxvers3File"><h4>3.4.10 Version 3 File Names - optional</h4></p>
+<p><a name="rnxvers3File"><h4>3.4.10 Version 3 Filenames - optional</h4></p>
 <p>
-Tick check box 'Version 3 file names' to let BNC create so-called extended file names following the RINEX Version 3 standard.
+Tick check box 'Version 3 filenames' to let BNC create so-called extended filenames following the RINEX Version 3 standard.
 </p>
-<p>Default is an empty check box, meaning to still use file names following the RINEX Version 2 standard although the file contents is saved in RINEX Version 3 format.
+<p>Default is an empty check box, meaning to still use filenames following the RINEX Version 2 standard although the file contents is saved in RINEX Version 3 format.
 </p>
 
 <p><a name="ephemeris"><h4>3.5. RINEX Ephemeris</h4></p>
 <p>
-Broadcast Ephemeris can be saved as RINEX Navigation files when received via RTCM Version 3 e.g. as message types 1019 (GPS) or 1020 (GLONASS) or 1044 (QZSS) or 1043 (SBAS) or 1045 and 1046 (Galileo) or 63 (tentative, BDS/BeiDou). The file name convention follows the details given in section 'RINEX File Names' except that the first four characters are 'BRDC'.
+Broadcast Ephemeris can be saved as RINEX Navigation files when received via RTCM Version 3 e.g. as message types 1019 (GPS) or 1020 (GLONASS) or 1044 (QZSS) or 1043 (SBAS) or 1045 and 1046 (Galileo) or 63 (tentative, BDS/BeiDou). The filename convention follows the details given in section 'RINEX Filenames' except that the first four characters are 'BRDC'.
 </p>
 <p>
 For RINEX Version 2 Navigation files the last character is 'N' or 'G' for GPS or GLONASS ephemeris in two separate files.
@@ -973,7 +973,7 @@ For RINEX Version 2 Navigation files the last character is 'N' or 'G' for GPS or
 Regarding RINEX Version 3 you will find all ephemeris data for GPS, GLONASS, Galileo, SBAS, QZSS, and BDS saved together in one Navigation file.
 </p>
 <p>
-The following is an example for a RINEX Version 3 Navigation file name. The file contains one days data. 'MN' stands for 'Multi Constellation Navigation' data.
+The following is an example for a RINEX Version 3 Navigation filename. The file contains one days data. 'MN' stands for 'Multi Constellation Navigation' data.
 <pre>
 BRDC00DEU_S_20121600000_01D_MN.rnx
 </pre>
@@ -1009,11 +1009,11 @@ Default format for RINEX Navigation files containing Broadcast Ephemeris is RINE
 Note that this does not concern the Broadcast Ephemeris output through IP port which is always in RINEX Version 3 format.
 </p>
 
-<p><a name="ephversFile"><h4>3.5.5 Version 3 File Names - optional</h4></p>
+<p><a name="ephversFile"><h4>3.5.5 Version 3 Filenames - optional</h4></p>
 <p>
-Tick check box 'Version 3 file names' to let BNC create so-called extended file names following the RINEX Version 3 standard.
+Tick check box 'Version 3 filenames' to let BNC create so-called extended filenames following the RINEX Version 3 standard.
 </p>
-<p>Default is an empty check box, meaning to still use file names following the RINEX Version 2 standard although the file contents is saved in RINEX Version 3 format.
+<p>Default is an empty check box, meaning to still use filenames following the RINEX Version 2 standard although the file contents is saved in RINEX Version 3 format.
 </p>
 
 <p><img src="IMG/screenshot42.png"/></p>
@@ -1231,7 +1231,7 @@ This default configuration will present;
 
 <p><a name="reqcdir"><h4>3.6.6 Directory for Plots - optional if 'Action' is set to 'Analyze'</h4></p>
 <p>
-If 'Analyze' is selected, specifying the path to a directory where plot files will be saved is optional. File names will be composed from the RINEX input file name(s) plus suffix 'PNG' to indicate the plot file format in use. Default is an empty option field, meaning that plots will not be saved on disk.
+If 'Analyze' is selected, specifying the path to a directory where plot files will be saved is optional. Filenames will be composed from the RINEX input filename(s) plus suffix 'PNG' to indicate the plot file format in use. Default is an empty option field, meaning that plots will not be saved on disk.
 </p>
 
 <p><a name="reqcedit"><h4>3.6.7 Set Edit Options - mandatory if 'Action' is set to 'Edit/Concatenate'</h4></p>
@@ -1519,7 +1519,7 @@ The orbit and clock corrections do not include local effects like Ocean Loading,
 </p>
 
 <p>
-While we have a plain ASCII standard for saving broadcast ephemeris in RINEX Navigation files, we don't have an equivalent standard for corrections to broadcast ephemeris. Hence BNC saves Broadcast Correction files following its own format definition. The file name convention for Broadcast Correction files follows the convention for RINEX Version 2 files except for the last character of the file name suffix which is set to 'C'.
+While we have a plain ASCII standard for saving broadcast ephemeris in RINEX Navigation files, we don't have an equivalent standard for corrections to broadcast ephemeris. Hence BNC saves Broadcast Correction files following its own format definition. The filename convention for Broadcast Correction files follows the convention for RINEX Version 2 files except for the last character of the filename suffix which is set to 'C'.
 </p>
 
 <p>
@@ -2368,7 +2368,7 @@ WUH27 -2267749.9761  5009154.5504  3221294.4429  0.0000  0.0000  0.1206 JAV_RING
 YELL7 -1224452.8796 -2689216.1863  5633638.2832  0.0000  0.0000  0.1000 AOAD/M_T        NONE
 </pre>
 <p>
-Note that the only mandatory parameters in this file are the 'Station' parameters, each standing for an observation stream's mountpoint or the 4-character station ID of a RINEX file name. The following shows further valid examples for records of a 'Coordinates' file.
+Note that the only mandatory parameters in this file are the 'Station' parameters, each standing for an observation stream's mountpoint or the 4-character station ID of a RINEX filename. The following shows further valid examples for records of a 'Coordinates' file.
 </p>
 
 <pre>
@@ -3274,7 +3274,7 @@ BNC allows to either refer Broadcast Corrections to the satellite's Center of Ma
 </p>
 
 <p><a name="upsp3"><h4>3.15.5 SP3 File - optional</h4></p>
-<p>Specify a path for saving the generated orbit corrections as SP3 orbit files. If the specified directory does not exist, BNC will not create SP3 orbit files. The following is a path example for a Linux system:<br>/home/user/BNC${GPSWD}.sp3<br>Note that '${GPSWD}' produces the GPS Week and Day number in the file name.</p>
+<p>Specify a path for saving the generated orbit corrections as SP3 orbit files. If the specified directory does not exist, BNC will not create SP3 orbit files. The following is a path example for a Linux system:<br>/home/user/BNC${GPSWD}.sp3<br>Note that '${GPSWD}' produces the GPS Week and Day number in the filename.</p>
 <p>
 Default is an empty option field, meaning that you don't want BNC to save the uploaded stream contents in daily SP3 files.
 </p>
@@ -3282,7 +3282,7 @@ Default is an empty option field, meaning that you don't want BNC to save the up
 As an SP3 file contents should be referred to the satellites Center of Mass (CoM) while Broadcast Corrections are referred to the satellites APC, an offset has to be applied which is available from an IGS ANTEX file (see option 'ANTEX File' below). Hence you should specify the 'ANTEX File' path there if you want to save the stream contents in SP3 format. If you don't specify an 'ANTEX File' path, the SP3 file contents will be referred to the satellites APCs.
 </p>
 <p>
-The file names for the daily SP3 files follow the convention for SP3 file names. The first three characters of each file name are set to 'BNC'. Note that clocks in the SP3 orbit files are not corrected for the conventional periodic relativistic effect.
+The filenames for the daily SP3 files follow the convention for SP3 filenames. The first three characters of each filename are set to 'BNC'. Note that clocks in the SP3 orbit files are not corrected for the conventional periodic relativistic effect.
 </p>
 <p>
 In case the 'Combine Corrections' table contains only one Broadcast Corrections stream, BNC will merge that stream with Broadcast Ephemeris to save results in files specified here through SP3 and/or Clock RINEX file path. In such a case you have to define only the SP3 and Clock RINEX file path and no further option in the 'Upload Corrections' table.
@@ -3297,7 +3297,7 @@ Note that BNC outputs a complete list of SP3 'Epoch Header Records' even if no '
 The clock corrections generated by BNC for upload can be logged in Clock RINEX format. The file naming follows the RINEX convention.
 </p>
 <p>
-Specify a path for saving the generated clock corrections as Clock RINEX files. If the specified directory does not exist, BNC will not create Clock RINEX files. The following is a path example for a Linux system:<br>/home/user/BNC${GPSWD}.clk<br>Note that '${GPSWD}' produces the GPS Week and Day number in the file name.
+Specify a path for saving the generated clock corrections as Clock RINEX files. If the specified directory does not exist, BNC will not create Clock RINEX files. The following is a path example for a Linux system:<br>/home/user/BNC${GPSWD}.clk<br>Note that '${GPSWD}' produces the GPS Week and Day number in the filename.
 </p>
 <p>
 Note further that clocks in the Clock RINEX files are not corrected for the conventional periodic relativistic effect.
@@ -3415,7 +3415,7 @@ Streams selected for retrieval are listed under the 'Streams' canvas on BNC's ma
 BNC automatically allocates one of its internal decoders to a stream based on the stream's 'format' and 'format-details' as given in the source-table. However, there might be cases where you need to override the automatic selection due to incorrect source-table for example. BNC allows users to manually select the required decoder by editing the decoder string. Double click on the 'decoder' field, enter your preferred decoder and then hit Enter. The accepted decoder strings are 'RTCM_2.x', 'RTCM_3.x' and 'RTNET'.
 </li>
 <li>
-In case you need to log the raw data as is, BNC allows users to by-pass its decoders and directly save the input in daily logfiles. To do this, specify the decoder string as 'ZERO'. The generated file names are created from the characters of the streams mountpoints plus two-digit numbers each for year, month, and day. Example: Setting the 'decoder' string for mountpoint WTZZ0 to 'ZERO' and running BNC on March 29, 2007 would save the raw data in a file named WTZZ0_070329.
+In case you need to log the raw data as is, BNC allows users to by-pass its decoders and directly save the input in daily logfiles. To do this, specify the decoder string as 'ZERO'. The generated filenames are created from the characters of the streams mountpoints plus two-digit numbers each for year, month, and day. Example: Setting the 'decoder' string for mountpoint WTZZ0 to 'ZERO' and running BNC on March 29, 2007 would save the raw data in a file named WTZZ0_070329.
 </li>
 <li>
 BNC can also retrieve streams from virtual reference stations (VRS). To initiate these streams, an approximate rover position needs to be sent in NMEA format to the NTRIP Broadcaster. In return, a user-specific data stream is generated, typically by Network-RTK software. VRS streams are indicated by a 'yes' in the source-table as well as in the 'nmea' column on the 'Streams' canvas in BNC's main window. They are customized exactly to the latitude and longitude transmitted to the NTRIP Broadcaster via NMEA-GGA messages.
@@ -3655,7 +3655,7 @@ Hit the 'Stop' button in order to stop BNC.
 
 <p><a name="cmd"><h4>3.20. Command Line Options</h4></p>
 <p>
-Command line options are available to run BNC in 'no window' mode or let it read data offline from one or several files for debugging or Post Processing purposes. BNC will then use processing options from the involved configuration file. Note that the self-explaining contents of the configuration file can easily be edited. It is possible to introduce a specific configuration file name instead of using the default name 'BNC.bnc'.
+Command line options are available to run BNC in 'no window' mode or let it read data offline from one or several files for debugging or Post Processing purposes. BNC will then use processing options from the involved configuration file. Note that the self-explaining contents of the configuration file can easily be edited. It is possible to introduce a specific configuration filename instead of using the default name 'BNC.bnc'.
 </p>
 
 <p><a name="nw"><h4>3.20.1 No Window Mode - optional</h4></p>
@@ -3710,7 +3710,7 @@ Note that when running BNC offline, it will use options for file saving, interva
 </p>
 
 <p><a name="conffile"><h4>3.20.3 Configuration File - optional</h4></p>
-The default configuration file name is 'BNC.bnc'. You may change this name at startup time using the command line option '--conf &lt;<u>confFileName</u>&gt;'. This allows running several BNC jobs in parallel on the same host using different sets of configuration options. <u>confFileName</u> stands either for the full path to a configuration file or just for a file name. If you introduce only a filename, the corresponding file will be saved in the current working directory from where BNC is started.
+The default configuration filename is 'BNC.bnc'. You may change this name at startup time using the command line option '--conf &lt;<u>confFileName</u>&gt;'. This allows running several BNC jobs in parallel on the same host using different sets of configuration options. <u>confFileName</u> stands either for the full path to a configuration file or just for a filename. If you introduce only a filename, the corresponding file will be saved in the current working directory from where BNC is started.
 </p>
 <p>
 Example:<br><br>
@@ -3825,7 +3825,7 @@ Drag and drop of configuration files is currently not supported on Mac OS X. On 
 
 <tr>
 <td>Nov 2009 &nbsp;</td><td>Version 1.7 &nbsp;</td>
-<td>[Bug] RINEX Navigation file format<br> [Add] Upgrade to Qt Version 4.5.2<br> [Add] Support of NTRIP v2<br> [Add] Rover support via serial port<br> [Add] Show broadcaster table from www.rtcm-ntrip.org<br> [Add] Enable/disable panel widgets<br> [Add] User defined configuration file name<br> [Mod] Switch to configuration files in ini-Format<br> [Add] Daily logfile rotation<br> [Add] Read from TCP/IP port, by-pass NTRIP transport protocol<br> [Add] Save NMEA messages coming from rover<br> [Add] Auto start<br> [Add] Drag and drop ini files<br> [Add] Read from serial port, by-pass NTRIP transport protocol<br> [Mod] Update of SSR messages following RTCM 091-2009-SC104-542<br> [Add] Read from UPD port, by-pass NTRIP transport protocol<br> [Mod] Output format of Broadcast Corrections<br> [Add] Throughput plot<br> [Add] Latency plot</td>
+<td>[Bug] RINEX Navigation file format<br> [Add] Upgrade to Qt Version 4.5.2<br> [Add] Support of NTRIP v2<br> [Add] Rover support via serial port<br> [Add] Show broadcaster table from www.rtcm-ntrip.org<br> [Add] Enable/disable panel widgets<br> [Add] User defined configuration filename<br> [Mod] Switch to configuration files in ini-Format<br> [Add] Daily logfile rotation<br> [Add] Read from TCP/IP port, by-pass NTRIP transport protocol<br> [Add] Save NMEA messages coming from rover<br> [Add] Auto start<br> [Add] Drag and drop ini files<br> [Add] Read from serial port, by-pass NTRIP transport protocol<br> [Mod] Update of SSR messages following RTCM 091-2009-SC104-542<br> [Add] Read from UPD port, by-pass NTRIP transport protocol<br> [Mod] Output format of Broadcast Corrections<br> [Add] Throughput plot<br> [Add] Latency plot</td>
 </tr>
 
 <tr>
@@ -3890,7 +3890,7 @@ Drag and drop of configuration files is currently not supported on Mac OS X. On 
 
 <tr>
 <td>Dec 2013 &nbsp;</td><td>Version 2.10 &nbsp;</td>
-<td>[Add] Started work on new version in Aug 2013<br>[Bug] Clock RINEX und SP3 file generation on Windows systems<br>[Bug] Broadcast Ephemeris generation<br>[Add] Transformation ITRF2008 to NAD83 and DREF91<br>[Add] CodeBias added to RTNET stream format<br>[Bug] GPS L2 in 'Feed Engine' output<br>[Mod] Made C1 in BeiDou default observation type instead of C2<br>[Add] Feed engine output sorted per stream<br>[Add] Feed engine output file name change on-the-fly<br>[Add] 'Append files' option for RINEX observation files<br>[Mod] Broadcast Corrections ASCII file output for message 1058 &amp; 1064 modified<br>[Bug] GPS L2 phase data in RINEX2<br>[Bug] GLONASS frequency numbers<br>[Add] RTCM v3 Galileo Broadcast Ephemeris message 1046<br>[Add] Reset ambiguities in PPP when orbit/clock correction IDs change<br>[Add] Satellite clock offsets are reset in adjustment for combination when orbit/clock correction IDs change<br>[Add] Version 2.10 published</td>
+<td>[Add] Started work on new version in Aug 2013<br>[Bug] Clock RINEX und SP3 file generation on Windows systems<br>[Bug] Broadcast Ephemeris generation<br>[Add] Transformation ITRF2008 to NAD83 and DREF91<br>[Add] CodeBias added to RTNET stream format<br>[Bug] GPS L2 in 'Feed Engine' output<br>[Mod] Made C1 in BeiDou default observation type instead of C2<br>[Add] Feed engine output sorted per stream<br>[Add] Feed engine output filename change on-the-fly<br>[Add] 'Append files' option for RINEX observation files<br>[Mod] Broadcast Corrections ASCII file output for message 1058 &amp; 1064 modified<br>[Bug] GPS L2 phase data in RINEX2<br>[Bug] GLONASS frequency numbers<br>[Add] RTCM v3 Galileo Broadcast Ephemeris message 1046<br>[Add] Reset ambiguities in PPP when orbit/clock correction IDs change<br>[Add] Satellite clock offsets are reset in adjustment for combination when orbit/clock correction IDs change<br>[Add] Version 2.10 published</td>
 </tr>
 
 <tr>
@@ -4215,11 +4215,11 @@ bnc.exe --conf &lt;configFileName&gt; --nw
 </li>
 </ul>
 <p>
-Although it's not a must, we suggest that you always create BNC configuration files with the file name extension '.bnc'.
+Although it's not a must, we suggest that you always create BNC configuration files with the filename extension '.bnc'.
 </p>
 
 <p>
-We furthermore suggest for convenience reasons that you configure your system to automatically start BNC when you double-click a file with the file name extension '.bnc'. The following describes what to do on Windows systems to associate the BNC program to such configuration files:
+We furthermore suggest for convenience reasons that you configure your system to automatically start BNC when you double-click a file with the filename extension '.bnc'. The following describes what to do on Windows systems to associate the BNC program to such configuration files:
 </p>
 
 <ol type=b>
@@ -4443,7 +4443,7 @@ which only contains the default settings.
 </p>
 
 <p>
-The following table shows a list of options contained in BNC's configuration files (default file name: BNC.bnc).
+The following table shows a list of options contained in BNC's configuration files (default filename: BNC.bnc).
 </p>
 
 <p><u>Table 2:</u> BNC configuration options<br>
@@ -4477,14 +4477,14 @@ The following table shows a list of options contained in BNC's configuration fil
 <tr><td>rnxScript</td><td>Upload script</td></tr>
 <tr><td>rnxV2Priority</td><td>Signal priority</td></tr>
 <tr><td>rnxV3</td><td>Version 3</td></tr>
-<tr><td>rnxV3filenames</td><td>Version 3 file names</td></tr>
+<tr><td>rnxV3filenames</td><td>Version 3 filenames</td></tr>
 
 <tr><td><br><b>RINEX Ephemeris Panel</b></td><td><br><b>Meaning</b></td></tr>
 <tr><td>ephPath</td><td>Directory</td></tr>
 <tr><td>ephIntr</td><td>Interval</td></tr>
 <tr><td>outEphPort</td><td>Port</td></tr>
 <tr><td>ephV3</td><td>Version 3</td></tr>
-<tr><td>ephV3filenames</td><td>Version 3 file names</td></tr>
+<tr><td>ephV3filenames</td><td>Version 3 filenames</td></tr>
 
 <tr><td><br><b>RINEX Editing and QC Panel</b></td><td><br><b>Meaning</b></td></tr>
 <tr><td>reqcAction</td><td>Action
@@ -4547,7 +4547,7 @@ The following table shows a list of options contained in BNC's configuration fil
 <tr><td>serialParity</td><td>Parity</td></tr>
 <tr><td>serialStopBits</td><td>Stop bits</td></tr>
 <tr><td>serialAutoNMEA</td><td>NMEA</td></tr>
-<tr><td>serialFileNMEA</td><td>NMEA file name</td></tr>
+<tr><td>serialFileNMEA</td><td>NMEA filename</td></tr>
 <tr><td>serialHeightNMEA</td><td>Height</td></tr>
 
 <tr><td><br><b>Outages Panel</b></td><td><br><b>Meaning</b></td></tr>
@@ -4572,7 +4572,7 @@ The following table shows a list of options contained in BNC's configuration fil
 <tr><td>logFilePPP</td><td>PPP logfile</td></tr>
 <tr><td>antexFile</td><td>ANTEX file</td></tr>
 <tr><td>nmeaFile</td><td>NMEA output file</td></tr>
-<tr><td>snxtroFile</td><td>SINEX troposphere output file name</td></tr>
+<tr><td>snxtroFile</td><td>SINEX troposphere output filename</td></tr>
 <tr><td>snxtroSampl</td><td>SINEX troposphere sampling rage</td></tr>
 
 <tr><td><br><b>PPP Client Panel 2</b></td><td><br><b>Meaning</b></td></tr>
