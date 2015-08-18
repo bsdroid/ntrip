@@ -50,6 +50,7 @@ class bncIpPort : public QDialog {
     QLineEdit*   _ipFormatLineEdit;
     QLineEdit*   _ipLatLineEdit;
     QLineEdit*   _ipLonLineEdit;
+    QLineEdit*   _ipCountryLineEdit;
 
     QPushButton* _buttonGet;
     QPushButton* _buttonCancel;

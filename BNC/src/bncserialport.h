@@ -50,6 +50,7 @@ class bncSerialPort : public QDialog {
     QLineEdit*   _serialFormatLineEdit;
     QLineEdit*   _serialLatLineEdit;
     QLineEdit*   _serialLonLineEdit;
+    QLineEdit*   _serialCountryLineEdit;
     QComboBox*   _serialBaudRateComboBox;
     QComboBox*   _serialFlowControlComboBox;
     QComboBox*   _serialDataBitsComboBox;
