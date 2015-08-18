@@ -104,10 +104,10 @@ bncTableDlg::bncTableDlg(QWidget* parent) : QDialog(parent) {
 
   // WhatsThis
   // ---------
-  _casterUserLineEdit->setWhatsThis(tr("<p>Access to some streams on NTRIP broadcasters may be restricted. You'll need to enter a valid 'User ID' and 'Password' for access to these protected streams.</p><p>Accounts are usually provided per NTRIP broadcaster through a registration process. Register through <u>http://igs.bkg.bund.de/index_ntrip_reg.htm</u> for access to protected streams on <u>www.euref-ip.net</u> and <u>www.igs-ip.net</u>.</p>"));
-  _casterHostComboBox->setWhatsThis(tr("<p>Enter the NTRIP broadcaster hostname or IP number.</p><p>Note that EUREF and IGS operate NTRIP broadcasters at <u>http://www.euref-ip.net/home</u> and <u>http://www.igs-ip.net/home</u>.</p>"));
-  _casterPortLineEdit->setWhatsThis(tr("<p>Enter the NTRIP broadcaster port number.</p></p>Note that NTRIP Version 2 via SSL usually requires specifying port 443.</p>"));
-  _casterPasswordLineEdit->setWhatsThis(tr("Access to some streams on NTRIP broadcasters may be restricted. You'll need to enter a valid 'Password' for access to these protected streams."));
+  _casterUserLineEdit->setWhatsThis(tr("<p>Access to some streams on Ntrip broadcasters may be restricted. You'll need to enter a valid 'User ID' and 'Password' for access to these protected streams.</p><p>Accounts are usually provided per Ntrip broadcaster through a registration process. Register through <u>http://igs.bkg.bund.de/index_ntrip_reg.htm</u> for access to protected streams on <u>www.euref-ip.net</u> and <u>www.igs-ip.net</u>.</p>"));
+  _casterHostComboBox->setWhatsThis(tr("<p>Enter the Ntrip broadcaster hostname or IP number.</p><p>Note that EUREF and IGS operate Ntrip broadcasters at <u>http://www.euref-ip.net/home</u> and <u>http://www.igs-ip.net/home</u>.</p>"));
+  _casterPortLineEdit->setWhatsThis(tr("<p>Enter the Ntrip broadcaster port number.</p></p>Note that Ntrip Version 2 via SSL usually requires specifying port 443.</p>"));
+  _casterPasswordLineEdit->setWhatsThis(tr("Access to some streams on Ntrip broadcasters may be restricted. You'll need to enter a valid 'Password' for access to these protected streams."));
 
   QGridLayout* editLayout = new QGridLayout;
   editLayout->addWidget(new QLabel(tr("Caster host")),    0, 0);
@@ -120,16 +120,16 @@ bncTableDlg::bncTableDlg(QWidget* parent) : QDialog(parent) {
   editLayout->addWidget(_casterUserLineEdit,              1, 1);
   editLayout->addWidget(new QLabel(tr("Password")),       1, 2, Qt::AlignRight);
   editLayout->addWidget(_casterPasswordLineEdit,          1, 3);
-  editLayout->addWidget(new QLabel(tr("  NTRIP Version")),1, 4, Qt::AlignRight);
+  editLayout->addWidget(new QLabel(tr("  Ntrip Version")),1, 4, Qt::AlignRight);
   editLayout->addWidget(_ntripVersionComboBox,            1, 5);
 
   mainLayout->addLayout(editLayout);
 
-  _buttonCasterTable->setWhatsThis(tr("<p>Hit 'Show' for a table of known NTRIP broadcaster installations as maintained at <u>www.rtcm-ntrip.org/home.</u></p><p>A window opens which allows to select a broadcaster for stream retrieval.</p>"));
-  _ntripVersionComboBox->setWhatsThis(tr("<p>Select the NTRIP transport protocol version you want to use. Implemented options are:<br>&nbsp; 1:&nbsp; NTRIP version 1, TCP/IP<br>&nbsp; 2:&nbsp; NTRIP version 2, TCP/IP mode<br>&nbsp; 2s:&nbsp; NTRIP version 2 TCP/IP mode via SSL (usually port 443)<br>&nbsp; R:&nbsp; NTRIP Version 2, RTSP/RTP mode<br>&nbsp; U:&nbsp; NTRIP Version 2, UDP mode<br>Select option '1' if you are not sure whether the NTRIP broadcaster supports NTRIP version 2.</p><p>Note that RTSP/RTP (option 'R') and UDP (option 'U') are not accepted by proxies and sometimes not supported by mobile Internet Service Providers.</p>"));
+  _buttonCasterTable->setWhatsThis(tr("<p>Hit 'Show' for a table of known Ntrip broadcaster installations as maintained at <u>www.rtcm-ntrip.org/home.</u></p><p>A window opens which allows to select a broadcaster for stream retrieval.</p>"));
+  _ntripVersionComboBox->setWhatsThis(tr("<p>Select the Ntrip transport protocol version you want to use. Implemented options are:<br>&nbsp; 1:&nbsp; Ntrip version 1, TCP/IP<br>&nbsp; 2:&nbsp; Ntrip version 2, TCP/IP mode<br>&nbsp; 2s:&nbsp; Ntrip version 2 TCP/IP mode via SSL (usually port 443)<br>&nbsp; R:&nbsp; Ntrip Version 2, RTSP/RTP mode<br>&nbsp; U:&nbsp; Ntrip Version 2, UDP mode<br>Select option '1' if you are not sure whether the Ntrip broadcaster supports Ntrip version 2.</p><p>Note that RTSP/RTP (option 'R') and UDP (option 'U') are not accepted by proxies and sometimes not supported by mobile Internet Service Providers.</p>"));
 
   _table = new QTableWidget(this);
-  _table->setWhatsThis(tr("<p>Use the 'Get Table' button to download the sourcetable from the selected NTRIP broadcaster. Select the desired streams line by line, using +Shift and +Ctrl when necessary. Hit 'OK' to return to the main window.</p><p>Pay attention to data field 'format'. Keep in mind that BNC can only decode and convert streams that come in RTCM Version 2.x, or RTCM Version 3.x format. See data field 'format-details' for available message types and their repetition rates in brackets.</p><p>The content of data field 'nmea' tells you whether a stream comes from a virtual reference station (VRS).</p>"));
+  _table->setWhatsThis(tr("<p>Use the 'Get Table' button to download the sourcetable from the selected Ntrip broadcaster. Select the desired streams line by line, using +Shift and +Ctrl when necessary. Hit 'OK' to return to the main window.</p><p>Pay attention to data field 'format'. Keep in mind that BNC can only decode and convert streams that come in RTCM Version 2.x, or RTCM Version 3.x format. See data field 'format-details' for available message types and their repetition rates in brackets.</p><p>The content of data field 'nmea' tells you whether a stream comes from a virtual reference station (VRS).</p>"));
   connect(_table, SIGNAL(itemSelectionChanged()),
           this, SLOT(slotSelectionChanged()));
   mainLayout->addWidget(_table);
@@ -610,10 +610,10 @@ bncCasterTableDlg::bncCasterTableDlg(const QString& ntripVersion,
   _whatsThisButton->setMinimumWidth(12*ww);
   _whatsThisButton->setMaximumWidth(12*ww);
 
-  _casterTable->setWhatsThis(tr("<p>Select an NTRIP broadcaster and hit 'OK'.</p><p>See <u>http://www.rtcm-ntrip.org/home</u> for further details on known NTRIP broadcaster installations.</u>."));
+  _casterTable->setWhatsThis(tr("<p>Select an Ntrip broadcaster and hit 'OK'.</p><p>See <u>http://www.rtcm-ntrip.org/home</u> for further details on known Ntrip broadcaster installations.</u>."));
 
   QGridLayout* dlgLayout = new QGridLayout();
-  dlgLayout->addWidget(new QLabel("  List of NTRIP Broadcasters from www.rtcm-ntrip.org"), 0,0,1,3,Qt::AlignLeft);
+  dlgLayout->addWidget(new QLabel("  List of Ntrip Broadcasters from www.rtcm-ntrip.org"), 0,0,1,3,Qt::AlignLeft);
   dlgLayout->addWidget(_casterTable,     1, 0, 1, 3);
   dlgLayout->addWidget(_whatsThisButton, 2, 0);
   dlgLayout->addWidget(_closeButton,     2, 1, Qt::AlignRight);  
