@@ -70,7 +70,7 @@ bncIpPort::bncIpPort(QWidget* parent) : QDialog(parent) {
 
   // WhatsThis
   // ---------
-  _ipHostLineEdit->setWhatsThis(tr("<p>If no proxy server is involed in the communication, BNC allows to retrieve streams via TCP directly from an IP address without using the NTRIP transport protocol.</p><p>Enter the IP address of the stream providing host.</p>"));
+  _ipHostLineEdit->setWhatsThis(tr("<p>If no proxy server is involed in the communication, BNC allows to retrieve streams via TCP directly from an IP address without using the Ntrip transport protocol.</p><p>Enter the IP address of the stream providing host.</p>"));
   _ipPortLineEdit->setWhatsThis(tr("<p>Enter the IP port number of the stream providing host.</p>"));
   _ipMountLineEdit->setWhatsThis(tr("<p>Specify a mountpoint.</p><p>Recommended is a 4-character station ID.<br>Example: FFMJ</p>"));
   _ipFormatLineEdit->setWhatsThis(tr("<p>Specify the stream format.</p><p>Available options are 'RTCM_2', 'RTCM_3', RTNET, and 'ZERO'.</p>"));
