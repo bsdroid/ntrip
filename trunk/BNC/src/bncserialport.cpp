@@ -64,6 +64,7 @@ bncSerialPort::bncSerialPort(QWidget* parent) : QDialog(parent) {
   _serialStopBitsComboBox = new QComboBox();
   _serialLatLineEdit = new QLineEdit();
   _serialLonLineEdit = new QLineEdit();
+  _serialCountryLineEdit = new QLineEdit();
 
   _serialBaudRateComboBox->addItems(QString("110,300,600,"
             "1200,2400,4800,9600,19200,38400,57600,115200").split(","));
@@ -83,9 +84,10 @@ bncSerialPort::bncSerialPort(QWidget* parent) : QDialog(parent) {
   _serialDataBitsComboBox->setMaximumWidth(5*ww);
   _serialParityComboBox->setMaximumWidth(9*ww);
   _serialStopBitsComboBox->setMaximumWidth(5*ww);
-  _serialLatLineEdit->setMaximumWidth(9*ww);
+  _serialLatLineEdit->setMaximumWidth(11*ww);
   _serialLonLineEdit->setMaximumWidth(9*ww);
   _serialFormatLineEdit->setMaximumWidth(9*ww);
+  _serialCountryLineEdit->setMaximumWidth(11*ww);
 
   // WhatsThis
   // ---------
@@ -99,6 +101,7 @@ bncSerialPort::bncSerialPort(QWidget* parent) : QDialog(parent) {
   _serialStopBitsComboBox->setWhatsThis(tr("<p>Select the number of 'Stop bits' for the serial input link.</p><p>Note that your selection must equal the number of stop bits configured to the serial connected device. Note further that often 1 stop bit is used.</p>"));
   _serialLatLineEdit->setWhatsThis(tr("<p>Enter the approximate latitude of the stream providing receiver in degrees.<p></p>Example: 45.32</p>"));
   _serialLonLineEdit->setWhatsThis(tr("<p>Enter the approximate latitude of the stream providing receiver in degrees.<p></p>Example: 45.32</p>"));
+  _serialCountryLineEdit->setWhatsThis(tr("<p>Specify the country code.</p><p>Recommended is the ISO 3166-1 alpha-3a code.<br>Example: DEU</p>"));
 
   editLayout->addWidget(new QLabel(tr("Mountpoint")),  0, 0, Qt::AlignRight);
   editLayout->addWidget(_serialMountpointLineEdit,     0, 1);
@@ -108,18 +111,20 @@ bncSerialPort::bncSerialPort(QWidget* parent) : QDialog(parent) {
   editLayout->addWidget(_serialLatLineEdit,            1, 1);
   editLayout->addWidget(new QLabel(tr("Longitude")),   1, 2, Qt::AlignRight);
   editLayout->addWidget(_serialLonLineEdit,            1, 3);
-  editLayout->addWidget(new QLabel(tr("Port name")),   2, 0, Qt::AlignRight);
-  editLayout->addWidget(_serialPortLineEdit,           2, 1);
-  editLayout->addWidget(new QLabel(tr("Baud rate")),   2, 2, Qt::AlignRight);
-  editLayout->addWidget(_serialBaudRateComboBox,       2, 3);
-  editLayout->addWidget(new QLabel(tr("Data bits")),   3, 0, Qt::AlignRight);
-  editLayout->addWidget(_serialDataBitsComboBox,       3, 1);
-  editLayout->addWidget(new QLabel(tr("Parity")),      3, 2, Qt::AlignRight);
-  editLayout->addWidget(_serialParityComboBox,         3, 3);
-  editLayout->addWidget(new QLabel(tr("Stop bits")),   4, 0, Qt::AlignRight);
-  editLayout->addWidget(_serialStopBitsComboBox,       4, 1);
-  editLayout->addWidget(new QLabel(tr("Flow control")),4, 2, Qt::AlignRight);
-  editLayout->addWidget(_serialFlowControlComboBox,    4, 3);
+  editLayout->addWidget(new QLabel(tr("Country")),     2, 0, Qt::AlignRight);
+  editLayout->addWidget(_serialCountryLineEdit,        2, 1);
+  editLayout->addWidget(new QLabel(tr("Port name")),   3, 0, Qt::AlignRight);
+  editLayout->addWidget(_serialPortLineEdit,           3, 1);
+  editLayout->addWidget(new QLabel(tr("Baud rate")),   3, 2, Qt::AlignRight);
+  editLayout->addWidget(_serialBaudRateComboBox,       3, 3);
+  editLayout->addWidget(new QLabel(tr("Data bits")),   4, 0, Qt::AlignRight);
+  editLayout->addWidget(_serialDataBitsComboBox,       4, 1);
+  editLayout->addWidget(new QLabel(tr("Parity")),      4, 2, Qt::AlignRight);
+  editLayout->addWidget(_serialParityComboBox,         4, 3);
+  editLayout->addWidget(new QLabel(tr("Stop bits")),   5, 0, Qt::AlignRight);
+  editLayout->addWidget(_serialStopBitsComboBox,       5, 1);
+  editLayout->addWidget(new QLabel(tr("Flow control")),5, 2, Qt::AlignRight);
+  editLayout->addWidget(_serialFlowControlComboBox,    5, 3);
 
   mainLayout->addLayout(editLayout);
 
@@ -167,6 +172,7 @@ void bncSerialPort::accept() {
   if ( !_serialMountpointLineEdit->text().isEmpty() &&
        !_serialPortLineEdit->text().isEmpty() &&
        !_serialFormatLineEdit->text().isEmpty() &&
+       !_serialCountryLineEdit->text().isEmpty() &&
        !_serialLatLineEdit->text().isEmpty() &&
        !_serialLonLineEdit->text().isEmpty() ) {
     mountPoints->push_back("//" 
@@ -178,6 +184,7 @@ void bncSerialPort::accept() {
       + _serialBaudRate + "/"
       + _serialMountpointLineEdit->text() + " "
       + _serialFormatLineEdit->text() + " "
+      + _serialCountryLineEdit->text() + " "
       + _serialLatLineEdit->text() + " "
       + _serialLonLineEdit->text() + " "
       + "no S");

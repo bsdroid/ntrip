@@ -60,6 +60,7 @@ bncIpPort::bncIpPort(QWidget* parent) : QDialog(parent) {
   _ipFormatLineEdit = new QLineEdit();
   _ipLatLineEdit = new QLineEdit();
   _ipLonLineEdit = new QLineEdit();
+  _ipCountryLineEdit = new QLineEdit();
 
   int ww = QFontMetrics(font()).width('w');
   _ipPortLineEdit->setMaximumWidth(9*ww);
@@ -67,6 +68,7 @@ bncIpPort::bncIpPort(QWidget* parent) : QDialog(parent) {
   _ipFormatLineEdit->setMaximumWidth(9*ww);
   _ipLatLineEdit->setMaximumWidth(9*ww);
   _ipLonLineEdit->setMaximumWidth(9*ww);
+  _ipCountryLineEdit->setMaximumWidth(9*ww);
 
   // WhatsThis
   // ---------
@@ -76,6 +78,7 @@ bncIpPort::bncIpPort(QWidget* parent) : QDialog(parent) {
   _ipFormatLineEdit->setWhatsThis(tr("<p>Specify the stream format.</p><p>Available options are 'RTCM_2', 'RTCM_3', RTNET, and 'ZERO'.</p>"));
   _ipLatLineEdit->setWhatsThis(tr("<p>Enter the approximate latitude of the stream providing receiver in degrees.<p></p>Example: 45.32</p>"));
   _ipLonLineEdit->setWhatsThis(tr("<p>Enter the approximate longitude of the stream providing receiver in degrees.<p></p>Example: -15.20</p>"));
+  _ipCountryLineEdit->setWhatsThis(tr("<p>Specify the country code.</p><p>Recommended is the ISO 3166-1 alpha-3a code.<br>Example: DEU</p>"));
 
   editLayout->addWidget(new QLabel(tr("Host")),      0, 0, Qt::AlignRight);
   editLayout->addWidget(_ipHostLineEdit,             0, 1);
@@ -89,6 +92,8 @@ bncIpPort::bncIpPort(QWidget* parent) : QDialog(parent) {
   editLayout->addWidget(_ipLatLineEdit,              2, 1);
   editLayout->addWidget(new QLabel(tr("Longitude")), 2, 2, Qt::AlignRight);
   editLayout->addWidget(_ipLonLineEdit,              2, 3);
+  editLayout->addWidget(new QLabel(tr("Country")),   3, 0, Qt::AlignRight);
+  editLayout->addWidget(_ipCountryLineEdit,          3, 1);
 
   mainLayout->addLayout(editLayout);
 
@@ -131,6 +136,7 @@ void bncIpPort::accept() {
        !_ipPortLineEdit->text().isEmpty()   &&
        !_ipMountLineEdit->text().isEmpty()  &&
        !_ipFormatLineEdit->text().isEmpty() &&
+       !_ipCountryLineEdit->text().isEmpty() &&
        !_ipLatLineEdit->text().isEmpty()    &&
        !_ipLonLineEdit->text().isEmpty() ) {
 
@@ -138,6 +144,7 @@ void bncIpPort::accept() {
                                 + _ipPortLineEdit->text() + "/" 
                                 + _ipMountLineEdit->text() + " "
                                 + _ipFormatLineEdit->text() + " "
+                                + _ipCountryLineEdit->text() + " "
                                 + _ipLatLineEdit->text() + " "
                                 + _ipLonLineEdit->text() + " "
                                 + "no N");
