@@ -443,9 +443,9 @@ double associatedLegendreFunction(int n, int m, double t) {
   double sum = 0.0;
   int    r   = (int) floor((n - m) / 2);
   for (int k = 0; k <= r; k++) {
-      sum += (pow(-1.0, (double)k) * factorial(2*n - 2*k)
-              / (factorial(k) * factorial(n-k) * factorial(n-m-2*k))
-              * pow(t, (double)n-m-2*k));
+    sum += (pow(-1.0, (double)k) * factorial(2*n - 2*k)
+            / (factorial(k) * factorial(n-k) * factorial(n-m-2*k))
+            * pow(t, (double)n-m-2*k));
   }
   double fac = pow(2.0,(double) -n) * pow((1 - t*t), (double)m/2);
   return sum *= fac;
