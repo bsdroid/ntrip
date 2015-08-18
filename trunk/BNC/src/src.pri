@@ -116,7 +116,7 @@ exists(combination/bnccomb.h) {
   SOURCES += combination/bnccomb.cpp
 }
 
-exists(PPP_AR) {
+exists(PPP_AR_) {
   INCLUDEPATH += PPP_AR
   DEFINES += USE_PPP_AR
   HEADERS += PPP_AR/pppClient.h    PPP_AR/pppObsPool.h   PPP_AR/pppEphPool.h   \
@@ -129,8 +129,8 @@ exists(PPP_AR) {
 else {
   INCLUDEPATH += PPP
   DEFINES += USE_PPP
-  HEADERS += PPP/pppClient.h   PPP/pppFilter.h
-  SOURCES += PPP/pppClient.cpp PPP/pppFilter.cpp
+  HEADERS += PPP/pppClient.h   PPP/pppFilter.h   PPP/pppUtils.h
+  SOURCES += PPP/pppClient.cpp PPP/pppFilter.cpp PPP/pppUtils.cpp
 }
 
 # Check QtWebKit Library Existence
