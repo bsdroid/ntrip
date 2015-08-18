@@ -100,6 +100,9 @@ t_pppRun::t_pppRun(const t_pppOptions* opt) {
     connect(BNC_CORE, SIGNAL(newBDSEph(t_ephBDS)),
             this, SLOT(slotNewBDSEph(t_ephBDS)),conType);
 
+    connect(BNC_CORE, SIGNAL(newTec(t_vTec)),
+            this, SLOT(slotNewTec(t_vTec)),conType);
+
     connect(BNC_CORE, SIGNAL(newOrbCorrections(QList<t_orbCorr>)),
             this, SLOT(slotNewOrbCorrections(QList<t_orbCorr>)),conType);
 
@@ -314,7 +317,23 @@ void t_pppRun::slotNewObs(QByteArray staID, QList<t_satObs> obsList) {
     emit newMessage(QByteArray(log.str().c_str()), true);
   }
 }
-    
+
+//
+////////////////////////////////////////////////////////////////////////////
+void t_pppRun::slotNewTec(t_vTec vTec) {
+  if (vTec._layers.size() == 0) {
+    return;
+  }
+
+  if (_opt->_realTime) {
+    if (_opt->_corrMount.empty() || _opt->_corrMount != vTec._staID) {
+      return;
+    }
+  }
+
+  _pppClient->putTec(&vTec);
+}
+
 // 
 ////////////////////////////////////////////////////////////////////////////
 void t_pppRun::slotNewOrbCorrections(QList<t_orbCorr> orbCorr) {
@@ -392,6 +411,8 @@ void t_pppRun::processFiles() {
 
   if (!_opt->_corrFile.empty()) {
     _corrFile = new t_corrFile(QString(_opt->_corrFile.c_str()));
+    connect(_corrFile, SIGNAL(newTec(t_vTec)),
+            this, SLOT(slotNewTec(t_vTec)));
     connect(_corrFile, SIGNAL(newOrbCorrections(QList<t_orbCorr>)),
             this, SLOT(slotNewOrbCorrections(QList<t_orbCorr>)));
     connect(_corrFile, SIGNAL(newClkCorrections(QList<t_clkCorr>)),
