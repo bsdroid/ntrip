@@ -116,15 +116,15 @@ exists(combination/bnccomb.h) {
   SOURCES += combination/bnccomb.cpp
 }
 
-exists(PPP_AR_) {
-  INCLUDEPATH += PPP_AR
-  DEFINES += USE_PPP_AR
-  HEADERS += PPP_AR/pppClient.h    PPP_AR/pppObsPool.h   PPP_AR/pppEphPool.h   \
-             PPP_AR/pppStation.h   PPP_AR/pppFilter.h    PPP_AR/pppParlist.h   \
-             PPP_AR/pppSatObs.h           
-  SOURCES += PPP_AR/pppClient.cpp  PPP_AR/pppObsPool.cpp PPP_AR/pppEphPool.cpp \
-             PPP_AR/pppStation.cpp PPP_AR/pppFilter.cpp  PPP_AR/pppParlist.cpp \ 
-             PPP_AR/pppSatObs.cpp      
+exists(PPP_RTK) {
+  INCLUDEPATH += PPP_RTK
+  DEFINES += USE_PPP_RTK
+  HEADERS += PPP_RTK/pppClient.h    PPP_RTK/pppObsPool.h   PPP_RTK/pppEphPool.h   \
+             PPP_RTK/pppStation.h   PPP_RTK/pppFilter.h    PPP_RTK/pppParlist.h   \
+             PPP_RTK/pppSatObs.h           
+  SOURCES += PPP_RTK/pppClient.cpp  PPP_RTK/pppObsPool.cpp PPP_RTK/pppEphPool.cpp \
+             PPP_RTK/pppStation.cpp PPP_RTK/pppFilter.cpp  PPP_RTK/pppParlist.cpp \ 
+             PPP_RTK/pppSatObs.cpp      
 }
 else {
   INCLUDEPATH += PPP
