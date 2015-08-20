@@ -27,6 +27,7 @@
 const double t_CST::c     = 299792458.0;
 const double t_CST::omega = 7292115.1467e-11;
 const double t_CST::aell  = 6378137.000;
+const double t_CST::rgeoc = 6370000.000;
 const double t_CST::fInv  = 298.2572236;
 
 //
