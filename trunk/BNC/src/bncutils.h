@@ -73,6 +73,8 @@ void         XYZ_to_RSW(const ColumnVector& rr, const ColumnVector& vv,
 
 t_irc        xyz2ell(const double* XYZ, double* Ell);
 
+void         xyz2geoc(const double* XYZ, double* Geoc);
+
 void         xyz2neu(const double* Ell, const double* xyz, double* neu);
 
 void         neu2xyz(const double* Ell, const double* neu, double* xyz);
