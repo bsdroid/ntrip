@@ -383,3 +383,22 @@ double t_tropo::delay_saast(const ColumnVector& xyz, double Ele) {
   return (0.002277/cos(zen)) * (pp + ((1255.0/TT)+0.05)*ee - BB*(tan(zen)*tan(zen)));
 }
 
+// Constructor
+///////////////////////////////////////////////////////////////////////////
+t_iono::t_iono() {
+  _vTec = 0;
+}
+
+t_iono::~t_iono() {
+  delete _vTec;
+}
+
+void t_iono::setTecData(const t_vTec* vTec) {
+   delete _vTec;
+  _vTec = new t_vTec(*vTec);
+}
+
+double t_iono::vtec() {
+
+  return 0.0;
+}

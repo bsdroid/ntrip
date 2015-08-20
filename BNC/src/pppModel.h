@@ -5,6 +5,7 @@
 #include <newmat.h>
 #include "bnctime.h"
 #include "t_prn.h"
+#include "satObs.h"
 
 namespace BNC_PPP {
 
@@ -55,6 +56,21 @@ class t_windUp {
 class t_tropo {
  public:  
   static double delay_saast(const ColumnVector& xyz, double Ele);
+};
+
+class t_iono {
+ public:
+  t_iono();
+  ~t_iono();
+  void setTecData(const t_vTec* vTec);
+  double vtec();
+ private:
+  t_vTec*   _vTec;
+  int       _layer;
+  double    _layerHeight;
+  double    _roverHeight;
+
+
 };
 
 }
