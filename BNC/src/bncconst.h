@@ -103,6 +103,7 @@ class t_CST {
   static const double omega;
   static const double aell;
   static const double fInv;
+  static const double rgeoc;
 };
 
 
