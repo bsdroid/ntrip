@@ -396,12 +396,14 @@ double t_iono::stec(const t_vTec* vTec, double signalPropagationTime,
 
   // Latitude, longitude, height are defined with respect to a spherical earth model
   // -------------------------------------------------------------------------------
-  ColumnVector geocSta;
-  xyz2geoc(xyzSta.data(), geocSta.data());
+  ColumnVector geocSta(3);
+  if (xyz2geoc(xyzSta.data(), geocSta.data()) != success) {
+    return 0.0;
+  }
 
   // satellite position rotated to the epoch of signal reception
   // -----------------------------------------------------------
-  ColumnVector xyzSat;
+  ColumnVector xyzSat(3);
   double omegaZ = t_CST::omega * signalPropagationTime;
   xyzSat[0] = rSat[0] * cos(omegaZ) + rSat[1] * sin(omegaZ);
   xyzSat[1] = rSat[1] * cos(omegaZ) - rSat[0] * sin(omegaZ);
