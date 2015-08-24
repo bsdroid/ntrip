@@ -135,6 +135,10 @@ double       accuracyFromIndex(int index, t_eph::e_type type);
 
 int          indexFromAccuracy(double accuracy, t_eph::e_type type);
 
+double       associatedLegendreFunction(int n, int m, double t);
+
+int          factorial(int n);
+
 
 // CRC24Q checksum calculation function (only full bytes supported).
 ///////////////////////////////////////////////////////////////////
