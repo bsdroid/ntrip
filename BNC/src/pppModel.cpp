@@ -43,7 +43,6 @@
 #include <cmath>
 
 #include "pppModel.h"
-#include "bncutils.h"
 
 using namespace BNC_PPP;
 using namespace std;
@@ -386,19 +385,101 @@ double t_tropo::delay_saast(const ColumnVector& xyz, double Ele) {
 // Constructor
 ///////////////////////////////////////////////////////////////////////////
 t_iono::t_iono() {
-  _vTec = 0;
+  _psiPP = _phiPP = _lambdaPP = _lonS = 0.0;
 }
 
-t_iono::~t_iono() {
-  delete _vTec;
+t_iono::~t_iono() {}
+
+double t_iono::stec(const t_vTec* vTec, double signalPropagationTime,
+      const ColumnVector& rSat, const bncTime& epochTime,
+      const ColumnVector& xyzSta) {
+
+  // Latitude, longitude, height are defined with respect to a spherical earth model
+  // -------------------------------------------------------------------------------
+  ColumnVector geocSta;
+  xyz2geoc(xyzSta.data(), geocSta.data());
+
+  // satellite position rotated to the epoch of signal reception
+  // -----------------------------------------------------------
+  ColumnVector xyzSat;
+  double omegaZ = t_CST::omega * signalPropagationTime;
+  xyzSat[0] = rSat[0] * cos(omegaZ) + rSat[1] * sin(omegaZ);
+  xyzSat[1] = rSat[1] * cos(omegaZ) - rSat[0] * sin(omegaZ);
+  xyzSat[2] = rSat[2];
+
+  // elevation and azimuth with respect to a spherical earth model
+  // -------------------------------------------------------------
+  ColumnVector rhoV = xyzSat - xyzSta;
+  double rho = rhoV.norm_Frobenius();
+  ColumnVector neu(3);
+  xyz2neu(geocSta.data(), rhoV.data(), neu.data());
+  double sphEle = acos( sqrt(neu[0]*neu[0] + neu[1]*neu[1]) / rho );
+  if (neu[2] < 0) {
+    sphEle *= -1.0;
+  }
+  double sphAzi = atan2(neu[1], neu[0]);
+
+  double epoch = fmod(epochTime.gpssec(), 86400.0);
+
+  double stec = 0.0;
+  for (unsigned ii = 0; ii < vTec->_layers.size(); ii++) {
+    double layerHeight = vTec->_layers[ii]._height * 1000.0; // m
+    piercePoint(layerHeight, epoch, geocSta.data(), sphEle, sphAzi);
+    double vtec = vtecSingleLayerContribution(vTec->_layers[ii]);
+    stec += vtec * sin(sphEle * _psiPP);
+  }
+  return stec;
 }
 
-void t_iono::setTecData(const t_vTec* vTec) {
-   delete _vTec;
-  _vTec = new t_vTec(*vTec);
+double t_iono::vtecSingleLayerContribution(const t_vTecLayer& vTecLayer) {
+
+  double vtec = 0.0;
+  int N = vTecLayer._C.Nrows()-1;
+  int M = vTecLayer._C.Ncols()-1;
+  double fac;
+
+  for (int n = 0; n <= N; n++) {
+    for (int m = 0; m <= min(n, M); m++) {
+      double pnm = associatedLegendreFunction(n, m, sin(_phiPP));
+      double a = double(factorial(n - m));
+      double b = double(factorial(n + m));
+      if (m == 0) {
+        fac = sqrt(2.0 * n + 1);
+      }
+      else {
+        fac = sqrt(2.0 * (2.0 * n + 1) * a / b);
+      }
+      pnm *= fac;
+      double Cnm_mlambda = vTecLayer._C[n][m] * cos(m * _lonS);
+      double Snm_mlambda = vTecLayer._S[n][m] * sin(m * _lonS);
+      vtec += (Snm_mlambda + Cnm_mlambda) * pnm;
+    }
+  }
+
+  if (vtec < 0.0) {
+    return 0.0;
+  }
+  return vtec;
 }
 
-double t_iono::vtec() {
+void t_iono::piercePoint(double layerHeight, double epoch, const double* geocSta,
+    double sphEle, double sphAzi) {
 
-  return 0.0;
+  double q = (t_CST::rgeoc + geocSta[2]) / (t_CST::rgeoc + layerHeight);
+
+  _psiPP = M_PI / 2 - sphEle - asin(q * cos(sphEle));
+
+  _phiPP = asin(sin(geocSta[0]) * cos(_psiPP) + cos(geocSta[0]) * sin(_psiPP) * cos(sphAzi));
+
+  if (( (geocSta[0]*180.0/M_PI > 0) && (  tan(_psiPP) * cos(sphAzi)  > tan(M_PI/2 - geocSta[0])) )  ||
+      ( (geocSta[0]*180.0/M_PI < 0) && (-(tan(_psiPP) * cos(sphAzi)) > tan(M_PI/2 + geocSta[0])) ))  {
+    _lambdaPP = geocSta[1] + M_PI - asin((sin(_psiPP) * sin(sphAzi) / cos(_phiPP)));
+  } else {
+    _lambdaPP = geocSta[1]        + asin((sin(_psiPP) * sin(sphAzi) / cos(_phiPP)));
+  }
+
+  _lonS = fmod((_lambdaPP + (epoch - 50400) * (M_PI / 43200)), 2*M_PI);
+
+  return;
 }
+

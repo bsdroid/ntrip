@@ -6,6 +6,7 @@
 #include "bnctime.h"
 #include "t_prn.h"
 #include "satObs.h"
+#include "bncutils.h"
 
 namespace BNC_PPP {
 
@@ -62,13 +63,17 @@ class t_iono {
  public:
   t_iono();
   ~t_iono();
-  void setTecData(const t_vTec* vTec);
-  double vtec();
+  double stec(const t_vTec* vTec, double signalPropagationTime,
+      const ColumnVector& rSat, const bncTime& epochTime,
+      const ColumnVector& xyzSta);
  private:
-  t_vTec*   _vTec;
-  int       _layer;
-  double    _layerHeight;
-  double    _roverHeight;
+  double vtecSingleLayerContribution(const t_vTecLayer& vTecLayer);
+  void piercePoint(double layerHeight, double epoch, const double* geocSta,
+      double sphEle, double sphAzi);
+  double _psiPP;
+  double _phiPP;
+  double _lambdaPP;
+  double _lonS;
 
 
 };
