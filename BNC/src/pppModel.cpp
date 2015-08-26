@@ -425,8 +425,7 @@ double t_iono::stec(const t_vTec* vTec, double signalPropagationTime,
 
   double stec = 0.0;
   for (unsigned ii = 0; ii < vTec->_layers.size(); ii++) {
-    double layerHeight = vTec->_layers[ii]._height * 1000.0; // m
-    piercePoint(layerHeight, epoch, geocSta.data(), sphEle, sphAzi);
+    piercePoint(vTec->_layers[ii]._height, epoch, geocSta.data(), sphEle, sphAzi);
     double vtec = vtecSingleLayerContribution(vTec->_layers[ii]);
     stec += vtec * sin(sphEle * _psiPP);
   }
