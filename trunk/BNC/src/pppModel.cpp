@@ -427,7 +427,7 @@ double t_iono::stec(const t_vTec* vTec, double signalPropagationTime,
   for (unsigned ii = 0; ii < vTec->_layers.size(); ii++) {
     piercePoint(vTec->_layers[ii]._height, epoch, geocSta.data(), sphEle, sphAzi);
     double vtec = vtecSingleLayerContribution(vTec->_layers[ii]);
-    stec += vtec * sin(sphEle * _psiPP);
+    stec += vtec * sin(sphEle + _psiPP);
   }
   return stec;
 }
@@ -460,6 +460,7 @@ double t_iono::vtecSingleLayerContribution(const t_vTecLayer& vTecLayer) {
   if (vtec < 0.0) {
     return 0.0;
   }
+
   return vtec;
 }
 
@@ -468,7 +469,7 @@ void t_iono::piercePoint(double layerHeight, double epoch, const double* geocSta
 
   double q = (t_CST::rgeoc + geocSta[2]) / (t_CST::rgeoc + layerHeight);
 
-  _psiPP = M_PI / 2 - sphEle - asin(q * cos(sphEle));
+  _psiPP = M_PI/2 - sphEle - asin(q * cos(sphEle));
 
   _phiPP = asin(sin(geocSta[0]) * cos(_psiPP) + cos(geocSta[0]) * sin(_psiPP) * cos(sphAzi));
 
@@ -479,7 +480,7 @@ void t_iono::piercePoint(double layerHeight, double epoch, const double* geocSta
     _lambdaPP = geocSta[1]        + asin((sin(_psiPP) * sin(sphAzi) / cos(_phiPP)));
   }
 
-  _lonS = fmod((_lambdaPP + (epoch - 50400) * (M_PI / 43200)), 2*M_PI);
+  _lonS = fmod((_lambdaPP + (epoch - 50400) * M_PI / 43200), 2*M_PI);
 
   return;
 }
