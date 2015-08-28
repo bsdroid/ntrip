@@ -106,17 +106,29 @@ t_pppWidgets::t_pppWidgets() {
 #ifdef USE_PPP_SSR_I
   _lcGPS->addItems(QString("P3,P3&L3").split(","));
 #else
-  _lcGPS->addItems(QString("no,P3,L3,P3&L3").split(","));
+  _lcGPS->addItems(QString("no,P1,L1,P1&L1,P2,L2,P2&L2,Pi,Li,Pi&Li,P3,L3,P3&L3").split(","));
 #endif
 
   _lcGLONASS->setEditable(false);
-  _lcGLONASS->addItems(QString("no,P3,L3,P3&L3").split(","));
+#ifdef USE_PPP_SSR_I
+   _lcGLONASS->addItems(QString("no,P3,L3,P3&L3").split(","));
+#else
+  _lcGLONASS->addItems(QString("no,P1,L1,P1&L1,P2,L2,P2&L2,Pi,Li,Pi&Li,P3,L3,P3&L3").split(","));
+#endif
 
   _lcGalileo->setEditable(false);
+#ifdef USE_PPP_SSR_I
   _lcGalileo->addItems(QString("no,P3,L3,P3&L3").split(","));
+#else
+  _lcGalileo->addItems(QString("no,P1,L1,P1&L1,P5,L5,P5&L5,Pi,Li,Pi&Li,P3,L3,P3&L3").split(","));
+#endif
 
   _lcBDS->setEditable(false);
+#ifdef USE_PPP_SSR_I
   _lcBDS->addItems(QString("no,P3,L3,P3&L3").split(","));
+#else
+  _lcBDS->addItems(QString("no,P2,L2,P2&L2,P7,L7,P7&L7,Pi,Li,Pi&Li,P3,L3,P3&L3").split(","));
+#endif
 
   _snxtroSampl->setMinimum(0);
   _snxtroSampl->setMaximum(300);

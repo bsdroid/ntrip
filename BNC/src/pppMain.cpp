@@ -175,6 +175,40 @@ void t_pppMain::readOptions() {
     opt->_sigmaL1      = settings.value("PPP/sigmaL1").toDouble(); if (opt->_sigmaL1 <= 0.0) opt->_sigmaL1 = 0.01;
     opt->_corrWaitTime = settings.value("PPP/corrWaitTime").toDouble();
 
+    if      (settings.value("PPP/lcGPS").toString() == "P1") {
+      opt->_LCsGPS.push_back(t_lc::c1);
+    }
+    else if (settings.value("PPP/lcGPS").toString() == "L1") {
+      opt->_LCsGPS.push_back(t_lc::l1);
+    }
+    else if (settings.value("PPP/lcGPS").toString() == "P1&L1") {
+      opt->_LCsGPS.push_back(t_lc::c1);
+      opt->_LCsGPS.push_back(t_lc::l1);
+    }
+    if      (settings.value("PPP/lcGPS").toString() == "P2") {
+      opt->_LCsGPS.push_back(t_lc::c2);
+    }
+    else if (settings.value("PPP/lcGPS").toString() == "L2") {
+      opt->_LCsGPS.push_back(t_lc::l2);
+    }
+    else if (settings.value("PPP/lcGPS").toString() == "P2&L2") {
+      opt->_LCsGPS.push_back(t_lc::c2);
+      opt->_LCsGPS.push_back(t_lc::l2);
+    }
+    if      (settings.value("PPP/lcGPS").toString() == "Pi") {
+      opt->_LCsGPS.push_back(t_lc::c1);
+      opt->_LCsGPS.push_back(t_lc::c2);
+    }
+    else if (settings.value("PPP/lcGPS").toString() == "Li") {
+      opt->_LCsGPS.push_back(t_lc::l1);
+      opt->_LCsGPS.push_back(t_lc::l2);
+    }
+    else if (settings.value("PPP/lcGPS").toString() == "Pi&Li") {
+      opt->_LCsGPS.push_back(t_lc::c1);
+      opt->_LCsGPS.push_back(t_lc::c2);
+      opt->_LCsGPS.push_back(t_lc::l1);
+      opt->_LCsGPS.push_back(t_lc::l2);
+    }
     if      (settings.value("PPP/lcGPS").toString() == "P3") {
       opt->_LCsGPS.push_back(t_lc::cIF);
     }
@@ -186,6 +220,40 @@ void t_pppMain::readOptions() {
       opt->_LCsGPS.push_back(t_lc::lIF);
     }
 
+    if      (settings.value("PPP/lcGLONASS").toString() == "P1") {
+      opt->_LCsGLONASS.push_back(t_lc::c1);
+    }
+    else if (settings.value("PPP/lcGLONASS").toString() == "L1") {
+      opt->_LCsGLONASS.push_back(t_lc::l1);
+    }
+    else if (settings.value("PPP/lcGLONASS").toString() == "P1&L1") {
+      opt->_LCsGLONASS.push_back(t_lc::c1);
+      opt->_LCsGLONASS.push_back(t_lc::l1);
+    }
+    if      (settings.value("PPP/lcGLONASS").toString() == "P2") {
+      opt->_LCsGLONASS.push_back(t_lc::c2);
+    }
+    else if (settings.value("PPP/lcGLONASS").toString() == "L2") {
+      opt->_LCsGLONASS.push_back(t_lc::l2);
+    }
+    else if (settings.value("PPP/lcGLONASS").toString() == "P2&L2") {
+      opt->_LCsGLONASS.push_back(t_lc::c2);
+      opt->_LCsGLONASS.push_back(t_lc::l2);
+    }
+    if      (settings.value("PPP/lcGLONASS").toString() == "Pi") {
+      opt->_LCsGLONASS.push_back(t_lc::c1);
+      opt->_LCsGLONASS.push_back(t_lc::c2);
+    }
+    else if (settings.value("PPP/lcGLONASS").toString() == "Li") {
+      opt->_LCsGLONASS.push_back(t_lc::l1);
+      opt->_LCsGLONASS.push_back(t_lc::l2);
+    }
+    else if (settings.value("PPP/lcGLONASS").toString() == "Pi&Li") {
+      opt->_LCsGLONASS.push_back(t_lc::c1);
+      opt->_LCsGLONASS.push_back(t_lc::c2);
+      opt->_LCsGLONASS.push_back(t_lc::l1);
+      opt->_LCsGLONASS.push_back(t_lc::l2);
+    }
     if      (settings.value("PPP/lcGLONASS").toString() == "P3") {
       opt->_LCsGLONASS.push_back(t_lc::cIF);
     }
@@ -197,6 +265,40 @@ void t_pppMain::readOptions() {
       opt->_LCsGLONASS.push_back(t_lc::lIF);
     }
 
+    if      (settings.value("PPP/lcGalileo").toString() == "P1") {
+      opt->_LCsGalileo.push_back(t_lc::c1);
+    }
+    else if (settings.value("PPP/lcGalileo").toString() == "L1") {
+      opt->_LCsGalileo.push_back(t_lc::l1);
+    }
+    else if (settings.value("PPP/lcGalileo").toString() == "P1&L1") {
+      opt->_LCsGalileo.push_back(t_lc::c1);
+      opt->_LCsGalileo.push_back(t_lc::l1);
+    }
+    if      (settings.value("PPP/lcGalileo").toString() == "P5") {
+      opt->_LCsGalileo.push_back(t_lc::c2);
+    }
+    else if (settings.value("PPP/lcGalileo").toString() == "L5") {
+      opt->_LCsGalileo.push_back(t_lc::l2);
+    }
+    else if (settings.value("PPP/lcGalileo").toString() == "P5&L5") {
+      opt->_LCsGalileo.push_back(t_lc::c2);
+      opt->_LCsGalileo.push_back(t_lc::l2);
+    }
+    if      (settings.value("PPP/lcGalileo").toString() == "Pi") {
+      opt->_LCsGalileo.push_back(t_lc::c1);
+      opt->_LCsGalileo.push_back(t_lc::c2);
+    }
+    else if (settings.value("PPP/lcGalileo").toString() == "Li") {
+      opt->_LCsGalileo.push_back(t_lc::l1);
+      opt->_LCsGalileo.push_back(t_lc::l2);
+    }
+    else if (settings.value("PPP/lcGalileo").toString() == "Pi&Li") {
+      opt->_LCsGalileo.push_back(t_lc::c1);
+      opt->_LCsGalileo.push_back(t_lc::c2);
+      opt->_LCsGalileo.push_back(t_lc::l1);
+      opt->_LCsGalileo.push_back(t_lc::l2);
+    }
     if      (settings.value("PPP/lcGalileo").toString() == "P3") {
       opt->_LCsGalileo.push_back(t_lc::cIF);
     }
@@ -208,6 +310,40 @@ void t_pppMain::readOptions() {
       opt->_LCsGalileo.push_back(t_lc::lIF);
     }
 
+    if      (settings.value("PPP/lcBDS").toString() == "P2") {
+      opt->_LCsBDS.push_back(t_lc::c1);
+    }
+    else if (settings.value("PPP/lcBDS").toString() == "L2") {
+      opt->_LCsBDS.push_back(t_lc::l1);
+    }
+    else if (settings.value("PPP/lcBDS").toString() == "P2&L2") {
+      opt->_LCsBDS.push_back(t_lc::c1);
+      opt->_LCsBDS.push_back(t_lc::l1);
+    }
+    if      (settings.value("PPP/lcBDS").toString() == "P7") {
+      opt->_LCsBDS.push_back(t_lc::c2);
+    }
+    else if (settings.value("PPP/lcBDS").toString() == "L7") {
+      opt->_LCsBDS.push_back(t_lc::l2);
+    }
+    else if (settings.value("PPP/lcBDS").toString() == "P7&L7") {
+      opt->_LCsBDS.push_back(t_lc::c2);
+      opt->_LCsBDS.push_back(t_lc::l2);
+    }
+    if      (settings.value("PPP/lcBDS").toString() == "Pi") {
+      opt->_LCsBDS.push_back(t_lc::c1);
+      opt->_LCsBDS.push_back(t_lc::c2);
+    }
+    else if (settings.value("PPP/lcBDS").toString() == "Li") {
+      opt->_LCsBDS.push_back(t_lc::l1);
+      opt->_LCsBDS.push_back(t_lc::l2);
+    }
+    else if (settings.value("PPP/lcBDS").toString() == "Pi&Li") {
+      opt->_LCsBDS.push_back(t_lc::c1);
+      opt->_LCsBDS.push_back(t_lc::c2);
+      opt->_LCsBDS.push_back(t_lc::l1);
+      opt->_LCsBDS.push_back(t_lc::l2);
+    }
     if      (settings.value("PPP/lcBDS").toString() == "P3") {
       opt->_LCsBDS.push_back(t_lc::cIF);
     }
