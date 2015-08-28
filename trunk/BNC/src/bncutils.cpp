@@ -413,13 +413,13 @@ void neu2xyz(const double* Ell, const double* neu, double* xyz) {
 t_irc xyz2geoc(const double* XYZ, double* Geoc) {
 
   const double bell = t_CST::aell*(1.0-1.0/t_CST::fInv) ;
-  const double e2   = (t_CST::aell*t_CST::aell-bell*bell)/(t_CST::aell*t_CST::aell) ;
+  const double e2 = (t_CST::aell*t_CST::aell-bell*bell)/(t_CST::aell*t_CST::aell) ;
   double Ell[3];
   if (xyz2ell(XYZ, Ell) != success) {
     return failure;
   }
   double rho = sqrt(XYZ[0]*XYZ[0]+XYZ[1]*XYZ[1]+XYZ[2]*XYZ[2]);
-  double Rn = t_CST::aell/sqrt(1-(e2)*pow(sin(Ell[0]),2));
+  double Rn = t_CST::aell/sqrt(1-e2*pow(sin(Ell[0]),2));
 
   Geoc[0] = atan((1-e2 * Rn/(Rn + Ell[2])) * tan(Ell[0]));
   Geoc[1] = Ell[1];
