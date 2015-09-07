@@ -34,7 +34,7 @@
  *
  * Created:    24-Dec-2005
  *
- * Changes:    
+ * Changes:
  *
  * -----------------------------------------------------------------------*/
 
@@ -74,9 +74,10 @@ int main(int argc, char* argv[]) {
   QByteArray rawFileName;
   QString    confFileName;
 
-  QByteArray printHelp = "Usage: bnc --nw                       \n" 
-                         "           --display <XXX>            \n" 
-                         "           --conf <confFileName>      \n" 
+  QByteArray printHelp = "Usage: bnc --nw                       \n"
+                         "           --version                  \n"
+                         "           --display <XXX>            \n"
+                         "           --conf <confFileName>      \n"
                          "           --file <rawFileName>       \n"
                          "           --key  <keyName> <keyValue>\n";
 
@@ -87,6 +88,10 @@ int main(int argc, char* argv[]) {
     }
     if (QRegExp("--?nw").exactMatch(argv[ii])) {
       interactive = false;
+    }
+    if (QRegExp("--?version").exactMatch(argv[ii])) {
+      cout << BNCPGMNAME << endl;
+      exit(0);
     }
     if (QRegExp("--?display").exactMatch(argv[ii])) {
       displaySet = true;
@@ -155,7 +160,7 @@ int main(int argc, char* argv[]) {
         QApplication::setFont(newFont);
       }
     }
-   
+
     app.setWindowIcon(QPixmap(":ntrip-logo.png"));
 
     bncWindow* bncWin = new bncWindow();
@@ -163,7 +168,7 @@ int main(int argc, char* argv[]) {
     bncWin->show();
   }
 
-  // Post-Processing PPP 
+  // Post-Processing PPP
   // -------------------
   else if (settings.value("PPP/dataSource").toString() == "RINEX Files") {
     bncCaster* caster = new bncCaster();
@@ -203,16 +208,16 @@ int main(int argc, char* argv[]) {
     signal(SIGINT, catch_signal);
 
     bncEphUploadCaster* casterEph = new bncEphUploadCaster(); (void) casterEph;
-    
+
     bncCaster* caster = new bncCaster();
-    
+
     BNC_CORE->setCaster(caster);
     BNC_CORE->setPortEph(settings.value("outEphPort").toInt());
     BNC_CORE->setPortCorr(settings.value("corrPort").toInt());
     BNC_CORE->initCombination();
-    
+
     BNC_CORE->connect(caster, SIGNAL(getThreadsFinished()), &app, SLOT(quit()));
-    
+
     BNC_CORE->slotMessage("========== Start BNC v" BNCVERSION " ("BNC_OS") ==========", true);
 
     // Normal case - data from Internet
@@ -226,7 +231,7 @@ int main(int argc, char* argv[]) {
         exit(0);
       }
     }
-    
+
     // Special case - data from file
     // -----------------------------
     else {
