@@ -86,7 +86,6 @@ int main(int argc, char* argv[]) {
       "           --startTab      <Top panel index number>\n"
       "           --statusTab     <Bottom panel index number>\n"
       "           --font          <Used font>\n"
-      "           --casterUrlList <Visited URLs>\n"
       "\n"
       "Network Panel keys:\n"
       "           --proxyHost       <Proxy host>\n"
@@ -276,8 +275,9 @@ int main(int argc, char* argv[]) {
       "           --uploadEphSample     <Sampling interval [sec]>\n"
       "\n"
       "Add Stream keys:\n"
-      "           --mountPoints  <Mountpoints list>\n"
-      "           --ntripVersion <Ntrip Version>\n";
+      "           --mountPoints  <Mountpoint list>\n"
+      "           --ntripVersion <Ntrip Version, 1|2|2s|R|U>\n"
+      "           --casterUrlList <Visited URLs>\n";
 
   for (int ii = 1; ii < argc; ii++) {
     if (QRegExp("--?help").exactMatch(argv[ii])) {
