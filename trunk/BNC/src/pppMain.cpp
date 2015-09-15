@@ -35,7 +35,7 @@
  *
  * Created:    29-Jul-2014
  *
- * Changes:    
+ * Changes:
  *
  * -----------------------------------------------------------------------*/
 
@@ -64,7 +64,7 @@ t_pppMain::~t_pppMain() {
   }
 }
 
-// 
+//
 //////////////////////////////////////////////////////////////////////////////
 void t_pppMain::start() {
   if (_running) {
@@ -89,7 +89,7 @@ void t_pppMain::start() {
   }
 }
 
-// 
+//
 //////////////////////////////////////////////////////////////////////////////
 void t_pppMain::stop() {
 
@@ -109,7 +109,7 @@ void t_pppMain::stop() {
   _running = false;
 }
 
-// 
+//
 //////////////////////////////////////////////////////////////////////////////
 void t_pppMain::readOptions() {
 
@@ -134,7 +134,7 @@ void t_pppMain::readOptions() {
     _realTime = false;
   }
   else {
-    return;    
+    return;
   }
 
   QListIterator<QString> iSta(settings.value("PPP/staTable").toStringList());
@@ -148,7 +148,7 @@ void t_pppMain::readOptions() {
     t_pppOptions* opt = new t_pppOptions();
 
     opt->_realTime     = _realTime;
-    opt->_roverName    = hlp[0].toAscii().data();
+    opt->_roverName    = hlp[0].toStdString();
     opt->_aprSigCrd[0] = hlp[1].toDouble();
     opt->_aprSigCrd[1] = hlp[2].toDouble();
     opt->_aprSigCrd[2] = hlp[3].toDouble();
