@@ -282,8 +282,8 @@ int main(int argc, char* argv[]) {
       "Examples:\n"
       "(1) /home/weber/bin/bnc\n"
       "(2) /Applications/bnc.app/Contents/MacOS/bnc\n"
-      "(3) /home/weber/bin/bnc --conf /home/weber/BNC.bnc\n"
-      "(4) bnc --conf /Users/home/weber/BNC.bnc -nw\n"
+      "(3) /home/weber/bin/bnc --conf /home/weber/MyConfigFile.bnc\n"
+      "(4) bnc --conf /Users/weber/.config/BKG/BNC.bnc -nw\n"
       "(5) bnc --conf /dev/null --key startTab 4 --key reqcAction Edit/Concatenate"
       " --key reqcObsFile AGAR.15O --key reqcOutObsFile AGAR_X.15O"
       " --key reqcRnxVersion 2 --key reqcSampling 30 --key reqcV2Priority CWPX_?\n";
