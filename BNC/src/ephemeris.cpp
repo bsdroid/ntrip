@@ -23,6 +23,14 @@ t_eph::t_eph() {
   _orbCorr    = 0;
   _clkCorr    = 0;
 }
+// Destructor
+////////////////////////////////////////////////////////////////////////////
+t_eph::~t_eph() {
+  if (_orbCorr)
+    delete _orbCorr;
+  if (_clkCorr)
+    delete _clkCorr;
+}
 
 // 
 ////////////////////////////////////////////////////////////////////////////
@@ -312,14 +320,14 @@ t_irc t_ephGPS::position(int GPSweek, double GPSweeks, double* xc, double* vv) c
   double yp     = r*sin(u);
   double OM     = _OMEGA0 + (_OMEGADOT - omegaEarth)*tk - 
                    omegaEarth*_TOEsec;
-  
+
   double sinom = sin(OM);
   double cosom = cos(OM);
   double sini  = sin(i);
   double cosi  = cos(i);
   xc[0] = xp*cosom - yp*cosi*sinom;
   xc[1] = xp*sinom + yp*cosi*cosom;
-  xc[2] = yp*sini;                 
+  xc[2] = yp*sini;                
   
   double tc = tt - _TOC;
   xc[3] = _clock_bias + _clock_drift*tc + _clock_driftrate*tc*tc;
@@ -328,12 +336,12 @@ t_irc t_ephGPS::position(int GPSweek, double GPSweeks, double* xc, double* vv) c
   // --------
   double tanv2 = tan(v/2);
   double dEdM  = 1 / (1 - _e*cos(E));
-  double dotv  = sqrt((1.0 + _e)/(1.0 - _e)) / cos(E/2)/cos(E/2) / (1 + tanv2*tanv2) 
+  double dotv  = sqrt((1.0 + _e)/(1.0 - _e)) / cos(E/2)/cos(E/2) / (1 + tanv2*tanv2)
                * dEdM * n;
   double dotu  = dotv + (-_Cuc*sin2u0 + _Cus*cos2u0)*2*dotv;
   double dotom = _OMEGADOT - omegaEarth;
   double doti  = _IDOT + (-_Cic*sin2u0 + _Cis*cos2u0)*2*dotv;
-  double dotr  = a0 * _e*sin(E) * dEdM * n 
+  double dotr  = a0 * _e*sin(E) * dEdM * n
                 + (-_Crc*sin2u0 + _Crs*cos2u0)*2*dotv;
   double dotx  = dotr*cos(u) - r*sin(u)*dotu;
   double doty  = dotr*sin(u) + r*cos(u)*dotu;
@@ -1127,15 +1135,15 @@ t_ephSBAS::t_ephSBAS(float rnxVersion, const QStringList& lines) {
     }
   }
 
-  _x_pos          *= 1.e3; 
-  _y_pos          *= 1.e3; 
-  _z_pos          *= 1.e3; 
-  _x_velocity     *= 1.e3; 
-  _y_velocity     *= 1.e3; 
-  _z_velocity     *= 1.e3; 
-  _x_acceleration *= 1.e3; 
-  _y_acceleration *= 1.e3; 
-  _z_acceleration *= 1.e3; 
+  _x_pos          *= 1.e3;
+  _y_pos          *= 1.e3;
+  _z_pos          *= 1.e3;
+  _x_velocity     *= 1.e3;
+  _y_velocity     *= 1.e3;
+  _z_velocity     *= 1.e3;
+  _x_acceleration *= 1.e3;
+  _y_acceleration *= 1.e3;
+  _z_acceleration *= 1.e3;
 }
 
 // IOD of SBAS Ephemeris (virtual)
@@ -1175,9 +1183,9 @@ t_irc t_ephSBAS::position(int GPSweek, double GPSweeks, double* xc, double* vv) 
   bncTime tt(GPSweek, GPSweeks);
   double  dt = tt - _TOC;
 
-  xc[0] = _x_pos + _x_velocity * dt + _x_acceleration * dt * dt / 2.0; 
-  xc[1] = _y_pos + _y_velocity * dt + _y_acceleration * dt * dt / 2.0; 
-  xc[2] = _z_pos + _z_velocity * dt + _z_acceleration * dt * dt / 2.0; 
+  xc[0] = _x_pos + _x_velocity * dt + _x_acceleration * dt * dt / 2.0;
+  xc[1] = _y_pos + _y_velocity * dt + _y_acceleration * dt * dt / 2.0;
+  xc[2] = _z_pos + _z_velocity * dt + _z_acceleration * dt * dt / 2.0;
 
   vv[0] = _x_velocity + _x_acceleration * dt;
   vv[1] = _y_velocity + _y_acceleration * dt;
@@ -1454,7 +1462,7 @@ t_irc t_ephBDS::position(int GPSweek, double GPSweeks, double* xc, double* vv) c
   double cosom = 0;
   double sini  = 0;
   double cosi  = 0;
-  
+
   const double iMaxGEO = 10.0 / 180.0 * M_PI;
 
   // MEO/IGSO satellite
@@ -1469,7 +1477,7 @@ t_irc t_ephBDS::position(int GPSweek, double GPSweeks, double* xc, double* vv) c
 
     xc[0] = xp*cosom - yp*cosi*sinom;
     xc[1] = xp*sinom + yp*cosi*cosom;
-    xc[2] = yp*sini;                 
+    xc[2] = yp*sini;
   }
 
   // GEO satellite
@@ -1485,7 +1493,7 @@ t_irc t_ephBDS::position(int GPSweek, double GPSweeks, double* xc, double* vv) c
 
     double xx = xp*cosom - yp*cosi*sinom;
     double yy = xp*sinom + yp*cosi*cosom;
-    double zz = yp*sini;                 
+    double zz = yp*sini;
 
     Matrix R1 = BNC_PPP::t_astro::rotX(-5.0 / 180.0 * M_PI);
     Matrix R2 = BNC_PPP::t_astro::rotZ(ll);
@@ -1497,21 +1505,21 @@ t_irc t_ephBDS::position(int GPSweek, double GPSweeks, double* xc, double* vv) c
     xc[1] = X2(2);
     xc[2] = X2(3);
   }
-  
+
   double tc = tt - _TOC;
-  xc[3] = _clock_bias + _clock_drift*tc + _clock_driftrate*tc*tc 
+  xc[3] = _clock_bias + _clock_drift*tc + _clock_driftrate*tc*tc
           - 4.442807633e-10 * _e * sqrt(a0) *sin(E);
 
   // Velocity
   // --------
   double tanv2 = tan(v/2);
   double dEdM  = 1 / (1 - _e*cos(E));
-  double dotv  = sqrt((1.0 + _e)/(1.0 - _e)) / cos(E/2)/cos(E/2) 
+  double dotv  = sqrt((1.0 + _e)/(1.0 - _e)) / cos(E/2)/cos(E/2)
                  / (1 + tanv2*tanv2) * dEdM * n;
   double dotu  = dotv + (-_Cuc*sin2u0 + _Cus*cos2u0)*2*dotv;
   double dotom = _OMEGADOT - t_CST::omega;
   double doti  = _IDOT + (-_Cic*sin2u0 + _Cis*cos2u0)*2*dotv;
-  double dotr  = a0 * _e*sin(E) * dEdM * n 
+  double dotr  = a0 * _e*sin(E) * dEdM * n
                 + (-_Crc*sin2u0 + _Crs*cos2u0)*2*dotv;
   double dotx  = dotr*cos(u) - r*sin(u)*dotu;
   double doty  = dotr*sin(u) + r*cos(u)*dotu;
@@ -1519,14 +1527,14 @@ t_irc t_ephBDS::position(int GPSweek, double GPSweeks, double* xc, double* vv) c
   vv[0]  = cosom  *dotx  - cosi*sinom   *doty   // dX / dr
         - xp*sinom*dotom - yp*cosi*cosom*dotom   // dX / dOMEGA
                          + yp*sini*sinom*doti;   // dX / di
-  
+
   vv[1]  = sinom  *dotx  + cosi*cosom   *doty
         + xp*cosom*dotom - yp*cosi*sinom*dotom
                          - yp*sini*cosom*doti;
 
   vv[2]  = sini   *doty  + yp*cosi      *doti;
 
-  // dotC  = _clock_drift + _clock_driftrate*tc 
+  // dotC  = _clock_drift + _clock_driftrate*tc
   //       - 4.442807633e-10*_e*sqrt(a0)*cos(E) * dEdM * n;
 
   return success;

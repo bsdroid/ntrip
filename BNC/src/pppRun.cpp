@@ -35,7 +35,7 @@
  *
  * Created:    29-Jul-2014
  *
- * Changes:    
+ * Changes:
  *
  * -----------------------------------------------------------------------*/
 
@@ -66,7 +66,7 @@ t_pppRun::t_pppRun(const t_pppOptions* opt) {
 
   _opt = opt;
 
-  connect(this, SIGNAL(newMessage(QByteArray,bool)), 
+  connect(this, SIGNAL(newMessage(QByteArray,bool)),
           BNC_CORE, SLOT(slotMessage(const QByteArray,bool)));
 
   connect(this,     SIGNAL(newPosition(QByteArray, bncTime, QVector<double>)),
@@ -90,10 +90,10 @@ t_pppRun::t_pppRun(const t_pppOptions* opt) {
 
     connect(BNC_CORE, SIGNAL(newGPSEph(t_ephGPS)),
             this, SLOT(slotNewGPSEph(t_ephGPS)),conType);
-  
+
     connect(BNC_CORE, SIGNAL(newGlonassEph(t_ephGlo)),
             this, SLOT(slotNewGlonassEph(t_ephGlo)),conType);
-  
+
     connect(BNC_CORE, SIGNAL(newGalileoEph(t_ephGal)),
             this, SLOT(slotNewGalileoEph(t_ephGal)),conType);
 
@@ -119,11 +119,11 @@ t_pppRun::t_pppRun(const t_pppOptions* opt) {
     _speed      = settings.value("PPP/mapSpeedSlider").toInt();
     connect(this, SIGNAL(progressRnxPPP(int)), BNC_CORE, SIGNAL(progressRnxPPP(int)));
     connect(this, SIGNAL(finishedRnxPPP()),    BNC_CORE, SIGNAL(finishedRnxPPP()));
-    connect(BNC_CORE, SIGNAL(mapSpeedSliderChanged(int)),    
+    connect(BNC_CORE, SIGNAL(mapSpeedSliderChanged(int)),
             this, SLOT(slotSetSpeed(int)));
     connect(BNC_CORE, SIGNAL(stopRinexPPP()), this, SLOT(slotSetStopFlag()));
   }
- 
+
   _stopFlag = false;
 
   QString roverName(_opt->_roverName.c_str());
@@ -182,21 +182,21 @@ t_pppRun::~t_pppRun() {
   delete _snxtroFile;
 }
 
-// 
+//
 ////////////////////////////////////////////////////////////////////////////
 void t_pppRun::slotNewGPSEph(t_ephGPS eph) {
   QMutexLocker locker(&_mutex);
   _pppClient->putEphemeris(&eph);
 }
 
-// 
+//
 ////////////////////////////////////////////////////////////////////////////
 void t_pppRun::slotNewGlonassEph(t_ephGlo eph) {
   QMutexLocker locker(&_mutex);
   _pppClient->putEphemeris(&eph);
 }
-  
-// 
+
+//
 ////////////////////////////////////////////////////////////////////////////
 void t_pppRun::slotNewGalileoEph(t_ephGal eph) {
   QMutexLocker locker(&_mutex);
@@ -219,7 +219,7 @@ void t_pppRun::slotNewObs(QByteArray staID, QList<t_satObs> obsList) {
     return;
   }
 
-  // Loop over all obsevations (possible different epochs)
+  // Loop over all observations (possible different epochs)
   // -----------------------------------------------------
   QListIterator<t_satObs> it(obsList);
   while (it.hasNext()) {
@@ -275,7 +275,7 @@ void t_pppRun::slotNewObs(QByteArray staID, QList<t_satObs> obsList) {
     }
 
     delete _epoData.front(); _epoData.pop_front();
-    
+
     ostringstream log;
     if (output._error) {
       log << output._log;
@@ -294,8 +294,8 @@ void t_pppRun::slotNewObs(QByteArray staID, QList<t_satObs> obsList) {
     }
 
     if (_logFile && output._epoTime.valid()) {
-      _logFile->write(output._epoTime.gpsw(), output._epoTime.gpssec(), 
-                      QString(output._log.c_str())); 
+      _logFile->write(output._epoTime.gpsw(), output._epoTime.gpssec(),
+                      QString(output._log.c_str()));
     }
 
     if (!output._error) {
@@ -334,7 +334,7 @@ void t_pppRun::slotNewTec(t_vTec vTec) {
   _pppClient->putTec(&vTec);
 }
 
-// 
+//
 ////////////////////////////////////////////////////////////////////////////
 void t_pppRun::slotNewOrbCorrections(QList<t_orbCorr> orbCorr) {
   if (orbCorr.size() == 0) {
@@ -351,10 +351,14 @@ void t_pppRun::slotNewOrbCorrections(QList<t_orbCorr> orbCorr) {
     corrections.push_back(new t_orbCorr(orbCorr[ii]));
   }
 
-  _pppClient->putOrbCorrections(corrections); 
+  _pppClient->putOrbCorrections(corrections);
+
+  for (unsigned ii = 0; ii < corrections.size(); ii++) {
+    delete corrections[ii];
+  }
 }
 
-// 
+//
 ////////////////////////////////////////////////////////////////////////////
 void t_pppRun::slotNewClkCorrections(QList<t_clkCorr> clkCorr) {
   if (clkCorr.size() == 0) {
@@ -371,10 +375,14 @@ void t_pppRun::slotNewClkCorrections(QList<t_clkCorr> clkCorr) {
     corrections.push_back(new t_clkCorr(clkCorr[ii]));
     _lastClkCorrTime = clkCorr[ii]._time;
   }
-  _pppClient->putClkCorrections(corrections); 
+  _pppClient->putClkCorrections(corrections);
+
+  for (unsigned ii = 0; ii < corrections.size(); ii++) {
+    delete corrections[ii];
+  }
 }
 
-// 
+//
 ////////////////////////////////////////////////////////////////////////////
 void t_pppRun::slotNewCodeBiases(QList<t_satCodeBias> codeBiases) {
   if (codeBiases.size() == 0) {
@@ -391,10 +399,14 @@ void t_pppRun::slotNewCodeBiases(QList<t_satCodeBias> codeBiases) {
     biases.push_back(new t_satCodeBias(codeBiases[ii]));
   }
 
-  _pppClient->putCodeBiases(biases); 
+  _pppClient->putCodeBiases(biases);
+
+  for (unsigned ii = 0; ii < biases.size(); ii++) {
+    delete biases[ii];
+  }
 }
 
-// 
+//
 ////////////////////////////////////////////////////////////////////////////
 void t_pppRun::processFiles() {
 
@@ -467,7 +479,7 @@ void t_pppRun::processFiles() {
     QList<t_satObs> obsList;
     for (unsigned iObs = 0; iObs < epo->rnxSat.size(); iObs++) {
       const t_rnxObsFile::t_rnxSat& rnxSat = epo->rnxSat[iObs];
-    
+
       t_satObs obs;
       t_rnxObsFile::setObsFromRnx(_rnxObsFile, epo, rnxSat, obs);
       obsList << obs;
@@ -478,7 +490,7 @@ void t_pppRun::processFiles() {
     if (nEpo % 10 == 0) {
       emit progressRnxPPP(nEpo);
     }
-  
+
     QCoreApplication::processEvents();
   }
 
@@ -492,25 +504,25 @@ void t_pppRun::processFiles() {
   }
 }
 
-//  
+//
 ////////////////////////////////////////////////////////////////////////////
 void t_pppRun::slotSetSpeed(int speed) {
   QMutexLocker locker(&_mutex);
   _speed = speed;
 }
 
-//  
+//
 ////////////////////////////////////////////////////////////////////////////
 void t_pppRun::slotSetStopFlag() {
   QMutexLocker locker(&_mutex);
   _stopFlag = true;
 }
 
-//  
+//
 ////////////////////////////////////////////////////////////////////////////
 QString t_pppRun::nmeaString(char strType, const t_output& output) {
 
-  double ell[3]; 
+  double ell[3];
   xyz2ell(output._xyzRover, ell);
   double phiDeg = ell[0] * 180 / M_PI;
   double lamDeg = ell[1] * 180 / M_PI;
@@ -519,38 +531,38 @@ QString t_pppRun::nmeaString(char strType, const t_output& output) {
   if (phiDeg < 0) {
     phiDeg = -phiDeg;
     phiCh  =  'S';
-  }   
+  }
   char lamCh = 'E';
   if (lamDeg < 0) {
     lamDeg = -lamDeg;
     lamCh  =  'W';
-  }   
+  }
 
   ostringstream out;
   out.setf(ios::fixed);
 
   if      (strType == 'R') {
     string datestr = output._epoTime.datestr(0); // yyyymmdd
-    out << "GPRMC," 
+    out << "GPRMC,"
         << output._epoTime.timestr(0,0) << ",A,"
-        << setw(2) << setfill('0') << int(phiDeg) 
-        << setw(6) << setprecision(3) << setfill('0') 
+        << setw(2) << setfill('0') << int(phiDeg)
+        << setw(6) << setprecision(3) << setfill('0')
         << fmod(60*phiDeg,60) << ',' << phiCh << ','
-        << setw(3) << setfill('0') << int(lamDeg) 
-        << setw(6) << setprecision(3) << setfill('0') 
+        << setw(3) << setfill('0') << int(lamDeg)
+        << setw(6) << setprecision(3) << setfill('0')
         << fmod(60*lamDeg,60) << ',' << lamCh << ",,,"
         << datestr[6] << datestr[7] << datestr[4] << datestr[5]
         << datestr[2] << datestr[3] << ",,";
   }
   else if (strType == 'G') {
-    out << "GPGGA," 
+    out << "GPGGA,"
         << output._epoTime.timestr(0,0) << ','
-        << setw(2) << setfill('0') << int(phiDeg) 
-        << setw(10) << setprecision(7) << setfill('0') 
+        << setw(2) << setfill('0') << int(phiDeg)
+        << setw(10) << setprecision(7) << setfill('0')
         << fmod(60*phiDeg,60) << ',' << phiCh << ','
-        << setw(3) << setfill('0') << int(lamDeg) 
-        << setw(10) << setprecision(7) << setfill('0') 
-        << fmod(60*lamDeg,60) << ',' << lamCh 
+        << setw(3) << setfill('0') << int(lamDeg)
+        << setw(10) << setprecision(7) << setfill('0')
+        << fmod(60*lamDeg,60) << ',' << lamCh
         << ",1," << setw(2) << setfill('0') << output._numSat << ','
         << setw(3) << setprecision(1) << output._pDop << ','
         << setprecision(3) << ell[2] << ",M,0.0,M,,";
@@ -568,7 +580,7 @@ QString t_pppRun::nmeaString(char strType, const t_output& output) {
   return '$' + nmStr + QString("*%1\n").arg(int(XOR), 0, 16).toUpper();
 }
 
-//  
+//
 ////////////////////////////////////////////////////////////////////////////
 bool t_pppRun::waitForCorr(const bncTime& epoTime) const {
 
