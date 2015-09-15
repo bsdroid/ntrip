@@ -3656,7 +3656,17 @@ Hit the 'Stop' button in order to stop BNC.
 
 <p><a name="cmd"><h4>3.20. Command Line Options</h4></p>
 <p>
-Command line options are available to run BNC in 'no window' mode or let it read data offline from one or several files for debugging or Post Processing purposes. BNC will then use processing options from the involved configuration file. Note that the self-explaining contents of the configuration file can easily be edited. It is possible to introduce a specific configuration filename instead of using the default name 'BNC.bnc'.
+Command line options are available to run BNC in 'no window' mode or let it read previously recorded input offline from one or several files for debugging purposes. The self-explaining contents of the configuration file can easily be edited. It is possible to introduce a specific configuration filename instead of using the default name 'BNC.bnc'.
+</p>
+<p>
+In addition to reading processing options from the involved configuration file, BNC can optionally read all configuration options from command line. Running BNC with command line option 'help'
+</p>
+<p>
+Example:<br><br>
+bnc.exe --help
+</p>
+<p>
+provides a list of all available command line options.
 </p>
 
 <p><a name="nw"><h4>3.20.1 No Window Mode - optional</h4></p>
@@ -3665,7 +3675,7 @@ Apart from its regular windows mode, BNC can be started on all systems as a batc
 </p>
 <p>
 Example:<br><br>
-bnc.exe -nw
+bnc.exe --nw
 </p>
 <p>
 It is obvious that BNC requires graphics support when started in interactive
