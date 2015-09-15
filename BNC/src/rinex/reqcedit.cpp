@@ -93,10 +93,12 @@ void t_reqcEdit::run() {
  
   // Open Log File
   // -------------
-  _logFile = new QFile(_logFileName);
-  if (_logFile->open(QIODevice::WriteOnly | QIODevice::Text)) {
-    _log = new QTextStream();
-    _log->setDevice(_logFile);
+  if (!_logFileName.isEmpty()) {
+    _logFile = new QFile(_logFileName);
+    if (_logFile->open(QIODevice::WriteOnly | QIODevice::Text)) {
+      _log = new QTextStream();
+      _log->setDevice(_logFile);
+    }
   }
 
   // Log File Header
