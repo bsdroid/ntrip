@@ -34,7 +34,7 @@
  *
  * Created:    01-Dec-2009
  *
- * Changes:    
+ * Changes:
  *
  * -----------------------------------------------------------------------*/
 
@@ -65,7 +65,7 @@ const double   BDS_WEIGHT_FACTOR     = 2.0;
 
 // Constructor
 ////////////////////////////////////////////////////////////////////////////
-t_pppParam::t_pppParam(t_pppParam::parType typeIn, int indexIn, 
+t_pppParam::t_pppParam(t_pppParam::parType typeIn, int indexIn,
                    const QString& prnIn) {
   type      = typeIn;
   index     = indexIn;
@@ -89,13 +89,13 @@ double t_pppParam::partial(t_satData* satData, bool phase) {
   // Coordinates
   // -----------
   if      (type == CRD_X) {
-    return (xx - satData->xx(1)) / satData->rho; 
+    return (xx - satData->xx(1)) / satData->rho;
   }
   else if (type == CRD_Y) {
-    return (xx - satData->xx(2)) / satData->rho; 
+    return (xx - satData->xx(2)) / satData->rho;
   }
   else if (type == CRD_Z) {
-    return (xx - satData->xx(3)) / satData->rho; 
+    return (xx - satData->xx(3)) / satData->rho;
   }
 
   // Receiver Clocks
@@ -107,7 +107,7 @@ double t_pppParam::partial(t_satData* satData, bool phase) {
   // Troposphere
   // -----------
   else if (type == TROPO) {
-    return 1.0 / sin(satData->eleSat); 
+    return 1.0 / sin(satData->eleSat);
   }
 
   // Glonass Offset
@@ -237,19 +237,19 @@ void t_pppFilter::reset() {
     _params.push_back(new t_pppParam(t_pppParam::BDS_OFFSET, ++nextPar, ""));
   }
 
-  _QQ.ReSize(_params.size()); 
+  _QQ.ReSize(_params.size());
   _QQ = 0.0;
   for (int iPar = 1; iPar <= _params.size(); iPar++) {
     t_pppParam* pp = _params[iPar-1];
     pp->xx = 0.0;
     if      (pp->isCrd()) {
-      _QQ(iPar,iPar) = OPT->_aprSigCrd(1) * OPT->_aprSigCrd(1); 
+      _QQ(iPar,iPar) = OPT->_aprSigCrd(1) * OPT->_aprSigCrd(1);
     }
     else if (pp->type == t_pppParam::RECCLK) {
-      _QQ(iPar,iPar) = OPT->_noiseClk * OPT->_noiseClk; 
+      _QQ(iPar,iPar) = OPT->_noiseClk * OPT->_noiseClk;
     }
     else if (pp->type == t_pppParam::TROPO) {
-      _QQ(iPar,iPar) = OPT->_aprSigTrp * OPT->_aprSigTrp; 
+      _QQ(iPar,iPar) = OPT->_aprSigTrp * OPT->_aprSigTrp;
       pp->xx = lastTrp;
     }
     else if (pp->type == t_pppParam::GLONASS_OFFSET) {
@@ -326,17 +326,17 @@ double t_pppFilter::cmpValue(t_satData* satData, bool phase) {
   xRec(3) = z();
 
   double rho0 = (satData->xx - xRec).norm_Frobenius();
-  double dPhi = t_CST::omega * rho0 / t_CST::c; 
+  double dPhi = t_CST::omega * rho0 / t_CST::c;
 
-  xRec(1) = x() * cos(dPhi) - y() * sin(dPhi); 
-  xRec(2) = y() * cos(dPhi) + x() * sin(dPhi); 
+  xRec(1) = x() * cos(dPhi) - y() * sin(dPhi);
+  xRec(2) = y() * cos(dPhi) + x() * sin(dPhi);
   xRec(3) = z();
 
   xRec += _tides->displacement(_time, xRec);
 
   satData->rho = (satData->xx - xRec).norm_Frobenius();
 
-  double tropDelay = delay_saast(satData->eleSat) + 
+  double tropDelay = delay_saast(satData->eleSat) +
                      trp() / sin(satData->eleSat);
 
   double wind = 0.0;
@@ -363,7 +363,7 @@ double t_pppFilter::cmpValue(t_satData* satData, bool phase) {
     //frqB = t_frequency::C7; -"-
   }
   double phaseCenter = 0.0;
-  if (_antex) { 
+  if (_antex) {
     bool found;
     phaseCenter = satData->lkA * _antex->rcvCorr(OPT->_antNameRover, frqA,
                                                  satData->eleSat, satData->azSat,
@@ -381,11 +381,11 @@ double t_pppFilter::cmpValue(t_satData* satData, bool phase) {
   double sina = sin(satData->azSat);
   double cose = cos(satData->eleSat);
   double sine = sin(satData->eleSat);
-  antennaOffset = -OPT->_neuEccRover(1) * cosa*cose 
-                  -OPT->_neuEccRover(2) * sina*cose 
+  antennaOffset = -OPT->_neuEccRover(1) * cosa*cose
+                  -OPT->_neuEccRover(2) * sina*cose
                   -OPT->_neuEccRover(3) * sine;
 
-  return satData->rho + phaseCenter + antennaOffset + clk() 
+  return satData->rho + phaseCenter + antennaOffset + clk()
                       + offset - satData->clk + tropDelay + wind;
 }
 
@@ -395,11 +395,11 @@ double t_pppFilter::delay_saast(double Ele) {
 
   Tracer tracer("t_pppFilter::delay_saast");
 
-  double xyz[3]; 
+  double xyz[3];
   xyz[0] = x();
   xyz[1] = y();
   xyz[2] = z();
-  double ell[3]; 
+  double ell[3];
   xyz2ell(xyz, ell);
   double height = ell[2];
 
@@ -409,22 +409,22 @@ double t_pppFilter::delay_saast(double Ele) {
   double ee =  hh / 100.0 * exp(-37.2465 + 0.213166*TT - 0.000256908*TT*TT);
 
   double h_km = height / 1000.0;
-  
+
   if (h_km < 0.0) h_km = 0.0;
   if (h_km > 5.0) h_km = 5.0;
   int    ii   = int(h_km + 1);
   double href = ii - 1;
-  
-  double bCor[6]; 
+
+  double bCor[6];
   bCor[0] = 1.156;
   bCor[1] = 1.006;
   bCor[2] = 0.874;
   bCor[3] = 0.757;
   bCor[4] = 0.654;
   bCor[5] = 0.563;
-  
+
   double BB = bCor[ii-1] + (bCor[ii]-bCor[ii-1]) * (h_km - href);
-  
+
   double zen  = M_PI/2.0 - Ele;
 
   return (0.002277/cos(zen)) * (pp + ((1255.0/TT)+0.05)*ee - BB*(tan(zen)*tan(zen)));
@@ -446,7 +446,7 @@ void t_pppFilter::predict(int iPhase, t_epoData* epoData) {
       _startTime = epoData->tt;
       reset();
     }
-    
+
     // Use different white noise for Quick-Start mode
     // ----------------------------------------------
     double sigCrdP_used = OPT->_noiseCrd(1);
@@ -458,7 +458,7 @@ void t_pppFilter::predict(int iPhase, t_epoData* epoData) {
     // -----------------------------------------
     for (int iPar = 1; iPar <= _params.size(); iPar++) {
       t_pppParam* pp = _params[iPar-1];
-    
+
       // Coordinates
       // -----------
       if      (pp->type == t_pppParam::CRD_X) {
@@ -493,8 +493,8 @@ void t_pppFilter::predict(int iPhase, t_epoData* epoData) {
           }
         }
         _QQ(iPar,iPar) += sigCrdP_used * sigCrdP_used;
-      }   
-    
+      }
+
       // Receiver Clocks
       // ---------------
       else if (pp->type == t_pppParam::RECCLK) {
@@ -504,13 +504,13 @@ void t_pppFilter::predict(int iPhase, t_epoData* epoData) {
         }
         _QQ(iPar,iPar) = OPT->_noiseClk * OPT->_noiseClk;
       }
-    
+
       // Tropospheric Delay
       // ------------------
       else if (pp->type == t_pppParam::TROPO) {
         _QQ(iPar,iPar) += OPT->_noiseTrp * OPT->_noiseTrp;
       }
-    
+
       // Glonass Offset
       // --------------
       else if (pp->type == t_pppParam::GLONASS_OFFSET) {
@@ -530,7 +530,7 @@ void t_pppFilter::predict(int iPhase, t_epoData* epoData) {
       // BDS Offset
       // ----------
       else if (pp->type == t_pppParam::BDS_OFFSET) {
-        _QQ(iPar,iPar) = 1000.0 * 1000.0;    //TODO: TEST
+        _QQ(iPar,iPar) += 0.1 * 0.1;    //TODO: TEST
       }
     }
   }
@@ -543,12 +543,12 @@ void t_pppFilter::predict(int iPhase, t_epoData* epoData) {
     // Make a copy of QQ and xx, set parameter indices
     // -----------------------------------------------
     SymmetricMatrix QQ_old = _QQ;
-    
+
     for (int iPar = 1; iPar <= _params.size(); iPar++) {
       _params[iPar-1]->index_old = _params[iPar-1]->index;
       _params[iPar-1]->index     = 0;
     }
-    
+
     // Remove Ambiguity Parameters without observations
     // ------------------------------------------------
     int iPar = 0;
@@ -568,7 +568,7 @@ void t_pppFilter::predict(int iPhase, t_epoData* epoData) {
         par->index = iPar;
       }
     }
-    
+
     // Add new ambiguity parameters
     // ----------------------------
     QMapIterator<QString, t_satData*> it(epoData->satData);
@@ -577,7 +577,7 @@ void t_pppFilter::predict(int iPhase, t_epoData* epoData) {
       t_satData* satData = it.value();
       addAmb(satData);
     }
-    
+
     int nPar = _params.size();
     _QQ.ReSize(nPar); _QQ = 0.0;
     for (int i1 = 1; i1 <= nPar; i1++) {
@@ -592,7 +592,7 @@ void t_pppFilter::predict(int iPhase, t_epoData* epoData) {
         }
       }
     }
-    
+
     for (int ii = 1; ii <= nPar; ii++) {
       t_pppParam* par = _params[ii-1];
       if (par->index_old == 0) {
@@ -633,15 +633,15 @@ t_irc t_pppFilter::update(t_epoData* epoData) {
   while (itPar.hasNext()) {
     t_pppParam* par = itPar.next();
     if      (par->type == t_pppParam::RECCLK) {
-      LOG << "\n    clk     = " << setw(10) << setprecision(3) << par->xx 
-          << " +- " << setw(6) << setprecision(3) 
+      LOG << "\n    clk     = " << setw(10) << setprecision(3) << par->xx
+          << " +- " << setw(6) << setprecision(3)
           << sqrt(_QQ(par->index,par->index));
     }
     else if (par->type == t_pppParam::AMB_L3) {
       ++par->numEpo;
       LOG << "\n    amb " << par->prn.mid(0,3).toAscii().data() << " = "
-          << setw(10) << setprecision(3) << par->xx 
-          << " +- " << setw(6) << setprecision(3) 
+          << setw(10) << setprecision(3) << par->xx
+          << " +- " << setw(6) << setprecision(3)
           << sqrt(_QQ(par->index,par->index))
           << "   nEpo = " << par->numEpo;
     }
@@ -650,17 +650,17 @@ t_irc t_pppFilter::update(t_epoData* epoData) {
       LOG << "\n    trp     = " << par->prn.mid(0,3).toAscii().data()
           << setw(7) << setprecision(3) << aprTrp << " "
           << setw(6) << setprecision(3) << showpos << par->xx << noshowpos
-          << " +- " << setw(6) << setprecision(3) 
+          << " +- " << setw(6) << setprecision(3)
           << sqrt(_QQ(par->index,par->index));
     }
     else if (par->type == t_pppParam::GLONASS_OFFSET) {
-      LOG << "\n    offGlo  = " << setw(10) << setprecision(3) << par->xx 
-          << " +- " << setw(6) << setprecision(3) 
+      LOG << "\n    offGlo  = " << setw(10) << setprecision(3) << par->xx
+          << " +- " << setw(6) << setprecision(3)
           << sqrt(_QQ(par->index,par->index));
     }
     else if (par->type == t_pppParam::GALILEO_OFFSET) {
-      LOG << "\n    offGal  = " << setw(10) << setprecision(3) << par->xx 
-          << " +- " << setw(6) << setprecision(3) 
+      LOG << "\n    offGal  = " << setw(10) << setprecision(3) << par->xx
+          << " +- " << setw(6) << setprecision(3)
           << sqrt(_QQ(par->index,par->index));
     }
     else if (par->type == t_pppParam::BDS_OFFSET) {
@@ -678,7 +678,7 @@ t_irc t_pppFilter::update(t_epoData* epoData) {
 
   // Final Message (both log file and screen)
   // ----------------------------------------
-  LOG << OPT->_roverName << "  PPP " 
+  LOG << OPT->_roverName << "  PPP "
       << epoData->tt.timestr(1) << " " << epoData->sizeAll() << " "
       << setw(14) << setprecision(3) << x()                  << " +- "
       << setw(6)  << setprecision(3) << sqrt(_QQ(1,1))       << " "
@@ -721,16 +721,16 @@ QString t_pppFilter::outlierDetection(int iPhase, const ColumnVector& vv,
 
   QString prnGPS;
   QString prnGlo;
-  double  maxResGPS = 0.0; // all the other systems except GLONASS
-  double  maxResGlo = 0.0; // GLONASS
+  double  maxResGPS = 0.0; // GPS + Galileo
+  double  maxResGlo = 0.0; // GLONASS + BDS
   findMaxRes(vv, satData, prnGPS, prnGlo, maxResGPS, maxResGlo);
 
   if      (iPhase == 1) {
-    if      (maxResGlo > 2.98 * OPT->_maxResL1) { 
+    if      (maxResGlo > 2.98 * OPT->_maxResL1) {
       LOG << "Outlier Phase " << prnGlo.mid(0,3).toAscii().data() << ' ' << maxResGlo << endl;
       return prnGlo;
     }
-    else if (maxResGPS > 2.98 * OPT->_maxResL1) { 
+    else if (maxResGPS > 2.98 * OPT->_maxResL1) {
       LOG << "Outlier Phase " << prnGPS.mid(0,3).toAscii().data() << ' ' << maxResGPS << endl;
       return prnGPS;
     }
@@ -761,13 +761,13 @@ double t_pppFilter::windUp(const QString& prn, const ColumnVector& rSat,
   // Compute the correction for new time
   // -----------------------------------
   if (!_windUpTime.contains(prn) || _windUpTime[prn] != Mjd) {
-    _windUpTime[prn] = Mjd; 
+    _windUpTime[prn] = Mjd;
 
     // Unit Vector GPS Satellite --> Receiver
     // --------------------------------------
     ColumnVector rho = rRec - rSat;
     rho /= rho.norm_Frobenius();
-    
+
     // GPS Satellite unit Vectors sz, sy, sx
     // -------------------------------------
     ColumnVector sz = -rSat / rSat.norm_Frobenius();
@@ -780,9 +780,9 @@ double t_pppFilter::windUp(const QString& prn, const ColumnVector& rSat,
 
     // Effective Dipole of the GPS Satellite Antenna
     // ---------------------------------------------
-    ColumnVector dipSat = sx - rho * DotProduct(rho,sx) 
+    ColumnVector dipSat = sx - rho * DotProduct(rho,sx)
                                                 - crossproduct(rho, sy);
-    
+
     // Receiver unit Vectors rx, ry
     // ----------------------------
     ColumnVector rx(3);
@@ -790,32 +790,32 @@ double t_pppFilter::windUp(const QString& prn, const ColumnVector& rSat,
 
     double recEll[3]; xyz2ell(rRec.data(), recEll) ;
     double neu[3];
-    
+
     neu[0] = 1.0;
     neu[1] = 0.0;
     neu[2] = 0.0;
     neu2xyz(recEll, neu, rx.data());
-    
+
     neu[0] =  0.0;
     neu[1] = -1.0;
     neu[2] =  0.0;
     neu2xyz(recEll, neu, ry.data());
-    
+
     // Effective Dipole of the Receiver Antenna
     // ----------------------------------------
-    ColumnVector dipRec = rx - rho * DotProduct(rho,rx) 
+    ColumnVector dipRec = rx - rho * DotProduct(rho,rx)
                                                    + crossproduct(rho, ry);
-    
+
     // Resulting Effect
     // ----------------
-    double alpha = DotProduct(dipSat,dipRec) / 
+    double alpha = DotProduct(dipSat,dipRec) /
                       (dipSat.norm_Frobenius() * dipRec.norm_Frobenius());
-    
+
     if (alpha >  1.0) alpha =  1.0;
     if (alpha < -1.0) alpha = -1.0;
-    
+
     double dphi = acos(alpha) / 2.0 / M_PI;  // in cycles
-    
+
     if ( DotProduct(rho, crossproduct(dipSat, dipRec)) < 0.0 ) {
       dphi = -dphi;
     }
@@ -823,10 +823,10 @@ double t_pppFilter::windUp(const QString& prn, const ColumnVector& rSat,
     _windUpSum[prn] = floor(_windUpSum[prn] - dphi + 0.5) + dphi;
   }
 
-  return _windUpSum[prn];  
+  return _windUpSum[prn];
 }
 
-// 
+//
 ///////////////////////////////////////////////////////////////////////////
 void t_pppFilter::cmpEle(t_satData* satData) {
   Tracer tracer("t_pppFilter::cmpEle");
@@ -843,7 +843,7 @@ void t_pppFilter::cmpEle(t_satData* satData) {
   satData->azSat  = atan2(neu[1], neu[0]);
 }
 
-// 
+//
 ///////////////////////////////////////////////////////////////////////////
 void t_pppFilter::addAmb(t_satData* satData) {
   Tracer tracer("t_pppFilter::addAmb");
@@ -852,21 +852,21 @@ void t_pppFilter::addAmb(t_satData* satData) {
   }
   bool    found = false;
   for (int iPar = 1; iPar <= _params.size(); iPar++) {
-    if (_params[iPar-1]->type == t_pppParam::AMB_L3 && 
+    if (_params[iPar-1]->type == t_pppParam::AMB_L3 &&
         _params[iPar-1]->prn == satData->prn) {
       found = true;
       break;
     }
   }
   if (!found) {
-    t_pppParam* par = new t_pppParam(t_pppParam::AMB_L3, 
+    t_pppParam* par = new t_pppParam(t_pppParam::AMB_L3,
                                  _params.size()+1, satData->prn);
     _params.push_back(par);
     par->xx = satData->L3 - cmpValue(satData, true);
   }
 }
 
-// 
+//
 ///////////////////////////////////////////////////////////////////////////
 void t_pppFilter::addObs(int iPhase, unsigned& iObs, t_satData* satData,
                       Matrix& AA, ColumnVector& ll, DiagonalMatrix& PP) {
@@ -875,7 +875,7 @@ void t_pppFilter::addObs(int iPhase, unsigned& iObs, t_satData* satData,
 
   const double ELEWGHT = 20.0;
   double ellWgtCoef = 1.0;
-  double eleD = satData->eleSat * 180.0 / M_PI; 
+  double eleD = satData->eleSat * 180.0 / M_PI;
   if (eleD < ELEWGHT) {
     ellWgtCoef = 1.5 - 0.5 / (ELEWGHT - 10.0) * (eleD - 10.0);
   }
@@ -902,7 +902,7 @@ void t_pppFilter::addObs(int iPhase, unsigned& iObs, t_satData* satData,
       if (_params[iPar-1]->type == t_pppParam::AMB_L3 &&
           _params[iPar-1]->prn  == satData->prn) {
         ll(iObs) -= _params[iPar-1]->xx;
-      } 
+      }
       AA(iObs, iPar) = _params[iPar-1]->partial(satData, true);
     }
   }
@@ -911,9 +911,6 @@ void t_pppFilter::addObs(int iPhase, unsigned& iObs, t_satData* satData,
   // -----------------
   else {
     double sigP3 = 2.98 * OPT->_sigmaC1;
-    if  (satData->system() == 'C') {
-      sigP3 *= BDS_WEIGHT_FACTOR;
-    }
     ll(iObs)      = satData->P3 - cmpValue(satData, false);
     PP(iObs,iObs) = 1.0 / (sigP3 * sigP3) / (ellWgtCoef * ellWgtCoef);
     for (int iPar = 1; iPar <= _params.size(); iPar++) {
@@ -922,9 +919,9 @@ void t_pppFilter::addObs(int iPhase, unsigned& iObs, t_satData* satData,
   }
 }
 
-// 
+//
 ///////////////////////////////////////////////////////////////////////////
-QByteArray t_pppFilter::printRes(int iPhase, const ColumnVector& vv, 
+QByteArray t_pppFilter::printRes(int iPhase, const ColumnVector& vv,
                               const QMap<QString, t_satData*>& satDataMap) {
 
   Tracer tracer("t_pppFilter::printRes");
@@ -949,12 +946,12 @@ QByteArray t_pppFilter::printRes(int iPhase, const ColumnVector& vv,
   return QByteArray(str.str().c_str());
 }
 
-// 
+//
 ///////////////////////////////////////////////////////////////////////////
 void t_pppFilter::findMaxRes(const ColumnVector& vv,
                           const QMap<QString, t_satData*>& satData,
-                          QString& prnGPS, QString& prnGlo, 
-                          double& maxResGPS, double& maxResGlo) { 
+                          QString& prnGPS, QString& prnGlo,
+                          double& maxResGPS, double& maxResGlo) {
 
   Tracer tracer("t_pppFilter::findMaxRes");
 
@@ -967,7 +964,7 @@ void t_pppFilter::findMaxRes(const ColumnVector& vv,
     t_satData* satData = it.value();
     if (satData->obsIndex != 0) {
       QString prn = satData->prn;
-      if (prn[0] == 'R') {
+      if (prn[0] == 'R' || prn[0] == 'C') {
         if (fabs(vv(satData->obsIndex)) > maxResGlo) {
           maxResGlo = fabs(vv(satData->obsIndex));
           prnGlo    = prn;
@@ -982,7 +979,7 @@ void t_pppFilter::findMaxRes(const ColumnVector& vv,
     }
   }
 }
- 
+
 // Update Step (private - loop over outliers)
 ////////////////////////////////////////////////////////////////////////////
 t_irc t_pppFilter::update_p(t_epoData* epoData) {
@@ -1009,7 +1006,7 @@ t_irc t_pppFilter::update_p(t_epoData* epoData) {
     }
 
     // First update using code observations, then phase observations
-    // -------------------------------------------------------------      
+    // -------------------------------------------------------------
     bool usePhase = OPT->ambLCs('G').size() || OPT->ambLCs('R').size() ||
                     OPT->ambLCs('E').size() || OPT->ambLCs('C').size() ;
 
@@ -1018,7 +1015,7 @@ t_irc t_pppFilter::update_p(t_epoData* epoData) {
       // Status Prediction
       // -----------------
       predict(iPhase, epoData);
-      
+
       // Create First-Design Matrix
       // --------------------------
       unsigned nPar = _params.size();
@@ -1033,13 +1030,13 @@ t_irc t_pppFilter::update_p(t_epoData* epoData) {
           nObs -= epoData->sizeSys(s);
         }
       }
-      
+
       // Prepare first-design Matrix, vector observed-computed
       // -----------------------------------------------------
       Matrix          AA(nObs, nPar);  // first design matrix
-      ColumnVector    ll(nObs);        // tems observed-computed
+      ColumnVector    ll(nObs);        // terms observed-computed
       DiagonalMatrix  PP(nObs); PP = 0.0;
-      
+
       unsigned iObs = 0;
       QMapIterator<QString, t_satData*> it(epoData->satData);
       while (it.hasNext()) {
@@ -1060,10 +1057,10 @@ t_irc t_pppFilter::update_p(t_epoData* epoData) {
       ColumnVector dx(nPar); dx = 0.0;
       kalman(AA, ll, PP, _QQ, dx);
       ColumnVector vv = ll - AA * dx;
-      
+
       // Print Residuals
       // ---------------
-      if      (iPhase == 0) {
+      if (iPhase == 0) {
         strResCode  = printRes(iPhase, vv, epoData->satData);
       }
       else {
@@ -1161,12 +1158,12 @@ void t_pppFilter::restoreState(t_epoData* epoData) {
   epoData->deepCopy(_epoData_sav);
 }
 
-// 
+//
 ////////////////////////////////////////////////////////////////////////////
-t_irc t_pppFilter::selectSatellites(const QString& lastOutlierPrn, 
+t_irc t_pppFilter::selectSatellites(const QString& lastOutlierPrn,
                                  QMap<QString, t_satData*>& satData) {
 
-  // First Call 
+  // First Call
   // ----------
   if (lastOutlierPrn.isEmpty()) {
     _outlierGPS.clear();
@@ -1178,7 +1175,7 @@ t_irc t_pppFilter::selectSatellites(const QString& lastOutlierPrn,
   // ----------------------
   else {
 
-    if (lastOutlierPrn[0] == 'R') {
+    if (lastOutlierPrn[0] == 'R' || lastOutlierPrn[0] == 'C') {
       _outlierGlo << lastOutlierPrn;
     }
 
@@ -1192,7 +1189,7 @@ t_irc t_pppFilter::selectSatellites(const QString& lastOutlierPrn,
       }
     }
 
-    if (lastOutlierPrn[0] == 'R') {
+    if (lastOutlierPrn[0] == 'R' || lastOutlierPrn[0] == 'C') {
       _outlierGPS.clear();
       return success;
     }
@@ -1212,13 +1209,13 @@ t_irc t_pppFilter::selectSatellites(const QString& lastOutlierPrn,
   return failure;
 }
 
-// 
+//
 ////////////////////////////////////////////////////////////////////////////
 double lorentz(const ColumnVector& aa, const ColumnVector& bb) {
   return aa(1)*bb(1) +  aa(2)*bb(2) +  aa(3)*bb(3) -  aa(4)*bb(4);
 }
 
-// 
+//
 ////////////////////////////////////////////////////////////////////////////
 void t_pppFilter::bancroft(const Matrix& BBpass, ColumnVector& pos) {
 
@@ -1236,8 +1233,8 @@ void t_pppFilter::bancroft(const Matrix& BBpass, ColumnVector& pos) {
       double traveltime = 0.072;
       if (iter > 1) {
         double zz  = BB(ii,3);
-        double rho = sqrt( (xx-pos(1)) * (xx-pos(1)) + 
-                           (yy-pos(2)) * (yy-pos(2)) + 
+        double rho = sqrt( (xx-pos(1)) * (xx-pos(1)) +
+                           (yy-pos(2)) * (yy-pos(2)) +
                            (zz-pos(3)) * (zz-pos(3)) );
         traveltime = rho / t_CST::c;
       }
@@ -1247,7 +1244,7 @@ void t_pppFilter::bancroft(const Matrix& BBpass, ColumnVector& pos) {
       BB(ii,1) =  cosa * xx + sina * yy;
       BB(ii,2) = -sina * xx + cosa * yy;
     }
-    
+
     Matrix BBB;
     if (mm > 4) {
       SymmetricMatrix hlp; hlp << BB.t() * BB;
@@ -1259,7 +1256,7 @@ void t_pppFilter::bancroft(const Matrix& BBpass, ColumnVector& pos) {
     ColumnVector ee(mm); ee = 1.0;
     ColumnVector alpha(mm); alpha = 0.0;
     for (int ii = 1; ii <= mm; ii++) {
-      alpha(ii) = lorentz(BB.Row(ii).t(),BB.Row(ii).t())/2.0; 
+      alpha(ii) = lorentz(BB.Row(ii).t(),BB.Row(ii).t())/2.0;
     }
     ColumnVector BBBe     = BBB * ee;
     ColumnVector BBBalpha = BBB * alpha;
@@ -1268,17 +1265,17 @@ void t_pppFilter::bancroft(const Matrix& BBpass, ColumnVector& pos) {
     double cc = lorentz(BBBalpha, BBBalpha);
     double root = sqrt(bb*bb-aa*cc);
 
-    Matrix hlpPos(4,2); 
+    Matrix hlpPos(4,2);
     hlpPos.Column(1) = (-bb-root)/aa * BBBe + BBBalpha;
     hlpPos.Column(2) = (-bb+root)/aa * BBBe + BBBalpha;
 
     ColumnVector omc(2);
     for (int pp = 1; pp <= 2; pp++) {
       hlpPos(4,pp)      = -hlpPos(4,pp);
-      omc(pp) = BB(1,4) - 
+      omc(pp) = BB(1,4) -
                 sqrt( (BB(1,1)-hlpPos(1,pp)) * (BB(1,1)-hlpPos(1,pp)) +
                       (BB(1,2)-hlpPos(2,pp)) * (BB(1,2)-hlpPos(2,pp)) +
-                      (BB(1,3)-hlpPos(3,pp)) * (BB(1,3)-hlpPos(3,pp)) ) - 
+                      (BB(1,3)-hlpPos(3,pp)) * (BB(1,3)-hlpPos(3,pp)) ) -
                 hlpPos(4,pp);
     }
     if ( fabs(omc(1)) > fabs(omc(2)) ) {
@@ -1290,7 +1287,7 @@ void t_pppFilter::bancroft(const Matrix& BBpass, ColumnVector& pos) {
   }
 }
 
-// 
+//
 ////////////////////////////////////////////////////////////////////////////
 void t_pppFilter::cmpDOP(t_epoData* epoData) {
 
@@ -1318,8 +1315,8 @@ void t_pppFilter::cmpDOP(t_epoData* epoData) {
     return;
   }
   AA = AA.Rows(1, _numSat);
-  SymmetricMatrix NN; NN << AA.t() * AA;  
+  SymmetricMatrix NN; NN << AA.t() * AA;
   SymmetricMatrix QQ = NN.i();
-    
+
   _pDop = sqrt(QQ(1,1) + QQ(2,2) + QQ(3,3));
 }
