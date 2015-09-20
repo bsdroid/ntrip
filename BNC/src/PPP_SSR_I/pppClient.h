@@ -37,7 +37,7 @@ class bncEphUser;
 class t_eph;
 
 namespace BNC_PPP {
-  
+
 class t_pppClient : public interface_pppClient {
  public:
   t_pppClient(const t_pppOptions* opt);
@@ -45,9 +45,10 @@ class t_pppClient : public interface_pppClient {
   void                processEpoch(const std::vector<t_satObs*>& satObs, t_output* output);
   void                putEphemeris(const t_eph* eph);
   void                putTec(const t_vTec* vTec);
-  void                putOrbCorrections(const std::vector<t_orbCorr*>& corr); 
-  void                putClkCorrections(const std::vector<t_clkCorr*>& corr); 
-  void                putCodeBiases(const std::vector<t_satCodeBias*>& satCodeBias);   
+  void                putOrbCorrections(const std::vector<t_orbCorr*>& corr);
+  void                putClkCorrections(const std::vector<t_clkCorr*>& corr);
+  void                putCodeBiases(const std::vector<t_satCodeBias*>& satCodeBias);
+  void                putPhaseBiases(const std::vector<t_satPhaseBias*>& satPhaseBias);
   std::ostringstream& log() {return *_log;}
   const t_pppOptions* opt() const {return _opt;}
 
@@ -60,7 +61,7 @@ class t_pppClient : public interface_pppClient {
   t_epoData*          _epoData;
   t_pppFilter*        _filter;
   t_pppUtils*         _pppUtils;
-  std::ostringstream* _log; 
+  std::ostringstream* _log;
 };
 
 } // namespace

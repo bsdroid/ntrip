@@ -111,6 +111,9 @@ t_pppRun::t_pppRun(const t_pppOptions* opt) {
 
     connect(BNC_CORE, SIGNAL(newCodeBiases(QList<t_satCodeBias>)),
             this, SLOT(slotNewCodeBiases(QList<t_satCodeBias>)),conType);
+
+    connect(BNC_CORE, SIGNAL(newPhaseBiases(QList<t_satPhaseBias>)),
+            this, SLOT(slotNewPhaseBiases(QList<t_satPhaseBias>)),conType);
   }
   else {
     _rnxObsFile = 0;
@@ -408,6 +411,30 @@ void t_pppRun::slotNewCodeBiases(QList<t_satCodeBias> codeBiases) {
 
 //
 ////////////////////////////////////////////////////////////////////////////
+void t_pppRun::slotNewPhaseBiases(QList<t_satPhaseBias> phaseBiases) {
+  if (phaseBiases.size() == 0) {
+    return;
+  }
+
+  if (_opt->_realTime) {
+    if (_opt->_corrMount.empty() || _opt->_corrMount != phaseBiases[0]._staID) {
+      return;
+    }
+  }
+  vector<t_satPhaseBias*> biases;
+  for (int ii = 0; ii < phaseBiases.size(); ii++) {
+    biases.push_back(new t_satPhaseBias(phaseBiases[ii]));
+  }
+
+  _pppClient->putPhaseBiases(biases);
+
+  for (unsigned ii = 0; ii < biases.size(); ii++) {
+    delete biases[ii];
+  }
+}
+
+//
+////////////////////////////////////////////////////////////////////////////
 void t_pppRun::processFiles() {
 
   try {
@@ -431,6 +458,8 @@ void t_pppRun::processFiles() {
             this, SLOT(slotNewClkCorrections(QList<t_clkCorr>)));
     connect(_corrFile, SIGNAL(newCodeBiases(QList<t_satCodeBias>)),
             this, SLOT(slotNewCodeBiases(QList<t_satCodeBias>)));
+    connect(_corrFile, SIGNAL(newPhaseBiases(QList<t_satPhaseBias>)),
+            this, SLOT(slotNewPhaseBiases(QList<t_satPhaseBias>)));
   }
 
   // Read/Process Observations

@@ -43,6 +43,7 @@ class t_pppRun : public QObject {
   void slotNewOrbCorrections(QList<t_orbCorr> orbCorr);
   void slotNewClkCorrections(QList<t_clkCorr> clkCorr);
   void slotNewCodeBiases(QList<t_satCodeBias> codeBiases);
+  void slotNewPhaseBiases(QList<t_satPhaseBias> phaseBiases);
   void slotNewObs(QByteArray staID, QList<t_satObs> obsList);
   void slotSetSpeed(int speed);
   void slotSetStopFlag();

@@ -34,7 +34,7 @@
  *
  * Created:    21-Nov-2009
  *
- * Changes:    
+ * Changes:
  *
  * -----------------------------------------------------------------------*/
 
@@ -75,12 +75,12 @@ t_pppClient::~t_pppClient() {
 //
 ////////////////////////////////////////////////////////////////////////////
 void t_pppClient::processEpoch(const vector<t_satObs*>& satObs, t_output* output) {
-  
+
   // Convert and store observations
   // ------------------------------
   _epoData->clear();
   for (unsigned ii = 0; ii < satObs.size(); ii++) {
-    const t_satObs* obs     = satObs[ii]; 
+    const t_satObs* obs     = satObs[ii];
     t_prn prn = obs->_prn;
     if (prn.system() == 'E') {prn.setFlags(1);} // force I/NAV usage
     t_satData*   satData = new t_satData();
@@ -144,7 +144,7 @@ void t_pppClient::processEpoch(const vector<t_satObs*>& satObs, t_output* output
     it.next();
     QString    prn     = it.key();
     t_satData* satData = it.value();
-    
+
     if (cmpToT(satData) != success) {
       delete satData;
       it.remove();
@@ -210,7 +210,7 @@ void t_pppClient::putNewObs(t_satData* satData) {
   // Set Observations Glonass
   // ------------------------
   else if (satData->system() == 'R' && _opt->useSystem('R')) {
-    if (satData->P1 != 0.0 && satData->P2 != 0.0 && 
+    if (satData->P1 != 0.0 && satData->P2 != 0.0 &&
         satData->L1 != 0.0 && satData->L2 != 0.0 ) {
 
       int channel = 0;
@@ -248,7 +248,7 @@ void t_pppClient::putNewObs(t_satData* satData) {
   // Set Observations Galileo
   // ------------------------
   else if (satData->system() == 'E' && _opt->useSystem('E')) {
-    if (satData->P1 != 0.0 && satData->P5 != 0.0 && 
+    if (satData->P1 != 0.0 && satData->P5 != 0.0 &&
         satData->L1 != 0.0 && satData->L5 != 0.0 ) {
       double f1 = t_CST::freq(t_frequency::E1, 0);
       double f5 = t_CST::freq(t_frequency::E5, 0);
@@ -292,7 +292,7 @@ void t_pppClient::putNewObs(t_satData* satData) {
   }
 }
 
-// 
+//
 ////////////////////////////////////////////////////////////////////////////
 void t_pppClient::putOrbCorrections(const std::vector<t_orbCorr*>& corr) {
   for (unsigned ii = 0; ii < corr.size(); ii++) {
@@ -308,7 +308,7 @@ void t_pppClient::putOrbCorrections(const std::vector<t_orbCorr*>& corr) {
   }
 }
 
-// 
+//
 ////////////////////////////////////////////////////////////////////////////
 void t_pppClient::putClkCorrections(const std::vector<t_clkCorr*>& corr) {
   for (unsigned ii = 0; ii < corr.size(); ii++) {
@@ -324,7 +324,7 @@ void t_pppClient::putClkCorrections(const std::vector<t_clkCorr*>& corr) {
   }
 }
 
-// 
+//
 //////////////////////////////////////////////////////////////////////////////
 void t_pppClient::putCodeBiases(const std::vector<t_satCodeBias*>& satCodeBias) {
   for (unsigned ii = 0; ii < satCodeBias.size(); ii++) {
@@ -334,10 +334,15 @@ void t_pppClient::putCodeBiases(const std::vector<t_satCodeBias*>& satCodeBias) 
 
 //
 //////////////////////////////////////////////////////////////////////////////
+void t_pppClient::putPhaseBiases(const std::vector<t_satPhaseBias*>& /*satPhaseBias*/) {
+}
+
+//
+//////////////////////////////////////////////////////////////////////////////
 void t_pppClient::putTec(const t_vTec* /*vTec*/) {
 }
 
-// 
+//
 //////////////////////////////////////////////////////////////////////////////
 void t_pppClient::putEphemeris(const t_eph* eph) {
   bool check = _opt->_realTime;
@@ -361,7 +366,7 @@ void t_pppClient::putEphemeris(const t_eph* eph) {
 
 // Satellite Position
 ////////////////////////////////////////////////////////////////////////////
-t_irc t_pppClient::getSatPos(const bncTime& tt, const QString& prn, 
+t_irc t_pppClient::getSatPos(const bncTime& tt, const QString& prn,
                               ColumnVector& xc, ColumnVector& vv) {
 
   t_eph* eLast = _ephUser->ephLast(prn);
@@ -403,7 +408,7 @@ t_irc t_pppClient::cmpToT(t_satData* satData) {
       satData->vv      = vv;
       satData->clk     = clkSat * t_CST::c;
       return success;
-    } 
+    }
   }
 
   return failure;
