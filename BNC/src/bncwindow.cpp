@@ -34,22 +34,22 @@
  *
  * Created:    24-Dec-2005
  *
- * Changes:    
+ * Changes:
  *
  * -----------------------------------------------------------------------*/
 
 #include <iostream>
 
 #include <unistd.h>
-#include "bncwindow.h" 
-#include "bnccore.h" 
-#include "bncgetthread.h" 
-#include "bnctabledlg.h" 
-#include "bncipport.h" 
-#include "bncudpport.h" 
-#include "bncserialport.h" 
-#include "bnchlpdlg.h" 
-#include "bnchtml.h" 
+#include "bncwindow.h"
+#include "bnccore.h"
+#include "bncgetthread.h"
+#include "bnctabledlg.h"
+#include "bncipport.h"
+#include "bncudpport.h"
+#include "bncserialport.h"
+#include "bnchlpdlg.h"
+#include "bnchtml.h"
 #include "bnctableitem.h"
 #include "bncsettings.h"
 #include "bncfigure.h"
@@ -110,14 +110,14 @@ bncWindow::bncWindow() {
   _mapWin = 0;
 
   int ww = QFontMetrics(this->font()).width('w');
-  
+
   static const QStringList labels = QString("account, Streams:   resource loader / mountpoint, decoder, country, lat, long, nmea, ntrip, bytes").split(",");
 
   setMinimumSize(100*ww, 70*ww);
 
   setWindowTitle(tr("BKG Ntrip Client (BNC) Version " BNCVERSION));
 
-  connect(BNC_CORE, SIGNAL(newMessage(QByteArray,bool)), 
+  connect(BNC_CORE, SIGNAL(newMessage(QByteArray,bool)),
           this, SLOT(slotWindowMessage(QByteArray,bool)));
 
   // Create Actions
@@ -169,7 +169,7 @@ bncWindow::bncWindow() {
   _proxyHostLineEdit  = new QLineEdit(settings.value("proxyHost").toString());
   _proxyPortLineEdit  = new QLineEdit(settings.value("proxyPort").toString());
 
-  connect(_proxyHostLineEdit, SIGNAL(textChanged(const QString &)), 
+  connect(_proxyHostLineEdit, SIGNAL(textChanged(const QString &)),
           this, SLOT(slotBncTextChanged()));
 
   _sslCaCertPathLineEdit   = new QLineEdit(settings.value("sslCaCertPath").toString());
@@ -226,7 +226,7 @@ bncWindow::bncWindow() {
   }
   _rnxV2Priority = new QLineEdit(hlp);
 
-  connect(_rnxPathLineEdit, SIGNAL(textChanged(const QString &)), 
+  connect(_rnxPathLineEdit, SIGNAL(textChanged(const QString &)),
           this, SLOT(slotBncTextChanged()));
   connect(_rnxV3CheckBox, SIGNAL(stateChanged(int)),
           this, SLOT(slotBncTextChanged()));
@@ -418,7 +418,7 @@ bncWindow::bncWindow() {
   _mountPointsTable->setSelectionBehavior(QAbstractItemView::SelectRows);
   _mountPointsTable->hideColumn(0);
   _mountPointsTable->hideColumn(3);
-  connect(_mountPointsTable, SIGNAL(itemSelectionChanged()), 
+  connect(_mountPointsTable, SIGNAL(itemSelectionChanged()),
           SLOT(slotSelectionChanged()));
   populateMountPointsTable();
 
@@ -435,13 +435,13 @@ bncWindow::bncWindow() {
   _cmbTable->setSelectionMode(QAbstractItemView::ExtendedSelection);
   _cmbTable->setSelectionBehavior(QAbstractItemView::SelectRows);
   _cmbTable->setMaximumWidth(30*ww);
-  _cmbTable->horizontalHeader()->resizeSection(0,10*ww); 
-  _cmbTable->horizontalHeader()->resizeSection(1,8*ww); 
-  _cmbTable->horizontalHeader()->resizeSection(2,8*ww); 
+  _cmbTable->horizontalHeader()->resizeSection(0,10*ww);
+  _cmbTable->horizontalHeader()->resizeSection(1,8*ww);
+  _cmbTable->horizontalHeader()->resizeSection(2,8*ww);
   _cmbTable->horizontalHeader()->setResizeMode(QHeaderView::Interactive);
   _cmbTable->horizontalHeader()->setStretchLastSection(true);
   _cmbTable->horizontalHeader()->setDefaultAlignment(Qt::AlignLeft);
-  
+
   _cmbMaxresLineEdit = new QLineEdit(settings.value("cmbMaxres").toString());
   _cmbUseGlonass     = new QCheckBox();
   _cmbUseGlonass->setCheckState(Qt::CheckState(settings.value("cmbUseGlonass").toInt()));
@@ -458,7 +458,7 @@ bncWindow::bncWindow() {
   QPushButton* delCmbRowButton = new QPushButton("Delete");
 
   connect(_cmbTable, SIGNAL(itemSelectionChanged()),
-          SLOT(slotBncTextChanged())); 
+          SLOT(slotBncTextChanged()));
 
   _cmbMethodComboBox = new QComboBox();
   _cmbMethodComboBox->setEditable(false);
@@ -474,7 +474,7 @@ bncWindow::bncWindow() {
     enableWidget(true, _cmbMaxresLineEdit);
     enableWidget(true, _cmbSamplSpinBox);
     enableWidget(true, _cmbUseGlonass);
-  } 
+  }
   else {
     enableWidget(false, _cmbMethodComboBox);
     enableWidget(false, _cmbMaxresLineEdit);
@@ -488,23 +488,23 @@ bncWindow::bncWindow() {
   _uploadTable->setHorizontalHeaderLabels(QString("Host, Port, Mount, Password, System, CoM, SP3 File, RNX File, PID, SID, IOD, bytes").split(","));
   _uploadTable->setSelectionMode(QAbstractItemView::ExtendedSelection);
   _uploadTable->setSelectionBehavior(QAbstractItemView::SelectRows);
-  _uploadTable->horizontalHeader()->resizeSection( 0,13*ww); 
-  _uploadTable->horizontalHeader()->resizeSection( 1, 5*ww); 
-  _uploadTable->horizontalHeader()->resizeSection( 2, 6*ww); 
-  _uploadTable->horizontalHeader()->resizeSection( 3, 8*ww); 
-  _uploadTable->horizontalHeader()->resizeSection( 4,11*ww); 
-  _uploadTable->horizontalHeader()->resizeSection( 5, 4*ww); 
-  _uploadTable->horizontalHeader()->resizeSection( 6,15*ww); 
-  _uploadTable->horizontalHeader()->resizeSection( 7,15*ww); 
-  _uploadTable->horizontalHeader()->resizeSection( 8, 4*ww); 
-  _uploadTable->horizontalHeader()->resizeSection( 9, 4*ww); 
-  _uploadTable->horizontalHeader()->resizeSection(10, 4*ww); 
-  _uploadTable->horizontalHeader()->resizeSection(11,12*ww); 
+  _uploadTable->horizontalHeader()->resizeSection( 0,13*ww);
+  _uploadTable->horizontalHeader()->resizeSection( 1, 5*ww);
+  _uploadTable->horizontalHeader()->resizeSection( 2, 6*ww);
+  _uploadTable->horizontalHeader()->resizeSection( 3, 8*ww);
+  _uploadTable->horizontalHeader()->resizeSection( 4,11*ww);
+  _uploadTable->horizontalHeader()->resizeSection( 5, 4*ww);
+  _uploadTable->horizontalHeader()->resizeSection( 6,15*ww);
+  _uploadTable->horizontalHeader()->resizeSection( 7,15*ww);
+  _uploadTable->horizontalHeader()->resizeSection( 8, 4*ww);
+  _uploadTable->horizontalHeader()->resizeSection( 9, 4*ww);
+  _uploadTable->horizontalHeader()->resizeSection(10, 4*ww);
+  _uploadTable->horizontalHeader()->resizeSection(11,12*ww);
   _uploadTable->horizontalHeader()->setResizeMode(QHeaderView::Interactive);
   _uploadTable->horizontalHeader()->setStretchLastSection(true);
   _uploadTable->horizontalHeader()->setDefaultAlignment(Qt::AlignLeft);
 
-  connect(_uploadTable, SIGNAL(itemSelectionChanged()), 
+  connect(_uploadTable, SIGNAL(itemSelectionChanged()),
           SLOT(slotBncTextChanged()));
 
   QPushButton* addUploadRowButton = new QPushButton("Add Row");
@@ -552,7 +552,7 @@ bncWindow::bncWindow() {
     enableWidget(true, _uploadSamplSp3SpinBox);
     enableWidget(true, _uploadSamplClkRnxSpinBox);
     enableWidget(true, _uploadAntexFile);
-  } 
+  }
   else {
     enableWidget(false, _uploadIntrComboBox);
     enableWidget(false, _uploadSamplRtcmEphCorrSpinBox);
@@ -683,7 +683,7 @@ bncWindow::bncWindow() {
   _rnxIntrComboBox->setMaximumWidth(9*ww);
   _rnxSamplSpinBox->setMaximumWidth(9*ww);
 
-  _rnxV2Priority->setMaximumWidth(9*ww);
+  _rnxV2Priority->setMaximumWidth(19*ww);
 
   oLayout->addWidget(new QLabel("Saving RINEX observation files.<br>"),0, 0, 1,50);
   oLayout->addWidget(new QLabel("Directory"),                      1, 0);
@@ -868,7 +868,7 @@ bncWindow::bncWindow() {
   QGridLayout* pppLayout1 = new QGridLayout();
   int ir = 0;
   pppLayout1->addWidget(new QLabel("Precise Point Positioning - Input and Output."), ir, 0, 1, 7, Qt::AlignLeft);
-  ++ir;     
+  ++ir;
   pppLayout1->addWidget(new QLabel("Data source"),           ir, 0);
   pppLayout1->addWidget(_pppWidgets._dataSource,             ir, 1);
   pppLayout1->addItem(new QSpacerItem(4*ww, 0),              ir, 2);
@@ -944,7 +944,7 @@ bncWindow::bncWindow() {
 
   _pppWidgets._lcGPS->setWhatsThis(tr("<p>Specify which kind of GPS observations you want to use and on which kind of ionosphere-free linear combination of GPS observations you want to base ambiguity resolutions.</p><p><ul><li>Specifying 'P3' means that you request BNC to use code data and the so-called P3 ionosphere-free linear combination of code observations.</li><li>'L3' means that you request BNC to use phase data and the so-called L3 ionosphere-free linear combination of phase observations.</li> <li>'P3&L3' means that you request BNC to use both, code and phase data and the so-called P3 and L3 ionosphere-free linear combination of code and phase observations.</li></ul></p><p>Note that most geodetic receivers support the observation of GPS code and phase data. Hence specifying 'P3&L3' would be a good choice when processing data from such a receiver.</p><p>Specifying 'no' means that you don't want BNC to use GPS data.</p>"));
 
-  _pppWidgets._lcGLONASS->setWhatsThis(tr("<p>Specify which kind of GLONASS observations you want to use and on which kind of ionosphere-free linear combination of GLONASS observations you want to base ambiguity resolutions.</p><p><ul><li>Specifying 'P3' means that you request BNC to use code data and the so-called P3 ionosphere-free linear combination of code observations.</li><li>'L3' means that you request BNC to use phase data and the so-called L3 ionosphere-free linear combination of phase observations.</li> <li>'P3&L3' means that you request BNC to use both, code and phase data and the so-called P3 and L3 ionosphere-free linear combination of code and phase observations.</li></ul></p><p>Specifying 'no' means that you don't want BNC to use GLONASS data.</p>")); 
+  _pppWidgets._lcGLONASS->setWhatsThis(tr("<p>Specify which kind of GLONASS observations you want to use and on which kind of ionosphere-free linear combination of GLONASS observations you want to base ambiguity resolutions.</p><p><ul><li>Specifying 'P3' means that you request BNC to use code data and the so-called P3 ionosphere-free linear combination of code observations.</li><li>'L3' means that you request BNC to use phase data and the so-called L3 ionosphere-free linear combination of phase observations.</li> <li>'P3&L3' means that you request BNC to use both, code and phase data and the so-called P3 and L3 ionosphere-free linear combination of code and phase observations.</li></ul></p><p>Specifying 'no' means that you don't want BNC to use GLONASS data.</p>"));
 
   _pppWidgets._lcGalileo->setWhatsThis(tr("<p>Specify which kind of Galileo observations you want to use and on which kind of of ionosphere-free linear combination of Galileo observations you want to base ambiguity resolutions.</p><p><ul><li>Specifying 'P3' means that you request BNC to use code data and the so-called P3 ionosphere-free linear combination of code observations.</li><li>'L3' means that you request BNC to use phase data and the so-called L3 ionosphere-free linear combination of phase observations.</li> <li>'P3&L3' means that you request BNC to use both, code and phase data and the so-called P3 and L3 ionosphere-free linear combination of code and phase observations.</li></ul></p><p>Specifying on of these options makes only sense if Galileo data are part ot the processed observation stream.</p><p>Specifying 'no' means that you don't want BNC to use Galileo data.</p>"));
 
@@ -957,7 +957,7 @@ bncWindow::bncWindow() {
   pppLayout2sub->addWidget(_pppWidgets._addStaButton);
   pppLayout2sub->addWidget(_pppWidgets._delStaButton);
   pppLayout2sub->addStretch(99);
- 
+
   pppLayout2->addLayout(pppLayout2sub);
 
   pppGroup2->setLayout(pppLayout2);
@@ -965,7 +965,7 @@ bncWindow::bncWindow() {
   QGridLayout* pppLayout3 = new QGridLayout();
   ir = 0;
   pppLayout3->addWidget(new QLabel("Precise Point Positioning - Options.<br>"), ir, 0, 1, 2, Qt::AlignLeft);
-  ++ir;     
+  ++ir;
   pppLayout3->addWidget(new QLabel("GPS LCs"),              ir, 0, Qt::AlignLeft);
   pppLayout3->addWidget(_pppWidgets._lcGPS,                 ir, 1);
   pppLayout3->addItem(new QSpacerItem(8*ww, 0),             ir, 2);
@@ -1084,8 +1084,8 @@ bncWindow::bncWindow() {
 
   _reqcSkyPlotSignals = new QLineEdit(settings.value("reqcSkyPlotSignals").toString());
   _reqcSkyPlotSignals->setWhatsThis(tr("<p>BNC can produce plots for multipath, signal-to-noise ratio, satellite availability, satellite elevation, and PDOP values. The 'Plots for signals' option lets you exactly specify the observation signals to be used for that and also enables the plot production. You can specify the navigation system, the frequency, and the tracking mode or channel as defined in RINEX Version 3. Specifications for fequency and tracking mode or channel must be seperated by ampersand character '&'. Specifications for each navigation systems must be seperated by blank character ' '.</p><p>Examples for 'Plots for signals' option:<ul><li> G:1&2 R:1&2 J:1&2 E:1&7 C:1&6 S:1<br>(Plots will be based on GPS observations on 1st and 2nd frequency, GLONASS observations on 1st and 2nd frequency, QZSS observations on 1st and 2nd frequency, Galileo observations on 1st and 7th frequency, BeiDou observations on 1st and 6th frequency, SBAS observations on 1st frequency.)</li><li>G:1C&5X<br>(Plots will be based on GPS observations on 1st frequency in C tracking mode and GPS observations on 5th frequency in X tracking mode.)</li><li>C:6I&7I<br>(Plots will be based on BeiDou observations on 6th frequency in I tracking mode and BeiDou observations on 7th frequency in I tracking mode.)<li></ul></p><p>Default is 'C:2&7 E:1&5 G:1&2 J:1&2 R:1&2 S:1&5'. Specifying an empty option string would be overruled by this default.</p>"));
- 
-  connect(_reqcSkyPlotSignals, SIGNAL(textChanged(const QString &)), 
+
+  connect(_reqcSkyPlotSignals, SIGNAL(textChanged(const QString &)),
           this, SLOT(slotBncTextChanged()));
 
   _reqcLogSummaryOnly = new QCheckBox();
@@ -1140,7 +1140,7 @@ bncWindow::bncWindow() {
 
   reqcgroup->setLayout(reqcLayout);
 
-  connect(_reqcEditOptionButton, SIGNAL(clicked()), 
+  connect(_reqcEditOptionButton, SIGNAL(clicked()),
           this, SLOT(slotReqcEditOption()));
 
   QGridLayout* sp3CompLayout = new QGridLayout;
@@ -1261,7 +1261,7 @@ bncWindow::bncWindow() {
   uploadLayoutEph->addWidget(new QLabel("Sampling"),              3, 0);
   uploadLayoutEph->addWidget(_uploadEphSampleSpinBox,             3, 1);
   uploadLayoutEph->addWidget(new QLabel("Uploaded"),              4, 0);
-  uploadLayoutEph->addWidget(_uploadEphBytesCounter,              4, 1); 
+  uploadLayoutEph->addWidget(_uploadEphBytesCounter,              4, 1);
   uploadLayoutEph->setRowStretch(5, 999);
 
   uploadEphgroup->setLayout(uploadLayoutEph);
@@ -1292,7 +1292,7 @@ bncWindow::bncWindow() {
   _outUPortLineEdit->setWhatsThis(tr("BNC can produce unsynchronized observations in a plain ASCII format on your local host through an IP port. Specify a port number here to activate this function."));
   _outEphPortLineEdit->setWhatsThis(tr("BNC can produce ephemeris data in RINEX ASCII format on your local host through an IP port. Specify a port number here to activate this function."));
   _corrPortLineEdit->setWhatsThis(tr("BNC can produce Broadcast Ephemeris Corrections on your local host through an IP port. Specify a port number here to activate this function."));
-  _rnxPathLineEdit->setWhatsThis(tr("Here you specify the path to where the RINEX Observation files will be stored. If the specified directory does not exist, BNC will not create RINEX Observation files.")); 
+  _rnxPathLineEdit->setWhatsThis(tr("Here you specify the path to where the RINEX Observation files will be stored. If the specified directory does not exist, BNC will not create RINEX Observation files."));
   _ephPathLineEdit->setWhatsThis(tr("Specify the path for saving Broadcast Ephemeris data as RINEX Navigation files. If the specified directory does not exist, BNC will not create RINEX Navigation files."));
   _corrPathLineEdit->setWhatsThis(tr("Specify a directory for saving Broadcast Ephemeris Correction files. If the specified directory does not exist, BNC will not create the files."));
   _rnxScrpLineEdit->setWhatsThis(tr("<p>Whenever a RINEX Observation file is saved, you might want to compress, copy or upload it immediately via FTP. BNC allows you to execute a script/batch file to carry out these operations. To do that specify the full path of the script/batch file here. BNC will pass the full RINEX Observation file path to the script as a command line parameter (%1 on Windows systems, $1 onUnix/Linux systems).</p>"));
@@ -1356,8 +1356,8 @@ bncWindow::bncWindow() {
   _uploadSamplRtcmEphCorrSpinBox->setWhatsThis(tr("Select the stream's orbit correction sampling interval in seconds. A value of zero '0' tells BNC to upload all available orbit and clock correction samples together in combined messages."));
   _uploadSamplClkRnxSpinBox->setWhatsThis(tr("Select the Clock RINEX file sampling interval in seconds. A value of zero '0' tells BNC to store all available samples into Clock RINEX files."));
   _uploadSamplSp3SpinBox->setWhatsThis(tr("Select the SP3 orbit file sampling interval in minutes. A value of zero '0' tells BNC to store all available samples into SP3 orbit files."));
-  setUploadTrafoButton->setWhatsThis(tr("Hit 'Custom Trafo' to specify your own 14 parameter Helmert Transformation instead of selecting a predefined transformation through 'System' button.")); 
-  _uploadAntexFile->setWhatsThis(tr("<p>When producing SP3 files or referring orbit and clock corrections to the satellite's Center of Mass (CoM) instead of Antenna Phase Center (APC), an offset has to be applied which is available from the IGS 'ANTEX file'. You must therefore specify the 'ANTEX file' path if you want to save the stream contents in SP3 format and/or refer correctors to CoM.</p><p>If you don't specify an 'ANTEX file' path, the SP3 file contents as well as the orbit and clock correctors will be referred to satellite APCs.</p>")); 
+  setUploadTrafoButton->setWhatsThis(tr("Hit 'Custom Trafo' to specify your own 14 parameter Helmert Transformation instead of selecting a predefined transformation through 'System' button."));
+  _uploadAntexFile->setWhatsThis(tr("<p>When producing SP3 files or referring orbit and clock corrections to the satellite's Center of Mass (CoM) instead of Antenna Phase Center (APC), an offset has to be applied which is available from the IGS 'ANTEX file'. You must therefore specify the 'ANTEX file' path if you want to save the stream contents in SP3 format and/or refer correctors to CoM.</p><p>If you don't specify an 'ANTEX file' path, the SP3 file contents as well as the orbit and clock correctors will be referred to satellite APCs.</p>"));
   _uploadEphHostLineEdit->setWhatsThis(tr("BNC can upload a Broadcast Ephemeris stream in RTCM Version 3 format. Specify the host IP of an Ntrip Broadcaster to upload the stream. An empty option field means that you don't want to upload Broadcast Ephemeris."));
   _uploadEphPortLineEdit->setWhatsThis(tr("Specify the IP port of an Ntrip Broadcaster to upload the stream. Default is port 80."));
   _uploadEphMountpointLineEdit->setWhatsThis(tr("Specify the mounpoint for stream upload to an Ntrip Broadcaster."));
@@ -1366,7 +1366,7 @@ bncWindow::bncWindow() {
   _uploadEphBytesCounter->setWhatsThis(tr("BNC shows the amount of data uploaded through this stream."));
   _actDeleteMountPoints->setWhatsThis(tr("<p>Delete stream(s) from selection presented in the 'Streams' canvas.</p>"));
   _actAddMountPoints->setWhatsThis(tr("<p>Add stream(s) to selection presented in the 'Streams' canvas.</p>"));
-  _actMapMountPoints->setWhatsThis(tr("<p> Draw distribution map of stream selection presented in the 'Streams' canvas. Use the mouse to zoom in or out.</p><p>Left button: Draw rectangle to zoom in.<br>Right button: Zoom out.<br>Middle button: Zoom back.</p>")); 
+  _actMapMountPoints->setWhatsThis(tr("<p> Draw distribution map of stream selection presented in the 'Streams' canvas. Use the mouse to zoom in or out.</p><p>Left button: Draw rectangle to zoom in.<br>Right button: Zoom out.<br>Middle button: Zoom back.</p>"));
   _actStart->setWhatsThis(tr("<p> Start running BNC.</p>"));
   _actStop->setWhatsThis(tr("<p> Stop running BNC.</p>"));
 
@@ -1389,7 +1389,7 @@ bncWindow::~bncWindow() {
   delete _casterEph;
 }
 
-// 
+//
 ////////////////////////////////////////////////////////////////////////////
 void bncWindow::populateMountPointsTable() {
 
@@ -1479,7 +1479,7 @@ void bncWindow::slotAddMountPoints() {
   if (proxyHost != _proxyHostLineEdit->text()         ||
       proxyPort != _proxyPortLineEdit->text().toInt()) {
     int iRet = QMessageBox::question(this, "Question", "Proxy options "
-                                     "changed. Use the new ones?", 
+                                     "changed. Use the new ones?",
                                      QMessageBox::Yes, QMessageBox::No,
                                      QMessageBox::NoButton);
     if      (iRet == QMessageBox::Yes) {
@@ -1647,10 +1647,10 @@ void bncWindow::saveOptions() {
   for (int iRow = 0; iRow < _mountPointsTable->rowCount(); iRow++) {
 
     if (_mountPointsTable->item(iRow, 6)->text() != "S") {
-      QUrl url( "//" + _mountPointsTable->item(iRow, 0)->text() + 
+      QUrl url( "//" + _mountPointsTable->item(iRow, 0)->text() +
                 "@"  + _mountPointsTable->item(iRow, 1)->text() );
 
-      mountPoints.append(url.toString() + " " + 
+      mountPoints.append(url.toString() + " " +
                          _mountPointsTable->item(iRow, 2)->text()
                  + " " + _mountPointsTable->item(iRow, 3)->text()
                  + " " + _mountPointsTable->item(iRow, 4)->text()
@@ -1658,7 +1658,7 @@ void bncWindow::saveOptions() {
                  + " " + _mountPointsTable->item(iRow, 6)->text()
                  + " " + _mountPointsTable->item(iRow, 7)->text());
     } else {
-      mountPoints.append( 
+      mountPoints.append(
                   "//" + _mountPointsTable->item(iRow, 1)->text()
                  + " " + _mountPointsTable->item(iRow, 2)->text()
                  + " " + _mountPointsTable->item(iRow, 3)->text()
@@ -1686,7 +1686,7 @@ void bncWindow::saveOptions() {
   for (int iRow = 0; iRow < _uploadTable->rowCount(); iRow++) {
     QString hlp;
     for (int iCol = 0; iCol < _uploadTable->columnCount(); iCol++) {
-      if (_uploadTable->cellWidget(iRow, iCol) && 
+      if (_uploadTable->cellWidget(iRow, iCol) &&
           (iCol == 3 || iCol == 4 || iCol == 5)) {
         if      (iCol == 3) {
           QLineEdit* passwd = (QLineEdit*)(_uploadTable->cellWidget(iRow, iCol));
@@ -1716,7 +1716,7 @@ void bncWindow::saveOptions() {
   settings.setValue("startTab",    _aogroup->currentIndex());
   settings.setValue("statusTab",   _loggroup->currentIndex());
   settings.setValue("mountPoints", mountPoints);
-// Network 
+// Network
   settings.setValue("proxyHost",   _proxyHostLineEdit->text());
   settings.setValue("proxyPort",   _proxyPortLineEdit->text());
   settings.setValue("sslCaCertPath",   _sslCaCertPathLineEdit->text());
@@ -1774,7 +1774,7 @@ void bncWindow::saveOptions() {
   settings.setValue("adviseFail",  _adviseFailSpinBox->value());
   settings.setValue("adviseReco",  _adviseRecoSpinBox->value());
   settings.setValue("adviseScript",_adviseScriptLineEdit->text());
-// Miscellaneous 
+// Miscellaneous
   settings.setValue("miscMount",   _miscMountLineEdit->text());
   settings.setValue("miscPort",    _miscPortLineEdit->text());
   settings.setValue("perfIntr",    _perfIntrComboBox->currentText());
@@ -1897,10 +1897,10 @@ void bncWindow::startRealTime() {
   BNC_CORE->setPortCorr(_corrPortLineEdit->text().toInt());
   BNC_CORE->initCombination();
 
-  connect(_caster, SIGNAL(getThreadsFinished()), 
+  connect(_caster, SIGNAL(getThreadsFinished()),
           this, SLOT(slotGetThreadsFinished()));
 
-  connect (_caster, SIGNAL(mountPointsRead(QList<bncGetThread*>)), 
+  connect (_caster, SIGNAL(mountPointsRead(QList<bncGetThread*>)),
            this, SLOT(slotMountPointsRead(QList<bncGetThread*>)));
 
   BNC_CORE->slotMessage("========== Start BNC v" BNCVERSION " ("BNC_OS") ==========", true);
@@ -1925,9 +1925,9 @@ void bncWindow::startRealTime() {
       BNC_CORE->slotMessage("Panel 'Miscellaneous' active", true);
   if (_pppWidgets._dataSource->currentText() == "Real-Time Streams")
       BNC_CORE->slotMessage("Panel 'PPP' active", true);
-  if (_cmbTable->rowCount() > 0) 
+  if (_cmbTable->rowCount() > 0)
       BNC_CORE->slotMessage("Panel 'Combine Corrections' active", true);
-  if (_uploadTable->rowCount() > 0) 
+  if (_uploadTable->rowCount() > 0)
       BNC_CORE->slotMessage("Panel 'Upload Corrections' active", true);
   if (!_uploadEphHostLineEdit->text().isEmpty())
       BNC_CORE->slotMessage("Panel 'UploadEphemeris' active", true);
@@ -1956,14 +1956,14 @@ void bncWindow::startRealTime() {
   _caster->readMountPoints();
 
   _casterEph = new bncEphUploadCaster();
-  connect(_casterEph, SIGNAL(newBytes(QByteArray,double)), 
+  connect(_casterEph, SIGNAL(newBytes(QByteArray,double)),
           _uploadEphBytesCounter, SLOT(slotNewBytes(QByteArray,double)));
 }
 
 // Retrieve Data
 ////////////////////////////////////////////////////////////////////////////
 void bncWindow::slotStop() {
-  int iRet = QMessageBox::question(this, "Stop", "Stop retrieving/processing data?", 
+  int iRet = QMessageBox::question(this, "Stop", "Stop retrieving/processing data?",
                                    QMessageBox::Yes, QMessageBox::No,
                                    QMessageBox::NoButton);
   if (iRet == QMessageBox::Yes) {
@@ -1981,7 +1981,7 @@ void bncWindow::slotStop() {
 ////////////////////////////////////////////////////////////////////////////
 void bncWindow::closeEvent(QCloseEvent* event) {
 
-  int iRet = QMessageBox::question(this, "Close", "Save Options?", 
+  int iRet = QMessageBox::question(this, "Close", "Save Options?",
                                    QMessageBox::Yes, QMessageBox::No,
                                    QMessageBox::Cancel);
 
@@ -2009,13 +2009,13 @@ void bncWindow::slotSelectionChanged() {
   }
 }
 
-// Display Program Messages 
+// Display Program Messages
 ////////////////////////////////////////////////////////////////////////////
 void bncWindow::slotWindowMessage(const QByteArray msg, bool showOnScreen) {
   if (showOnScreen ) {
     _log->append(QDateTime::currentDateTime().toUTC().toString("yy-MM-dd hh:mm:ss ") + msg);
   }
-}  
+}
 
 // About Message
 ////////////////////////////////////////////////////////////////////////////
@@ -2032,7 +2032,7 @@ void bncWindow::slotFlowchart() {
 // Help Window
 ////////////////////////////////////////////////////////////////////////////
 void bncWindow::slotHelp() {
-  QUrl url; 
+  QUrl url;
   url.setPath(":bnchelp.html");
   new bncHlpDlg(0, url);
 }
@@ -2041,7 +2041,7 @@ void bncWindow::slotHelp() {
 ////////////////////////////////////////////////////////////////////////////
 void bncWindow::slotFontSel() {
   bool ok;
-  QFont newFont = QFontDialog::getFont(&ok, this->font(), this); 
+  QFont newFont = QFontDialog::getFont(&ok, this->font(), this);
   if (ok) {
     bncSettings settings;
     settings.setValue("font", newFont.toString());
@@ -2057,7 +2057,7 @@ void bncWindow::slotWhatsThis() {
   QWhatsThis::enterWhatsThisMode();
 }
 
-// 
+//
 ////////////////////////////////////////////////////////////////////////////
 void bncWindow::slotMountPointsRead(QList<bncGetThread*> threads) {
   _threads = threads;
@@ -2073,7 +2073,7 @@ void bncWindow::slotMountPointsRead(QList<bncGetThread*> threads) {
   while (iTh.hasNext()) {
     bncGetThread* thread = iTh.next();
     for (int iRow = 0; iRow < _mountPointsTable->rowCount(); iRow++) {
-      QUrl url( "//" + _mountPointsTable->item(iRow, 0)->text() + 
+      QUrl url( "//" + _mountPointsTable->item(iRow, 0)->text() +
                 "@"  + _mountPointsTable->item(iRow, 1)->text() );
       if (url                                      == thread->mountPoint() &&
           _mountPointsTable->item(iRow, 4)->text() == thread->latitude()   &&
@@ -2093,7 +2093,7 @@ void bncWindow::slotMountPointsRead(QList<bncGetThread*> threads) {
   }
 }
 
-// 
+//
 ////////////////////////////////////////////////////////////////////////////
 void bncWindow::CreateMenu() {
   // Create Menus
@@ -2115,7 +2115,7 @@ void bncWindow::CreateMenu() {
 ////////////////////////////////////////////////////////////////////////////
 void bncWindow::AddToolbar() {
   QToolBar* toolBar = new QToolBar;
-  addToolBar(Qt::BottomToolBarArea, toolBar); 
+  addToolBar(Qt::BottomToolBarArea, toolBar);
   toolBar->setMovable(false);
   toolBar->addAction(_actAddMountPoints);
   toolBar->addAction(_actDeleteMountPoints);
@@ -2124,11 +2124,11 @@ void bncWindow::AddToolbar() {
   toolBar->addAction(_actStop);
   toolBar->addWidget(new QLabel("                                           "));
   toolBar->addAction(_actwhatsthis);
-} 
+}
 
 // About
 ////////////////////////////////////////////////////////////////////////////
-bncAboutDlg::bncAboutDlg(QWidget* parent) : 
+bncAboutDlg::bncAboutDlg(QWidget* parent) :
    QDialog(parent) {
 
   QTextBrowser* tb = new QTextBrowser;
@@ -2147,7 +2147,7 @@ bncAboutDlg::bncAboutDlg(QWidget* parent) :
   dlgLayout->addWidget(img, 0,0);
   dlgLayout->addWidget(new QLabel("BKG Ntrip Client (BNC) Version "BNCVERSION), 0,1);
   dlgLayout->addWidget(tb,1,0,1,2);
-  dlgLayout->addWidget(_closeButton,2,1,Qt::AlignRight);  
+  dlgLayout->addWidget(_closeButton,2,1,Qt::AlignRight);
 
   setLayout(dlgLayout);
   resize(60*ww, 60*ww);
@@ -2155,12 +2155,12 @@ bncAboutDlg::bncAboutDlg(QWidget* parent) :
   show();
 }
 
-// 
+//
 ////////////////////////////////////////////////////////////////////////////
 bncAboutDlg::~bncAboutDlg() {
-}; 
+};
 
-// Flowchart 
+// Flowchart
 ////////////////////////////////////////////////////////////////////////////
 bncFlowchartDlg::bncFlowchartDlg(QWidget* parent) :
    QDialog(parent) {
@@ -2181,7 +2181,7 @@ bncFlowchartDlg::bncFlowchartDlg(QWidget* parent) :
   show();
 }
 
-// 
+//
 ////////////////////////////////////////////////////////////////////////////
 bncFlowchartDlg::~bncFlowchartDlg() {
 };
@@ -2203,7 +2203,7 @@ void bncWindow::enableWidget(bool enable, QWidget* widget) {
 }
 
 //  Bnc Text
-//////////////////////////////////////////////////////////////////////////// 
+////////////////////////////////////////////////////////////////////////////
 void bncWindow::slotBncTextChanged(){
 
   const static QPalette paletteWhite(QColor(255, 255, 255));
@@ -2263,7 +2263,7 @@ void bncWindow::slotBncTextChanged(){
   // ---------------------
   if (sender() == 0 || sender() == _corrPathLineEdit || sender() == _corrPortLineEdit) {
     enable = !_corrPathLineEdit->text().isEmpty() || !_corrPortLineEdit->text().isEmpty();
-    enableWidget(enable, _corrIntrComboBox); 
+    enableWidget(enable, _corrIntrComboBox);
   }
 
   // Feed Engine
@@ -2276,7 +2276,7 @@ void bncWindow::slotBncTextChanged(){
 
   // Serial Output
   // -------------
-  if (sender() == 0 || sender() == _serialMountPointLineEdit || 
+  if (sender() == 0 || sender() == _serialMountPointLineEdit ||
       sender() == _serialAutoNMEAComboBox) {
     enable = !_serialMountPointLineEdit->text().isEmpty();
     enableWidget(enable, _serialPortNameLineEdit);
@@ -2330,7 +2330,7 @@ void bncWindow::slotBncTextChanged(){
       enableWidget(true, _cmbMaxresLineEdit);
       enableWidget(true, _cmbSamplSpinBox);
       enableWidget(true, _cmbUseGlonass);
-    } 
+    }
     else {
       enableWidget(false, _cmbMethodComboBox);
       enableWidget(false, _cmbMaxresLineEdit);
@@ -2348,7 +2348,7 @@ void bncWindow::slotBncTextChanged(){
     enableWidget(true, _uploadSamplClkRnxSpinBox);
     enableWidget(true, _uploadSamplSp3SpinBox);
     enableWidget(true, _uploadAntexFile);
-  } 
+  }
   else {
     enableWidget(false, _uploadIntrComboBox);
     enableWidget(false, _uploadSamplRtcmEphCorrSpinBox);
@@ -2386,7 +2386,7 @@ void bncWindow::slotBncTextChanged(){
   enableStartStop();
 }
 
-// 
+//
 ////////////////////////////////////////////////////////////////////////////
 void bncWindow::slotAddCmbRow() {
   int iRow = _cmbTable->rowCount();
@@ -2396,7 +2396,7 @@ void bncWindow::slotAddCmbRow() {
   }
 }
 
-// 
+//
 ////////////////////////////////////////////////////////////////////////////
 void bncWindow::slotDelCmbRow() {
 
@@ -2427,7 +2427,7 @@ void bncWindow::slotDelCmbRow() {
   }
 }
 
-// 
+//
 ////////////////////////////////////////////////////////////////////////////
 void bncWindow::populateCmbTable() {
 
@@ -2451,7 +2451,7 @@ void bncWindow::populateCmbTable() {
   }
 }
 
-// 
+//
 ////////////////////////////////////////////////////////////////////////////
 void bncWindow::slotAddUploadRow() {
   int iRow = _uploadTable->rowCount();
@@ -2486,7 +2486,7 @@ void bncWindow::slotAddUploadRow() {
   }
 }
 
-// 
+//
 ////////////////////////////////////////////////////////////////////////////
 void bncWindow::slotDelUploadRow() {
   BNC_CORE->_uploadTableItems.clear();
@@ -2506,7 +2506,7 @@ void bncWindow::slotDelUploadRow() {
     }
   }
   for (int iRow = 0; iRow < _uploadTable->rowCount(); iRow++) {
-    BNC_CORE->_uploadTableItems[iRow] = 
+    BNC_CORE->_uploadTableItems[iRow] =
                                 (bncTableItem*) _uploadTable->item(iRow, 11);
   }
   nRows = _uploadTable->rowCount();
@@ -2519,7 +2519,7 @@ void bncWindow::slotDelUploadRow() {
   }
 }
 
-// 
+//
 ////////////////////////////////////////////////////////////////////////////
 void bncWindow::populateUploadTable() {
   for (int iRow = _uploadTable->rowCount()-1; iRow >=0; iRow--) {
@@ -2572,7 +2572,7 @@ void bncWindow::populateUploadTable() {
   }
 }
 
-// 
+//
 ////////////////////////////////////////////////////////////////////////////
 void bncWindow::slotSetUploadTrafo() {
   bncCustomTrafo* dlg = new bncCustomTrafo(this);
