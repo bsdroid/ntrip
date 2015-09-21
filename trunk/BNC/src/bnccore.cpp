@@ -34,7 +34,7 @@
  *
  * Created:    29-Aug-2006
  *
- * Changes:    
+ * Changes:
  *
  * -----------------------------------------------------------------------*/
 
@@ -43,23 +43,23 @@
 #include <QMessageBox>
 #include <cmath>
 
-#include "bnccore.h" 
-#include "bncutils.h" 
-#include "bncrinex.h" 
-#include "bncsettings.h" 
-#include "bncversion.h" 
-#include "ephemeris.h" 
-#include "rinex/rnxobsfile.h" 
-#include "rinex/rnxnavfile.h" 
+#include "bnccore.h"
+#include "bncutils.h"
+#include "bncrinex.h"
+#include "bncsettings.h"
+#include "bncversion.h"
+#include "ephemeris.h"
+#include "rinex/rnxobsfile.h"
+#include "rinex/rnxnavfile.h"
 #include "pppMain.h"
 
 #ifdef USE_COMBINATION
-#  include "combination/bnccomb.h" 
+#  include "combination/bnccomb.h"
 #endif
 
 using namespace std;
 
-// Singleton 
+// Singleton
 ////////////////////////////////////////////////////////////////////////////
 t_bncCore* t_bncCore::instance() {
   static t_bncCore _bncCore;
@@ -175,7 +175,7 @@ void t_bncCore::messagePrivate(const QByteArray& msg) {
     QString logFileName = settings.value("logFile").toString();
     if ( !logFileName.isEmpty() ) {
       expandEnvVar(logFileName);
-      _logFile = new QFile(logFileName + "_" + 
+      _logFile = new QFile(logFileName + "_" +
                           currDate.toString("yyMMdd").toAscii().data());
       _fileDate = currDate;
       if ( Qt::CheckState(settings.value("rnxAppend").toInt()) == Qt::Checked) {
@@ -202,7 +202,7 @@ void t_bncCore::messagePrivate(const QByteArray& msg) {
   }
 }
 
-// 
+//
 ////////////////////////////////////////////////////////////////////////////
 t_irc t_bncCore::checkPrintEph(t_eph* eph) {
   QMutexLocker locker(&_mutex);
@@ -220,14 +220,14 @@ t_irc t_bncCore::checkPrintEph(t_eph* eph) {
   return success;
 }
 
-// New GPS Ephemeris 
+// New GPS Ephemeris
 ////////////////////////////////////////////////////////////////////////////
 void t_bncCore::slotNewGPSEph(t_ephGPS eph) {
   if (checkPrintEph(&eph) == success) {
     emit newGPSEph(eph);
   }
 }
-    
+
 // New Glonass Ephemeris
 ////////////////////////////////////////////////////////////////////////////
 void t_bncCore::slotNewGlonassEph(t_ephGlo eph) {
@@ -271,7 +271,7 @@ void t_bncCore::printEphHeader() {
   if (_rinexVers == 0) {
 
     if ( Qt::CheckState(settings.value("ephV3").toInt()) == Qt::Checked) {
-      _rinexVers = 3;    
+      _rinexVers = 3;
     }
     else {
       _rinexVers = 2;
@@ -297,7 +297,7 @@ void t_bncCore::printEphHeader() {
 
     bool ephV3filenames = settings.value("ephV3filenames").toBool();
 
-    QString hlpStr = bncRinex::nextEpochStr(datTim, 
+    QString hlpStr = bncRinex::nextEpochStr(datTim,
                          settings.value("ephIntr").toString(), ephV3filenames);
 
     if (_rinexVers == 3) {
@@ -380,19 +380,19 @@ void t_bncCore::printEphHeader() {
       if ( ! (appendFlagGPS & QIODevice::Append)) {
         QString line;
         line.sprintf(
-          "%9.2f%11sN: GNSS NAV DATA    M: Mixed%12sRINEX VERSION / TYPE\n", 
-          3.0, "", "");
+          "%9.2f%11sN: GNSS NAV DATA    M: Mixed%12sRINEX VERSION / TYPE\n",
+          t_rnxNavFile::defaultRnxNavVersion3, "", "");
         *_ephStreamGPS << line;
-        
+
         QString hlp = currentDateAndTimeGPS().toString("yyyyMMdd hhmmss UTC").leftJustified(20, ' ', true);
-        *_ephStreamGPS << _pgmName.toAscii().data() 
-                       << _userName.toAscii().data() 
-                       << hlp.toAscii().data() 
+        *_ephStreamGPS << _pgmName.toAscii().data()
+                       << _userName.toAscii().data()
+                       << hlp.toAscii().data()
                        << "PGM / RUN BY / DATE" << endl;
 
         line.sprintf("%60sEND OF HEADER\n", "");
         *_ephStreamGPS << line;
-        
+
         _ephStreamGPS->flush();
       }
     }
@@ -405,11 +405,11 @@ void t_bncCore::printEphHeader() {
         line.sprintf("%9.2f%11sN: GPS NAV DATA%25sRINEX VERSION / TYPE\n",
                      t_rnxNavFile::defaultRnxNavVersion2, "", "");
         *_ephStreamGPS << line;
-         
+
         QString hlp = currentDateAndTimeGPS().date().toString("dd-MMM-yyyy").leftJustified(20, ' ', true);
-        *_ephStreamGPS << _pgmName.toAscii().data() 
-                       << _userName.toAscii().data() 
-                       << hlp.toAscii().data() 
+        *_ephStreamGPS << _pgmName.toAscii().data()
+                       << _userName.toAscii().data()
+                       << hlp.toAscii().data()
                        << "PGM / RUN BY / DATE" << endl;
 
         line.sprintf("%60sEND OF HEADER\n", "");
@@ -422,11 +422,11 @@ void t_bncCore::printEphHeader() {
         line.sprintf("%9.2f%11sG: GLONASS NAV DATA%21sRINEX VERSION / TYPE\n",
                      t_rnxNavFile::defaultRnxNavVersion2, "", "");
         *_ephStreamGlonass << line;
-        
+
         QString hlp = currentDateAndTimeGPS().date().toString("dd-MMM-yyyy").leftJustified(20, ' ', true);
-        *_ephStreamGlonass << _pgmName.toAscii().data() 
-                           << _userName.toAscii().data() 
-                           << hlp.toAscii().data() 
+        *_ephStreamGlonass << _pgmName.toAscii().data()
+                           << _userName.toAscii().data()
+                           << hlp.toAscii().data()
                            << "PGM / RUN BY / DATE" << endl;
 
         line.sprintf("%60sEND OF HEADER\n", "");
@@ -537,21 +537,21 @@ void t_bncCore::slotNewConnectionCorr() {
   _socketsCorr->push_back( _serverCorr->nextPendingConnection() );
 }
 
-// 
+//
 ////////////////////////////////////////////////////////////////////////////
 void t_bncCore::slotQuit() {
   delete _caster; _caster = 0;
   qApp->quit();
 }
 
-// 
+//
 ////////////////////////////////////////////////////////////////////////////
 void t_bncCore::slotNewOrbCorrections(QList<t_orbCorr> orbCorrections) {
   QMutexLocker locker(&_mutex);
   emit newOrbCorrections(orbCorrections);
   if (_socketsCorr) {
     ostringstream out;
-    t_orbCorr::writeEpoch(&out, orbCorrections);   
+    t_orbCorr::writeEpoch(&out, orbCorrections);
     QMutableListIterator<QTcpSocket*> is(*_socketsCorr);
     while (is.hasNext()) {
       QTcpSocket* sock = is.next();
@@ -569,14 +569,14 @@ void t_bncCore::slotNewOrbCorrections(QList<t_orbCorr> orbCorrections) {
   }
 }
 
-// 
+//
 ////////////////////////////////////////////////////////////////////////////
 void t_bncCore::slotNewClkCorrections(QList<t_clkCorr> clkCorrections) {
   QMutexLocker locker(&_mutex);
   emit newClkCorrections(clkCorrections);
   if (_socketsCorr) {
     ostringstream out;
-    t_clkCorr::writeEpoch(&out, clkCorrections);   
+    t_clkCorr::writeEpoch(&out, clkCorrections);
     QMutableListIterator<QTcpSocket*> is(*_socketsCorr);
     while (is.hasNext()) {
       QTcpSocket* sock = is.next();
@@ -594,14 +594,14 @@ void t_bncCore::slotNewClkCorrections(QList<t_clkCorr> clkCorrections) {
   }
 }
 
-// 
+//
 ////////////////////////////////////////////////////////////////////////////
 void t_bncCore::slotNewCodeBiases(QList<t_satCodeBias> codeBiases) {
   QMutexLocker locker(&_mutex);
   emit newCodeBiases(codeBiases);
   if (_socketsCorr) {
     ostringstream out;
-    t_satCodeBias::writeEpoch(&out, codeBiases);   
+    t_satCodeBias::writeEpoch(&out, codeBiases);
     QMutableListIterator<QTcpSocket*> is(*_socketsCorr);
     while (is.hasNext()) {
       QTcpSocket* sock = is.next();
@@ -619,14 +619,14 @@ void t_bncCore::slotNewCodeBiases(QList<t_satCodeBias> codeBiases) {
   }
 }
 
-// 
+//
 ////////////////////////////////////////////////////////////////////////////
 void t_bncCore::slotNewPhaseBiases(QList<t_satPhaseBias> phaseBiases) {
   QMutexLocker locker(&_mutex);
   emit newPhaseBiases(phaseBiases);
   if (_socketsCorr) {
     ostringstream out;
-    t_satPhaseBias::writeEpoch(&out, phaseBiases);   
+    t_satPhaseBias::writeEpoch(&out, phaseBiases);
     QMutableListIterator<QTcpSocket*> is(*_socketsCorr);
     while (is.hasNext()) {
       QTcpSocket* sock = is.next();
@@ -644,14 +644,14 @@ void t_bncCore::slotNewPhaseBiases(QList<t_satPhaseBias> phaseBiases) {
   }
 }
 
-// 
+//
 ////////////////////////////////////////////////////////////////////////////
 void t_bncCore::slotNewTec(t_vTec vTec) {
   QMutexLocker locker(&_mutex);
   emit newTec(vTec);
   if (_socketsCorr) {
     ostringstream out;
-    t_vTec::write(&out, vTec);   
+    t_vTec::write(&out, vTec);
     QMutableListIterator<QTcpSocket*> is(*_socketsCorr);
     while (is.hasNext()) {
       QTcpSocket* sock = is.next();
@@ -669,11 +669,11 @@ void t_bncCore::slotNewTec(t_vTec vTec) {
   }
 }
 
-// 
+//
 ////////////////////////////////////////////////////////////////////////////
 void t_bncCore::setConfFileName(const QString& confFileName) {
   if (confFileName.isEmpty()) {
-    _confFileName = QDir::homePath() + QDir::separator() 
+    _confFileName = QDir::homePath() + QDir::separator()
                   + ".config" + QDir::separator()
                   + qApp->organizationName() + QDir::separator()
                   + qApp->applicationName() + ".bnc";
@@ -703,7 +703,7 @@ void t_bncCore::writeRawData(const QByteArray& data, const QByteArray& staID,
   }
 }
 
-// 
+//
 ////////////////////////////////////////////////////////////////////////////
 void t_bncCore::initCombination() {
 #ifdef USE_COMBINATION
@@ -715,7 +715,7 @@ void t_bncCore::initCombination() {
 #endif
 }
 
-// 
+//
 ////////////////////////////////////////////////////////////////////////////
 void t_bncCore::stopCombination() {
 #ifdef USE_COMBINATION
