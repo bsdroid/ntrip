@@ -1671,7 +1671,7 @@ void bncWindow::saveOptions() {
     }
   }
 
-  QStringList combineStreams;
+  QStringList cmbStreams;
   for (int iRow = 0; iRow < _cmbTable->rowCount(); iRow++) {
     QString hlp;
     for (int iCol = 0; iCol < _cmbTable->columnCount(); iCol++) {
@@ -1680,7 +1680,7 @@ void bncWindow::saveOptions() {
       }
     }
     if (!hlp.isEmpty()) {
-      combineStreams << hlp;
+      cmbStreams << hlp;
     }
   }
 
@@ -1796,11 +1796,11 @@ void bncWindow::saveOptions() {
   settings.setValue("sp3CompExclude",    _sp3CompExclude->text());
   settings.setValue("sp3CompOutLogFile", _sp3CompLogLineEdit->text());
 // Combine Corrections
-  if (!combineStreams.isEmpty()) {
-    settings.setValue("combineStreams", combineStreams);
+  if (!cmbStreams.isEmpty()) {
+    settings.setValue("cmbStreams", cmbStreams);
   }
   else {
-    settings.setValue("combineStreams", "");
+    settings.setValue("cmbStreams", "");
   }
   settings.setValue("cmbMethod",     _cmbMethodComboBox->currentText());
   settings.setValue("cmbMaxres",     _cmbMaxresLineEdit->text());
@@ -2440,7 +2440,7 @@ void bncWindow::populateCmbTable() {
   bncSettings settings;
 
   int iRow = -1;
-  QListIterator<QString> it(settings.value("combineStreams").toStringList());
+  QListIterator<QString> it(settings.value("cmbStreams").toStringList());
   while (it.hasNext()) {
     QStringList hlp = it.next().split(" ");
     if (hlp.size() > 2) {

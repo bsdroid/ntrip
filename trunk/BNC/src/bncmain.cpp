@@ -237,7 +237,7 @@ int main(int argc, char* argv[]) {
       "           PPP/mapSpeedSlider   <Offline processing speed for mapping, 1-100>\n"
       "\n"
       "Combine Corrections Panel keys:\n"
-      "           combineStreams  <Table of correction streams\n"
+      "           cmbStreams      <Correction streams as semicolon separated list>\n"
       "           cmbMethodFilter <Approach, Single-Epoch|Filter\n"
       "           cmbMaxres       <Clock outlier threshold [m]\n"
       "           cmbSampl        <Orbit and clock sampling [m]\n"

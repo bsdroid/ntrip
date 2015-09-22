@@ -10,7 +10,7 @@
  *
  * Created:    25-Jan-2009
  *
- * Changes:    
+ * Changes:
  *
  * -----------------------------------------------------------------------*/
 
@@ -19,7 +19,7 @@
 #include "bncsettings.h"
 #include "bnccore.h"
 
-QMutex bncSettings::_mutex;  // static mutex 
+QMutex bncSettings::_mutex;  // static mutex
 
 // Constructor
 ////////////////////////////////////////////////////////////////////////////
@@ -27,7 +27,7 @@ bncSettings::bncSettings() {
   QMutexLocker locker(&_mutex);
 
   // First fill the options
-  // ---------------------- 
+  // ----------------------
   if (BNC_CORE->_settings.size() == 0) {
     reRead();
   }
@@ -66,9 +66,9 @@ void bncSettings::reRead() {
     setValue_p("startTab",            "0");
     setValue_p("statusTab",           "0");
     setValue_p("font",                "");
-    setValue_p("casterUrlList", (QStringList() 
-                               << "http://user:pass@www.euref-ip.net:2101" 
-                               << "http://user:pass@www.igs-ip.net:2101" 
+    setValue_p("casterUrlList", (QStringList()
+                               << "http://user:pass@www.euref-ip.net:2101"
+                               << "http://user:pass@www.igs-ip.net:2101"
                                << "http://user:pass@products.igs-ip.net:2101"
                                << "http://user:pass@mgex.igs-ip.net:2101"));
     setValue_p("mountPoints",         "");
@@ -134,7 +134,7 @@ void bncSettings::reRead() {
     setValue_p("reqcOldReceiverNumber", "");
     setValue_p("reqcUseObsTypes",     "");
     setValue_p("reqcV2Priority",      "");
-    // SP3 
+    // SP3
     setValue_p("sp3CompFile",         "");
     setValue_p("sp3CompExclude",      "");
     setValue_p("sp3CompOutLogFile",   "");
@@ -166,12 +166,12 @@ void bncSettings::reRead() {
     setValue_p("adviseReco",          "5");
     setValue_p("adviseScript",        "");
     // Miscellaneous
-    setValue_p("miscMount",           "");  
+    setValue_p("miscMount",           "");
     setValue_p("perfIntr",            "");
     setValue_p("scanRTCM",            "0");
-    setValue_p("miscPort",            "");  
+    setValue_p("miscPort",            "");
     // Combination
-    setValue_p("combineStreams",      "");
+    setValue_p("cmbStreams",          "");
     setValue_p("cmbMethod",           "");
     setValue_p("cmbMaxres",           "");
     setValue_p("cmbSampl",            "10");
@@ -210,7 +210,7 @@ void bncSettings::reRead() {
 #endif
 }
 
-// 
+//
 ////////////////////////////////////////////////////////////////////////////
 QVariant bncSettings::value(const QString& key,
                             const QVariant& defaultValue) const {
@@ -224,34 +224,34 @@ QVariant bncSettings::value(const QString& key,
   }
 }
 
-// 
+//
 ////////////////////////////////////////////////////////////////////////////
 void bncSettings::setValue(const QString &key, const QVariant& value) {
   QMutexLocker locker(&_mutex);
   setValue_p(key, value);
 }
 
-// 
+//
 ////////////////////////////////////////////////////////////////////////////
 void bncSettings::setValue_p(const QString &key, const QVariant& value) {
   BNC_CORE->_settings[key] = value;
 }
 
-// 
+//
 ////////////////////////////////////////////////////////////////////////////
 void bncSettings::remove(const QString& key ) {
   QMutexLocker locker(&_mutex);
   BNC_CORE->_settings.remove(key);
 }
 
-// 
+//
 ////////////////////////////////////////////////////////////////////////////
 bool bncSettings::contains(const QString& key) const {
   QMutexLocker locker(&_mutex);
   return BNC_CORE->_settings.contains(key);
 }
 
-// 
+//
 ////////////////////////////////////////////////////////////////////////////
 void bncSettings::sync() {
   QMutexLocker locker(&_mutex);
