@@ -39,11 +39,11 @@ HEADERS = bnchelp.html bncgetthread.h    bncwindow.h   bnctabledlg.h  \
           bncconst.h bnchtml.h bnctableitem.h bnczerodecoder.h        \
           bncnetquery.h bncnetqueryv1.h bncnetqueryv2.h               \
           bncnetqueryrtp.h bncsettings.h latencychecker.h             \
-          bncipport.h bncnetqueryv0.h bncnetqueryudp.h                \ 
-          bncnetqueryudp0.h bncudpport.h bnctime.h                    \ 
-          bncserialport.h bncnetquerys.h bncfigure.h                  \ 
-          bncfigurelate.h bncversion.h                                \ 
-          bncfigureppp.h bncrawfile.h                                 \ 
+          bncipport.h bncnetqueryv0.h bncnetqueryudp.h                \
+          bncnetqueryudp0.h bncudpport.h bnctime.h                    \
+          bncserialport.h bncnetquerys.h bncfigure.h                  \
+          bncfigurelate.h bncversion.h                                \
+          bncfigureppp.h bncrawfile.h                                 \
           bncmap.h bncantex.h bncephuser.h                            \
           bncoutf.h bncclockrinex.h bncsp3.h bncsinextro.h            \
           bncbytescounter.h bncsslconfig.h reqcdlg.h                  \
@@ -64,13 +64,14 @@ HEADERS = bnchelp.html bncgetthread.h    bncwindow.h   bnctabledlg.h  \
           rinex/reqcedit.h         rinex/reqcanalyze.h                \
           rinex/graphwin.h         rinex/polarplot.h                  \
           rinex/availplot.h        rinex/eleplot.h                    \
-          rinex/dopplot.h          orbComp/sp3Comp.h
+          rinex/dopplot.h          orbComp/sp3Comp.h                  \
+          combination/bnccomb.h
 
 HEADERS       += serial/qextserialbase.h serial/qextserialport.h
 unix:HEADERS  += serial/posix_qextserialport.h
 win32:HEADERS += serial/win_qextserialport.h
 
-SOURCES =             bncgetthread.cpp  bncwindow.cpp bnctabledlg.cpp \
+SOURCES = bncgetthread.cpp  bncwindow.cpp bnctabledlg.cpp             \
           bnccaster.cpp bncrinex.cpp bnccore.cpp bncutils.cpp         \
           bncconst.cpp bnchtml.cpp bnchlpdlg.cpp bnctableitem.cpp     \
           bnczerodecoder.cpp bncnetqueryv1.cpp bncnetqueryv2.cpp      \
@@ -100,7 +101,8 @@ SOURCES =             bncgetthread.cpp  bncwindow.cpp bnctabledlg.cpp \
           rinex/reqcedit.cpp       rinex/reqcanalyze.cpp              \
           rinex/graphwin.cpp       rinex/polarplot.cpp                \
           rinex/availplot.cpp      rinex/eleplot.cpp                  \
-          rinex/dopplot.cpp        orbComp/sp3Comp.cpp
+          rinex/dopplot.cpp        orbComp/sp3Comp.cpp                \
+          combination/bnccomb.cpp
 
 SOURCES       += serial/qextserialbase.cpp serial/qextserialport.cpp
 unix:SOURCES  += serial/posix_qextserialport.cpp
@@ -110,21 +112,15 @@ RC_FILE = bnc.rc
 
 QT += network
 
-exists(combination/bnccomb.h) {
-  DEFINES += USE_COMBINATION
-  HEADERS += combination/bnccomb.h
-  SOURCES += combination/bnccomb.cpp
-}
-
 exists(PPP) {
   INCLUDEPATH += PPP
   DEFINES += USE_PPP
   HEADERS += PPP/pppClient.h    PPP/pppObsPool.h   PPP/pppEphPool.h   \
              PPP/pppStation.h   PPP/pppFilter.h    PPP/pppParlist.h   \
-             PPP/pppSatObs.h           
+             PPP/pppSatObs.h
   SOURCES += PPP/pppClient.cpp  PPP/pppObsPool.cpp PPP/pppEphPool.cpp \
-             PPP/pppStation.cpp PPP/pppFilter.cpp  PPP/pppParlist.cpp \ 
-             PPP/pppSatObs.cpp      
+             PPP/pppStation.cpp PPP/pppFilter.cpp  PPP/pppParlist.cpp \
+             PPP/pppSatObs.cpp
 }
 else {
   INCLUDEPATH += PPP_SSR_I
@@ -148,7 +144,7 @@ unix {
 }
 
 macx {
-  exists("$$[QT_INSTALL_LIBS]/QtWebKit.framework") { 
+  exists("$$[QT_INSTALL_LIBS]/QtWebKit.framework") {
     DEFINES += QT_WEBKIT
   }
 }
