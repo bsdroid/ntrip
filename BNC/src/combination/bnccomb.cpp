@@ -10,7 +10,7 @@
  *
  * Created:    22-Jan-2011
  *
- * Changes:    
+ * Changes:
  *
  * -----------------------------------------------------------------------*/
 
@@ -77,7 +77,7 @@ bncComb::cmbParam::~cmbParam() {
 // Partial
 ////////////////////////////////////////////////////////////////////////////
 double bncComb::cmbParam::partial(const QString& AC_, const QString& prn_) {
-  
+
   if      (type == offACgps) {
     if (AC == AC_ && prn_[0] == 'G') {
       return 1.0;
@@ -102,12 +102,12 @@ double bncComb::cmbParam::partial(const QString& AC_, const QString& prn_) {
   return 0.0;
 }
 
-// 
+//
 ////////////////////////////////////////////////////////////////////////////
 QString bncComb::cmbParam::toString() const {
 
   QString outStr;
- 
+
   if      (type == offACgps) {
     outStr = "AC offset GPS " + AC;
   }
@@ -130,7 +130,7 @@ bncComb::bncComb() : _ephUser(true) {
 
   bncSettings settings;
 
-  QStringList combineStreams = settings.value("combineStreams").toStringList();
+  QStringList cmbStreams = settings.value("cmbStreams").toStringList();
 
   _cmbSampl = settings.value("cmbSampl").toInt();
   if (_cmbSampl <= 0) {
@@ -139,8 +139,8 @@ bncComb::bncComb() : _ephUser(true) {
 
   _masterMissingEpochs = 0;
 
-  if (combineStreams.size() >= 1 && !combineStreams[0].isEmpty()) {
-    QListIterator<QString> it(combineStreams);
+  if (cmbStreams.size() >= 1 && !cmbStreams[0].isEmpty()) {
+    QListIterator<QString> it(cmbStreams);
     while (it.hasNext()) {
       QStringList hlp = it.next().split(" ");
       cmbAC* newAC = new cmbAC();
@@ -156,7 +156,7 @@ bncComb::bncComb() : _ephUser(true) {
 
   _rtnetDecoder = 0;
 
-  connect(this,     SIGNAL(newMessage(QByteArray,bool)), 
+  connect(this,     SIGNAL(newMessage(QByteArray,bool)),
           BNC_CORE, SLOT(slotMessage(const QByteArray,bool)));
 
   connect(BNC_CORE, SIGNAL(providerIDChanged(QString)),
@@ -196,14 +196,14 @@ bncComb::bncComb() : _ephUser(true) {
       _params.push_back(new cmbParam(cmbParam::offACgps, ++nextPar, AC->name, ""));
       for (unsigned iGps = 1; iGps <= t_prn::MAXPRN_GPS; iGps++) {
         QString prn = QString("G%1_0").arg(iGps, 2, 10, QChar('0'));
-        _params.push_back(new cmbParam(cmbParam::offACSat, ++nextPar, 
+        _params.push_back(new cmbParam(cmbParam::offACSat, ++nextPar,
                                        AC->name, prn));
       }
       if (_useGlonass) {
         _params.push_back(new cmbParam(cmbParam::offACglo, ++nextPar, AC->name, ""));
         for (unsigned iGlo = 1; iGlo <= t_prn::MAXPRN_GLONASS; iGlo++) {
           QString prn = QString("R%1_0").arg(iGlo, 2, 10, QChar('0'));
-          _params.push_back(new cmbParam(cmbParam::offACSat, ++nextPar, 
+          _params.push_back(new cmbParam(cmbParam::offACSat, ++nextPar,
                                          AC->name, prn));
         }
       }
@@ -218,7 +218,7 @@ bncComb::bncComb() : _ephUser(true) {
         _params.push_back(new cmbParam(cmbParam::clkSat, ++nextPar, "", prn));
       }
     }
-    
+
     // Initialize Variance-Covariance Matrix
     // -------------------------------------
     _QQ.ReSize(_params.size());
@@ -352,7 +352,7 @@ void bncComb::slotNewClkCorrections(QList<t_clkCorr> clkCorrections) {
       emit newMessage("bncComb: old correction: " + acName.toAscii() + " " + prn.mid(0,3).toAscii(), true);
       continue;
     }
-  
+
     // Create new correction
     // ---------------------
     cmbCorr* newCorr  = new cmbCorr();
@@ -423,7 +423,7 @@ void bncComb::slotNewClkCorrections(QList<t_clkCorr> clkCorrections) {
   }
 }
 
-// Change the correction so that it refers to last received ephemeris 
+// Change the correction so that it refers to last received ephemeris
 ////////////////////////////////////////////////////////////////////////////
 void bncComb::switchToLastEph(t_eph* lastEph, cmbCorr* corr) {
 
@@ -470,7 +470,7 @@ void bncComb::processEpoch() {
 
   QTextStream out(&_log, QIODevice::WriteOnly);
 
-  out << endl <<           "Combination:" << endl 
+  out << endl <<           "Combination:" << endl
       << "------------------------------" << endl;
 
   // Observation Statistics
@@ -514,9 +514,9 @@ void bncComb::processEpoch() {
         cmbAC* AC = icAC.next();
         if (AC->numObs > 0) {
           out << "Switching Master AC "
-              << _masterOrbitAC.toAscii().data() << " --> " 
-              << AC->name.toAscii().data()   << " " 
-              << _resTime.datestr().c_str()    << " " 
+              << _masterOrbitAC.toAscii().data() << " --> "
+              << AC->name.toAscii().data()   << " "
+              << _resTime.datestr().c_str()    << " "
               << _resTime.timestr().c_str()    << endl;
           _masterOrbitAC = AC->name;
           break;
@@ -549,7 +549,7 @@ void bncComb::processEpoch() {
           resCorr[pp->prn]->_dClkResult = pp->xx / t_CST::c;
         }
       }
-      out << _resTime.datestr().c_str() << " " 
+      out << _resTime.datestr().c_str() << " "
           << _resTime.timestr().c_str() << " ";
       out.setRealNumberNotation(QTextStream::FixedNotation);
       out.setFieldWidth(8);
@@ -617,16 +617,16 @@ t_irc bncComb::processEpoch_filter(QTextStream& out,
     ColumnVector vv = ll - AA * dx;
 
     int     maxResIndex;
-    double  maxRes = vv.maximum_absolute_value1(maxResIndex);   
+    double  maxRes = vv.maximum_absolute_value1(maxResIndex);
     out.setRealNumberNotation(QTextStream::FixedNotation);
-    out.setRealNumberPrecision(3);  
+    out.setRealNumberPrecision(3);
     out << _resTime.datestr().c_str() << " " << _resTime.timestr().c_str()
         << " Maximum Residuum " << maxRes << ' '
         << corrs()[maxResIndex-1]->_acName << ' ' << corrs()[maxResIndex-1]->_prn.mid(0,3);
     if (maxRes > _MAXRES) {
       for (int iPar = 1; iPar <= _params.size(); iPar++) {
         cmbParam* pp = _params[iPar-1];
-        if (pp->type == cmbParam::offACSat            && 
+        if (pp->type == cmbParam::offACSat            &&
             pp->AC   == corrs()[maxResIndex-1]->_acName &&
             pp->prn  == corrs()[maxResIndex-1]->_prn.mid(0,3)) {
           QQ_sav.Row(iPar)    = 0.0;
@@ -674,7 +674,7 @@ void bncComb::printResults(QTextStream& out,
       ColumnVector vv(3);
       eph->getCrd(_resTime, xc, vv, false);
 
-      out << _resTime.datestr().c_str() << " " 
+      out << _resTime.datestr().c_str() << " "
           << _resTime.timestr().c_str() << " ";
       out.setFieldWidth(3);
       out << "Full Clock " << corr->_prn.mid(0,3) << " " << corr->_iod << " ";
@@ -703,7 +703,7 @@ void bncComb::dumpResults(const QMap<QString, cmbCorr*>& resCorr) {
   _resTime.civil_date(year, month, day);
   _resTime.civil_time(hour, minute, sec);
 
-  outLines.sprintf("*  %4d %2d %2d %d %d %12.8f\n", 
+  outLines.sprintf("*  %4d %2d %2d %d %d %12.8f\n",
                    year, month, day, hour, minute, sec);
 
   QMapIterator<QString, cmbCorr*> it(resCorr);
@@ -796,11 +796,11 @@ void bncComb::dumpResults(const QMap<QString, cmbCorr*>& resCorr) {
 // Create First Design Matrix and Vector of Measurements
 ////////////////////////////////////////////////////////////////////////////
 t_irc bncComb::createAmat(Matrix& AA, ColumnVector& ll, DiagonalMatrix& PP,
-                          const ColumnVector& x0, 
+                          const ColumnVector& x0,
                           QMap<QString, cmbCorr*>& resCorr) {
 
   unsigned nPar = _params.size();
-  unsigned nObs = corrs().size(); 
+  unsigned nObs = corrs().size();
 
   if (nObs == 0) {
     return failure;
@@ -857,7 +857,7 @@ t_irc bncComb::createAmat(Matrix& AA, ColumnVector& ll, DiagonalMatrix& PP,
       for (int iPar = 1; iPar <= _params.size(); iPar++) {
         cmbParam* pp = _params[iPar-1];
         if ( AA.Column(iPar).maximum_absolute_value() > 0.0 &&
-             pp->type == cmbParam::offACSat                 && 
+             pp->type == cmbParam::offACSat                 &&
              pp->prn == prn) {
           AA(nObs+iCond, iPar) = 1.0;
         }
@@ -871,7 +871,7 @@ t_irc bncComb::createAmat(Matrix& AA, ColumnVector& ll, DiagonalMatrix& PP,
 //        for (int iPar = 1; iPar <= _params.size(); iPar++) {
 //          cmbParam* pp = _params[iPar-1];
 //          if ( AA.Column(iPar).maximum_absolute_value() > 0.0 &&
-//               pp->type == cmbParam::offACSat                 && 
+//               pp->type == cmbParam::offACSat                 &&
 //               pp->prn == prn) {
 //            AA(nObs+iCond, iPar) = 1.0;
 //          }
@@ -898,7 +898,7 @@ t_irc bncComb::processEpoch_singleEpoch(QTextStream& out,
   // Outlier Detection Loop
   // ----------------------
   while (true) {
-    
+
     // Remove Satellites that are not in Master
     // ----------------------------------------
     QMutableVectorIterator<cmbCorr*> it(corrs());
@@ -921,7 +921,7 @@ t_irc bncComb::processEpoch_singleEpoch(QTextStream& out,
         it.remove();
       }
     }
-    
+
     // Count Number of Observations per Satellite and per AC
     // -----------------------------------------------------
     QMap<QString, int> numObsPrn;
@@ -944,18 +944,18 @@ t_irc bncComb::processEpoch_singleEpoch(QTextStream& out,
         numObsAC[AC] += 1;
       }
     }
-    
+
     // Clean-Up the Paramters
     // ----------------------
     for (int iPar = 1; iPar <= _params.size(); iPar++) {
       delete _params[iPar-1];
     }
     _params.clear();
-    
+
     // Set new Parameters
     // ------------------
     int nextPar = 0;
-    
+
     QMapIterator<QString, int> itAC(numObsAC);
     while (itAC.hasNext()) {
       itAC.next();
@@ -967,8 +967,8 @@ t_irc bncComb::processEpoch_singleEpoch(QTextStream& out,
           _params.push_back(new cmbParam(cmbParam::offACglo, ++nextPar, AC, ""));
         }
       }
-    } 
-    
+    }
+
     QMapIterator<QString, int> itPrn(numObsPrn);
     while (itPrn.hasNext()) {
       itPrn.next();
@@ -977,12 +977,12 @@ t_irc bncComb::processEpoch_singleEpoch(QTextStream& out,
       if (numObs > 0) {
         _params.push_back(new cmbParam(cmbParam::clkSat, ++nextPar, "", prn));
       }
-    }  
-    
+    }
+
     int nPar = _params.size();
-    ColumnVector x0(nPar); 
+    ColumnVector x0(nPar);
     x0 = 0.0;
-    
+
     // Create First-Design Matrix
     // --------------------------
     Matrix         AA;
@@ -991,7 +991,7 @@ t_irc bncComb::processEpoch_singleEpoch(QTextStream& out,
     if (createAmat(AA, ll, PP, x0, resCorr) != success) {
       return failure;
     }
-    
+
     ColumnVector vv;
     try {
       Matrix          ATP = AA.t() * PP;
@@ -1007,9 +1007,9 @@ t_irc bncComb::processEpoch_singleEpoch(QTextStream& out,
     }
 
     int     maxResIndex;
-    double  maxRes = vv.maximum_absolute_value1(maxResIndex);   
+    double  maxRes = vv.maximum_absolute_value1(maxResIndex);
     out.setRealNumberNotation(QTextStream::FixedNotation);
-    out.setRealNumberPrecision(3);  
+    out.setRealNumberPrecision(3);
     out << _resTime.datestr().c_str() << " " << _resTime.timestr().c_str()
         << " Maximum Residuum " << maxRes << ' '
         << corrs()[maxResIndex-1]->_acName << ' ' << corrs()[maxResIndex-1]->_prn;
@@ -1022,10 +1022,10 @@ t_irc bncComb::processEpoch_singleEpoch(QTextStream& out,
     else {
       out << "  OK" << endl;
       out.setRealNumberNotation(QTextStream::FixedNotation);
-      out.setRealNumberPrecision(3);  
+      out.setRealNumberPrecision(3);
       for (int ii = 0; ii < vv.Nrows(); ii++) {
         const cmbCorr* corr = corrs()[ii];
-        out << _resTime.datestr().c_str() << ' ' 
+        out << _resTime.datestr().c_str() << ' '
             << _resTime.timestr().c_str() << " "
             << corr->_acName << ' ' << corr->_prn.mid(0,3);
         out.setFieldWidth(6);
@@ -1091,11 +1091,11 @@ t_irc bncComb::checkOrbits(QTextStream& out) {
       if (meanRao.find(prn) == meanRao.end()) {
         meanRao[prn].ReSize(4);
         meanRao[prn].Rows(1,3) = corr->_orbCorr._xr;
-        meanRao[prn](4)        = 1; 
+        meanRao[prn](4)        = 1;
       }
       else {
         meanRao[prn].Rows(1,3) += corr->_orbCorr._xr;
-        meanRao[prn](4)        += 1; 
+        meanRao[prn](4)        += 1;
       }
       if (numCorr.find(prn) == numCorr.end()) {
         numCorr[prn] = 1;
@@ -1104,7 +1104,7 @@ t_irc bncComb::checkOrbits(QTextStream& out) {
         numCorr[prn] += 1;
       }
     }
-    
+
     // Compute Differences wrt Mean, find Maximum
     // ------------------------------------------
     QMap<QString, cmbCorr*> maxDiff;
@@ -1126,9 +1126,9 @@ t_irc bncComb::checkOrbits(QTextStream& out) {
         if (norm > normMax) {
           maxDiff[prn] = corr;
         }
-      } 
+      }
     }
-    
+
     if (_ACs.size() == 1) {
       break;
     }
@@ -1149,10 +1149,10 @@ t_irc bncComb::checkOrbits(QTextStream& out) {
         if (norm > MAX_DISPLACEMENT) {
           out << _resTime.datestr().c_str()    << " "
               << _resTime.timestr().c_str()    << " "
-              << "Orbit Outlier: " 
-              << corr->_acName.toAscii().data() << " " 
+              << "Orbit Outlier: "
+              << corr->_acName.toAscii().data() << " "
               << prn.mid(0,3).toAscii().data()           << " "
-              << corr->_iod                     << " " 
+              << corr->_iod                     << " "
               << norm                           << endl;
           delete corr;
           im.remove();
@@ -1160,7 +1160,7 @@ t_irc bncComb::checkOrbits(QTextStream& out) {
         }
       }
     }
-    
+
     if (!removed) {
       break;
     }
@@ -1169,7 +1169,7 @@ t_irc bncComb::checkOrbits(QTextStream& out) {
   return success;
 }
 
-// 
+//
 ////////////////////////////////////////////////////////////////////////////
 void bncComb::slotProviderIDChanged(QString mountPoint) {
   QMutexLocker locker(&_mutex);

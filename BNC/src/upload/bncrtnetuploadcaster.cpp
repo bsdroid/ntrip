@@ -57,7 +57,7 @@ bncRtnetUploadCaster::bncRtnetUploadCaster(const QString& mountpoint,
 
   bncSettings settings;
   QString intr = settings.value("uploadIntr").toString();
-  QStringList hlp = settings.value("combineStreams").toStringList();
+  QStringList hlp = settings.value("cmbStreams").toStringList();
   _samplRtcmEphCorr = settings.value("uploadSamplRtcmEphCorr").toDouble();
   if (hlp.size() > 1) { // combination stream upload
     _samplRtcmClkCorr = settings.value("cmbSampl").toInt();
