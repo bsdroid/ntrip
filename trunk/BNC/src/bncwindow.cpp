@@ -618,10 +618,7 @@ bncWindow::bncWindow() {
   _aogroup->addTab(pppGroup2,tr("PPP (2)"));
   _aogroup->addTab(pppGroup3,tr("PPP (3)"));
   _aogroup->addTab(pppGroup4,tr("PPP (4)"));
-
-#ifdef USE_COMBINATION
   _aogroup->addTab(cmbgroup,tr("Combine Corrections"));
-#endif
   _aogroup->addTab(uploadgroup,tr("Upload Corrections"));
   _aogroup->addTab(uploadEphgroup,tr("Upload Ephemeris"));
 

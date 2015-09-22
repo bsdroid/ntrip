@@ -52,10 +52,7 @@
 #include "rinex/rnxobsfile.h"
 #include "rinex/rnxnavfile.h"
 #include "pppMain.h"
-
-#ifdef USE_COMBINATION
-#  include "combination/bnccomb.h"
-#endif
+#include "combination/bnccomb.h"
 
 using namespace std;
 
@@ -75,9 +72,7 @@ t_bncCore::t_bncCore() : _ephUser(false) {
   _logStream   = 0;
   _rawFile     = 0;
   _caster      = 0;
-#ifdef USE_COMBINATION
   _bncComb     = 0;
-#endif
 
   // Eph file(s)
   // -----------
@@ -144,10 +139,7 @@ t_bncCore::~t_bncCore() {
 
   delete _dateAndTimeGPS;
   delete _rawFile;
-
-#ifdef USE_COMBINATION
   delete _bncComb;
-#endif
 }
 
 // Write a Program Message
@@ -706,22 +698,18 @@ void t_bncCore::writeRawData(const QByteArray& data, const QByteArray& staID,
 //
 ////////////////////////////////////////////////////////////////////////////
 void t_bncCore::initCombination() {
-#ifdef USE_COMBINATION
   _bncComb = new bncComb();
   if (_bncComb->nStreams() < 1) {
     delete _bncComb;
     _bncComb = 0;
   }
-#endif
 }
 
 //
 ////////////////////////////////////////////////////////////////////////////
 void t_bncCore::stopCombination() {
-#ifdef USE_COMBINATION
   delete _bncComb;
   _bncComb = 0;
-#endif
 }
 
 //

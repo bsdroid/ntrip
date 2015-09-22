@@ -45,7 +45,7 @@ friend class bncSettings;
  public:
   enum e_mode {interactive, nonInteractive, batchPostProcessing};
   t_bncCore();
-  ~t_bncCore();  
+  ~t_bncCore();
   static t_bncCore* instance();
   e_mode            mode() const {return _mode;}
   void              setGUIenabled(bool GUIenabled) {_GUIenabled = GUIenabled;}
@@ -59,7 +59,7 @@ friend class bncSettings;
   void              setDateAndTimeGPS(QDateTime dateTime);
   void              setConfFileName(const QString& confFileName);
   QString           confFileName() const {return _confFileName;}
-  void              writeRawData(const QByteArray& data, const QByteArray& staID, 
+  void              writeRawData(const QByteArray& data, const QByteArray& staID,
                                 const QByteArray& format);
   void             initCombination();
   void             stopCombination();
@@ -106,7 +106,7 @@ friend class bncSettings;
   void finishedRnxPPP();
   void mapSpeedSliderChanged(int);
   void stopRinexPPP();
-    
+
  private slots:
   void slotNewConnectionEph();
   void slotNewConnectionCorr();
@@ -115,7 +115,7 @@ friend class bncSettings;
   t_irc checkPrintEph(t_eph* eph);
   void  printEphHeader();
   void  printEph(const t_eph& eph, bool printFile);
-  void  printOutputEph(bool printFile, QTextStream* stream, 
+  void  printOutputEph(bool printFile, QTextStream* stream,
                        const QString& strV2, const QString& strV3);
   void  messagePrivate(const QByteArray& msg);
 
@@ -144,7 +144,6 @@ friend class bncSettings;
   int                    _portCorr;
   QTcpServer*            _serverCorr;
   QList<QTcpSocket*>*    _socketsCorr;
-  int                    _portNMEA;
   QTcpServer*            _serverNMEA;
   QList<QTcpSocket*>*    _socketsNMEA;
   bncCaster*             _caster;
