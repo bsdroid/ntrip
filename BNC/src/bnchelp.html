@@ -943,8 +943,17 @@ The default 'Signal priority' list is an empty option string meaning a priority 
 <li>If no signal with 'C', 'W', 'P', 'X', or '_' generation attribute exists then the question mark '?' tells BNC to present the first of any other appearing signal as RINEX Version 2 observation.</li>
 </ul>
 </p>
+
 <p>
-You may like to specify you own 'Signal priority' string for producing RINEX Version 2 files. If you neither convert observation streams to RINEX Version 2 nor concatenate RINEX Version 3 to Version 2 files then the 'Version 2' option is meaningless.
+Signal priorities can be specified as equal for all systems or system specific. The following are example priority strings:</li>
+<ul>
+<li>CWPX_? (Same signal priorities valid for all systems)</li>
+<li>G:CWPX_? R:PCX_? E:CPX_? (Specific signal priorities for GPS, GLONASS and Galileo system)</li>
+</ul>
+
+</p>
+<p>
+You may like to specify you own 'Signal priority' string(s) for producing RINEX Version 2 files. If you neither convert observation streams to RINEX Version 2 nor concatenate RINEX Version 3 to Version 2 files then the 'Version 2' option is meaningless.
 </p>
 
 <p><a name="rnxvers3"><h4>3.4.9 Version 3 - optional</h4></p>
@@ -1245,8 +1254,12 @@ A note on converting RINEX Version 3 to RINEX Version 2 and vice versa:
 
 <p>
 <ul>
-<li>The RINEX Version 2 format ignores signal generation attributes. Therefore, when converting <u>RINEX Version 3 to Version 2</u> Observation files, BNC is forced to somehow map signals with attributes to signals without attributes although this can't be done in one-to-one correspondence. Hence we introduce a 'Version 2 Signal Priority' list of attributes (characters, forming a string) for mapping Version 3 to Version 2, see details in section 'RINEX Observations/Version 2'.</li>
-<li>When converting <u>RINEX Version 2 to Version 3</u> Observation files, the tracking mode or channel information in the (last character out of the three characters) observation code is left blank if unknown. This is a compromise, knowing that it is not in accordance with the RINEX Version 3 documentation. The default 'Version 2 Signal Priority' list of observation attributes when mapping RINEX Version 3 to Version 2 is 'CWPX_?', see again details in section 'RINEX Observations/Version 2'.</li>
+<li>The RINEX Version 2 format ignores signal generation attributes. Therefore, when converting <u>RINEX Version 3 to Version 2</u> Observation files, BNC is forced to somehow map signals with attributes to signals without attributes although this can't be done in one-to-one correspondence. Hence we introduce a 'Version 2 Signal Priority' list of attributes (characters, forming a string) for mapping Version 3 to Version 2, see details in section 'RINEX Observations/Version 2'. The default 'Version 2 Signal Priority' list of observation attributes when mapping RINEX Version 3 to Version 2 is 'CWPX_?'. Signal priorities can be specified as equal for all systems or system specifics. The following are example priority strings:</li>
+<ul>
+<li>CWPX_? (Same signal priorities valid for all systems)</li>
+<li>G:CWPX_? R:PCX_? E:CPX_? (Specific signal priorities for GPS, GLONASS and Galileo system)</li><br>
+</ul>
+<li>When converting <u>RINEX Version 2 to Version 3</u> Observation files, the tracking mode or channel information in the (last character out of the three characters) observation code is left blank if unknown. This is a compromise, knowing that it is not in accordance with the RINEX Version 3 documentation.</li>
 </ul>
 </p>
 
