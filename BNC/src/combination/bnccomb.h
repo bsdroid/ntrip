@@ -16,6 +16,7 @@ class bncComb : public QObject {
  public:
   bncComb();
   virtual ~bncComb();
+  static bncComb* instance();
   int  nStreams() const {return _ACs.size();}
 
  public slots:
@@ -125,5 +126,7 @@ class bncComb : public QObject {
   QMap<QString, QMap<t_prn, t_orbCorr> > _orbCorrections;
   bncEphUser                             _ephUser;
 };
+
+#define BNC_CMB (bncComb::instance())
 
 #endif

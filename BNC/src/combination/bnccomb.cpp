@@ -124,6 +124,13 @@ QString bncComb::cmbParam::toString() const {
   return outStr;
 }
 
+// Singleton
+////////////////////////////////////////////////////////////////////////////
+bncComb* bncComb::instance() {
+  static bncComb _bncComb;
+  return &_bncComb;
+}
+
 // Constructor
 ////////////////////////////////////////////////////////////////////////////
 bncComb::bncComb() : _ephUser(true) {
@@ -856,7 +863,8 @@ t_irc bncComb::createAmat(Matrix& AA, ColumnVector& ll, DiagonalMatrix& PP,
       PP(nObs+iCond) = Ph;
       for (int iPar = 1; iPar <= _params.size(); iPar++) {
         cmbParam* pp = _params[iPar-1];
-        if ( AA.Column(iPar).maximum_absolute_value() > 0.0 &&
+        if ( pp &&
+             AA.Column(iPar).maximum_absolute_value() > 0.0 &&
              pp->type == cmbParam::offACSat                 &&
              pp->prn == prn) {
           AA(nObs+iCond, iPar) = 1.0;
@@ -870,7 +878,8 @@ t_irc bncComb::createAmat(Matrix& AA, ColumnVector& ll, DiagonalMatrix& PP,
 //        PP(nObs+iCond) = Ph;
 //        for (int iPar = 1; iPar <= _params.size(); iPar++) {
 //          cmbParam* pp = _params[iPar-1];
-//          if ( AA.Column(iPar).maximum_absolute_value() > 0.0 &&
+//          if ( pp &&
+//               AA.Column(iPar).maximum_absolute_value() > 0.0 &&
 //               pp->type == cmbParam::offACSat                 &&
 //               pp->prn == prn) {
 //            AA(nObs+iCond, iPar) = 1.0;
