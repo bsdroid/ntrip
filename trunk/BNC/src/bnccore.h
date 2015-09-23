@@ -144,8 +144,6 @@ friend class bncSettings;
   int                    _portCorr;
   QTcpServer*            _serverCorr;
   QList<QTcpSocket*>*    _socketsCorr;
-  QTcpServer*            _serverNMEA;
-  QList<QTcpSocket*>*    _socketsNMEA;
   bncCaster*             _caster;
   QString                _confFileName;
   QDate                  _fileDate;
