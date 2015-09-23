@@ -375,7 +375,7 @@ void t_pppRun::slotNewClkCorrections(QList<t_clkCorr> clkCorr) {
     return;
   }
 
-  if (_opt->_realTime) { qDebug() << clkCorr[0]._staID.c_str();
+  if (_opt->_realTime) {
     if (_opt->_corrMount.empty() || _opt->_corrMount != clkCorr[0]._staID) {
       return;
     }
