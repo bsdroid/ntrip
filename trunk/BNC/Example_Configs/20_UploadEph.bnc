@@ -119,7 +119,7 @@ uploadMountpointsOut=
 uploadSamplClkRnx=0
 uploadSamplRtcmEphCorr=0
 uploadSamplSp3=0
-waitTime=1
+outWait=1
 
 [PPP]
 antexFile=
