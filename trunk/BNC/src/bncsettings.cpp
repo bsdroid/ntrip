@@ -97,7 +97,7 @@ void bncSettings::reRead() {
     // RINEX Ephemeris
     setValue_p("ephPath",             "");
     setValue_p("ephIntr",             "1 day");
-    setValue_p("outEphPort",          "");
+    setValue_p("ephOutPort",          "");
     setValue_p("ephV3",               "0");
     setValue_p("ephV3filenames",      "0");
     // Reqc
