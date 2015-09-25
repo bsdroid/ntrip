@@ -172,7 +172,7 @@ class bncWindow : public QMainWindow {
     QCheckBox* _rnxAppendCheckBox;
     QCheckBox* _autoStartCheckBox;
     QCheckBox* _scanRTCMCheckBox;
-    QSpinBox*  _waitTimeSpinBox;
+    QSpinBox*  _outWaitSpinBox;
     QComboBox* _adviseObsRateComboBox;
     QSpinBox*  _adviseFailSpinBox;
     QSpinBox*  _adviseRecoSpinBox;
