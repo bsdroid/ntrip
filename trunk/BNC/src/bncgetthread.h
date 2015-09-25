@@ -102,7 +102,7 @@ class bncGetThread : public QThread {
 
    void  initialize();
    t_irc tryReconnect();
-   void  scanRTCM();
+   void  miscScanRTCM();
 
    QMap<QString, GPSDecoder*> _decodersRaw;
    GPSDecoder*                _decoder;
