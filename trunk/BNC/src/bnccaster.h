@@ -75,7 +75,7 @@ class bncCaster : public QObject {
    QList<QByteArray>               _staIDs;
    QList<bncGetThread*>            _threads;
    int                             _samplingRate;
-   double                          _waitTime;
+   double                          _outWait;
    QMutex                          _mutex;
    int                             _confInterval;
    QString                         _miscMount;
