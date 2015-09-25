@@ -166,7 +166,7 @@ int main(int argc, char* argv[]) {
       "Feed Engine Panel keys:\n"
       "           outPort  <Port>\n"
       "           waitTime <Wait for full obs epoch [sec]>\n"
-      "           binSampl <Sampling [sec]>\n"
+      "           outSampl <Sampling [sec]>\n"
       "           outFile  <File, full path>\n"
       "           outUPort <Port, unsynchronized output)>\n"
       "\n"
