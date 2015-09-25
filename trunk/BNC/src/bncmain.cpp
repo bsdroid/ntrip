@@ -114,7 +114,7 @@ int main(int argc, char* argv[]) {
       "RINEX Ephemeris Panel keys:\n"
       "           ephPath         <Directory>\n"
       "           ephIntr         <Interval>\n"
-      "           outEphPort      <Port>\n"
+      "           ephOutPort      <Port>\n"
       "           ephV3           <Produce version 3 file contents, 0=no, 2=yes>\n"
       "           ephV3filenames  <Produde version 3 filenames, 0=no, 2=yes>\n"
       "\n"
@@ -424,7 +424,7 @@ int main(int argc, char* argv[]) {
     bncCaster* caster = new bncCaster();
 
     BNC_CORE->setCaster(caster);
-    BNC_CORE->setPortEph(settings.value("outEphPort").toInt());
+    BNC_CORE->setPortEph(settings.value("ephOutPort").toInt());
     BNC_CORE->setPortCorr(settings.value("corrPort").toInt());
     BNC_CORE->initCombination();
 
