@@ -95,7 +95,7 @@ bncCaster::bncCaster() {
     _uSockets = 0;
   }
 
-  _samplingRate = settings.value("binSampl").toInt();
+  _samplingRate = settings.value("outSampl").toInt();
   _waitTime     = settings.value("waitTime").toDouble();
   if (_waitTime <= 0.0) {
     _waitTime = 0.01;
@@ -371,7 +371,7 @@ void bncCaster::readMountPoints() {
 
   // Reread several options
   // ----------------------
-  _samplingRate = settings.value("binSampl").toInt();
+  _samplingRate = settings.value("outSampl").toInt();
   _waitTime     = settings.value("waitTime").toInt();
   if (_waitTime < 1) {
     _waitTime = 1;
