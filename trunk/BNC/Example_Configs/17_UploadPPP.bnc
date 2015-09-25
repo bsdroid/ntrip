@@ -119,7 +119,7 @@ uploadMountpointsOut="products.igs-ip.net,2101,CLOCK,Pass,IGS08,0,Output/BNC${GP
 uploadSamplClkRnx=0
 uploadSamplRtcmEphCorr=0
 uploadSamplSp3=0
-waitTime=1
+outWait=1
 
 [PPP]
 antexFile=Input/igs08.atx
