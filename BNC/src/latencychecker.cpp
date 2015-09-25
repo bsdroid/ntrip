@@ -66,24 +66,24 @@ latencyChecker::latencyChecker(QByteArray staID) {
 
   // Notice threshold
   // ----------------
-  QString obsRate = settings.value("obsRate").toString();
+  QString adviseObsRate = settings.value("adviseObsRate").toString();
   _inspSegm = 0;
-  if      ( obsRate.isEmpty() ) { 
+  if      ( adviseObsRate.isEmpty() ) { 
     _inspSegm = 0; 
   }
-  else if ( obsRate.indexOf("5 Hz")   != -1 ) { 
+  else if ( adviseObsRate.indexOf("5 Hz")   != -1 ) { 
     _inspSegm = 20; 
   }
-  else if ( obsRate.indexOf("1 Hz")   != -1 ) { 
+  else if ( adviseObsRate.indexOf("1 Hz")   != -1 ) { 
     _inspSegm = 10; 
   }
-  else if ( obsRate.indexOf("0.5 Hz") != -1 ) { 
+  else if ( adviseObsRate.indexOf("0.5 Hz") != -1 ) { 
     _inspSegm = 20; 
   }
-  else if ( obsRate.indexOf("0.2 Hz") != -1 ) { 
+  else if ( adviseObsRate.indexOf("0.2 Hz") != -1 ) { 
     _inspSegm = 40; 
   }
-  else if ( obsRate.indexOf("0.1 Hz") != -1 ) { 
+  else if ( adviseObsRate.indexOf("0.1 Hz") != -1 ) { 
     _inspSegm = 50; 
   }
   _adviseFail = settings.value("adviseFail").toInt();
