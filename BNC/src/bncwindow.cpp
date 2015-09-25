@@ -355,12 +355,12 @@ bncWindow::bncWindow() {
 
   // Outages Options
   // ---------------
-  _obsRateComboBox    = new QComboBox();
-  _obsRateComboBox->setEditable(false);
-  _obsRateComboBox->addItems(QString(",0.1 Hz,0.2 Hz,0.5 Hz,1 Hz,5 Hz").split(","));
-  kk = _obsRateComboBox->findText(settings.value("obsRate").toString());
+  _adviseObsRateComboBox    = new QComboBox();
+  _adviseObsRateComboBox->setEditable(false);
+  _adviseObsRateComboBox->addItems(QString(",0.1 Hz,0.2 Hz,0.5 Hz,1 Hz,5 Hz").split(","));
+  kk = _adviseObsRateComboBox->findText(settings.value("adviseObsRate").toString());
   if (kk != -1) {
-    _obsRateComboBox->setCurrentIndex(kk);
+    _adviseObsRateComboBox->setCurrentIndex(kk);
   }
   _adviseFailSpinBox = new QSpinBox();
   _adviseFailSpinBox->setMinimum(0);
@@ -376,7 +376,7 @@ bncWindow::bncWindow() {
   _adviseRecoSpinBox->setValue(settings.value("adviseReco").toInt());
   _adviseScriptLineEdit    = new QLineEdit(settings.value("adviseScript").toString());
 
-  connect(_obsRateComboBox, SIGNAL(currentIndexChanged(const QString &)),
+  connect(_adviseObsRateComboBox, SIGNAL(currentIndexChanged(const QString &)),
           this, SLOT(slotBncTextChanged()));
 
   // Miscellaneous Options
@@ -818,13 +818,13 @@ bncWindow::bncWindow() {
   // -------
   QGridLayout* aLayout = new QGridLayout;
   aLayout->setColumnMinimumWidth(0,14*ww);
-  _obsRateComboBox->setMaximumWidth(9*ww);
+  _adviseObsRateComboBox->setMaximumWidth(9*ww);
   _adviseFailSpinBox->setMaximumWidth(9*ww);
   _adviseRecoSpinBox->setMaximumWidth(9*ww);
 
   aLayout->addWidget(new QLabel("Failure and recovery reports, advisory notes.<br>"),0,0,1,50,Qt::AlignLeft);
   aLayout->addWidget(new QLabel("Observation rate"),              1, 0);
-  aLayout->addWidget(_obsRateComboBox,                            1, 1);
+  aLayout->addWidget(_adviseObsRateComboBox,                      1, 1);
   aLayout->addWidget(new QLabel("Failure threshold"),             2, 0);
   aLayout->addWidget(_adviseFailSpinBox,                          2, 1);
   aLayout->addWidget(new QLabel("Recovery threshold"),            3, 0);
@@ -1304,7 +1304,7 @@ bncWindow::bncWindow() {
   _corrIntrComboBox->setWhatsThis(tr("<p>Select the length of the Broadcast Ephemeris Correction files.</p>"));
   _rnxSamplSpinBox->setWhatsThis(tr("<p>Select the RINEX Observation sampling interval in seconds. A value of zero '0' tells BNC to store all received epochs into RINEX.</p>"));
   _binSamplSpinBox->setWhatsThis(tr("<p>Select the synchronized observation sampling interval in seconds. A value of zero '0' tells BNC to send/store all received epochs.</p>"));
-  _obsRateComboBox->setWhatsThis(tr("<p>BNC can collect all returns (success or failure) coming from a decoder within a certain short time span to then decide whether a stream has an outage or its content is corrupted. The procedure needs a rough estimate of the expected 'Observation rate' of the incoming streams. When a continuous problem is detected, BNC can inform its operator about this event through an advisory note.</p><p>Default is an empty option field, meaning that you don't want BNC to report on stream failures or recoveries when exceeding a threshold time span.</p>"));
+  _adviseObsRateComboBox->setWhatsThis(tr("<p>BNC can collect all returns (success or failure) coming from a decoder within a certain short time span to then decide whether a stream has an outage or its content is corrupted. The procedure needs a rough estimate of the expected 'Observation rate' of the incoming streams. When a continuous problem is detected, BNC can inform its operator about this event through an advisory note.</p><p>Default is an empty option field, meaning that you don't want BNC to report on stream failures or recoveries when exceeding a threshold time span.</p>"));
   _adviseRecoSpinBox->setWhatsThis(tr("<p>Following a stream outage or a longer series of bad observations, an advisory note is generated when valid observations are received again throughout the 'Recovery threshold' time span. A value of about 5min (default) is recommended.</p><p>A value of zero '0' means that for any stream recovery, however short, BNC immediately generates an advisory note.</p>"));
   _adviseFailSpinBox->setWhatsThis(tr("<p>An advisory note is generated when no (or only corrupted) observations are seen throughout the 'Failure threshold' time span. A value of 15 min (default) is recommended.</p><p>A value of zero '0' means that for any stream failure, however short, BNC immediately generates an advisory note.</p>"));
   _logFileLineEdit->setWhatsThis(tr("<p>Records of BNC's activities are shown in the 'Log' tab on the bottom of this window. They can be saved into a file when a valid path is specified in the 'Logfile (full path)' field.</p><p>The logfile name will automatically be extended by a string '_YYMMDD' carrying the current date."));
@@ -1769,10 +1769,10 @@ void bncWindow::saveOptions() {
   settings.setValue("serialHeightNMEA",  _serialHeightNMEALineEdit->text());
   settings.setValue("serialManualNMEASampling", _serialManualNMEASamplingSpinBox->value());
 // Outages
-  settings.setValue("obsRate",     _obsRateComboBox->currentText());
-  settings.setValue("adviseFail",  _adviseFailSpinBox->value());
-  settings.setValue("adviseReco",  _adviseRecoSpinBox->value());
-  settings.setValue("adviseScript",_adviseScriptLineEdit->text());
+  settings.setValue("adviseObsRate", _adviseObsRateComboBox->currentText());
+  settings.setValue("adviseFail",    _adviseFailSpinBox->value());
+  settings.setValue("adviseReco",    _adviseRecoSpinBox->value());
+  settings.setValue("adviseScript",  _adviseScriptLineEdit->text());
 // Miscellaneous
   settings.setValue("miscMount",   _miscMountLineEdit->text());
   settings.setValue("miscPort",    _miscPortLineEdit->text());
@@ -1918,7 +1918,7 @@ void bncWindow::startRealTime() {
       BNC_CORE->slotMessage("Panel 'Feed Engine' active", true);
   if (!_serialMountPointLineEdit->text().isEmpty())
       BNC_CORE->slotMessage("Panel 'Serial Output' active", true);
-  if (!_obsRateComboBox->currentText().isEmpty())
+  if (!_adviseObsRateComboBox->currentText().isEmpty())
       BNC_CORE->slotMessage("Panel 'Outages' active", true);
   if (!_miscMountLineEdit->text().isEmpty())
       BNC_CORE->slotMessage("Panel 'Miscellaneous' active", true);
@@ -2294,8 +2294,8 @@ void bncWindow::slotBncTextChanged(){
 
   // Outages
   // -------
-  if (sender() == 0 || sender() == _obsRateComboBox) {
-    enable = !_obsRateComboBox->currentText().isEmpty();
+  if (sender() == 0 || sender() == _adviseObsRateComboBox) {
+    enable = !_adviseObsRateComboBox->currentText().isEmpty();
     enableWidget(enable, _adviseFailSpinBox);
     enableWidget(enable, _adviseRecoSpinBox);
     enableWidget(enable, _adviseScriptLineEdit);
