@@ -48,7 +48,7 @@ Q_OBJECT
   int        _inspSegm;
   int        _adviseFail;
   int        _adviseReco;
-  int        _perfIntr;
+  int        _miscIntr;
   int        _numSucc;
   int        _secSucc;
   int        _secFail;
