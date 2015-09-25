@@ -383,16 +383,16 @@ bncWindow::bncWindow() {
   // ---------------------
   _miscMountLineEdit  = new QLineEdit(settings.value("miscMount").toString());
   _miscPortLineEdit   = new QLineEdit(settings.value("miscPort").toString());
-  _perfIntrComboBox   = new QComboBox();
-  _perfIntrComboBox->setEditable(false);
-  _perfIntrComboBox->addItems(QString(",2 sec, 10 sec,1 min,5 min,15 min,1 hour,6 hours,1 day").split(","));
-  int ll = _perfIntrComboBox->findText(settings.value("perfIntr").toString());
+  _miscIntrComboBox   = new QComboBox();
+  _miscIntrComboBox->setEditable(false);
+  _miscIntrComboBox->addItems(QString(",2 sec, 10 sec,1 min,5 min,15 min,1 hour,6 hours,1 day").split(","));
+  int ll = _miscIntrComboBox->findText(settings.value("miscIntr").toString());
   if (ll != -1) {
-    _perfIntrComboBox->setCurrentIndex(ll);
+    _miscIntrComboBox->setCurrentIndex(ll);
   }
-  _scanRTCMCheckBox  = new QCheckBox();
-  _scanRTCMCheckBox->setCheckState(Qt::CheckState(
-                                    settings.value("scanRTCM").toInt()));
+  _miscScanRTCMCheckBox  = new QCheckBox();
+  _miscScanRTCMCheckBox->setCheckState(Qt::CheckState(
+                                    settings.value("miscScanRTCM").toInt()));
 
   connect(_miscMountLineEdit, SIGNAL(textChanged(const QString &)),
           this, SLOT(slotBncTextChanged()));
@@ -840,16 +840,16 @@ bncWindow::bncWindow() {
   // -------------
   QGridLayout* rLayout = new QGridLayout;
   rLayout->setColumnMinimumWidth(0,14*ww);
-  _perfIntrComboBox->setMaximumWidth(9*ww);
+  _miscIntrComboBox->setMaximumWidth(9*ww);
   _miscPortLineEdit->setMaximumWidth(9*ww);
 
   rLayout->addWidget(new QLabel("Log latencies or scan RTCM streams for message types and antenna information or output raw data through TCP/IP port.<br>"),0, 0,1,50);
   rLayout->addWidget(new QLabel("Mountpoint"),                    1, 0);
   rLayout->addWidget(_miscMountLineEdit,                          1, 1, 1, 7);
   rLayout->addWidget(new QLabel("Log latency"),                   2, 0);
-  rLayout->addWidget(_perfIntrComboBox,                           2, 1);
+  rLayout->addWidget(_miscIntrComboBox,                           2, 1);
   rLayout->addWidget(new QLabel("Scan RTCM"),                     3, 0);
-  rLayout->addWidget(_scanRTCMCheckBox,                           3, 1);
+  rLayout->addWidget(_miscScanRTCMCheckBox,                       3, 1);
   rLayout->addWidget(new QLabel("Port"),                          4, 0);
   rLayout->addWidget(_miscPortLineEdit,                           4, 1);
   rLayout->addWidget(new QLabel(""),                              5, 1);
@@ -1309,7 +1309,7 @@ bncWindow::bncWindow() {
   _adviseFailSpinBox->setWhatsThis(tr("<p>An advisory note is generated when no (or only corrupted) observations are seen throughout the 'Failure threshold' time span. A value of 15 min (default) is recommended.</p><p>A value of zero '0' means that for any stream failure, however short, BNC immediately generates an advisory note.</p>"));
   _logFileLineEdit->setWhatsThis(tr("<p>Records of BNC's activities are shown in the 'Log' tab on the bottom of this window. They can be saved into a file when a valid path is specified in the 'Logfile (full path)' field.</p><p>The logfile name will automatically be extended by a string '_YYMMDD' carrying the current date."));
   _adviseScriptLineEdit->setWhatsThis(tr("<p>Specify the full path to a script or batch file to handle advisory notes generated in the event of corrupted streams or stream outages. The affected mountpoint and one of the comments 'Begin_Outage', 'End_Outage', 'Begin_Corrupted', or 'End_Corrupted' are passed on to the script as command line parameters.</p><p>The script may have the task to send the advisory notes by email to BNC's operator and/or to the affected stream provider.</p><p>An empty option field (default) or invalid path means that you don't want to use this option.</p>"));
-  _perfIntrComboBox->setWhatsThis(tr("<p>BNC can average latencies per stream over a certain period of GPS time. The resulting mean latencies are recorded in the 'Log' tab at the end of each 'Log latency' interval together with results of a statistical evaluation (approximate number of covered epochs, data gaps).</p><p>Select a 'Log latency' interval or select the empty option field if you do not want BNC to log latencies and statistical information.</p>"));
+  _miscIntrComboBox->setWhatsThis(tr("<p>BNC can average latencies per stream over a certain period of GPS time. The resulting mean latencies are recorded in the 'Log' tab at the end of each 'Log latency' interval together with results of a statistical evaluation (approximate number of covered epochs, data gaps).</p><p>Select a 'Log latency' interval or select the empty option field if you do not want BNC to log latencies and statistical information.</p>"));
   _mountPointsTable->setWhatsThis(tr("<p>Streams selected for retrieval are listed in the 'Streams' section. Clicking on 'Add Stream' button will open a window that allows the user to select data streams from an Ntrip broadcaster according to their mountpoints. To remove a stream from the 'Streams' list, highlight it by clicking on it and hit the 'Delete Stream' button. You can also remove multiple streams by highlighting them using +Shift and +Ctrl.</p><p>BNC automatically allocates one of its internal decoders to a stream based on the stream's 'format' as given in the sourcetable. BNC allows users to change this selection by editing the decoder string. Double click on the 'decoder' field, enter your preferred decoder and then hit Enter. The accepted decoder strings are 'RTCM_2.x', 'RTCM_3.x' and 'RTNET'.</p><p>In case you need to log the raw data as is, BNC allows users to by-pass its decoders and directly save the input in daily log files. To do this specify the decoder string as 'ZERO'.</p><p>BNC can also retrieve streams from virtual reference stations (VRS). VRS streams are indicated by a 'yes' in the 'nmea' column. To initiate these streams, the approximate latitude/longitude rover position is sent to the Ntrip broadcaster together with an approximation for the height. The default values for latitude and longitude can be change according to your requirement. Double click on 'lat' and 'long' fields, enter the values you wish to send and then hit Enter.</p>"));
   _log->setWhatsThis(tr("Records of BNC's activities are shown in the 'Log' tab. The message log covers the communication status between BNC and the Ntrip broadcaster as well as any problems that occur in the communication link, stream availability, stream delay, stream conversion etc."));
   _bncFigure->setWhatsThis(tr("The bandwidth consumtion per stream is shown in the 'Throughput' tab in bits per second (bps) or kilo bits per second (kbps)."));
@@ -1323,7 +1323,7 @@ bncWindow::bncWindow() {
 
   _miscMountLineEdit->setWhatsThis(tr("<p>Specify a mountpoint to apply any of the options shown below. Enter 'ALL' if you want to apply these options to all configured streams.</p><p>An empty option field (default) means that you don't want BNC to apply any of these options.</p>"));
   _miscPortLineEdit->setWhatsThis(tr("BNC can output an incoming stream through a TCP/IP port of your local host. Specify a port number here to activate this function."));
-  _scanRTCMCheckBox->setWhatsThis(tr("<p>Tick 'Scan RTCM' to log the numbers of incomming message types as well as contained antenna coordinates, antenna heigt, and antenna descriptor.</p><p>In case of RTCM Version 3 MSM streams, BNC will also log contained RINEX Version 3 observation types.</p>."));
+  _miscScanRTCMCheckBox->setWhatsThis(tr("<p>Tick 'Scan RTCM' to log the numbers of incomming message types as well as contained antenna coordinates, antenna heigt, and antenna descriptor.</p><p>In case of RTCM Version 3 MSM streams, BNC will also log contained RINEX Version 3 observation types.</p>."));
   _serialMountPointLineEdit->setWhatsThis(tr("<p>Enter a 'Mountpoint' to forward the corresponding stream to a serial connected receiver.</p><p>Depending on the stream contents the receiver may use it for Differential GNSS, Precise Point Positioning or any other purpose supported by the firmware.</p>"));
   _serialPortNameLineEdit->setWhatsThis(tr("<p>Enter the serial 'Port name' selected for communication with your serial connected receiver. Valid port names are</p><pre>Windows:       COM1, COM2<br>Linux:         /dev/ttyS0, /dev/ttyS1<br>FreeBSD:       /dev/ttyd0, /dev/ttyd1<br>Digital Unix:  /dev/tty01, /dev/tty02<br>HP-UX:         /dev/tty1p0, /dev/tty2p0<br>SGI/IRIX:      /dev/ttyf1, /dev/ttyf2<br>SunOS/Solaris: /dev/ttya, /dev/ttyb</pre><p>Note that you must plug a serial cable in the port defined here before you start BNC.</p>"));
   _serialBaudRateComboBox->setWhatsThis(tr("<p>Select a 'Baud rate' for the serial output link.</p><p>Note that your selection must equal the baud rate configured to the serial connected receiver. Note further that using a high baud rate is recommended.</p>"));
@@ -1776,8 +1776,8 @@ void bncWindow::saveOptions() {
 // Miscellaneous
   settings.setValue("miscMount",   _miscMountLineEdit->text());
   settings.setValue("miscPort",    _miscPortLineEdit->text());
-  settings.setValue("perfIntr",    _perfIntrComboBox->currentText());
-  settings.setValue("scanRTCM",    _scanRTCMCheckBox->checkState());
+  settings.setValue("miscIntr",    _miscIntrComboBox->currentText());
+  settings.setValue("miscScanRTCM", _miscScanRTCMCheckBox->checkState());
 // Reqc
   settings.setValue("reqcAction",     _reqcActionComboBox->currentText());
   settings.setValue("reqcObsFile",    _reqcObsFileChooser->fileName());
@@ -2305,8 +2305,8 @@ void bncWindow::slotBncTextChanged(){
   // -------------
   if (sender() == 0 || sender() == _miscMountLineEdit) {
     enable = !_miscMountLineEdit->text().isEmpty();
-    enableWidget(enable, _perfIntrComboBox);
-    enableWidget(enable, _scanRTCMCheckBox);
+    enableWidget(enable, _miscIntrComboBox);
+    enableWidget(enable, _miscScanRTCMCheckBox);
     enableWidget(enable, _miscPortLineEdit);
   }
 
