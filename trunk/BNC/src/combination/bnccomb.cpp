@@ -419,11 +419,11 @@ void bncComb::slotNewClkCorrections(QList<t_clkCorr> clkCorrections) {
 
   // Process previous Epoch(s)
   // -------------------------
-  const double waitTime = 1.0 * _cmbSampl;
+  const double outWait = 1.0 * _cmbSampl;
   QListIterator<bncTime> itTime(_buffer.keys());
   while (itTime.hasNext()) {
     bncTime epoTime = itTime.next();
-    if (epoTime < lastTime - waitTime) {
+    if (epoTime < lastTime - outWait) {
       _resTime = epoTime;
       processEpoch();
     }
