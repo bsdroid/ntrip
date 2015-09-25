@@ -281,12 +281,12 @@ bncWindow::bncWindow() {
   _waitTimeSpinBox->setSingleStep(1);
   _waitTimeSpinBox->setSuffix(" sec");
   _waitTimeSpinBox->setValue(settings.value("waitTime").toInt());
-  _binSamplSpinBox    = new QSpinBox();
-  _binSamplSpinBox->setMinimum(0);
-  _binSamplSpinBox->setMaximum(60);
-  _binSamplSpinBox->setSingleStep(5);
-  _binSamplSpinBox->setValue(settings.value("binSampl").toInt());
-  _binSamplSpinBox->setSuffix(" sec");
+  _outSamplSpinBox    = new QSpinBox();
+  _outSamplSpinBox->setMinimum(0);
+  _outSamplSpinBox->setMaximum(60);
+  _outSamplSpinBox->setSingleStep(5);
+  _outSamplSpinBox->setValue(settings.value("outSampl").toInt());
+  _outSamplSpinBox->setSuffix(" sec");
   _outFileLineEdit    = new QLineEdit(settings.value("outFile").toString());
   _outUPortLineEdit   = new QLineEdit(settings.value("outUPort").toString());
 
@@ -754,7 +754,7 @@ bncWindow::bncWindow() {
   sLayout->setColumnMinimumWidth(0,14*ww);
   _outPortLineEdit->setMaximumWidth(9*ww);
   _waitTimeSpinBox->setMaximumWidth(9*ww);
-  _binSamplSpinBox->setMaximumWidth(9*ww);
+  _outSamplSpinBox->setMaximumWidth(9*ww);
   _outUPortLineEdit->setMaximumWidth(9*ww);
 
   sLayout->addWidget(new QLabel("Output decoded observations in ASCII format to feed a real-time GNSS network engine.<br>"),0,0,1,50);
@@ -763,7 +763,7 @@ bncWindow::bncWindow() {
   sLayout->addWidget(new QLabel("       Wait for full obs epoch"),  1, 2, Qt::AlignRight);
   sLayout->addWidget(_waitTimeSpinBox,                              1, 3, Qt::AlignLeft);
   sLayout->addWidget(new QLabel("Sampling"),                        2, 0);
-  sLayout->addWidget(_binSamplSpinBox,                              2, 1, Qt::AlignLeft);
+  sLayout->addWidget(_outSamplSpinBox,                              2, 1, Qt::AlignLeft);
   sLayout->addWidget(new QLabel("File (full path)"),                3, 0);
   sLayout->addWidget(_outFileLineEdit,                              3, 1, 1, 10);
   sLayout->addWidget(new QLabel("Port (unsynchronized)"),           4, 0);
@@ -1303,7 +1303,7 @@ bncWindow::bncWindow() {
   _ephIntrComboBox->setWhatsThis(tr("<p>Select the length of the RINEX Navigation file.</p>"));
   _corrIntrComboBox->setWhatsThis(tr("<p>Select the length of the Broadcast Ephemeris Correction files.</p>"));
   _rnxSamplSpinBox->setWhatsThis(tr("<p>Select the RINEX Observation sampling interval in seconds. A value of zero '0' tells BNC to store all received epochs into RINEX.</p>"));
-  _binSamplSpinBox->setWhatsThis(tr("<p>Select the synchronized observation sampling interval in seconds. A value of zero '0' tells BNC to send/store all received epochs.</p>"));
+  _outSamplSpinBox->setWhatsThis(tr("<p>Select the synchronized observation sampling interval in seconds. A value of zero '0' tells BNC to send/store all received epochs.</p>"));
   _adviseObsRateComboBox->setWhatsThis(tr("<p>BNC can collect all returns (success or failure) coming from a decoder within a certain short time span to then decide whether a stream has an outage or its content is corrupted. The procedure needs a rough estimate of the expected 'Observation rate' of the incoming streams. When a continuous problem is detected, BNC can inform its operator about this event through an advisory note.</p><p>Default is an empty option field, meaning that you don't want BNC to report on stream failures or recoveries when exceeding a threshold time span.</p>"));
   _adviseRecoSpinBox->setWhatsThis(tr("<p>Following a stream outage or a longer series of bad observations, an advisory note is generated when valid observations are received again throughout the 'Recovery threshold' time span. A value of about 5min (default) is recommended.</p><p>A value of zero '0' means that for any stream recovery, however short, BNC immediately generates an advisory note.</p>"));
   _adviseFailSpinBox->setWhatsThis(tr("<p>An advisory note is generated when no (or only corrupted) observations are seen throughout the 'Failure threshold' time span. A value of 15 min (default) is recommended.</p><p>A value of zero '0' means that for any stream failure, however short, BNC immediately generates an advisory note.</p>"));
@@ -1753,7 +1753,7 @@ void bncWindow::saveOptions() {
 // Feed Engine
   settings.setValue("outPort",     _outPortLineEdit->text());
   settings.setValue("waitTime",    _waitTimeSpinBox->value());
-  settings.setValue("binSampl",    _binSamplSpinBox->value());
+  settings.setValue("outSampl",    _outSamplSpinBox->value());
   settings.setValue("outFile",     _outFileLineEdit->text());
   settings.setValue("outUPort",    _outUPortLineEdit->text());
 // Serial Output
@@ -2066,7 +2066,7 @@ void bncWindow::slotMountPointsRead(QList<bncGetThread*> threads) {
 
   populateMountPointsTable();
   bncSettings settings;
-  _binSamplSpinBox->setValue(settings.value("binSampl").toInt());
+  _outSamplSpinBox->setValue(settings.value("outSampl").toInt());
   _waitTimeSpinBox->setValue(settings.value("waitTime").toInt());
   QListIterator<bncGetThread*> iTh(threads);
   while (iTh.hasNext()) {
@@ -2270,7 +2270,7 @@ void bncWindow::slotBncTextChanged(){
   if (sender() == 0 || sender() == _outPortLineEdit || sender() == _outFileLineEdit) {
     enable = !_outPortLineEdit->text().isEmpty() || !_outFileLineEdit->text().isEmpty();
     enableWidget(enable, _waitTimeSpinBox);
-    enableWidget(enable, _binSamplSpinBox);
+    enableWidget(enable, _outSamplSpinBox);
   }
 
   // Serial Output
