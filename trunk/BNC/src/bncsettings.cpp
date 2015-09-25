@@ -144,7 +144,7 @@ void bncSettings::reRead() {
     setValue_p("corrPort",            "");
     // Feed Engine
     setValue_p("outPort",             "");
-    setValue_p("waitTime",            "5");
+    setValue_p("outWait",             "5");
     setValue_p("outSampl",            "0");
     setValue_p("outFile",             "");
     setValue_p("outUPort",            "");
