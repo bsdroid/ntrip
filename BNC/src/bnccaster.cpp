@@ -96,9 +96,9 @@ bncCaster::bncCaster() {
   }
 
   _samplingRate = settings.value("outSampl").toInt();
-  _waitTime     = settings.value("waitTime").toDouble();
-  if (_waitTime <= 0.0) {
-    _waitTime = 0.01;
+  _outWait      = settings.value("outWait").toDouble();
+  if (_outWait <= 0.0) {
+    _outWait = 0.01;
   }
   _confInterval = -1;
 
@@ -216,9 +216,9 @@ void bncCaster::slotNewObs(const QByteArray staID, QList<t_satObs> obsList) {
 
     // Dump Epochs
     // -----------
-    if (obs._time - _waitTime > _lastDumpTime) {
-      dumpEpochs(obs._time - _waitTime);
-      _lastDumpTime = obs._time - _waitTime;
+    if (obs._time - _outWait > _lastDumpTime) {
+      dumpEpochs(obs._time - _outWait);
+      _lastDumpTime = obs._time - _outWait;
     }
   }
 }
@@ -372,9 +372,9 @@ void bncCaster::readMountPoints() {
   // Reread several options
   // ----------------------
   _samplingRate = settings.value("outSampl").toInt();
-  _waitTime     = settings.value("waitTime").toInt();
-  if (_waitTime < 1) {
-    _waitTime = 1;
+  _outWait      = settings.value("outWait").toInt();
+  if (_outWait < 1) {
+    _outWait = 1;
   }
 
   // Add new mountpoints
