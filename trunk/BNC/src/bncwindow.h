@@ -171,13 +171,13 @@ class bncWindow : public QMainWindow {
     QSpinBox*  _outSamplSpinBox;
     QCheckBox* _rnxAppendCheckBox;
     QCheckBox* _autoStartCheckBox;
-    QCheckBox* _scanRTCMCheckBox;
+    QCheckBox* _miscScanRTCMCheckBox;
     QSpinBox*  _outWaitSpinBox;
     QComboBox* _adviseObsRateComboBox;
     QSpinBox*  _adviseFailSpinBox;
     QSpinBox*  _adviseRecoSpinBox;
     QLineEdit* _adviseScriptLineEdit;
-    QComboBox* _perfIntrComboBox;
+    QComboBox* _miscIntrComboBox;
     QTableWidget* _mountPointsTable;
 
     QLineEdit* _serialPortNameLineEdit;
