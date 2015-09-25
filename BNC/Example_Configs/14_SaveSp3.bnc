@@ -119,7 +119,7 @@ uploadMountpointsOut=",,,,,0,Output/BNC${GPSWD}.sp3,Output/BNC${GPSWD}.clk,,,,0 
 uploadSamplClkRnx=10
 uploadSamplRtcmEphCorr=0
 uploadSamplSp3=1
-waitTime=5
+outWait=5
 
 [PPP]
 antexFile=
