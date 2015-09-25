@@ -275,12 +275,12 @@ bncWindow::bncWindow() {
   // Feed Engine Options
   // -------------------
   _outPortLineEdit    = new QLineEdit(settings.value("outPort").toString());
-  _waitTimeSpinBox   = new QSpinBox();
-  _waitTimeSpinBox->setMinimum(1);
-  _waitTimeSpinBox->setMaximum(30);
-  _waitTimeSpinBox->setSingleStep(1);
-  _waitTimeSpinBox->setSuffix(" sec");
-  _waitTimeSpinBox->setValue(settings.value("waitTime").toInt());
+  _outWaitSpinBox   = new QSpinBox();
+  _outWaitSpinBox->setMinimum(1);
+  _outWaitSpinBox->setMaximum(30);
+  _outWaitSpinBox->setSingleStep(1);
+  _outWaitSpinBox->setSuffix(" sec");
+  _outWaitSpinBox->setValue(settings.value("outWait").toInt());
   _outSamplSpinBox    = new QSpinBox();
   _outSamplSpinBox->setMinimum(0);
   _outSamplSpinBox->setMaximum(60);
@@ -753,7 +753,7 @@ bncWindow::bncWindow() {
   QGridLayout* sLayout = new QGridLayout;
   sLayout->setColumnMinimumWidth(0,14*ww);
   _outPortLineEdit->setMaximumWidth(9*ww);
-  _waitTimeSpinBox->setMaximumWidth(9*ww);
+  _outWaitSpinBox->setMaximumWidth(9*ww);
   _outSamplSpinBox->setMaximumWidth(9*ww);
   _outUPortLineEdit->setMaximumWidth(9*ww);
 
@@ -761,7 +761,7 @@ bncWindow::bncWindow() {
   sLayout->addWidget(new QLabel("Port"),                            1, 0);
   sLayout->addWidget(_outPortLineEdit,                              1, 1);
   sLayout->addWidget(new QLabel("       Wait for full obs epoch"),  1, 2, Qt::AlignRight);
-  sLayout->addWidget(_waitTimeSpinBox,                              1, 3, Qt::AlignLeft);
+  sLayout->addWidget(_outWaitSpinBox,                              1, 3, Qt::AlignLeft);
   sLayout->addWidget(new QLabel("Sampling"),                        2, 0);
   sLayout->addWidget(_outSamplSpinBox,                              2, 1, Qt::AlignLeft);
   sLayout->addWidget(new QLabel("File (full path)"),                3, 0);
@@ -1283,7 +1283,7 @@ bncWindow::bncWindow() {
   _proxyPortLineEdit->setWhatsThis(tr("<p>Enter your proxy server port number in case a proxy is operated in front of BNC.</p>"));
   _sslCaCertPathLineEdit->setWhatsThis(tr("<p>Communication with an Ntrip broadcaster over SSL requires the exchange of client and/or server certificates. Specify the path to a directory where you save certificates on your system. Don't try communication via SSL if you are not sure wheter this is supported by the involved Ntrip broadcaster. Note that SSL communication is usually done over port 443.</p>"));
   _ignoreSslErrorsCheckBox->setWhatsThis(tr("<p>SSL communication may involve queries coming from the Ntrip broadcaster. Tick 'Ignore SSL authorization erros' if you don't want to be bothered with this.</p>"));
-  _waitTimeSpinBox->setWhatsThis(tr("<p>When feeding a real-time GNSS network engine waiting for synchronized input epoch by epoch, BNC drops whatever is received later than 'Wait for full obs epoch' seconds. A value of 3 to 5 seconds is recommended, depending on the latency of the incoming streams and the delay acceptable to your real-time GNSS network engine or products.</p>"));
+  _outWaitSpinBox->setWhatsThis(tr("<p>When feeding a real-time GNSS network engine waiting for synchronized input epoch by epoch, BNC drops whatever is received later than 'Wait for full obs epoch' seconds. A value of 3 to 5 seconds is recommended, depending on the latency of the incoming streams and the delay acceptable to your real-time GNSS network engine or products.</p>"));
   _outFileLineEdit->setWhatsThis(tr("Specify the full path to a file where synchronized observations are saved in plain ASCII format. Beware that the size of this file can rapidly increase depending on the number of incoming streams."));
   _outPortLineEdit->setWhatsThis(tr("BNC can produce synchronized observations in a plain ASCII format on your local host through an IP port. Specify a port number here to activate this function."));
   _outUPortLineEdit->setWhatsThis(tr("BNC can produce unsynchronized observations in a plain ASCII format on your local host through an IP port. Specify a port number here to activate this function."));
@@ -1752,7 +1752,7 @@ void bncWindow::saveOptions() {
   settings.setValue("corrPort",    _corrPortLineEdit->text());
 // Feed Engine
   settings.setValue("outPort",     _outPortLineEdit->text());
-  settings.setValue("waitTime",    _waitTimeSpinBox->value());
+  settings.setValue("outWait",     _outWaitSpinBox->value());
   settings.setValue("outSampl",    _outSamplSpinBox->value());
   settings.setValue("outFile",     _outFileLineEdit->text());
   settings.setValue("outUPort",    _outUPortLineEdit->text());
@@ -2067,7 +2067,7 @@ void bncWindow::slotMountPointsRead(QList<bncGetThread*> threads) {
   populateMountPointsTable();
   bncSettings settings;
   _outSamplSpinBox->setValue(settings.value("outSampl").toInt());
-  _waitTimeSpinBox->setValue(settings.value("waitTime").toInt());
+  _outWaitSpinBox->setValue(settings.value("outWait").toInt());
   QListIterator<bncGetThread*> iTh(threads);
   while (iTh.hasNext()) {
     bncGetThread* thread = iTh.next();
@@ -2269,7 +2269,7 @@ void bncWindow::slotBncTextChanged(){
   // -----------
   if (sender() == 0 || sender() == _outPortLineEdit || sender() == _outFileLineEdit) {
     enable = !_outPortLineEdit->text().isEmpty() || !_outFileLineEdit->text().isEmpty();
-    enableWidget(enable, _waitTimeSpinBox);
+    enableWidget(enable, _outWaitSpinBox);
     enableWidget(enable, _outSamplSpinBox);
   }
 
