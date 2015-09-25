@@ -241,14 +241,14 @@ bncWindow::bncWindow() {
   if (jj != -1) {
     _ephIntrComboBox->setCurrentIndex(jj);
   }
-  _outEphPortLineEdit    = new QLineEdit(settings.value("outEphPort").toString());
+  _ephOutPortLineEdit    = new QLineEdit(settings.value("ephOutPort").toString());
   _ephV3CheckBox = new QCheckBox();
   _ephV3CheckBox->setCheckState(Qt::CheckState(settings.value("ephV3").toInt()));
 
   _ephV3filenameCheckBox = new QCheckBox();
   _ephV3filenameCheckBox->setCheckState(Qt::CheckState(settings.value("ephV3filenames").toInt()));
 
-  connect(_outEphPortLineEdit, SIGNAL(textChanged(const QString &)),
+  connect(_ephOutPortLineEdit, SIGNAL(textChanged(const QString &)),
           this, SLOT(slotBncTextChanged()));
 
   connect(_ephPathLineEdit, SIGNAL(textChanged(const QString &)),
@@ -712,7 +712,7 @@ bncWindow::bncWindow() {
   QGridLayout* eLayout = new QGridLayout;
   eLayout->setColumnMinimumWidth(0,14*ww);
   _ephIntrComboBox->setMaximumWidth(9*ww);
-  _outEphPortLineEdit->setMaximumWidth(9*ww);
+  _ephOutPortLineEdit->setMaximumWidth(9*ww);
 
   eLayout->addWidget(new QLabel("Saving RINEX navigation files and ephemeris output through IP port.<br>"),0,0,1,70);
   eLayout->addWidget(new QLabel("Directory"),                     1, 0);
@@ -720,7 +720,7 @@ bncWindow::bncWindow() {
   eLayout->addWidget(new QLabel("Interval"),                      2, 0);
   eLayout->addWidget(_ephIntrComboBox,                            2, 1);
   eLayout->addWidget(new QLabel("Port"),                          3, 0);
-  eLayout->addWidget(_outEphPortLineEdit,                         3, 1);
+  eLayout->addWidget(_ephOutPortLineEdit,                         3, 1);
   eLayout->addWidget(new QLabel("Version 3"),                     4, 0);
   eLayout->addWidget(_ephV3CheckBox,                              4, 1);
   eLayout->addWidget(new QLabel("Version 3 filenames"),           4, 2);
@@ -1287,7 +1287,7 @@ bncWindow::bncWindow() {
   _outFileLineEdit->setWhatsThis(tr("Specify the full path to a file where synchronized observations are saved in plain ASCII format. Beware that the size of this file can rapidly increase depending on the number of incoming streams."));
   _outPortLineEdit->setWhatsThis(tr("BNC can produce synchronized observations in a plain ASCII format on your local host through an IP port. Specify a port number here to activate this function."));
   _outUPortLineEdit->setWhatsThis(tr("BNC can produce unsynchronized observations in a plain ASCII format on your local host through an IP port. Specify a port number here to activate this function."));
-  _outEphPortLineEdit->setWhatsThis(tr("BNC can produce ephemeris data in RINEX ASCII format on your local host through an IP port. Specify a port number here to activate this function."));
+  _ephOutPortLineEdit->setWhatsThis(tr("BNC can produce ephemeris data in RINEX ASCII format on your local host through an IP port. Specify a port number here to activate this function."));
   _corrPortLineEdit->setWhatsThis(tr("BNC can produce Broadcast Ephemeris Corrections on your local host through an IP port. Specify a port number here to activate this function."));
   _rnxPathLineEdit->setWhatsThis(tr("Here you specify the path to where the RINEX Observation files will be stored. If the specified directory does not exist, BNC will not create RINEX Observation files."));
   _ephPathLineEdit->setWhatsThis(tr("Specify the path for saving Broadcast Ephemeris data as RINEX Navigation files. If the specified directory does not exist, BNC will not create RINEX Navigation files."));
@@ -1741,7 +1741,7 @@ void bncWindow::saveOptions() {
 // RINEX Ephemeris
   settings.setValue("ephPath",       _ephPathLineEdit->text());
   settings.setValue("ephIntr",       _ephIntrComboBox->currentText());
-  settings.setValue("outEphPort",    _outEphPortLineEdit->text());
+  settings.setValue("ephOutPort",    _ephOutPortLineEdit->text());
   settings.setValue("ephV3filenames", _ephV3filenameCheckBox->checkState());
   (_ephV3filenameCheckBox->checkState()) ?
     settings.setValue("ephV3",       _ephV3filenameCheckBox->checkState()) :
@@ -1892,7 +1892,7 @@ void bncWindow::startRealTime() {
   _caster = new bncCaster();
 
   BNC_CORE->setCaster(_caster);
-  BNC_CORE->setPortEph(_outEphPortLineEdit->text().toInt());
+  BNC_CORE->setPortEph(_ephOutPortLineEdit->text().toInt());
   BNC_CORE->setPortCorr(_corrPortLineEdit->text().toInt());
   BNC_CORE->initCombination();
 
@@ -2251,8 +2251,8 @@ void bncWindow::slotBncTextChanged(){
 
   // RINEX Ephemeris
   // ---------------
-  if (sender() == 0 || sender() == _ephPathLineEdit || sender() == _outEphPortLineEdit) {
-    enable = !_ephPathLineEdit->text().isEmpty() || !_outEphPortLineEdit->text().isEmpty();
+  if (sender() == 0 || sender() == _ephPathLineEdit || sender() == _ephOutPortLineEdit) {
+    enable = !_ephPathLineEdit->text().isEmpty() || !_ephOutPortLineEdit->text().isEmpty();
     enableWidget(enable, _ephIntrComboBox);
     enableWidget(enable, _ephV3CheckBox);
     enableWidget(enable, _ephV3filenameCheckBox);
