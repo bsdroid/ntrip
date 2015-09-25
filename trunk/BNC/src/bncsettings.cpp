@@ -167,8 +167,8 @@ void bncSettings::reRead() {
     setValue_p("adviseScript",        "");
     // Miscellaneous
     setValue_p("miscMount",           "");
-    setValue_p("perfIntr",            "");
-    setValue_p("scanRTCM",            "0");
+    setValue_p("miscIntr",            "");
+    setValue_p("miscScanRTCM",        "0");
     setValue_p("miscPort",            "");
     // Combination
     setValue_p("cmbStreams",          "");
