@@ -505,7 +505,7 @@ void bncGetThread::run() {
         emit newLatency(_staID, _latencyChecker->currentLatency());
       }
 
-      scanRTCM();            
+      miscScanRTCM();            
 
       // Loop over all observations (observations output)
       // ------------------------------------------------
@@ -698,14 +698,14 @@ t_irc bncGetThread::tryReconnect() {
 
 // RTCM scan output
 //////////////////////////////////////////////////////////////////////////////
-void bncGetThread::scanRTCM() {
+void bncGetThread::miscScanRTCM() {
 
   if ( !decoder() ) {
     return;
   }
 
   bncSettings settings;
-  if ( Qt::CheckState(settings.value("scanRTCM").toInt()) == Qt::Checked ) {
+  if ( Qt::CheckState(settings.value("miscScanRTCM").toInt()) == Qt::Checked ) {
 
     if ( _miscMount == _staID || _miscMount == "ALL" ) {
       // RTCM message types
