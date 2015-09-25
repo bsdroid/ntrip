@@ -93,34 +93,34 @@ latencyChecker::latencyChecker(QByteArray staID) {
 
   // Latency interval/average
   // ------------------------
-  _perfIntr = 1;
-  QString perfIntr = settings.value("perfIntr").toString();
-  if      ( perfIntr.isEmpty() ) { 
-    _perfIntr = 1; 
+  _miscIntr = 1;
+  QString miscIntr = settings.value("miscIntr").toString();
+  if      ( miscIntr.isEmpty() ) { 
+    _miscIntr = 1; 
   }
-  else if ( perfIntr.indexOf("2 sec")   != -1 ) { 
-    _perfIntr = 2; 
+  else if ( miscIntr.indexOf("2 sec")   != -1 ) { 
+    _miscIntr = 2; 
   }
-  else if ( perfIntr.indexOf("10 sec")  != -1 ) { 
-    _perfIntr = 10; 
+  else if ( miscIntr.indexOf("10 sec")  != -1 ) { 
+    _miscIntr = 10; 
   }
-  else if ( perfIntr.indexOf("1 min")   != -1 ) { 
-    _perfIntr = 60; 
+  else if ( miscIntr.indexOf("1 min")   != -1 ) { 
+    _miscIntr = 60; 
   }
-  else if ( perfIntr.left(5).indexOf("5 min")   != -1 ) { 
-    _perfIntr = 300; 
+  else if ( miscIntr.left(5).indexOf("5 min")   != -1 ) { 
+    _miscIntr = 300; 
   }
-  else if ( perfIntr.indexOf("15 min")  != -1 ) { 
-    _perfIntr = 900; 
+  else if ( miscIntr.indexOf("15 min")  != -1 ) { 
+    _miscIntr = 900; 
   }
-  else if ( perfIntr.indexOf("1 hour")  != -1 ) { 
-    _perfIntr = 3600; 
+  else if ( miscIntr.indexOf("1 hour")  != -1 ) { 
+    _miscIntr = 3600; 
   }
-  else if ( perfIntr.indexOf("6 hours") != -1 ) { 
-    _perfIntr = 21600; 
+  else if ( miscIntr.indexOf("6 hours") != -1 ) { 
+    _miscIntr = 21600; 
   }
-  else if ( perfIntr.indexOf("1 day")   != -1 ) { 
-    _perfIntr = 86400; 
+  else if ( miscIntr.indexOf("1 day")   != -1 ) { 
+    _miscIntr = 86400; 
   }
 
   // RTCM message types
@@ -330,7 +330,7 @@ void latencyChecker::checkOutage(bool decoded) {
 //////////////////////////////////////////////////////////////////////////////
 void latencyChecker::checkObsLatency(const QList<t_satObs>& obsList) {
 
-  if (_perfIntr > 0 ) {
+  if (_miscIntr > 0 ) {
 
     QListIterator<t_satObs> it(obsList);
     while (it.hasNext()) {
@@ -338,7 +338,7 @@ void latencyChecker::checkObsLatency(const QList<t_satObs>& obsList) {
       
       _newSecGPS = static_cast<int>(obs._time.gpssec());
       if (_newSecGPS != _oldSecGPS) {
-        if (_newSecGPS % _perfIntr < _oldSecGPS % _perfIntr) {
+        if (_newSecGPS % _miscIntr < _oldSecGPS % _miscIntr) {
           if (_numLat > 0) {
             if (_meanDiff > 0.0) {
               if ( _checkMountPoint == _staID || _checkMountPoint == "ALL" ) {
@@ -422,7 +422,7 @@ void latencyChecker::checkCorrLatency(int corrGPSEpochTime) {
     return;
   }
 
-  if (_perfIntr > 0) {
+  if (_miscIntr > 0) {
 
     _newSecGPS = corrGPSEpochTime;
 
@@ -439,7 +439,7 @@ void latencyChecker::checkCorrLatency(int corrGPSEpochTime) {
       }
     }
     if (_newSecGPS != _oldSecGPS) {
-      if (int(_newSecGPS) % _perfIntr < int(_oldSecGPS) % _perfIntr) {
+      if (int(_newSecGPS) % _miscIntr < int(_oldSecGPS) % _miscIntr) {
         if (_numLat>0) {
           QString late;
           if (_meanDiff>0.) {
