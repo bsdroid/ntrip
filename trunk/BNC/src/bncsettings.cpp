@@ -145,7 +145,7 @@ void bncSettings::reRead() {
     // Feed Engine
     setValue_p("outPort",             "");
     setValue_p("waitTime",            "5");
-    setValue_p("binSampl",            "0");
+    setValue_p("outSampl",            "0");
     setValue_p("outFile",             "");
     setValue_p("outUPort",            "");
     // Serial Output
