@@ -161,7 +161,7 @@ void bncSettings::reRead() {
     setValue_p("serialHeightNMEA",    "");
     setValue_p("serialManualNMEASampling", "");
     // Outages
-    setValue_p("obsRate",             "");
+    setValue_p("adviseObsRate",       "");
     setValue_p("adviseFail",          "15");
     setValue_p("adviseReco",          "5");
     setValue_p("adviseScript",        "");
