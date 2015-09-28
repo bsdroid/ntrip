@@ -993,6 +993,10 @@ BRDC00DEU_S_20121600000_01D_MN.rnx
 Note that streams dedicated to carry Broadcast Ephemeris messages in RTCM Version 3 format in high repetition rates are listed on <u>http://igs.bkg.bund.de/ntrip/ephemeris</u>.
 </p>
 
+<p>
+Note further that BNC will ignore incorrect or outdated Broadcast Ephemeris data when necessary, leaving a note 'WRONG EPHEMERIS' or 'OUTDATED EPHEMERIS' in the logfile.
+</p>
+
 <p><a name="ephdir"><h4>3.5.1 Directory - optional</h4></p>
 <p>
 Specify a path for saving Broadcast Ephemeris data as RINEX Navigation files. If the specified directory does not exist, BNC will not create RINEX Navigation files. Default value for Ephemeris 'Directory' is an empty option field, meaning that no RINEX Navigation files will be created.
@@ -2218,6 +2222,7 @@ BNC can derive coordinates for rover positions following the Precise Point Posit
 <li>Requires pulling in addition a stream carrying satellite orbit and clock corrections to Broadcast Ephemeris in the form of RTCM Version 3 'State Space Representation' (SSR) messages. Note that for BNC these Broadcast Corrections need to be referred to the satellite's Antenna Phase Center (APC). Streams providing such messages are listed on <u>http://igs.bkg.bund.de/ntrip/orbits</u>. Stream 'CLK11' on Ntrip Broadcaster 'products.igs-ip.net:2101' is an example.</li>
 <li>May require pulling a stream carrying Broadcast Ephemeris available as RTCM Version 3 message types 1019, 1020, 1043, 1044, 1045, 1046 and 63 (tentative). This becomes a must only when the stream coming from the receiver does not contain Broadcast Ephemeris or provides them only at very low repetition rate. Streams providing such messages are listed on <u>http://igs.bkg.bund.de/ntrip/ephemeris</u>. Stream 'RTCM3EPH' on caster 'products.igs-ip.net:2101' is an example.</li>
 </ul>
+Note that broadcast ephemeris parameters pass through a plausibility check in BNC which allows to ignore incorrect or outdated ephemeris data when necessary, leaving a note 'WRONG EPHEMERIS' or 'OUTDATED EPHEMERIS' in the logfile.
 </p>
 
 <p>When using the PPP option, it is important to understand which effects are corrected by BNC.
@@ -2892,7 +2897,7 @@ In view of IGS real-time products, the 'Combine Corrections' functionality has b
 </ul>
 </p>
 <p>
-Note that the combination process requires real-time access to Broadcast Ephemeris. So, in addition to the orbit and clock correction streams BNC must pull a stream carrying Broadcast Ephemeris in the form of RTCM Version 3 messages. Stream 'RTCM3EPH' on caster <u>products.igs-ip.net</u> is an example for that.
+Note that the combination process requires real-time access to Broadcast Ephemeris. So, in addition to the orbit and clock correction streams BNC must pull a stream carrying Broadcast Ephemeris in the form of RTCM Version 3 messages. Stream 'RTCM3EPH' on caster <u>products.igs-ip.net</u> is an example for that. Note further that BNC will ignore incorrect or outdated Broadcast Ephemeris data when necessary, leaving a note 'WRONG EPHEMERIS' or 'OUTDATED EPHEMERIS' in the logfile.
 </p>
 
 <p>
@@ -3378,7 +3383,23 @@ IGS provides a file containing absolute phase center variations for GNSS satelli
 
 <p><a name="upeph"><h4>3.16. Upload Ephemeris</h4></p>
 <p>
-BNC can upload a stream carrying Broadcast Ephemeris in RTCM Version 3 format to an Ntrip Broadcaster.
+BNC can generate a stream carrying only Broadcast Ephemeris in RTCM Version 3 format and upload it to an Ntrip Broadcaster.
+</p>
+
+<p>
+Note that broadcast ephemeris received in real-time have a system specific period of validity in BNC which is defined in accordance with the update rates of the navigation messages.
+<ul>
+<li>GPS ephemeris will be interpreted as outdated and ignored when older than 4 hours.</li>
+<li>GLONASS ephemeris will be interpreted as outdated and ignored when older than 1 hour.</li>
+<li>Galileo ephemeris will be interpreted as outdated and ignored when older than 4 hours.</li>
+<li>BDS ephemeris will be interpreted as outdated and ignored when older than 6 hours.</li>
+<li>SBAS ephemeris will be interpreted as outdated and ignored when older than 10 minutes.</li>
+<li>QZSS ephemeris will be interpreted as outdated and ignored when older than 30 minutes.</li>
+</ul>
+A note 'OUTDATED EPHEMERIS' will be given in the logfile and the data will be disregarded when necessary. 
+</p>
+<p>
+Furthermore, received broadcast ephemeris parameters pass through a plausibility check in BNC which allows to ignore incorrect ephemeris data when necessary, leaving a note 'WRONG EPHEMERIS' in the logfile.
 </p>
 
 <p><a name="brdcserver"><h4>3.16.1 Host &amp; Port - optional</h4></p>
