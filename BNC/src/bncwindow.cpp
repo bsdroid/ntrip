@@ -385,7 +385,7 @@ bncWindow::bncWindow() {
   _miscPortLineEdit   = new QLineEdit(settings.value("miscPort").toString());
   _miscIntrComboBox   = new QComboBox();
   _miscIntrComboBox->setEditable(false);
-  _miscIntrComboBox->addItems(QString(",2 sec, 10 sec,1 min,5 min,15 min,1 hour,6 hours,1 day").split(","));
+  _miscIntrComboBox->addItems(QString(",2 sec,10 sec,1 min,5 min,15 min,1 hour,6 hours,1 day").split(","));
   int ll = _miscIntrComboBox->findText(settings.value("miscIntr").toString());
   if (ll != -1) {
     _miscIntrComboBox->setCurrentIndex(ll);
