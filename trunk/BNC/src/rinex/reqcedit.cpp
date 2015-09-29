@@ -34,7 +34,7 @@
  *
  * Created:    11-Apr-2012
  *
- * Changes:    
+ * Changes:
  *
  * -----------------------------------------------------------------------*/
 
@@ -87,10 +87,10 @@ t_reqcEdit::~t_reqcEdit() {
   delete _logFile; _logFile = 0;
 }
 
-//  
+//
 ////////////////////////////////////////////////////////////////////////////
 void t_reqcEdit::run() {
- 
+
   // Open Log File
   // -------------
   if (!_logFileName.isEmpty()) {
@@ -119,10 +119,10 @@ void t_reqcEdit::run() {
     *_log << QByteArray("Sampling").leftJustified(15) << ": "
           << _samplingRate << endl;
     *_log << QByteArray("Start time").leftJustified(15) << ": "
-          << _begTime.datestr().c_str() << ' ' 
+          << _begTime.datestr().c_str() << ' '
           << _begTime.timestr(0).c_str() << endl;
     *_log << QByteArray("End time").leftJustified(15) << ": "
-          << _endTime.datestr().c_str() << ' ' 
+          << _endTime.datestr().c_str() << ' '
           << _endTime.timestr(0).c_str() << endl;
     *_log << QByteArray("Input Obs Files").leftJustified(15) << ": "
           << _obsFileNames.join(",") << endl;
@@ -158,7 +158,7 @@ void t_reqcEdit::run() {
 
 // Initialize input observation files, sort them according to start time
 ////////////////////////////////////////////////////////////////////////////
-void t_reqcEdit::initRnxObsFiles(const QStringList& obsFileNames, 
+void t_reqcEdit::initRnxObsFiles(const QStringList& obsFileNames,
                                  QVector<t_rnxObsFile*>& rnxObsFiles,
                                  QTextStream* log) {
 
@@ -171,7 +171,7 @@ void t_reqcEdit::initRnxObsFiles(const QStringList& obsFileNames,
       QStringList filters; filters << fileInfo.fileName();
       QListIterator<QFileInfo> it(dir.entryInfoList(filters));
       while (it.hasNext()) {
-        QString filePath = it.next().filePath(); 
+        QString filePath = it.next().filePath();
         t_rnxObsFile* rnxObsFile = 0;
         try {
           rnxObsFile = new t_rnxObsFile(filePath, t_rnxObsFile::input);
@@ -198,11 +198,11 @@ void t_reqcEdit::initRnxObsFiles(const QStringList& obsFileNames,
       }
     }
   }
-  qStableSort(rnxObsFiles.begin(), rnxObsFiles.end(), 
+  qStableSort(rnxObsFiles.begin(), rnxObsFiles.end(),
               t_rnxObsFile::earlierStartTime);
 }
 
-//  
+//
 ////////////////////////////////////////////////////////////////////////////
 void t_reqcEdit::editObservations() {
 
@@ -217,7 +217,7 @@ void t_reqcEdit::editObservations() {
   // Initialize output observation file
   // ----------------------------------
   t_rnxObsFile outObsFile(_outObsFileName, t_rnxObsFile::output);
-  
+
   // Select observation types
   // ------------------------
   bncSettings settings;
@@ -295,8 +295,8 @@ void t_reqcEdit::editObservations() {
   for (int ii = 0; ii < _rnxObsFiles.size(); ii++) {
     t_rnxObsFile* obsFile = _rnxObsFiles[ii];
     if (_log) {
-      *_log << "Processing File: " << obsFile->fileName() << "  start: " 
-            << obsFile->startTime().datestr().c_str() << ' ' 
+      *_log << "Processing File: " << obsFile->fileName() << "  start: "
+            << obsFile->startTime().datestr().c_str() << ' '
             << obsFile->startTime().timestr(0).c_str() << endl;
     }
     if (ii == 0) {
@@ -319,6 +319,9 @@ void t_reqcEdit::editObservations() {
       if (!comment.isEmpty()) {
         txtMap["COMMENT"]  = comment;
       }
+      if (int(_rnxVersion) < int(obsFile->header().version())) {
+        addRnxConversionDetails(obsFile, txtMap);
+      }
       outObsFile.header().write(outObsFile.stream(), &txtMap);
     }
     t_rnxObsFile::t_rnxEpo* epo = 0;
@@ -330,8 +333,8 @@ void t_reqcEdit::editObservations() {
         if (_endTime.valid() && epo->tt > _endTime) {
           break;
         }
-      
-        if (_samplingRate == 0 || 
+
+        if (_samplingRate == 0 ||
             fmod(round(epo->tt.gpssec()), _samplingRate) == 0) {
           applyLLI(obsFile, epo);
           outObsFile.writeEpoch(epo);
@@ -346,7 +349,7 @@ void t_reqcEdit::editObservations() {
         *_log << "Exception " << str << endl;
       }
       else {
-        qDebug() << str;    
+        qDebug() << str;
       }
       return;
     }
@@ -362,7 +365,7 @@ void t_reqcEdit::editObservations() {
   }
 }
 
-// Change RINEX Header Content  
+// Change RINEX Header Content
 ////////////////////////////////////////////////////////////////////////////
 void t_reqcEdit::editRnxObsHeader(t_rnxObsFile& obsFile) {
 
@@ -371,7 +374,7 @@ void t_reqcEdit::editRnxObsHeader(t_rnxObsFile& obsFile) {
   QString oldMarkerName   = settings.value("reqcOldMarkerName").toString();
   QString newMarkerName   = settings.value("reqcNewMarkerName").toString();
   if (!newMarkerName.isEmpty()) {
-    if (oldMarkerName.isEmpty() || 
+    if (oldMarkerName.isEmpty() ||
         QRegExp(oldMarkerName).exactMatch(obsFile.markerName())) {
       obsFile.setMarkerName(newMarkerName);
     }
@@ -380,7 +383,7 @@ void t_reqcEdit::editRnxObsHeader(t_rnxObsFile& obsFile) {
   QString oldAntennaName  = settings.value("reqcOldAntennaName").toString();
   QString newAntennaName  = settings.value("reqcNewAntennaName").toString();
   if (!newAntennaName.isEmpty()) {
-    if (oldAntennaName.isEmpty() || 
+    if (oldAntennaName.isEmpty() ||
         QRegExp(oldAntennaName).exactMatch(obsFile.antennaName())) {
       obsFile.setAntennaName(newAntennaName);
     }
@@ -425,7 +428,7 @@ void t_reqcEdit::editRnxObsHeader(t_rnxObsFile& obsFile) {
   QString oldReceiverType = settings.value("reqcOldReceiverName").toString();
   QString newReceiverType = settings.value("reqcNewReceiverName").toString();
   if (!newReceiverType.isEmpty()) {
-    if (oldReceiverType.isEmpty() || 
+    if (oldReceiverType.isEmpty() ||
         QRegExp(oldReceiverType).exactMatch(obsFile.receiverType())) {
       obsFile.setReceiverType(newReceiverType);
     }
@@ -441,9 +444,9 @@ void t_reqcEdit::editRnxObsHeader(t_rnxObsFile& obsFile) {
   }
 }
 
-// 
+//
 ////////////////////////////////////////////////////////////////////////////
-void t_reqcEdit::rememberLLI(const t_rnxObsFile* obsFile, 
+void t_reqcEdit::rememberLLI(const t_rnxObsFile* obsFile,
                              const t_rnxObsFile::t_rnxEpo* epo) {
 
   if (_samplingRate == 0) {
@@ -466,12 +469,12 @@ void t_reqcEdit::rememberLLI(const t_rnxObsFile* obsFile,
     }
   }
 }
-  
-// 
+
+//
 ////////////////////////////////////////////////////////////////////////////
-void t_reqcEdit::applyLLI(const t_rnxObsFile* obsFile, 
+void t_reqcEdit::applyLLI(const t_rnxObsFile* obsFile,
                           t_rnxObsFile::t_rnxEpo* epo) {
- 
+
  if (_samplingRate == 0) {
     return;
   }
@@ -508,7 +511,7 @@ void t_reqcEdit::readEphemerides(const QStringList& navFileNames,
       QStringList filters; filters << fileInfo.fileName();
       QListIterator<QFileInfo> it(dir.entryInfoList(filters));
       while (it.hasNext()) {
-        QString filePath = it.next().filePath(); 
+        QString filePath = it.next().filePath();
         appendEphemerides(filePath, ephs);
       }
     }
@@ -519,7 +522,7 @@ void t_reqcEdit::readEphemerides(const QStringList& navFileNames,
   qStableSort(ephs.begin(), ephs.end(), t_eph::earlierTime);
 }
 
-//  
+//
 ////////////////////////////////////////////////////////////////////////////
 void t_reqcEdit::editEphemerides() {
 
@@ -593,7 +596,7 @@ void t_reqcEdit::editEphemerides() {
   }
 }
 
-//  
+//
 ////////////////////////////////////////////////////////////////////////////
 void t_reqcEdit::appendEphemerides(const QString& fileName,
                                    QVector<t_eph*>& ephs) {
@@ -628,6 +631,41 @@ void t_reqcEdit::appendEphemerides(const QString& fileName,
       }
       else if (eph->type() == t_eph::BDS) {
         ephs.append(new t_ephBDS(*dynamic_cast<t_ephBDS*>(eph)));
+      }
+    }
+  }
+}
+
+void t_reqcEdit::addRnxConversionDetails(const t_rnxObsFile* obsFile,
+                                          QMap<QString, QString>& txtMap) {
+
+  int key = 0;
+  QString systems = obsFile->header().usedSystems();
+  QString comment = QString("RINEX 3 => 2 CONVERSION DETAILS:");
+  QString commentKey = QString("COMMENT %1").arg(key, 3, 10, QChar('0'));
+  txtMap.insert(commentKey, comment);
+
+  for(int ii = 0; ii < obsFile->numSys(); ii++) {
+    key++;
+    char sys = systems[ii].toAscii();
+    QString preferredAttrib = obsFile->signalPriorities(sys);
+    comment = QString("%1: Signal priority = %2").arg(sys).arg(preferredAttrib);
+    commentKey = QString("COMMENT %1").arg(key, 3, 10, QChar('0'));
+    txtMap.insert(commentKey, comment);
+    QStringList types = obsFile->header().obsTypes(sys);
+    for (int jj = 0; jj < types.size(); jj++) {
+      key++;
+      QString inType = types[jj];
+      for (int iPref = 0; iPref < preferredAttrib.length(); iPref++) {
+        if (preferredAttrib[iPref] == '?'                             ||
+            (inType.length() == 2 && preferredAttrib[iPref] == '_'    ) ||
+            (inType.length() == 3 && preferredAttrib[iPref] == inType[2]) ) {
+          QString outType = t_rnxObsFile::type3to2(sys, inType);
+          comment = QString("%1: %2 => %3").arg(sys).arg(inType).arg(outType);
+          commentKey = QString("COMMENT %1").arg(key, 3, 10, QChar('0'));
+          txtMap.insert(commentKey, comment);
+          break;
+        }
       }
     }
   }

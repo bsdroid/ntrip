@@ -61,6 +61,8 @@ class t_rnxObsHeader {
   int         numGloBiases() const;
   int         numGloSlots() const;
   QString     obsType(char sys, int index, double version = 0.0) const;
+  QString     usedSystems() const;
+  QStringList obsTypes(char sys) const;
   QStringList phaseShifts() const;
   QStringList gloBiases() const;
   QStringList gloSlots() const;
@@ -135,7 +137,7 @@ class t_rnxObsFile {
 
   t_rnxObsFile(const QString& fileName, e_inpOut inpOut);
   ~t_rnxObsFile();
-  
+
   double         version() const {return _header._version;}
   double         interval() const {return _header._interval;}
   int            numSys() const {return _header.numSys();}
@@ -176,7 +178,7 @@ class t_rnxObsFile {
   const bncTime&      startTime() const {return _header._startTime;}
   void  setStartTime(const bncTime& startTime) {_header._startTime = startTime;}
 
-  t_rnxEpo* nextEpoch(); 
+  t_rnxEpo* nextEpoch();
 
   int wlFactorL1(unsigned iPrn) {
     return iPrn <= t_prn::MAXPRN_GPS ? _header._wlFactorsL1[iPrn] : 1;
@@ -197,11 +199,12 @@ class t_rnxObsFile {
 
   QTextStream* stream() {return _stream;}
 
-  static void setObsFromRnx(const t_rnxObsFile* rnxObsFile, const t_rnxObsFile::t_rnxEpo* epo, 
+  static void setObsFromRnx(const t_rnxObsFile* rnxObsFile, const t_rnxObsFile::t_rnxEpo* epo,
                             const t_rnxObsFile::t_rnxSat& rnxSat, t_satObs& obs);
 
   static QString type2to3(char sys, const QString& typeV2);
   static QString type3to2(char sys, const QString& typeV3);
+  static QString signalPriorities(char sys);
 
   static void writeEpoch(QTextStream* stream, const t_rnxObsHeader& header, const t_rnxEpo* epo) {
     if (header.version() >= 3.0) {
@@ -215,7 +218,6 @@ class t_rnxObsFile {
  private:
   static void writeEpochV2(QTextStream* stream, const t_rnxObsHeader& header, const t_rnxEpo* epo);
   static void writeEpochV3(QTextStream* stream, const t_rnxObsHeader& header, const t_rnxEpo* epo);
-  static QString signalPriorities(char sys);
   t_rnxObsFile() {};
   void openRead(const QString& fileName);
   void openWrite(const QString& fileName);

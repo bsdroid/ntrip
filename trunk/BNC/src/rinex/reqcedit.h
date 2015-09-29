@@ -32,7 +32,7 @@
 
 class t_reqcEdit : public QThread {
 Q_OBJECT
- 
+
  public:
   t_reqcEdit(QObject* parent);
 
@@ -41,24 +41,25 @@ Q_OBJECT
 
  signals:
   void finished();
-   
+
  public slots:
 
  public:
   virtual void run();
-  static void initRnxObsFiles(const QStringList& obsFileNames, 
+  static void initRnxObsFiles(const QStringList& obsFileNames,
                               QVector<t_rnxObsFile*>& rnxObsFiles,
                               QTextStream* log);
   static void readEphemerides(const QStringList& navFileNames,
                               QVector<t_eph*>& ephs);
   static void appendEphemerides(const QString& fileName, QVector<t_eph*>& ephs);
- 
+
  private:
   void editObservations();
   void editEphemerides();
   void editRnxObsHeader(t_rnxObsFile& obsFile);
   void rememberLLI(const t_rnxObsFile* obsFile, const t_rnxObsFile::t_rnxEpo* epo);
   void applyLLI(const t_rnxObsFile* obsFile, t_rnxObsFile::t_rnxEpo* epo);
+  void addRnxConversionDetails(const t_rnxObsFile* obsFile, QMap<QString, QString>& txtMap);
 
   QString                _logFileName;
   QFile*                 _logFile;

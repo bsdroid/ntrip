@@ -34,7 +34,7 @@
  *
  * Created:    24-Jan-2012
  *
- * Changes:    
+ * Changes:
  *
  * -----------------------------------------------------------------------*/
 
@@ -309,7 +309,7 @@ void t_rnxObsHeader::setDefault(const QString& markerName, int version) {
 
   _obsTypes.clear();
   if (_version < 3.0) {
-    _obsTypes['G'] << "C1" << "P1" << "L1" << "S1" 
+    _obsTypes['G'] << "C1" << "P1" << "L1" << "S1"
                    << "C2" << "P2" << "L2" << "S2";
     _obsTypes['R'] = _obsTypes['G'];
     _obsTypes['E'] = _obsTypes['G'];
@@ -318,26 +318,26 @@ void t_rnxObsHeader::setDefault(const QString& markerName, int version) {
     _obsTypes['C'] = _obsTypes['G'];
   }
   else {
-    _obsTypes['G'] << "C1C" << "L1C"  << "S1C" 
+    _obsTypes['G'] << "C1C" << "L1C"  << "S1C"
                    << "C1W" << "L1W"  << "S1W"
                    << "C2X" << "L2X"  << "S2X"
-                   << "C2W" << "L2W"  << "S2W" 
+                   << "C2W" << "L2W"  << "S2W"
                    << "C5X" << "L5X"  << "S5X";
 
     _obsTypes['J'] = _obsTypes['G'];
-    
-    _obsTypes['R'] << "C1C" << "L1C" << "S1C" 
+
+    _obsTypes['R'] << "C1C" << "L1C" << "S1C"
                    << "C2P" << "L2P" << "S2P";
-    
+
     _obsTypes['E'] << "C1X" << "L1X" << "SX1"
                    << "C5X" << "L5X" << "SX5"
                    << "C7X" << "L7X" << "SX7"
                    << "C8X" << "L8X" << "SX8";
-    
+
     _obsTypes['S'] << "C1C" << "L1C" << "S1C"
                    << "C5I" << "L5I" << "S5I"
                    << "C5Q" << "L5Q" << "S5Q";
-    
+
     _obsTypes['C'] << "C2I" << "L2I" << "S2I"
                    << "C6I" << "L6I" << "S6I"
                    << "C7I" << "L7I" << "S7I";
@@ -358,28 +358,28 @@ void t_rnxObsHeader::set(const t_rnxObsHeader& header, int version,
   else {
     _version = t_rnxObsHeader::defaultRnxObsVersion3;
   }
-  _interval        = header._interval;    
-  _antennaNumber   = header._antennaNumber; 
-  _antennaName     = header._antennaName; 
-  _markerName      = header._markerName;  
-  _markerNumber    = header._markerNumber;  
+  _interval        = header._interval;
+  _antennaNumber   = header._antennaNumber;
+  _antennaName     = header._antennaName;
+  _markerName      = header._markerName;
+  _markerNumber    = header._markerNumber;
   _markerType      = header._markerType;
-  _antNEU          = header._antNEU;      
-  _antXYZ          = header._antXYZ;      
-  _antBSG          = header._antBSG;      
-  _xyz             = header._xyz;         
-  _observer        = header._observer;       
-  _agency          = header._agency;         
-  _receiverNumber  = header._receiverNumber; 
-  _receiverType    = header._receiverType;   
+  _antNEU          = header._antNEU;
+  _antXYZ          = header._antXYZ;
+  _antBSG          = header._antBSG;
+  _xyz             = header._xyz;
+  _observer        = header._observer;
+  _agency          = header._agency;
+  _receiverNumber  = header._receiverNumber;
+  _receiverType    = header._receiverType;
   _receiverVersion = header._receiverVersion;
-  _startTime       = header._startTime;   
+  _startTime       = header._startTime;
   _comments        = header._comments;
   _usedSystems     = header._usedSystems;
 
   for (unsigned iPrn = 1; iPrn <= t_prn::MAXPRN_GPS; iPrn++) {
-    _wlFactorsL1[iPrn] =  header._wlFactorsL1[iPrn]; 
-    _wlFactorsL2[iPrn] =  header._wlFactorsL2[iPrn]; 
+    _wlFactorsL1[iPrn] =  header._wlFactorsL1[iPrn];
+    _wlFactorsL2[iPrn] =  header._wlFactorsL2[iPrn];
   }
 
   // Set observation types
@@ -443,7 +443,7 @@ void t_rnxObsHeader::set(const t_rnxObsHeader& header, int version,
       else {
         for (int iSys = 0; iSys < _usedSystems.length(); iSys++) {
           char    sys  = _usedSystems[iSys].toAscii();
-          QString type = _version >= 3.0 ? t_rnxObsFile::type2to3(sys, useObsTypes->at(iType)) : 
+          QString type = _version >= 3.0 ? t_rnxObsFile::type2to3(sys, useObsTypes->at(iType)) :
                                            t_rnxObsFile::type3to2(sys, useObsTypes->at(iType));
           if (!_obsTypes[sys].contains(type)) {
             _obsTypes[sys].push_back(type);
@@ -522,14 +522,14 @@ void t_rnxObsHeader::write(QTextStream* stream,
   QString     runBy = BNC_CORE->userName();
 
   if (txtMap) {
-    QMapIterator<QString, QString> it(*txtMap);
+   QMapIterator<QString, QString> it(*txtMap);
     while (it.hasNext()) {
       it.next();
       if      (it.key() == "RUN BY") {
         runBy = it.value();
       }
-      else if (it.key() == "COMMENT") {
-        newComments = it.value().split("\\n", QString::SkipEmptyParts);
+      else if ((it.key().indexOf("COMMENT")) != -1) {
+        newComments += it.value().split("\\n", QString::SkipEmptyParts);
       }
     }
   }
@@ -569,7 +569,7 @@ void t_rnxObsHeader::write(QTextStream* stream,
     .arg(_markerType, -60)
     .leftJustified(60)
            << "MARKER TYPE\n";
-           
+
   *stream << QString("%1%2")
     .arg(_observer, -20)
     .arg(_agency,   -40)
@@ -765,7 +765,7 @@ int t_rnxObsHeader::numSys() const {
   return _obsTypes.size();
 }
 
-// 
+//
 ////////////////////////////////////////////////////////////////////////////
 char t_rnxObsHeader::system(int iSys) const {
   int iSysLocal = -1;
@@ -778,6 +778,21 @@ char t_rnxObsHeader::system(int iSys) const {
     }
   }
   return ' ';
+}
+
+//
+////////////////////////////////////////////////////////////////////////////
+QString t_rnxObsHeader::usedSystems(void) const {
+  return _usedSystems;
+}
+
+QStringList t_rnxObsHeader::obsTypes(char sys) const {
+  if (_obsTypes.contains(sys)) {
+    return _obsTypes[sys];
+  }
+  else {
+    return QStringList();
+  }
 }
 
 // Number of Observation Types (satellite-system specific)
@@ -872,7 +887,7 @@ QStringList t_rnxObsHeader::obsTypesStrings() const {
     QString hlp;
     QTextStream(&hlp) << QString("%1").arg(_obsTypes[sys0].size(), 6);
     for (int ii = 0; ii < _obsTypes[sys0].size(); ii++) {
-      QTextStream(&hlp) << QString("%1").arg(_obsTypes[sys0][ii], 6);   
+      QTextStream(&hlp) << QString("%1").arg(_obsTypes[sys0][ii], 6);
       if ((ii+1) % 9 == 0 || ii == _obsTypes[sys0].size()-1) {
         strList.append(hlp.leftJustified(60) + "# / TYPES OF OBSERV\n");
         hlp = QString().leftJustified(6);
@@ -886,7 +901,7 @@ QStringList t_rnxObsHeader::obsTypesStrings() const {
       QTextStream(&hlp) << QString("%1  %2").arg(sys).arg(nTypes(sys), 3);
       for (int iType = 0; iType < nTypes(sys); iType++) {
         QString type = obsType(sys, iType);
-        QTextStream(&hlp) << QString(" %1").arg(type, -3);   
+        QTextStream(&hlp) << QString(" %1").arg(type, -3);
         if ((iType+1) % 13 == 0 || iType == nTypes(sys)-1) {
           strList.append(hlp.leftJustified(60) + "SYS / # / OBS TYPES\n");
           hlp = QString().leftJustified(6);
@@ -984,7 +999,7 @@ void t_rnxObsFile::close() {
 
 // Handle Special Epoch Flag
 ////////////////////////////////////////////////////////////////////////////
-void t_rnxObsFile::handleEpochFlag(int flag, const QString& line, 
+void t_rnxObsFile::handleEpochFlag(int flag, const QString& line,
                                    bool& headerReRead) {
 
   headerReRead = false;
@@ -1002,7 +1017,7 @@ void t_rnxObsFile::handleEpochFlag(int flag, const QString& line,
   }
 
   // Re-Read Header
-  // -------------- 
+  // --------------
   else if (flag == 3 || flag == 4 || flag == 5) {
     int numLines = 0;
     if (version() < 3.0) {
@@ -1076,7 +1091,7 @@ t_rnxObsFile::t_rnxEpo* t_rnxObsFile::nextEpochV3() {
     // --------------------
     int numSat;
     readInt(line, 32, 3, numSat);
-  
+
     _currEpo.rnxSat.resize(numSat);
 
     // Observations
@@ -1089,7 +1104,7 @@ t_rnxObsFile::t_rnxEpo* t_rnxObsFile::nextEpochV3() {
       for (int iType = 0; iType < _header.nTypes(sys); iType++) {
         int pos = 3 + 16*iType;
         double obsValue = 0.0;
-        int    lli      = 0; 
+        int    lli      = 0;
         int    snr      = 0;
         readDbl(line, pos,     14, obsValue);
         readInt(line, pos + 14, 1, lli);
@@ -1153,7 +1168,7 @@ t_rnxObsFile::t_rnxEpo* t_rnxObsFile::nextEpochV2() {
     // --------------------
     int numSat;
     readInt(line, 29, 3, numSat);
-  
+
     _currEpo.rnxSat.resize(numSat);
 
     // Read Satellite Numbers
@@ -1171,7 +1186,7 @@ t_rnxObsFile::t_rnxEpo* t_rnxObsFile::nextEpochV2() {
       }
       int satNum; readInt(line, pos + 1, 2, satNum);
       _currEpo.rnxSat[iSat].prn.set(sys, satNum);
- 
+
       pos += 3;
     }
 
@@ -1205,12 +1220,12 @@ t_rnxObsFile::t_rnxEpo* t_rnxObsFile::nextEpochV2() {
         pos += 16;
       }
     }
- 
+
     _flgPowerFail = false;
 
     return &_currEpo;
   }
- 
+
   return 0;
 }
 
@@ -1225,7 +1240,7 @@ void t_rnxObsFile::writeEpoch(const t_rnxEpo* epo) {
   for (unsigned ii = 0; ii < epo->rnxSat.size(); ii++) {
     const t_rnxSat& rnxSat = epo->rnxSat[ii];
     if (_header._obsTypes[rnxSat.prn.system()].size() > 0) {
-      epoLocal.rnxSat.push_back(rnxSat);    
+      epoLocal.rnxSat.push_back(rnxSat);
     }
   }
 
@@ -1239,7 +1254,7 @@ void t_rnxObsFile::writeEpoch(const t_rnxEpo* epo) {
 
 // Write Data Epoch (RINEX Version 2)
 ////////////////////////////////////////////////////////////////////////////
-void t_rnxObsFile::writeEpochV2(QTextStream* stream, const t_rnxObsHeader& header, 
+void t_rnxObsFile::writeEpochV2(QTextStream* stream, const t_rnxObsHeader& header,
                                 const t_rnxEpo* epo) {
 
   unsigned year, month, day, hour, min;
@@ -1277,7 +1292,7 @@ void t_rnxObsFile::writeEpochV2(QTextStream* stream, const t_rnxObsHeader& heade
       }
       QString typeV2 = header.obsType(sys, iTypeV2);
       bool    found  = false;
-   
+
       QString preferredAttrib = signalPriorities(sys);
       for (int iPref = 0; iPref < preferredAttrib.length(); iPref++) {
         QMapIterator<QString, t_rnxObs> itObs(rnxSat.obs);
@@ -1323,7 +1338,7 @@ void t_rnxObsFile::writeEpochV2(QTextStream* stream, const t_rnxObsHeader& heade
 
 // Write Data Epoch (RINEX Version 3)
 ////////////////////////////////////////////////////////////////////////////
-void t_rnxObsFile::writeEpochV3(QTextStream* stream, const t_rnxObsHeader& header, 
+void t_rnxObsFile::writeEpochV3(QTextStream* stream, const t_rnxObsHeader& header,
                                 const t_rnxEpo* epo) {
 
   unsigned year, month, day, hour, min;
@@ -1430,7 +1445,7 @@ QString t_rnxObsFile::type3to2(char /* sys */, const QString& typeV3) {
 
 // Set Observations from RINEX File
 ////////////////////////////////////////////////////////////////////////////
-void t_rnxObsFile::setObsFromRnx(const t_rnxObsFile* rnxObsFile, const t_rnxObsFile::t_rnxEpo* epo, 
+void t_rnxObsFile::setObsFromRnx(const t_rnxObsFile* rnxObsFile, const t_rnxObsFile::t_rnxEpo* epo,
                                  const t_rnxObsFile::t_rnxSat& rnxSat, t_satObs& obs) {
   obs._staID = rnxObsFile->markerName().toAscii().constData();
   obs._prn   = rnxSat.prn;
@@ -1460,7 +1475,7 @@ void t_rnxObsFile::setObsFromRnx(const t_rnxObsFile* rnxObsFile, const t_rnxObsF
       const t_rnxObs& rnxObs = rnxSat.obs[type];
       if (rnxObs.value != 0.0) {
         string type2ch(typeV3.mid(1).toAscii().data());
-        
+
         t_frqObs* frqObs = 0;
         for (unsigned iFrq = 0; iFrq < obs._obs.size(); iFrq++) {
           if (obs._obs[iFrq]->_rnxType2ch == type2ch) {
@@ -1473,7 +1488,7 @@ void t_rnxObsFile::setObsFromRnx(const t_rnxObsFile* rnxObsFile, const t_rnxObsF
           frqObs->_rnxType2ch = type2ch;
           obs._obs.push_back(frqObs);
         }
-        
+
         switch( typeV3.toAscii().data()[0] ) {
         case 'C':
           frqObs->_codeValid = true;
