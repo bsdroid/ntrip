@@ -1061,11 +1061,11 @@ bncWindow::bncWindow() {
 
   _reqcObsFileChooser = new qtFileChooser(0, qtFileChooser::Files);
   _reqcObsFileChooser->setFileName(settings.value("reqcObsFile").toString());
-  _reqcObsFileChooser->setWhatsThis(tr("<p>Specify the full path to an input observation file in RINEX v2 or v3 format.</p><p>Note that when in 'Analyze' mode, specifying at least one RINEX observation file is mandatory.</p>"));
+  _reqcObsFileChooser->setWhatsThis(tr("<p>Specify the full path to input observation files in RINEX v2 or v3 format.</p><p>Note that when in 'Analyze' mode, specifying at least one RINEX observation file is mandatory.</p>"));
 
   _reqcNavFileChooser = new qtFileChooser(0, qtFileChooser::Files);
   _reqcNavFileChooser->setFileName(settings.value("reqcNavFile").toString());
-  _reqcNavFileChooser->setWhatsThis(tr("<p>Specify the full path to an input navigation file in RINEX v2 or v3 format.</p><p>Note that when in 'Analyze' mode, specifying at least one RINEX navigation file is mandatory.</p>"));
+  _reqcNavFileChooser->setWhatsThis(tr("<p>Specify the full path to input navigation files in RINEX v2 or v3 format.</p><p>Note that when in 'Analyze' mode, specifying at least one RINEX navigation file is mandatory.</p>"));
 
   _reqcOutObsLineEdit = new QLineEdit(settings.value("reqcOutObsFile").toString());
   _reqcOutObsLineEdit->setWhatsThis(tr("<p>Specify the full path to a RINEX observation output file.</p><p>Default is an empty option field, meaning that no RINEX observation output file will be produced.</p>"));
@@ -1108,7 +1108,7 @@ bncWindow::bncWindow() {
   _reqcNavFileChooser->setMaximumWidth(40*ww);
   reqcLayout->addWidget(new QLabel("  Nav"),                     ir, 4);
   ++ir;
-  reqcLayout->addWidget(new QLabel("Output files (full path)"),  ir, 0);
+  reqcLayout->addWidget(new QLabel("Output file (full path)"),   ir, 0);
   reqcLayout->addWidget(_reqcOutObsLineEdit,                     ir, 1);
   _reqcOutObsLineEdit->setMaximumWidth(40*ww);
   reqcLayout->addWidget(new QLabel("  Obs"),                     ir, 2);
