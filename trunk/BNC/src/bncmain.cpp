@@ -350,7 +350,7 @@ int main(int argc, char* argv[]) {
     if (QRegExp("--?key").exactMatch(argv[ii])) {
       QString key(argv[ii+1]);
       QString val(argv[ii+2]);
-      if (val.indexOf(";")) {
+      if (val.indexOf(";") != -1) {
         settings.setValue(key, val.split(";", QString::SkipEmptyParts));
       }
       else {
