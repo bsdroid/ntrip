@@ -34,7 +34,7 @@
  *
  * Created:    27-Aug-2006
  *
- * Changes:    
+ * Changes:
  *
  * -----------------------------------------------------------------------*/
 
@@ -63,8 +63,8 @@ using namespace std;
 
 // Constructor
 ////////////////////////////////////////////////////////////////////////////
-bncRinex::bncRinex(const QByteArray& statID, const QUrl& mountPoint, 
-                   const QByteArray& latitude, const QByteArray& longitude, 
+bncRinex::bncRinex(const QByteArray& statID, const QUrl& mountPoint,
+                   const QByteArray& latitude, const QByteArray& longitude,
                    const QByteArray& nmea, const QByteArray& ntripVersion) {
 
   _statID        = statID;
@@ -114,7 +114,7 @@ t_irc bncRinex::downloadSkeleton() {
   t_irc irc = failure;
 
   QStringList table;
-  bncTableDlg::getFullTable(_ntripVersion, _mountPoint.host(), 
+  bncTableDlg::getFullTable(_ntripVersion, _mountPoint.host(),
                             _mountPoint.port(), table, true);
   QString net;
   QStringListIterator it(table);
@@ -142,12 +142,12 @@ t_irc bncRinex::downloadSkeleton() {
             sklDir = tags.at(6).trimmed();
             break;
           }
-        }          
+        }
       }
     }
   }
   if (!sklDir.isEmpty() && sklDir != "none") {
-    QUrl url(sklDir + "/" + _mountPoint.path().mid(1,4).toLower() + ".skl"); 
+    QUrl url(sklDir + "/" + _mountPoint.path().mid(1,4).toLower() + ".skl");
     if (url.port() == -1) {
       if (sklDir.contains("https", Qt::CaseInsensitive)) {
         url.setPort(443);
@@ -160,7 +160,8 @@ t_irc bncRinex::downloadSkeleton() {
     bncNetQuery* query = new bncNetQueryV2(true);
     QByteArray outData;
     query->waitForRequestResult(url, outData);
-    if (query->status() == bncNetQuery::finished) {
+    if (query->status() == bncNetQuery::finished &&
+        outData.contains("END OF HEADER")) {
       irc = success;
       QTextStream in(outData);
       _sklHeader.read(&in);
@@ -207,7 +208,7 @@ bool bncRinex::readSkeleton() {
 
 // Next File Epoch (static)
 ////////////////////////////////////////////////////////////////////////////
-QString bncRinex::nextEpochStr(const QDateTime& datTim, 
+QString bncRinex::nextEpochStr(const QDateTime& datTim,
                                const QString& intStr, bool rnxV3filenames,
                                QDateTime* nextEpoch) {
 
@@ -304,7 +305,7 @@ void bncRinex::resolveFileName(const QDateTime& datTim) {
     path += QDir::separator();
   }
 
-  QString hlpStr = nextEpochStr(datTim, settings.value("rnxIntr").toString(), 
+  QString hlpStr = nextEpochStr(datTim, settings.value("rnxIntr").toString(),
                                 _rnxV3filenames, &_nextCloseEpoch);
 
   QString ID4 = _statID.left(4);
@@ -489,7 +490,7 @@ void bncRinex::dumpEpoch(const QByteArray& format, const bncTime& maxTime) {
 
   // Prepare structure t_rnxEpo
   // --------------------------
-  t_rnxObsFile::t_rnxEpo rnxEpo;  
+  t_rnxObsFile::t_rnxEpo rnxEpo;
   rnxEpo.tt = fObs._time;
 
   QListIterator<t_satObs> it(obsList);
@@ -580,24 +581,24 @@ string bncRinex::asciiSatLine(const t_satObs& obs) {
   str.setf(ios::showpoint | ios::fixed);
 
   str << obs._prn.toString() << ' ';
- 
+
   for (unsigned ii = 0; ii < obs._obs.size(); ii++) {
     const t_frqObs* frqObs = obs._obs[ii];
     if (frqObs->_codeValid) {
-      str << " C" << frqObs->_rnxType2ch << ' ' 
+      str << " C" << frqObs->_rnxType2ch << ' '
           << setw(14) << setprecision(3) << frqObs->_code;
     }
     if (frqObs->_phaseValid) {
-      str << " L" << frqObs->_rnxType2ch << ' ' 
+      str << " L" << frqObs->_rnxType2ch << ' '
           << setw(14) << setprecision(3) << frqObs->_phase
           << ' ' << setw(3)  << frqObs->_slipCounter;
     }
     if (frqObs->_dopplerValid) {
-      str << " D" << frqObs->_rnxType2ch << ' ' 
+      str << " D" << frqObs->_rnxType2ch << ' '
           << setw(14) << setprecision(3) << frqObs->_doppler;
     }
     if (frqObs->_snrValid) {
-      str << " S" << frqObs->_rnxType2ch << ' ' 
+      str << " S" << frqObs->_rnxType2ch << ' '
           << setw(8) << setprecision(3) << frqObs->_snr;
     }
   }
