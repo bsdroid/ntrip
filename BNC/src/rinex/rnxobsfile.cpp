@@ -1348,19 +1348,19 @@ void t_rnxObsFile::writeEpochV3(QTextStream* stream, const t_rnxObsHeader& heade
 
   QString dateStr;
   QTextStream(&dateStr) << QString("> %1 %2 %3 %4 %5%6")
-    .arg(year,  4)
-    .arg(month, 2, 10, QChar('0'))
-    .arg(day,   2, 10, QChar('0'))
-    .arg(hour,  2, 10, QChar('0'))
-    .arg(min,   2, 10, QChar('0'))
-    .arg(sec,  11, 'f', 7);
+      .arg(year, 4)
+      .arg(month, 2, 10, QChar('0'))
+      .arg(day, 2, 10, QChar('0'))
+      .arg(hour, 2, 10, QChar('0'))
+      .arg(min, 2, 10, QChar('0'))
+      .arg(sec, 11, 'f', 7);
 
   int flag = 0;
   *stream << dateStr << QString("%1%2\n").arg(flag, 3).arg(epo->rnxSat.size(), 3);
 
   for (unsigned iSat = 0; iSat < epo->rnxSat.size(); iSat++) {
     const t_rnxSat& rnxSat = epo->rnxSat[iSat];
-    char            sys    = rnxSat.prn.system();
+    char sys = rnxSat.prn.system();
 
     const t_rnxObs* hlp[header.nTypes(sys)];
     for (int iTypeV3 = 0; iTypeV3 < header.nTypes(sys); iTypeV3++) {
@@ -1372,7 +1372,7 @@ void t_rnxObsFile::writeEpochV3(QTextStream* stream, const t_rnxObsHeader& heade
       // -----------
       while (itObs.hasNext()) {
         itObs.next();
-        const QString&  type   = itObs.key();
+        const QString& type = itObs.key();
         const t_rnxObs& rnxObs = itObs.value();
         if (typeV3 == type2to3(sys, type) && rnxObs.value != 0.0) {
           hlp[iTypeV3] = &itObs.value();
@@ -1384,7 +1384,7 @@ void t_rnxObsFile::writeEpochV3(QTextStream* stream, const t_rnxObsHeader& heade
       itObs.toFront();
       while (itObs.hasNext()) {
         itObs.next();
-        const QString&  type   = itObs.key();
+        const QString& type = itObs.key();
         const t_rnxObs& rnxObs = itObs.value();
         if (hlp[iTypeV3] == 0 && typeV3 == type2to3(sys, type).left(2) && rnxObs.value != 0.0) {
           hlp[iTypeV3] = &itObs.value();
@@ -1392,30 +1392,31 @@ void t_rnxObsFile::writeEpochV3(QTextStream* stream, const t_rnxObsHeader& heade
       }
     }
 
-    *stream << rnxSat.prn.toString().c_str();
-
-    for (int iTypeV3 = 0; iTypeV3 < header.nTypes(sys); iTypeV3++) {
-      const t_rnxObs* rnxObs = hlp[iTypeV3];
-      if (rnxObs == 0) {
-        *stream << QString().leftJustified(16);
-      }
-      else {
-        *stream << QString("%1").arg(rnxObs->value, 14, 'f', 3);
-        if (rnxObs->lli != 0.0) {
-          *stream << QString("%1").arg(rnxObs->lli,1);
+    if (header.nTypes(sys)) {
+      *stream << rnxSat.prn.toString().c_str();
+      for (int iTypeV3 = 0; iTypeV3 < header.nTypes(sys); iTypeV3++) {
+        const t_rnxObs* rnxObs = hlp[iTypeV3];
+        if (rnxObs == 0) {
+          *stream << QString().leftJustified(16);
         }
         else {
-          *stream << ' ';
-        }
-        if (rnxObs->snr != 0.0) {
-          *stream << QString("%1").arg(rnxObs->snr,1);
-        }
-        else {
-          *stream << ' ';
+          *stream << QString("%1").arg(rnxObs->value, 14, 'f', 3);
+          if (rnxObs->lli != 0.0) {
+            *stream << QString("%1").arg(rnxObs->lli, 1);
+          }
+          else {
+            *stream << ' ';
+          }
+          if (rnxObs->snr != 0.0) {
+            *stream << QString("%1").arg(rnxObs->snr, 1);
+          }
+          else {
+            *stream << ' ';
+          }
         }
       }
+      *stream << endl;
     }
-    *stream << endl;
   }
 }
 
