@@ -32,21 +32,21 @@ t_eph::~t_eph() {
     delete _clkCorr;
 }
 
-// 
+//
 ////////////////////////////////////////////////////////////////////////////
 void t_eph::setOrbCorr(const t_orbCorr* orbCorr) {
-  delete _orbCorr; 
+  delete _orbCorr;
   _orbCorr = new t_orbCorr(*orbCorr);
 }
 
-// 
+//
 ////////////////////////////////////////////////////////////////////////////
 void t_eph::setClkCorr(const t_clkCorr* clkCorr) {
-  delete _clkCorr; 
+  delete _clkCorr;
   _clkCorr = new t_clkCorr(*clkCorr);
 }
 
-// 
+//
 ////////////////////////////////////////////////////////////////////////////
 t_irc t_eph::getCrd(const bncTime& tt, ColumnVector& xc, ColumnVector& vv, bool useCorr) const {
 
@@ -318,7 +318,7 @@ t_irc t_ephGPS::position(int GPSweek, double GPSweeks, double* xc, double* vv) c
   double u      = u0 + _Cuc*cos2u0 + _Cus*sin2u0;
   double xp     = r*cos(u);
   double yp     = r*sin(u);
-  double OM     = _OMEGA0 + (_OMEGADOT - omegaEarth)*tk - 
+  double OM     = _OMEGA0 + (_OMEGADOT - omegaEarth)*tk -
                    omegaEarth*_TOEsec;
 
   double sinom = sin(OM);
@@ -327,8 +327,8 @@ t_irc t_ephGPS::position(int GPSweek, double GPSweeks, double* xc, double* vv) c
   double cosi  = cos(i);
   xc[0] = xp*cosom - yp*cosi*sinom;
   xc[1] = xp*sinom + yp*cosi*cosom;
-  xc[2] = yp*sini;                
-  
+  xc[2] = yp*sini;
+
   double tc = tt - _TOC;
   xc[3] = _clock_bias + _clock_drift*tc + _clock_driftrate*tc*tc;
 
@@ -358,6 +358,7 @@ t_irc t_ephGPS::position(int GPSweek, double GPSweeks, double* xc, double* vv) c
 
   // Relativistic Correction
   // -----------------------
+  // correspondent to IGS convention and GPS ICD (and SSR standard)
   xc[3] -= 2.0 * (xc[0]*vv[0] + xc[1]*vv[1] + xc[2]*vv[2]) / t_CST::c / t_CST::c;
 
   return success;
@@ -893,8 +894,10 @@ t_irc t_ephGal::position(int GPSweek, double GPSweeks, double* xc, double* vv) c
 
   // Relativistic Correction
   // -----------------------
-  //  xc(4) -= 4.442807633e-10 * _e * sqrt(a0) *sin(E);
-  xc[3] -= 2.0 * (xc[0]*vv[0] + xc[1]*vv[1] + xc[2]*vv[2]) / t_CST::c / t_CST::c;
+  // correspondent to Galileo ICD and to SSR standard
+  xc[3] -= 4.442807633e-10 * _e * sqrt(a0) *sin(E);
+  // correspondent to IGS convention
+  //xc[3] -= 2.0 * (xc[0]*vv[0] + xc[1]*vv[1] + xc[2]*vv[2]) / t_CST::c / t_CST::c;
 
   return success;
 }
@@ -1463,6 +1466,21 @@ t_irc t_ephBDS::position(int GPSweek, double GPSweeks, double* xc, double* vv) c
   double sini  = 0;
   double cosi  = 0;
 
+  // Velocity
+  // --------
+  double tanv2 = tan(v/2);
+  double dEdM  = 1 / (1 - _e*cos(E));
+  double dotv  = sqrt((1.0 + _e)/(1.0 - _e)) / cos(E/2)/cos(E/2)
+                 / (1 + tanv2*tanv2) * dEdM * n;
+  double dotu  = dotv + (-_Cuc*sin2u0 + _Cus*cos2u0)*2*dotv;
+  double doti  = _IDOT + (-_Cic*sin2u0 + _Cis*cos2u0)*2*dotv;
+  double dotr  = a0 * _e*sin(E) * dEdM * n
+                + (-_Crc*sin2u0 + _Crs*cos2u0)*2*dotv;
+
+  double dotx  = dotr*cos(u) - r*sin(u)*dotu;
+  double doty  = dotr*sin(u) + r*cos(u)*dotu;
+
+
   const double iMaxGEO = 10.0 / 180.0 * M_PI;
 
   // MEO/IGSO satellite
@@ -1478,6 +1496,22 @@ t_irc t_ephBDS::position(int GPSweek, double GPSweeks, double* xc, double* vv) c
     xc[0] = xp*cosom - yp*cosi*sinom;
     xc[1] = xp*sinom + yp*cosi*cosom;
     xc[2] = yp*sini;
+
+    // Velocity
+    // --------
+
+    double dotom = _OMEGADOT - t_CST::omega;
+
+    vv[0]  = cosom  *dotx   - cosi*sinom   *doty    // dX / dr
+           - xp*sinom*dotom - yp*cosi*cosom*dotom   // dX / dOMEGA
+                            + yp*sini*sinom*doti;   // dX / di
+
+    vv[1]  = sinom  *dotx   + cosi*cosom   *doty
+           + xp*cosom*dotom - yp*cosi*sinom*dotom
+                            - yp*sini*cosom*doti;
+
+    vv[2]  = sini   *doty   + yp*cosi      *doti;
+
   }
 
   // GEO satellite
@@ -1504,38 +1538,61 @@ t_irc t_ephBDS::position(int GPSweek, double GPSweeks, double* xc, double* vv) c
     xc[0] = X2(1);
     xc[1] = X2(2);
     xc[2] = X2(3);
+
+    double dotom = _OMEGADOT;
+
+    double vx  = cosom   *dotx  - cosi*sinom   *doty
+               - xp*sinom*dotom - yp*cosi*cosom*dotom
+                                + yp*sini*sinom*doti;
+
+    double vy  = sinom   *dotx  + cosi*cosom   *doty
+               + xp*cosom*dotom - yp*cosi*sinom*dotom
+                                - yp*sini*cosom*doti;
+
+    //double vz  = sini    *doty  + yp*cosi      *doti;
+
+    ColumnVector V(3);
+
+    V[0]   = cosom  *vx     - cosi*sinom   *vy      // dX / dr
+           - xp*sinom*dotom - yp*cosi*cosom*dotom   // dX / dOMEGA
+                            + yp*sini*sinom*doti;   // dX / di
+
+    V[1]   = sinom  *vx     + cosi*cosom   *vy
+           + xp*cosom*dotom - yp*cosi*sinom*dotom
+                            - yp*sini*cosom*doti;
+
+    V[2]   = sini   *vy     + yp*cosi      *doti;
+
+    Matrix R3(3,3);
+    double C = cos(ll);
+    double S = sin(ll);
+    Matrix UU(3,3);
+    UU[0][0] =  -S;  UU[0][1] =  +C;  UU[0][2] = 0.0;
+    UU[1][0] =  -C;  UU[1][1] =  -S;  UU[1][2] = 0.0;
+    UU[2][0] = 0.0;  UU[2][1] = 0.0;  UU[2][2] = 0.0;
+    R3 = omegaBDS * UU;
+
+    ColumnVector VV(3);
+
+    VV = R2*R1*V + R3*R1*X1;
+
+    vv[0] = VV(1);
+    vv[1] = VV(2);
+    vv[2] = VV(3);
   }
 
   double tc = tt - _TOC;
-  xc[3] = _clock_bias + _clock_drift*tc + _clock_driftrate*tc*tc
-          - 4.442807633e-10 * _e * sqrt(a0) *sin(E);
-
-  // Velocity
-  // --------
-  double tanv2 = tan(v/2);
-  double dEdM  = 1 / (1 - _e*cos(E));
-  double dotv  = sqrt((1.0 + _e)/(1.0 - _e)) / cos(E/2)/cos(E/2)
-                 / (1 + tanv2*tanv2) * dEdM * n;
-  double dotu  = dotv + (-_Cuc*sin2u0 + _Cus*cos2u0)*2*dotv;
-  double dotom = _OMEGADOT - t_CST::omega;
-  double doti  = _IDOT + (-_Cic*sin2u0 + _Cis*cos2u0)*2*dotv;
-  double dotr  = a0 * _e*sin(E) * dEdM * n
-                + (-_Crc*sin2u0 + _Crs*cos2u0)*2*dotv;
-  double dotx  = dotr*cos(u) - r*sin(u)*dotu;
-  double doty  = dotr*sin(u) + r*cos(u)*dotu;
-
-  vv[0]  = cosom  *dotx  - cosi*sinom   *doty   // dX / dr
-        - xp*sinom*dotom - yp*cosi*cosom*dotom   // dX / dOMEGA
-                         + yp*sini*sinom*doti;   // dX / di
-
-  vv[1]  = sinom  *dotx  + cosi*cosom   *doty
-        + xp*cosom*dotom - yp*cosi*sinom*dotom
-                         - yp*sini*cosom*doti;
-
-  vv[2]  = sini   *doty  + yp*cosi      *doti;
+  xc[3] = _clock_bias + _clock_drift*tc + _clock_driftrate*tc*tc;
 
   // dotC  = _clock_drift + _clock_driftrate*tc
   //       - 4.442807633e-10*_e*sqrt(a0)*cos(E) * dEdM * n;
+
+  // Relativistic Correction
+  // -----------------------
+  // correspondent to BDS ICD and to SSR standard
+    xc[3] -= 4.442807633e-10 * _e * sqrt(a0) *sin(E);
+  // correspondent to IGS convention
+  // xc[3] -= 2.0 * (xc[0]*vv[0] + xc[1]*vv[1] + xc[2]*vv[2]) / t_CST::c / t_CST::c;
 
   return success;
 }
