@@ -13,7 +13,7 @@ The BKG Ntrip Client (BNC) is a program for simultaneously retrieving, decoding,
 </p>
 
 <p>
-BNC has been written under GNU General Public License (GPL). Source code is available from Subversion software archive <u>http://software.rtcm-ntrip.org/svn/trunk/BNC.</u> Binaries for BNC are available for Windows, Linux, and Mac OS X systems. We used the MinGW Version 4.4.0 compiler to create the Windows binaries. It is likely that BNC can be compiled on other systems where a GNU compiler and Qt Version 4.8.4 or any later version are installed. Please ensure that you always use the latest precompiled version of BNC available from <u>http://igs.bkg.bund.de/ntrip/download</u>. Note that static and shared builds of BNC are made available. A <u>static</u> build would be sufficient in case you don't want BNC to trace PPP results using Google Map (GM) or Open StreetMap (OSM). However, GM/OSM usage requires the QtWebKit library which can only be part of BNC builds from <u>shared</u> libraries. Using a shared library BNC build requires that you first install your own shared Qt library. The 'README.txt' file which comes with the BNC source code describes how to install Qt on Windows, Linux and Mac systems.
+BNC has been written under GNU General Public License (GPL). Source code is available from Subversion software archive <u>http://software.rtcm-ntrip.org/svn/trunk/BNC.</u> Binaries for BNC are available for Windows, Linux, and Mac OS X systems. We used the MinGW Version 4.4.0 compiler to create the Windows binaries. It is likely that BNC can be compiled on other systems where a GNU compiler and Qt Version 4.8.4 or any later version are installed. Please ensure that you always use the latest precompiled version of BNC available from <u>http://igs.bkg.bund.de/ntrip/download</u>. Note that static and shared builds of BNC are made available. A <u>static</u> build would be sufficient in case you don't want BNC to trace PPP results using Google Map (GM) or OpenStreetMap (OSM). However, GM/OSM usage requires the QtWebKit library which can only be part of BNC builds from <u>shared</u> libraries. Using a shared library BNC build requires that you first install your own shared Qt library. The 'README.txt' file which comes with the BNC source code describes how to install Qt on Windows, Linux and Mac systems.
 </p>
 <p>
 Feel free to send us comments, suggestions or bug reports. Any contribution would be appreciated.
@@ -178,7 +178,7 @@ Lennard Huisman, Kadaster Netherlands, and Rolf Dach, Astronomical Institute Uni
 <li>Scan RTCM streams for incoming antenna information, observation types, message types and repetition rates and latencies and GLONASS slot numbers and frequency channels;</li>
 <li>Carry out real-time Precise Point Positioning to determine GNSS rover positions;</li>
 <li>Enable multi-station Precise Point Positioning for simultaneous processing of observations from a whole network of receivers;</li>
-<li>Plot positions derived via PPP from RTCM streams or RINEX files on maps from Google Map or Open StreetMap;</li>
+<li>Plot positions derived via PPP from RTCM streams or RINEX files on maps from Google Map or OpenStreetMap;</li>
 <li>Simultaneously process several Broadcast Correction streams to produce, encode and upload combined Broadcast Corrections;</li>
 <li>Read GNSS orbits and clocks in a plain ASCII format from an IP port. They can be produced by a real-time GNSS engine such as RTNET and should be referenced to the IGS Earth-Centered-Earth-Fixed (ECEF) reference system. BNC will then</li>
 <ul>
@@ -750,7 +750,7 @@ S    8 C1  C1P L1  S1  C2  C2P L2  S2                       SYS / # / OBS TYPES
 Please note that RTCM Version 3 messages 1084 for GLONASS observations don't contain the channel numbers. However, these messages can only be converted to RINEX when you add messages which include the channel numbers. This could be done though an additional stream carrying 1087 GLONASS observation messages or an additional stream carrying 1020 GLONASS ephemeris messages. You could also consider setting up a streams which contains both, the 1084 and the 1020 messages.
 </p>
 <p>
-The screenshot below shows an example setup of BNC when converting streams to RINEX. Streams are coming from various Ntrip Broadcasters as well as from a serial communication link. Specifying a decoder string 'ZERO' means to not convert the affected stream but save its contents as received. The 'SSL Error' recorded in the 'Log' tab is caused by the fact that observation stream downloads from IGS and MGEX Broadcasters initiate the download of RINEX skeleton files from a HTTPS (TLS/SSL) website and BNC has been configured in this example to ignore SSL errors as shown in the preceding 'Network' panel sreenshot.
+The screenshot below shows an example setup of BNC when converting streams to RINEX. Streams are coming from various Ntrip Broadcasters as well as from a serial communication link. Specifying a decoder string 'ZERO' means to not convert the affected stream but save its contents as received. The 'SSL Error' recorded in the 'Log' tab is caused by the fact that observation stream downloads from IGS and MGEX Broadcasters initiate the download of RINEX skeleton files from a HTTPS (TLS/SSL) website and BNC has been configured in this example to ignore SSL errors as shown in the preceding 'Network' panel screenshot.
 </p>
 
 <p><img src="IMG/screenshot16.png"/></p>
@@ -2546,7 +2546,7 @@ $GPGGA,112356,3200.2332035,S,11553.6880127,E,1,13,1.4,23.971,M,0.0,M,,*52
 ...
 </pre>
 <p>
-The default value for 'NMEA file' is an empty option field, meaning that BNC will not saved NMEA messages into a file.
+The default value for 'NMEA file' is an empty option field, meaning that BNC will not save NMEA messages into a file.
 </p>
 <p>
 Note that Tomoji Takasu has written a program named RTKPLOT for visualizing NMEA sentences from IP ports or files. It is available from http://www.rtklib.com and compatible with the 'NMEA file' and port output of BNC's 'PPP' client option.
@@ -2662,7 +2662,7 @@ Hit the 'Add Station' button, double click on the 'Station' field, then specify 
 
 <p><a name="pppnehsigma"><h4>3.13.2.2 Sigma North/East/Up - mandatory</h4></p>
 <p>
-Enter a sigmas in meters for the initial coordinate components. A value of 100.0 (default) may be an appropriate choice. However, this value may be significantly smaller (i.e. 0.01) when starting for example from a station with well known position - so-called Quick-Start mode.
+Enter a sigmas in meters for the initial coordinate components. A value of 100.0 (default) may be an appropriate choice. However, this value may be significantly smaller (i.e. 0.01) when starting for example from a station with well-known position - so-called Quick-Start mode.
 </p>
 
 <p><a name="pppnehnoise"><h4>3.13.2.3 Noise North/East/Up - mandatory</h4></p>
@@ -2832,7 +2832,7 @@ Default is an empty option field, meaning that you don't want BNC to produce aco
 
 <p><a name="ppptrackmap"><h4>3.13.4.3 Track Map - optional</h4></p>
 <p>
-You may like to track your rover position using Google Maps or Open StreetMap as a background map. Track maps can be produced with BNC in 'Real-time Streams' mode or in 'RINEX Files' post processing mode with data coming from files.
+You may like to track your rover position using Google Maps or OpenStreetMap as a background map. Track maps can be produced with BNC in 'Real-time Streams' mode or in 'RINEX Files' post processing mode with data coming from files.
 </p>
 <p>
 When in 'RINEX Files' post processing mode you should not forget to go online with your host and specify a proxy under the 'Network' panel if that is operated in front of BNC.
@@ -2980,7 +2980,7 @@ Select a clock combination method. Available options are Kalman 'Filter' and 'Si
 
 <p><a name="combiGLO"><h4>3.14.1.5 Use GLONASS - optional</h4></p>
 <p>
-You may tick the 'Use GLONASS' option in case you want to produce an GPS plus GLONASS combination and both systems are supported by the Broadcast Correction streams participating in the combination.
+You may tick the 'Use GLONASS' option in case you want to produce a GPS plus GLONASS combination and both systems are supported by the Broadcast Correction streams participating in the combination.
 </p>
 
 <p><a name="upclk"><h4>3.15. Upload Corrections</h4></p>
@@ -3980,7 +3980,7 @@ Drag and drop of configuration files is currently not supported on Mac OS X. On 
 [Add] Use BDS observations in PPP SSR I mode<br>
 [Add] Considering that yaw angle restricted to -180 to +180 deg<br>
 [Mod] Read local RINEX skeleton files<br>
-[Add] Update intevall for VTEC in RTNET stream format<br>
+[Add] Update interval for VTEC in RTNET stream format<br>
 [Bug] SBAS IODN<br>
 [Bug] Galileo week number<br>
 [Add] Phase shift records in RINEX v3 headers<br>
@@ -3988,7 +3988,7 @@ Drag and drop of configuration files is currently not supported on Mac OS X. On 
 [Add] Decoder interface for PPP SSR I+II messages for Galileo/QZSS/SBAS/BDS<br>
 [Mod] Renaming BDS first frequency from '1' to '2'<br>
 [Add] RINEX QC, receiver/antenna information editable<br>
-[Add] Switch to port 443 for skeleton file donwload from https website<br>
+[Add] Switch to port 443 for skeleton file download from https website<br>
 [Mod] Default observation types for RINEX v3 files<br>
 [Bug] RTCM v2 decoder<br>
 [Add] SINEX Troposphere file output<br>
@@ -4041,7 +4041,7 @@ The Ntrip Broadcaster maintains a source-table containing information on availab
 Source-table records of type STR contain the following data fields: 'mountpoint', 'identifier', 'format', 'format-details', 'carrier', 'nav-system', 'network', 'country', 'latitude', 'longitude', 'nmea', 'solution', 'generator', 'compr-encryp', 'authentication', 'fee', 'bitrate', 'misc'.
 </p>
 <p>
-Source-table records of type NET contain the following data fields: 'identifiey', 'operator', 'authentication', 'fee', 'web-net', 'web-str', 'web-reg', 'misc'.
+Source-table records of type NET contain the following data fields: 'identifier', 'operator', 'authentication', 'fee', 'web-net', 'web-str', 'web-reg', 'misc'.
 </p>
 <p>
 Source-table records of type CAS contain the following data fields: 'host', 'port', 'identifier', 'operator', 'nmea', 'country', 'latitude', 'longitude', 'misc'.
@@ -4395,7 +4395,7 @@ implemented PPP filter algorithm.
 
 <li>File 'PPPGoogleMaps.bnc'<br>
 The purpose of this configuration is to track BNC's point positioning
-solution using Google Maps or Open StreetMap as background. BNC reads a
+solution using Google Maps or OpenStreetMap as background. BNC reads a
 RINEX Observation file and a RINEX Navigation file to carry out a
 'Standard Point Positioning' solution in post-processing mode. Although 
 this is not a real-time application it requires the BNC host to be connected
