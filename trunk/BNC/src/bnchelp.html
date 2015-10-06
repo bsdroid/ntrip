@@ -2,6 +2,253 @@
 
 <h3>BKG Ntrip Client (BNC) Version 2.12.0</h3>
 
+<p><b>Contents</b><br><br>
+1. <a href=#genInstruction>General Instructions</a><br>
+&nbsp; &nbsp; &nbsp; 1.1 <a href=#introPurpose>Purpose</a><br>
+&nbsp; &nbsp; &nbsp; 1.2 <a href=#introSystem>Supported Systems</a><br>
+&nbsp; &nbsp; &nbsp; 1.3 <a href=#introFlow>Data Flow</a><br>
+&nbsp; &nbsp; &nbsp; 1.4 <a href=#introHandling>Handling</a><br>
+&nbsp; &nbsp; &nbsp; 1.5 <a href=#introConf>Configuration</a><br>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 1.5.1 <a href=#introManage>Management</a><br>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 1.5.2 <a href=#introExamples>Examples</a><br>
+&nbsp; &nbsp; &nbsp; 1.6 <a href=#introLimit>Limitations</a><br>
+2. <a href=#optsettings>Settings Details</a><br>
+&nbsp; &nbsp; &nbsp; 2.1 <a href=#topmenu>Top Menu Bar</a><br>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 2.1.1 <a href=#file>File</a><br>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 2.1.2 <a href=#help>Help</a><br>
+&nbsp; &nbsp; &nbsp; 2.2 <a href=#network>Network</a><br>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 2.2.1 <a href=#proxy>Proxy</a><br>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 2.2.2 <a href=#ssl>SSL</a><br>
+&nbsp; &nbsp; &nbsp; 2.3 <a href=#general>General</a><br>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 2.3.1 <a href=#genlog>Logfile</a><br>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 2.3.2 <a href=#genapp>Append Files</a><br>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 2.3.3 <a href=#genconf>Reread Configuration</a><br>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 2.3.4 <a href=#genstart>Auto Start</a><br>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 2.3.5 <a href=#rawout>Raw Output File</a><br>
+&nbsp; &nbsp; &nbsp; 2.4 <a href=#rinex>RINEX Observations</a><br>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 2.4.1 <a href=#rnxname>Filenames</a><br>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 2.4.2 <a href=#rnxdir>Directory</a><br>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 2.4.3 <a href=#rnxinterval>File Interval</a><br>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 2.4.4 <a href=#rnxsample>Sampling</a><br>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 2.4.5 <a href=#rnxskl>Skeleton Extension</a><br>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 2.4.6 <a href=#sklMandat>Skeleton Mandatory</a><br>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 2.4.7 <a href=#rnxscript>Script</a><br>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 2.4.8 <a href=#rnxvers2>Version 2</a><br>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 2.4.9 <a href=#rnxvers3>Version 3</a><br>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 2.4.10 <a href=#rnxvers3File>Version 3 Filenames</a><br>
+&nbsp; &nbsp; &nbsp; 2.5 <a href=#ephemeris>RINEX Ephemeris</a><br>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 2.5.1 <a href=#ephdir>Directory</a><br>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 2.5.2 <a href=#ephint>Interval</a><br>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 2.5.3 <a href=#ephport>Port</a><br>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 2.5.4 <a href=#ephvers>Version</a><br>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 2.5.5 <a href=#ephversFile>Version 3 Filenames</a><br>
+&nbsp; &nbsp; &nbsp; 2.6 <a href=#reqc>RINEX Editing & QC</a><br>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 2.6.1 <a href=#reqcact>Action</a><br>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 2.6.2 <a href=#reqcinp>Input Files</a><br>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 2.6.3 <a href=#reqcout>Output Files</a><br>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 2.6.4 <a href=#reqclog>Logfiles</a><br>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 2.6.5 <a href=#reqcplots>Plots for Signals</a><br>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 2.6.6 <a href=#reqcdir>Directory for Plots</a><br>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 2.6.7 <a href=#reqcedit>Set Edit Options</a><br>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 2.6.8 <a href=#reqccommand>Command Line, No Window</a><br>
+&nbsp; &nbsp; &nbsp; 2.7 <a href=#sp3comp>SP3 Comparison</a><br>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 2.7.1 <a href=#sp3input>Input SP3 Files</a><br>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 2.7.2 <a href=#sp3exclude>Exclude Satellites</a><br>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 2.7.3 <a href=#sp3log>Logfile</a><br>
+&nbsp; &nbsp; &nbsp; 2.8 <a href=#correct>Broadcast Corrections</a><br>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 2.8.1 <a href=#corrdir>Directory, ASCII</a><br>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 2.8.2 <a href=#corrint>Interval</a><br>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 2.8.3 <a href=#corrport>Port</a><br>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 2.8.4 <a href=#corrwait>Wait for Full Corr Epoch</a><br>
+&nbsp; &nbsp; &nbsp; 2.9 <a href=#syncout>Feed Engine</a><br>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 2.9.1 <a href=#syncport>Port</a><br>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 2.9.2 <a href=#syncwait>Wait for Full Obs Epoch</a><br>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 2.9.3 <a href=#syncsample>Sampling</a><br>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 2.9.4 <a href=#syncfile>File</a><br>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 2.9.5 <a href=#syncuport>Port (unsynchronized)</a><br>
+&nbsp; &nbsp; &nbsp; 2.10 <a href=#serial>Serial Output</a><br>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 2.10.1 <a href=#sermount>Mountpoint</a><br>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 2.10.2 <a href=#serport>Port Name</a><br>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 2.10.3 <a href=#serbaud>Baud Rate</a><br>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 2.10.4 <a href=#serflow>Flow Control</a><br>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 2.10.5 <a href=#serparity>Parity</a><br>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 2.10.6 <a href=#serdata>Data Bits</a><br>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 2.10.7 <a href=#serstop>Stop Bits</a><br>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 2.10.8 <a href=#serauto>NMEA</a><br>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 2.10.9 <a href=#serfile>File</a><br>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 2.10.10 <a href=#serheight>Height</a><br>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 2.10.11 <a href=#sersampl>Sampling</a><br>
+&nbsp; &nbsp; &nbsp; 2.11 <a href=#advnote>Outages</a><br>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 2.11.1. <a href=#obsrate>Observation Rate</a><br>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 2.11.2. <a href=#advfail>Failure Threshold</a><br>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 2.11.3. <a href=#advreco>Recovery Threshold</a><br>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 2.11.4. <a href=#advscript>Script</a><br>
+&nbsp; &nbsp; &nbsp; 2.12 <a href=#misc>Miscellaneous</a><br>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 2.12.1. <a href=#miscmount>Mountpoint</a><br>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 2.12.2. <a href=#miscperf>Log Latency</a><br>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 2.12.3. <a href=#miscscan>Scan RTCM</a><br>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 2.12.4. <a href=#miscport>Port</a><br>
+&nbsp; &nbsp; &nbsp; 2.13 <a href=#pppclient>PPP Client</a><br>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 2.13.1 <a href=#pppInp>PPP (1): Input and Output</a><br>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 2.13.1.1 <a href=#pppdatasource>Data Source</a><br>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 2.13.1.2 <a href=#ppprnxobs>RINEX Observation File</a><br>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 2.13.1.3 <a href=#ppprnxnav>RINEX Navigation File</a><br>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 2.13.1.4 <a href=#pppcorrfile>Correction File</a><br>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 2.13.1.5 <a href=#pppcorrstream>Corrections Stream</a><br>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 2.13.1.6 <a href=#pppmarkcoor>Coordinates</a><br>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 2.13.1.7 <a href=#ppplogfile>Logfile</a><br>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 2.13.1.8 <a href=#pppantexfile>ANTEX File</a><br>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 2.13.1.9 <a href=#pppnmeafile>NMEA File</a><br>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 2.13.1.10 <a href=#pppsnxtrofile>SNX TRO File</a><br>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 2.13.1.10.1 <a href=#pppsnxtrosampl>Sampling</a><br>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 2.13.2 <a href=#pppStation>PPP (2): Processed Stations</a><br>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 2.13.2.1 <a href=#pppsite>Station</a><br>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 2.13.2.2 <a href=#pppnehsigma>Sigma North/East/Up</a><br>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 2.13.2.3 <a href=#pppnehnoise>Noise North/East/Up</a><br>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 2.13.2.4 <a href=#ppptropsigma>Tropo Sigma</a><br>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 2.13.2.5 <a href=#ppptropnoise>Tropo Noise</a><br>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 2.13.2.6 <a href=#pppnmeaport>NMEA Port</a><br>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 2.13.3 <a href=#pppOptions>PPP (3): Processing Options</a><br>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 2.13.3.1 <a href=#ppplinecombi>Linear Combinations</a><br>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 2.13.3.2 <a href=#pppcodeobs>Code Observations</a><br>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 2.13.3.3 <a href=#pppphaseobs>Phase Observations</a><br>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 2.13.3.4 <a href=#pppeleweight>Elevation Dependent Weighting</a><br>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 2.13.3.5 <a href=#pppminobs>Minimum Number of Observations</a><br>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 2.13.3.6 <a href=#pppmineleva>Minimum Elevation</a><br>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 2.13.3.7 <a href=#pppwaitclockcorr>Wait for Clock Corrections</a><br>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 2.13.3.8 <a href=#pppseeding>Seeding</a><br>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 2.13.4 <a href=#pppPlots>PPP (4): Plots</a><br>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 2.13.4.1 <a href=#ppptimeseries>PPP Plot</a><br>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 2.13.4.2 <a href=#pppaudioresp>Audio Response</a><br>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 2.13.4.3 <a href=#ppptrackmap>Track Map</a><br>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 2.13.4.3.1 <a href=#pppmaptype>Google/OSM</a><br>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 2.13.4.4 <a href=#pppdotprop>Dot-properties</a><br>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 2.13.4.4.1 <a href=#pppdotsize>Size</a><br>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 2.13.4.4.2 <a href=#pppdotcolor>Color</a><br>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 2.13.4.5 <a href=#pppspeed>Post Processing Speed</a><br>
+&nbsp; &nbsp; &nbsp; 2.14 <a href=#combi>Combine Corrections</a><br>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 2.14.1 <a href=#combimounttab>Combine Corrections Table</a><br>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 2.14.1.1 <a href=#combiadd>Add Row, Delete</a><br>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 2.14.1.2 <a href=#combimethod>Method</a><br>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 2.14.1.3 <a href=#combimax>Maximal Residuum</a><br>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 2.14.1.4 <a href=#combismpl>Sampling</a><br>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 2.14.1.5 <a href=#combiGLO>Use GLONASS</a><br>
+&nbsp; &nbsp; &nbsp; 2.15 <a href=#upclk>Upload Corrections</a><br>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 2.15.1 <a href=#upadd>Add, Delete Row</a><br>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 2.15.2 <a href=#uphost>Host, Port, Mountpoint, Password</a><br>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 2.15.3 <a href=#upsystem>System</a><br>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 2.15.4 <a href=#upcom>Center of Mass</a><br>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 2.15.5 <a href=#upsp3>SP3 File</a><br>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 2.15.6 <a href=#uprinex>RNX File</a><br>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 2.15.7 <a href=#upinter>Interval</a><br>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 2.15.8 <a href=#upclksmpl>Sampling</a><br>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 2.15.8.1 <a href=#upclkorb>Orbits</a><br>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 2.15.8.2 <a href=#upclksp3>SP3</a><br>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 2.15.8.3 <a href=#upclkrnx>RINEX</a><br>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 2.15.9 <a href=#upcustom>Custom Trafo</a><br>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 2.15.10 <a href=#upantex>ANTEX File</a><br>
+&nbsp; &nbsp; &nbsp; 2.16 <a href=#upeph>Upload Ephemeris</a><br>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 2.16.1 <a href=#brdcserver>Host &amp; Port</a><br>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 2.16.2 <a href=#brdcmount>Mountpoint &amp; Password</a><br>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 2.16.3 <a href=#brdcsmpl>Sampling</a><br>
+&nbsp; &nbsp; &nbsp; 2.17 <a href=#streams>Streams Canvas</a><br>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 2.17.1 <a href=#streamedit>Edit Streams</a><br>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 2.17.2 <a href=#streamdelete>Delete Stream</a><br>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 2.17.3 <a href=#streamconf>Reconfigure Stream Selection On-the-fly</a><br>
+&nbsp; &nbsp; &nbsp; 2.18 <a href=#logs>Logging Canvas</a><br>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 2.18.1 <a href=#logfile>Log</a><br>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 2.18.2 <a href=#throughput>Throughput</a><br>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 2.18.3 <a href=#latency>Latency</a><br>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 2.18.4 <a href=#ppptab>PPP Plot</a><br>
+&nbsp; &nbsp; &nbsp; 2.19 <a href=#bottom>Bottom Menu Bar</a><br>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 2.19.1 <a href=#streamadd>Add Stream</a><br>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 2.19.1.1 <a href=#streamcaster>Add Stream - Coming from Caster</a><br>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 2.19.1.1.1 <a href=#streamhost>Caster Host and Port</a><br>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 2.19.1.1.2 <a href=#streamtable>Casters Table</a><br>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 2.19.1.1.3 <a href=#streamuser>User and Password</a><br>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 2.19.1.1.4 <a href=#gettable>Get Table</a><br>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 2.19.1.1.5 <a href=#ntripv>Ntrip Version</a><br>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 2.19.1.1.6 <a href=#castermap>Map</a><br>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 2.19.1.2 <a href=#streamip>Add Stream - Coming from TCP/IP Port</a><br>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 2.19.1.3 <a href=#streamudp>Add Stream - Coming from UDP Port</a><br>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 2.19.1.4 <a href=#streamser>Add Stream - Coming from Serial Port</a><br>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 2.19.2 <a href=#streamsdelete>Delete Stream</a><br>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 2.19.3 <a href=#streamsmap>Map</a><br>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 2.19.4 <a href=#start>Start</a><br>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 2.19.5 <a href=#stop>Stop</a><br>
+&nbsp; &nbsp; &nbsp; 2.20 <a href=#cmd>Command Line Options</a><br>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 2.20.1 <a href=#nw>No Window Mode</a><br>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 2.20.2 <a href=#post>File Mode</a><br>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 2.20.3 <a href=#conffile>Configuration File</a><br>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 2.20.4 <a href=#confopt>Configuration Options</a><br>
+3. <a href=#annex>Annex</a><br>
+&nbsp; &nbsp; &nbsp; 3.1. <a href=#history>Revision History</a><br>
+&nbsp; &nbsp; &nbsp; 3.2. <a href=#rtcm>RTCM Standards</a><br>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 3.2.1 <a href=#ntrip1>Ntrip Version 1</a><br>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 3.2.2 <a href=#ntrip2>Ntrip Version 2</a><br>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 3.2.3 <a href=#rtcm2>RTCM Version 2</a><br>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 3.2.4 <a href=#rtcm3>RTCM Version 3</a><br>
+&nbsp; &nbsp; &nbsp; 3.3. <a href=#confList>Configuration List</a><br>
+&nbsp; &nbsp; &nbsp; 3.4. <a href=#links>Further Reading</a>
+</p>
+
+
+<p><b>List of Figures</b><br><br>
+<table>
+<tr><td><b>Fig.&nbsp;&nbsp;</b></td><td><b>Title</b></td><td><b>Chapter</b></td></tr>
+<tr><td>1</td><td>Flowchart, BNC connected to a GNSS rover for Precise Point Positioning</b></td><td>1.3</td></tr>
+<tr><td>2</td><td>Flowchart, BNC converting RTCM streams to RINEX batches</td><td>1.3</td></tr>
+<tr><td>3</td><td>Flowchart, BNC feeding a real-time GNSS engine and uploading encoded Broadcast Corrections</td><td>1.3</td></tr>
+<tr><td>4</td><td>Flowchart, BNC combining Broadcast Correction streams</td><td>1.3</td></tr>
+<tr><td>5</td><td>Sections on BNC's main window</td><td>1.4</td></tr>
+<tr><td>6</td><td>Management of configuration options in BNC</td><td>1.5.1</td></tr>
+<tr><td>7</td><td>BNC's 'Network' panel configured to ignore eventually occurring SSL error messages</td><td>2.2.2</td></tr>
+<tr><td>8</td><td>BNC translating incoming streams to 15 min RINEX Version 3 files</td><td>2.4</td></tr>
+<tr><td>9</td><td>Converting Broadcast Ephemeris stream to RINEX Version 3 Navigation file</td><td>2.5.5</td></tr>
+<tr><td>10</td><td>Example for 'RINEX Editing Options' window</td><td>2.6.7</td></tr>
+<tr><td>11</td><td>Example for RINEX file concatenation with BNC</td><td>2.6.7</td></tr>
+<tr><td>12</td><td>Example for creating RINEX quality check analysis graphics output with BNC</td><td>2.6.7</td></tr>
+<tr><td>13</td><td>Example for satellite availability, elevation and PDOP plots as a result of a RINEX quality check analysis with BNC</td><td>2.6.7</td></tr>
+<tr><td>14</td><td>Sky plot examples for multipath, part of RINEX quality check analysis with BNC</td><td>2.6.7</td></tr>
+<tr><td>15</td><td>Sky plot examples for signal-to-noise ratio, part of RINEX quality check analysis with BNC</td><td>2.6.7</td></tr>
+<tr><td>16</td><td>BNC configuration example for comparing two SP3 files with satellite orbit and clock data</td><td>2.7.3</td></tr>
+<tr><td>17</td><td>BNC configuration example for pulling, saving and output of Broadcast Corrections</td><td>2.8.3</td></tr>
+<tr><td>18</td><td>Synchronized BNC output via IP port to feed a GNSS real-time engine</td><td>2.9</td></tr>
+<tr><td>19</td><td>Flowcharts, BNC forwarding a stream to a serial connected receiver; sending NMEA sentences is mandatory for VRS streams</td><td>2.10</td></tr>
+<tr><td>20</td><td>BNC pulling a VRS stream to feed a serial connected RTK rover</td><td>2.10</td></tr>
+<tr><td>21</td><td>RTCM message numbers, latencies and observation types</td><td>2.12</td></tr>
+<tr><td>22</td><td>Real-time Precise Point Positioning with BNC, PPP Panel 1</td><td>2.13.1</td></tr>
+<tr><td>23</td><td>Precise Point Positioning with BNC, PPP Panel 2</td><td>2.13.2</td></tr>
+<tr><td>24</td><td>Precise Point Positioning with BNC, PPP Panel 3</td><td>2.13.3</td></tr>
+<tr><td>25</td><td>BNC in 'Quick-Start' mode (PPP, Panel 2)</td><td>2.13.3.8</td></tr>
+<tr><td>26</td><td>Track of positions from BNC with Google Maps in the background</td><td>2.13.4.3</td></tr>
+<tr><td>27</td><td>Example for a background map from Google Maps and OpenStreetMap (OSM) resources</td><td>2.13.4.3.1</td></tr>
+<tr><td>28</td><td>BNC combining Broadcast Correction streams</td><td>2.14.1.1</td></tr>
+<tr><td>29</td><td>BNC uploading the combined Broadcast Corrections stream</td><td>2.14.1.1</td></tr>
+<tr><td>30</td><td>'INTERNAL' PPP with BNC using combined Broadcast Corrections stream</td><td>2.14.1.1</td></tr>
+<tr><td>31</td><td>Setting Custom Transformation Parameters window, example for 'ITRF2008->GDA94'</td><td>2.15.3</td></tr>
+<tr><td>32</td><td>Producing Broadcast Corrections from incoming precise orbits and clocks and uploading them to an Ntrip Broadcaster</td><td>2.15.9</td></tr>
+<tr><td>33</td><td>Producing a Broadcast Ephemeris stream from navigation messages of globally distributed RTCM streams and uploading them in RTCM Version 3 format to an Ntrip Broadcaster</td><td>2.16.3</td></tr>
+<tr><td>34</td><td>Bandwidth consumption of incoming streams</td><td>2.18.2</td></tr>
+<tr><td>35</td><td>Latency of incoming streams</td><td>2.18.3</td></tr>
+<tr><td>36</td><td>Time series plot of PPP session</td><td>2.18.4</td></tr>
+<tr><td>37</td><td>Steam input communication links</td><td>2.19</td></tr>
+<tr><td>38</td><td>Casters table</td><td>2.19.1.1.2</td></tr>
+<tr><td>39</td><td>Broadcaster source-table</td><td>2.19.1.1.4</td></tr>
+<tr><td>40</td><td>Stream distribution map derived from Ntrip Broadcaster source-table</td><td>2.19.1.1.6</td></tr>
+<tr><td>41</td><td>BNC setup for pulling a stream via serial port</td><td>2.19.1.4</td></tr>
+</table>
+</p>
+
+<p><b>List of Tables</b><br><br>
+<table>
+<tr><td><b>Tab.&nbsp;&nbsp;</b></td><td><b>Title</b></td><td><b>Chapter</b></td></tr>
+<tr><td>1</td><td>Status of RTCM Version 3 message implementations in BNC supporting various GNSS systems</td><td>1.2</td></tr>
+<tr><td>2</td><td>List of BNC configuration options</td><td>3.3</td></tr>
+</table>
+</p>
+
+<p><a name="genInstruction"><h3>1. General Instructions</h3></p>
 <p>
 The BKG Ntrip Client (BNC) is a program for simultaneously retrieving, decoding, converting and processing or analyzing real-time GNSS data streams applying the 'Networked Transport of RTCM via Internet Protocol' (Ntrip) standard. It has been developed within the framework of the IAG sub-commission for Europe (EUREF) and the International GNSS Service (IGS). Although meant as a real-time tool, it comes with some Post Processing functionality. You may like to use it for data coming from Ntrip Broadcasters like
 <ul>
@@ -89,80 +336,6 @@ Denis Laurichesse, Centre National d'Etudes Spatiales (CNES), suggested synchron
 Lennard Huisman, Kadaster Netherlands, and Rolf Dach, Astronomical Institute University of Bern, assisted in handling satellite clocks in transformations from ITRF to regional reference frames.
 </li>
 </ul>
-</p>
-
-<p><b>Contents</b><br>
-<a href="#genInstruction">1. General Instructions</a><br>
-&nbsp; &nbsp; &nbsp; <a href="#introPurpose">1.1 Purpose</a><br>
-&nbsp; &nbsp; &nbsp; <a href="#introSystem">1.2 Supported Systems</a><br>
-&nbsp; &nbsp; &nbsp; <a href="#introFlow">1.3 Data Flow</a><br>
-&nbsp; &nbsp; &nbsp; <a href="#introHandling">1.4 Handling</a><br>
-&nbsp; &nbsp; &nbsp; <a href="#introConf">1.5 Configuration</a><br>
-&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; <a href="#introManage">1.5.1 Management</a><br>
-&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; <a href="#introExamples">1.5.2 Examples</a><br>
-&nbsp; &nbsp; &nbsp; <a href="#introLimit">1.6 Limitations</a><br>
-
-<a href="#optsettings">2. Settings Details</a><br>
-<a href="#annex">3. Annex</a>
-
-<p><b>List of Figures</b><br><br>
-<table>
-<tr><td><b>Fig.&nbsp;&nbsp;</b></td><td><b>Title</b></td><td><b>Chapter</b></td></tr>
-<tr><td>1</td><td>Flowchart, BNC connected to a GNSS rover for Precise Point Positioning</b></td><td>1.3</td></tr>
-<tr><td>2</td><td>Flowchart, BNC converting RTCM streams to RINEX batches</td><td>1.3</td></tr>
-<tr><td>3</td><td>Flowchart, BNC feeding a real-time GNSS engine and uploading encoded Broadcast Corrections</td><td>1.3</td></tr>
-<tr><td>4</td><td>Flowchart, BNC combining Broadcast Correction streams</td><td>1.3</td></tr>
-<tr><td>5</td><td>Sections on BNC's main window</td><td>1.4</td></tr>
-<tr><td>6</td><td>Management of configuration options in BNC</td><td>1.5.1</td></tr>
-<tr><td>7</td><td>BNC's 'Network' panel configured to ignore eventually occurring SSL error messages</td><td>2.2.2</td></tr>
-<tr><td>8</td><td>BNC translating incoming streams to 15 min RINEX Version 3 files</td><td>2.4</td></tr>
-<tr><td>9</td><td>Converting Broadcast Ephemeris stream to RINEX Version 3 Navigation file</td><td>2.5.5</td></tr>
-<tr><td>10</td><td>Example for 'RINEX Editing Options' window</td><td>2.6.7</td></tr>
-<tr><td>11</td><td>Example for RINEX file concatenation with BNC</td><td>2.6.7</td></tr>
-<tr><td>12</td><td>Example for creating RINEX quality check analysis graphics output with BNC</td><td>2.6.7</td></tr>
-<tr><td>13</td><td>Example for satellite availability, elevation and PDOP plots as a result of a RINEX quality check analysis with BNC</td><td>2.6.7</td></tr>
-<tr><td>14</td><td>Sky plot examples for multipath, part of RINEX quality check analysis with BNC</td><td>2.6.7</td></tr>
-<tr><td>15</td><td>Sky plot examples for signal-to-noise ratio, part of RINEX quality check analysis with BNC</td><td>2.6.7</td></tr>
-<tr><td>16</td><td>BNC configuration example for comparing two SP3 files with satellite orbit and clock data</td><td>2.7.3</td></tr>
-<tr><td>17</td><td>BNC configuration example for pulling, saving and output of Broadcast Corrections</td><td>2.8.3</td></tr>
-<tr><td>18</td><td>Synchronized BNC output via IP port to feed a GNSS real-time engine</td><td>2.9</td></tr>
-<tr><td>19</td><td>Flowcharts, BNC forwarding a stream to a serial connected receiver; sending NMEA sentences is mandatory for VRS streams</td><td>2.10</td></tr>
-<tr><td>20</td><td>BNC pulling a VRS stream to feed a serial connected RTK rover</td><td>2.10</td></tr>
-<tr><td>21</td><td>RTCM message numbers, latencies and observation types</td><td>2.12</td></tr>
-<tr><td>22</td><td>Real-time Precise Point Positioning with BNC, PPP Panel 1</td><td>2.13.1</td></tr>
-<tr><td>23</td><td>Precise Point Positioning with BNC, PPP Panel 2</td><td>2.13.2</td></tr>
-<tr><td>24</td><td>Precise Point Positioning with BNC, PPP Panel 3</td><td>2.13.3</td></tr>
-<tr><td>25</td><td>BNC in 'Quick-Start' mode (PPP, Panel 2)</td><td>2.13.3.8</td></tr>
-<tr><td>26</td><td>Track of positions from BNC with Google Maps in the background</td><td>2.13.4.3</td></tr>
-<tr><td>27</td><td>Example for a background map from Google Maps and OpenStreetMap (OSM) resources</td><td>2.13.4.3.1</td></tr>
-<tr><td>28</td><td>BNC combining Broadcast Correction streams</td><td>2.14.1.1</td></tr>
-<tr><td>29</td><td>BNC uploading the combined Broadcast Corrections stream</td><td>2.14.1.1</td></tr>
-<tr><td>30</td><td>'INTERNAL' PPP with BNC using combined Broadcast Corrections stream</td><td>2.14.1.1</td></tr>
-<tr><td>31</td><td>Setting Custom Transformation Parameters window, example for 'ITRF2008->GDA94'</td><td>2.15.3</td></tr>
-<tr><td>32</td><td>Producing Broadcast Corrections from incoming precise orbits and clocks and uploading them to an Ntrip Broadcaster</td><td>2.15.9</td></tr>
-<tr><td>33</td><td>Producing a Broadcast Ephemeris stream from navigation messages of globally distributed RTCM streams and uploading them in RTCM Version 3 format to an Ntrip Broadcaster</td><td>2.16.3</td></tr>
-<tr><td>34</td><td>Bandwidth consumption of incoming streams</td><td>2.18.2</td></tr>
-<tr><td>35</td><td>Latency of incoming streams</td><td>2.18.3</td></tr>
-<tr><td>36</td><td>Time series plot of PPP session</td><td>2.18.4</td></tr>
-<tr><td>37</td><td>Steam input communication links</td><td>2.19</td></tr>
-<tr><td>38</td><td>Casters table</td><td>2.19.1.1.2</td></tr>
-<tr><td>39</td><td>Broadcaster source-table</td><td>2.19.1.1.4</td></tr>
-<tr><td>40</td><td>Stream distribution map derived from Ntrip Broadcaster source-table</td><td>2.19.1.1.6</td></tr>
-<tr><td>41</td><td>BNC setup for pulling a stream via serial port</td><td>2.19.1.4</td></tr>
-</table>
-</p>
-
-<p><b>List of Tables</b><br><br>
-<table>
-<tr><td><b>Tab.&nbsp;&nbsp;</b></td><td><b>Title</b></td><td><b>Chapter</b></td></tr>
-<tr><td>1</td><td>Status of RTCM Version 3 message implementations in BNC supporting various GNSS systems</td><td>1.2</td></tr>
-<tr><td>2</td><td>List of BNC configuration options</td><td>3.3</td></tr>
-</table>
-</p>
-
-<p><a name="genInstruction"><h3>1. General Instructions</h3></p>
-<p>
-This chapter provides overall information on what the BKG Ntrip Client (BNC) does, how it works and how it shall be handeled.
 </p>
 
 <p><a name="introPurpose"><h3>1.1 Purpose</h3></p>
@@ -383,7 +556,7 @@ Records of BNC's activities are shown in the 'Log' tab whis is part of the 'Log'
 The following sections present information on how the BNC configuration works and provide configuration examples which can be adjusted according to specific user needs.
 </p>
 
-<p><a name="introManage"><h4>1.5.1 Configuration Management</h4></p>
+<p><a name="introManage"><h4>1.5.1 Management</h4></p>
 <p>
 As a default, configuration files for running BNC on Unix/Linux/Mac OS X systems are saved in directory '${HOME}/.config/BKG'. On Windows systems, they are typically saved in directory 'C:/Documents and Settings/Username/.config/BKG'. The default configuration filename is 'BNC.bnc'.</p>
 <p>
@@ -422,7 +595,7 @@ Configuration options are usually specified using GUI input fields (1) after lau
 </ul>
 </p>
 
-<p><a name="introExamples"><h4>1.5.2 Configuration Examples</h4></p>
+<p><a name="introExamples"><h4>1.5.2 Examples</h4></p>
 
 <p>
 BNC comes with a number of configuration examples which can be used on all operating systems. Copy the complete directory 'Example_Configs' which comes with the software including sub-directories 'Input' and 'Output' to your disc. There are two ways to start BNC using one of the example configurations:
@@ -692,184 +865,9 @@ Drag and drop of configuration files is currently not supported on Mac OS X. On 
 
 <p><a name="optsettings"><h3>2. Settings Details</h3></p>
 <p>
-This chapter describes how to set the BNC program options. It explains the 'Top Menu Bar', the 'Settings Canvas' with the processing options, the 'Streams Canvas' and 'Log Canvas', and the 'Bottom Menu Bar'.
+The following chapters describes how to set the BNC program options. They explain the 'Top Menu Bar', the 'Settings Canvas' with the processing options, the contents of the 'Streams Canvas' and 'Logging Canvas', and the 'Bottom Menu Bar'.
 </p>
 <p>
-<b>Top Menu Bar</b><br>
-2.1. <a href=#topmenu>Top Menu Bar</a><br>
-&nbsp; &nbsp; &nbsp; 2.1.1 <a href=#file>File</a><br>
-&nbsp; &nbsp; &nbsp; 2.1.2 <a href=#help>Help</a><br><br>
-<b>Settings Canvas</b><br>
-2.2. <a href=#network>Network</a><br>
-&nbsp; &nbsp; &nbsp; 2.2.1 <a href=#proxy>Proxy</a><br>
-&nbsp; &nbsp; &nbsp; 2.2.2 <a href=#ssl>SSL</a><br>
-2.3. <a href=#general>General</a><br>
-&nbsp; &nbsp; &nbsp; 2.3.1. <a href=#genlog>Logfile</a><br>
-&nbsp; &nbsp; &nbsp; 2.3.2. <a href=#genapp>Append Files</a><br>
-&nbsp; &nbsp; &nbsp; 2.3.3. <a href=#genconf>Reread Configuration</a><br>
-&nbsp; &nbsp; &nbsp; 2.3.4. <a href=#genstart>Auto Start</a><br>
-&nbsp; &nbsp; &nbsp; 2.3.5. <a href=#rawout>Raw Output File</a><br>
-2.4. <a href=#rinex>RINEX Observations</a><br>
-&nbsp; &nbsp; &nbsp; 2.4.1. <a href=#rnxname>Filenames</a><br>
-&nbsp; &nbsp; &nbsp; 2.4.2. <a href=#rnxdir>Directory</a><br>
-&nbsp; &nbsp; &nbsp; 2.4.3. <a href=#rnxinterval>File Interval</a><br>
-&nbsp; &nbsp; &nbsp; 2.4.4. <a href=#rnxsample>Sampling</a><br>
-&nbsp; &nbsp; &nbsp; 2.4.5. <a href=#rnxskl>Skeleton Extension</a><br>
-&nbsp; &nbsp; &nbsp; 2.4.6. <a href=#sklMandat>Skeleton Mandatory</a><br>
-&nbsp; &nbsp; &nbsp; 2.4.7. <a href=#rnxscript>Script</a><br>
-&nbsp; &nbsp; &nbsp; 2.4.8. <a href=#rnxvers2>Version 2</a><br>
-&nbsp; &nbsp; &nbsp; 2.4.9. <a href=#rnxvers3>Version 3</a><br>
-&nbsp; &nbsp; &nbsp; 2.4.10. <a href=#rnxvers3File>Version 3 Filenames</a><br>
-2.5. <a href=#ephemeris>RINEX Ephemeris</a><br>
-&nbsp; &nbsp; &nbsp; 2.5.1. <a href=#ephdir>Directory</a><br>
-&nbsp; &nbsp; &nbsp; 2.5.2. <a href=#ephint>Interval</a><br>
-&nbsp; &nbsp; &nbsp; 2.5.3. <a href=#ephport>Port</a><br>
-&nbsp; &nbsp; &nbsp; 2.5.4. <a href=#ephvers>Version</a><br>
-&nbsp; &nbsp; &nbsp; 2.5.5. <a href=#ephversFile>Version 3 Filenames</a><br>
-2.6. <a href=#reqc>RINEX Editing & QC</a><br>
-&nbsp; &nbsp; &nbsp; 2.6.1 <a href=#reqcact>Action</a><br>
-&nbsp; &nbsp; &nbsp; 2.6.2 <a href=#reqcinp>Input Files</a><br>
-&nbsp; &nbsp; &nbsp; 2.6.3 <a href=#reqcout>Output Files</a><br>
-&nbsp; &nbsp; &nbsp; 2.6.4 <a href=#reqclog>Logfiles</a><br>
-&nbsp; &nbsp; &nbsp; 2.6.5 <a href=#reqcplots>Plots for Signals</a><br>
-&nbsp; &nbsp; &nbsp; 2.6.6 <a href=#reqcdir>Directory for Plots</a><br>
-&nbsp; &nbsp; &nbsp; 2.6.7 <a href=#reqcedit>Set Edit Options</a><br>
-&nbsp; &nbsp; &nbsp; 2.6.8 <a href=#reqccommand>Command Line, No Window</a><br>
-2.7. <a href=#sp3comp>SP3 Comparison</a><br>
-&nbsp; &nbsp; &nbsp; 2.7.1 <a href=#sp3input>Input SP3 Files</a><br>
-&nbsp; &nbsp; &nbsp; 2.7.2 <a href=#sp3exclude>Exclude Satellites</a><br>
-&nbsp; &nbsp; &nbsp; 2.7.3 <a href=#sp3log>Logfile</a><br>
-2.8. <a href=#correct>Broadcast Corrections</a><br>
-&nbsp; &nbsp; &nbsp; 2.8.1. <a href=#corrdir>Directory, ASCII</a><br>
-&nbsp; &nbsp; &nbsp; 2.8.2. <a href=#corrint>Interval</a><br>
-&nbsp; &nbsp; &nbsp; 2.8.3. <a href=#corrport>Port</a><br>
-&nbsp; &nbsp; &nbsp; 2.8.4. <a href=#corrwait>Wait for Full Corr Epoch</a><br>
-2.9. <a href=#syncout>Feed Engine</a><br>
-&nbsp; &nbsp; &nbsp; 2.9.1. <a href=#syncport>Port</a><br>
-&nbsp; &nbsp; &nbsp; 2.9.2. <a href=#syncwait>Wait for Full Obs Epoch</a><br>
-&nbsp; &nbsp; &nbsp; 2.9.3. <a href=#syncsample>Sampling</a><br>
-&nbsp; &nbsp; &nbsp; 2.9.4. <a href=#syncfile>File</a><br>
-&nbsp; &nbsp; &nbsp; 2.9.5. <a href=#syncuport>Port (unsynchronized)</a><br>
-2.10. <a href=#serial>Serial Output</a><br>
-&nbsp; &nbsp; &nbsp; 2.10.1. <a href=#sermount>Mountpoint</a><br>
-&nbsp; &nbsp; &nbsp; 2.10.2. <a href=#serport>Port Name</a><br>
-&nbsp; &nbsp; &nbsp; 2.10.3. <a href=#serbaud>Baud Rate</a><br>
-&nbsp; &nbsp; &nbsp; 2.10.4. <a href=#serflow>Flow Control</a><br>
-&nbsp; &nbsp; &nbsp; 2.10.5. <a href=#serparity>Parity</a><br>
-&nbsp; &nbsp; &nbsp; 2.10.6. <a href=#serdata>Data Bits</a><br>
-&nbsp; &nbsp; &nbsp; 2.10.7. <a href=#serstop>Stop Bits</a><br>
-&nbsp; &nbsp; &nbsp; 2.10.8. <a href=#serauto>NMEA</a><br>
-&nbsp; &nbsp; &nbsp; 2.10.9. <a href=#serfile>File</a><br>
-&nbsp; &nbsp; &nbsp; 2.10.10. <a href=#serheight>Height</a><br>
-&nbsp; &nbsp; &nbsp; 2.10.11. <a href=#sersampl>Sampling</a><br>
-2.11. <a href=#advnote>Outages</a><br>
-&nbsp; &nbsp; &nbsp; 2.11.1. <a href=#obsrate>Observation Rate</a><br>
-&nbsp; &nbsp; &nbsp; 2.11.2. <a href=#advfail>Failure Threshold</a><br>
-&nbsp; &nbsp; &nbsp; 2.11.3. <a href=#advreco>Recovery Threshold</a><br>
-&nbsp; &nbsp; &nbsp; 2.11.4. <a href=#advscript>Script</a><br>
-2.12. <a href=#misc>Miscellaneous</a><br>
-&nbsp; &nbsp; &nbsp; 2.12.1. <a href=#miscmount>Mountpoint</a><br>
-&nbsp; &nbsp; &nbsp; 2.12.2. <a href=#miscperf>Log Latency</a><br>
-&nbsp; &nbsp; &nbsp; 2.12.3. <a href=#miscscan>Scan RTCM</a><br>
-&nbsp; &nbsp; &nbsp; 2.12.4. <a href=#miscport>Port</a><br>
-2.13. <a href=#pppclient>PPP Client</a><br>
-&nbsp; &nbsp; &nbsp; 2.13.1 <a href=#pppInp>PPP (1): Input and Output</a><br>
-&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 2.13.1.1 <a href=#pppdatasource>Data Source</a><br>
-&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 2.13.1.2 <a href=#ppprnxobs>RINEX Observation File</a><br>
-&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 2.13.1.3 <a href=#ppprnxnav>RINEX Navigation File</a><br>
-&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 2.13.1.4 <a href=#pppcorrfile>Correction File</a><br>
-&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 2.13.1.5 <a href=#pppcorrstream>Corrections Stream</a><br>
-&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 2.13.1.6 <a href=#pppmarkcoor>Coordinates</a><br>
-&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 2.13.1.7 <a href=#ppplogfile>Logfile</a><br>
-&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 2.13.1.8 <a href=#pppantexfile>ANTEX File</a><br>
-&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 2.13.1.9 <a href=#pppnmeafile>NMEA File</a><br>
-&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 2.13.1.10 <a href=#pppsnxtrofile>SNX TRO File</a><br>
-&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 2.13.1.10.1 <a href=#pppsnxtrosampl>Sampling</a><br>
-&nbsp; &nbsp; &nbsp; 2.13.2 <a href=#pppStation>PPP (2): Processed Stations</a><br>
-&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 2.13.2.1 <a href=#pppsite>Station</a><br>
-&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 2.13.2.2 <a href=#pppnehsigma>Sigma North/East/Up</a><br>
-&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 2.13.2.3 <a href=#pppnehnoise>Noise North/East/Up</a><br>
-&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 2.13.2.4 <a href=#ppptropsigma>Tropo Sigma</a><br>
-&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 2.13.2.5 <a href=#ppptropnoise>Tropo Noise</a><br>
-&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 2.13.2.6 <a href=#pppnmeaport>NMEA Port</a><br>
-&nbsp; &nbsp; &nbsp; 2.13.3 <a href=#pppOptions>PPP (3): Processing Options</a><br>
-&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 2.13.3.1 <a href=#ppplinecombi>Linear Combinations</a><br>
-&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 2.13.3.2 <a href=#pppcodeobs>Code Observations</a><br>
-&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 2.13.3.3 <a href=#pppphaseobs>Phase Observations</a><br>
-&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 2.13.3.4 <a href=#pppeleweight>Elevation Dependent Weighting</a><br>
-&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 2.13.3.5 <a href=#pppminobs>Minimum Number of Observations</a><br>
-&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 2.13.3.6 <a href=#pppmineleva>Minimum Elevation</a><br>
-&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 2.13.3.7 <a href=#pppwaitclockcorr>Wait for Clock Corrections</a><br>
-&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 2.13.3.8 <a href=#pppseeding>Seeding</a><br>
-&nbsp; &nbsp; &nbsp; 2.13.4 <a href=#pppPlots>PPP (4): Plots</a><br>
-&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 2.13.4.1 <a href=#ppptimeseries>PPP Plot</a><br>
-&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 2.13.4.2 <a href=#pppaudioresp>Audio Response</a><br>
-&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 2.13.4.3 <a href=#ppptrackmap>Track Map</a><br>
-&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 2.13.4.3.1 <a href=#pppmaptype>Google/OSM</a><br>
-&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 2.13.4.4 <a href=#pppdotprop>Dot-properties</a><br>
-&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 2.13.4.4.1 <a href=#pppdotsize>Size</a><br>
-&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 2.13.4.4.2 <a href=#pppdotcolor>Color</a><br>
-&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 2.13.4.5 <a href=#pppspeed>Post Processing Speed</a><br>
-2.14. <a href=#combi>Combine Corrections</a><br>
-&nbsp; &nbsp; &nbsp; 2.14.1 <a href=#combimounttab>Combine Corrections Table</a><br>
-&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 2.14.1.1 <a href=#combiadd>Add Row, Delete</a><br>
-&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 2.14.1.2 <a href=#combimethod>Method</a><br>
-&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 2.14.1.3 <a href=#combimax>Maximal Residuum</a><br>
-&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 2.14.1.4 <a href=#combismpl>Sampling</a><br>
-&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 2.14.1.5 <a href=#combiGLO>Use GLONASS</a><br>
-2.15. <a href=#upclk>Upload Corrections</a><br>
-&nbsp; &nbsp; &nbsp; 2.15.1 <a href=#upadd>Add, Delete Row</a><br>
-&nbsp; &nbsp; &nbsp; 2.15.2 <a href=#uphost>Host, Port, Mountpoint, Password</a><br>
-&nbsp; &nbsp; &nbsp; 2.15.3 <a href=#upsystem>System</a><br>
-&nbsp; &nbsp; &nbsp; 2.15.4 <a href=#upcom>Center of Mass</a><br>
-&nbsp; &nbsp; &nbsp; 2.15.5 <a href=#upsp3>SP3 File</a><br>
-&nbsp; &nbsp; &nbsp; 2.15.6 <a href=#uprinex>RNX File</a><br>
-&nbsp; &nbsp; &nbsp; 2.15.7 <a href=#upinter>Interval</a><br>
-&nbsp; &nbsp; &nbsp; 2.15.8 <a href=#upclksmpl>Sampling</a><br>
-&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 2.15.8.1 <a href=#upclkorb>orbits</a><br>
-&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 2.15.8.2 <a href=#upclksp3>SP3</a><br>
-&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 2.15.8.3 <a href=#upclkrnx>RINEX </a><br>
-&nbsp; &nbsp; &nbsp; 2.15.9 <a href=#upcustom>Custom Trafo</a><br>
-&nbsp; &nbsp; &nbsp; 2.15.10 <a href=#upantex>ANTEX File</a><br>
-2.16. <a href=#upeph>Upload Ephemeris</a><br>
-&nbsp; &nbsp; &nbsp; 2.16.1 <a href=#brdcserver>Host &amp; Port</a><br>
-&nbsp; &nbsp; &nbsp; 2.16.2 <a href=#brdcmount>Mountpoint &amp; Password</a><br>
-&nbsp; &nbsp; &nbsp; 2.16.3 <a href=#brdcsmpl>Sampling</a><br><br>
-<b>Streams Canvas</b><br>
-2.17. <a href=#streams>Streams</a><br>
-&nbsp; &nbsp; &nbsp; 2.17.1 <a href=#streamedit>Edit Streams</a><br>
-&nbsp; &nbsp; &nbsp; 2.17.2 <a href=#streamdelete>Delete Stream</a><br>
-&nbsp; &nbsp; &nbsp; 2.17.3 <a href=#streamconf>Reconfigure Stream Selection On-the-fly</a><br><br>
-<b>Logging Canvas</b><br>
-2.18. <a href=#logs>Logging</a><br>
-&nbsp; &nbsp; &nbsp; 2.18.1 <a href=#logfile>Log</a><br>
-&nbsp; &nbsp; &nbsp; 2.18.2 <a href=#throughput>Throughput</a><br>
-&nbsp; &nbsp; &nbsp; 2.18.3 <a href=#latency>Latency</a><br>
-&nbsp; &nbsp; &nbsp; 2.18.4 <a href=#ppptab>PPP Plot</a><br><br>
-<b>Bottom Menu Bar</b><br>
-2.19. <a href=#bottom>Bottom Menu Bar</a><br>
-&nbsp; &nbsp; &nbsp; 2.19.1 <a href=#streamadd>Add Stream</a><br>
-&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 2.19.1.1 <a href=#streamcaster>Add Stream - Coming from Caster</a><br>
-&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 2.19.1.1.1 <a href=#streamhost>Caster Host and Port</a><br>
-&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 2.19.1.1.2 <a href=#streamtable>Casters Table</a><br>
-&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 2.19.1.1.3 <a href=#streamuser>User and Password</a><br>
-&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 2.19.1.1.4 <a href=#gettable>Get Table</a><br>
-&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 2.19.1.1.5 <a href=#ntripv>Ntrip Version</a><br>
-&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 2.19.1.1.6 <a href=#castermap>Map</a><br>
-&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 2.19.1.2 <a href=#streamip>Add Stream - Coming from TCP/IP Port</a><br>
-&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 2.19.1.3 <a href=#streamudp>Add Stream - Coming from UDP Port</a><br>
-&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 2.19.1.4 <a href=#streamser>Add Stream - Coming from Serial Port</a><br>
-&nbsp; &nbsp; &nbsp; 2.19.2 <a href=#streamsdelete>Delete Stream</a><br>
-&nbsp; &nbsp; &nbsp; 2.19.3 <a href=#streamsmap>Map</a><br>
-&nbsp; &nbsp; &nbsp; 2.19.4 <a href=#start>Start</a><br>
-&nbsp; &nbsp; &nbsp; 2.19.5 <a href=#stop>Stop</a><br><br>
-<b>Command Line</b><br>
-2.20. <a href=#cmd>Command Line Options</a><br>
-&nbsp; &nbsp; &nbsp; 2.20.1 <a href=#nw>No Window Mode</a><br>
-&nbsp; &nbsp; &nbsp; 2.20.2 <a href=#post>File Mode</a><br>
-&nbsp; &nbsp; &nbsp; 2.20.3 <a href=#conffile>Configuration File</a><br>
-&nbsp; &nbsp; &nbsp; 2.20.4 <a href=#confopt>Configuration Options</a><br>
-</p>
 
 <p><a name="topmenu"><h4>2.1. Top Menu Bar</h4></p>
 <p>
@@ -2926,7 +2924,7 @@ In this '${STATION}' stands for the observation's mountpoint or RINEX file, '${D
 </pre>
 
 <p>
-The default value for 'SNX TRO File' is an empty option field, meaning that BNC will not saved SINEX Troposphere files.
+The default value for 'SNX TRO File' is an empty option field, meaning that BNC will not save SINEX Troposphere files.
 </p>
 
 <p><a name="pppsnxtrosampl"><h4>2.13.1.10.1 Sampling - mandatory if 'SINEX TRO File' is set</h4></p>
@@ -3720,7 +3718,7 @@ Select the Broadcast Ephemeris repetition interval in seconds. Default is '5' me
 <p><img src="IMG/screenshot28.png"/></p>
 <p><u>Figure 33:</u> Producing a Broadcast Ephemeris stream from navigation messages of globally distributed RTCM streams and uploading them in RTCM Version 3 format to an Ntrip Broadcaster.</p>
 
-<p><a name="streams"><h4>2.17. Streams</h4></p>
+<p><a name="streams"><h4>2.17. Streams Canvas</h4></p>
 <p>
 Each stream on an Ntrip Broadcaster (and consequently on BNC) is defined using a unique source ID called mountpoint. An Ntrip Client like BNC accesses the desired stream by referring to its mountpoint. Information about streams and their mountpoints is available through the source-table maintained by the Ntrip Broadcaster.
 </p>
@@ -3770,9 +3768,9 @@ The streams selection can be changed on-the-fly without interrupting uninvolved 
 <u>No window mode:</u> When operating BNC online in 'no window' mode (command line option -nw), you force BNC to reread its 'mountPoints' configuration option from disk at pre-defined intervals. Select '1 min', '1 hour', or '1 day' as 'Reread configuration' option to reread the 'mountPoints' option every full minute, hour, or day. This lets a 'mountPoints' option edited in between in the configuration file become effective without terminating uninvolved threads. See section 'Configuration Examples' for a configuration file example and section 'Reread Configuration' for a list of other on-the-fly changeable options.
 </p>
 
-<p><a name="logs"><h4>2.18. Logging</h4></p>
+<p><a name="logs"><h4>2.18. Logging Canvas</h4></p>
 <p>
-The section on the bottom of the main window provides online control of BNC's activities. Tabs are available to show the records saved in a logfile, for a plot to control the bandwidth consumption, for a plot showing stream latencies, and for time series plots of PPP results.
+The 'Logging Canvas' above the bottom menu bar on the main window labeled 'Log', 'Throughput', 'Lacenty', and 'PPP Plot' provides control of BNC's activities. Tabs are available for continuously showing logfile contents, for a plot controling the bandwidth consumption, for a plot showing stream latencies, and for time series plots of PPP results.
 </p>
 <p><a name="logfile"><h4>2.18.1 Log</h4></p>
 <p>
@@ -4084,16 +4082,6 @@ Example:
 
 
 <p><a name="annex"><h3>3. Annex</h3></p>
-<p>
-3.1. <a href=#history>Revision History</a><br>
-3.2. <a href=#rtcm>RTCM</a><br>
-&nbsp; &nbsp; &nbsp; 3.2.1 Ntrip <a href=#ntrip1>Version 1</a><br>
-&nbsp; &nbsp; &nbsp; 3.2.2 Ntrip <a href=#ntrip2>Version 2</a><br>
-&nbsp; &nbsp; &nbsp; 3.2.3 RTCM <a href=#rtcm2>Version 2</a><br>
-&nbsp; &nbsp; &nbsp; 3.2.4 RTCM <a href=#rtcm3>Version 3</a><br>
-3.3. <a href=#confList>Configuration List</a><br>
-3.4. <a href=#links>Further Reading</a>
-</p>
 
 <p><a name=history><h4>3.1 Revision History</h3></p>
 <table>
@@ -4271,7 +4259,7 @@ Example:
 </table>
 </p>
 
-<p><a name="rtcm"><h4>3.2. RTCM</h4></p>
+<p><a name="rtcm"><h4>3.2. RTCM Standards</h4></p>
 
 <p>
 The Radio Technical Commission for Maritime Services (RTCM) is an international non-profit scientific, professional and educational organization. Special Committees provide a forum in which governmental and non-governmental members work together to develop technical standards and consensus recommendations in regard to issues of particular concern. RTCM is engaged in the development of international standards for maritime radionavigation and radiocommunication systems. The output documents and reports prepared by RTCM Committees are published as RTCM Recommended Standards. Topics concerning Differential Global Navigation Satellite Systems (DGNSS) are handled by the Special Committee SC 104.
