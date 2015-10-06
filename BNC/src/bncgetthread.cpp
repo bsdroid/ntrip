@@ -34,7 +34,7 @@
  *
  * Created:    24-Dec-2005
  *
- * Changes:    
+ * Changes:
  *
  * -----------------------------------------------------------------------*/
 
@@ -84,11 +84,11 @@ bncGetThread::bncGetThread(bncRawFile* rawFile) {
 
 // Constructor 2
 ////////////////////////////////////////////////////////////////////////////
-bncGetThread::bncGetThread(const QUrl& mountPoint, 
+bncGetThread::bncGetThread(const QUrl& mountPoint,
                            const QByteArray& format,
                            const QByteArray& latitude,
                            const QByteArray& longitude,
-                           const QByteArray& nmea, 
+                           const QByteArray& nmea,
                            const QByteArray& ntripVersion) {
   _rawFile      = 0;
   _mountPoint   = mountPoint;
@@ -118,7 +118,7 @@ void bncGetThread::initialize() {
 
   setTerminationEnabled(true);
 
-  connect(this, SIGNAL(newMessage(QByteArray,bool)), 
+  connect(this, SIGNAL(newMessage(QByteArray,bool)),
           BNC_CORE, SLOT(slotMessage(const QByteArray,bool)));
 
   _isToBeDeleted = false;
@@ -171,89 +171,89 @@ void bncGetThread::initialize() {
     // ---------
     QString hlp = settings.value("serialBaudRate").toString();
     if      (hlp == "110") {
-      _serialPort->setBaudRate(BAUD110);   
+      _serialPort->setBaudRate(BAUD110);
     }
     else if (hlp == "300") {
-      _serialPort->setBaudRate(BAUD300);   
+      _serialPort->setBaudRate(BAUD300);
     }
     else if (hlp == "600") {
-      _serialPort->setBaudRate(BAUD600);   
+      _serialPort->setBaudRate(BAUD600);
     }
     else if (hlp == "1200") {
-      _serialPort->setBaudRate(BAUD1200);   
+      _serialPort->setBaudRate(BAUD1200);
     }
     else if (hlp == "2400") {
-      _serialPort->setBaudRate(BAUD2400);   
+      _serialPort->setBaudRate(BAUD2400);
     }
     else if (hlp == "4800") {
-      _serialPort->setBaudRate(BAUD4800);   
+      _serialPort->setBaudRate(BAUD4800);
     }
     else if (hlp == "9600") {
-      _serialPort->setBaudRate(BAUD9600);   
+      _serialPort->setBaudRate(BAUD9600);
     }
     else if (hlp == "19200") {
-      _serialPort->setBaudRate(BAUD19200);   
+      _serialPort->setBaudRate(BAUD19200);
     }
     else if (hlp == "38400") {
-      _serialPort->setBaudRate(BAUD38400);   
+      _serialPort->setBaudRate(BAUD38400);
     }
     else if (hlp == "57600") {
-      _serialPort->setBaudRate(BAUD57600);   
+      _serialPort->setBaudRate(BAUD57600);
     }
     else if (hlp == "115200") {
-      _serialPort->setBaudRate(BAUD115200);   
+      _serialPort->setBaudRate(BAUD115200);
     }
 
     // Parity
     // ------
     hlp = settings.value("serialParity").toString();
     if      (hlp == "NONE") {
-      _serialPort->setParity(PAR_NONE);    
+      _serialPort->setParity(PAR_NONE);
     }
     else if (hlp == "ODD") {
-      _serialPort->setParity(PAR_ODD);    
+      _serialPort->setParity(PAR_ODD);
     }
     else if (hlp == "EVEN") {
-      _serialPort->setParity(PAR_EVEN);    
+      _serialPort->setParity(PAR_EVEN);
     }
     else if (hlp == "SPACE") {
-      _serialPort->setParity(PAR_SPACE);    
+      _serialPort->setParity(PAR_SPACE);
     }
 
     // Data Bits
     // ---------
     hlp = settings.value("serialDataBits").toString();
     if      (hlp == "5") {
-      _serialPort->setDataBits(DATA_5);   
+      _serialPort->setDataBits(DATA_5);
     }
     else if (hlp == "6") {
-      _serialPort->setDataBits(DATA_6);   
+      _serialPort->setDataBits(DATA_6);
     }
     else if (hlp == "7") {
-      _serialPort->setDataBits(DATA_7);   
+      _serialPort->setDataBits(DATA_7);
     }
     else if (hlp == "8") {
-      _serialPort->setDataBits(DATA_8);   
+      _serialPort->setDataBits(DATA_8);
     }
     hlp = settings.value("serialStopBits").toString();
     if      (hlp == "1") {
-      _serialPort->setStopBits(STOP_1);    
+      _serialPort->setStopBits(STOP_1);
     }
     else if (hlp == "2") {
-      _serialPort->setStopBits(STOP_2);    
+      _serialPort->setStopBits(STOP_2);
     }
 
     // Flow Control
     // ------------
     hlp = settings.value("serialFlowControl").toString();
     if (hlp == "XONXOFF") {
-      _serialPort->setFlowControl(FLOW_XONXOFF);    
+      _serialPort->setFlowControl(FLOW_XONXOFF);
     }
     else if (hlp == "HARDWARE") {
-      _serialPort->setFlowControl(FLOW_HARDWARE);    
+      _serialPort->setFlowControl(FLOW_HARDWARE);
     }
     else {
-      _serialPort->setFlowControl(FLOW_OFF);    
+      _serialPort->setFlowControl(FLOW_OFF);
     }
 
     // Open Serial Port
@@ -264,7 +264,7 @@ void bncGetThread::initialize() {
       _serialPort = 0;
       emit(newMessage((_staID + ": Cannot open serial port\n"), true));
     }
-    connect(_serialPort, SIGNAL(readyRead()), 
+    connect(_serialPort, SIGNAL(readyRead()),
             this, SLOT(slotSerialReadyRead()));
 
     // Automatic NMEA
@@ -322,7 +322,7 @@ t_irc bncGetThread::initDecoder() {
     emit(newMessage(_staID + ": Get data in RTCM 3.x format", true));
     RTCM3Decoder* newDecoder = new RTCM3Decoder(_staID, _rawFile);
     _decoder = newDecoder;
-    connect((RTCM3Decoder*) newDecoder, SIGNAL(newMessage(QByteArray,bool)), 
+    connect((RTCM3Decoder*) newDecoder, SIGNAL(newMessage(QByteArray,bool)),
             this, SIGNAL(newMessage(QByteArray,bool)));
   }
   else if (_format.indexOf("ZERO") != -1) {
@@ -340,8 +340,8 @@ t_irc bncGetThread::initDecoder() {
   }
 
   msleep(100); //sleep 0.1 sec
-  
-  _decoder->initRinex(_staID, _mountPoint, _latitude, _longitude, 
+
+  _decoder->initRinex(_staID, _mountPoint, _latitude, _longitude,
                                _nmea, _ntripVersion);
 
   if (_rawFile) {
@@ -392,7 +392,7 @@ bncGetThread::~bncGetThread() {
   emit getThreadFinished(_staID);
 }
 
-// 
+//
 ////////////////////////////////////////////////////////////////////////////
 void bncGetThread::terminate() {
   _isToBeDeleted = true;
@@ -477,14 +477,14 @@ void bncGetThread::run() {
       // Output Data
       // -----------
       if (_rawOutput) {
-        BNC_CORE->writeRawData(data, _staID, _format); 
+        BNC_CORE->writeRawData(data, _staID, _format);
       }
 
       if (_serialPort) {
         slotSerialReadyRead();
         _serialPort->write(data);
       }
-      
+
       // Decode Data
       // -----------
       vector<string> errmsg;
@@ -495,17 +495,21 @@ void bncGetThread::run() {
       decoder()->_obsList.clear();
       t_irc irc = decoder()->Decode(data.data(), data.size(), errmsg);
 
+      if (irc == failure) {
+        continue;
+      }
+
       // Perform various scans and checks
       // --------------------------------
       if (_latencyChecker) {
         _latencyChecker->checkOutage(irc == success);
         _latencyChecker->checkObsLatency(decoder()->_obsList);
         _latencyChecker->checkCorrLatency(decoder()->corrGPSEpochTime());
-        
+
         emit newLatency(_staID, _latencyChecker->currentLatency());
       }
 
-      miscScanRTCM();            
+      miscScanRTCM();
 
       // Loop over all observations (observations output)
       // ------------------------------------------------
@@ -541,12 +545,12 @@ void bncGetThread::run() {
           if (it != _prnLastEpo.end()) {
             long oldTime = it.value();
             if      (obsTime <  oldTime) {
-              emit( newMessage(_staID + 
+              emit( newMessage(_staID +
                  ": old observation " + prn.toAscii(), false));
               continue;
             }
             else if (obsTime == oldTime) {
-              emit( newMessage(_staID + 
+              emit( newMessage(_staID +
                  ": observation coming more than once " + prn.toAscii(), false));
               continue;
             }
@@ -580,7 +584,7 @@ void bncGetThread::run() {
   }
 }
 
-// Try Re-Connect 
+// Try Re-Connect
 ////////////////////////////////////////////////////////////////////////////
 t_irc bncGetThread::tryReconnect() {
 
@@ -714,7 +718,7 @@ void bncGetThread::miscScanRTCM() {
         QString type =  QString("%1 ").arg(decoder()->_typeList[ii]);
         emit(newMessage(_staID + ": Received message type " + type.toAscii(), true));
       }
-  
+
       // Check Observation Types
       // -----------------------
       for (int ii = 0; ii < decoder()->_obsList.size(); ii++) {
@@ -776,7 +780,7 @@ void bncGetThread::miscScanRTCM() {
           }
         }
         if (!allFound) {
-          QString msg; 
+          QString msg;
           QTextStream str(&msg);
           QString s;
           str << obs._prn.system() << "    " << s.sprintf("%2d", rnxTypes.size()) << "  ";
@@ -817,8 +821,8 @@ void bncGetThread::miscScanRTCM() {
           QByteArray ant4 = QString("%1 ").arg(hh,0,'f',4).toAscii();
           emit(newMessage(_staID + ": Antenna height above marker "  + ant4 + "m", true));
         }
-        emit(newAntCrd(_staID, decoder()->_antList[ii].xx, 
-                       decoder()->_antList[ii].yy, decoder()->_antList[ii].zz, 
+        emit(newAntCrd(_staID, decoder()->_antList[ii].xx,
+                       decoder()->_antList[ii].yy, decoder()->_antList[ii].zz,
                        hh, antT));
       }
 
@@ -853,8 +857,8 @@ void bncGetThread::miscScanRTCM() {
         if (decoder()->_antList[ii].height_f) {
           hh = decoder()->_antList[ii].height;
         }
-        emit(newAntCrd(_staID, decoder()->_antList[ii].xx, 
-                       decoder()->_antList[ii].yy, decoder()->_antList[ii].zz, 
+        emit(newAntCrd(_staID, decoder()->_antList[ii].xx,
+                       decoder()->_antList[ii].yy, decoder()->_antList[ii].zz,
                        hh, antT));
   }
 
