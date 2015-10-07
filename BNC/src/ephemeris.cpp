@@ -1529,11 +1529,11 @@ t_irc t_ephBDS::position(int GPSweek, double GPSweeks, double* xc, double* vv) c
     double yy = xp*sinom + yp*cosi*cosom;
     double zz = yp*sini;
 
-    Matrix R1 = BNC_PPP::t_astro::rotX(-5.0 / 180.0 * M_PI);
-    Matrix R2 = BNC_PPP::t_astro::rotZ(ll);
+    Matrix RX = BNC_PPP::t_astro::rotX(-5.0 / 180.0 * M_PI);
+    Matrix RZ = BNC_PPP::t_astro::rotZ(ll);
 
     ColumnVector X1(3); X1 << xx << yy << zz;
-    ColumnVector X2 = R2*R1*X1;
+    ColumnVector X2 = RZ*RX*X1;
 
     xc[0] = X2(1);
     xc[1] = X2(2);
@@ -1552,7 +1552,6 @@ t_irc t_ephBDS::position(int GPSweek, double GPSweeks, double* xc, double* vv) c
     //double vz  = sini    *doty  + yp*cosi      *doti;
 
     ColumnVector V(3);
-
     V[0]   = cosom  *vx     - cosi*sinom   *vy      // dX / dr
            - xp*sinom*dotom - yp*cosi*cosom*dotom   // dX / dOMEGA
                             + yp*sini*sinom*doti;   // dX / di
@@ -1563,18 +1562,17 @@ t_irc t_ephBDS::position(int GPSweek, double GPSweeks, double* xc, double* vv) c
 
     V[2]   = sini   *vy     + yp*cosi      *doti;
 
-    Matrix R3(3,3);
+    Matrix RdotZ(3,3);
     double C = cos(ll);
     double S = sin(ll);
     Matrix UU(3,3);
     UU[0][0] =  -S;  UU[0][1] =  +C;  UU[0][2] = 0.0;
     UU[1][0] =  -C;  UU[1][1] =  -S;  UU[1][2] = 0.0;
     UU[2][0] = 0.0;  UU[2][1] = 0.0;  UU[2][2] = 0.0;
-    R3 = omegaBDS * UU;
+    RdotZ = omegaBDS * UU;
 
     ColumnVector VV(3);
-
-    VV = R2*R1*V + R3*R1*X1;
+    VV = RZ*RX*V + RdotZ*RX*X1;
 
     vv[0] = VV(1);
     vv[1] = VV(2);
