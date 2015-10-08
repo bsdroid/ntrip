@@ -39,14 +39,15 @@ class t_pppWidgets : public QObject {
   QComboBox*     _dataSource;
   qtFileChooser* _rinexObs;
   qtFileChooser* _rinexNav;
-  QLineEdit*     _corrMount;  
-  qtFileChooser* _corrFile;  
+  QLineEdit*     _corrMount;
+  qtFileChooser* _corrFile;
   qtFileChooser* _crdFile;
   qtFileChooser* _antexFile;
   QLineEdit*     _logFile;
   QLineEdit*     _nmeaFile;
   QLineEdit*     _snxtroFile;
   QSpinBox*      _snxtroSampl;
+  QComboBox*     _snxtroIntr;
   QTableWidget*  _staTable;
   QComboBox*     _lcGPS;
   QComboBox*     _lcGLONASS;
@@ -76,7 +77,7 @@ class t_pppWidgets : public QObject {
   QSlider*       _mapSpeedSlider;
 
  private slots:
-  void slotEnableWidgets();  
+  void slotEnableWidgets();
   void slotAddStation();
   void slotDelStation();
   void slotPPPTextChanged();

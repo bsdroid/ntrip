@@ -893,7 +893,10 @@ bncWindow::bncWindow() {
   ++ir;
   pppLayout1->addWidget(new QLabel("   SNX TRO file"),       ir, 3);
   pppLayout1->addWidget(_pppWidgets._snxtroFile,             ir, 4);
-  pppLayout1->addWidget(new QLabel("   Sampling"),           ir, 5);
+  ++ir;
+  pppLayout1->addWidget(new QLabel("   SNX Interval"),       ir, 3);
+  pppLayout1->addWidget(_pppWidgets._snxtroIntr,             ir, 4);
+  pppLayout1->addWidget(new QLabel("Sampling"),              ir, 5);
   pppLayout1->addWidget(_pppWidgets._snxtroSampl,            ir, 6);
   ++ir;
   pppLayout1->setRowStretch(ir, 999);
