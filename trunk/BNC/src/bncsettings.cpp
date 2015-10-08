@@ -234,6 +234,7 @@ void bncSettings::setValue(const QString &key, const QVariant& value) {
 //
 ////////////////////////////////////////////////////////////////////////////
 void bncSettings::setValue_p(const QString &key, const QVariant& value) {
+//  qDebug() << "key: " << key << " value: " << value;
   BNC_CORE->_settings[key] = value;
 }
 

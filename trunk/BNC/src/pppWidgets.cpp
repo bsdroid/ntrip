@@ -34,7 +34,7 @@
  *
  * Created:    29-Jul-2014
  *
- * Changes:    
+ * Changes:
  *
  * -----------------------------------------------------------------------*/
 
@@ -51,26 +51,27 @@ using namespace std;
 ////////////////////////////////////////////////////////////////////////////
 t_pppWidgets::t_pppWidgets() {
 
-  _dataSource   = new QComboBox();     _dataSource  ->setObjectName("PPP/dataSource");   _widgets << _dataSource;  
-  _rinexObs     = new qtFileChooser(); _rinexObs    ->setObjectName("PPP/rinexObs");     _widgets << _rinexObs;    
-  _rinexNav     = new qtFileChooser(); _rinexNav    ->setObjectName("PPP/rinexNav");     _widgets << _rinexNav;    
+  _dataSource   = new QComboBox();     _dataSource  ->setObjectName("PPP/dataSource");   _widgets << _dataSource;
+  _rinexObs     = new qtFileChooser(); _rinexObs    ->setObjectName("PPP/rinexObs");     _widgets << _rinexObs;
+  _rinexNav     = new qtFileChooser(); _rinexNav    ->setObjectName("PPP/rinexNav");     _widgets << _rinexNav;
   _corrMount    = new QLineEdit();     _corrMount   ->setObjectName("PPP/corrMount");    _widgets << _corrMount;
-  _corrFile     = new qtFileChooser(); _corrFile    ->setObjectName("PPP/corrFile");     _widgets << _corrFile;    
-  _crdFile      = new qtFileChooser(); _crdFile     ->setObjectName("PPP/crdFile");      _widgets << _crdFile;     
-  _antexFile    = new qtFileChooser(); _antexFile   ->setObjectName("PPP/antexFile");    _widgets << _antexFile;   
-  _logFile      = new QLineEdit();     _logFile     ->setObjectName("PPP/logFilePPP");   _widgets << _logFile;     
-  _nmeaFile     = new QLineEdit();     _nmeaFile    ->setObjectName("PPP/nmeaFile");     _widgets << _nmeaFile;    
+  _corrFile     = new qtFileChooser(); _corrFile    ->setObjectName("PPP/corrFile");     _widgets << _corrFile;
+  _crdFile      = new qtFileChooser(); _crdFile     ->setObjectName("PPP/crdFile");      _widgets << _crdFile;
+  _antexFile    = new qtFileChooser(); _antexFile   ->setObjectName("PPP/antexFile");    _widgets << _antexFile;
+  _logFile      = new QLineEdit();     _logFile     ->setObjectName("PPP/logFilePPP");   _widgets << _logFile;
+  _nmeaFile     = new QLineEdit();     _nmeaFile    ->setObjectName("PPP/nmeaFile");     _widgets << _nmeaFile;
   _snxtroFile   = new QLineEdit();     _snxtroFile  ->setObjectName("PPP/snxtroFile");   _widgets << _snxtroFile;
   _snxtroSampl  = new QSpinBox();      _snxtroSampl ->setObjectName("PPP/snxtroSampl");  _widgets << _snxtroSampl;
-  _staTable     = new QTableWidget();  _staTable    ->setObjectName("PPP/staTable");     _widgets << _staTable;    
-  _lcGPS        = new QComboBox();     _lcGPS       ->setObjectName("PPP/lcGPS");        _widgets << _lcGPS;       
-  _lcGLONASS    = new QComboBox();     _lcGLONASS   ->setObjectName("PPP/lcGLONASS");    _widgets << _lcGLONASS;   
-  _lcGalileo    = new QComboBox();     _lcGalileo   ->setObjectName("PPP/lcGalileo");    _widgets << _lcGalileo;   
+  _snxtroIntr   = new QComboBox();     _snxtroIntr  ->setObjectName("PPP/_snxtroIntr");  _widgets << _snxtroIntr;
+  _staTable     = new QTableWidget();  _staTable    ->setObjectName("PPP/staTable");     _widgets << _staTable;
+  _lcGPS        = new QComboBox();     _lcGPS       ->setObjectName("PPP/lcGPS");        _widgets << _lcGPS;
+  _lcGLONASS    = new QComboBox();     _lcGLONASS   ->setObjectName("PPP/lcGLONASS");    _widgets << _lcGLONASS;
+  _lcGalileo    = new QComboBox();     _lcGalileo   ->setObjectName("PPP/lcGalileo");    _widgets << _lcGalileo;
   _lcBDS        = new QComboBox();     _lcBDS       ->setObjectName("PPP/lcBDS");        _widgets << _lcBDS;
-  _sigmaC1      = new QLineEdit();     _sigmaC1     ->setObjectName("PPP/sigmaC1");      _widgets << _sigmaC1;     
-  _sigmaL1      = new QLineEdit();     _sigmaL1     ->setObjectName("PPP/sigmaL1");      _widgets << _sigmaL1;     
-  _maxResC1     = new QLineEdit();     _maxResC1    ->setObjectName("PPP/maxResC1");     _widgets << _maxResC1;     
-  _maxResL1     = new QLineEdit();     _maxResL1    ->setObjectName("PPP/maxResL1");     _widgets << _maxResL1;     
+  _sigmaC1      = new QLineEdit();     _sigmaC1     ->setObjectName("PPP/sigmaC1");      _widgets << _sigmaC1;
+  _sigmaL1      = new QLineEdit();     _sigmaL1     ->setObjectName("PPP/sigmaL1");      _widgets << _sigmaL1;
+  _maxResC1     = new QLineEdit();     _maxResC1    ->setObjectName("PPP/maxResC1");     _widgets << _maxResC1;
+  _maxResL1     = new QLineEdit();     _maxResL1    ->setObjectName("PPP/maxResL1");     _widgets << _maxResL1;
   _minObs       = new QSpinBox();      _minObs      ->setObjectName("PPP/minObs");       _widgets << _minObs;
   _minEle       = new QSpinBox();      _minEle      ->setObjectName("PPP/minEle");       _widgets << _minEle;
   _eleWgtCode   = new QCheckBox();     _eleWgtCode  ->setObjectName("PPP/eleWgtCode");   _widgets << _eleWgtCode;
@@ -97,7 +98,7 @@ t_pppWidgets::t_pppWidgets() {
   _dataSource->addItems(QString(",Real-Time Streams,RINEX Files").split(","));
   connect(_dataSource, SIGNAL(currentIndexChanged(const QString&)), this, SLOT(slotEnableWidgets()));
 
-  connect(_snxtroFile, SIGNAL(textChanged(const QString &)), 
+  connect(_snxtroFile, SIGNAL(textChanged(const QString &)),
          this, SLOT(slotPPPTextChanged()));
 
   slotEnableWidgets();
@@ -135,6 +136,9 @@ t_pppWidgets::t_pppWidgets() {
   _snxtroSampl->setSingleStep(30);
   _snxtroSampl->setSuffix(" sec");
 
+  _snxtroIntr->setEditable(false);
+  _snxtroIntr->addItems(QString("1 min,2 min,5 min,10 min,15 min,30 min,1 hour,1 day").split(","));
+
   _minObs->setMinimum(4);
   _minObs->setMaximum(6);
   _minObs->setSingleStep(1);
@@ -158,7 +162,7 @@ t_pppWidgets::t_pppWidgets() {
   _staTable->setSelectionBehavior(QAbstractItemView::SelectRows);
   _staTable->horizontalHeader()->setResizeMode(QHeaderView::Interactive);
   _staTable->horizontalHeader()->setDefaultAlignment(Qt::AlignLeft);
-  
+
   connect(_addStaButton, SIGNAL(clicked()), this, SLOT(slotAddStation()));
   connect(_delStaButton, SIGNAL(clicked()), this, SLOT(slotDelStation()));
 
@@ -198,7 +202,7 @@ t_pppWidgets::t_pppWidgets() {
   readOptions();
 }
 
-// 
+//
 ////////////////////////////////////////////////////////////////////////////
 void t_pppWidgets::readOptions() {
 
@@ -225,6 +229,10 @@ void t_pppWidgets::readOptions() {
   ii = _lcBDS->findText(settings.value(_lcBDS->objectName()).toString());
   if (ii != -1) {
     _lcBDS->setCurrentIndex(ii);
+  }
+  ii = _snxtroIntr->findText(settings.value(_snxtroIntr->objectName()).toString());
+  if (ii != -1) {
+    _snxtroIntr->setCurrentIndex(ii);
   }
 
   // FileChoosers
@@ -266,7 +274,7 @@ void t_pppWidgets::readOptions() {
   if (!settings.value(_maxResL1->objectName()).toString().isEmpty()) {
     _maxResL1->setText(settings.value(_maxResL1->objectName()).toString());
   }
-  else { 
+  else {
     _maxResL1->setText("0.03");
   }
 
@@ -323,7 +331,7 @@ void t_pppWidgets::readOptions() {
   _mapSpeedSlider->setSliderPosition(speed);
 }
 
-// 
+//
 ////////////////////////////////////////////////////////////////////////////
 void t_pppWidgets::saveOptions() {
 
@@ -340,6 +348,7 @@ void t_pppWidgets::saveOptions() {
   settings.setValue(_nmeaFile    ->objectName(), _nmeaFile    ->text());
   settings.setValue(_snxtroFile  ->objectName(), _snxtroFile  ->text());
   settings.setValue(_snxtroSampl ->objectName(), _snxtroSampl ->value());
+  settings.setValue(_snxtroIntr  ->objectName(), _snxtroIntr  ->currentText());
   settings.setValue(_lcGPS       ->objectName(), _lcGPS       ->currentText());
   settings.setValue(_lcGLONASS   ->objectName(), _lcGLONASS   ->currentText());
   settings.setValue(_lcGalileo   ->objectName(), _lcGalileo   ->currentText());
@@ -378,7 +387,7 @@ void t_pppWidgets::saveOptions() {
   settings.setValue(_mapSpeedSlider  ->objectName(), _mapSpeedSlider  ->value());
 }
 
-// 
+//
 ////////////////////////////////////////////////////////////////////////////
 void t_pppWidgets::slotEnableWidgets() {
 
@@ -396,9 +405,9 @@ void t_pppWidgets::slotEnableWidgets() {
   }
 
   if      (realTime) {
-    _rinexObs->setEnabled(false);    
-    _rinexNav->setEnabled(false);    
-    _corrFile->setEnabled(false);    
+    _rinexObs->setEnabled(false);
+    _rinexNav->setEnabled(false);
+    _corrFile->setEnabled(false);
   }
   else if (rinexFiles) {
     _corrMount->setEnabled(false);
@@ -407,10 +416,12 @@ void t_pppWidgets::slotEnableWidgets() {
   }
 
   if ( _snxtroFile->text() != "" && !allDisabled) {
-    _snxtroSampl->setEnabled(true);    
+    _snxtroSampl->setEnabled(true);
+    _snxtroIntr ->setEnabled(true);
   }
   else {
-    _snxtroSampl->setEnabled(false);    
+    _snxtroSampl->setEnabled(false);
+    _snxtroIntr ->setEnabled(false);
   }
 
   _dataSource->setEnabled(true);
@@ -427,7 +438,7 @@ void t_pppWidgets::slotEnableWidgets() {
   }
 }
 
-// 
+//
 ////////////////////////////////////////////////////////////////////////////
 void t_pppWidgets::slotAddStation() {
   int iRow = _staTable->rowCount();
@@ -446,7 +457,7 @@ void t_pppWidgets::slotAddStation() {
   }
 }
 
-// 
+//
 ////////////////////////////////////////////////////////////////////////////
 void t_pppWidgets::slotDelStation() {
   int nRows = _staTable->rowCount();
@@ -476,13 +487,17 @@ void t_pppWidgets::slotPPPTextChanged(){
   // SNX TRO file sampling
   // ---------------------
   if (sender() == 0 || sender() == _snxtroFile) {
-    if ( _snxtroFile->text() != "" ) {  
-      _snxtroSampl->setEnabled(true);    
+    if ( _snxtroFile->text() != "" ) {
+      _snxtroSampl->setEnabled(true);
+      _snxtroIntr->setEnabled(true);
       _snxtroSampl->setPalette(paletteWhite);
+      _snxtroIntr->setPalette(paletteWhite);
     }
     else {
-    _snxtroSampl->setEnabled(false);    
+    _snxtroSampl->setEnabled(false);
+    _snxtroIntr->setEnabled(false);
     _snxtroSampl->setPalette(paletteGray);
+    _snxtroIntr->setPalette(paletteGray);
     }
   }
 }
