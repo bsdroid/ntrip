@@ -496,6 +496,7 @@ void bncGetThread::run() {
       t_irc irc = decoder()->Decode(data.data(), data.size(), errmsg);
 
       if (irc == failure) {
+        _isToBeDeleted = true;
         continue;
       }
 
