@@ -495,11 +495,6 @@ void bncGetThread::run() {
       decoder()->_obsList.clear();
       t_irc irc = decoder()->Decode(data.data(), data.size(), errmsg);
 
-      if (irc == failure) {
-        _isToBeDeleted = true;
-        continue;
-      }
-
       // Perform various scans and checks
       // --------------------------------
       if (_latencyChecker) {
