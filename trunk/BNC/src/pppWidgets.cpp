@@ -62,7 +62,7 @@ t_pppWidgets::t_pppWidgets() {
   _nmeaFile     = new QLineEdit();     _nmeaFile    ->setObjectName("PPP/nmeaFile");     _widgets << _nmeaFile;
   _snxtroFile   = new QLineEdit();     _snxtroFile  ->setObjectName("PPP/snxtroFile");   _widgets << _snxtroFile;
   _snxtroSampl  = new QSpinBox();      _snxtroSampl ->setObjectName("PPP/snxtroSampl");  _widgets << _snxtroSampl;
-  _snxtroIntr   = new QComboBox();     _snxtroIntr  ->setObjectName("PPP/_snxtroIntr");  _widgets << _snxtroIntr;
+  _snxtroIntr   = new QComboBox();     _snxtroIntr  ->setObjectName("PPP/snxtroIntr");   _widgets << _snxtroIntr;
   _staTable     = new QTableWidget();  _staTable    ->setObjectName("PPP/staTable");     _widgets << _staTable;
   _lcGPS        = new QComboBox();     _lcGPS       ->setObjectName("PPP/lcGPS");        _widgets << _lcGPS;
   _lcGLONASS    = new QComboBox();     _lcGLONASS   ->setObjectName("PPP/lcGLONASS");    _widgets << _lcGLONASS;
