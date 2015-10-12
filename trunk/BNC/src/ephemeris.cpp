@@ -1480,7 +1480,6 @@ t_irc t_ephBDS::position(int GPSweek, double GPSweeks, double* xc, double* vv) c
   double dotx  = dotr*cos(u) - r*sin(u)*dotu;
   double doty  = dotr*sin(u) + r*cos(u)*dotu;
 
-
   const double iMaxGEO = 10.0 / 180.0 * M_PI;
 
   // MEO/IGSO satellite
@@ -1549,18 +1548,9 @@ t_irc t_ephBDS::position(int GPSweek, double GPSweeks, double* xc, double* vv) c
                + xp*cosom*dotom - yp*cosi*sinom*dotom
                                 - yp*sini*cosom*doti;
 
-    //double vz  = sini    *doty  + yp*cosi      *doti;
+    double vz  = sini    *doty  + yp*cosi      *doti;
 
-    ColumnVector V(3);
-    V[0]   = cosom  *vx     - cosi*sinom   *vy      // dX / dr
-           - xp*sinom*dotom - yp*cosi*cosom*dotom   // dX / dOMEGA
-                            + yp*sini*sinom*doti;   // dX / di
-
-    V[1]   = sinom  *vx     + cosi*cosom   *vy
-           + xp*cosom*dotom - yp*cosi*sinom*dotom
-                            - yp*sini*cosom*doti;
-
-    V[2]   = sini   *vy     + yp*cosi      *doti;
+    ColumnVector V(3); V << vx << vy << vz;
 
     Matrix RdotZ(3,3);
     double C = cos(ll);
