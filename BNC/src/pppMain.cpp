@@ -121,11 +121,6 @@ void t_pppMain::readOptions() {
 
   bncSettings settings;
 
-  _logFile  = settings.value("PPP/logFilePPP").toString();
-  _nmeaFile = settings.value("PPP/nmeaFile").toString();
-  _snxtroFile = settings.value("PPP/snxtroFile").toString();
-  _snxtroSampling = settings.value("PPP/snxtroSampl").toInt();
-
   _realTime = false;
   if      (settings.value("PPP/dataSource").toString() == "Real-Time Streams") {
     _realTime = true;
