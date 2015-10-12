@@ -929,8 +929,8 @@ bncWindow::bncWindow() {
 
   _pppWidgets._snxtroFile->setWhatsThis(tr("<p>Specify the path to daily SINEX Troposphere files using e.g. the following syntax (example):</p><p> ./PPP_${STATION}${DOY}.${YY}.zpd</p><p>BNC will produce daily files per station to save troposphere parameters from the PPP solution in SINEX Troposphere format. Variable ${STATION} stands for the affected station, ${DOY} stands for the Day Of Year, and ${YY} for the year.</p>"));
 
-  _pppWidgets._snxtroSampl->setWhatsThis(tr("<p>Select a 'Sampling' rate for saving troposphere paramers.</p>"));
-  _pppWidgets._snxtroIntr->setWhatsThis(tr("<p>Select an 'Interval' for saving troposphere paramers.</p>"));
+  _pppWidgets._snxtroSampl->setWhatsThis(tr("<p>Select a 'Sampling' rate for saving troposphere paramers.</p><p>Default 'Sampling' rate is '0', meaning that all troposphere estimates will be saved on disk.</p>"));
+  _pppWidgets._snxtroIntr->setWhatsThis(tr("<p>Select a length for SINEX Troposphere files.</p><p>Default 'Interval' for saving SINEX Troposphere files on disk in '1 day'.</p>"));
 
   _pppWidgets._sigmaC1->setWhatsThis(tr("<p>Enter a sigma for your GNSS C1 code observations in meters.</p><p>The higher the sigma you enter, the less the contribution of C1 code observations to a PPP solution based on a combination of code and phase data. 2.0 is likely to be an appropriate choice.</p><p>Default is an empty option field, meaning<br>'Sigma C1 = 2.0'</p>"));
 
