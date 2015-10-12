@@ -150,6 +150,7 @@ seedingTime=
 sigmaC1=
 sigmaL1=
 snxtroFile=
+snxtroIntr=1 hour
 snxtroSampl=
 staTable=
 useGoogleMap=

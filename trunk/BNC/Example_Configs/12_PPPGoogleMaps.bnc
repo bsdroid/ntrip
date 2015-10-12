@@ -151,6 +151,7 @@ seedingTime=
 sigmaC1=2.0
 sigmaL1=0.01
 snxtroFile=
+snxtroIntr=1 hour
 snxtroSampl=0
 staTable="VM01,100,100,100,100,100,100,0.1,3e-6,,"
 useGoogleMap=true
