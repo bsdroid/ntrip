@@ -138,6 +138,7 @@ t_pppWidgets::t_pppWidgets() {
 
   _snxtroIntr->setEditable(false);
   _snxtroIntr->addItems(QString("1 min,2 min,5 min,10 min,15 min,30 min,1 hour,1 day").split(","));
+  _snxtroIntr->setCurrentIndex(6);
 
   _minObs->setMinimum(4);
   _minObs->setMaximum(6);
