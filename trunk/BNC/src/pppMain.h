@@ -19,10 +19,6 @@ class t_pppMain {
 
   QList<t_pppOptions*> _options;
   QList<t_pppThread*>  _pppThreads;
-  QString  _logFile;
-  QString  _nmeaFile;
-  QString  _snxtroFile;
-  int      _snxtroSampling;
   bool     _running;
   bool     _realTime;
 };
