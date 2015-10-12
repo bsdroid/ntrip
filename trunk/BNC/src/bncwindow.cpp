@@ -862,42 +862,47 @@ bncWindow::bncWindow() {
   _pppWidgets._dataSource->setMaximumWidth(20*ww);
   _pppWidgets._corrMount->setMaximumWidth(20*ww);
 
+  _pppWidgets._crdFile->setMaximumWidth(35*ww);
+  _pppWidgets._antexFile->setMaximumWidth(35*ww);
+  _pppWidgets._snxtroFile->setMaximumWidth(35*ww);
+  _pppWidgets._snxtroIntr->setMaximumWidth(15*ww);
+
   QGridLayout* pppLayout1 = new QGridLayout();
   int ir = 0;
   pppLayout1->addWidget(new QLabel("Precise Point Positioning - Input and Output."), ir, 0, 1, 7, Qt::AlignLeft);
   ++ir;
   pppLayout1->addWidget(new QLabel("Data source"),           ir, 0);
   pppLayout1->addWidget(_pppWidgets._dataSource,             ir, 1);
-  pppLayout1->addItem(new QSpacerItem(4*ww, 0),              ir, 2);
   pppLayout1->addWidget(new QLabel("   RINEX Obs file"),     ir, 3);
-  pppLayout1->addWidget(_pppWidgets._rinexObs,               ir, 4);
+  pppLayout1->addWidget(_pppWidgets._rinexObs,               ir, 4, 1, 3);
   ++ir;
   pppLayout1->addWidget(new QLabel("   RINEX Nav file"),     ir, 3);
-  pppLayout1->addWidget(_pppWidgets._rinexNav,               ir, 4);
+  pppLayout1->addWidget(_pppWidgets._rinexNav,               ir, 4, 1, 3);
   ++ir;
   pppLayout1->addWidget(new QLabel("Corrections stream"),    ir, 0);
   pppLayout1->addWidget(_pppWidgets._corrMount,              ir, 1);
   pppLayout1->addWidget(new QLabel("   Correction file"),    ir, 3);
-  pppLayout1->addWidget(_pppWidgets._corrFile,               ir, 4);
+  pppLayout1->addWidget(_pppWidgets._corrFile,               ir, 4, 1, 3);
   ++ir;
   pppLayout1->addWidget(new QLabel("Coordinates"),           ir, 0);
   pppLayout1->addWidget(_pppWidgets._crdFile,                ir, 1);
   pppLayout1->addWidget(new QLabel("   Logfile"),            ir, 3);
-  pppLayout1->addWidget(_pppWidgets._logFile,                ir, 4);
+  pppLayout1->addWidget(_pppWidgets._logFile,                ir, 4, 1, 3);
   ++ir;
   pppLayout1->addWidget(new QLabel("ANTEX file"),            ir, 0);
   pppLayout1->addWidget(_pppWidgets._antexFile,              ir, 1);
 
   pppLayout1->addWidget(new QLabel("   NMEA file"),          ir, 3);
-  pppLayout1->addWidget(_pppWidgets._nmeaFile,               ir, 4);
+  pppLayout1->addWidget(_pppWidgets._nmeaFile,               ir, 4, 1, 3);
+
   ++ir;
-  pppLayout1->addWidget(new QLabel("   SNX TRO file"),       ir, 3);
-  pppLayout1->addWidget(_pppWidgets._snxtroFile,             ir, 4);
-  ++ir;
-  pppLayout1->addWidget(new QLabel("   SNX Interval"),       ir, 3);
+  pppLayout1->addWidget(new QLabel("SNX TRO file"),          ir, 0);
+  pppLayout1->addWidget(_pppWidgets._snxtroFile,             ir, 1);
+  pppLayout1->addWidget(new QLabel("   SNX TRO interval"),   ir, 3);
   pppLayout1->addWidget(_pppWidgets._snxtroIntr,             ir, 4);
-  pppLayout1->addWidget(new QLabel("Sampling"),              ir, 5);
-  pppLayout1->addWidget(_pppWidgets._snxtroSampl,            ir, 6);
+  pppLayout1->addWidget(new QLabel("   SNX TRO sampling"),   ir, 5, Qt::AlignRight);
+  pppLayout1->addWidget(_pppWidgets._snxtroSampl,            ir, 6, Qt::AlignRight);
+
   ++ir;
   pppLayout1->setRowStretch(ir, 999);
 
@@ -922,9 +927,10 @@ bncWindow::bncWindow() {
 
   _pppWidgets._nmeaFile->setWhatsThis(tr("<p>Specify the path to daily NMEA files using e.g. the following syntax (example):</p><p> ./PPP_${STATION}_${DATE}.nmea</p><p>BNC will produce one daily NMEA file per station, mainly to save NMEA GGA sentences from the PPP solution. Variable ${STATION} stands for the affected station and ${DATE} stands for the date.</p>"));
 
-  _pppWidgets._snxtroFile->setWhatsThis(tr("<p>Specify the path to daily SINEX Troposphere files using e.g. the following syntax (example):</p><p> ./PPP_${STATION}${DOY}.${YY}.zpd</p><p>BNC will produce one daily troposphere file per station to save troposphere parameters from the PPP solution in SINEX Troposphere format. Variable ${STATION} stands for the affected station, ${DOY} stands for the Day Of Year, and ${YY} for the year.</p>"));
+  _pppWidgets._snxtroFile->setWhatsThis(tr("<p>Specify the path to daily SINEX Troposphere files using e.g. the following syntax (example):</p><p> ./PPP_${STATION}${DOY}.${YY}.zpd</p><p>BNC will produce files per station to save troposphere parameters from the PPP solution in SINEX Troposphere format. Variable ${STATION} stands for the affected station, ${DOY} stands for the Day Of Year, and ${YY} for the year.</p>"));
 
   _pppWidgets._snxtroSampl->setWhatsThis(tr("<p>Select a 'Sampling' rate for saving troposphere paramers.</p>"));
+  _pppWidgets._snxtroIntr->setWhatsThis(tr("<p>Select an 'Interval' for saving troposphere paramers.</p>"));
 
   _pppWidgets._sigmaC1->setWhatsThis(tr("<p>Enter a sigma for your GNSS C1 code observations in meters.</p><p>The higher the sigma you enter, the less the contribution of C1 code observations to a PPP solution based on a combination of code and phase data. 2.0 is likely to be an appropriate choice.</p><p>Default is an empty option field, meaning<br>'Sigma C1 = 2.0'</p>"));
 
