@@ -927,7 +927,7 @@ bncWindow::bncWindow() {
 
   _pppWidgets._nmeaFile->setWhatsThis(tr("<p>Specify the path to daily NMEA files using e.g. the following syntax (example):</p><p> ./PPP_${STATION}_${DATE}.nmea</p><p>BNC will produce one daily NMEA file per station, mainly to save NMEA GGA sentences from the PPP solution. Variable ${STATION} stands for the affected station and ${DATE} stands for the date.</p>"));
 
-  _pppWidgets._snxtroFile->setWhatsThis(tr("<p>Specify the path to daily SINEX Troposphere files using e.g. the following syntax (example):</p><p> ./PPP_${STATION}${DOY}.${YY}.zpd</p><p>BNC will produce files per station to save troposphere parameters from the PPP solution in SINEX Troposphere format. Variable ${STATION} stands for the affected station, ${DOY} stands for the Day Of Year, and ${YY} for the year.</p>"));
+  _pppWidgets._snxtroFile->setWhatsThis(tr("<p>Specify a path for saving SINEX Troposphere files on disk using e.g. the following syntax (example):</p><p> ./PPP_${STATION}${DOY}.${YY}.zpd</p><p>BNC will produce files per station to save troposphere parameters from the PPP solution in SINEX Troposphere format. Variable ${STATION} stands for the affected station, ${DOY} stands for the Day Of Year, and ${YY} for the year.</p>"));
 
   _pppWidgets._snxtroSampl->setWhatsThis(tr("<p>Select a 'Sampling' rate for saving troposphere paramers.</p><p>Default 'Sampling' rate is '0', meaning that all troposphere estimates will be saved on disk.</p>"));
   _pppWidgets._snxtroIntr->setWhatsThis(tr("<p>Select a length for SINEX Troposphere files.</p><p>Default 'Interval' for saving SINEX Troposphere files on disk is '1 hour'.</p>"));
