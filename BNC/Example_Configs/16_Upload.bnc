@@ -154,6 +154,7 @@ seedingTime=0
 sigmaC1=2.0
 sigmaL1=0.01
 snxtroFile=
+snxtroIntr=1 hour
 snxtroSampl=0
 staTable=@Invalid()
 useGoogleMap=false
