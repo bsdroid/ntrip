@@ -100,7 +100,8 @@
 &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 2.13.1.8 <a href=#pppantexfile>ANTEX File</a><br>
 &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 2.13.1.9 <a href=#pppnmeafile>NMEA File</a><br>
 &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 2.13.1.10 <a href=#pppsnxtrofile>SNX TRO File</a><br>
-&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 2.13.1.10.1 <a href=#pppsnxtrosampl>Sampling</a><br>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 2.13.1.10.1 <a href=#pppsnxtrointr>Interval</a><br>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 2.13.1.10.2 <a href=#pppsnxtrosampl>Sampling</a><br>
 &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 2.13.2 <a href=#pppStation>PPP (2): Processed Stations</a><br>
 &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 2.13.2.1 <a href=#pppsite>Station</a><br>
 &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 2.13.2.2 <a href=#pppnehsigma>Sigma North/East/Up</a><br>
@@ -605,7 +606,7 @@ BNC comes with a number of configuration examples which can be used on all opera
 On graphical systems (except for Mac systems) you may use the computer mouse to 'drag' a configuration file icon and 'drop' it on top of BNC's program icon.
 </li>
 <li>
-On non-graphical systems you may start BNC using a command line with the following option for a configuration file (example for Windows systems):<br>
+On non-graphical systems or when running BNC in batch mode in the background you may start the program using a command line with the following option for a configuration file (example for Windows systems):<br>
 bnc.exe --conf &lt;configFileName&gt; --nw
 </li>
 </ul>
@@ -2930,7 +2931,16 @@ In this '${STATION}' stands for the observation's mountpoint or RINEX file, '${D
 The default value for 'SNX TRO File' is an empty option field, meaning that BNC will not save SINEX Troposphere files.
 </p>
 
-<p><a name="pppsnxtrosampl"><h4>2.13.1.10.1 Sampling - mandatory if 'SINEX TRO File' is set</h4></p>
+<p><a name="pppsnxtrointr"><h4>2.13.1.10.1 Interval - mandatory if 'SINEX TRO File' is set</h4></p>
+<p>
+Select the length of SINEX Troposphere files.
+</p>
+<p>
+Default 'Interval' for saving SINEX Troposphere files on disk is '1 day'.
+</p>
+
+
+<p><a name="pppsnxtrosampl"><h4>2.13.1.10.2 Sampling - mandatory if 'SINEX TRO File' is set</h4></p>
 <p>
 Select a 'Sampling' rate in seconds for saving troposphere parameters.
 </p>
@@ -4675,6 +4685,7 @@ The following table shows a list of options contained in BNC's configuration fil
 <tr><td>antexFile</td><td>ANTEX file</td></tr>
 <tr><td>nmeaFile</td><td>NMEA output file</td></tr>
 <tr><td>snxtroFile</td><td>SINEX troposphere output filename</td></tr>
+<tr><td>snxtroIntr</td><td>SINEX troposphere file interval</td></tr>
 <tr><td>snxtroSampl</td><td>SINEX troposphere sampling rate</td></tr>
 
 <tr><td><br><b>PPP Client Panel 2</b></td><td><br><b>Meaning</b></td></tr>
