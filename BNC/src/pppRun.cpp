@@ -136,49 +136,69 @@ t_pppRun::t_pppRun(const t_pppOptions* opt) {
 
   _stopFlag = false;
 
-  QString roverName(_opt->_roverName.c_str());
+  QString roverName(_opt->_roverName.c_str()), fullRoverName("");
+  QString country;
+  QString monNum = "0";
+  QString recNum = "0";
+  QString intr = "1 day";
+  int     sampl  = 0;
+  QListIterator<QString> it(settings.value("mountPoints").toStringList());
+  while (it.hasNext()) {
+    QStringList hlp = it.next().split(" ");
+    if (hlp.size() < 7)
+      continue;
+    if (hlp.join(" ").indexOf(roverName, 0) != -1) {
+      country = hlp[2];
+    }
+  }
+  fullRoverName = roverName.left(4) +
+                  QString("%1").arg(monNum, 1, 10) +
+                  QString("%1").arg(recNum, 1, 10) +
+                  country;
 
-  QString logFileSkl = settings.value("PPP/logFilePPP").toString();
+  bool v3filenames = settings.value("PPP/v3filenames").toBool();
+  QString logFileSkl = settings.value("PPP/logPath").toString();
   if (logFileSkl.isEmpty()) {
     _logFile = 0;
   }
   else {
-    if (logFileSkl.indexOf("${STATION}") == -1) {
-      logFileSkl = logFileSkl + "_" + roverName;
+    if (v3filenames) {
+      logFileSkl = logFileSkl + fullRoverName + "${V3}" + ".ppp";
     }
     else {
-      logFileSkl.replace("${STATION}", roverName);
+      logFileSkl = logFileSkl + roverName.left(4) + "${GPSWD}" + ".ppp";
     }
-    _logFile = new bncoutf(logFileSkl, "1 day", 0);
+    _logFile = new bncoutf(logFileSkl, intr, sampl);
   }
 
-  QString nmeaFileSkl = settings.value("PPP/nmeaFile").toString();
+  QString nmeaFileSkl = settings.value("PPP/nmeaPath").toString();
   if (nmeaFileSkl.isEmpty()) {
     _nmeaFile = 0;
   }
   else {
-    if (nmeaFileSkl.indexOf("${STATION}") == -1) {
-      nmeaFileSkl = roverName + "_" + nmeaFileSkl;
+    if (v3filenames) {
+      nmeaFileSkl = nmeaFileSkl + fullRoverName + "${V3}" + ".nmea";
     }
     else {
-      nmeaFileSkl.replace("${STATION}", roverName);
+      nmeaFileSkl = nmeaFileSkl + roverName.left(4) + "${GPSWD}" + ".nmea";
     }
-    _nmeaFile = new bncoutf(nmeaFileSkl, "1 day", 0);
+    _nmeaFile = new bncoutf(nmeaFileSkl, intr, sampl);
   }
 
-  QString snxtroFileSkl = settings.value("PPP/snxtroFile").toString();
+  QString snxtroFileSkl = settings.value("PPP/snxtroPath").toString();
   if (snxtroFileSkl.isEmpty()) {
     _snxtroFile = 0;
   }
   else {
-    if (snxtroFileSkl.indexOf("${STATION}") == -1) {
-      snxtroFileSkl = snxtroFileSkl + "_" + roverName;
+    if (v3filenames) {
+      snxtroFileSkl = snxtroFileSkl + fullRoverName + "${V3}" + ".tra";
     }
     else {
-      snxtroFileSkl.replace("${STATION}", roverName.left(4));
+      snxtroFileSkl = snxtroFileSkl + roverName.left(4) + "${GPSWD}" + ".tro";
     }
-    int samplSnxTro = settings.value("PPP/snxtroSampl").toInt();
-    _snxtroFile = new bncSinexTro(_opt, snxtroFileSkl, "1 day", samplSnxTro);
+    sampl = settings.value("PPP/snxtroSampl").toInt();
+    intr  = settings.value("PPP/snxtroIntr").toString();
+    _snxtroFile = new bncSinexTro(_opt, snxtroFileSkl, intr, sampl);
   }
 }
 

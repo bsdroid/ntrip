@@ -22,7 +22,8 @@ class bncoutf {
   int           _numSec;
 
  private:
-  QString epochStr(const QDateTime& datTim, const QString& intStr);
+  QString epochStr(const QDateTime& datTim, const QString& intStr,
+      int sampl);
   QString resolveFileName(int GPSweek, const QDateTime& datTim);
 
   bool    _headerWritten;
@@ -32,6 +33,7 @@ class bncoutf {
   QString _intr;
   QString _fName;
   bool    _append;
+  bool    _v3filenames;
 };
 
 #endif

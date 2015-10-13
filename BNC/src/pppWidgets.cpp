@@ -58,11 +58,12 @@ t_pppWidgets::t_pppWidgets() {
   _corrFile     = new qtFileChooser(); _corrFile    ->setObjectName("PPP/corrFile");     _widgets << _corrFile;
   _crdFile      = new qtFileChooser(); _crdFile     ->setObjectName("PPP/crdFile");      _widgets << _crdFile;
   _antexFile    = new qtFileChooser(); _antexFile   ->setObjectName("PPP/antexFile");    _widgets << _antexFile;
-  _logFile      = new QLineEdit();     _logFile     ->setObjectName("PPP/logFilePPP");   _widgets << _logFile;
-  _nmeaFile     = new QLineEdit();     _nmeaFile    ->setObjectName("PPP/nmeaFile");     _widgets << _nmeaFile;
-  _snxtroFile   = new QLineEdit();     _snxtroFile  ->setObjectName("PPP/snxtroFile");   _widgets << _snxtroFile;
+  _logPath      = new QLineEdit();     _logPath     ->setObjectName("PPP/logPath");      _widgets << _logPath;
+  _nmeaPath     = new QLineEdit();     _nmeaPath    ->setObjectName("PPP/nmeaPath");     _widgets << _nmeaPath;
+  _snxtroPath   = new QLineEdit();     _snxtroPath  ->setObjectName("PPP/snxtroPath");   _widgets << _snxtroPath;
   _snxtroSampl  = new QSpinBox();      _snxtroSampl ->setObjectName("PPP/snxtroSampl");  _widgets << _snxtroSampl;
   _snxtroIntr   = new QComboBox();     _snxtroIntr  ->setObjectName("PPP/snxtroIntr");   _widgets << _snxtroIntr;
+  _v3filenames  = new QCheckBox();     _v3filenames ->setObjectName("PPP/v3filenames");  _widgets << _v3filenames;
   _staTable     = new QTableWidget();  _staTable    ->setObjectName("PPP/staTable");     _widgets << _staTable;
   _lcGPS        = new QComboBox();     _lcGPS       ->setObjectName("PPP/lcGPS");        _widgets << _lcGPS;
   _lcGLONASS    = new QComboBox();     _lcGLONASS   ->setObjectName("PPP/lcGLONASS");    _widgets << _lcGLONASS;
@@ -98,7 +99,7 @@ t_pppWidgets::t_pppWidgets() {
   _dataSource->addItems(QString(",Real-Time Streams,RINEX Files").split(","));
   connect(_dataSource, SIGNAL(currentIndexChanged(const QString&)), this, SLOT(slotEnableWidgets()));
 
-  connect(_snxtroFile, SIGNAL(textChanged(const QString &)),
+  connect(_snxtroPath, SIGNAL(textChanged(const QString &)),
          this, SLOT(slotPPPTextChanged()));
 
   slotEnableWidgets();
@@ -247,9 +248,9 @@ void t_pppWidgets::readOptions() {
   // LineEdits
   // ---------
   _corrMount  ->setText(settings.value(_corrMount  ->objectName()).toString());
-  _logFile    ->setText(settings.value(_logFile    ->objectName()).toString());
-  _nmeaFile   ->setText(settings.value(_nmeaFile   ->objectName()).toString());
-  _snxtroFile ->setText(settings.value(_snxtroFile ->objectName()).toString());
+  _logPath    ->setText(settings.value(_logPath    ->objectName()).toString());
+  _nmeaPath   ->setText(settings.value(_nmeaPath   ->objectName()).toString());
+  _snxtroPath ->setText(settings.value(_snxtroPath ->objectName()).toString());
 
   if (!settings.value(_sigmaC1->objectName()).toString().isEmpty()) {
     _sigmaC1->setText(settings.value(_sigmaC1->objectName()).toString());
@@ -290,6 +291,7 @@ void t_pppWidgets::readOptions() {
   // ----------
   _eleWgtCode ->setCheckState(Qt::CheckState(settings.value(_eleWgtCode ->objectName()).toInt()));
   _eleWgtPhase->setCheckState(Qt::CheckState(settings.value(_eleWgtPhase->objectName()).toInt()));
+  _v3filenames->setCheckState(Qt::CheckState(settings.value(_v3filenames->objectName()).toInt()));
 
   // SpinBoxex
   // ---------
@@ -345,10 +347,11 @@ void t_pppWidgets::saveOptions() {
   settings.setValue(_corrFile    ->objectName(), _corrFile    ->fileName());
   settings.setValue(_crdFile     ->objectName(), _crdFile     ->fileName());
   settings.setValue(_antexFile   ->objectName(), _antexFile   ->fileName());
-  settings.setValue(_logFile     ->objectName(), _logFile     ->text());
-  settings.setValue(_nmeaFile    ->objectName(), _nmeaFile    ->text());
-  settings.setValue(_snxtroFile  ->objectName(), _snxtroFile  ->text());
+  settings.setValue(_logPath     ->objectName(), _logPath     ->text());
+  settings.setValue(_nmeaPath    ->objectName(), _nmeaPath    ->text());
+  settings.setValue(_snxtroPath  ->objectName(), _snxtroPath  ->text());
   settings.setValue(_snxtroSampl ->objectName(), _snxtroSampl ->value());
+  settings.setValue(_v3filenames ->objectName(), _v3filenames ->checkState());
   settings.setValue(_snxtroIntr  ->objectName(), _snxtroIntr  ->currentText());
   settings.setValue(_lcGPS       ->objectName(), _lcGPS       ->currentText());
   settings.setValue(_lcGLONASS   ->objectName(), _lcGLONASS   ->currentText());
@@ -416,7 +419,7 @@ void t_pppWidgets::slotEnableWidgets() {
 //  _audioResponse->setEnabled(false);
   }
 
-  if ( _snxtroFile->text() != "" && !allDisabled) {
+  if ( _snxtroPath->text() != "" && !allDisabled) {
     _snxtroSampl->setEnabled(true);
     _snxtroIntr ->setEnabled(true);
   }
@@ -487,8 +490,8 @@ void t_pppWidgets::slotPPPTextChanged(){
 
   // SNX TRO file sampling
   // ---------------------
-  if (sender() == 0 || sender() == _snxtroFile) {
-    if ( _snxtroFile->text() != "" ) {
+  if (sender() == 0 || sender() == _snxtroPath) {
+    if ( _snxtroPath->text() != "" ) {
       _snxtroSampl->setEnabled(true);
       _snxtroIntr->setEnabled(true);
       _snxtroSampl->setPalette(paletteWhite);
