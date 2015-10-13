@@ -4556,210 +4556,232 @@ The following are proposed 'Multiple Signal Messages' (MSM) under discussion for
 <p>
 The following table shows a list of options contained in BNC's configuration files (default filename: BNC.bnc).
 </p>
+<pre>
+Usage: bnc --nw                       
+           --version                  
+           --display {name}           
+           --conf {confFileName}      
+           --file {rawFileName}       
+           --key  {keyName} {keyValue}
 
-<p><u>Table 2:</u> BNC configuration options<br>
-<table>
-<tr></tr>
-<tr><td><br><b>Internal</b></td><td><br><b>Meaning</b></td></tr>
-<tr><td>startTab</td><td>Top panel index</td></tr>
-<tr><td>statusTab</td><td>Bottom panel index</td></tr>
-<tr><td>font</td><td>Used font</td></tr>
-<tr><td>casterUrlList</td><td>Visited URLs</td></tr>
+Appearance keys:
+           startTab  {Index of top panel to be presented at start time [integer number: 0-17]}
+           statusTab {Index of bottom panel to be presented at start time [integer number: 0-3]}
+           font      {Font specification [character string in quotation marks, example: "Helvetica,14,-1,5,50,0,0,0,0,0"]}
 
-<tr><td><br><b>Network Panel</b></td><td><br><b>Meaning</b></td></tr>
-<tr><td>proxyHost</td><td>Proxy host</td></tr>
-<tr><td>proxyPort</td><td>Proxy port</td></tr>
-<tr><td>sslCaCertPath</td><td>Path to SSL certificates</td></tr>
-<tr><td>ignoreSslErrors</td><td>Ignore ssl authorization errors</td></tr>
+Network Panel keys:
+           proxyHost       {Proxy host, name or IP address [character string]}
+           proxyPort       {Proxy port [integer number]}
+           sslCaCertPath   {Full path to SSL certificates [character string]}
+           ignoreSslErrors {Ignore SSL authorization errors [integer number: 0=no,2=yes]}
 
-<tr><td><br><b>General Panel</b></td><td><br><b>Meaning</b></td></tr>
-<tr><td>logFile</td><td>Logfile (full path)</td></tr>
-<tr><td>rnxAppend</td><td>Append files</td></tr>
-<tr><td>onTheFlyInterval</td><td>Reread configuration</td></tr>
-<tr><td>autoStart</td><td>Auto start</td></tr>
-<tr><td>rawOutFile</td><td>Raw output file (full path)</td></tr>
+General Panel keys:
+           logFile          {Logfile, full path [character string]}
+           rnxAppend        {Append files [integer number: 0=no,2=yes]}
+           onTheFlyInterval {Configuration reload interval [character string: 1 day|1 hour|5 min|1 min]}
+           autoStart        {Auto start [integer number: 0=no,2=yes]}
+           rawOutFile       {Raw output file, full path [character string]}
 
-<tr><td><br><b>RINEX Observations Panel</b></td><td><br><b>Meaning</b></td></tr>
-<tr><td>rnxPath</td><td>Directory</td></tr>
-<tr><td>rnxIntr</td><td>Interval</td></tr>
-<tr><td>rnxSample</td><td>Sampling</td></tr>
-<tr><td>rnxSkel</td><td>Skeleton extension</td></tr>
-<tr><td>rnxOnlyWithSKL</td><td>Skeleton is mandatory</td></tr>
-<tr><td>rnxScript</td><td>Upload script</td></tr>
-<tr><td>rnxV2Priority</td><td>Signal priority</td></tr>
-<tr><td>rnxV3</td><td>Version 3</td></tr>
-<tr><td>rnxV3filenames</td><td>Version 3 filenames</td></tr>
+RINEX Observations Panel keys:
+           rnxPath        {Directory [character string]}
+           rnxIntr        {File interval [character string: 1 min|2 min|5 min|10 min|15 min|30 min|1 hour|1 day]}
+           rnxSampl       {File sampling rate [integer number of seconds: 0,5|10|15|20|25|30|35|40|45|50|55|60]} 
+           rnxSkel        {RINEX skeleton file extension [character string]}
+           rnxOnlyWithSKL {Using RINEX skeleton file is mandatory [integer number: 0=no,2=yes]}
+           rnxScript      {File upload script, full path [character string]}
+           rnxV2Priority  {Priority of signal attributes [character string, list separated by blank character, example: G:CWPX_? R:CP]}
+           rnxV3          {Produce version 3 file contents [integer number: 0=no,2=yes]}
+           rnxV3filenames {Produce version 3 filenames [integer number: 0=no,2=yes]}
 
-<tr><td><br><b>RINEX Ephemeris Panel</b></td><td><br><b>Meaning</b></td></tr>
-<tr><td>ephPath</td><td>Directory</td></tr>
-<tr><td>ephIntr</td><td>Interval</td></tr>
-<tr><td>ephOutPort</td><td>Port</td></tr>
-<tr><td>ephV3</td><td>Version 3</td></tr>
-<tr><td>ephV3filenames</td><td>Version 3 filenames</td></tr>
+RINEX Ephemeris Panel keys:
+           ephPath        {Directory [character string]}
+           ephIntr        {File interval [character string: 1 min|2 min|5 min|10 min|15 min|30 min|1 hour|1 day]}
+           ephOutPort     {Output port [integer number]}
+           ephV3          {Produce version 3 file contents [integer number: 0=no,2=yes]}
+           ephV3filenames {Produce version 3 filenames [integer number: 0=no,2=yes]}
 
-<tr><td><br><b>RINEX Editing and QC Panel</b></td><td><br><b>Meaning</b></td></tr>
-<tr><td>reqcAction</td><td>Action
-<tr><td>reqcObsFile</td><td>Input observations file
-<tr><td>reqcNavFile</td><td>Input navigation file
-<tr><td>reqcOutObsFile</td><td>Output observations file
-<tr><td>reqcOutNavFile</td><td>Output navigation file
-<tr><td>reqcOutLogFile</td><td>Output logfile
-<tr><td>reqcLogSummaryOnly</td><td>Summary output logfile
-<tr><td>reqcSkyPlotSignals</td><td>Plots for signals 
-<tr><td>reqcPlotDir</td><td>QC plots directory
-<tr><td>reqcRnxVersion</td><td>RINEX version
-<tr><td>reqcSampling</td><td>RINEX sampling
-<tr><td>reqcV2Priority</td><td>Version 2 signal priority
-<tr><td>reqcStartDateTime</td><td>Start time
-<tr><td>reqcEndDateTime</td><td>Stop time
-<tr><td>reqcRunBy</td><td>Operators name
-<tr><td>reqcUseObsTypes</td><td>Use observation types
-<tr><td>reqcComment</td><td>Additional comments
-<tr><td>reqcOldMarkerName</td><td>Old marker name
-<tr><td>reqcNewMarkerName</td><td>New marker name
-<tr><td>reqcOldAntennaName</td><td>Old antenna name
-<tr><td>reqcNewAntennaName</td><td>New antenna name
-<tr><td>reqcOldAntennaNumber</td><td>Old antenna number
-<tr><td>reqcNewAntennaNumber</td><td>New antenna number
-<tr><td>reqcOldAntennadN</td><td>Old north eccentritity
-<tr><td>reqcNewAntennadN</td><td>New north eccentricity
-<tr><td>reqcOldAntennadE</td><td>Old east eccentricity
-<tr><td>reqcNewAntennadE</td><td>New east eccentricity
-<tr><td>reqcOldAntennadU</td><td>Old up eccentritity
-<tr><td>reqcNewAntennadU</td><td>New up eccentricity
-<tr><td>reqcOldReceiverName</td><td>Old receiver name
-<tr><td>reqcNewReceiverName</td><td>New receiver name
-<tr><td>reqcOldReceiverNumber</td><td>Old receiver number
-<tr><td>reqcNewReceiverNumber</td><td>New receiver number
+RINEX Editing and QC Panel keys:
+           reqcAction            {Action specification [character string:  Blank|Edit/Concatenate|Analyze]}
+           reqcObsFile           {Input observations file(s), full path [character string, comma separated list in quotation marks]}
+           reqcNavFile           {Input navigation file(s), full path [character string, comma separated list in quotation marks]}
+           reqcOutObsFile        {Output observations file, full path [character string]}
+           reqcOutNavFile        {Output navigation file, full path [character string]}
+           reqcOutLogFile        {Output logfile, full path [character string]}
+           reqcLogSummaryOnly    {Output only summary of logfile [integer number: 0=no,2=yes]}
+           reqcSkyPlotSignals    {Observation signals [character string, list separated by blank character, example: C:2&7 E:1&5 G:1&2 J:1&2 R:1&2 S:1&5]}
+           reqcPlotDir           {QC plots directory [character string]}
+           reqcRnxVersion        {RINEX version [integer number: 2|3]}
+           reqcSampling          {RINEX output file sampling rate [integer number of seconds: 0|5|10|15|20|25|30|35|40|45|50|55|60]}
+           reqcV2Priority        {Version 2 priority of signal attributes [character string, list separated by blank character, example: G:CWPX_? R:CP]}
+           reqcStartDateTime     {Start time [character string, example: 1967-11-02T00:00:00]}
+           reqcEndDateTime       {Stop time [character string, example: 2099-01-01T00:00:00 }
+           reqcRunBy             {Operators name [character string]}
+           reqcUseObsTypes       {Use observation types [character string, list separated by blank character, example: G:C1C G:L1C R:C1C RC1P]}
+           reqcComment           {Additional comments [character string]}
+           reqcOldMarkerName     {Old marker name [character string]}
+           reqcNewMarkerName     {New marker name [character string]}
+           reqcOldAntennaName    {Old antenna name [character string]}
+           reqcNewAntennaName    {New antenna name [character string]}
+           reqcOldAntennaNumber  {Old antenna number [character string]}
+           reqcNewAntennaNumber  {New antenna number [character string]}
+           reqcOldAntennadN      {Old north eccentritity [character string]}
+           reqcNewAntennadN      {New north eccentricity [character string]}
+           reqcOldAntennadE      {Old east eccentricity [character string]}
+           reqcNewAntennadE      {New east eccentricity [character string]}
+           reqcOldAntennadU      {Old up eccentricity [character string]}
+           reqcNewAntennadU      {New up eccentricity [character string]}
+           reqcOldReceiverName   {Old receiver name [character string]}
+           reqcNewReceiverName   {New receiver name [character string]}
+           reqcOldReceiverNumber {Old receiver number [character string]}
+           reqcNewReceiverNumber {New receiver number [character string]}
 
-<tr><td><br><b>SP3 Comparison Panel</b></td><td><br><b>Meaning</b></td></tr>
-<tr><td>sp3CompFile</td><td>SP3 input files
-<tr><td>sp3CompExclude</td><td>Satellite exclusion list 
-<tr><td>sp3CompOutLogFile</td><td>Output logfile
+SP3 Comparison Panel keys:
+           sp3CompFile       {SP3 input files, full path [character string, comma separated list in quotation marks]}
+           sp3CompExclude    {Satellite exclusion list [character string, comma separated list in quotation marks, example: "G04,G31,R"]}
+           sp3CompOutLogFile {Output logfile, full path [character string]}
 
-<tr><td><br><b>Broadcast Corrections Panel</b></td><td><br><b>Meaning</b></td></tr>
-<tr><td>corrPath</td><td>Directory, ASCII </td></tr>
-<tr><td>corrIntr</td><td>Interval</td></tr>
-<tr><td>corrPort</td><td>Port</td></tr>
+Broadcast Corrections Panel keys:
+           corrPath {Directory for saving files in ASCII format [character string]}
+           corrIntr {File interval [character string: 1 min|2 min|5 min|10 min|15 min|30 min|1 hour|1 day]}
+           corrPort {Output port [integer number]}
 
-<tr><td><br><b>Feed Engine Panel</b></td><td><br><b>Meaning</b></td></tr>
-<tr><td>outPort</td><td>Port</td></tr>
-<tr><td>outWait</td><td>Wait for full obs epoch</td></tr>
-<tr><td>outSampl</td><td>Sampling</td></tr>
-<tr><td>outFile</td><td>File (full path)</td></tr>
-<tr><td>outUPort</td><td>Port (unsynchronized)</td></tr>
+Feed Engine Panel keys:
+           outPort  {Output port, synchronized [integer number]}
+           outWait  {Wait for full observation epoch [integer number of seconds: 1-30]}
+           outSampl {Sampling rate [integer number of seconds: 0|5|10|15|20|25|30|35|40|45|50|55|60]}
+           outFile  {Output file, full path [character string]}
+           outUPort {Output port, unsynchronized [integer number]}
 
-<tr><td><br><b>Serial Output Panel</b></td><td><br><b>Meaning</b></td></tr>
-<tr><td>serialMountPoint</td><td>Mountpoint</td></tr>
-<tr><td>serialPortName</td><td>Port name</td></tr>
-<tr><td>serialBaudRate</td><td>Baud rate</td></tr>
-<tr><td>serialFlowControl</td><td>Flow control</td></tr>
-<tr><td>serialDataBits</td><td>Data bits</td></tr>
-<tr><td>serialParity</td><td>Parity</td></tr>
-<tr><td>serialStopBits</td><td>Stop bits</td></tr>
-<tr><td>serialAutoNMEA</td><td>NMEA</td></tr>
-<tr><td>serialFileNMEA</td><td>NMEA filename</td></tr>
-<tr><td>serialHeightNMEA</td><td>Height</td></tr>
-<tr><td>serialHeightSampling</td><td>Sampling</td></tr>
+Serial Output Panel:
+           serialMountPoint         {Mountpoint [character string]}
+           serialPortName           {Port name [character string]}
+           serialBaudRate           {Baud rate [integer number: 110|300|600|1200|2400|4800|9600|19200|38400|57600|115200]}
+           serialFlowControl        {Flow control [character string: OFF|XONXOFF|HARDWARE}
+           serialDataBits           {Data bits [integer number: 5|6|7|8]}
+           serialParity             {Parity [character string: NONE|ODD|EVEN|SPACE]}
+           serialStopBits           {Stop bits [integer number: 1|2]}
+           serialAutoNMEA           {NMEA specification [character string: no|Auto|Manual GPGGA|Manual GNGGA]}
+           serialFileNMEA           {NMEA filename, full path [character string]}
+           serialHeightNMEA         {Height [floating-point number]}
+           serialHeightNMEASampling {Sampling rate [integer number of seconds: 0|10|20|30|...|280|290|300]}
 
-<tr><td><br><b>Outages Panel</b></td><td><br><b>Meaning</b></td></tr>
-<tr><td>adviseObsRate</td><td>Observation rate</td></tr>
-<tr><td>adviseFail</td><td>Failure threshold</td></tr>
-<tr><td>adviseReco</td><td>Recovery threshold</td></tr>
-<tr><td>adviseScript</td><td>Script (full path)</td></tr>
+Outages Panel keys:
+           adviseObsRate {Stream observation rate [character string: 0.1 Hz|0.2 Hz|0.5 Hz|1 Hz|5 Hz]} 
+           adviseFail    {Failure threshold [integer number of minutes: 0-60]}
+           adviseReco    {Recovery threshold [integer number of minutes: 0-60]}
+           adviseScript  {Advisory script, full path [character string]}
 
-<tr><td><br><b>Miscellaneous</b></td><td><br><b>Meaning</b></td></tr>
-<tr><td>miscMount</td><td>Mountpoint</td></tr>
-<tr><td>miscIntr</td><td>Log latency</td></tr>
-<tr><td>miscScanRTCM</td><td>Scan RTCM</td></tr>
-<tr><td>miscPort</td><td>Port, output</td></tr>
+Miscellaneous Panel keys:
+           miscMount    {Mountpoint [character string]}
+           miscIntr     {Interval for logging latency [character string: Blank|2 sec|10 sec|1 min|5 min|15 min|1 hour|6 hours|1 day]}
+           miscScanRTCM {Scan for RTCM message numbers [integer number: 0=no,2=yes]}
+           miscPort     {Output port [integer number]}
 
-<tr><td><br><b>PPP Client Panel 1</b></td><td><br><b>Meaning</b></td></tr>
-<tr><td>dataSource</td><td>Switch between real-time and post processing</td></tr>
-<tr><td>rinexObs</td><td>RINEX observation file</td></tr>
-<tr><td>rinexNav</td><td>RINEX navigation file</td></tr>
-<tr><td>corrMount</td><td>Corrections mountpoint</td></tr>
-<tr><td>corrFile</td><td>Corrections file</td></tr>
-<tr><td>crdFile</td><td>Coordinates file</td></tr>
-<tr><td>logFilePPP</td><td>PPP logfile</td></tr>
-<tr><td>antexFile</td><td>ANTEX file</td></tr>
-<tr><td>nmeaFile</td><td>NMEA output file</td></tr>
-<tr><td>snxtroFile</td><td>SINEX troposphere output filename</td></tr>
-<tr><td>snxtroIntr</td><td>SINEX troposphere file interval</td></tr>
-<tr><td>snxtroSampl</td><td>SINEX troposphere sampling rate</td></tr>
+PPP Client Panel 1 keys:
+           PPP/dataSource  {Data source [character string: Blank|Real-Time Streams|RINEX Files]}
+           PPP/rinexObs    {RINEX observation file, full path [character string]}
+           PPP/rinexNav    {RINEX navigation file, full path [character string]}
+           PPP/corrMount   {Corrections mountpoint [character string]}
+           PPP/corrFile    {Corrections file, full path [character string]}
+           PPP/crdFile     {Coordinates file, full path [character string]}
+           PPP/logPath     {Directory for PPP log files [character string]}
+           PPP/antexFile   {ANTEX file, full path [character string]}
+           PPP/nmeaPath    {Directory for NMEA output files [character string]}
+           PPP/snxtroPath  {Directory for SINEX troposphere output files [character string]}
+           PPP/v3filenames {Produce version 3 filenames, 0=no,2=yes}
+           PPP/snxtroIntr  {SINEX troposphere file interval [character string: 1 min|2 min|5 min|10 min|15 min|30 min|1 hour|1 day]}
+           PPP/snxtroSampl {SINEX troposphere file sampling rate [integer number of seconds: 0|30|60|90|120|150|180|210|240|270|300]}
 
-<tr><td><br><b>PPP Client Panel 2</b></td><td><br><b>Meaning</b></td></tr>
-<tr><td>staTable</td><td>Stations table</td></tr>
+PPP Client Panel 2 keys:
+           PPP/staTable {Station specifications table [character string, semicolon separated list, each element in quotaion marks, example:
+                        "FFMJ1,100.0,100.0,100.0,100.0,100.0,100.0,0.1,3e-6,7777";"CUT07,100.0,100.0,100.0,100.0,100.0,100.0,0.1,3e-6,7778"]}
 
-<tr><td><br><b>PPP Client Panel 3</b></td><td><br><b>Meaning</b></td></tr>
-<tr><td>lcGPS</td><td>Linear combination from GPS code data</td></tr>
-<tr><td>lcGLONASS</td><td>Linear combination from GLONASS code data</td></tr>
-<tr><td>lcGalileo</td><td>Linear combination from Galileo code data</td></tr>
-<tr><td>lcBDS</td><td>Linear combination from BDS code data</td></tr>
-<tr><td>sigmaC1</td><td>Sigma for code observations</td></tr>
-<tr><td>sigmaL1</td><td>Sigma for phase observations</td></tr>
-<tr><td>maxResC1</td><td>Maximal residuum for code observations</td></tr>
-<tr><td>maxResL1</td><td>Maximal residuum for phase observations</td></tr>
-<tr><td>eleWgtCode</td><td>Elevation dependent waiting of code observations</td></tr>
-<tr><td>eleWgtPhase</td><td>Elevation dependent waiting of phase observations</td></tr>
-<tr><td>minObs</td><td>Minimum number of observations</td></tr>
-<tr><td>minEle</td><td>Minimum elevation</td></tr>
-<tr><td>corrWaitTime</td><td>Wait for clock corrections</td></tr>
-<tr><td>seedingTime</td><td>Seeding time span for Quick Start</td></tr>
+PPP Client Panel 3 keys:
+           PPP/lcGPS        {Select linear combination from GPS code or phase data [character string; P3|P3&L3]}
+           PPP/lcGLONASS    {Select linear combination from GLONASS code or phase data [character string: no|P3|L3|P3&L3]}
+           PPP/lcGalileo    {Select linear combination from Galileo code or phase data [character string: no|P3|L3|P3&L3]}
+           PPP/lcBDS        {Select linear combination from BDS code or phase data [character string: no|P3|L3|P3&L3]}
+           PPP/sigmaC1      {Sigma for code observations in meters [floating-point number]}
+           PPP/sigmaL1      {Sigma for phase observations in meters [floating-point number]}
+           PPP/maxResC1     {Maximal residuum for code observations in meters [floating-point number]}
+           PPP/maxResL1     {Maximal residuum for phase observations in meters [floating-point number]}
+           PPP/eleWgtCode   {Elevation dependent waiting of code observations [integer number: 0=no,2=yes]}
+           PPP/eleWgtPhase  {Elevation dependent waiting of phase observations [integer number: 0=no,2=yes]}
+           PPP/minObs       {Minimum number of observations [integer number: 4|5|6]}
+           PPP/minEle       {Minimum satellite elevation in degrees [integer number: 0-20]}
+           PPP/corrWaitTime {Wait for clock corrections [integer number of seconds: no|1-20]}
+           PPP/seedingTime  {Seeding time span for Quick Start [integer number of seconds]}
 
-<tr><td><br><b>PPP Client Panel 4</b></td><td><br><b>Meaning</b></td></tr>
-<tr><td>plotCoordinates</td><td>Mountpoint for time series plot</td></tr>
-<tr><td>audioResponse</td><td>Audio response</td></tr>
-<tr><td>useOpenStreetMap</td><td>OSM track map</td></tr>
-<tr><td>useGoogleMap</td><td>Google track map</td></tr>
-<tr><td>mapWinDotSize</td><td>Size of dots on map</td></tr>
-<tr><td>mapWinDotColor</td><td>Color of dots and cross hair on map</td></tr>
-<tr><td>mapSpeedSlider</td><td>Offline processing speed for mapping</td></tr>
+PPP Client Panel 4 keys:
+           PPP/plotCoordinates  {Mountpoint for time series plot [character string]}
+           PPP/audioResponse    {Audio response threshold in meters [floating-point number]}
+           PPP/useOpenStreetMap {OSM track map [character string: true|false]}
+           PPP/useGoogleMap     {Google track map [character string: true|false]}
+           PPP/mapWinDotSize    {Size of dots on map [integer number: 0-10]}
+           PPP/mapWinDotColor   {Color of dots and cross hair on map [character string: red|yellow]}
+           PPP/mapSpeedSlider   {Offline processing speed for mapping [integer number: 1-100]}
 
-<tr><td><br><b>Combine Corrections Panel</b></td><td><br><b>Meaning</b></td></tr>
-<tr><td>combineStreams</td><td>Table of correction streams</td></tr>
-<tr><td>cmbMethodFilter</td><td>Approach</td></tr>
-<tr><td>cmbMaxres</td><td>Clock outlier threshold</td></tr>
-<tr><td>cmbSampl</td><td>Orbit and clock sampling</td></tr>
-<tr><td>cmbUseGlonass</td><td>Use GLONASS in combination</td></tr>
+Combine Corrections Panel keys:
+           cmbStreams      {Correction streams table [character string, semicolon separated list, each element in quotation marks, example:
+                           "IGS01 ESA 1.0";"IGS03 BKG 1.0"]}
+           cmbMethodFilter {Combination approach [character string: Single-Epoch|Filter]
+           cmbMaxres       {Clock outlier residuum threshold in meters [floating-point number]
+           cmbSampl        {Clock sampling rate [integer number of seconds: 10|20|30|40|50|60]}
+           cmbUseGlonass   {Use GLONASS in combination [integer number: 0=no,2=yes]
 
-<tr><td><br><b>Upload Corrections Panel</b></td><td><br><b>Meaning</b></td></tr>
-<tr><td>uploadMountpointsOut</td><td>Upload corrections table</td></tr>
-<tr><td>uploadIntr</td><td>File interval</td></tr>
-<tr><td>uploadSamplRtcmEphCorr</td><td>Orbit sampling</td></tr>
-<tr><td>uploadSamplSp3</td><td>Orbit sampling</td></tr>
-<tr><td>uploadSamplClkRnx</td><td>Clock sampling</td></tr>
+Upload Corrections Panel keys:
+           uploadMountpointsOut   {Upload corrections table [character string, semicolon separated list, each element in quotation marks, example:
+                                  "www.igs-ip.net,2101,IGS01,pass,IGS08,0,/home/user/BNC$[GPSWD}.sp3,/home/user/BNC$[GPSWD}.clk,258,1,0,0 byte(s)";
+                                  "www.euref-ip.net,2101,EUREF01,pass,ETRF2000,0,,,258,2,0,0 byte(s)"]}
+           uploadIntr             {Length of SP3 and Clock RINEX file interval [character string: 1 min|2 min|5 min|10 min|15 min|30 min|1 hour|1 day]}
+           uploadSamplRtcmEphCorr {Orbit corrections stream sampling rate [integer number of seconds: 0|5|10|15|20|25|30|35|40|45|50|55|60]}
+           uploadSamplSp3         {SP3 file sampling rate [integer number of minutes: 0-15]}
+           uploadSamplClkRnx      {Clock RINEX file sampling rate [integer number of seconds: 0|5|10|15|20|25|30|35|40|45|50|55|60]}
 
-<tr><td><br><b>Custom Trafo</b></td><td><br><b>Meaning</b></td></tr>
-<tr><td>trafo_dx</td><td>Translation X</td></tr>
-<tr><td>trafo_dy</td><td>Translation Y</td></tr>
-<tr><td>trafo_dz</td><td>Translation Z</td></tr>
-<tr><td>trafo_dxr</td><td>Translation change X</td></tr>
-<tr><td>trafo_dyr</td><td>Translation change Y</td></tr>
-<tr><td>trafo_dzr</td><td>Translation change Z</td></tr>
-<tr><td>trafo_ox</td><td>Rotation X</td></tr>
-<tr><td>trafo_oy</td><td>Rotation Y</td></tr>
-<tr><td>trafo_oz</td><td>Rotation Z</td></tr>
-<tr><td>trafo_oxr</td><td>Rotation change X</td></tr>
-<tr><td>trafo_oyr</td><td>Rotation change Y</td></tr>
-<tr><td>trafo_ozr</td><td>Rotation change Z</td></tr>
-<tr><td>trafo_sc</td><td>Scale</td></tr>
-<tr><td>trafo_scr</td><td>Scale change</td></tr>
-<tr><td>trafo_t0</td><td>Reference year</td></tr>
+Custom Trafo keys:
+           trafo_dx  {Translation X in meters [floating-point number]
+           trafo_dy  {Translation Y in meters [floating-point number]
+           trafo_dz  {Translation Z in meters [floating-point number]
+           trafo_dxr {Translation change X in meters per year [floating-point number]
+           trafo_dyr {Translation change Y in meters per year [floating-point number]
+           trafo_dzr {Translation change Z in meters per year [floating-point number]
+           trafo_ox  {Rotation X in arcsec [floating-point number]}
+           trafo_oy  {Rotation Y in arcsec [floating-point number]}
+           trafo_oz  {Rotation Z in arcsec [floating-point number]}
+           trafo_oxr {Rotation change X in arcsec per year [floating-point number]}
+           trafo_oyr {Rotation change Y in arcsec per year [floating-point number]}
+           trafo_ozr {Rotation change Z in arcsec per year [floating-point number]}
+           trafo_sc  {Scale [10^-9, floating-point number]}
+           trafo_scr {Scale change [10^-9 per year, floating-point number]}
+           trafo_t0  {Reference year [integer number]}
 
-<tr><td><br><b>Upload Ephemeris Panel</b></td><td><br><b>Meaning</b></td></tr>
-<tr><td>uploadEphHost</td><td>Host</td></tr>
-<tr><td>uploadEphPort</td><td>Port</td></tr>
-<tr><td>uploadEphMountpoint</td><td>Mountpoint</td></tr>
-<tr><td>uploadEphPassword</td><td>Password</td></tr>
-<tr><td>uploadEphSample</td><td>Sampling</td></tr>
+Upload Ephemeris Panel keys:
+           uploadEphHost       {Broadcaster host, name or IP address [character string]}
+           uploadEphPort       {Broadcaster port [integer number]}
+           uploadEphMountpoint {Mountpoint [character string]}
+           uploadEphPassword   {Stream upload password [character string]}
+           uploadEphSample     {Stream upload sampling rate [integer number of seconds: 5|10|15|20|25|30|35|40|45|50|55|60]}
 
-<tr><td><br><b>Add Stream</b></td><td><br><b>Meaning</b></td></tr>
-<tr><td>mountPoints</td><td>Mountpoints list</td></tr>
-<tr><td>ntripVersion</td><td>Ntrip Version</td></tr>
-</table>
-</p>
+Add Stream keys:
+           mountPoints   {Mountpoints [character string, semicolon separated list, example:
+                         //user:pass@www.igs-ip.net:2101/FFMJ1 RTCM_3.1 DEU 50.09 8.66 no 2;
+                         //user:pass@www.igs-ip.net:2101/FFMJ2 RTCM_3.1 DEU 50.09 8.66 no 2}
+           ntripVersion  {Ntrip Version [character string: 1|2|2s|R|U]}
+           casterUrlList {Visited Broadcasters [character string, comma separated list]}
 
+Note:
+Configuration options which contain one or more blank characters must be enclosed by quotation marks when specified on command line.
+
+Examples command lines:
+(1) /home/weber/bin/bnc
+(2) /Applications/bnc.app/Contents/MacOS/bnc
+(3) /home/weber/bin/bnc --conf /home/weber/MyConfigFile.bnc
+(4) bnc --conf /Users/weber/.config/BKG/BNC.bnc -nw
+(5) bnc --conf /dev/null --key startTab 4 --key reqcAction Edit/Concatenate --key reqcObsFile AGAR.15O --key reqcOutObsFile AGAR_X.15O --key reqcRnxVersion 2 --key reqcSampling 30 --key reqcV2Priority CWPX_?
+(6) bnc --key mountPoints "//user:pass@mgex.igs-ip.net:2101/CUT07 RTCM_3.0 ETH 9.03 38.74 no 2;//user:pass@www.igs-ip.net:2101/FFMJ1 RTCM_3.1 DEU 50.09 8.66 no 2"
+(7) bnc --key cmbStreams "CLK11 BLG 1.0;CLK93 CNES 1.0"
+(8) bnc --key PPP/staTable "FFMJ1,100.0,100.0,100.0,100.0,100.0,100.0,0.1,3e-6,7777;CUT07,100.0,100.0,100.0,100.0,100.0,100.0,0.1,3e-6,7778"
+</pre>
 <p><a name="links"><h4>3.4 Further Reading</h3></p>
 
 <table>
