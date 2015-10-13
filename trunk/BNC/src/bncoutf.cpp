@@ -11,7 +11,7 @@
  *
  * Created:    25-Apr-2008
  *
- * Changes:    
+ * Changes:
  *
  * -----------------------------------------------------------------------*/
 
@@ -38,8 +38,8 @@ bncoutf::bncoutf(const QString& sklFileName, const QString& intr, int sampl) {
     QFileInfo fileInfo(sklFileName);
     _path        = fileInfo.absolutePath() + QDir::separator();
     _sklBaseName = fileInfo.baseName();
-    _extension   = fileInfo.completeSuffix(); 
-    
+    _extension   = fileInfo.completeSuffix();
+
     expandEnvVar(_path);
     if (!_extension.isEmpty()) {
       _extension = "." + _extension;
@@ -47,6 +47,7 @@ bncoutf::bncoutf(const QString& sklFileName, const QString& intr, int sampl) {
   }
 
   _append = Qt::CheckState(settings.value("rnxAppend").toInt()) == Qt::Checked;
+  _v3filenames = settings.value("PPP/v3filenames").toBool();
 }
 
 // Destructor
@@ -63,37 +64,73 @@ void bncoutf::closeFile() {
 
 // Epoch String
 ////////////////////////////////////////////////////////////////////////////
-QString bncoutf::epochStr(const QDateTime& datTim, const QString& intStr) {
+QString bncoutf::epochStr(const QDateTime& datTim, const QString& intStr,
+    int sampl) {
 
-  QString epoStr;
+  QString epoStr = "";
 
   int indHlp = intStr.indexOf("min");
+  if (!sampl) {
+    sampl++;
+  }
 
   if ( indHlp != -1) {
     int step = intStr.left(indHlp-1).toInt();
-    char ch = 'A' + datTim.time().hour();
-    epoStr = QString("_") + ch;
+    if (_v3filenames) {
+      epoStr +=  QString("%1").arg(datTim.time().hour(), 2, 10, QChar('0')); // H
+    } else {
+      epoStr +=  'A' + datTim.time().hour();
+    }
+
     if (datTim.time().minute() >= 60-step) {
-      epoStr += QString("%1").arg(60-step, 2, 10, QChar('0'));
+      epoStr += QString("%1").arg(60-step, 2, 10, QChar('0'));               // M
     }
     else {
       for (int limit = step; limit <= 60-step; limit += step) {
         if (datTim.time().minute() < limit) {
-          epoStr += QString("%1").arg(limit-step, 2, 10, QChar('0'));
+          epoStr += QString("%1").arg(limit-step, 2, 10, QChar('0'));        // M
           break;
         }
       }
     }
+
+    if (_v3filenames) {
+      epoStr += QString("_%1M").arg(step, 2, 10, QChar('0'));                // period
+    }
+
     _numSec = 60 * step;
   }
   else if (intStr == "1 hour") {
-    char ch = 'A' + datTim.time().hour();
-    epoStr = QString("_") + ch;
+    int step = intStr.left(indHlp-1).toInt();
+    if (_v3filenames) {
+      epoStr += QString("%1").arg(datTim.time().hour(), 2, 10, QChar('0'));  // H
+      epoStr += QString("%1").arg(0, 2, 10, QChar('0'));                     // M
+      epoStr += QString("_%1H").arg(step+1, 2, 10, QChar('0'));              // period
+    } else {
+      epoStr +=  'A' + datTim.time().hour();
+    }
     _numSec = 3600;
   }
   else {
-    epoStr = "";
+    int step = intStr.left(indHlp-1).toInt();
+    if (_v3filenames) {
+      epoStr += QString("%1").arg(0, 2, 10, QChar('0'));                    // H
+      epoStr += QString("%1").arg(0, 2, 10, QChar('0'));                    // M
+      epoStr += QString("_%1D").arg(step+1, 2, 10, QChar('0'));             // period
+    } else {
+      epoStr = "0";
+    }
     _numSec = 86400;
+  }
+
+  if (_v3filenames) {
+    if (sampl < 60) {
+      epoStr += QString("_%1S").arg(sampl, 2, 10, QChar('0'));
+    }
+    else {
+      sampl /= 60;
+      epoStr += QString("_%1M").arg(sampl, 2, 10, QChar('0'));
+    }
   }
 
   return epoStr;
@@ -110,14 +147,13 @@ QString bncoutf::resolveFileName(int GPSweek, const QDateTime& datTim) {
   int dayOfYear = datTim.date().dayOfYear();
 
   QString yyyy     = QString::number(datTim.date().year());
-  QString doy      = QString("%1%2").arg(dayOfYear,3,10, QLatin1Char('0')).arg(0);
+  QString doy      = QString("%1").arg(dayOfYear,3,10, QLatin1Char('0'));
   QString gpswd    = QString("%1%2").arg(GPSweek).arg(dayOfWeek);
-  QString epoStr   = epochStr(datTim, _intr);
-  QString baseName = _sklBaseName; 
+  QString epoStr   = epochStr(datTim, _intr, _sampl);
+  QString baseName = _sklBaseName;
   baseName.replace("${GPSWD}", gpswd);
-  baseName.replace("${DATE}" , datTim.date().toString(Qt::ISODate));
-  baseName.replace("${DOY}"  , doy);
-  _extension.replace("${YY}" , yyyy.right(2));
+  baseName.replace("${V3}" , QString("_U_%1%2").arg(yyyy).arg(doy));
+
   return _path + baseName + epoStr + _extension;
 }
 

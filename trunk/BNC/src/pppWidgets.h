@@ -43,11 +43,12 @@ class t_pppWidgets : public QObject {
   qtFileChooser* _corrFile;
   qtFileChooser* _crdFile;
   qtFileChooser* _antexFile;
-  QLineEdit*     _logFile;
-  QLineEdit*     _nmeaFile;
-  QLineEdit*     _snxtroFile;
+  QLineEdit*     _logPath;
+  QLineEdit*     _nmeaPath;
+  QLineEdit*     _snxtroPath;
   QSpinBox*      _snxtroSampl;
   QComboBox*     _snxtroIntr;
+  QCheckBox*     _v3filenames;
   QTableWidget*  _staTable;
   QComboBox*     _lcGPS;
   QComboBox*     _lcGLONASS;
