@@ -249,7 +249,6 @@ QString bncRinex::nextEpochStr(const QDateTime& datTim,
       }
     }
     if (rnxV3filenames) {
-      epoStr += QString("%1").arg(0, 2, 10, QChar('0'));                     // S
       epoStr += QString("_%1M").arg(step, 2, 10, QChar('0'));                // period
     }
   }
@@ -258,7 +257,6 @@ QString bncRinex::nextEpochStr(const QDateTime& datTim,
     if (rnxV3filenames) {
       epoStr += QString("%1").arg(datTim.time().hour(), 2, 10, QChar('0'));  // H
       epoStr += QString("%1").arg(0, 2, 10, QChar('0'));                     // M
-      epoStr += QString("%1").arg(0, 2, 10, QChar('0'));                     // S
       epoStr += QString("_%1H").arg(step+1, 2, 10, QChar('0'));              // period
     } else {
       epoStr +=  'A' + datTim.time().hour();
@@ -277,7 +275,6 @@ QString bncRinex::nextEpochStr(const QDateTime& datTim,
     if (rnxV3filenames) {
       epoStr += QString("%1").arg(0, 2, 10, QChar('0'));                    // H
       epoStr += QString("%1").arg(0, 2, 10, QChar('0'));                    // M
-      epoStr += QString("%1").arg(0, 2, 10, QChar('0'));                    // S
       epoStr += QString("_%1D").arg(step+1, 2, 10, QChar('0'));             // period
     } else {
       epoStr = "0";

@@ -303,7 +303,7 @@ void t_bncCore::printEphHeader() {
                           "_S_" +     // stream
                           QString("%1").arg(datTim.date().year()) +
                           QString("%1").arg(datTim.date().dayOfYear(), 3, 10, QChar('0')) +
-                          hlpStr +   // HMS_period
+                          hlpStr +   // HM_period
                           "_MN.rnx"; // mixed BRDC
       }
       else { // RNX v3 with old filenames
