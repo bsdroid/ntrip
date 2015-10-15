@@ -561,7 +561,7 @@ The following sections present information on how the BNC configuration works an
 <p>
 As a default, configuration files for running BNC on Unix/Linux/Mac OS X systems are saved in directory '${HOME}/.config/BKG'. On Windows systems, they are typically saved in directory 'C:/Documents and Settings/Username/.config/BKG'. The default configuration filename is 'BNC.bnc'.</p>
 <p>
-The default filename 'BNC.bnc' can be changed and the file contents can easily be edited. On graphical user interfaces it is possible to Drag &amp; Drop a configuration file icon to start BNC (not on Mac OS X systems). Some configuration options can be changed on-the-fly. See annexed 'Command Line Help' for a complete set of configuration options. It is also possible to start and configure BNC via command line.
+The default filename 'BNC.bnc' can be changed and the file contents can easily be edited. On graphical user interfaces it is possible to Drag &amp; Drop a configuration file icon to start BNC (not on Mac OS X systems). It is also possible to start and configure BNC via command line. Some configuration options can be changed on-the-fly. See annexed 'Command Line Help' for a complete set of configuration options. 
 </p>
 
 <p>
@@ -4113,7 +4113,7 @@ where &lt;keyName&gt; stands for the name of an option contained in the configur
 Configuration options which are part of the configuration files PPP section must be prefixed by 'PPP/'. As an example, option 'minObs' from the PPP section of the BNC configuration file would be specified as 'PPP/minObs' on a command line.
 </p>
 <p>
-Values for configuration options can be introduced via command line exactly as they show up in the configuration file. However, any value containing one or more blank characters must be enclosed by quotation marks when specified on the command line. 
+Values for configuration options can be introduced via command line exactly as they show up in the configuration file. However, any value containing one or more blank characters must be enclosed by quotation marks when specified on command line. 
 </p>
 
 <p><a name="annex"><h3>3. Annex</h3></p>
@@ -4288,6 +4288,7 @@ Values for configuration options can be introduced via command line exactly as t
 [Add] SINEX Troposphere file output<br>
 [Add] String for Operating System in logfile output<br>
 [Add] Full integration of 'rtcm3torinex'<br>
+[Add] Extended command lile help<br>
 </td>
 </tr>
 
@@ -4543,7 +4544,7 @@ The following are proposed 'Multiple Signal Messages' (MSM) under discussion for
 <p><a name="confList"><h4>3.3 Command Line Help</h3></p>
 
 <p>
-The following table shows a list of options contained in BNC's configuration files (default filename: BNC.bnc).
+Command line option '--help' provides a complete list of all configuration parameters which can be specified via command line. Note that command line options overrule configuration options specified in the configuration file. The following is the output produce when running BNC with command line option '--help':
 </p>
 <pre>
 Usage:
@@ -4567,11 +4568,11 @@ Network Panel keys:
    ignoreSslErrors {Ignore SSL authorization errors [integer number: 0=no,2=yes]}
 
 General Panel keys:
-   logFile     {Logfile, full path [character string]}
-   rnxAppend   {Append files [integer number: 0=no,2=yes]}
-   FlyInterval {Configuration reload interval [character string: 1 day|1 hour|5 min|1 min]}
-   autoStart   {Auto start [integer number: 0=no,2=yes]}
-   rawOutFile  {Raw output file, full path [character string]}
+   logFile          {Logfile, full path [character string]}
+   rnxAppend        {Append files [integer number: 0=no,2=yes]}
+   onTheFlyInterval {Configuration reload interval [character string: 1 day|1 hour|5 min|1 min]}
+   autoStart        {Auto start [integer number: 0=no,2=yes]}
+   rawOutFile       {Raw output file, full path [character string]}
 
 RINEX Observations Panel keys:
    rnxPath        {Directory [character string]}
