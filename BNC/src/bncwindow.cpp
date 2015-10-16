@@ -173,9 +173,9 @@ bncWindow::bncWindow() {
           this, SLOT(slotBncTextChanged()));
 
   _sslCaCertPathLineEdit   = new QLineEdit(settings.value("sslCaCertPath").toString());
-  _ignoreSslErrorsCheckBox = new QCheckBox();
-  _ignoreSslErrorsCheckBox->setCheckState(Qt::CheckState(
-                                          settings.value("ignoreSslErrors").toInt()));
+  _sslIgnoreErrorsCheckBox = new QCheckBox();
+  _sslIgnoreErrorsCheckBox->setCheckState(Qt::CheckState(
+                                          settings.value("sslIgnoreErrors").toInt()));
 
   // General Options
   // ---------------
@@ -645,7 +645,7 @@ bncWindow::bncWindow() {
   pLayout->addWidget(_sslCaCertPathLineEdit,                                 3, 1, 1,10);
   pLayout->addWidget(new QLabel("Default:  " + bncSslConfig::defaultPath()), 3,11, 1,20);
   pLayout->addWidget(new QLabel("Ignore SSL authorization errors"),          4, 0);
-  pLayout->addWidget(_ignoreSslErrorsCheckBox,                               4, 1, 1,10);
+  pLayout->addWidget(_sslIgnoreErrorsCheckBox,                               4, 1, 1,10);
   pLayout->addWidget(new QLabel(""),                                         5, 1);
   pLayout->setRowStretch(6, 999);
 
@@ -1294,7 +1294,7 @@ bncWindow::bncWindow() {
   _proxyHostLineEdit->setWhatsThis(tr("<p>If you are running BNC within a protected Local Area Network (LAN), you might need to use a proxy server to access the Internet. Enter your proxy server IP and port number in case one is operated in front of BNC. If you do not know the IP and port of your proxy server, check the proxy server settings in your Internet browser or ask your network administrator.</p><p>Note that IP streaming is sometimes not allowed in a LAN. In this case you need to ask your network administrator for an appropriate modification of the local security policy or for the installation of a TCP relay to the Ntrip broadcasters. If these are not possible, you might need to run BNC outside your LAN on a network that has unobstructed connection to the Internet.</p>"));
   _proxyPortLineEdit->setWhatsThis(tr("<p>Enter your proxy server port number in case a proxy is operated in front of BNC.</p>"));
   _sslCaCertPathLineEdit->setWhatsThis(tr("<p>Communication with an Ntrip broadcaster over SSL requires the exchange of client and/or server certificates. Specify the path to a directory where you save certificates on your system. Don't try communication via SSL if you are not sure wheter this is supported by the involved Ntrip broadcaster. Note that SSL communication is usually done over port 443.</p>"));
-  _ignoreSslErrorsCheckBox->setWhatsThis(tr("<p>SSL communication may involve queries coming from the Ntrip broadcaster. Tick 'Ignore SSL authorization erros' if you don't want to be bothered with this.</p>"));
+  _sslIgnoreErrorsCheckBox->setWhatsThis(tr("<p>SSL communication may involve queries coming from the Ntrip broadcaster. Tick 'Ignore SSL authorization erros' if you don't want to be bothered with this.</p>"));
   _outWaitSpinBox->setWhatsThis(tr("<p>When feeding a real-time GNSS network engine waiting for synchronized input epoch by epoch, BNC drops whatever is received later than 'Wait for full obs epoch' seconds. A value of 3 to 5 seconds is recommended, depending on the latency of the incoming streams and the delay acceptable to your real-time GNSS network engine or products.</p>"));
   _outFileLineEdit->setWhatsThis(tr("Specify the full path to a file where synchronized observations are saved in plain ASCII format. Beware that the size of this file can rapidly increase depending on the number of incoming streams."));
   _outPortLineEdit->setWhatsThis(tr("BNC can produce synchronized observations in a plain ASCII format on your local host through an IP port. Specify a port number here to activate this function."));
@@ -1500,7 +1500,7 @@ void bncWindow::slotAddMountPoints() {
   }
 
   settings.setValue("sslCaCertPath",   _sslCaCertPathLineEdit->text());
-  settings.setValue("ignoreSslErrors", _ignoreSslErrorsCheckBox->checkState());
+  settings.setValue("sslIgnoreErrors", _sslIgnoreErrorsCheckBox->checkState());
 
   QMessageBox msgBox;
   msgBox.setIcon(QMessageBox::Question);
@@ -1731,7 +1731,7 @@ void bncWindow::saveOptions() {
   settings.setValue("proxyHost",   _proxyHostLineEdit->text());
   settings.setValue("proxyPort",   _proxyPortLineEdit->text());
   settings.setValue("sslCaCertPath",   _sslCaCertPathLineEdit->text());
-  settings.setValue("ignoreSslErrors",  _ignoreSslErrorsCheckBox->checkState());
+  settings.setValue("sslIgnoreErrors",  _sslIgnoreErrorsCheckBox->checkState());
 // General
   settings.setValue("logFile",     _logFileLineEdit->text());
   settings.setValue("rnxAppend",   _rnxAppendCheckBox->checkState());
