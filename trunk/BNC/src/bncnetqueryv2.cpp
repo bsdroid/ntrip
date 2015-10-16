@@ -37,8 +37,8 @@ bncNetQueryV2::bncNetQueryV2(bool secure) {
   _status    = init;
 
   bncSettings settings;
-  _ignoreSslErrors = 
-     (Qt::CheckState(settings.value("ignoreSslErrors").toInt()) == Qt::Checked);
+  _sslIgnoreErrors = 
+     (Qt::CheckState(settings.value("sslIgnoreErrors").toInt()) == Qt::Checked);
 
   if (_secure && !QSslSocket::supportsSsl()) {
     BNC_CORE->slotMessage("No SSL support, install OpenSSL run-time libraries", true);
@@ -226,7 +226,7 @@ void bncNetQueryV2::slotSslErrors(QList<QSslError> errors) {
 
   BNC_CORE->slotMessage(msg.toAscii(), true);
 
-  if (_ignoreSslErrors) {
+  if (_sslIgnoreErrors) {
     _reply->ignoreSslErrors();
   }
   else {

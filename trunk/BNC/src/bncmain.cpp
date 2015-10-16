@@ -93,7 +93,7 @@ int main(int argc, char* argv[]) {
       "   proxyHost       {Proxy host, name or IP address [character string]}\n"
       "   proxyPort       {Proxy port [integer number]}\n"
       "   sslCaCertPath   {Full path to SSL certificates [character string]}\n"
-      "   ignoreSslErrors {Ignore SSL authorization errors [integer number: 0=no,2=yes]}\n"
+      "   sslIgnoreErrors {Ignore SSL authorization errors [integer number: 0=no,2=yes]}\n"
       "\n"
       "General Panel keys:\n"
       "   logFile          {Logfile, full path [character string]}\n"
