@@ -4,16 +4,13 @@
 Version 2.12.0</h3>
 
 <p>
-Copyright &copy; Federal Agency for Cartography and Geodesa (BKG), Frankfurt, Germany<br>
+Copyright &copy; Federal Agency for Cartography and Geodesa (BKG), Frankfurt, Germany</p>
+<p>
 November 2015
 </p>
 
-<h4>Edited by Georg Weber<br>
-November 2015</h4>
-
-
 <p><b>Contents</b><br><br>
-1. <a href=#genInstruction>General Instructions</a><br>
+<b>1.</b> <a href=#genInstruction><b>General Instructions</b></a><br><br>
 &nbsp; &nbsp; &nbsp; 1.1 <a href=#introPurpose>Purpose</a><br>
 &nbsp; &nbsp; &nbsp; 1.2 <a href=#introSystem>Supported Systems</a><br>
 &nbsp; &nbsp; &nbsp; 1.3 <a href=#introFlow>Data Flow</a><br>
@@ -21,21 +18,21 @@ November 2015</h4>
 &nbsp; &nbsp; &nbsp; 1.5 <a href=#introConf>Configuration</a><br>
 &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 1.5.1 <a href=#introManage>Management</a><br>
 &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 1.5.2 <a href=#introExamples>Examples</a><br>
-&nbsp; &nbsp; &nbsp; 1.6 <a href=#introLimit>Limitations</a><br>
-2. <a href=#optsettings>Settings Details</a><br>
-&nbsp; &nbsp; &nbsp; 2.1 <a href=#topmenu>Top Menu Bar</a><br>
+&nbsp; &nbsp; &nbsp; 1.6 <a href=#introLimit>Limitations</a><br><br>
+<b>2.</b> <a href=#optsettings><b>Settings Details</b></a><br><br>
+&nbsp; &nbsp; &nbsp; <a href=#topmenu><b>2.1 Top Menu Bar</b></a><br>
 &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 2.1.1 <a href=#file>File</a><br>
 &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 2.1.2 <a href=#help>Help</a><br>
-&nbsp; &nbsp; &nbsp; 2.2 <a href=#network>Network</a><br>
+&nbsp; &nbsp; &nbsp; <a href=#network><b>2.2 Network</b></a><br>
 &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 2.2.1 <a href=#proxy>Proxy</a><br>
 &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 2.2.2 <a href=#ssl>SSL</a><br>
-&nbsp; &nbsp; &nbsp; 2.3 <a href=#general>General</a><br>
+&nbsp; &nbsp; &nbsp; <a href=#general><b>2.3 General</b></a><br>
 &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 2.3.1 <a href=#genlog>Logfile</a><br>
 &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 2.3.2 <a href=#genapp>Append Files</a><br>
 &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 2.3.3 <a href=#genconf>Reread Configuration</a><br>
 &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 2.3.4 <a href=#genstart>Auto Start</a><br>
 &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 2.3.5 <a href=#rawout>Raw Output File</a><br>
-&nbsp; &nbsp; &nbsp; 2.4 <a href=#rinex>RINEX Observations</a><br>
+&nbsp; &nbsp; &nbsp; <a href=#rinex><b>2.4 RINEX Observations</b></a><br>
 &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 2.4.1 <a href=#rnxname>Filenames</a><br>
 &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 2.4.2 <a href=#rnxdir>Directory</a><br>
 &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 2.4.3 <a href=#rnxinterval>File Interval</a><br>
@@ -46,13 +43,13 @@ November 2015</h4>
 &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 2.4.8 <a href=#rnxvers2>Version 2</a><br>
 &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 2.4.9 <a href=#rnxvers3>Version 3</a><br>
 &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 2.4.10 <a href=#rnxvers3File>Version 3 Filenames</a><br>
-&nbsp; &nbsp; &nbsp; 2.5 <a href=#ephemeris>RINEX Ephemeris</a><br>
+&nbsp; &nbsp; &nbsp; <a href=#ephemeris><b>2.5 RINEX Ephemeris</b></a><br>
 &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 2.5.1 <a href=#ephdir>Directory</a><br>
 &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 2.5.2 <a href=#ephint>Interval</a><br>
 &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 2.5.3 <a href=#ephport>Port</a><br>
 &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 2.5.4 <a href=#ephvers>Version</a><br>
 &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 2.5.5 <a href=#ephversFile>Version 3 Filenames</a><br>
-&nbsp; &nbsp; &nbsp; 2.6 <a href=#reqc>RINEX Editing & QC</a><br>
+&nbsp; &nbsp; &nbsp; <a href=#reqc><b>2.6 RINEX Editing & QC</b></a><br>
 &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 2.6.1 <a href=#reqcact>Action</a><br>
 &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 2.6.2 <a href=#reqcinp>Input Files</a><br>
 &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 2.6.3 <a href=#reqcout>Output Files</a><br>
@@ -61,22 +58,22 @@ November 2015</h4>
 &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 2.6.6 <a href=#reqcdir>Directory for Plots</a><br>
 &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 2.6.7 <a href=#reqcedit>Set Edit Options</a><br>
 &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 2.6.8 <a href=#reqccommand>Command Line, No Window</a><br>
-&nbsp; &nbsp; &nbsp; 2.7 <a href=#sp3comp>SP3 Comparison</a><br>
+&nbsp; &nbsp; &nbsp; <a href=#sp3comp><b>2.7 SP3 Comparison</b></a><br>
 &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 2.7.1 <a href=#sp3input>Input SP3 Files</a><br>
 &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 2.7.2 <a href=#sp3exclude>Exclude Satellites</a><br>
 &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 2.7.3 <a href=#sp3log>Logfile</a><br>
-&nbsp; &nbsp; &nbsp; 2.8 <a href=#correct>Broadcast Corrections</a><br>
+&nbsp; &nbsp; &nbsp; <a href=#correct><b>2.8 Broadcast Corrections</b></a><br>
 &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 2.8.1 <a href=#corrdir>Directory, ASCII</a><br>
 &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 2.8.2 <a href=#corrint>Interval</a><br>
 &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 2.8.3 <a href=#corrport>Port</a><br>
 &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 2.8.4 <a href=#corrwait>Wait for Full Corr Epoch</a><br>
-&nbsp; &nbsp; &nbsp; 2.9 <a href=#syncout>Feed Engine</a><br>
+&nbsp; &nbsp; &nbsp; <a href=#syncout><b>2.9 Feed Engine</b></a><br>
 &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 2.9.1 <a href=#syncport>Port</a><br>
 &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 2.9.2 <a href=#syncwait>Wait for Full Obs Epoch</a><br>
 &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 2.9.3 <a href=#syncsample>Sampling</a><br>
 &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 2.9.4 <a href=#syncfile>File</a><br>
 &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 2.9.5 <a href=#syncuport>Port (unsynchronized)</a><br>
-&nbsp; &nbsp; &nbsp; 2.10 <a href=#serial>Serial Output</a><br>
+&nbsp; &nbsp; &nbsp; <a href=#serial><b>2.10 Serial Output</b></a><br>
 &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 2.10.1 <a href=#sermount>Mountpoint</a><br>
 &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 2.10.2 <a href=#serport>Port Name</a><br>
 &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 2.10.3 <a href=#serbaud>Baud Rate</a><br>
@@ -88,12 +85,12 @@ November 2015</h4>
 &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 2.10.9 <a href=#serfile>File</a><br>
 &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 2.10.10 <a href=#serheight>Height</a><br>
 &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 2.10.11 <a href=#sersampl>Sampling</a><br>
-&nbsp; &nbsp; &nbsp; 2.11 <a href=#advnote>Outages</a><br>
+&nbsp; &nbsp; &nbsp; <a href=#advnote><b>2.11 Outages</b></a><br>
 &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 2.11.1. <a href=#obsrate>Observation Rate</a><br>
 &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 2.11.2. <a href=#advfail>Failure Threshold</a><br>
 &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 2.11.3. <a href=#advreco>Recovery Threshold</a><br>
 &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 2.11.4. <a href=#advscript>Script</a><br>
-&nbsp; &nbsp; &nbsp; 2.12 <a href=#misc>Miscellaneous</a><br>
+&nbsp; &nbsp; &nbsp; <a href=#misc><b>2.12 Miscellaneous</b></a><br>
 &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 2.12.1. <a href=#miscmount>Mountpoint</a><br>
 &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 2.12.2. <a href=#miscperf>Log Latency</a><br>
 &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 2.12.3. <a href=#miscscan>Scan RTCM</a><br>
@@ -193,8 +190,8 @@ November 2015</h4>
 &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 2.20.3 <a href=#nw>No Window Mode</a><br>
 &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 2.20.4 <a href=#post>File Mode</a><br>
 &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 2.20.5 <a href=#conffile>Configuration File</a><br>
-&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 2.20.6 <a href=#confopt>Configuration Options</a><br>
-3. <a href=#annex>Annex</a><br>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 2.20.6 <a href=#confopt>Configuration Options</a><br><br>
+<b>3.</b> <a href=#annex><b>Annex</b></a><br><br>
 &nbsp; &nbsp; &nbsp; 3.1. <a href=#history>Revision History</a><br>
 &nbsp; &nbsp; &nbsp; 3.2. <a href=#rtcm>RTCM Standards</a><br>
 &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 3.2.1 <a href=#ntrip1>Ntrip Version 1</a><br>
