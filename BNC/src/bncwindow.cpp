@@ -882,7 +882,7 @@ bncWindow::bncWindow() {
   pppLayout1->addWidget(new QLabel("   RINEX Nav file"),     ir, 3);
   pppLayout1->addWidget(_pppWidgets._rinexNav,               ir, 4, 1, 3);
   ++ir;
-  pppLayout1->addWidget(new QLabel("Correction file"),       ir, 0);
+  pppLayout1->addWidget(new QLabel("Corrections file"),      ir, 0);
   pppLayout1->addWidget(_pppWidgets._corrFile,               ir, 1);
   pppLayout1->addWidget(new QLabel("   ANTEX file"),         ir, 3);
   pppLayout1->addWidget(_pppWidgets._antexFile,              ir, 4, 1, 3);
@@ -892,9 +892,9 @@ bncWindow::bncWindow() {
   pppLayout1->addWidget(new QLabel("   Version 3 filenames"),ir, 3);
   pppLayout1->addWidget(_pppWidgets._v3filenames,            ir, 4, 1, 3);
   ++ir;
-  pppLayout1->addWidget(new QLabel("Logfile Directory"),     ir, 0);
+  pppLayout1->addWidget(new QLabel("Logfile directory"),     ir, 0);
   pppLayout1->addWidget(_pppWidgets._logPath,                ir, 1);
-  pppLayout1->addWidget(new QLabel("   NMEA Directory"),     ir, 3);
+  pppLayout1->addWidget(new QLabel("   NMEA directory"),     ir, 3);
   pppLayout1->addWidget(_pppWidgets._nmeaPath,               ir, 4, 1, 3);
   ++ir;
   pppLayout1->addWidget(new QLabel("SNX TRO directory"),     ir, 0);
