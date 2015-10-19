@@ -34,7 +34,7 @@
  *
  * Created:    26-Jan-2011
  *
- * Changes:    
+ * Changes:
  *
  * -----------------------------------------------------------------------*/
 
@@ -67,7 +67,7 @@ bncAntex::~bncAntex() {
   }
 }
 
-// Print 
+// Print
 ////////////////////////////////////////////////////////////////////////////
 void bncAntex::print() const {
   QMapIterator<QString, t_antMap*> itAnt(_maps);
@@ -89,6 +89,32 @@ void bncAntex::print() const {
   }
 }
 
+// Print
+////////////////////////////////////////////////////////////////////////////
+QString bncAntex::pcoSinexString(const std::string& antName, t_frequency::type frqType) {
+
+  if (antName.find("NULLANTENNA") != string::npos) {
+    QString();
+  }
+
+  QString antNameQ = antName.c_str();
+
+  if (_maps.find(antNameQ) == _maps.end()) {
+    QString();
+  }
+
+  t_antMap* map = _maps[antNameQ];
+  if (map->frqMap.find(frqType) == map->frqMap.end()) {
+    return QString();
+  }
+
+  t_frqMap* frqMap = map->frqMap[frqType];
+
+  return QString("%1 %2 %3").arg(frqMap->neu[2], 6, 'f', 4)
+                            .arg(frqMap->neu[0], 6, 'f', 4)
+                            .arg(frqMap->neu[1], 6, 'f', 4);
+}
+
 // Read ANTEX File
 ////////////////////////////////////////////////////////////////////////////
 t_irc bncAntex::readFile(const QString& fileName) {
@@ -103,7 +129,7 @@ t_irc bncAntex::readFile(const QString& fileName) {
 
   while ( !in.atEnd() ) {
     QString line = in.readLine();
-  
+
     // Start of Antenna
     // ----------------
     if      (line.indexOf("START OF ANTENNA") == 60) {
@@ -115,7 +141,7 @@ t_irc bncAntex::readFile(const QString& fileName) {
         delete newAntMap;
         newAntMap = new t_antMap();
       }
-    } 
+    }
 
     // End of Antenna
     // --------------
@@ -151,7 +177,7 @@ t_irc bncAntex::readFile(const QString& fileName) {
       }
       else if (line.indexOf("ZEN1 / ZEN2 / DZEN") == 60) {
         QTextStream inLine(&line, QIODevice::ReadOnly);
-        inLine >> newAntMap->zen1 >> newAntMap->zen2 >> newAntMap->dZen;  
+        inLine >> newAntMap->zen1 >> newAntMap->zen2 >> newAntMap->dZen;
       }
 
       // Start of Frequency
@@ -270,7 +296,7 @@ t_irc bncAntex::readFile(const QString& fileName) {
 
 // Satellite Antenna Offset
 ////////////////////////////////////////////////////////////////////////////
-t_irc bncAntex::satCoMcorrection(const QString& prn, double Mjd, 
+t_irc bncAntex::satCoMcorrection(const QString& prn, double Mjd,
                                  const ColumnVector& xSat, ColumnVector& dx) {
 
   t_frequency::type frqType = t_frequency::dummy;
@@ -296,10 +322,10 @@ t_irc bncAntex::satCoMcorrection(const QString& prn, double Mjd,
 
       ColumnVector xSun = BNC_PPP::t_astro::Sun(Mjd);
       xSun /= sqrt(DotProduct(xSun,xSun));
-  
+
       ColumnVector sy = crossproduct(sz, xSun);
       sy /= sqrt(DotProduct(sy,sy));
-  
+
       ColumnVector sx = crossproduct(sy, sz);
 
       dx[0] = sx[0] * neu[0] + sy[0] * neu[1] + sz[0] * neu[2];
@@ -313,7 +339,7 @@ t_irc bncAntex::satCoMcorrection(const QString& prn, double Mjd,
   return failure;
 }
 
-// 
+//
 ////////////////////////////////////////////////////////////////////////////
 double bncAntex::rcvCorr(const string& antName, t_frequency::type frqType,
                          double eleSat, double azSat, bool& found) const {

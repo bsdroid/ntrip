@@ -9,6 +9,8 @@
 #include "bncoutf.h"
 #include "bncversion.h"
 #include "pppOptions.h"
+#include "bncsettings.h"
+#include "bncantex.h"
 
 using namespace BNC_PPP;
 
@@ -25,8 +27,10 @@ class bncSinexTro : public bncoutf {
   virtual void writeHeader(const QDateTime& datTim);
   virtual void closeFile();
   QString _roverName;
-  int     _sampl;
+  int _sampl;
   const t_pppOptions*  _opt;
+  bncAntex* _antex;
+  double _antPCO[t_frequency::max];
 };
 
 

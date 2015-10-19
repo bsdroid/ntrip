@@ -36,12 +36,13 @@ class bncAntex {
   bncAntex(const char* fileName);
   bncAntex();
   ~bncAntex();
-  t_irc  readFile(const QString& fileName);  
-  void   print() const;
-  double rcvCorr(const std::string& antName, t_frequency::type frqType,
-                 double eleSat, double azSat, bool& found) const;
-  t_irc  satCoMcorrection(const QString& prn, double Mjd, 
-                          const ColumnVector& xSat, ColumnVector& dx);
+  t_irc   readFile(const QString& fileName);
+  void    print() const;
+  QString pcoSinexString(const std::string& antName, t_frequency::type frqType);
+  double  rcvCorr(const std::string& antName, t_frequency::type frqType,
+                  double eleSat, double azSat, bool& found) const;
+  t_irc   satCoMcorrection(const QString& prn, double Mjd,
+                           const ColumnVector& xSat, ColumnVector& dx);
 
  private:
   class t_frqMap {
