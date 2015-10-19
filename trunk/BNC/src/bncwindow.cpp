@@ -862,8 +862,9 @@ bncWindow::bncWindow() {
   _pppWidgets._dataSource->setMaximumWidth(20*ww);
   _pppWidgets._corrMount->setMaximumWidth(20*ww);
 
+  _pppWidgets._corrFile->setMaximumWidth(35*ww);
   _pppWidgets._crdFile->setMaximumWidth(35*ww);
-  _pppWidgets._antexFile->setMaximumWidth(35*ww);
+  _pppWidgets._logPath->setMaximumWidth(35*ww);
   _pppWidgets._snxtroPath->setMaximumWidth(35*ww);
   _pppWidgets._snxtroIntr->setMaximumWidth(15*ww);
 
@@ -876,25 +877,25 @@ bncWindow::bncWindow() {
   pppLayout1->addWidget(new QLabel("   RINEX Obs file"),     ir, 3);
   pppLayout1->addWidget(_pppWidgets._rinexObs,               ir, 4, 1, 3);
   ++ir;
+  pppLayout1->addWidget(new QLabel("Corrections stream"),    ir, 0);
+  pppLayout1->addWidget(_pppWidgets._corrMount,              ir, 1);
   pppLayout1->addWidget(new QLabel("   RINEX Nav file"),     ir, 3);
   pppLayout1->addWidget(_pppWidgets._rinexNav,               ir, 4, 1, 3);
   ++ir;
-  pppLayout1->addWidget(new QLabel("Corrections stream"),    ir, 0);
-  pppLayout1->addWidget(_pppWidgets._corrMount,              ir, 1);
-  pppLayout1->addWidget(new QLabel("   Correction file"),    ir, 3);
-  pppLayout1->addWidget(_pppWidgets._corrFile,               ir, 4, 1, 3);
+  pppLayout1->addWidget(new QLabel("Correction file"),       ir, 0);
+  pppLayout1->addWidget(_pppWidgets._corrFile,               ir, 1);
+  pppLayout1->addWidget(new QLabel("   ANTEX file"),         ir, 3);
+  pppLayout1->addWidget(_pppWidgets._antexFile,              ir, 4, 1, 3);
   ++ir;
   pppLayout1->addWidget(new QLabel("Coordinates"),           ir, 0);
   pppLayout1->addWidget(_pppWidgets._crdFile,                ir, 1);
-  pppLayout1->addWidget(new QLabel("   Logfile Directory"),  ir, 3);
-  pppLayout1->addWidget(_pppWidgets._logPath,                ir, 4, 1, 3);
+  pppLayout1->addWidget(new QLabel("   Version 3 filenames"),ir, 3);
+  pppLayout1->addWidget(_pppWidgets._v3filenames,            ir, 4, 1, 3);
   ++ir;
-  pppLayout1->addWidget(new QLabel("ANTEX file"),            ir, 0);
-  pppLayout1->addWidget(_pppWidgets._antexFile,              ir, 1);
-
+  pppLayout1->addWidget(new QLabel("Logfile Directory"),     ir, 0);
+  pppLayout1->addWidget(_pppWidgets._logPath,                ir, 1);
   pppLayout1->addWidget(new QLabel("   NMEA Directory"),     ir, 3);
   pppLayout1->addWidget(_pppWidgets._nmeaPath,               ir, 4, 1, 3);
-
   ++ir;
   pppLayout1->addWidget(new QLabel("SNX TRO directory"),     ir, 0);
   pppLayout1->addWidget(_pppWidgets._snxtroPath,             ir, 1);
@@ -902,10 +903,6 @@ bncWindow::bncWindow() {
   pppLayout1->addWidget(_pppWidgets._snxtroIntr,             ir, 4);
   pppLayout1->addWidget(new QLabel("   SNX TRO sampling"),   ir, 5, Qt::AlignRight);
   pppLayout1->addWidget(_pppWidgets._snxtroSampl,            ir, 6, Qt::AlignRight);
-  ++ir;
-  pppLayout1->addWidget(new QLabel("Version 3 filenames"),   ir, 0);
-  pppLayout1->addWidget(_pppWidgets._v3filenames,            ir, 1);
-
   ++ir;
   pppLayout1->setRowStretch(ir, 999);
 
@@ -926,11 +923,13 @@ bncWindow::bncWindow() {
 
   _pppWidgets._corrFile->setWhatsThis(tr("<p>Specify the Broadcast Ephemeris Corrections file as saved beforehand using BNC.</p><p>If you don't specify corrections through this option, BNC will fall back to Single Point Positioning (SPP, positioning from RINEX Obs and RINEX Nav files only) instead of doing PPP.</p>"));
 
-  _pppWidgets._logPath->setWhatsThis(tr("<p>Specify the path to daily PPP logfiles using e.g. the following syntax (example):</p><p> ./PPP_${STATION}_${DATE}.log</p><p>BNC will produce one daily PPP logfile per station. Variable ${STATION} stands for the affected station and ${DATE} stands for the date.</p>"));
+  _pppWidgets._v3filenames->setWhatsThis(tr("<p>Tick 'Version 3 filenames' to let BNC create so-called extended filenames for PPP logfiles, NMEA files and SINEX Troposphere files following the RINEX Version 3 standard.</p><p>Default is an empty check box, meaning to create filenames following the RINEX Version 2 standard. The file contents is not affected by this option. It only concerns the filenames.</p>"));
 
-  _pppWidgets._nmeaPath->setWhatsThis(tr("<p>Specify the path to daily NMEA files using e.g. the following syntax (example):</p><p> ./PPP_${STATION}_${DATE}.nmea</p><p>BNC will produce one daily NMEA file per station, mainly to save NMEA GGA sentences from the PPP solution. Variable ${STATION} stands for the affected station and ${DATE} stands for the date.</p>"));
+  _pppWidgets._logPath->setWhatsThis(tr("<p>Specify a directory for saving daily PPP logfiles. If the specified directory does not exist, BNC will not create PPP logfiles.</p><p>Default is an empty option field, meaning that no PPP logfiles shall be produced.</p>"));
 
-  _pppWidgets._snxtroPath->setWhatsThis(tr("<p>Specify a path for saving SINEX Troposphere files on disk using e.g. the following syntax (example):</p><p> ./PPP_${STATION}${DOY}.${YY}.zpd</p><p>BNC will produce files per station to save troposphere parameters from the PPP solution in SINEX Troposphere format. Variable ${STATION} stands for the affected station, ${DOY} stands for the Day Of Year, and ${YY} for the year.</p>"));
+  _pppWidgets._nmeaPath->setWhatsThis(tr("<p>Specify a directory for saving coordinates in daily NMEA files. If the specified directory does not exist, BNC will not create NMEA files.</p><p>Default is an empty option field, meaning that no NMEA file shall be produced.</p>"));
+
+  _pppWidgets._snxtroPath->setWhatsThis(tr("<p>Specify a directory for saving SINEX Troposphere files. If the specified directory does not exist, BNC will not create SINEX Troposphere files.</p><p>Default is an empty option field, meaning that no SINEX Troposphere files shall be produced.</p>"));
 
   _pppWidgets._snxtroSampl->setWhatsThis(tr("<p>Select a 'Sampling' rate for saving troposphere paramers.</p><p>Default 'Sampling' rate is '0', meaning that all troposphere estimates will be saved on disk.</p>"));
   _pppWidgets._snxtroIntr->setWhatsThis(tr("<p>Select a length for SINEX Troposphere files.</p><p>Default 'Interval' for saving SINEX Troposphere files on disk is '1 hour'.</p>"));
