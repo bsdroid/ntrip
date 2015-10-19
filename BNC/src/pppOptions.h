@@ -31,11 +31,12 @@ class t_pppOptions {
   std::string             _rinexNav;
   std::string             _corrFile;
   double                  _corrWaitTime;
-  std::string             _roverName;     
+  std::string             _roverName;
   ColumnVector            _xyzAprRover;
   ColumnVector            _neuEccRover;
-  std::string             _antNameRover;  
-  std::string             _antexFileName; 
+  std::string             _recNameRover;
+  std::string             _antNameRover;
+  std::string             _antexFileName;
   double                  _sigmaC1;
   double                  _sigmaL1;
   double                  _maxResC1;
