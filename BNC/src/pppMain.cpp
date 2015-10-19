@@ -366,6 +366,7 @@ void t_pppMain::readOptions() {
           opt->_neuEccRover[1] = staInfo._neuAnt[1];
           opt->_neuEccRover[2] = staInfo._neuAnt[2];
           opt->_antNameRover   = staInfo._antenna;
+          opt->_recNameRover   = staInfo._receiver;
           break;
         }
       }

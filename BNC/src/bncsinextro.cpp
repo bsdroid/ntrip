@@ -84,7 +84,7 @@ void bncSinexTro::writeHeader(const QDateTime& datTim) {
   }
 
 
-  QString numberOfEpochs = QString("%1").arg(intr/_sampl, 5, 10, QLatin1Char('0'));
+  QString numberOfEpochs = QString("%1").arg(1, 5, 10, QLatin1Char('0'));
   _out << "%=TRO 2.00 BNC " << creationTime.toStdString() << " BNC "
        << startTime.toStdString() << " " << endTime.toStdString() << " P "
        << numberOfEpochs.toStdString() << " 0 " << " T "  << endl;
@@ -101,13 +101,13 @@ void bncSinexTro::writeHeader(const QDateTime& datTim) {
   _out << "+SITE/ID" << endl;
   _out << "-SITE/ID" << endl << endl;
 
-
-  _out << "+SITE/RECEIVER" << endl;
-  _out << "*SITE PT SOLN T DATA_START__ DATA_END____ DESCRIPTION_________ S/N__ FIRMWARE___" << endl;
-  _out << " " << _opt->_roverName.substr(0,4) << "  A    1 P "
-       << startTime.toStdString() << " " << endTime.toStdString() << " " << _opt->_recNameRover << endl;
-  _out << "-SITE/RECEIVER" << endl << endl;
-
+  if (!_opt->_recNameRover.empty()) {
+    _out << "+SITE/RECEIVER" << endl;
+    _out << "*SITE PT SOLN T DATA_START__ DATA_END____ DESCRIPTION_________ S/N__ FIRMWARE___" << endl;
+    _out << " " << _opt->_roverName.substr(0,4) << "  A    1 P "
+         << startTime.toStdString() << " " << endTime.toStdString() << " " << _opt->_recNameRover << endl;
+    _out << "-SITE/RECEIVER" << endl << endl;
+  }
 
   _out << "+SITE/ANTENNA" << endl;
   _out << "*SITE PT SOLN T DATA_START__ DATA_END____ DESCRIPTION_________ S/N__" << endl;

@@ -17,6 +17,7 @@ class t_pppCrdFile {
     }
     std::string  _name;
     std::string  _antenna;
+    std::string  _receiver;
     ColumnVector _xyz;
     ColumnVector _neuAnt;
   };
