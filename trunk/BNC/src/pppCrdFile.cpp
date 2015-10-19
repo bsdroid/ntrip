@@ -35,7 +35,7 @@
  *
  * Created:    29-Jul-2014
  *
- * Changes:    
+ * Changes:
  *
  * -----------------------------------------------------------------------*/
 
@@ -47,7 +47,7 @@
 using namespace std;
 using namespace BNC_PPP;
 
-// 
+//
 //////////////////////////////////////////////////////////////////////////////
 void t_pppCrdFile::readCrdFile(const string& fileName, vector<t_staInfo>& staInfoVec) {
 
@@ -60,7 +60,7 @@ void t_pppCrdFile::readCrdFile(const string& fileName, vector<t_staInfo>& staInf
     if ( line.empty() || line[0] == '#'|| line[0] == '!') {
       continue;
     }
-    
+
     istringstream in;
 
     t_staInfo staInfo;
@@ -86,8 +86,15 @@ void t_pppCrdFile::readCrdFile(const string& fileName, vector<t_staInfo>& staInf
     }
 
     if (!in.eof()) {
-      getline(in, staInfo._antenna);
-      stripWhiteSpace(staInfo._antenna);
+      std::string hlp;
+      getline(in, hlp);
+      stripWhiteSpace(hlp);
+      staInfo._antenna = hlp.substr(0,20);
+      hlp = hlp.erase(0, 20);
+      if (hlp.length()) {
+        stripWhiteSpace(hlp);
+        staInfo._receiver = hlp;
+      }
     }
 
     staInfoVec.push_back(staInfo);
