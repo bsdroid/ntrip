@@ -158,10 +158,14 @@ t_pppRun::t_pppRun(const t_pppOptions* opt) {
 
   bool v3filenames = settings.value("PPP/v3filenames").toBool();
   QString logFileSkl = settings.value("PPP/logPath").toString();
+  int l = logFileSkl.length();
   if (logFileSkl.isEmpty()) {
     _logFile = 0;
   }
   else {
+    if (l && logFileSkl[l-1] != QDir::separator() ) {
+      logFileSkl += QDir::separator();
+    }
     if (v3filenames) {
       logFileSkl = logFileSkl + fullRoverName + "${V3}" + ".ppp";
     }
@@ -172,10 +176,14 @@ t_pppRun::t_pppRun(const t_pppOptions* opt) {
   }
 
   QString nmeaFileSkl = settings.value("PPP/nmeaPath").toString();
+  l = nmeaFileSkl.length();
   if (nmeaFileSkl.isEmpty()) {
     _nmeaFile = 0;
   }
   else {
+    if (l > 0 && nmeaFileSkl[l-1] != QDir::separator() ) {
+      nmeaFileSkl += QDir::separator();
+    }
     if (v3filenames) {
       nmeaFileSkl = nmeaFileSkl + fullRoverName + "${V3}" + ".nmea";
     }
@@ -186,10 +194,14 @@ t_pppRun::t_pppRun(const t_pppOptions* opt) {
   }
 
   QString snxtroFileSkl = settings.value("PPP/snxtroPath").toString();
+  l = snxtroFileSkl.length();
   if (snxtroFileSkl.isEmpty()) {
     _snxtroFile = 0;
   }
   else {
+    if (l > 0 && snxtroFileSkl[l-1] != QDir::separator() ) {
+      snxtroFileSkl += QDir::separator();
+    }
     if (v3filenames) {
       snxtroFileSkl = snxtroFileSkl + fullRoverName + "${V3}" + ".tra";
     }
