@@ -612,12 +612,12 @@ t_irc t_pppFilter::update(t_epoData* epoData) {
   _time = epoData->tt; // current epoch time
 
   if (OPT->useOrbClkCorr()) {
-    LOG << "Precise Point Positioning of Epoch " << _time.datestr() <<  "_" << _time.timestr(1)
+    LOG << "Precise Point Positioning of Epoch " << _time.datestr() <<  "_" << _time.timestr(3)
         << "\n---------------------------------------------------------------\n";
   }
   else {
-    LOG << "Single Point Positioning of Epoch " << _time.datestr() <<  "_" << _time.timestr(1)
-        << "\n--------------------------------------------------------------\n";
+    LOG << "Single Point Positioning of Epoch " << _time.datestr() <<  "_" << _time.timestr(3)
+        << "\n---------------------------------------------------------------\n";
   }
 
   // Outlier Detection Loop
@@ -633,13 +633,15 @@ t_irc t_pppFilter::update(t_epoData* epoData) {
   while (itPar.hasNext()) {
     t_pppParam* par = itPar.next();
     if      (par->type == t_pppParam::RECCLK) {
-      LOG << "\n    clk     = " << setw(10) << setprecision(3) << par->xx
+      LOG << "\n" << _time.datestr() << "_" << _time.timestr(3)
+          << " CLK     " << setw(10) << setprecision(3) << par->xx
           << " +- " << setw(6) << setprecision(3)
           << sqrt(_QQ(par->index,par->index));
     }
     else if (par->type == t_pppParam::AMB_L3) {
       ++par->numEpo;
-      LOG << "\n    amb " << par->prn.mid(0,3).toAscii().data() << " = "
+      LOG << "\n" << _time.datestr() << "_" << _time.timestr(3)
+          << " AMB " << par->prn.mid(0,3).toAscii().data() << " "
           << setw(10) << setprecision(3) << par->xx
           << " +- " << setw(6) << setprecision(3)
           << sqrt(_QQ(par->index,par->index))
@@ -647,24 +649,28 @@ t_irc t_pppFilter::update(t_epoData* epoData) {
     }
     else if (par->type == t_pppParam::TROPO) {
       double aprTrp = delay_saast(M_PI/2.0);
-      LOG << "\n    trp     = " << par->prn.mid(0,3).toAscii().data()
+      LOG << "\n" << _time.datestr() << "_" << _time.timestr(3)
+          << " TRP     " << par->prn.mid(0,3).toAscii().data()
           << setw(7) << setprecision(3) << aprTrp << " "
           << setw(6) << setprecision(3) << showpos << par->xx << noshowpos
           << " +- " << setw(6) << setprecision(3)
           << sqrt(_QQ(par->index,par->index));
     }
     else if (par->type == t_pppParam::GLONASS_OFFSET) {
-      LOG << "\n    offGlo  = " << setw(10) << setprecision(3) << par->xx
+      LOG << "\n" << _time.datestr() << "_" << _time.timestr(3)
+          << " OFFGLO  " << setw(10) << setprecision(3) << par->xx
           << " +- " << setw(6) << setprecision(3)
           << sqrt(_QQ(par->index,par->index));
     }
     else if (par->type == t_pppParam::GALILEO_OFFSET) {
-      LOG << "\n    offGal  = " << setw(10) << setprecision(3) << par->xx
+      LOG << "\n" << _time.datestr() << "_" << _time.timestr(3)
+          << " OFFGAL  " << setw(10) << setprecision(3) << par->xx
           << " +- " << setw(6) << setprecision(3)
           << sqrt(_QQ(par->index,par->index));
     }
     else if (par->type == t_pppParam::BDS_OFFSET) {
-      LOG << "\n    offBds  = " << setw(10) << setprecision(3) << par->xx
+      LOG << "\n" << _time.datestr() << "_" << _time.timestr(3)
+          << " OFFBDS  " << setw(10) << setprecision(3) << par->xx
           << " +- " << setw(6) << setprecision(3)
           << sqrt(_QQ(par->index,par->index));
     }
@@ -679,7 +685,7 @@ t_irc t_pppFilter::update(t_epoData* epoData) {
   // Final Message (both log file and screen)
   // ----------------------------------------
   LOG << OPT->_roverName << "  PPP "
-      << epoData->tt.timestr(1) << " " << epoData->sizeAll() << " "
+      << epoData->tt.datestr() << "_" << epoData->tt.timestr(3) << " " << epoData->sizeAll() << " "
       << setw(14) << setprecision(3) << x()                  << " +- "
       << setw(6)  << setprecision(3) << sqrt(_QQ(1,1))       << " "
       << setw(14) << setprecision(3) << y()                  << " +- "
@@ -936,7 +942,7 @@ QByteArray t_pppFilter::printRes(int iPhase, const ColumnVector& vv,
     (iPhase == 0) ? useObs = OPT->codeLCs(satData->system()).size() :
                     useObs = OPT->ambLCs(satData->system()).size();
     if (satData->obsIndex != 0 && useObs) {
-      str << _time.timestr(1)
+      str << _time.datestr() << "_" << _time.timestr(3)
           << " RES " << satData->prn.mid(0,3).toAscii().data()
           << (iPhase ? "   L3 " : "   P3 ")
           << setw(9) << setprecision(4) << vv(satData->obsIndex) << endl;
@@ -1029,6 +1035,11 @@ t_irc t_pppFilter::update_p(t_epoData* epoData) {
         if (!useObs) {
           nObs -= epoData->sizeSys(s);
         }
+        else {
+          LOG << _time.datestr() << "_" << _time.timestr(3)
+              << " SATNUM " << s << ' ' << right << setw(2)
+              << epoData->sizeSys(s) << endl;
+        }
       }
 
       // Prepare first-design Matrix, vector observed-computed
@@ -1039,6 +1050,7 @@ t_irc t_pppFilter::update_p(t_epoData* epoData) {
 
       unsigned iObs = 0;
       QMapIterator<QString, t_satData*> it(epoData->satData);
+
       while (it.hasNext()) {
         it.next();
         t_satData* satData = it.value();
