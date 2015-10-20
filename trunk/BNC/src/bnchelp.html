@@ -2653,7 +2653,7 @@ Having this parameter first in each record is mandatory. BNC can carry out PPP s
 &nbsp; &nbsp;'LEIAR25.R3      LEIT' (radome)</pre>
 Leave antenna name blank if you don't want to correct observations for APC offsets and variations or if you don't know the antenna name.</li><br>
 <li>
-Receiver type following the naming conventions for IGS equipment as defined in <u>https://igscb.jpl.nasa.gov/igscb/station/general/rcvr_ant.tab</u>. Specifying the receiver type is only required when saving SINEX Troposphere files. In those files it becomes part of the 'FILE/REFERENCE' section, see section 'SNX TRO Directory'.
+Receiver type following the naming conventions for IGS equipment as defined in <u>https://igscb.jpl.nasa.gov/igscb/station/general/rcvr_ant.tab</u>. Specifying the receiver type is only required when saving SINEX Troposphere files. In those files it becomes part of the 'SITE/RECEIVER' section, see section 'SNX TRO Directory'.
 </li>
 </ul>
 </p>
@@ -2888,60 +2888,64 @@ You can specify a 'SNX TRO directory' for saving SINEX Troposphere files on disk
 </p>
 
 <pre>
-%=TRO 0.01 BNC 15:181:38193 BNC 15:181:38193 15:181:84600 P CUT0
+%=TRO 2.00 BNC 15:293:50333 BNC 15:293:50333 15:293:84600 P 00001 0  T 
 +FILE/REFERENCE
  DESCRIPTION        BNC generated SINEX TRO file
  OUTPUT             Total Troposphere Zenith Path Delay Product
  SOFTWARE           BNC 2.12
- HARDWARE           MAC
  INPUT              Orbit and Clock information used from BRDC and RTCM-SSR streams
 -FILE/REFERENCE
+
++SITE/ID
+-SITE/ID
+
++SITE/RECEIVER
+*SITE PT SOLN T DATA_START__ DATA_END____ DESCRIPTION_________ S/N__ FIRMWARE___
+ FFMJ  A    1 P 15:293:50333 15:293:84600 JAVAD TRE_G3TH DELTA
+-SITE/RECEIVER
+
++SITE/ANTENNA
+*SITE PT SOLN T DATA_START__ DATA_END____ DESCRIPTION_________ S/N__
+ FFMJ  A    1 P 15:293:50333 15:293:84600 LEIAR25.R4      LEIT
+-SITE/ANTENNA
+
++SITE/ECCENTRICITY
+*                                             UP______ NORTH___ EAST____
+*SITE PT SOLN T DATA_START__ DATA_END____ AXE ARP->BENCHMARK(M)_________
+ FFMJ  A    1 P 15:293:50333 15:293:84600  UNE   0.0450   0.0000   0.0000
+-SITE/ANTENNA
+
++TROP/COORDINATES
+*SITE PT SOLN T __STA_X_____ __STA_Y_____ __STA_Z_____ SYSTEM REMRK
+ FFMJ  A    1 P  4053455.738   617729.839  4869395.821 ITRF08
+-TROP/COORDINATES
 
 +TROP/DESCRIPTION
 *KEYWORD______________________ VALUE(S)______________
  SAMPLING INTERVAL                                  1
  SAMPLING TROP                                      1
- ELEVATION CUTOFF ANGLE                            10
+ ELEVATION CUTOFF ANGLE                             7
  TROP MAPPING FUNCTION         Saastamoinen
  SOLUTION_FIELDS_1             TROTOT STDEV
 -TROP/DESCRIPTION
 
-+TROP/STA_COORDINATES
-*SITE PT SOLN T STA_X_______ STA_Y_______ STA_Z_______ SYSTEM REMARK
- CUT0  A    1 P -2364337.441  4870285.605 -3360809.628 ITRF08
--TROP/STA_COORDINATES
-
 +TROP/SOLUTION
 *SITE EPOCH_______ TROTOT STDEV
- CUT0 15:181:38193    0.0   0.0
- CUT0 15:181:38194 2402.0 100.0
- CUT0 15:181:38195 2402.0 100.0
- CUT0 15:181:38196 2402.1 100.0
- CUT0 15:181:38197 2402.0 100.0
- CUT0 15:181:38198 2401.8 100.0
- CUT0 15:181:38199 2401.6  99.9
- CUT0 15:181:38200 2401.7  99.9
- CUT0 15:181:38201 2401.6  99.9
- CUT0 15:181:38202 2401.5  99.9
- CUT0 15:181:38203 2401.3  99.9
- CUT0 15:181:38204 2401.0  99.9
- CUT0 15:181:38205 2400.8  99.9
- CUT0 15:181:38206 2400.5  99.9
- CUT0 15:181:38207 2400.3  99.9
- CUT0 15:181:38208 2399.8  99.9
- CUT0 15:181:38209 2399.6  99.9
- CUT0 15:181:38210 2399.3  99.9
- CUT0 15:181:38211 2398.9  99.8
- CUT0 15:181:38212 2398.5  99.8
- CUT0 15:181:38213 2397.9  99.8
- CUT0 15:181:38214 2397.3  99.8
- CUT0 15:181:38215 2396.7  99.8
- CUT0 15:181:38216 2396.2  99.8
- CUT0 15:181:38217 2395.6  99.8
- CUT0 15:181:38218 2395.1  99.7
- CUT0 15:181:38219 2394.6  99.7
- CUT0 15:181:38220 2394.0  99.7
- CUT0 15:181:38221 2393.2  99.7
+ FFMJ 15:293:50333 2346.2   0.0
+ FFMJ 15:293:50334 2345.3   0.0
+ FFMJ 15:293:50335 2345.4   0.0
+ FFMJ 15:293:50336 2345.2   0.0
+ FFMJ 15:293:50337 2344.7   0.0
+ FFMJ 15:293:50338 2345.3   0.0
+ FFMJ 15:293:50339 2345.4   0.0
+ FFMJ 15:293:50340 2345.3   0.0
+ FFMJ 15:293:50341 2345.6   0.0
+ FFMJ 15:293:50342 2346.1   0.0
+ FFMJ 15:293:50343 2347.6   0.0
+ FFMJ 15:293:50344 2348.3   0.0
+ FFMJ 15:293:50345 2349.2   0.0
+...
+...
 -TROP/SOLUTION
 %=ENDTROP
 </pre>
