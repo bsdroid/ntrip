@@ -34,7 +34,7 @@
  *
  * Created:    30-Aug-2006
  *
- * Changes:    
+ * Changes:
  *
  * -----------------------------------------------------------------------*/
 
@@ -144,7 +144,7 @@ void updatetime(int *week, int *secOfWeek, int mSecOfWeek, bool fixnumleap)
   // else if(glo_timeofday < 5*60 && mSecOfWeek > 23*60*60*1000)
   //   *secOfWeek -= 24*60*60;
 
-  // new version 
+  // new version
   if(mSecOfWeek < 4*60*60*1000 && glo_timeofday > 20*60*60)
     *secOfWeek += 24*60*60;
   else if(glo_timeofday < 4*60*60 && mSecOfWeek > 20*60*60*1000)
@@ -157,7 +157,7 @@ void updatetime(int *week, int *secOfWeek, int mSecOfWeek, bool fixnumleap)
   if(*secOfWeek >= 24*60*60*7) {*secOfWeek -= 24*60*60*7; ++*week; }
 }
 
-// 
+//
 ////////////////////////////////////////////////////////////////////////////
 void expandEnvVar(QString& str) {
 
@@ -187,12 +187,12 @@ void stripWhiteSpace(string& str) {
   }
 }
 
-// 
+//
 ////////////////////////////////////////////////////////////////////////////
 QDateTime dateAndTimeFromGPSweek(int GPSWeek, double GPSWeeks) {
 
   static const QDate zeroEpoch(1980, 1, 6);
- 
+
   QDate date(zeroEpoch);
   QTime time(0,0,0,0);
 
@@ -203,7 +203,7 @@ QDateTime dateAndTimeFromGPSweek(int GPSWeek, double GPSWeeks) {
   return QDateTime(date,time);
 }
 
-// 
+//
 ////////////////////////////////////////////////////////////////////////////
 void currentGPSWeeks(int& week, double& sec) {
 
@@ -215,7 +215,7 @@ void currentGPSWeeks(int& week, double& sec) {
   else {
     currDateTimeGPS = QDateTime::currentDateTime().toUTC();
     QDate hlp       = currDateTimeGPS.date();
-    currDateTimeGPS = currDateTimeGPS.addSecs(gnumleap(hlp.year(), 
+    currDateTimeGPS = currDateTimeGPS.addSecs(gnumleap(hlp.year(),
                                                      hlp.month(), hlp.day()));
   }
 
@@ -224,14 +224,14 @@ void currentGPSWeeks(int& week, double& sec) {
 
   week = int( (double(currDateGPS.toJulianDay()) - 2444244.5) / 7 );
 
-  sec = (currDateGPS.dayOfWeek() % 7) * 24.0 * 3600.0 + 
-        currTimeGPS.hour()                   * 3600.0 + 
-        currTimeGPS.minute()                 *   60.0 + 
+  sec = (currDateGPS.dayOfWeek() % 7) * 24.0 * 3600.0 +
+        currTimeGPS.hour()                   * 3600.0 +
+        currTimeGPS.minute()                 *   60.0 +
         currTimeGPS.second()                          +
         currTimeGPS.msec()                   / 1000.0;
 }
 
-// 
+//
 ////////////////////////////////////////////////////////////////////////////
 QDateTime currentDateAndTimeGPS() {
   if ( BNC_CORE->dateAndTimeGPSSet() ) {
@@ -245,7 +245,7 @@ QDateTime currentDateAndTimeGPS() {
   }
 }
 
-// 
+//
 ////////////////////////////////////////////////////////////////////////////
 QByteArray ggaString(const QByteArray& latitude,
                      const QByteArray& longitude,
@@ -267,9 +267,9 @@ QByteArray ggaString(const QByteArray& latitude,
   if (lon < -180.)  {lon=(lon+360.); flagE="E";}
   if (lat < 0.)  {lat=lat*(-1.); flagN="S";}
   QTime ttime(QDateTime::currentDateTime().toUTC().time());
-  int lat_deg = (int)lat;  
+  int lat_deg = (int)lat;
   double lat_min=(lat-lat_deg)*60.;
-  int lon_deg = (int)lon;  
+  int lon_deg = (int)lon;
   double lon_min=(lon-lon_deg)*60.;
   int hh = 0 , mm = 0;
   double ss = 0.0;
@@ -286,8 +286,10 @@ QByteArray ggaString(const QByteArray& latitude,
   gga += QString(",%1,").arg(hei, 2, 'f', 1);
   gga += QString("M,10.000,M,,");
   int xori;
+
   char XOR = 0;
-  char *Buff =gga.toAscii().data();
+  char Buff[gga.size()];
+  strncpy(Buff, gga.toAscii().data(), gga.size());
   int iLen = strlen(Buff);
   for (xori = 0; xori < iLen; xori++) {
     XOR ^= (char)Buff[xori];
@@ -297,7 +299,7 @@ QByteArray ggaString(const QByteArray& latitude,
   return gga.toAscii();
 }
 
-// 
+//
 ////////////////////////////////////////////////////////////////////////////
 void RSW_to_XYZ(const ColumnVector& rr, const ColumnVector& vv,
                 const ColumnVector& rsw, ColumnVector& xyz) {
@@ -336,7 +338,7 @@ t_irc xyz2ell(const double* XYZ, double* Ell) {
   const double bell = t_CST::aell*(1.0-1.0/t_CST::fInv) ;
   const double e2   = (t_CST::aell*t_CST::aell-bell*bell)/(t_CST::aell*t_CST::aell) ;
   const double e2c  = (t_CST::aell*t_CST::aell-bell*bell)/(bell*bell) ;
-  
+
   double nn, ss, zps, hOld, phiOld, theta, sin3, cos3;
 
   ss    = sqrt(XYZ[0]*XYZ[0]+XYZ[1]*XYZ[1]) ;
@@ -346,7 +348,7 @@ t_irc xyz2ell(const double* XYZ, double* Ell) {
   cos3  = cos(theta) * cos(theta) * cos(theta);
 
   // Closed formula
-  Ell[0] = atan( (XYZ[2] + e2c * bell * sin3) / (ss - e2 * t_CST::aell * cos3) );  
+  Ell[0] = atan( (XYZ[2] + e2c * bell * sin3) / (ss - e2 * t_CST::aell * cos3) );
   Ell[1] = atan2(XYZ[1],XYZ[0]) ;
   nn = t_CST::aell/sqrt(1.0-e2*sin(Ell[0])*sin(Ell[0])) ;
   Ell[2] = ss / cos(Ell[0]) - nn;
@@ -428,16 +430,16 @@ t_irc xyz2geoc(const double* XYZ, double* Geoc) {
   return success;
 }
 
-// 
+//
 ////////////////////////////////////////////////////////////////////////////
 double Frac (double x) {
-  return x-floor(x); 
+  return x-floor(x);
 }
 
 //
 ////////////////////////////////////////////////////////////////////////////
-double Modulo (double x, double y) { 
-  return y*Frac(x/y); 
+double Modulo (double x, double y) {
+  return y*Frac(x/y);
 }
 
 // Round to nearest integer
@@ -472,7 +474,7 @@ double associatedLegendreFunction(int n, int m, double t) {
 }
 
 
-// Jacobian XYZ --> NEU 
+// Jacobian XYZ --> NEU
 ////////////////////////////////////////////////////////////////////////////
 void jacobiXYZ_NEU(const double* Ell, Matrix& jacobi) {
 
@@ -486,13 +488,13 @@ void jacobiXYZ_NEU(const double* Ell, Matrix& jacobi) {
   jacobi(1,1) = - sinPhi * cosLam;
   jacobi(1,2) = - sinPhi * sinLam;
   jacobi(1,3) =   cosPhi;
-                           
-  jacobi(2,1) = - sinLam;        
+
+  jacobi(2,1) = - sinLam;
   jacobi(2,2) =   cosLam;
-  jacobi(2,3) =   0.0;          
-                           
-  jacobi(3,1) = cosPhi * cosLam; 
-  jacobi(3,2) = cosPhi * sinLam; 
+  jacobi(2,3) =   0.0;
+
+  jacobi(3,1) = cosPhi * cosLam;
+  jacobi(3,2) = cosPhi * sinLam;
   jacobi(3,3) = sinPhi;
 }
 
@@ -523,11 +525,11 @@ void jacobiEll_XYZ(const double* Ell, Matrix& jacobi) {
   jacobi(3,1) = (nn*(1.0-e2)+hh) * cosPhi;
   jacobi(3,2) = 0.0;
   jacobi(3,3) = sinPhi;
-} 
+}
 
 // Covariance Matrix in NEU
 ////////////////////////////////////////////////////////////////////////////
-void covariXYZ_NEU(const SymmetricMatrix& QQxyz, const double* Ell, 
+void covariXYZ_NEU(const SymmetricMatrix& QQxyz, const double* Ell,
                    SymmetricMatrix& Qneu) {
 
   Tracer tracer("covariXYZ_NEU");
@@ -539,7 +541,7 @@ void covariXYZ_NEU(const SymmetricMatrix& QQxyz, const double* Ell,
 
 // Covariance Matrix in XYZ
 ////////////////////////////////////////////////////////////////////////////
-void covariNEU_XYZ(const SymmetricMatrix& QQneu, const double* Ell, 
+void covariNEU_XYZ(const SymmetricMatrix& QQneu, const double* Ell,
                    SymmetricMatrix& Qxyz) {
 
   Tracer tracer("covariNEU_XYZ");
@@ -557,7 +559,7 @@ ColumnVector rungeKutta4(
   double dx,              // the step size for the integration
   double* acc,            // aditional acceleration
   ColumnVector (*der)(double x, const ColumnVector& y, double* acc)
-                          // A pointer to a function that computes the 
+                          // A pointer to a function that computes the
                           // derivative of a function at a point (x,y)
                          ) {
 
@@ -567,10 +569,10 @@ ColumnVector rungeKutta4(
   ColumnVector k4 = der(xi+dx    , yi+k3    , acc) * dx;
 
   ColumnVector yf = yi + k1/6.0 + k2/3.0 + k3/3.0 + k4/6.0;
-  
+
   return yf;
 }
-// 
+//
 ////////////////////////////////////////////////////////////////////////////
 double djul(long jj, long mm, double tt) {
   long    ii, kk;
@@ -578,23 +580,23 @@ double djul(long jj, long mm, double tt) {
   if( mm <= 2 ) {
     jj = jj - 1;
     mm = mm + 12;
-  }  
+  }
   ii   = jj/100;
   kk   = 2 - ii + ii/4;
   djul = (365.25*jj - fmod( 365.25*jj, 1.0 )) - 679006.0;
   djul = djul + floor( 30.6001*(mm + 1) ) + tt + kk;
   return djul;
-} 
+}
 
-// 
+//
 ////////////////////////////////////////////////////////////////////////////
 double gpjd(double second, int nweek) {
   double deltat;
   deltat = nweek*7.0 + second/86400.0 ;
   return( 44244.0 + deltat) ;
-} 
+}
 
-// 
+//
 ////////////////////////////////////////////////////////////////////////////
 void jdgp(double tjul, double & second, long & nweek) {
   double      deltat;
@@ -603,7 +605,7 @@ void jdgp(double tjul, double & second, long & nweek) {
   second = (deltat - (nweek)*7.0)*86400.0;
 }
 
-// 
+//
 ////////////////////////////////////////////////////////////////////////////
 void jmt(double djul, long& jj, long& mm, double& dd) {
   long   ih, ih1, ih2 ;
@@ -621,25 +623,25 @@ void jmt(double djul, long& jj, long& mm, double& dd) {
   if ( ih2 > 13 ) mm = ih2 - 13;
   jj  = ih1;
   if ( mm <= 2 ) jj = jj + 1;
-} 
+}
 
-// 
+//
 ////////////////////////////////////////////////////////////////////////////
-void GPSweekFromDateAndTime(const QDateTime& dateTime, 
+void GPSweekFromDateAndTime(const QDateTime& dateTime,
                             int& GPSWeek, double& GPSWeeks) {
 
   static const QDateTime zeroEpoch(QDate(1980, 1, 6),QTime(),Qt::UTC);
- 
+
   GPSWeek = zeroEpoch.daysTo(dateTime) / 7;
 
   int weekDay = dateTime.date().dayOfWeek() + 1;  // Qt: Monday = 1
   if (weekDay > 7) weekDay = 1;
 
   GPSWeeks = (weekDay - 1) * 86400.0
-             - dateTime.time().msecsTo(QTime()) / 1e3; 
+             - dateTime.time().msecsTo(QTime()) / 1e3;
 }
 
-// 
+//
 ////////////////////////////////////////////////////////////////////////////
 void GPSweekFromYMDhms(int year, int month, int day, int hour, int min,
                        double sec, int& GPSWeek, double& GPSWeeks) {
@@ -649,10 +651,10 @@ void GPSweekFromYMDhms(int year, int month, int day, int hour, int min,
   long GPSWeek_long;
   jdgp(mjd, GPSWeeks, GPSWeek_long);
   GPSWeek = GPSWeek_long;
-  GPSWeeks += hour * 3600.0 + min * 60.0 + sec;  
+  GPSWeeks += hour * 3600.0 + min * 60.0 + sec;
 }
 
-// 
+//
 ////////////////////////////////////////////////////////////////////////////
 void mjdFromDateAndTime(const QDateTime& dateTime, int& mjd, double& dayfrac) {
 
@@ -662,11 +664,11 @@ void mjdFromDateAndTime(const QDateTime& dateTime, int& mjd, double& dayfrac) {
 
   dayfrac = (dateTime.time().hour() +
              (dateTime.time().minute() +
-              (dateTime.time().second() + 
+              (dateTime.time().second() +
                dateTime.time().msec() / 1000.0) / 60.0) / 60.0) / 24.0;
 }
 
-// 
+//
 ////////////////////////////////////////////////////////////////////////////
 bool findInVector(const vector<QString>& vv, const QString& str) {
   std::vector<QString>::const_iterator it;
@@ -678,7 +680,7 @@ bool findInVector(const vector<QString>& vv, const QString& str) {
   return false;
 }
 
-// 
+//
 ////////////////////////////////////////////////////////////////////////////
 int readInt(const QString& str, int pos, int len, int& value) {
   bool ok;
@@ -686,7 +688,7 @@ int readInt(const QString& str, int pos, int len, int& value) {
   return ok ? 0 : 1;
 }
 
-// 
+//
 ////////////////////////////////////////////////////////////////////////////
 int readDbl(const QString& str, int pos, int len, double& value) {
   QString hlp = str.mid(pos, len);
@@ -702,8 +704,8 @@ int readDbl(const QString& str, int pos, int len, double& value) {
 
 // Topocentrical Distance and Elevation
 ////////////////////////////////////////////////////////////////////////////
-void topos(double xRec, double yRec, double zRec, 
-           double xSat, double ySat, double zSat, 
+void topos(double xRec, double yRec, double zRec,
+           double xSat, double ySat, double zSat,
            double& rho, double& eleSat, double& azSat) {
 
   double dx[3];
@@ -711,7 +713,7 @@ void topos(double xRec, double yRec, double zRec,
   dx[1] = ySat-yRec;
   dx[2] = zSat-zRec;
 
-  rho =  sqrt( dx[0]*dx[0] + dx[1]*dx[1] + dx[2]*dx[2] ); 
+  rho =  sqrt( dx[0]*dx[0] + dx[1]*dx[1] + dx[2]*dx[2] );
 
   double xyzRec[3];
   xyzRec[0] = xRec;
@@ -740,7 +742,7 @@ void deg2DMS(double decDeg, int& deg, int& min, double& sec) {
   sec =       (decDeg - deg - min/60.0) * 3600.0;
 }
 
-// 
+//
 ////////////////////////////////////////////////////////////////////////////
 QString fortranFormat(double value, int width, int prec) {
   int    expo = value == 0.0 ? 0 : int(log10(fabs(value)));
@@ -759,7 +761,7 @@ QString fortranFormat(double value, int width, int prec) {
 
 //
 //////////////////////////////////////////////////////////////////////////////
-void kalman(const Matrix& AA, const ColumnVector& ll, const DiagonalMatrix& PP, 
+void kalman(const Matrix& AA, const ColumnVector& ll, const DiagonalMatrix& PP,
             SymmetricMatrix& QQ, ColumnVector& xx) {
 
   Tracer tracer("kalman");
@@ -776,17 +778,17 @@ void kalman(const Matrix& AA, const ColumnVector& ll, const DiagonalMatrix& PP,
 
   SRF.SubMatrix   (nObs+1, nObs+nPar, 1, nObs) = SA;
   SRF.SymSubMatrix(nObs+1, nObs+nPar)          = SS;
-  
+
   UpperTriangularMatrix UU;
   QRZ(SRF, UU);
-  
+
   SS = UU.SymSubMatrix(nObs+1, nObs+nPar);
   UpperTriangularMatrix SH_rt = UU.SymSubMatrix(1, nObs);
   Matrix YY  = UU.SubMatrix(1, nObs, nObs+1, nObs+nPar);
-  
+
   UpperTriangularMatrix SHi = SH_rt.i();
-  
-  Matrix KT  = SHi * YY; 
+
+  Matrix KT  = SHi * YY;
   SymmetricMatrix Hi; Hi << SHi * SHi.t();
 
   xx += KT.t() * (ll - AA * xx);
