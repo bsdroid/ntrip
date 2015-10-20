@@ -34,7 +34,7 @@
  *
  * Created:    24-Aug-2006
  *
- * Changes:    
+ * Changes:
  *
  * -----------------------------------------------------------------------*/
 
@@ -50,17 +50,17 @@
 using namespace std;
 using namespace rtcm2;
 
-// 
+//
 // Constructor
-// 
+//
 
 RTCM2Decoder::RTCM2Decoder(const std::string& ID) : _ephUser(true) {
   _ID = ID;
 }
 
-// 
+//
 // Destructor
-// 
+//
 
 RTCM2Decoder::~RTCM2Decoder() {
 }
@@ -289,19 +289,19 @@ void RTCM2Decoder::translateCorr2Obs(vector<string>& errmsg) {
     string obsT = "";
 
     // new observation
-    t_satObs* new_obs = 0;
+    t_satObs new_obs;
 
     t_frqObs* frqObs1C = new t_frqObs;
     frqObs1C->_rnxType2ch = "1C";
-    new_obs->_obs.push_back(frqObs1C);
+    new_obs._obs.push_back(frqObs1C);
 
     t_frqObs* frqObs1P = new t_frqObs;
     frqObs1P->_rnxType2ch = (sys == 'G') ? "1W" : "1P";
-    new_obs->_obs.push_back(frqObs1P);
+    new_obs._obs.push_back(frqObs1P);
 
     t_frqObs* frqObs2P = new t_frqObs;
     frqObs2P->_rnxType2ch = (sys == 'G') ? "2W" : "2P";
-    new_obs->_obs.push_back(frqObs2P);
+    new_obs._obs.push_back(frqObs2P);
 
     // missing IOD
     vector<string> missingIOD;
@@ -366,17 +366,12 @@ void RTCM2Decoder::translateCorr2Obs(vector<string>& errmsg) {
         if (*obsVal == 0)
           *obsVal = ZEROVALUE;
 
-        // Allocate new memory
-        // -------------------
-        if (!new_obs) {
-          new_obs = new t_satObs();
-          if (corr->PRN < 200) {
-            new_obs->_prn.set('G', corr->PRN);
-          } else {
-            new_obs->_prn.set('R', corr->PRN - 200);
-          }
-          new_obs->_time.set(GPSWeek_rcv, GPSWeeks_rcv);
+        if (corr->PRN < 200) {
+          new_obs._prn.set('G', corr->PRN);
+        } else {
+          new_obs._prn.set('R', corr->PRN - 200);
         }
+        new_obs._time.set(GPSWeek_rcv, GPSWeeks_rcv);
 
         // Store estimated measurements
         // ----------------------------
@@ -429,9 +424,8 @@ void RTCM2Decoder::translateCorr2Obs(vector<string>& errmsg) {
     }
 
     // Store new observation
-    if (new_obs) {
-      _obsList.push_back(*new_obs);
-      delete new_obs;
+    if (new_obs._time.mjd() > 0) {
+      _obsList.push_back(new_obs);
     }
   }
 }
