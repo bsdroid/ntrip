@@ -2651,7 +2651,10 @@ Having this parameter first in each record is mandatory. BNC can carry out PPP s
 &nbsp; &nbsp;'JPSREGANT_SD_E      ' (no radome)
 &nbsp; &nbsp;'LEIAT504        NONE' (no radome)
 &nbsp; &nbsp;'LEIAR25.R3      LEIT' (radome)</pre>
-Leave antenna name blank if you don't want to correct observations for APC offsets and variations or if you don't know the antenna name.</li>
+Leave antenna name blank if you don't want to correct observations for APC offsets and variations or if you don't know the antenna name.</li><br>
+<li>
+Receiver type following the naming conventions for IGS equipment as defined in <u>https://igscb.jpl.nasa.gov/igscb/station/general/rcvr_ant.tab</u>. Specifying the receiver type is only required when saving SINEX Troposphere files. In these files it becomes part of the 'FILE/REFERENCE' section, see section 'SNX TRO Directory'.
+</li>
 </ul>
 </p>
 <p>
@@ -2663,67 +2666,63 @@ followed by the antenna name and radome in use.
 </p>
 <pre>
 !
-! Station    X[m]          Y[m]          Z[m] North[m]  EAST[m]  UP[m]  Antenna        Radom
-! -------------------------------------------------------------------------------------------
-ADIS0  4913652.6612  3945922.7678   995383.4359  0.0000  0.0000  0.0010 TRM29659.00     NONE
-ALIC0 -4052052.5593  4212836.0078 -2545104.8289  0.0000  0.0000  0.0015 LEIAR25.R3      NONE
-BELF0  3685257.8823  -382908.8992  5174311.1067  0.0000  0.0000  0.0000 LEIAT504GG      LEIS
-BNDY0 -5125977.4106  2688801.2966 -2669890.4345  0.0000  0.0000  0.0000 ASH701945E_M    NONE
-BRAZ0  4115014.0678 -4550641.6105 -1741443.8244  0.0000  0.0000  0.0080 LEIAR10         NONE
-CAGZ0  4893379.8326   772650.6854  4004180.1625  0.0000  0.0000  0.0945 JPSREGANT_DD_E  NONE
-CALG0 -1635378.1748 -3665371.5746  4941664.3370  0.0000  0.0000  0.0000 SOK702          NONE
-CONZ0  1492004.6119 -4887911.2671 -3803640.2397  0.0000  0.0000  0.0574 LEIAR25.R3      LEIT
-CTWN0  5023564.4285  1677795.7211 -3542025.8392  0.0000  0.0000  0.0000 ASH701941.B     NONE
-CUT07 -2364337.4408  4870285.6055 -3360809.6280  0.0000  0.0000  0.0000 TRM59800.00     SCIS
-DHLG3 -2319099.4261 -4799846.4583  3490090.4018  0.0000  0.0000  0.1224 ASH701945B_M    SCIS
-FAA10 -5247393.4678 -3076866.6580 -1911521.1749  0.0000  0.0000  0.1262 LEIAR25.R4      NONE
-GANP0  3929181.3480  1455236.9105  4793653.9880  0.0000  0.0000  0.3830 TRM55971.00     NONE
-HLFX0  2018905.6037 -4069070.5095  4462415.4771  0.0000  0.0000  0.1000 TPSCR.G3        NONE
-KIRU0  2251420.6255   862817.3340  5885476.8395  0.0000  0.0000  0.0620 ASH701945C_M    SNOW
-LHAZ0  -106941.9272  5549269.8041  3139215.1564  0.0000  0.0000  0.1330 ASH701941.B     NONE
-LMMF7  2993387.3587 -5399363.8649  1596748.0983  0.0000  0.0000  0.0000 TRM57971.00     NONE
-MAO07 -5466067.0979 -2404333.0198  2242123.1929  0.0000  0.0000  0.0000 LEIAR25.R3      LEIT
-NICO0  4359415.5252  2874117.1872  3650777.9614  0.0000  0.0000  0.0650 LEIAR25.R4      LEIT
-NKLG7  6287385.7320  1071574.7606    39133.1088 -0.0015 -0.0025  3.0430 TRM59800.00     SCIS
-NURK7  5516756.5103  3196624.9684  -215027.1315  0.0000  0.0000  0.1300 TPSCR3_GGD      NONE
-OHIX7  1525809.2353 -2432478.7568 -5676166.2639  0.0000  0.0000  0.0660 LEIAR25.R4      LEIT
-ONSA0  3370658.3928   711877.2903  5349787.0603  0.0000  0.0000  0.9950 AOAD/M_B        OSOD
-PDEL0  4551595.9072 -2186892.9495  3883410.9685  0.0000  0.0000  0.0000 LEIAT504GG      NONE
-RCMN0  5101056.6270  3829074.4206  -135016.1589  0.0000  0.0000  0.0000 LEIAT504GG      LEIS
-REUN0  3364098.9668  4907944.6121 -2293466.7379  0.0000  0.0000  0.0610 TRM55971.00     NONE
-REYK7  2587384.0890 -1043033.5433  5716564.1301  0.0000  0.0000  0.0570 LEIAR25.R4      LEIT
-RIO27  1429907.8578 -3495354.8953 -5122698.5595  0.0000  0.0000  0.0350 ASH700936C_M    SNOW
-SMR50   927077.1096 -2195043.5597 -5896521.1344  0.0000  0.0000  0.0000 TRM41249.00     TZGD
-SUWN0 -3062023.1604  4055447.8946  3841818.1684  0.0000  0.0000  1.5700 TRM29659.00     DOME
-TASH7  1695944.9208  4487138.6220  4190140.7391  0.0000  0.0000  0.1206 JAV_RINGANT_G3T NONE
-UFPR0  3763751.6731 -4365113.9039 -2724404.5331  0.0000  0.0000  0.1000 TRM55971.00     NONE
-UNB30  1761287.9724 -4078238.5659  4561417.8448  0.0000  0.0000  0.3145 TRM57971.00     NONE
-VILL0  4849833.5863  -335048.8133  4116015.0652  0.0000  0.0000  0.0437 AOAD/M_T        NONE
-WIND7  5633708.8016  1732017.9297 -2433985.5795  0.0000  0.0000  0.0460 ASH700936C_M    SNOW
-WTZR0  4075580.3797   931853.9767  4801568.2360  0.0000  0.0000  0.0710 LEIAR25.R3      LEIT
-WUH27 -2267749.9761  5009154.5504  3221294.4429  0.0000  0.0000  0.1206 JAV_RINGANT_G3T NONE
-YELL7 -1224452.8796 -2689216.1863  5633638.2832  0.0000  0.0000  0.1000 AOAD/M_T        NONE
+! Station    X[m]          Y[m]          Z[m] North[m]  EAST[m]  UP[m]  Antenna--------Radom Receiver
+! -----------------------------------------------------------------------------------------------------
+ADIS0  4913652.6612  3945922.7678   995383.4359  0.0000  0.0000  0.0010 TRM29659.00     NONE JPS LEGACY
+ALIC0 -4052052.5593  4212836.0078 -2545104.8289  0.0000  0.0000  0.0015 LEIAR25.R3      NONE LEICA GRX1200GGPRO
+BELF0  3685257.8823  -382908.8992  5174311.1067  0.0000  0.0000  0.0000 LEIAT504GG      LEIS LEICA GRX1200GGPRO
+BNDY0 -5125977.4106  2688801.2966 -2669890.4345  0.0000  0.0000  0.0000 ASH701945E_M    NONE TRIMBLE NETR5
+BRAZ0  4115014.0678 -4550641.6105 -1741443.8244  0.0000  0.0000  0.0080 LEIAR10         NONE LEICA GR25
+CTWN0  5023564.4285  1677795.7211 -3542025.8392  0.0000  0.0000  0.0000 ASH701941.B     NONE TRIMBLE NETR5
+CUT07 -2364337.4408  4870285.6055 -3360809.6280  0.0000  0.0000  0.0000 TRM59800.00     SCIS TRIMBLE NETR9
+GANP0  3929181.3480  1455236.9105  4793653.9880  0.0000  0.0000  0.3830 TRM55971.00     NONE TRIMBLE NETR9
+HLFX0  2018905.6037 -4069070.5095  4462415.4771  0.0000  0.0000  0.1000 TPSCR.G3        NONE TPS NET-G3A
+LHAZ0  -106941.9272  5549269.8041  3139215.1564  0.0000  0.0000  0.1330 ASH701941.B     NONE TPS E_GGD
+LMMF7  2993387.3587 -5399363.8649  1596748.0983  0.0000  0.0000  0.0000 TRM57971.00     NONE TRIMBLE NETR9
+MAO07 -5466067.0979 -2404333.0198  2242123.1929  0.0000  0.0000  0.0000 LEIAR25.R3      LEIT JAVAD TRE_G3TH DELTA
+NICO0  4359415.5252  2874117.1872  3650777.9614  0.0000  0.0000  0.0650 LEIAR25.R4      LEIT LEICA GR25
+NKLG7  6287385.7320  1071574.7606    39133.1088 -0.0015 -0.0025  3.0430 TRM59800.00     SCIS TRIMBLE NETR9
+NURK7  5516756.5103  3196624.9684  -215027.1315  0.0000  0.0000  0.1300 TPSCR3_GGD      NONE JAVAD TRE_G3TH DELTA
+ONSA0  3370658.3928   711877.2903  5349787.0603  0.0000  0.0000  0.9950 AOAD/M_B        OSOD JAVAD TRE_G3TH DELTA
+PDEL0  4551595.9072 -2186892.9495  3883410.9685  0.0000  0.0000  0.0000 LEIAT504GG      NONE LEICA GRX1200GGPRO
+RCMN0  5101056.6270  3829074.4206  -135016.1589  0.0000  0.0000  0.0000 LEIAT504GG      LEIS LEICA GRX1200GGPRO
+REUN0  3364098.9668  4907944.6121 -2293466.7379  0.0000  0.0000  0.0610 TRM55971.00     NONE TRIMBLE NETR9
+REYK7  2587384.0890 -1043033.5433  5716564.1301  0.0000  0.0000  0.0570 LEIAR25.R4      LEIT LEICA GR25
+RIO27  1429907.8578 -3495354.8953 -5122698.5595  0.0000  0.0000  0.0350 ASH700936C_M    SNOW JAVAD TRE_G3TH DELTA
+SMR50   927077.1096 -2195043.5597 -5896521.1344  0.0000  0.0000  0.0000 TRM41249.00     TZGD TRIMBLE NETR5
+SUWN0 -3062023.1604  4055447.8946  3841818.1684  0.0000  0.0000  1.5700 TRM29659.00     DOME TRIMBLE NETR9
+TASH7  1695944.9208  4487138.6220  4190140.7391  0.0000  0.0000  0.1206 JAV_RINGANT_G3T NONE JAVAD TRE_G3TH DELTA
+UFPR0  3763751.6731 -4365113.9039 -2724404.5331  0.0000  0.0000  0.1000 TRM55971.00     NONE TRIMBLE NETR5
+UNB30  1761287.9724 -4078238.5659  4561417.8448  0.0000  0.0000  0.3145 TRM57971.00     NONE TRIMBLE NETR9
+WIND7  5633708.8016  1732017.9297 -2433985.5795  0.0000  0.0000  0.0460 ASH700936C_M    SNOW JAVAD TRE_G3TH DELTA
+WTZR0  4075580.3797   931853.9767  4801568.2360  0.0000  0.0000  0.0710 LEIAR25.R3      LEIT LEICA GR25
+WUH27 -2267749.9761  5009154.5504  3221294.4429  0.0000  0.0000  0.1206 JAV_RINGANT_G3T NONE JAVAD TRE_G3TH DELTA
+YELL7 -1224452.8796 -2689216.1863  5633638.2832  0.0000  0.0000  0.1000 AOAD/M_T        NONE JAVAD TRE_G3TH DELTA
 </pre>
 <p>
-Note that the only mandatory parameters in this file are the 'Station' parameters, each standing for an observation stream's mountpoint or the 4-character station ID of a RINEX filename. The following shows further valid examples for records of a 'Coordinates' file.
+Note that the only mandatory parameters in this file are the 'Station' parameters in the first column, each standing for an observation stream's mountpoint or the 4-character station ID of a RINEX filename. The following shows further valid examples for records of a 'Coordinates' file.
 </p>
 
 <pre>
 !
-! Station     X[m]         Y[m]          Z[m]    N[m]   E[m]   U[m]  Antenna        Radom
-! ---------------------------------------------------------------------------------------
+! Station     X[m]         Y[m]          Z[m]    N[m]   E[m]   U[m]  Antenna--------Radom Receiver
+! --------------------------------------------------------------------------------------------------
+WTZR0   4075580.3797  931853.9767  4801568.2360  0.000  0.000  0.071 LEIAR25.R3      LEIT LEICA GR25
+CUT07  -2364337.4408 4870285.6055 -3360809.6280  0.000  0.000  0.000 TRM59800.00     SCIS
 FFMJ1   4053455.7384  617729.8393  4869395.8214  0.000  0.000  0.045
 TITZ1   3993780.4501  450206.8969  4936136.9886
 WARN
-SASS1         0.0          0.0           0.0     0.000  0.000  0.031 TPSCR3_GGD      CONE
+SASS1         0.0          0.0           0.0     0.000  0.000  0.031 TPSCR3_GGD      CONE TRIMBLE NETR5
 </pre>
 
 <p>
 In this file
 </p>
 <ul>
-<li> Record 'FFMJ1' describes a stream from a stationary receiver with known a priori marker coordinate and antenna eccentricity but unknown antenna name and radome.</li>
-<li> Record 'TITZ1' describes a stream coming from a stationary receiver where an a priori marker coordinate is known but antenna eccentricity, name and radome are unknown.</li>
+<li> Record 'WTZR0' describes a stream from a stationary receiver with known a priori marker coordinate, antenna eccentricity, antenna and radome type and receiver tpye.</li>
+<li> Record 'CUT07' describes a stream from a stationary receiver with known a priori marker coordinate, antenna eccentricity and antenna and radome type. The receiver type is unknown.</li>
+<li> Record 'FFMJ1' describes a stream from a stationary receiver with known a priori marker coordinate and antenna eccentricity but unknown antenna, radome and receiver type.</li>
+<li> Record 'TITZ1' describes a stream coming from a stationary receiver where an a priori marker coordinate is known but antenna eccentricity, name and radome and receiver type are unknown.</li>
 <li>The 4-character station ID 'WARN' indicates that a RINEX observations file for post processing PPP is available for station 'WARN' but an a priori marker coordinate as well as antenna eccentricity, name and radome are unknown.</li>
 <li>Record 'SASS1' stands for a mountpoint where the stream comes from a mobile rover receiver. Hence an a priori coordinate is unknown although antenna eccentricity, name and radome are known.</li>
 </ul>
@@ -2885,7 +2884,7 @@ where T_apr is the a priori tropospheric delay derived from Saastamoinen model.
 </p>
 
 <p>
-You can specify a 'SNX TRO directory' for saving SINEX Troposphere files on disk, see <u>https://igscb.jpl.nasa.gov/igscb/data/format/sinex_tropo.txt</u> for a documentation of the file format. The following is an example for the file contents:
+You can specify a 'SNX TRO directory' for saving SINEX Troposphere files on disk, see <u>https://igscb.jpl.nasa.gov/igscb/data/format/sinex_tropo.txt</u> for a documentation of the file format. Note that receiver type information for these files must be provided through the coordinates file described in section 'Coordinates'. The following is an example for a troposphere file contents:
 </p>
 
 <pre>
