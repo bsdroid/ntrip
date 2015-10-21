@@ -645,7 +645,7 @@ t_irc t_pppFilter::update(t_epoData* epoData) {
           << setw(10) << setprecision(3) << par->xx
           << " +- " << setw(6) << setprecision(3)
           << sqrt(_QQ(par->index,par->index))
-          << "   nEpo = " << par->numEpo;
+          << "   epo = " << par->numEpo;
     }
     else if (par->type == t_pppParam::TROPO) {
       double aprTrp = delay_saast(M_PI/2.0);
@@ -684,31 +684,48 @@ t_irc t_pppFilter::update(t_epoData* epoData) {
 
   // Final Message (both log file and screen)
   // ----------------------------------------
-  LOG << OPT->_roverName << "  PPP "
-      << epoData->tt.datestr() << "_" << epoData->tt.timestr(3) << " " << epoData->sizeAll() << " "
-      << setw(14) << setprecision(3) << x()                  << " +- "
-      << setw(6)  << setprecision(3) << sqrt(_QQ(1,1))       << " "
-      << setw(14) << setprecision(3) << y()                  << " +- "
-      << setw(6)  << setprecision(3) << sqrt(_QQ(2,2))       << " "
-      << setw(14) << setprecision(3) << z()                  << " +- "
-      << setw(6)  << setprecision(3) << sqrt(_QQ(3,3));
+  LOG << epoData->tt.datestr() << "_" << epoData->tt.timestr(3)
+      << " " << OPT->_roverName
+      << " X = "
+      << setprecision(4) << x() << " +- "
+      << setprecision(4) << sqrt(_QQ(1,1))
+
+      << " Y = "
+      << setprecision(4) << y() << " +- "
+      << setprecision(4) << sqrt(_QQ(2,2))
+
+      << " Z = "
+      << setprecision(4) << z() << " +- "
+      << setprecision(4) << sqrt(_QQ(3,3));
 
   // NEU Output
   // ----------
   if (OPT->xyzAprRoverSet()) {
-    double xyz[3];
-    xyz[0] = x() - OPT->_xyzAprRover[0];
-    xyz[1] = y() - OPT->_xyzAprRover[1];
-    xyz[2] = z() - OPT->_xyzAprRover[2];
+    SymmetricMatrix QQxyz = _QQ.SymSubMatrix(1,3);
 
-    double ellRef[3];
-    xyz2ell(OPT->_xyzAprRover.data(), ellRef);
-    xyz2neu(ellRef, xyz, _neu.data());
+    ColumnVector xyz(3);
+    xyz(1) = x() - OPT->_xyzAprRover[0];
+    xyz(2) = y() - OPT->_xyzAprRover[1];
+    xyz(3) = z() - OPT->_xyzAprRover[2];
 
-    LOG << "  NEU "
-        << setw(8) << setprecision(3) << _neu[0] << " "
-        << setw(8) << setprecision(3) << _neu[1] << " "
-        << setw(8) << setprecision(3) << _neu[2] << endl << endl;
+    ColumnVector ellRef(3);
+    xyz2ell(OPT->_xyzAprRover.data(), ellRef.data());
+    xyz2neu(ellRef.data(), xyz.data(), _neu.data());
+
+    SymmetricMatrix QQneu(3);
+    covariXYZ_NEU(QQxyz, ellRef.data(), QQneu);
+
+    LOG << " dN = "
+        << setprecision(4) << _neu[0] << " +- "
+        << setprecision(4) << sqrt(QQneu[0][0])
+
+        << " dE = "
+        << setprecision(4) << _neu[1] << " +- "
+        << setprecision(4) << sqrt(QQneu[1][1])
+
+        << " dU = "
+        << setprecision(4) << _neu[2] << " +- "
+        << setprecision(4) << sqrt(QQneu[2][2])           << endl << endl;
   }
   else {
     LOG << endl << endl;
@@ -1016,6 +1033,7 @@ t_irc t_pppFilter::update_p(t_epoData* epoData) {
     bool usePhase = OPT->ambLCs('G').size() || OPT->ambLCs('R').size() ||
                     OPT->ambLCs('E').size() || OPT->ambLCs('C').size() ;
 
+    bool satnumPrinted = false;
     for (int iPhase = 0; iPhase <= (usePhase ? 1 : 0); iPhase++) {
 
       // Status Prediction
@@ -1036,11 +1054,14 @@ t_irc t_pppFilter::update_p(t_epoData* epoData) {
           nObs -= epoData->sizeSys(s);
         }
         else {
-          LOG << _time.datestr() << "_" << _time.timestr(3)
-              << " SATNUM " << s << ' ' << right << setw(2)
-              << epoData->sizeSys(s) << endl;
+          if (!satnumPrinted) {
+            LOG << _time.datestr() << "_" << _time.timestr(3)
+                << " SATNUM " << s << ' ' << right << setw(2)
+                << epoData->sizeSys(s) << endl;
+          }
         }
       }
+      satnumPrinted = true;
 
       // Prepare first-design Matrix, vector observed-computed
       // -----------------------------------------------------
