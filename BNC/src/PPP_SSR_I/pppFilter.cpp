@@ -1033,7 +1033,10 @@ t_irc t_pppFilter::update_p(t_epoData* epoData) {
     bool usePhase = OPT->ambLCs('G').size() || OPT->ambLCs('R').size() ||
                     OPT->ambLCs('E').size() || OPT->ambLCs('C').size() ;
 
-    bool satnumPrinted = false;
+    char sys[] ={'G', 'R', 'E', 'C'};
+
+    bool satnumPrinted[] = {false, false, false, false};
+
     for (int iPhase = 0; iPhase <= (usePhase ? 1 : 0); iPhase++) {
 
       // Status Prediction
@@ -1046,7 +1049,6 @@ t_irc t_pppFilter::update_p(t_epoData* epoData) {
       unsigned nObs = 0;
       nObs = epoData->sizeAll();
       bool useObs = false;
-      char sys[] ={'G', 'R', 'E', 'C'};
       for (unsigned ii = 0; ii < sizeof(sys); ii++) {
         const char s = sys[ii];
         (iPhase == 0) ? useObs = OPT->codeLCs(s).size() : useObs = OPT->ambLCs(s).size();
@@ -1054,14 +1056,14 @@ t_irc t_pppFilter::update_p(t_epoData* epoData) {
           nObs -= epoData->sizeSys(s);
         }
         else {
-          if (!satnumPrinted) {
+          if (!satnumPrinted[ii]) {
+            satnumPrinted[ii] = true;
             LOG << _time.datestr() << "_" << _time.timestr(3)
                 << " SATNUM " << s << ' ' << right << setw(2)
                 << epoData->sizeSys(s) << endl;
           }
         }
       }
-      satnumPrinted = true;
 
       // Prepare first-design Matrix, vector observed-computed
       // -----------------------------------------------------
