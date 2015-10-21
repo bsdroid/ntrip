@@ -156,7 +156,7 @@ bncWindow::bncWindow() {
   _actStop = new QAction(tr("Sto&p"),this);
   connect(_actStop, SIGNAL(triggered()), SLOT(slotStop()));
 
-  _actwhatsthis= new QAction(tr("Help ?=Shift+F1"),this);
+  _actwhatsthis= new QAction(tr("Help?=Shift+F1"),this);
   connect(_actwhatsthis, SIGNAL(triggered()), SLOT(slotWhatsThis()));
 
   CreateMenu();
