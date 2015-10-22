@@ -119,7 +119,7 @@ void t_reqcAnalyze::run() {
   }
 
   if (_log) {
-    *_log << "QC Format Version : " << QString("%1").arg(QC_FORMAT_VERSION,3,'f',1)  << endl << endl;
+    *_log << "QC Format Version  : " << QString("%1").arg(QC_FORMAT_VERSION,3,'f',1)  << endl << endl;
   }
 
   // Check Ephemerides
@@ -1015,7 +1015,7 @@ void t_reqcAnalyze::checkEphemerides() {
     }
   }
   if (_log) {
-    *_log << "Navigation File(s): " << navFileName                                   << endl;
+    *_log << "Navigation File(s) : " << navFileName                                   << endl;
   }
   QStringListIterator it(_navFileNames);
   while (it.hasNext()) {
@@ -1035,7 +1035,7 @@ void t_reqcAnalyze::checkEphemerides() {
       }
     }
     if (_log) {
-      *_log << "Ephemeris         : " << numOK << " OK   " << numBad << " BAD" << endl;
+      *_log << "Ephemeris          : " << numOK << " OK   " << numBad << " BAD" << endl;
     }
     if (numBad > 0) {
       for (unsigned ii = 0; ii < rnxNavFile.ephs().size(); ii++) {
