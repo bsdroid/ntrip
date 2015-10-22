@@ -77,7 +77,7 @@ t_reqcAnalyze::t_reqcAnalyze(QObject* parent) : QThread(parent) {
 
   connect(this, SIGNAL(dspSkyPlot(const QString&, const QString&, QVector<t_polarPoint*>*,
                                   const QString&, QVector<t_polarPoint*>*,
-                                  const QByteArray&, double)), 
+                                  const QByteArray&, double)),
           this, SLOT(slotDspSkyPlot(const QString&, const QString&, QVector<t_polarPoint*>*,
                                     const QString&, QVector<t_polarPoint*>*,
                                     const QByteArray&, double)));
@@ -195,7 +195,7 @@ void t_reqcAnalyze::analyzeFile(t_rnxObsFile* obsFile) {
   // Loop over all Epochs
   // --------------------
   try {
-    QMap<QString, bncTime> lastObsTime; 
+    QMap<QString, bncTime> lastObsTime;
     bool firstEpo = true;
     while ( (_currEpo = obsFile->nextEpoch()) != 0) {
       if (firstEpo) {
@@ -328,7 +328,7 @@ void t_reqcAnalyze::updateQcSat(const t_qcSat& qcSat, t_qcSatSum& qcSatSum) {
 
 //
 ////////////////////////////////////////////////////////////////////////////
-void t_reqcAnalyze::setQcObs(const bncTime& epoTime, const ColumnVector& xyzSta, 
+void t_reqcAnalyze::setQcObs(const bncTime& epoTime, const ColumnVector& xyzSta,
                              const t_satObs& satObs, QMap<QString, bncTime>& lastObsTime,
                              t_qcSat& qcSat) {
 
@@ -457,14 +457,14 @@ void t_reqcAnalyze::analyzeMultipath() {
 
       // Loop over all Chunks of Data
       // ----------------------------
-      for (bncTime chunkStart = _qcFile._startTime; 
+      for (bncTime chunkStart = _qcFile._startTime;
            chunkStart < _qcFile._endTime; chunkStart += chunkStep) {
 
         bncTime chunkEnd = chunkStart + chunkStep;
 
         QVector<t_qcFrq*> frqVec;
         QVector<double>   MP;
-    
+
         // Loop over all Epochs within one Chunk of Data
         // ---------------------------------------------
         for (int iEpo = 0; iEpo < _qcFile._qcEpo.size(); iEpo++) {
@@ -493,9 +493,9 @@ void t_reqcAnalyze::analyzeMultipath() {
             meanMP += MP[ii];
           }
           meanMP /= MP.size();
-        
+
           bool slipMP = false;
-        
+
           double stdMP = 0.0;
           for (int ii = 0; ii < MP.size(); ii++) {
             double diff = MP[ii] - meanMP;
@@ -505,7 +505,7 @@ void t_reqcAnalyze::analyzeMultipath() {
             }
             stdMP += diff * diff;
           }
-        
+
           if (slipMP) {
             stdMP = 0.0;
             stdMP = 0.0;
@@ -516,7 +516,7 @@ void t_reqcAnalyze::analyzeMultipath() {
             qcFrqSum._numMP += 1;
             qcFrqSum._sumMP += stdMP;
           }
-        
+
           for (int ii = 0; ii < frqVec.size(); ii++) {
             t_qcFrq* qcFrq = frqVec[ii];
             if (slipMP) {
@@ -658,7 +658,7 @@ void t_reqcAnalyze::slotDspSkyPlot(const QString& fileName, const QString& title
 
     QVector<QWidget*> plots;
     if (data1) {
-      QwtText title(title1); 
+      QwtText title(title1);
       QFont font = title.font(); font.setPointSize(font.pointSize()-1); title.setFont(font);
       t_polarPlot* plot1 = new t_polarPlot(title, scaleInterval, BNC_CORE->mainWindow());
       plot1->addCurve(data1);
@@ -792,27 +792,27 @@ void t_reqcAnalyze::printReport(const t_rnxObsFile* obsFile) {
 
   // Summary
   // -------
-  *_log << "Observation File  : " << obsFileName                                   << endl
-        << "RINEX Version     : " << QString("%1").arg(obsFile->version(),4,'f',2) << endl
-        << "Marker Name       : " << _qcFile._markerName                           << endl
-        << "Marker Number     : " << obsFile->markerNumber()                       << endl
-        << "Receiver          : " << _qcFile._receiverType                         << endl
-        << "Antenna           : " << _qcFile._antennaName                          << endl
-        << "Position XYZ      : " << QString("%1 %2 %3").arg(obsFile->xyz()(1), 14, 'f', 4)
+  *_log << "Observation File   : " << obsFileName                                   << endl
+        << "RINEX Version      : " << QString("%1").arg(obsFile->version(),4,'f',2) << endl
+        << "Marker Name        : " << _qcFile._markerName                           << endl
+        << "Marker Number      : " << obsFile->markerNumber()                       << endl
+        << "Receiver           : " << _qcFile._receiverType                         << endl
+        << "Antenna            : " << _qcFile._antennaName                          << endl
+        << "Position XYZ       : " << QString("%1 %2 %3").arg(obsFile->xyz()(1), 14, 'f', 4)
                                                         .arg(obsFile->xyz()(2), 14, 'f', 4)
                                                         .arg(obsFile->xyz()(3), 14, 'f', 4) << endl
-        << "Antenna dH/dE/dN  : " << QString("%1 %2 %3").arg(obsFile->antNEU()(3), 8, 'f', 4)
+        << "Antenna dH/dE/dN   : " << QString("%1 %2 %3").arg(obsFile->antNEU()(3), 8, 'f', 4)
                                                         .arg(obsFile->antNEU()(2), 8, 'f', 4)
                                                         .arg(obsFile->antNEU()(1), 8, 'f', 4) << endl
-        << "Start Time        : " << _qcFile._startTime.datestr().c_str()         << ' '
+        << "Start Time         : " << _qcFile._startTime.datestr().c_str()         << ' '
                                   << _qcFile._startTime.timestr(1,'.').c_str()    << endl
-        << "End Time          : " << _qcFile._endTime.datestr().c_str()           << ' '
+        << "End Time           : " << _qcFile._endTime.datestr().c_str()           << ' '
                                   << _qcFile._endTime.timestr(1,'.').c_str()      << endl
-        << "Interval          : " << _qcFile._interval                            << endl;
+        << "Interval           : " << _qcFile._interval                            << endl;
 
   // Number of systems
   // -----------------
-  QMap<QChar, QVector<const t_qcSatSum*> > systemMap; 
+  QMap<QChar, QVector<const t_qcSatSum*> > systemMap;
   QMapIterator<t_prn, t_qcSatSum> itSat(_qcFile._qcSatSum);
   while (itSat.hasNext()) {
     itSat.next();
@@ -820,7 +820,7 @@ void t_reqcAnalyze::printReport(const t_rnxObsFile* obsFile) {
     const t_qcSatSum& qcSatSum = itSat.value();
     systemMap[prn.system()].push_back(&qcSatSum);
   }
-  *_log << "Navigation Systems: " << systemMap.size() << "   ";
+  *_log << "Navigation Systems : " << systemMap.size() << "   ";
 
   QMapIterator<QChar, QVector<const t_qcSatSum*> > itSys(systemMap);
   while (itSys.hasNext()) {
@@ -829,13 +829,27 @@ void t_reqcAnalyze::printReport(const t_rnxObsFile* obsFile) {
   }
   *_log << endl;
 
+  // Observation types per system
+  // -----------------------------
+  for (int iSys = 0; iSys < obsFile->numSys(); iSys++) {
+    char sys = obsFile->system(iSys);
+    if (sys != ' ') {
+      *_log << "Observation Types " << sys << ":";
+      for (int iType = 0; iType < obsFile->nTypes(sys); iType++) {
+        QString type = obsFile->obsType(sys, iType);
+        *_log << " " << type;
+      }
+      *_log << endl;
+    }
+  }
+
   itSys.toFront();
   while (itSys.hasNext()) {
     itSys.next();
     const QChar&                      sys      = itSys.key();
     const QVector<const t_qcSatSum*>& qcSatVec = itSys.value();
     QString prefixSys = QString("  ") + sys + QString(": ");
-    QMap<QString, QVector<const t_qcFrqSum*> > frqMap; 
+    QMap<QString, QVector<const t_qcFrqSum*> > frqMap;
     for (int ii = 0; ii < qcSatVec.size(); ii++) {
       const t_qcSatSum* qcSatSum = qcSatVec[ii];
       QMapIterator<QString, t_qcFrqSum> itFrq(qcSatSum->_qcFrqSum);
