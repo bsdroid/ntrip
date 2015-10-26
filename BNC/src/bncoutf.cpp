@@ -117,8 +117,6 @@ QString bncoutf::epochStr(const QDateTime& datTim, const QString& intStr,
       epoStr += QString("%1").arg(0, 2, 10, QChar('0'));                    // H
       epoStr += QString("%1").arg(0, 2, 10, QChar('0'));                    // M
       epoStr += QString("_%1D").arg(step+1, 2, 10, QChar('0'));             // period
-    } else {
-      epoStr = "0";
     }
     _numSec = 86400;
   }
