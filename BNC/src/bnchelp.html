@@ -310,7 +310,7 @@ BNC provides context-sensitive online help (<i>What's This</i>) related to speci
 BNC includes the following GNU GPL software components:
 <ul>
 <li> RTCM 2 decoder, written by Oliver Montenbruck, German Space Operations Center, DLR, Oberpfaffenhofen, Germany;</li>
-<li> RTCM 3 decoder for conventional and MSM observation messages and a RTCM 3 encoder & decoder for SSR messages, both written for BKG by Dirk Stoecker, Alberding GmbH, Schoenefeld, Germany.</li>
+<li> RTCM 3 decoder for conventional and MSM observation messages and a RTCM 3 encoder & decoder for SSR messages, both written for BKG by Dirk St&ouml;cker, Alberding GmbH, Sch&ouml;nefeld, Germany.</li>
 </ul>
 </p>
 <p>
@@ -398,7 +398,7 @@ BNC supports the following GNSS stream formats and message types:
 </ul>
 </p>
 <p>
-Note that BNC allows to by-pass its decoding and conversion algorithms for incoming streams, leave whatever is received untouched to save it in files or output it through local TCP/IP port.
+Note that BNC allows to by-pass decoding and conversion algorithms for incoming streams, leave whatever is received untouched to save it in files or output it through local TCP/IP port.
 </p>
 
 <p><h4>1.2 <a name="introSystem">Supported Systems</h4></p>
@@ -555,9 +555,11 @@ producing plots, you need to make sure that at least a virtual X-Server like
 </p>
 
 <p>
-The usual handling of BNC is that you first select a number of streams ('Add Stream'). Any stream configured to BNC shows up on the 'Streams' canvas in the middle of BNC's main window. You then go through BNC's various configuration panels to set a combination of input, processing and output options before you start the program ('Start'). Most configuration panels are dedicated to a certain functionality of BNC. If the first option field on such a configuration panel is empty, the affected functionality is deactivated.</p>
+The usual handling of BNC is that you first select a number of streams ('Add Stream'). Any stream configured to BNC shows up on the 'Streams' canvas in the middle of BNC's main window. You then go through BNC's various configuration panels to set a combination of input, processing and output options before you start the program ('Start'). Most configuration panels are dedicated to a certain functionality of BNC. If the first option field on such a configuration panel is empty, the affected functionality is deactivated.
+</p>
 
-Records of BNC's activities are shown in the 'Log' tab whis is part of the 'Log' canvas. The bandwidth consumption per stream, the latency of incoming observations and a PPP time series for coordinate displacements are also part of that canvas and shown in the 'Throughput', 'Latency' and 'PPP Plot' tabs.
+<p>
+Records of BNC's activities are shown in the 'Log' tab which is part of the 'Log' canvas. The bandwidth consumption per stream, the latency of incoming observations and a PPP time series for coordinate displacements are also part of that canvas and shown in the 'Throughput', 'Latency' and 'PPP Plot' tabs.
 </p>
 
 <p><h4>1.5 <a name="introConf">Configuration</h4></p>
@@ -698,7 +700,7 @@ mode for RINEX file editing, concatenation and quality checks.
 
 <li>File 'RinexQC.bnc'<br>
 The purpose of this configuration is to check the quality of a RINEX Version 3 
-file through a multipath analysis. The results is saved in disk in terms of a 
+file through a multipath analysis. The results are saved on disk in terms of a 
 plot in PNG format. See section 'RINEX Editing & QC' in the documentation for 
 examples on how to call BNC from command line in 'no window' mode for RINEX 
 file editing, concatenation and quality checks. 
@@ -878,7 +880,7 @@ Drag and drop of configuration files is currently not supported on Mac OS X. On 
 
 <p><h3>2. <a name="optsettings">Settings Details</h3></p>
 <p>
-The following chapters describes how to set BNC program options. They explain the 'Top Menu Bar', the 'Settings Canvas' with the processing options, the contents of the 'Streams Canvas' and 'Logging Canvas', and the 'Bottom Menu Bar'.
+The following chapters describe how to set BNC program options. They explain the 'Top Menu Bar', the 'Settings Canvas' with the processing options, the contents of the 'Streams Canvas' and 'Logging Canvas', and the 'Bottom Menu Bar'.
 </p>
 <p>
 
@@ -934,13 +936,13 @@ Note that IP streaming is often not allowed in a LAN. In this case you need to a
 </p>
 
 <p><h4>2.2.2 <a name="ssl">SSL - Transport Layer Security</h4></p>
-<p>Communication with an Ntrip Broadcaster over Secure Sockets Layer (SSL) as well as the download of RINEX skeleton files when available from HTTPS websites require the exchange of client and/or server certificates. Specify the path to a directory where you save certificates on your system. You may like to check out <u>http://software.rtcm-ntrip.org/wiki/Certificates</u> for a list of known Ntrip Server certificates. You may also just try communication via SSL to check out whether this is supported by the involved Ntrip Broadcaster. </p>
+<p>Communication with an Ntrip Broadcaster over Secure Sockets Layer (SSL) as well as the download of RINEX skeleton files when available from HTTPS websites requires the exchange of client and/or server certificates. Specify the path to a directory where you save certificates on your system. You may like to check out <u>http://software.rtcm-ntrip.org/wiki/Certificates</u> for a list of known Ntrip Server certificates. You may also just try communication via SSL to check out whether this is supported by the involved Ntrip Broadcaster. </p>
 <p>SSL communication may involve queries coming from the Ntrip Broadcaster or from a HTTPS website hosting RINEX skeletons. Such a query could show up under BNC's 'Log' tab as follows:
 <pre>
    SSL Error
    Server Certificate Issued by:
    GNSS Data Center
-   BKG (Bundesamt fuer Geodaesie und Kartographie)
+   BKG (Bundesamt f&uuml;r Geod&auml;sie und Kartographie)
    Cannot be verified
 
    The issuer certificate of a locally looked up certificate could not be found
@@ -2547,7 +2549,7 @@ Select a 'Log latency' interval to activate this function or select the empty op
 
 <p><h4>2.12.3 <a name="miscscan">Scan RTCM - optional</h4></p>
 <p>
-When configuring a GNSS receiver for RTCM stream generation, the firmware's setup interface may not provide details about RTCM message types and observation types. As reliable information concerning stream contents should be available i.e. for Ntrip Broadcaster operators to maintain the broadcaster's source-table, BNC allows to scan RTCM streams for incoming message types and printout some of the contained meta-data. Contained observation types are also printed because such information is required a priori for the conversion of RTCM Version 3 MSM streams to RINEX Version 3 files. The idea for this option arose from 'inspectRTCM', a comprehensive stream analyzing tool written by D. Stoecker.
+When configuring a GNSS receiver for RTCM stream generation, the firmware's setup interface may not provide details about RTCM message types and observation types. As reliable information concerning stream contents should be available i.e. for Ntrip Broadcaster operators to maintain the broadcaster's source-table, BNC allows to scan RTCM streams for incoming message types and printout some of the contained meta-data. Contained observation types are also printed because such information is required a priori for the conversion of RTCM Version 3 MSM streams to RINEX Version 3 files. The idea for this option arose from 'inspectRTCM', a comprehensive stream analyzing tool written by D. St&ouml;cker.
 </p>
 <p>
 Tick 'Scan RTCM' to scan RTCM Version 2 or 3 streams and log all contained
@@ -2594,7 +2596,7 @@ Be careful when keyword 'ALL' is specified as 'Mountpoint' for involving all inc
 
 <p><h4>2.13 <a name="pppclient">PPP Client</h4></p>
 <p>
-BNC can derive coordinates for rover positions following the Precise Point Positioning (PPP) approach. It uses either code or code plus phase data from one or more GNSS systems in ionosphere-free linear combinations P3 or L3. Besides pulling streams of observations from dual frequency GNSS receiver, this also
+BNC can derive coordinates for rover positions following the Precise Point Positioning (PPP) approach. It uses code or code plus phase data from one or more GNSS systems in ionosphere-free linear combinations P3 or L3. Besides pulling streams of observations from dual frequency GNSS receiver, this also
 <ul>
 <li>Requires pulling in addition a stream carrying satellite orbit and clock corrections to Broadcast Ephemeris in the form of RTCM Version 3 'State Space Representation' (SSR) messages. Note that for BNC these Broadcast Corrections need to be referred to the satellite's Antenna Phase Center (APC). Streams providing such messages are listed on <u>http://igs.bkg.bund.de/ntrip/orbits</u>. Stream 'CLK11' on Ntrip Broadcaster 'products.igs-ip.net:2101' is an example.</li>
 <li>May require pulling a stream carrying Broadcast Ephemeris available as RTCM Version 3 message types 1019, 1020, 1043, 1044, 1045, 1046 and 63 (tentative). This becomes a must only when the stream coming from the receiver does not contain Broadcast Ephemeris or provides them only at very low repetition rate. Streams providing such messages are listed on <u>http://igs.bkg.bund.de/ntrip/ephemeris</u>. Stream 'RTCM3EPH' on caster 'products.igs-ip.net:2101' is an example.</li>
@@ -2802,7 +2804,7 @@ In this file
 Tick 'Version 3 filenames' to let BNC create so-called extended filenames for PPP logfiles, NMEA files and SINEX Troposphere files to follow the RINEX Version 3 standard, see section 'RINEX Filenames' for details.
 </p>
 <p>
-Default is an empty check box, meaning to create filenames following the RINEX Version 2 standard. The file contents is not affected by this option. It only concerns the filename notation.
+Default is an empty check box, meaning to create filenames following the RINEX Version 2 standard. The file content is not affected by this option. It only concerns the filename notation.
 </p>
 <p>
 The following are examples for Version 2 filenames:
@@ -3289,7 +3291,7 @@ You may like to track your rover position using Google Maps or OpenStreetMap as 
 When in 'RINEX Files' post processing mode you should not forget to go online with your host and specify a proxy under the 'Network' panel if that is operated in front of BNC.
 </p>
 <p>
-The 'Open Map' button opens a windows showing a map according to the selected 'Google/OSM' option.
+The 'Open Map' button opens a window showing a map according to the selected 'Google/OSM' option.
 </p>
 
 <p><img src="IMG/screenshot32.png"/></p>
@@ -3740,7 +3742,7 @@ To: 2000.0
 
 <p><h4>2.15.4 <a name="upcom">Center of Mass - optional</h4></p>
 <p>
-BNC allows to either refer Broadcast Corrections to the satellite's Center of Mass (CoM) or to the satellite's Antenna Phase Center (APC). By default corrections refer to APC. Tick 'Center of Mass' to refer uploaded corrections to CoM.
+BNC allows to either referring Broadcast Corrections to the satellite's Center of Mass (CoM) or to the satellite's Antenna Phase Center (APC). By default corrections refer to APC. Tick 'Center of Mass' to refer uploaded corrections to CoM.
 </p>
 
 <p><h4>2.15.5 <a name="upsp3">SP3 File - optional</h4></p>
@@ -3831,7 +3833,7 @@ The following screenshot shows the encoding and uploading of a stream of precise
 <p><img src="IMG/screenshot26.png"/></p>
 <p><u>Figure 32:</u> Producing Broadcast Corrections from incoming precise orbits and clocks and uploading them to an Ntrip Broadcaster.</p>
 
-<p><h4>2.15.10 <a name="upantex">ANTEX File - mantatory if 'SP3 File' is specified</h4></p>
+<p><h4>2.15.10 <a name="upantex">ANTEX File - mandatory if 'SP3 File' is specified</h4></p>
 <p>
 IGS provides a file containing absolute phase center variations for GNSS satellite and receiver antennas in ANTEX format. Entering the full path to such an ANTEX file is required here for referring the SP3 file contents to the satellite's Center of Mass (CoM). If you don't specify a ANTEX file, the SP3 file will contain orbit information which is referred to Antenna Phase Center (APC) instead of CoM.
 </p>
@@ -3930,7 +3932,7 @@ The streams selection can be changed on-the-fly without interrupting uninvolved 
 
 <p><h4>2.18 <a name="logs">Logging Canvas</h4></p>
 <p>
-The 'Logging Canvas' above the bottom menu bar on the main window labeled 'Log', 'Throughput', 'Lacenty', and 'PPP Plot' provides control of BNC's activities. Tabs are available for continuously showing logfile contents, for a plot controling the bandwidth consumption, for a plot showing stream latencies, and for time series plots of PPP results.
+The 'Logging Canvas' above the bottom menu bar on the main window labeled 'Log', 'Throughput', 'Lacenty', and 'PPP Plot' provides control of BNC's activities. Tabs are available for continuously showing logfile contents, for a plot controlling the bandwidth consumption, for a plot showing stream latencies, and for time series plots of PPP results.
 </p>
 <p><h4>2.18.1 <a name="logfile">Log</h4></p>
 <p>
@@ -4758,7 +4760,7 @@ RINEX Editing and QC Panel keys:
    reqcNewAntennaName    {New antenna name [character string]}
    reqcOldAntennaNumber  {Old antenna number [character string]}
    reqcNewAntennaNumber  {New antenna number [character string]}
-   reqcOldAntennadN      {Old north eccentritity [character string]}
+   reqcOldAntennadN      {Old north eccentricity [character string]}
    reqcNewAntennadN      {New north eccentricity [character string]}
    reqcOldAntennadE      {Old east eccentricity [character string]}
    reqcNewAntennadE      {New east eccentricity [character string]}
@@ -4827,7 +4829,7 @@ PPP Client Panel 1 keys:
    PPP/snxtroSampl {SINEX troposphere file sampling rate [integer number of seconds: 0|30|60|90|120|150|180|210|240|270|300]}
 
 PPP Client Panel 2 keys:
-   PPP/staTable {Station specifications table [character string, semicolon separated list, each element in quotaion marks, example:
+   PPP/staTable {Station specifications table [character string, semicolon separated list, each element in quotation marks, example:
                 "FFMJ1,100.0,100.0,100.0,100.0,100.0,100.0,0.1,3e-6,7777";"CUT07,100.0,100.0,100.0,100.0,100.0,100.0,0.1,3e-6,7778"]}
 
 PPP Client Panel 3 keys:
