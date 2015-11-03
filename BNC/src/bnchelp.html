@@ -10,7 +10,7 @@ November 2015
 </p>
 
 <p><b>Table of <a name="contents">Contents</b><br><br>
-<b>1.</b> <a href=#genInstruction><b>General Instructions</b></a><br><br>
+<b>1.</b> <a href=#genInstruction><b>General Information</b></a><br><br>
 &nbsp; &nbsp; &nbsp; 1.1 <a href=#introPurpose>Purpose</a><br>
 &nbsp; &nbsp; &nbsp; 1.2 <a href=#introSystem>Supported Systems</a><br>
 &nbsp; &nbsp; &nbsp; 1.3 <a href=#introFlow>Data Flow</a><br>
@@ -243,7 +243,7 @@ November 2015
 <tr><td>33</td><td>Producing a Broadcast Ephemeris stream from navigation messages of globally distributed RTCM streams and uploading them in RTCM Version 3 format to an Ntrip Broadcaster</td><td>2.16.3</td></tr>
 <tr><td>34</td><td>Bandwidth consumption of incoming streams</td><td>2.18.2</td></tr>
 <tr><td>35</td><td>Latency of incoming streams</td><td>2.18.3</td></tr>
-<tr><td>36</td><td>Time series plot of PPP session</td><td>2.18.4</td></tr>
+<tr><td>36</td><td>Time series plot of PPP session showing displacements</td><td>2.18.4</td></tr>
 <tr><td>37</td><td>Steam input communication links</td><td>2.19</td></tr>
 <tr><td>38</td><td>Casters table</td><td>2.19.1.1.2</td></tr>
 <tr><td>39</td><td>Broadcaster source-table</td><td>2.19.1.1.4</td></tr>
@@ -259,7 +259,7 @@ November 2015
 </table>
 </p>
 
-<p><h3>1. <a name="genInstruction">General Instructions</h3></p>
+<p><h3>1. <a name="genInstruction">General Information</h3></p>
 <p>
 The BKG Ntrip Client (BNC) is a program for simultaneously retrieving, decoding, converting and processing or analyzing real-time GNSS data streams applying the 'Networked Transport of RTCM via Internet Protocol' (Ntrip) standard. It has been developed within the framework of the IAG sub-commission for Europe (EUREF) and the International GNSS Service (IGS). Although meant as a real-time tool, it comes with some Post Processing functionality. You may like to use it for data coming from Ntrip Broadcasters like
 <ul>
@@ -303,7 +303,7 @@ Prof. Mervart started working on BNC in 2005. His sole responsibility for writin
 </p>
 
 <p>
-BNC provides context-sensitive online help (<i>What's This</i>) related to specific objects. It furthermore comes with the here presented documentation, available as an integral part of the software and as a PDF file. Responsible for online and offline documentation, example configurations (and till February 2014 the overall BNC policy concept) is Dr. Georg Weber [georg.weber@bkg.bund.de].
+BNC provides context-sensitive help (<i>What's This</i>) related to specific objects. It furthermore comes with the here presented documentation, available as part of the software and as a PDF file. Responsible for online and offline documentation, example configurations (and till February 2014 the overall BNC policy concept) is Dr. Georg Weber [georg.weber@bkg.bund.de].
 </p>
 
 <p>
@@ -1607,9 +1607,9 @@ Note that in addition to cycle slips recorded in the RINEX 'file', cycle slips i
 Multipath and signal-to-noise sky plots as well as plots for satellite availability, elevation and PDOP are produced per GNSS system and frequency with the multipath analysis based on CnC observation types (n = band / frequency). The 'Plots for signals' option lets you exactly specify the observation signals to be used for that and also enables the plot production. You can specify the navigation system (C = BDS, E = Galileo, G = GPS, J = QZSS, R = GLONASS, S = SBAS), the frequency, and the tracking mode or channel as defined in RINEX Version 3. Specifications for frequency and tracking mode or channel must be separated by ampersand character '&'. Specifications for each navigation systems must be separated by blank character ' '. The following string is an example for option field 'Plots of signals': It lets you exactly specify the observation signals to be used and also enables the plot generation. You can specify the navigation system, the frequency, and the tracking mode or channel as defined in RINEX Version 3. Specifications for frequency and tracking mode or channel must be separated by ampersand character '&'. Specifications for each navigation systems must be separated by blank character ' '.
 <br>
 <pre>
-C:2&7 E:1&5 G:1&2 J:1&2 R:1&2 S:1&5
+   C:2&7 E:1&5 G:1&2 J:1&2 R:1&2 S:1&5
 </pre>
-This default configuration will present;
+This default configuration will present:
 <ul>
 <li>BDS plots for L2 and L7,</li>
 <li>Galileo plots for L1 and L5,</li>
@@ -1691,7 +1691,9 @@ where &lt;keyName&gt; stands for the name of an option contained in the configur
 The following example for a Linux platform calls BNC in 'no window' mode with a local configuration file 'rnx.conf' for concatenating four 15min RINEX files from station TLSE residing in the local directory to produce an hourly RINEX Version 3 file with 30 seconds sampling interval:
 </p>
 <pre>
-   ./bnc --nw --conf rnx.conf --key reqcAction Edit/Concatenate --key reqcObsFile "tlse119b00.12o,tlse119b15.12o,tlse119b30.12o,tlse119b45.12o" --key reqcOutObsFile tlse119b.12o --key reqcRnxVersion 3 --key reqcSampling 30
+   ./bnc --nw --conf rnx.conf --key reqcAction Edit/Concatenate --key reqcObsFile 
+   "tlse119b00.12o,tlse119b15.12o,tlse119b30.12o,tlse119b45.12o" --key 
+   reqcOutObsFile tlse119b.12o --key reqcRnxVersion 3 --key reqcSampling 30
 </pre>
 <p>
 You may use asterisk '*' and/or question mark '?' wildcard characters as shown with the following globbing command line option to specify a selection of files in a local directory:
@@ -1704,13 +1706,17 @@ or:
 
 <p>The following Linux command line produces RINEX QC plots (see Estey and Meertens 1999) offline in 'no window' mode and saves them in directory '/home/user'. Introducing a dummy configuration file /dev/null makes sure that no configuration options previously saved on disc are used:</p>
 <pre>
-   /home/user/bnc --conf /dev/null --key reqcAction Analyze --key reqcObsFile CUT02070.12O --key reqcNavFile BRDC2070.12P --key reqcOutLogFile CUT0.txt --key reqcPlotDir /home/user --nw
+   /home/user/bnc --conf /dev/null --key reqcAction Analyze --key reqcObsFile 
+   CUT02070.12O --key reqcNavFile BRDC2070.12P --key reqcOutLogFile CUT0.txt --key
+   reqcPlotDir /home/user --nw
 </pre>
 </p>
 <p>The following Linux command line produces the same RINEX QC plots in interactive autoStart mode:
 </p>
 <pre>
-   /home/user/bnc --conf /dev/null --key reqcAction Analyze --key reqcObsFile CUT02070.12O --key reqcNavFile BRDC2070.12P --key reqcOutLogFile CUT0.txt --key --key startTab 4 --key autoStart 2
+   /home/user/bnc --conf /dev/null --key reqcAction Analyze --key reqcObsFile 
+   CUT02070.12O --key reqcNavFile BRDC2070.12P --key reqcOutLogFile CUT0.txt --key
+   --key startTab 4 --key autoStart 2
 </pre>
 </p>
 
@@ -3475,17 +3481,18 @@ When uploading an SSR stream generated according to b. then BNC requires precise
 Below you find an example for the 'RTNET' ASCII format coming from a real-time GNSS engine. Each epoch begins with an asterisk character followed by the time as year, month, day of month, hour, minute and second. Subsequent records can provide 
 </p>
 <p>
-<li>Satellite specific parameters </li>
-</p>
 <ul>
+<li>Satellite specific parameters </li>
+</ul>
+</p>
+<p>
 A set of parameters can be defined for each satellite as follows:
-<p>
-&lt;SatelliteID&gt; &lt;key&gt; &lt;numValues&gt; &lt;value1 value2 ...&gt; &lt;key&gt; &lt;numValues&gt; &lt;value1 value2 ...&gt; ...
+<pre>
+&lt;SatelliteID&gt; &lt;key&gt; &lt;numValues&gt; &lt;value1 value2 ...&gt; &lt;key&gt; &lt;numValues&gt; 
+&lt;value1 value2 ...&gt; ...
 &nbsp;
-</p>
-<p>
-The following satellite specific keys and values are currently specified in BNC:
-</p>
+</pre>
+The following satellite specific keys and values are currently specified in BNC:<br><br>
 <table>
 <tr><td><i>Key&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</i></td><td><i>Values</i></td></tr>
 <tr><td>APC</td><td>Satellite Antenna Phase Center coordinates in meters</td></tr>
@@ -3497,20 +3504,18 @@ The following satellite specific keys and values are currently specified in BNC:
 <tr><td>YawRate</td><td>Satellite Yaw Rate in radian per second, which is the rate of Yaw Angle</td></tr>
 <tr><td>PhaseBias</td><td>Satellite Phase Biases in meters with two characters for frequency and tracking mode per bias as defined in RINEX 3, preceded by total number of biases and followed by Signal Wilde-Lane Integer Indicator as well as Signal Discontinuity Counter</td></tr>
 </table>
-</p>
-</ul>
-<li> Non-satellite specific parameters
 <ul>
-The following non-satellite specific keys and values are currently specified in BNC:
-</p>
+<li> Non-satellite specific parameters
+</ul>
+The following non-satellite specific keys and values are currently specified in BNC:<br><br>
 <table>
 <tr><td><i>Key&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</i></td><td><i>Values</i></td></tr>
 <tr><td>IND</td><td>Stands for phase bias information and is followed by Dispersive Bias Consistency Indicator and MW Consistency Indicator</td></tr>
 <tr><td>VTEC</td><td>Stands for Vertical TEC information and is followed by Update Interval and Number of Ionospheric Layers</td></tr>
 </table>
-</p>
+<br>
 If the key VTEC is specified, a data set for each layer contains within its first line the Layers Number, followed by Maximum Degree, Maximum Order and Layer Height. After that follow Cosine and Sinus Spherical Harmonic Coefficients, one block each.
-</ul>
+</p>
 <p>
 Because each keyword is associated to a certain number of values, an 'old' BNC could be operated with an incoming 'new' RTNET stream containing so far unknown keys - they would just be skipped in BNC.
 </p>
@@ -3746,7 +3751,13 @@ BNC allows to either referring Broadcast Corrections to the satellite's Center o
 </p>
 
 <p><h4>2.15.5 <a name="upsp3">SP3 File - optional</h4></p>
-<p>Specify a path for saving the generated orbit corrections as SP3 orbit files. If the specified directory does not exist, BNC will not create SP3 orbit files. The following is a path example for a Linux system:<br>/home/user/BNC${GPSWD}.sp3<br>Note that '${GPSWD}' produces the GPS Week and Day number in the filename.</p>
+<p>Specify a path for saving the generated orbit corrections as SP3 orbit files. If the specified directory does not exist, BNC will not create SP3 orbit files. The following is a path example for a Linux system:
+
+<pre>
+   /home/user/BNC${GPSWD}.sp3
+</pre>
+
+Note that '${GPSWD}' produces the GPS Week and Day number in the filename.</p>
 <p>
 Default is an empty option field, meaning that you don't want BNC to save the uploaded stream contents in daily SP3 files.
 </p>
@@ -3870,7 +3881,7 @@ Enter the Ntrip Broadcaster's IP 'Port' number for stream upload. Note that Ntri
 <p><h4>2.16.2 <a name="brdcmount">Mountpoint &amp; Password - mandatory if 'Host' is set</h4></p>
 <p>
 BNC uploads a stream to the Ntrip Broadcaster by referring to a dedicated mountpoint that has been set by its operator. Specify the mountpoint based on the details you received for your stream from the operator. It is often a four character ID (capital letters) plus an integer number.</p>
-<p>The stream upload may be protected through an upload 'Password'. Enter the password you received from the Ntrip Broadcaster operator along with the mountpoint.</p>
+<p>The stream upload follows Ntrip Version 1 and may be protected through an upload 'Password'. Enter the password you received from the Ntrip Broadcaster operator along with the mountpoint.</p>
 </p>
 
 <p><h4>2.16.3 <a name="brdcsmpl">Sampling - mandatory if 'Host' is set</h4></p>
@@ -3961,7 +3972,7 @@ Precise Point Positioning time series of North (red), East (green) and Up (blue)
 </p>
 
 <p><img src="IMG/screenshot13.png"/></p>
-<p><u>Figure 36:</u> Time series plot of PPP session.</p>
+<p><u>Figure 36:</u> Time series plot of PPP session showing displacements.</p>
 
 <p><h4>2.19 <a name="bottom">Bottom Menu Bar</h4></p>
 <p>
