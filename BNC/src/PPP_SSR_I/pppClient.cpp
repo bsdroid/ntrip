@@ -169,6 +169,7 @@ void t_pppClient::processEpoch(const vector<t_satObs*>& satObs, t_output* output
     output->_pDop        = _filter->PDOP();
     output->_trp0        = _filter->trp0();
     output->_trp         = _filter->trp();
+    output->_trpStdev    = _filter->trpStdev();
   }
   else {
     output->_error = true;
