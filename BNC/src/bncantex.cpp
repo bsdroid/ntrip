@@ -94,13 +94,13 @@ void bncAntex::print() const {
 QString bncAntex::pcoSinexString(const std::string& antName, t_frequency::type frqType) {
 
   if (antName.find("NULLANTENNA") != string::npos) {
-    QString();
+    return QString();
   }
 
   QString antNameQ = antName.c_str();
 
   if (_maps.find(antNameQ) == _maps.end()) {
-    QString();
+    return QString();
   }
 
   t_antMap* map = _maps[antNameQ];
