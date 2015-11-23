@@ -1127,6 +1127,7 @@ t_irc t_pppFilter::update_p(t_epoData* epoData) {
               QString prn = itGlo.next();
               LOG << prn.mid(0,3).toAscii().data() << ' ';
             }
+            LOG << endl;
           }
           LOG << strResCode.data() << strResPhase.data();
 
