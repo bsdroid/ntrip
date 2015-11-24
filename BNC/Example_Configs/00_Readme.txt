@@ -193,14 +193,7 @@ an Ntrip Broadcaster. The Broadcast Corrections stream is referred to satellite
 Antenna Phase Center (APC) and IGS08. Orbits are saved on disk in SP3 format 
 and clocks in Clock RINEX format.
 
-17. File 'UploadPPP.bnc'
-This configuration equals the 'Upload.bnc' configuration. However, the 
-Broadcast Corrections are in addition used for an 'INTERNAL' PPP solution based 
-on observations from a static reference station with known precise coordinates. 
-This allows a continuous quality check of the Broadcast Corrections through 
-observing coordinate displacements.
-
-18. File 'Combi.bnc'
+17. File 'Combi.bnc'
 The purpose of this configuration is to pull several streams carrying 
 Broadcast Corrections and a Broadcast Ephemeris stream from an Ntrip 
 Broadcaster to produce a combined Broadcast Corrections stream. BNC encodes the 
@@ -209,26 +202,26 @@ Broadcaster. The Broadcast Corrections stream is not referred to satellite
 Center of Mass (CoM). It is referred to IGS08. Orbits are saved in SP3 format 
 and clocks in Clock RINEX format.
 
-19. File 'CombiPPP.bnc'
+18. File 'CombiPPP.bnc'
 This configuration equals the 'Combi.bnc' configuration. However, the 
 combined Broadcast Corrections are in addition used for an 'INTERNAL' PPP 
 solutions based on observations from a static reference station with known 
 precise coordinates. This allows a continuous quality check of the combination 
 product through observing coordinate displacements.
 
-20. File 'UploadEph.bnc'
+19. File 'UploadEph.bnc'
 The purpose of this configuration is to pull a number of streams from 
 reference stations to get hold of contained Broadcast Ephemeris messages. These 
 are encoded then in a RTCM Version 3 stream which only provides Broadcast 
 Ephemeris with an update rate of 5 seconds.
 
-21. File 'CompareSp3.bnc'
+20. File 'CompareSp3.bnc'
 The purpose of this configuration is to compare two SP3 files to calculate 
 RMS values for orbit and clock differences. GPS satellite G05 and GLONASS 
 satellite R18 are excluded from this comparison. Comparison results are saved 
 in a logfile.
 
-22. File 'Empty.bnc'
+21. File 'Empty.bnc'
 The purpose of this example is to provide an empty configuration file for 
 BNC which only contains the default settings.
 
