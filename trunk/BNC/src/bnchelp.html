@@ -1672,13 +1672,13 @@ If you specify a 'New' but no 'Old' marker/antenna/receiver name, the correspond
 
 <p><h4>2.6.8 <a name="reqccommand">Command Line, No Window - optional</h4></p>
 <p>
-BNC applies options from the configuration file but allows updating every one of them on the command line while the contents of the configuration file remains unchanged, see section on 'Command Line Options'. The syntax for that looks as follows
+BNC applies options from the configuration file but allows updating every one of them on the command line while the contents of the configuration file remains unchanged, see section on 'Command Line Options'. Note the following syntax for Command Line Interface (CLI) options:
 </p>
 <pre>
    --key &lt;keyName&gt; &lt;keyValue&gt;
 </pre>
 <p>
-where &lt;keyName&gt; stands for the name of an option contained in the configuration file and &lt;keyValue&gt; stands for the value you want to assign to it. This functionality may be helpful in the 'RINEX Editing & QC' context when running BNC on a routine basis for maintaining a RINEX file archive.
+Parameter &lt;keyName&gt; stands for the name of an option contained in the configuration file and &lt;keyValue&gt; stands for the value you want to assign to it. This functionality may be helpful in the 'RINEX Editing & QC' context when running BNC on a routine basis for maintaining a RINEX file archive.
 </p>
 The following example for a Linux platform calls BNC in 'no window' mode with a local configuration file 'rnx.conf' for concatenating four 15min RINEX files from station TLSE residing in the local directory to produce an hourly RINEX Version 3 file with 30 seconds sampling interval:
 </p>
