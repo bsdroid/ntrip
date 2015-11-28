@@ -226,6 +226,6 @@ The purpose of this example is to provide an empty configuration file for
 BNC which only contains the default settings.
 
 Georg Weber, BKG
-Frankfurt, November 2015
+Frankfurt, December 2015
 igs-ip@bkg.bund.de
 
