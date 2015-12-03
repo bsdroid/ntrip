@@ -874,15 +874,15 @@ Drag and drop of configuration files is currently not supported on Mac OS X. On 
 <p><h4>1.7 <a name="introLBack">Looking Back</h4></p>
 
 <p>
-A basic function of BNC is streaming GNSS data over the open Internet using the Ntrip transport protocol. Employing IP streaming for satellite positioning goes back to the beginning of our century. Wolfgang Rupprecht has been the first who developed TCP/IP server software under the acronym of DGPS-IP (Rupprecht 2000) and published it under GNU General Public License (GPL). While connecting marine beacon receivers to PCs with permanent access to the Internet he transmitted DGPS corrections in RTCM format to support Differential GPS positioning over North America. With approximately 200 bits/sec the bandwidth requirement for disseminating beacon data was comparatively small. Each stream was transmitted over a unique combination of IP address and Port. Websites informed about existing streams and corresponding receiver positions.
+A basic function of BNC is streaming GNSS data over the open Internet using the Ntrip transport protocol. Employing IP streaming for satellite positioning goes back to the beginning of our century. Wolfgang Rupprecht has been the first who developed TCP/IP server software under the acronym of DGPS-IP (Rupprecht 2000) and published it under GNU General Public License (GPL). While connecting marine beacon receivers to PCs with permanent access to the Internet he transmitted DGPS corrections in RTCM format to support Differential GPS positioning over North America. With approximately 200 bits/sec the bandwidth requirement for disseminating beacon data was comparatively small. Each stream was transmitted over a unique combination of IP address and port. Websites informed about existing streams and corresponding receiver positions.
 </p>
 
 <p>
-To cope with an increasing number of transmitting GNSS reference stations, the Federal Agency for Cartography and Geodesy (BKG) together with the Informatik Centrum Dortmund (ICD) in Germany developed a streaming protocol for satellite navigation data called 'Networked Transport of RTCM via Internet Protocol' (Ntrip). The protocol was built on top of the HTTP standard and included the provision of meta data describing the stream contents. Any stream could now be globally transmitted over just one IP port: HTTP port 80. Stream availability and content details became part of the transport protocol. The concept was first published in 2003 (Weber et al. 2003) and based on three software components, namely an NtripServer pushing data from a reference station to an NtripCaster and an NtripClient pulling data from a caster to support a rover receiver. (Note that from a socket-programmers perspective NtripServer and NtripClient both act as clients; only the NtripCaster operates as a socket-server.) Ntrip could essentially benefit from Internet Radio developments. It was the ICECAST mulitmedia server which provided the bases for BKG's 'Professional Ntrip Broadcaster' with software published first in 2003 and of course again as Open Source under GPL.
+To cope with an increasing number of transmitting GNSS reference stations, the Federal Agency for Cartography and Geodesy (BKG) together with the Informatik Centrum Dortmund (ICD) in Germany developed a streaming protocol for satellite navigation data called 'Networked Transport of RTCM via Internet Protocol' (Ntrip). The protocol was built on top of the HTTP standard and included the provision of meta data describing the stream contents. Any stream could now be globally transmitted over just one IP port: HTTP port 80. Stream availability and content details became part of the transport protocol. The concept was first published in 2003 (Weber et al. 2003) and based on three software components, namely an NtripServer pushing data from a reference station to an NtripCaster and an NtripClient pulling data from a caster to support a rover receiver. (Note that from a socket-programmers perspective NtripServer and NtripClient both act as clients; only the NtripCaster operates as socket-server.) Ntrip could essentially benefit from Internet Radio developments. It was the ICECAST mulitmedia server which provided the bases for BKG's 'Professional Ntrip Broadcaster' with software published first in 2003 and of course again as Open Source under GPL.
 </p>
 
 <p>
-For BKG as a governmental agency, making Ntrip an Open Industry Standard has been an objective from the very beginning. The 'Radio Technical Commission for Maritime Services' (RTCM) accepted 'Ntrip Version 1' in 2004 as 'RTCM Recommended Standard' (Weber et al. 2005). Nowadays there is almost no geodetic GNSS receiver which does not come with integrated NtripClient and NtripServer functionality as part of the firmware. Hundreds of NtripCaster implementations are operated world-wide for highly accurate satellite navigation through RTK networks. Thousands of reference stations upload observations via NtripServer to central computing facilities for any kind of NtripClient application. In 2007 'Ntrip Version 2' was released which cleared and fixed some design problems and HTTP protocol violations. It also supports TCP/IP via SSL and adds optional communication over RTSP/RTP and UDP.
+For BKG as a governmental agency, making Ntrip an Open Industry Standard has been an objective from the very beginning. The 'Radio Technical Commission for Maritime Services' (RTCM) accepted 'Ntrip Version 1' in 2004 as 'RTCM Recommended Standard' (Weber et al. 2005). Nowadays there is almost no geodetic GNSS receiver which does not come with integrated NtripClient and NtripServer functionality as part of the firmware. Hundreds of NtripCaster implementations are operated world-wide for highly accurate satellite navigation through RTK networks. Thousands of reference stations upload observations via NtripServer to central computing facilities for any kind of NtripClient application. In 2011 'Ntrip Version 2' was released (RTCM SC-104 2011) which cleared and fixed some design problems and HTTP protocol violations. It also supports TCP/IP via SSL and adds optional communication over RTSP/RTP and UDP.
 </p>
 
 <p>
@@ -4718,7 +4718,7 @@ The following are proposed 'Multiple Signal Messages' (MSM) under discussion for
 Command line option '--help' provides a complete list of all configuration parameters which can be specified via BNC's Command Line Interface (CLI). Note that command line options overrule configuration options specified in the configuration file. The following is the output produce when running BNC with command line option '--help':
 </p>
 <pre>
-Usage:
+<b>Usage:</b>
    bnc --help
        --nw
        --version
@@ -4727,20 +4727,20 @@ Usage:
        --file {rawFileName}
        --key  {keyName} {keyValue}
 
-Network Panel keys:
+<b>Network Panel keys:</b>
    proxyHost       {Proxy host, name or IP address [character string]}
    proxyPort       {Proxy port [integer number]}
    sslCaCertPath   {Full path to SSL certificates [character string]}
    sslIgnoreErrors {Ignore SSL authorization errors [integer number: 0=no,2=yes]}
 
-General Panel keys:
+<b>General Panel keys:</b>
    logFile          {Logfile, full path [character string]}
    rnxAppend        {Append files [integer number: 0=no,2=yes]}
    onTheFlyInterval {Configuration reload interval [character string: 1 day|1 hour|5 min|1 min]}
    autoStart        {Auto start [integer number: 0=no,2=yes]}
    rawOutFile       {Raw output file, full path [character string]}
 
-RINEX Observations Panel keys:
+<b>RINEX Observations Panel keys:</b>
    rnxPath        {Directory [character string]}
    rnxIntr        {File interval [character string: 1 min|2 min|5 min|10 min|15 min|30 min|1 hour|1 day]}
    rnxSampl       {File sampling rate [integer number of seconds: 0,5|10|15|20|25|30|35|40|45|50|55|60]} 
@@ -4751,14 +4751,14 @@ RINEX Observations Panel keys:
    rnxV3          {Produce version 3 file contents [integer number: 0=no,2=yes]}
    rnxV3filenames {Produce version 3 filenames [integer number: 0=no,2=yes]}
 
-RINEX Ephemeris Panel keys:
+<b>RINEX Ephemeris Panel keys:</b>
    ephPath        {Directory [character string]}
    ephIntr        {File interval [character string: 1 min|2 min|5 min|10 min|15 min|30 min|1 hour|1 day]}
    ephOutPort     {Output port [integer number]}
    ephV3          {Produce version 3 file contents [integer number: 0=no,2=yes]}
    ephV3filenames {Produce version 3 filenames [integer number: 0=no,2=yes]}
 
-RINEX Editing and QC Panel keys:
+<b>RINEX Editing and QC Panel keys:</b>
    reqcAction            {Action specification [character string:  Blank|Edit/Concatenate|Analyze]}
    reqcObsFile           {Input observations file(s), full path [character string, comma separated list in quotation marks]}
    reqcNavFile           {Input navigation file(s), full path [character string, comma separated list in quotation marks]}
@@ -4793,24 +4793,24 @@ RINEX Editing and QC Panel keys:
    reqcOldReceiverNumber {Old receiver number [character string]}
    reqcNewReceiverNumber {New receiver number [character string]}
 
-SP3 Comparison Panel keys:
+<b>SP3 Comparison Panel keys:</b>
    sp3CompFile       {SP3 input files, full path [character string, comma separated list in quotation marks]}
    sp3CompExclude    {Satellite exclusion list [character string, comma separated list in quotation marks, example: "G04,G31,R"]}
    sp3CompOutLogFile {Output logfile, full path [character string]}
 
-Broadcast Corrections Panel keys:
+<b>Broadcast Corrections Panel keys:</b>
    corrPath {Directory for saving files in ASCII format [character string]}
    corrIntr {File interval [character string: 1 min|2 min|5 min|10 min|15 min|30 min|1 hour|1 day]}
    corrPort {Output port [integer number]}
 
-Feed Engine Panel keys:
+<b>Feed Engine Panel keys:</b>
    outPort  {Output port, synchronized [integer number]}
    outWait  {Wait for full observation epoch [integer number of seconds: 1-30]}
    outSampl {Sampling rate [integer number of seconds: 0|5|10|15|20|25|30|35|40|45|50|55|60]}
    outFile  {Output file, full path [character string]}
    outUPort {Output port, unsynchronized [integer number]}
 
-Serial Output Panel:
+<b>Serial Output Panel:</b>
    serialMountPoint         {Mountpoint [character string]}
    serialPortName           {Port name [character string]}
    serialBaudRate           {Baud rate [integer number: 110|300|600|1200|2400|4800|9600|19200|38400|57600|115200]}
@@ -4823,19 +4823,19 @@ Serial Output Panel:
    serialHeightNMEA         {Height [floating-point number]}
    serialHeightNMEASampling {Sampling rate [integer number of seconds: 0|10|20|30|...|280|290|300]}
 
-Outages Panel keys:
+<b>Outages Panel keys:</b>
    adviseObsRate {Stream observation rate [character string: 0.1 Hz|0.2 Hz|0.5 Hz|1 Hz|5 Hz]} 
    adviseFail    {Failure threshold [integer number of minutes: 0-60]}
    adviseReco    {Recovery threshold [integer number of minutes: 0-60]}
    adviseScript  {Advisory script, full path [character string]}
 
-Miscellaneous Panel keys:
+<b>Miscellaneous Panel keys:</b>
    miscMount    {Mountpoint [character string]}
    miscIntr     {Interval for logging latency [character string: Blank|2 sec|10 sec|1 min|5 min|15 min|1 hour|6 hours|1 day]}
    miscScanRTCM {Scan for RTCM message numbers [integer number: 0=no,2=yes]}
    miscPort     {Output port [integer number]}
 
-PPP Client Panel 1 keys:
+<b>PPP Client Panel 1 keys:</b>
    PPP/dataSource  {Data source [character string: Blank|Real-Time Streams|RINEX Files]}
    PPP/rinexObs    {RINEX observation file, full path [character string]}
    PPP/rinexNav    {RINEX navigation file, full path [character string]}
@@ -4850,11 +4850,11 @@ PPP Client Panel 1 keys:
    PPP/snxtroIntr  {SINEX troposphere file interval [character string: 1 min|2 min|5 min|10 min|15 min|30 min|1 hour|1 day]}
    PPP/snxtroSampl {SINEX troposphere file sampling rate [integer number of seconds: 0|30|60|90|120|150|180|210|240|270|300]}
 
-PPP Client Panel 2 keys:
+<b>PPP Client Panel 2 keys:</b>
    PPP/staTable {Station specifications table [character string, semicolon separated list, each element in quotation marks, example:
                 "FFMJ1,100.0,100.0,100.0,100.0,100.0,100.0,0.1,3e-6,7777";"CUT07,100.0,100.0,100.0,100.0,100.0,100.0,0.1,3e-6,7778"]}
 
-PPP Client Panel 3 keys:
+<b>PPP Client Panel 3 keys:</b>
    PPP/lcGPS        {Select linear combination from GPS code or phase data [character string; P3|P3&L3]}
    PPP/lcGLONASS    {Select linear combination from GLONASS code or phase data [character string: no|P3|L3|P3&L3]}
    PPP/lcGalileo    {Select linear combination from Galileo code or phase data [character string: no|P3|L3|P3&L3]}
@@ -4870,7 +4870,7 @@ PPP Client Panel 3 keys:
    PPP/corrWaitTime {Wait for clock corrections [integer number of seconds: no|1-20]}
    PPP/seedingTime  {Seeding time span for Quick Start [integer number of seconds]}
 
-PPP Client Panel 4 keys:
+<b>PPP Client Panel 4 keys:</b>
    PPP/plotCoordinates  {Mountpoint for time series plot [character string]}
    PPP/audioResponse    {Audio response threshold in meters [floating-point number]}
    PPP/useOpenStreetMap {OSM track map [character string: true|false]}
@@ -4879,7 +4879,7 @@ PPP Client Panel 4 keys:
    PPP/mapWinDotColor   {Color of dots and cross hair on map [character string: red|yellow]}
    PPP/mapSpeedSlider   {Offline processing speed for mapping [integer number: 1-100]}
 
-Combine Corrections Panel keys:
+<b>Combine Corrections Panel keys:</b>
    cmbStreams      {Correction streams table [character string, semicolon separated list, each element in quotation marks, example:
                    "IGS01 ESA 1.0";"IGS03 BKG 1.0"]}
    cmbMethodFilter {Combination approach [character string: Single-Epoch|Filter]
@@ -4887,7 +4887,7 @@ Combine Corrections Panel keys:
    cmbSampl        {Clock sampling rate [integer number of seconds: 10|20|30|40|50|60]}
    cmbUseGlonass   {Use GLONASS in combination [integer number: 0=no,2=yes]
 
-Upload Corrections Panel keys:
+<b>Upload Corrections Panel keys:</b>
    uploadMountpointsOut   {Upload corrections table [character string, semicolon separated list, each element in quotation marks, example:
                           "www.igs-ip.net,2101,IGS01,pass,IGS08,0,/home/user/BNC$[GPSWD}.sp3,/home/user/BNC$[GPSWD}.clk,258,1,0,0 byte(s)";
                           "www.euref-ip.net,2101,EUREF01,pass,ETRF2000,0,,,258,2,0,0 byte(s)"]}
@@ -4896,7 +4896,7 @@ Upload Corrections Panel keys:
    uploadSamplSp3         {SP3 file sampling rate [integer number of minutes: 0-15]}
    uploadSamplClkRnx      {Clock RINEX file sampling rate [integer number of seconds: 0|5|10|15|20|25|30|35|40|45|50|55|60]}
 
-Custom Trafo keys:
+<b>Custom Trafo keys:</b>
    trafo_dx  {Translation X in meters [floating-point number]
    trafo_dy  {Translation Y in meters [floating-point number]
    trafo_dz  {Translation Z in meters [floating-point number]
@@ -4913,29 +4913,29 @@ Custom Trafo keys:
    trafo_scr {Scale change [10^-9 per year, floating-point number]}
    trafo_t0  {Reference year [integer number]}
 
-Upload Ephemeris Panel keys:
+<b>Upload Ephemeris Panel keys:</b>
    uploadEphHost       {Broadcaster host, name or IP address [character string]}
    uploadEphPort       {Broadcaster port [integer number]}
    uploadEphMountpoint {Mountpoint [character string]}
    uploadEphPassword   {Stream upload password [character string]}
    uploadEphSample     {Stream upload sampling rate [integer number of seconds: 5|10|15|20|25|30|35|40|45|50|55|60]}
 
-Add Stream keys:
+<b>Add Stream keys:</b>
    mountPoints   {Mountpoints [character string, semicolon separated list, example:
                  //user:pass@www.igs-ip.net:2101/FFMJ1 RTCM_3.1 DEU 50.09 8.66 no 2;
                  //user:pass@www.igs-ip.net:2101/FFMJ2 RTCM_3.1 DEU 50.09 8.66 no 2}
    ntripVersion  {Ntrip Version [character string: 1|2|2s|R|U]}
    casterUrlList {Visited Broadcasters [character string, comma separated list]}
 
-Appearance keys:
+<b>Appearance keys:</b>
    startTab  {Index of top panel to be presented at start time [integer number: 0-17]}
    statusTab {Index of bottom panel to be presented at start time [integer number: 0-3]}
    font      {Font specification [character string in quotation marks, example: "Helvetica,14,-1,5,50,0,0,0,0,0"]}
 
-Note:
+<b>Note:</b>
 Configuration options which contain one or more blank characters must be enclosed by quotation marks when specified on command line.
 
-Examples command lines:
+<b>Example command lines:</b>
 (1) /home/weber/bin/bnc
 (2) /Applications/bnc.app/Contents/MacOS/bnc
 (3) /home/weber/bin/bnc --conf /home/weber/MyConfigFile.bnc
@@ -4985,6 +4985,8 @@ Examples command lines:
 <tr><td>Weber, G. and L. Mervart </td><td>The BKG Ntrip Client (BNC), Report on EUREF Symposium 2007 in London, Mitteilungen des Bundesamtes fuer Kartographie und Geodaesie, Band 42, Frankfurt, 2009.</td></tr>
 
 <tr><td>Weber, G. and L. Mervart </td><td>Real-time Combination of GNSS Orbit and Clock Correction Streams Using a Kalman Filter Approach, ION GNSS 2010.</td></tr>
+
+<tr><td>RTCM SC-104</td><td>Amendment 1 to RTCM Standard 10410.1 Networked Transport of RTCM via Internet Protocol (Ntrip) - Version 2.0, RTCM Papter 139-2011-SC104-STD, 2011.</td></tr>
 
 <tr><td>Huisman, L., P. Teunissen and C. Hu </td><td>GNSS Precise Point Positioning in Regional Reference Frames Using Real-time Broadcast Corrections, Journal of Applied Geodesy, Vol. 6, pp15-23, 2012.</td></tr>
 
