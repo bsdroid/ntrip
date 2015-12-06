@@ -354,7 +354,7 @@ Lennard Huisman, Kadaster Netherlands, and Rolf Dach, Astronomical Institute Uni
 Promoting Open RTCM Standards for streaming GNSS data over the Internet has been a major aspect in developing BNC as Open Source real-time software. Basically, the tool enables the test, validation and further evolution of new RTCM messages for precise satellite navigation. With high-level source code at hand, it also allows university education to catch up with comprehensive state-of-the-art positioning and potentially contribute fresh ideas which are free from any licensing.
 </p>
 
-<p> BNC has the following capabilities:
+<p> BNC was designed to serve the following purposes:
 <ul>
 <li>Retrieve real-time GNSS data streams available through Ntrip transport protocol;</li>
 <li>Retrieve real-time GNSS data streams via TCP directly from an IP address without using the Ntrip transport protocol;</li>
@@ -377,6 +377,9 @@ Promoting Open RTCM Standards for streaming GNSS data over the Internet has been
 <li>Enable multi-station Precise Point Positioning for simultaneous processing of observations from a whole network of receivers;</li>
 <li>Plot positions derived via PPP from RTCM streams or RINEX files on maps from Google Map or OpenStreetMap;</li>
 <li>Simultaneously process several Broadcast Correction streams to produce, encode and upload combined Broadcast Corrections;</li>
+
+<li>Estimate real-time tropospheric zenith path delays and save them in SINEX troposphere file format;</li>
+
 <li>Read GNSS orbits and clocks in a plain ASCII format from an IP port. They can be produced by a real-time GNSS engine such as RTNET and should be referenced to the IGS Earth-Centered-Earth-Fixed (ECEF) reference system. BNC will then</li>
 <ul>
 <li>Convert the IGS Earth-Centered-Earth-Fixed orbits and clocks into Broadcast Corrections with radial, along-track and cross-track components;</li>
@@ -402,8 +405,24 @@ BNC supports the following GNSS stream formats and message types:
 <li>RTNET, a plain ASCII format defined within BNC to receive orbits and clocks from a serving GNSS engine.
 </ul>
 </p>
+
 <p>
 Note that BNC allows to by-pass decoding and conversion algorithms for incoming streams, leave whatever is received untouched to save it in files or output it through local TCP/IP port.
+</p>
+
+<p>
+BNC supports the following GNSS file formats:
+</p>
+<p>
+<ul>
+<li>RINEX Version 2.11 & 3.02, Receiver Independent Exchange format for observations, navigation and meteorological data;</li>
+<li>SINEX Version 2.10, Solution Independent Exchange format for station position and velocity solutions;</li>
+<li>SINEX TRO, Troposphere Solution Independent Exchange format for zenith path delay products;</li>
+<li>SP3 Version c format for orbit solutions;</li>
+<li>Clock RINEX Version 3.02 format for station and satellite clock solutions;</li>
+<li>ANTEX Version 1.4, Antenna Exchange format for antenna calibration data;</li>
+<li>NMEA Version 0813, National Marine Electronics Association format for satellinte navigation data;</li>
+</ul>
 </p>
 
 <p><h4>1.2 <a name="introSystem">Supported Systems</h4></p>
@@ -882,7 +901,7 @@ A basic function of BNC is streaming GNSS data over the open Internet using the 
 </p>
 
 <p>
-To cope with an increasing number of transmitting GNSS reference stations, the Federal Agency for Cartography and Geodesy (BKG) together with the Informatik Centrum Dortmund (ICD) in Germany developed a streaming protocol for satellite navigation data called 'Networked Transport of RTCM via Internet Protocol' (Ntrip). The protocol was built on top of the HTTP standard and included the provision of meta data describing the stream contents. Any stream could now be globally transmitted over just one IP port: HTTP port 80. Stream availability and content details became part of the transport protocol. The concept was first published in 2003 (Weber et al. 2003) and based on three software components, namely an NtripServer pushing data from a reference station to an NtripCaster and an NtripClient pulling data from a caster to support a rover receiver. (Note that from a socket-programmers perspective NtripServer and NtripClient both act as clients; only the NtripCaster operates as socket-server.) Ntrip could essentially benefit from Internet Radio developments. It was the ICECAST mulitmedia server which provided the bases for BKG's 'Professional Ntrip Broadcaster' with software published first in 2003 and of course again as Open Source under GPL.
+To cope with an increasing number of transmitting GNSS reference stations, the Federal Agency for Cartography and Geodesy (BKG) together with the Informatik Centrum Dortmund (ICD) in Germany developed a streaming protocol for satellite navigation data called 'Networked Transport of RTCM via Internet Protocol' (Ntrip). The protocol was built on top of the HTTP standard and included the provision of meta data describing the stream contents. Any stream could now be globally transmitted over just one IP port: HTTP port 80. Stream availability and content details became part of the transport protocol. The concept was first published in 2003 (Weber et al. 2003) and based on three software components, namely an NtripServer pushing data from a reference station to an NtripCaster and an NtripClient pulling data from the splitter caster to support a rover receiver. (Note that from a socket-programmers perspective NtripServer and NtripClient both act as clients; only the NtripCaster operates as socket-server.) Ntrip could essentially benefit from Internet Radio developments. It was the ICECAST mulitmedia server which provided the bases for BKG's 'Professional Ntrip Broadcaster' with software published first in 2003 and of course again as Open Source under GPL.
 </p>
 
 <p>
