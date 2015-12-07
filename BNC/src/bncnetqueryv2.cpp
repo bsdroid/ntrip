@@ -10,7 +10,7 @@
  *
  * Created:    27-Dec-2008
  *
- * Changes:    
+ * Changes:
  *
  * -----------------------------------------------------------------------*/
 
@@ -27,9 +27,9 @@
 bncNetQueryV2::bncNetQueryV2(bool secure) {
   _secure    = secure;
   _manager   = new QNetworkAccessManager(this);
-  connect(_manager, SIGNAL(proxyAuthenticationRequired(const QNetworkProxy&, 
+  connect(_manager, SIGNAL(proxyAuthenticationRequired(const QNetworkProxy&,
                                                        QAuthenticator*)),
-          this, SLOT(slotProxyAuthenticationRequired(const QNetworkProxy&, 
+          this, SLOT(slotProxyAuthenticationRequired(const QNetworkProxy&,
                                                      QAuthenticator*)));
   _reply     = 0;
   _eventLoop = new QEventLoop(this);
@@ -37,7 +37,7 @@ bncNetQueryV2::bncNetQueryV2(bool secure) {
   _status    = init;
 
   bncSettings settings;
-  _sslIgnoreErrors = 
+  _sslIgnoreErrors =
      (Qt::CheckState(settings.value("sslIgnoreErrors").toInt()) == Qt::Checked);
 
   if (_secure && !QSslSocket::supportsSsl()) {
@@ -71,7 +71,7 @@ void bncNetQueryV2::slotFinished() {
   if (_reply && _reply->error() != QNetworkReply::NoError) {
     _status = error;
     emit newMessage(_url.path().toAscii().replace(0,1,"")  +
-                    ": NetQueryV2: server replied: " + 
+                    ": NetQueryV2: server replied: " +
                     _reply->attribute(QNetworkRequest::HttpReasonPhraseAttribute).toByteArray(),
                     true);
   }
@@ -80,9 +80,9 @@ void bncNetQueryV2::slotFinished() {
   }
 }
 
-// 
+//
 ////////////////////////////////////////////////////////////////////////////
-void bncNetQueryV2::slotProxyAuthenticationRequired(const QNetworkProxy&, 
+void bncNetQueryV2::slotProxyAuthenticationRequired(const QNetworkProxy&,
                                                     QAuthenticator*) {
   emit newMessage("slotProxyAuthenticationRequired", true);
 }
@@ -144,15 +144,14 @@ void bncNetQueryV2::startRequestPrivate(const QUrl& url, const QByteArray& gga,
   if (!_url.userName().isEmpty()) {
     QString uName = QUrl::fromPercentEncoding(_url.userName().toAscii());
     QString passW = QUrl::fromPercentEncoding(_url.password().toAscii());
-    request.setRawHeader("Authorization", "Basic " + 
+    request.setRawHeader("Authorization", "Basic " +
                          (uName + ":" + passW).toAscii().toBase64());
-  } 
+  }
   if (!gga.isEmpty()) {
     request.setRawHeader("Ntrip-GGA", gga);
   }
   request.setRawHeader("Connection"   , "close");
 
-  delete _reply;
   _reply = _manager->get(request);
 
   // Connect Signals
@@ -206,7 +205,7 @@ void bncNetQueryV2::waitForReadyRead(QByteArray& outData) {
   }
 }
 
-// TSL/SSL 
+// TSL/SSL
 ////////////////////////////////////////////////////////////////////////////
 void bncNetQueryV2::slotSslErrors(QList<QSslError> errors) {
 
