@@ -62,6 +62,7 @@ class t_pppClient : public interface_pppClient {
   t_pppFilter*        _filter;
   t_pppUtils*         _pppUtils;
   std::ostringstream* _log;
+  t_eph*              _newEph;
 };
 
 } // namespace
