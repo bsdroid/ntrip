@@ -14,29 +14,29 @@
 class t_frqObs  {
  public:
   t_frqObs() {
-    _code            = 0.0;          
-    _codeValid       = false;     
-    _phase           = 0.0;         
-    _phaseValid      = false;    
-    _doppler         = 0.0;       
-    _dopplerValid    = false;  
-    _snr             = 0.0;           
-    _snrValid        = false;      
-    _slip            = false;          
-    _slipCounter     = 0;   
+    _code            = 0.0;
+    _codeValid       = false;
+    _phase           = 0.0;
+    _phaseValid      = false;
+    _doppler         = 0.0;
+    _dopplerValid    = false;
+    _snr             = 0.0;
+    _snrValid        = false;
+    _slip            = false;
+    _slipCounter     = 0;
     _biasJumpCounter = 0;
   }
-  std::string       _rnxType2ch; 
-  double            _code;          
-  bool              _codeValid;     
-  double            _phase;         
-  bool              _phaseValid;    
-  double            _doppler;       
-  bool              _dopplerValid;  
-  double            _snr;           
-  bool              _snrValid;      
-  bool              _slip;          
-  int               _slipCounter;   
+  std::string       _rnxType2ch;
+  double            _code;
+  bool              _codeValid;
+  double            _phase;
+  bool              _phaseValid;
+  double            _doppler;
+  bool              _dopplerValid;
+  double            _snr;
+  bool              _snrValid;
+  bool              _slip;
+  int               _slipCounter;
   int               _biasJumpCounter;
 };
 
@@ -91,7 +91,7 @@ class t_orbCorr {
   unsigned int   _updateInt;
   char           _system;
   ColumnVector   _xr;
-  ColumnVector   _dotXr; 
+  ColumnVector   _dotXr;
 };
 
 class t_clkCorr {
@@ -112,7 +112,7 @@ class t_clkCorr {
 class t_frqCodeBias {
  public:
   t_frqCodeBias() {
-    _value = 0.0;          
+    _value = 0.0;
   }
   std::string _rnxType2ch;
   double      _value;
@@ -132,7 +132,7 @@ class t_satCodeBias {
 class t_frqPhaseBias {
  public:
   t_frqPhaseBias() {
-    _value                = 0.0;          
+    _value                = 0.0;
     _fixIndicator         = 0;
     _fixWideLaneIndicator = 0;
     _jumpCounter          = 0;
@@ -168,6 +168,9 @@ class t_satPhaseBias {
 
 class t_vTecLayer {
  public:
+  t_vTecLayer() {
+    _height = 0.0;
+  }
   double _height;
   Matrix _C;
   Matrix _S;
