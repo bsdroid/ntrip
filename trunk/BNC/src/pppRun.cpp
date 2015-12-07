@@ -222,6 +222,7 @@ t_pppRun::~t_pppRun() {
   delete _logFile;
   delete _nmeaFile;
   delete _snxtroFile;
+  delete _pppClient;
 }
 
 //
