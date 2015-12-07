@@ -59,6 +59,7 @@ t_pppClient::t_pppClient(const t_pppOptions* opt) {
   _log      = new ostringstream();
   _ephUser  = new bncEphUser(false);
   _pppUtils = new t_pppUtils();
+  _newEph = 0;
 }
 
 // Destructor
@@ -70,6 +71,8 @@ t_pppClient::~t_pppClient() {
   delete _ephUser;
   delete _log;
   delete _pppUtils;
+  if (_newEph)
+    delete _newEph;
 }
 
 //
@@ -291,6 +294,9 @@ void t_pppClient::putNewObs(t_satData* satData) {
       delete satData;
     }
   }
+  else {
+    delete satData;
+  }
 }
 
 //
@@ -347,22 +353,29 @@ void t_pppClient::putTec(const t_vTec* /*vTec*/) {
 //////////////////////////////////////////////////////////////////////////////
 void t_pppClient::putEphemeris(const t_eph* eph) {
   bool check = _opt->_realTime;
+  if (_newEph)
+    delete _newEph;
+  _newEph = 0;
   const t_ephGPS* ephGPS = dynamic_cast<const t_ephGPS*>(eph);
   const t_ephGlo* ephGlo = dynamic_cast<const t_ephGlo*>(eph);
   const t_ephGal* ephGal = dynamic_cast<const t_ephGal*>(eph);
   const t_ephBDS* ephBDS = dynamic_cast<const t_ephBDS*>(eph);
   if      (ephGPS) {
-    _ephUser->putNewEph(new t_ephGPS(*ephGPS), check);
+    _newEph = new t_ephGPS(*ephGPS);
   }
   else if (ephGlo) {
-    _ephUser->putNewEph(new t_ephGlo(*ephGlo), check);
+    _newEph = new t_ephGlo(*ephGlo);
   }
   else if (ephGal) {
-    _ephUser->putNewEph(new t_ephGal(*ephGal), check);
+    _newEph = new t_ephGal(*ephGal);
   }
   else if (ephBDS) {
-      _ephUser->putNewEph(new t_ephBDS(*ephBDS), check);
-    }
+    _newEph = new t_ephBDS(*ephBDS);
+  }
+
+  if (_newEph) {
+    _ephUser->putNewEph(_newEph, check);
+  }
 }
 
 // Satellite Position
