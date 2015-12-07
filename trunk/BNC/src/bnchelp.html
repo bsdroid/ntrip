@@ -407,10 +407,6 @@ BNC supports the following GNSS stream formats and message types:
 </p>
 
 <p>
-Note that BNC allows to by-pass decoding and conversion algorithms for incoming streams, leave whatever is received untouched to save it in files or output it through local TCP/IP port.
-</p>
-
-<p>
 BNC supports the following GNSS file formats:
 </p>
 <p>
@@ -423,6 +419,10 @@ BNC supports the following GNSS file formats:
 <li>ANTEX Version 1.4, Antenna Exchange format for antenna calibration data;</li>
 <li>NMEA Version 0813, National Marine Electronics Association format for satellinte navigation data;</li>
 </ul>
+</p>
+
+<p>
+Note that BNC allows to by-pass decoding and conversion algorithms for incoming streams, leave whatever is received untouched to save it in files or output it through local TCP/IP port.
 </p>
 
 <p><h4>1.2 <a name="introSystem">Supported Systems</h4></p>
@@ -908,7 +908,7 @@ For BKG as a governmental agency, making Ntrip an Open Industry Standard has bee
 With the advent of Ntrip as open streaming standard, BKG's interest turned towards taking advantage from free real-time access to GNSS observations. NGOs such as the IAG Reference Frame Sub Commissions for Africa (AFREF), Asia & Pacific (APREF), Europe (EUREF), North America (NAREF) Latin America & Caribbean (SIRGAS), and the International GNSS Service (IGS) maintain continental or even global GNSS networks with the majority of modern receivers supporting Ntrip stream upload. Through operating BKG's NtripCaster software, these networks became extremely valuable sources of real-time GNSS information.  In 2005 this was the starting point for developing the 'BKG Ntrip Client' (BNC) as a multi-stream Open Source NtripClient which allows pulling hundreds of streams simultaneously from any number of NtripCaster installations world-wide. Decoding incoming RTCM streams and output observations epoch by epoch through IP port to feed a real-time GNSS network engine became BNC's first and foremost ability. Converting decoded streams to short high-rate RINEX files to assist near real-time applications became a welcome by-product right from the start of this development.
 </p>
 <p>
-For debugging real-time software implementing some post processing capability is quite advantageous. So gradually certain real-time options of BNC had to be complemented to work offline with reading data from files. Moreover, beginning in 2012 the software was extended to support Galileo, BeiDou, and QZSS besides GPS and GLONASS. With that the Open Source tool BNC could be used for RINEX Version 3 file editing, concatenation and quality check, a post processing functionallity not really covered at that time by UNAVCO's famous TEQC program because of its focus on GPS.
+Implementing some post processing capability is essential for debugging real-time software in case of probelms. So gradually certain real-time options of BNC had to be complemented to work offline with reading data from files. Moreover, beginning in 2012 the software was extended to support Galileo, BeiDou, and QZSS besides GPS and GLONASS. With that the Open Source tool BNC could be used for RINEX Version 3 file editing, concatenation and quality checks, a post processing functionallity eagerly demanded by the IGS Multi-GNSS Experiment and not really covered at that time by UNAVCO's famous TEQC program because of its focus on GPS.
 </p>
 
 <p><h3>2. <a name="optsettings">Settings Details</h3></p>
