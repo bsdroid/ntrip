@@ -187,11 +187,11 @@ t_pppWidgets::t_pppWidgets() {
 
   _plotCoordinates->setWhatsThis(tr("<p>BNC allows to produce a time series plot of coordinate displacements for one of your PPP stations in the 'PPP Plot' tab below. Specify a 'Mountpoint' (when in 'Real-Time Streams' mode) or the 4-character station ID (when in 'RINEX Files' mode) to define the station whose coordinate displacements you would like to see plotted.</p><p>Note that this option makes only sense for a stationary receiver with known a-priori marker coordinates as specified through PPP option 'Coordinates'.</p><p>Default is an empty option field, meaning that BNC shall not produce a time series plot of PPP coordinate displacements.</p>"));
 
-  _mapWinButton->setWhatsThis(tr("<p>You make like to track your rover position using Google Maps or Open Street Map as a background map. Track maps can be produced with BNC in 'Realtime-PPP', 'Realtime-SPP' and 'Post-Processing' mode.</p><p>The 'Open Map' button opens a windows showing a map according to specified options.</p><p>Even in 'Post-Processing' mode you should not forget to specify a proxy under the 'Network' tab if that is operated in front of BNC because the programm needs to download the map data."));
+  _mapWinButton->setWhatsThis(tr("<p>You make like to track your rover position using Google Maps or Open Street Map as a background map. Track maps can be produced with BNC in 'Realtime-PPP', 'Realtime-SPP' and 'Post-Processing' mode.</p><p>The 'Open Map' button opens a windows showing a map according to specified options.</p><p>Even in 'Post-Processing' mode you should not forget to specify a proxy under the 'Network' tab if that is operated in front of BNC because the programm needs to download the map data.</p>"));
 
-  _useGoogleMap->setWhatsThis(tr("<p>Specify Google Maps as the background for your rover positions."));
+  _useGoogleMap->setWhatsThis(tr("<p>Specify Google Maps as the background for your rover positions.</p>"));
 
-  _useOpenStreetMap->setWhatsThis(tr("<p>Specify Open Street Map as the background for your rover positions."));
+  _useOpenStreetMap->setWhatsThis(tr("<p>Specify Open Street Map as the background for your rover positions.</p>"));
 
   _audioResponse->setWhatsThis(tr("<p>Specify an 'Audio response' threshold in meters. A beep is produced by BNC whenever a horizontal PPP coordinate component differs by more than the threshold value from the a-priory marker coordinate.</p><p>Default is an empty option field, meaning that you don't want BNC to produce alarm signals.</p>"));
 
@@ -199,7 +199,7 @@ t_pppWidgets::t_pppWidgets() {
 
   _mapWinDotColor->setWhatsThis(tr("<p>Specify the color of dots showing the rover track on the map.</p>"));
 
-  _mapSpeedSlider->setWhatsThis(tr("<p>With BNC in PPP post-processing mode you can specify the speed of computations as appropriate for 'Track map' visualization. Note that you can adjust 'speed' on-the-fly while BNC is already processing your observations."));
+  _mapSpeedSlider->setWhatsThis(tr("<p>With BNC in PPP post-processing mode you can specify the speed of computations as appropriate for 'Track map' visualization. Note that you can adjust 'speed' on-the-fly while BNC is already processing your observations.</p>"));
 
   readOptions();
 }
