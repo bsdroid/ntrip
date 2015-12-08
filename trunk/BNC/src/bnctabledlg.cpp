@@ -107,7 +107,7 @@ bncTableDlg::bncTableDlg(QWidget* parent) : QDialog(parent) {
   _casterUserLineEdit->setWhatsThis(tr("<p>Access to some streams on Ntrip broadcasters may be restricted. You'll need to enter a valid 'User ID' and 'Password' for access to these protected streams.</p><p>Accounts are usually provided per Ntrip broadcaster through a registration process. Register through <u>http://igs.bkg.bund.de/index_ntrip_reg.htm</u> for access to protected streams on <u>www.euref-ip.net</u> and <u>www.igs-ip.net</u>.</p>"));
   _casterHostComboBox->setWhatsThis(tr("<p>Enter the Ntrip broadcaster hostname or IP number.</p><p>Note that EUREF and IGS operate Ntrip broadcasters at <u>http://www.euref-ip.net/home</u> and <u>http://www.igs-ip.net/home</u>.</p>"));
   _casterPortLineEdit->setWhatsThis(tr("<p>Enter the Ntrip broadcaster port number.</p></p>Note that Ntrip Version 2 via SSL usually requires specifying port 443.</p>"));
-  _casterPasswordLineEdit->setWhatsThis(tr("Access to some streams on Ntrip broadcasters may be restricted. You'll need to enter a valid 'Password' for access to these protected streams."));
+  _casterPasswordLineEdit->setWhatsThis(tr("<p>Access to some streams on Ntrip broadcasters may be restricted. You'll need to enter a valid 'Password' for access to these protected streams.</p>"));
 
   QGridLayout* editLayout = new QGridLayout;
   editLayout->addWidget(new QLabel(tr("Caster host")),    0, 0);
