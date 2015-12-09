@@ -32,6 +32,8 @@ class t_tides {
  public:
   t_tides() {
     _lastMjd = 0.0;
+    _rSun    = 0.0;
+    _rMoon   = 0.0;
   }
   ~t_tides() {}
   ColumnVector displacement(const bncTime& time, const ColumnVector& xyz);
@@ -55,7 +57,7 @@ class t_windUp {
 };
 
 class t_tropo {
- public:  
+ public:
   static double delay_saast(const ColumnVector& xyz, double Ele);
 };
 

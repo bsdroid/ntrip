@@ -54,7 +54,37 @@ class t_ephGPS : public t_eph {
  friend class t_ephEncoder;
  friend class RTCM3Decoder;
  public:
-  t_ephGPS() { }
+  t_ephGPS() {
+    _clock_bias       = 0.0;
+    _clock_drift      = 0.0;
+    _clock_driftrate  = 0.0;
+    _IODE             = 0.0;
+    _Crs              = 0.0;
+    _Delta_n          = 0.0;
+    _M0               = 0.0;
+    _Cuc              = 0.0;
+    _e                = 0.0;
+    _Cus              = 0.0;
+    _sqrt_A           = 0.0;
+    _TOEsec           = 0.0;
+    _Cic              = 0.0;
+    _OMEGA0           = 0.0;
+    _Cis              = 0.0;
+    _i0               = 0.0;
+    _Crc              = 0.0;
+    _omega            = 0.0;
+    _OMEGADOT         = 0.0;
+    _IDOT             = 0.0;
+    _L2Codes          = 0.0;
+    _TOEweek          = 0.0;
+    _L2PFlag          = 0.0;
+    _ura              = 0.0;
+    _health           = 0.0;
+    _TGD              = 0.0;
+    _IODC             = 0.0;
+    _TOT              = 0.0;
+    _fitInterval      = 0.0;
+  }
   t_ephGPS(float rnxVersion, const QStringList& lines);
   virtual ~t_ephGPS() {}
 
@@ -108,7 +138,25 @@ class t_ephGlo : public t_eph {
  friend class t_ephEncoder;
  friend class RTCM3Decoder;
  public:
-  t_ephGlo() { _xv.ReSize(6); }
+  t_ephGlo() {
+    _xv.ReSize(6);
+    _gps_utc          = 0.0;
+    _tau              = 0.0;
+    _gamma            = 0.0;
+    _tki              = 0.0;
+    _x_pos            = 0.0;
+    _x_velocity       = 0.0;
+    _x_acceleration   = 0.0;
+    _health           = 0.0;
+    _y_pos            = 0.0;
+    _y_velocity       = 0.0;
+    _y_acceleration   = 0.0;
+    _frequency_number = 0.0;
+    _z_pos            = 0.0;
+    _z_velocity       = 0.0;
+    _z_acceleration   = 0.0;
+    _E                = 0.0;
+  }
   t_ephGlo(float rnxVersion, const QStringList& lines);
   virtual ~t_ephGlo() {}
 
@@ -149,7 +197,36 @@ class t_ephGal : public t_eph {
  friend class t_ephEncoder;
  friend class RTCM3Decoder;
  public:
-  t_ephGal() { };
+  t_ephGal() {
+    _clock_bias      = 0.0;
+    _clock_drift     = 0.0;
+    _clock_driftrate = 0.0;
+    _IODnav          = 0.0;
+    _Crs             = 0.0;
+    _Delta_n         = 0.0;
+    _M0              = 0.0;
+    _Cuc             = 0.0;
+    _e               = 0.0;
+    _Cus             = 0.0;
+    _sqrt_A          = 0.0;
+    _TOEsec          = 0.0;
+    _Cic             = 0.0;
+    _OMEGA0          = 0.0;
+    _Cis             = 0.0;
+    _i0              = 0.0;
+    _Crc             = 0.0;
+    _omega           = 0.0;
+    _OMEGADOT        = 0.0;
+    _IDOT            = 0.0;
+    _TOEweek         = 0.0;
+    _SISA            = 0.0;
+    _E5aHS           = 0.0;
+    _E5bHS           = 0.0;
+    _E1_bHS          = 0.0;
+    _BGD_1_5A        = 0.0;
+    _BGD_1_5B        = 0.0;
+    _TOT             = 0.0;
+  };
   t_ephGal(float rnxVersion, const QStringList& lines);
   virtual ~t_ephGal() {}
 
@@ -212,7 +289,23 @@ class t_ephSBAS : public t_eph {
  friend class t_ephEncoder;
  friend class RTCM3Decoder;
  public:
-  t_ephSBAS() {}
+  t_ephSBAS() {
+    _IODN           = 0;
+    _TOW            = 0.0;
+    _agf0           = 0.0;
+    _agf1           = 0.0;
+    _x_pos          = 0.0;
+    _x_velocity     = 0.0;
+    _x_acceleration = 0.0;
+    _y_pos          = 0.0;
+    _y_velocity     = 0.0;
+    _y_acceleration = 0.0;
+    _z_pos          = 0.0;
+    _z_velocity     = 0.0;
+    _z_acceleration = 0.0;
+    _ura            = 0.0;
+    _health         = 0.0;
+  }
   t_ephSBAS(float rnxVersion, const QStringList& lines);
   virtual ~t_ephSBAS() {}
 
@@ -248,7 +341,37 @@ class t_ephBDS : public t_eph {
  friend class t_ephEncoder;
  friend class RTCM3Decoder;
  public:
- t_ephBDS() : _TOEweek(-1.0) {}
+ t_ephBDS() : _TOEweek(-1.0) {
+   _TOT             = 0.0;
+   _AODE            = 0;
+   _AODC            = 0;
+   _URAI            = 0;
+   _URA             = 0.0;
+   _clock_bias      = 0.0;
+   _clock_drift     = 0.0;
+   _clock_driftrate = 0.0;
+   _Crs             = 0.0;
+   _Delta_n         = 0.0;
+   _M0              = 0.0;
+   _Cuc             = 0.0;
+   _e               = 0.0;
+   _Cus             = 0.0;
+   _sqrt_A          = 0.0;
+   _Cic             = 0.0;
+   _OMEGA0          = 0.0;
+   _Cis             = 0.0;
+   _i0              = 0.0;
+   _Crc             = 0.0;
+   _omega           = 0.0;
+   _OMEGADOT        = 0.0;
+   _IDOT            = 0.0;
+   _TGD1            = 0.0;
+   _TGD2            = 0.0;
+   _SatH1           = 0.0;
+   _TOW             = 0.0;
+   _TOEsec          = 0.0;
+   _TOEweek         = 0.0;
+ }
  t_ephBDS(float rnxVersion, const QStringList& lines);
   virtual ~t_ephBDS() {}
 
