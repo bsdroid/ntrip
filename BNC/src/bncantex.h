@@ -47,13 +47,22 @@ class bncAntex {
  private:
   class t_frqMap {
    public:
+    t_frqMap() {
+      for (unsigned ii = 0; ii < 3; ii++) {
+        neu[ii] = 0.0;
+      }
+    }
     double       neu[3];
     ColumnVector pattern;
   };
 
   class t_antMap {
    public:
-    t_antMap() {}
+    t_antMap() {
+      zen1 = 0.0;
+      zen2 = 0.0;
+      dZen = 0.0;
+    }
     ~t_antMap() {
       QMapIterator<t_frequency::type, t_frqMap*> it(frqMap);
       while (it.hasNext()) {
