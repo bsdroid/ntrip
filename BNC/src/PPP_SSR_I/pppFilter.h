@@ -46,16 +46,24 @@ class t_satData {
  public:
   t_satData() {
     obsIndex = 0;
-    P1      = 0.0;
-    P2      = 0.0;
-    P5      = 0.0;
-    P3      = 0.0;
-    L1      = 0.0;
-    L2      = 0.0;
-    L5      = 0.0;
-    L3      = 0.0;
-    lkA     = 0.0;
-    lkB     = 0.0;
+    P1       = 0.0;
+    P2       = 0.0;
+    P5       = 0.0;
+    P7       = 0.0;
+    P3       = 0.0;
+    L1       = 0.0;
+    L2       = 0.0;
+    L5       = 0.0;
+    L7       = 0.0;
+    L3       = 0.0;
+    lkA      = 0.0;
+    lkB      = 0.0;
+    clk      = 0.0;
+    eleSat   = 0.0;
+    azSat    = 0.0;
+    rho      = 0.0;
+    slipFlag = false;
+    lambda3  = 0.0;
   }
   ~t_satData() {}
   bncTime      tt;
@@ -131,7 +139,7 @@ class t_epoData {
 
 class t_pppParam {
  public:
-  enum parType {CRD_X, CRD_Y, CRD_Z, RECCLK, TROPO, AMB_L3, 
+  enum parType {CRD_X, CRD_Y, CRD_Z, RECCLK, TROPO, AMB_L3,
                 GLONASS_OFFSET, GALILEO_OFFSET, BDS_OFFSET};
   t_pppParam(parType typeIn, int indexIn, const QString& prn);
   ~t_pppParam();
@@ -214,12 +222,12 @@ class t_pppFilter {
   void   addAmb(t_satData* satData);
   void   addObs(int iPhase, unsigned& iObs, t_satData* satData,
                 Matrix& AA, ColumnVector& ll, DiagonalMatrix& PP);
-  QByteArray printRes(int iPhase, const ColumnVector& vv, 
+  QByteArray printRes(int iPhase, const ColumnVector& vv,
                       const QMap<QString, t_satData*>& satDataMap);
   void   findMaxRes(const ColumnVector& vv,
                     const QMap<QString, t_satData*>& satData,
-                    QString& prnGPS, QString& prnGlo,  
-                    double& maxResGPS, double& maxResGlo); 
+                    QString& prnGPS, QString& prnGlo,
+                    double& maxResGPS, double& maxResGlo);
   double cmpValue(t_satData* satData, bool phase);
   double delay_saast(double Ele);
   void   predict(int iPhase, t_epoData* epoData);
@@ -234,8 +242,8 @@ class t_pppFilter {
 
   void rememberState(t_epoData* epoData);
   void restoreState(t_epoData* epoData);
-  
-  t_irc selectSatellites(const QString& lastOutlierPrn, 
+
+  t_irc selectSatellites(const QString& lastOutlierPrn,
                          QMap<QString, t_satData*>& satData);
 
   void bancroft(const Matrix& BBpass, ColumnVector& pos);
