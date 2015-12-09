@@ -6,22 +6,22 @@ namespace rtcm2 {
 
 class RTCM2_2021 {
 
-  public: 
+  public:
 
     RTCM2_2021();                           // Constructor
-    
+
     void   extract(const RTCM2packet& P);  // Packet handler
     void   clear();                        // Initialization
-    bool   valid() const { return valid_; }                  // Check for complete obs block 
+    bool   valid() const { return valid_; }                  // Check for complete obs block
 
     double resolvedPhase_L1(int i) const;  // L1 & L2 carrier phase of i-th sat
-    double resolvedPhase_L2(int i) const;  // with resolved 2^24 cy ambiguity 
+    double resolvedPhase_L2(int i) const;  // with resolved 2^24 cy ambiguity
                                            // (based on rng_C1)
 
-  public: 
+  public:
 
     struct HiResCorr {
-   
+
       HiResCorr();
       void reset();
 
@@ -61,14 +61,18 @@ class RTCM2_2021 {
     std::map<unsigned, HiResCorr> data_i_;
     double                        tt_;
     bool                          valid_;
-}; 
+};
 
 class RTCM2_22 {
  public:
-  RTCM2_22() { 
+  RTCM2_22() {
     validMsg = false;
+    for (unsigned ii = 0; ii < 3; ii++){
+      dL1[ii] = 0.0;
+      dL2[ii] = 0.0;
+    }
   }
-  
+
   void extract(const RTCM2packet& P);
 
   bool   validMsg;
