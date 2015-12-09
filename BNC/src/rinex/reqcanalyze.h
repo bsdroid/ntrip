@@ -49,7 +49,7 @@ class t_plotData {
 
 class t_reqcAnalyze : public QThread {
 Q_OBJECT
- 
+
  public:
   t_reqcAnalyze(QObject* parent);
   virtual void run();
@@ -104,14 +104,14 @@ Q_OBJECT
     double           _azDeg;
     QVector<t_qcFrq> _qcFrq;
   };
-  
+
   class t_qcEpo {
    public:
     bncTime              _epoTime;
     double               _PDOP;
     QMap<t_prn, t_qcSat> _qcSat;
   };
-  
+
   class t_qcFrqSum {
    public:
     t_qcFrqSum() {
@@ -138,10 +138,13 @@ Q_OBJECT
    public:
     QMap<QString, t_qcFrqSum> _qcFrqSum;
   };
-  
+
   class t_qcFile {
    public:
-    t_qcFile() {clear();}
+    t_qcFile() {
+      clear();
+      _interval = 1.0;
+    }
     void clear() {_qcSatSum.clear(); _qcEpo.clear();}
     bncTime                 _startTime;
     bncTime                 _endTime;
@@ -169,7 +172,7 @@ Q_OBJECT
 
   void   updateQcSat(const t_qcSat& qcSat, t_qcSatSum& qcSatSum);
 
-  void   setQcObs(const bncTime& epoTime, const ColumnVector& xyzSta, 
+  void   setQcObs(const bncTime& epoTime, const ColumnVector& xyzSta,
                   const t_satObs& satObs, QMap<QString, bncTime>& lastObsTime, t_qcSat& qcSat);
 
   void   analyzeMultipath();
