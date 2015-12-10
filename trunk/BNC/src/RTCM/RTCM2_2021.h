@@ -7,8 +7,10 @@ namespace rtcm2 {
 class RTCM2_2021 {
 
   public:
-
-    RTCM2_2021();                           // Constructor
+    RTCM2_2021() {// Constructor
+      tt_    = 0.0;
+      valid_ = false;
+    }
 
     void   extract(const RTCM2packet& P);  // Packet handler
     void   clear();                        // Initialization
@@ -17,8 +19,6 @@ class RTCM2_2021 {
     double resolvedPhase_L1(int i) const;  // L1 & L2 carrier phase of i-th sat
     double resolvedPhase_L2(int i) const;  // with resolved 2^24 cy ambiguity
                                            // (based on rng_C1)
-
-  public:
 
     struct HiResCorr {
 

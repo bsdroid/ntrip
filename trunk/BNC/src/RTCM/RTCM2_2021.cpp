@@ -9,15 +9,13 @@ using namespace std;
 
 const double ZEROVALUE = 1e-100;
 
-RTCM2_2021::RTCM2_2021() { }
-
 
 void RTCM2_2021::extract(const RTCM2packet& P) {
   if ( !P.valid() || (P.ID() != 20 && P.ID() != 21) ) {
     return;
   }
 
-  // Error: at least 4 data words 
+  // Error: at least 4 data words
   if ( P.nDataWords()<5 ) {
 #if ( DEBUG > 0 )
     cerr << "Error in RTCM2_Obs::extract(): less than 3 DW ("
@@ -25,7 +23,7 @@ void RTCM2_2021::extract(const RTCM2packet& P) {
 #endif
     return;
   };
-  
+
   // Error: number of data words has to be odd number
   if ( P.nDataWords()%2==0 ){
 #if ( DEBUG > 0 )
@@ -35,8 +33,8 @@ void RTCM2_2021::extract(const RTCM2packet& P) {
     return;
   };
 
-  // Current epoch (mod 3600 sec) 
-  double tt = 0.6*P.modZCount() 
+  // Current epoch (mod 3600 sec)
+  double tt = 0.6*P.modZCount()
             + P.getUnsignedBits(4,20)*1.0e-6;
 
   // Clear old epoch
@@ -58,7 +56,7 @@ void RTCM2_2021::extract(const RTCM2packet& P) {
 
   double multipleMsgInd = true;
   for (unsigned iSat = 0; iSat < nSat; iSat++) {
-    bool     multInd   =   P.getBits        (iSat*48 + 24, 1); 
+    bool     multInd   =   P.getBits        (iSat*48 + 24, 1);
     bool     isGPS     = ( P.getUnsignedBits(iSat*48 + 26, 1)==0 );
     unsigned PRN       =   P.getUnsignedBits(iSat*48 + 27, 5);
 
@@ -70,7 +68,7 @@ void RTCM2_2021::extract(const RTCM2packet& P) {
     if ( PRN == 0 ) {
       PRN = 32;
     }
-    
+
     HiResCorr* corr = 0;
     if ( !(corr = find_i(PRN)) ) {
       data_i_[PRN] = HiResCorr();
@@ -79,7 +77,7 @@ void RTCM2_2021::extract(const RTCM2packet& P) {
     if ( !find(PRN) ) {
       data[PRN] = corr;
     }
-    
+
     corr->PRN = PRN;
     corr->tt  = tt_;
 
@@ -105,7 +103,7 @@ void RTCM2_2021::extract(const RTCM2packet& P) {
 
     // Message number 21
     else if ( P.ID() == 21 ) {
-      bool   P_CA_Ind  =   P.getBits        (iSat*48 + 25, 1); 
+      bool   P_CA_Ind  =   P.getBits        (iSat*48 + 25, 1);
       double dcorrUnit = ( P.getUnsignedBits(iSat*48 + 32, 1) ? 0.032 : 0.002);
       double  corrUnit = ( P.getUnsignedBits(iSat*48 + 36, 1) ? 0.320 : 0.020);
       unsigned    IOD  =   P.getUnsignedBits(iSat*48 + 40, 8);
@@ -126,7 +124,7 @@ void RTCM2_2021::extract(const RTCM2packet& P) {
       }
     }
   }
-  
+
   valid_ = !multipleMsgInd;
 }
 
@@ -145,7 +143,7 @@ RTCM2_2021::HiResCorr* RTCM2_2021::find_i(unsigned PRN) {
 void RTCM2_2021::clear() {
   tt_    = 0;
   valid_ = false;
-  for (map<unsigned, HiResCorr>::iterator 
+  for (map<unsigned, HiResCorr>::iterator
 	 ii = data_i_.begin(); ii != data_i_.end(); ii++) {
     ii->second.reset();
   }
@@ -154,7 +152,7 @@ void RTCM2_2021::clear() {
 
 
 RTCM2_2021::HiResCorr::HiResCorr() :
-  PRN(0), tt(0), 
+  PRN(0), tt(0),
   phase1 (0),     phase2 (2),
   lock1  (0),     lock2  (0),
   slip1  (false), slip2  (false),
@@ -162,7 +160,7 @@ RTCM2_2021::HiResCorr::HiResCorr() :
   range1 (0),     range2 (0),
   drange1(0),     drange2(0),
   Pind1  (false), Pind2  (false),
-  IODr1  (0),     IODr2  (0) { 
+  IODr1  (0),     IODr2  (0) {
 }
 
 void RTCM2_2021::HiResCorr::reset() {
