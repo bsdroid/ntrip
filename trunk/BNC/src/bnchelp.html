@@ -7,15 +7,23 @@ Version 2.12.0</h3>
 <b>Software by</b><br>
 Leos Mervart<sup>(1)</sup>, Andrea St&uuml;rze<sup>(2)</sup>, Georg Weber<sup>(2)</sup>, Axel R&uuml;lke<sup>(2)</sup>, Dirk St&ouml;cker<sup>(3)</sup>
 <p>
-<sup>(1)</sup>Czech Technical University (CTU), Department of Geomatics, Prague, Czech Republic<br>
-<sup>(2)</sup>Federal Agency for Cartography and Geodesy (BKG), Frankfurt, Germany<br>
-<sup>(3)</sup>Alberding GmbH, Wildau, Germany
+<sup>(1) Czech Technical University (CTU), Department of Geomatics, Prague, Czech Republic</sup><br>
+<sup>(2) Federal Agency for Cartography and Geodesy (BKG), Frankfurt, Germany</sup><br>
+<sup>(3) Alberding GmbH, Wildau, Germany</sup>
 <br><br>
 <b>Documentation by</b><br>
 Georg Weber<sup>(2)</sup>
 <br><br>
-Copyright &copy; 2005-2015 Federal Agency for Cartography and Geodesy (BKG), Frankfurt, Germany
-<br><br><br>
+<b>Copyright</b><br>
+&copy;<sup>&nbsp;</sup> 2005-2015 Federal Agency for Cartography and Geodesy (BKG), Frankfurt, Germany
+<br><br>
+<b>Citation<sup>&nbsp;</sup></b><br>
+To help justify funding the development of BNC,<sup>&nbsp;</sup>we kindly ask users to include a citation when applying the software results in a publication. We suggest:
+<br><br>
+Mervart, Leos, Andrea St&uuml;rze, Georg Weber, Axel R&uuml;lke and Dirk St&ouml;cker:<br>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; BKG Ntrip Client, Version 2.12.0. Mitteilungen des Bundesamtes<br>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; f&uuml;r Kartographie und Geod&auml;sie, Vol. 49, Frankfurt am Main, 2016.
+<br><br>
 
 <b>Table of <a name="contents">Contents</b><br><br>
 <b>1.</b> <a href=#genInstruction><b>General Information</b></a><br><br>
@@ -921,8 +929,9 @@ Adding real-time Precise Point Positioning (PPP) support to BNC began in 2010 as
 <p>
 Implementing some post processing capability is essential for debugging real-time software in case of problems. So certain real-time options in BNC were complemented to work offline through reading data from files. Moreover, beginning in 2012 the software was extended to support Galileo, BeiDou, and QZSS besides GPS and GLONASS. With that the Open Source tool BNC could be used for RINEX Version 3 file editing, concatenation and quality checks, a post processing functionality demanded by the IGS Multi-GNSS Experiment and not really covered at that time by UNAVCO's famous TEQC program with its limitation on GPS.
 </p>
+
 <p>
-BNC and its publication under GNU GPL is thought to be well-suited for test, validation and demonstration of new approaches in precise real-time satellite navigation when IP streaming is involved. Commissioned by a German governmental agency, the overall intention has been to push the development of RTCM Recommended Standards to the benefit of IAG institutions such as IGS and the interested public in general.
+Over the years, the BNC Subversion (SVN) software archive received over seven thousand commits made by 11 contributors representing about one hundred thirty thousand lines of code. The well established, mature codebase is mostly written in C++ language. Its publication under GNU GPL is thought to be well-suited for test, validation and demonstration of new approaches in precise real-time satellite navigation when IP streaming is involved. Commissioned by a German governmental agency, the overall intention has been to push the development of RTCM Recommended Standards to the benefit of IAG institutions and services such as IGS and the interested public in general.
 </p>
 
 <p><h3>2. <a name="optsettings">Settings Details</h3></p>
@@ -5026,6 +5035,8 @@ Configuration options which contain one or more blank characters must be enclose
 <tr><td>RTCM SC-104</td><td>Amendment 1 to RTCM Standard 10410.1 Networked Transport of RTCM via Internet Protocol (Ntrip) - Version 2.0, RTCM Papter 139-2011-SC104-STD, 2011.</td></tr>
 
 <tr><td>Huisman, L., P. Teunissen and C. Hu </td><td>GNSS Precise Point Positioning in Regional Reference Frames Using Real-time Broadcast Corrections, Journal of Applied Geodesy, Vol. 6, pp15-23, 2012.</td></tr>
+
+<br><td>Mervart, L., A. St&uuml;rze, G. Weber, A. R&uuml;lke and D. St&ouml;cker</td><td>BKG Ntrip Client, Version 2.12.0. Mitteilungen des Bundesamtes f&uuml;r Kartographie und Geod&auml;sie, Vol. 49, Frankfurt am Main, 2016.</td><tr>
 
 
 </table>
