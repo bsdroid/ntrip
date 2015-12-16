@@ -34,7 +34,7 @@
  *
  * Created:    24-Jan-2012
  *
- * Changes:    
+ * Changes:
  *
  * -----------------------------------------------------------------------*/
 
@@ -129,7 +129,7 @@ t_rnxNavFile::~t_rnxNavFile() {
   close();
   for (unsigned ii = 0; ii < _ephs.size(); ii++) {
     delete _ephs[ii];
-  }  
+  }
 }
 
 // Close
@@ -155,12 +155,13 @@ void t_rnxNavFile::read(QTextStream* stream) {
     }
     else {
       if (glonass()) {
-        prn = QString("R%1").arg(hlp.at(0).toInt(), 2, 10, QChar('0'));
+        prn = QString("R%1_0").arg(hlp.at(0).toInt(), 2, 10, QChar('0'));
       }
       else {
-        prn = QString("G%1").arg(hlp.at(0).toInt(), 2, 10, QChar('0'));
+        prn = QString("G%1_0").arg(hlp.at(0).toInt(), 2, 10, QChar('0'));
       }
     }
+
     t_eph* eph = 0;
     QStringList lines; lines << line;
     if      (prn[0] == 'G') {
@@ -212,7 +213,7 @@ void t_rnxNavFile::read(QTextStream* stream) {
 
 // Read Next Ephemeris
 ////////////////////////////////////////////////////////////////////////////
-t_eph* t_rnxNavFile::getNextEph(const bncTime& tt, 
+t_eph* t_rnxNavFile::getNextEph(const bncTime& tt,
                                 const QMap<QString, unsigned int>* corrIODs) {
 
   // Get Ephemeris according to IOD
@@ -242,9 +243,7 @@ t_eph* t_rnxNavFile::getNextEph(const bncTime& tt,
     vector<t_eph*>::iterator it = _ephs.begin();
     while (it != _ephs.end()) {
       t_eph* eph = *it;
-
       double dt = eph->TOC() - tt;
-
       if (dt < 2*3600.0) {
         it = _ephs.erase(it);
         return eph;
@@ -256,7 +255,7 @@ t_eph* t_rnxNavFile::getNextEph(const bncTime& tt,
   return 0;
 }
 
-// 
+//
 ////////////////////////////////////////////////////////////////////////////
 void t_rnxNavFile::writeHeader(const QMap<QString, QString>* txtMap) {
 
@@ -277,7 +276,7 @@ void t_rnxNavFile::writeHeader(const QMap<QString, QString>* txtMap) {
   }
 
   if (version() < 3.0) {
-    const QString fmt = glonass() ? "%1           GLONASS navigation data" 
+    const QString fmt = glonass() ? "%1           GLONASS navigation data"
                                   : "%1           Navigation data";
     *_stream << QString(fmt)
       .arg(_header._version, 9, 'f', 2)
@@ -310,7 +309,7 @@ void t_rnxNavFile::writeHeader(const QMap<QString, QString>* txtMap) {
            << "END OF HEADER\n";
 }
 
-// 
+//
 ////////////////////////////////////////////////////////////////////////////
 void t_rnxNavFile::writeEph(const t_eph* eph) {
   *_stream << eph->toString(version());
