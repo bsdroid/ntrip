@@ -175,10 +175,13 @@ t_ephGPS::t_ephGPS(float rnxVersion, const QStringList& lines) {
 
       QString prnStr, n;
       in >> prnStr;
-      if (prnStr.size() == 1) {
+
+      if (prnStr.size() == 1 &&
+          (prnStr[0] == 'G' || prnStr[0] == 'J')) {
         in >> n;
         prnStr.append(n);
       }
+
       in >> year >> month >> day >> hour >> min >> sec;
       if      (prnStr.at(0) == 'G') {
         _prn.set('G', prnStr.mid(1).toInt());
@@ -458,7 +461,7 @@ t_ephGlo::t_ephGlo(float rnxVersion, const QStringList& lines) {
 
       QString prnStr, n;
       in >> prnStr;
-      if (prnStr.size() == 1) {
+      if (prnStr.size() == 1 && prnStr[0] == 'R') {
         in >> n;
         prnStr.append(n);
       }
@@ -697,7 +700,7 @@ t_ephGal::t_ephGal(float rnxVersion, const QStringList& lines) {
       QTextStream in(line.left(pos[1]).toAscii());
       QString n;
       in >> prnStr;
-      if (prnStr.size() == 1) {
+      if (prnStr.size() == 1 && prnStr[0] == 'E') {
         in >> n;
         prnStr.append(n);
       }
@@ -1075,7 +1078,7 @@ t_ephSBAS::t_ephSBAS(float rnxVersion, const QStringList& lines) {
 
       QString prnStr, n;
       in >> prnStr;
-      if (prnStr.size() == 1) {
+      if (prnStr.size() == 1 && prnStr[0] == 'S') {
         in >> n;
         prnStr.append(n);
       }
@@ -1269,7 +1272,7 @@ t_ephBDS::t_ephBDS(float rnxVersion, const QStringList& lines) {
 
       QString prnStr, n;
       in >> prnStr;
-      if (prnStr.size() == 1) {
+      if (prnStr.size() == 1 && prnStr[0] == 'C') {
         in >> n;
         prnStr.append(n);
       }
