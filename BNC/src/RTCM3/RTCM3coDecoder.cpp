@@ -101,9 +101,16 @@ RTCM3coDecoder::RTCM3coDecoder(const QString& staID) {
 ////////////////////////////////////////////////////////////////////////////
 RTCM3coDecoder::~RTCM3coDecoder() {
   delete _out;
+  _IODs.clear();
+  _orbCorrections.clear();
+  _clkCorrections.clear();
+  _lastClkCorrections.clear();
+  _codeBiases.clear();
+  _phaseBiases.clear();
+  _vTecMap.clear();
 }
 
-// 
+//
 ////////////////////////////////////////////////////////////////////////////
 void RTCM3coDecoder::reset() {
   memset(&_clkOrb,    0, sizeof(_clkOrb));
@@ -168,7 +175,7 @@ t_irc RTCM3coDecoder::Decode(char* buffer, int bufLen, vector<string>& errmsg) {
     memcpy(&vTECSav,      &_vTEC,      sizeof(vTECSav));
 
     int bytesused = 0;
-    GCOB_RETURN irc = GetSSR(&_clkOrb, &_codeBias, &_vTEC, &_phaseBias, 
+    GCOB_RETURN irc = GetSSR(&_clkOrb, &_codeBias, &_vTEC, &_phaseBias,
                              _buffer.data(), _buffer.size(), &bytesused);
 
     if      (irc <= -30) { // not enough data - restore state and exit loop
@@ -190,8 +197,8 @@ t_irc RTCM3coDecoder::Decode(char* buffer, int bufLen, vector<string>& errmsg) {
       if (irc == GCOBR_OK || irc == GCOBR_MESSAGEFOLLOWS ) {
 
         setEpochTime(); // sets _lastTime
- 
-        if (_lastTime.valid()) { 
+
+        if (_lastTime.valid()) {
           reopen();
           checkProviderID();
           sendResults();
@@ -485,7 +492,7 @@ void RTCM3coDecoder::sendResults() {
       emit newOrbCorrections(itOrb.value());
       t_orbCorr::writeEpoch(_out, itOrb.value());
       itOrb.remove();
-    } 
+    }
   }
   QMutableMapIterator<bncTime, QList<t_clkCorr> > itClk(_clkCorrections);
   while (itClk.hasNext()) {
@@ -494,7 +501,7 @@ void RTCM3coDecoder::sendResults() {
       emit newClkCorrections(itClk.value());
       t_clkCorr::writeEpoch(_out, itClk.value());
       itClk.remove();
-    } 
+    }
   }
   QMutableMapIterator<bncTime, QList<t_satCodeBias> > itCB(_codeBiases);
   while (itCB.hasNext()) {
@@ -503,7 +510,7 @@ void RTCM3coDecoder::sendResults() {
       emit newCodeBiases(itCB.value());
       t_satCodeBias::writeEpoch(_out, itCB.value());
       itCB.remove();
-    } 
+    }
   }
   QMutableMapIterator<bncTime, QList<t_satPhaseBias> > itPB(_phaseBiases);
   while (itPB.hasNext()) {
@@ -512,7 +519,7 @@ void RTCM3coDecoder::sendResults() {
       emit newPhaseBiases(itPB.value());
       t_satPhaseBias::writeEpoch(_out, itPB.value());
       itPB.remove();
-    } 
+    }
   }
   QMutableMapIterator<bncTime, t_vTec> itTec(_vTecMap);
   while (itTec.hasNext()) {
@@ -521,7 +528,7 @@ void RTCM3coDecoder::sendResults() {
       emit newTec(itTec.value());
       t_vTec::write(_out, itTec.value());
       itTec.remove();
-    } 
+    }
   }
 }
 
@@ -573,13 +580,13 @@ void RTCM3coDecoder::setEpochTime() {
     epoSecGPS = _clkOrb.EpochTime[CLOCKORBIT_SATGPS];        // 0 .. 604799 s
   }
   else if (_codeBias.NumberOfSat[CLOCKORBIT_SATGPS] > 0) {
-    epoSecGPS = _codeBias.EpochTime[CLOCKORBIT_SATGPS];      // 0 .. 604799 s  
+    epoSecGPS = _codeBias.EpochTime[CLOCKORBIT_SATGPS];      // 0 .. 604799 s
   }
   else if (_phaseBias.NumberOfSat[CLOCKORBIT_SATGPS] > 0) {
-    epoSecGPS = _phaseBias.EpochTime[CLOCKORBIT_SATGPS];     // 0 .. 604799 s  
+    epoSecGPS = _phaseBias.EpochTime[CLOCKORBIT_SATGPS];     // 0 .. 604799 s
   }
   else if (_vTEC.NumLayers > 0) {
-    epoSecGPS = _vTEC.EpochTime;                             // 0 .. 604799 s  
+    epoSecGPS = _vTEC.EpochTime;                             // 0 .. 604799 s
   }
   else if (_clkOrb.NumberOfSat[CLOCKORBIT_SATGLONASS] > 0) {
     epoSecGlo = _clkOrb.EpochTime[CLOCKORBIT_SATGLONASS];    // 0 .. 86399 s
@@ -686,7 +693,7 @@ string RTCM3coDecoder::codeTypeToRnxType(char system, CodeType type) const {
     case CODETYPEGPS_L2_Z:          return "2W";
     case CODETYPEGPS_L5_I:          return "5I";
     case CODETYPEGPS_L5_Q:          return "5Q";
-    default: return "";                 
+    default: return "";
     }
   }
   else if (system == 'R') {
@@ -695,7 +702,7 @@ string RTCM3coDecoder::codeTypeToRnxType(char system, CodeType type) const {
     case CODETYPEGLONASS_L1_P:      return "1P";
     case CODETYPEGLONASS_L2_CA:     return "2C";
     case CODETYPEGLONASS_L2_P:      return "2P";
-    default: return "";                 
+    default: return "";
     }
   }
   else if (system == 'E') {
@@ -712,7 +719,7 @@ string RTCM3coDecoder::codeTypeToRnxType(char system, CodeType type) const {
     case CODETYPEGALILEO_E6_A:      return "6A";
     case CODETYPEGALILEO_E6_B:      return "6B";
     case CODETYPEGALILEO_E6_C:      return "6C";
-    default: return "";                 
+    default: return "";
     }
   }
   else if (system == 'J') {
@@ -730,7 +737,7 @@ string RTCM3coDecoder::codeTypeToRnxType(char system, CodeType type) const {
     case CODETYPEQZSS_LEX_S:        return "6S";
     case CODETYPEQZSS_LEX_L:        return "6L";
     case CODETYPEQZSS_LEX_SL:       return "6X";
-    default: return "";                 
+    default: return "";
     }
   }
   else if (system == 'S') {
@@ -739,7 +746,7 @@ string RTCM3coDecoder::codeTypeToRnxType(char system, CodeType type) const {
     case CODETYPE_SBAS_L5_I:        return "5I";
     case CODETYPE_SBAS_L5_Q:        return "5Q";
     case CODETYPE_SBAS_L5_IQ:       return "5X";
-    default: return "";                 
+    default: return "";
     }
   }
   else if (system == 'C') {
@@ -753,7 +760,7 @@ string RTCM3coDecoder::codeTypeToRnxType(char system, CodeType type) const {
     case CODETYPE_BDS_B3_I:         return "6I";
     case CODETYPE_BDS_B3_Q:         return "6Q";
     case CODETYPE_BDS_B3_IQ:        return "6X";
-    default: return "";                 
+    default: return "";
     }
   }
   return "";
