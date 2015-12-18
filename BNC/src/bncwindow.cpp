@@ -1397,6 +1397,107 @@ bncWindow::bncWindow() {
 bncWindow::~bncWindow() {
   delete _caster; BNC_CORE->setCaster(0);
   delete _casterEph;
+  delete _bncFigureLate;
+  delete _bncFigurePPP;
+  delete _actHelp;
+  delete _actAbout;
+  delete _actFlowchart;
+  delete _actFontSel;
+  delete _actSaveOpt;
+  delete _actQuit;
+  delete _actAddMountPoints;
+  delete _actDeleteMountPoints;
+  delete _actMapMountPoints;
+  delete _actStart;
+  delete _actStop;
+  delete _actwhatsthis;
+  delete _proxyHostLineEdit;
+  delete _proxyPortLineEdit;
+  delete _sslCaCertPathLineEdit;
+  delete _sslIgnoreErrorsCheckBox;
+  delete _logFileLineEdit;
+  delete _rawOutFileLineEdit;
+  delete _rnxAppendCheckBox;
+  delete _onTheFlyComboBox;
+  delete _autoStartCheckBox;
+  delete _rnxPathLineEdit;
+  delete _rnxIntrComboBox;
+  delete _rnxSamplSpinBox;
+  delete _rnxFileCheckBox;
+  delete _rnxSkelLineEdit;
+  delete _rnxScrpLineEdit;
+  delete _rnxV3CheckBox;
+  delete _rnxV3filenameCheckBox;
+  delete _rnxV2Priority;
+  delete _ephPathLineEdit;
+  delete _ephIntrComboBox;
+  delete _ephOutPortLineEdit;
+  delete _ephV3CheckBox;
+  delete _ephV3filenameCheckBox;
+  delete _corrPathLineEdit;
+  delete _corrIntrComboBox;
+  delete _corrPortLineEdit;
+  delete _outPortLineEdit;
+  delete _outWaitSpinBox;
+  delete _outSamplSpinBox;
+  delete _outFileLineEdit;
+  delete _outUPortLineEdit;
+  delete _serialMountPointLineEdit;
+  delete _serialPortNameLineEdit;
+  delete _serialBaudRateComboBox;
+  delete _serialFlowControlComboBox;
+  delete _serialDataBitsComboBox;
+  delete _serialParityComboBox;
+  delete _serialStopBitsComboBox;
+  delete _serialAutoNMEAComboBox;
+  delete _serialFileNMEALineEdit;
+  delete _serialHeightNMEALineEdit;
+  delete _serialManualNMEASamplingSpinBox;
+  delete _adviseObsRateComboBox;
+  delete _adviseFailSpinBox;
+  delete _adviseRecoSpinBox;
+  delete _adviseScriptLineEdit;
+  delete _miscMountLineEdit;
+  delete _miscPortLineEdit;
+  delete _miscIntrComboBox;
+  delete _miscScanRTCMCheckBox;
+  _mountPointsTable->setRowCount(0);
+  _mountPointsTable->deleteLater();
+  delete _log;
+  _cmbTable->setRowCount(0);
+  _cmbTable->deleteLater();
+  delete _cmbMaxresLineEdit;
+  delete _cmbUseGlonass;
+  delete _cmbSamplSpinBox;
+  delete _cmbMethodComboBox;
+  _uploadTable->setRowCount(0);
+  _uploadTable->deleteLater();
+  delete _uploadIntrComboBox;
+  delete _uploadAntexFile;
+  delete _uploadSamplRtcmEphCorrSpinBox;
+  delete _uploadSamplSp3SpinBox;
+  delete _uploadSamplClkRnxSpinBox;
+  delete _uploadEphHostLineEdit;
+  delete _uploadEphPortLineEdit;
+  delete _uploadEphPasswordLineEdit;
+  delete _uploadEphMountpointLineEdit;
+  delete _uploadEphSampleSpinBox;
+  delete _uploadEphBytesCounter;
+  delete _loggroup;
+  delete _reqcActionComboBox;
+  delete _reqcObsFileChooser;
+  delete _reqcNavFileChooser;
+  delete _reqcOutObsLineEdit;
+  delete _reqcOutNavLineEdit;
+  delete _reqcOutLogLineEdit;
+  delete _reqcPlotDirLineEdit;
+  delete _reqcSkyPlotSignals;
+  delete _reqcLogSummaryOnly;
+  delete _reqcEditOptionButton;
+  delete _sp3CompFileChooser;
+  delete _sp3CompExclude;
+  delete _sp3CompLogLineEdit;
+  //delete _canvas;
 }
 
 //
@@ -2168,6 +2269,7 @@ bncAboutDlg::bncAboutDlg(QWidget* parent) :
 //
 ////////////////////////////////////////////////////////////////////////////
 bncAboutDlg::~bncAboutDlg() {
+
 };
 
 // Flowchart
