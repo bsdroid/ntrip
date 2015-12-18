@@ -378,6 +378,15 @@ int main(int argc, char* argv[]) {
     }
   }
 
+  bncWindow*          bncWin = 0;
+  t_reqcEdit*         reqcEdit = 0;
+  t_reqcAnalyze*      reqcAnalyze = 0;
+  t_sp3Comp*          sp3Comp = 0;
+  bncEphUploadCaster* casterEph = 0;
+  bncCaster*          caster = 0;
+  bncRawFile*         rawFile =  0;
+  bncGetThread*       getThread = 0;
+
   // Interactive Mode - open the main window
   // ---------------------------------------
   if (interactive) {
@@ -394,7 +403,7 @@ int main(int argc, char* argv[]) {
 
     app.setWindowIcon(QPixmap(":ntrip-logo.png"));
 
-    bncWindow* bncWin = new bncWindow();
+    bncWin = new bncWindow();
     BNC_CORE->setMainWindow(bncWin);
     bncWin->show();
   }
@@ -402,7 +411,7 @@ int main(int argc, char* argv[]) {
   // Post-Processing PPP
   // -------------------
   else if (settings.value("PPP/dataSource").toString() == "RINEX Files") {
-    bncCaster* caster = new bncCaster();
+    caster = new bncCaster();
     BNC_CORE->setCaster(caster);
     BNC_CORE->setMode(t_bncCore::batchPostProcessing);
     BNC_CORE->startPPP();
@@ -412,7 +421,7 @@ int main(int argc, char* argv[]) {
   // -------------------------
   else if (settings.value("reqcAction").toString() == "Edit/Concatenate") {
     BNC_CORE->setMode(t_bncCore::batchPostProcessing);
-    t_reqcEdit* reqcEdit = new t_reqcEdit(0);
+    reqcEdit = new t_reqcEdit(0);
     reqcEdit->start();
   }
 
@@ -420,7 +429,7 @@ int main(int argc, char* argv[]) {
   // ----------------------------
   else if (settings.value("reqcAction").toString() == "Analyze") {
     BNC_CORE->setMode(t_bncCore::batchPostProcessing);
-    t_reqcAnalyze* reqcAnalyze = new t_reqcAnalyze(0);
+    reqcAnalyze = new t_reqcAnalyze(0);
     reqcAnalyze->start();
   }
 
@@ -428,7 +437,7 @@ int main(int argc, char* argv[]) {
   // --------------------
   else if (!settings.value("sp3CompFile").toString().isEmpty()) {
     BNC_CORE->setMode(t_bncCore::batchPostProcessing);
-    t_sp3Comp* sp3Comp = new t_sp3Comp(0);
+    sp3Comp = new t_sp3Comp(0);
     sp3Comp->start();
   }
 
@@ -438,9 +447,9 @@ int main(int argc, char* argv[]) {
 
     signal(SIGINT, catch_signal);
 
-    bncEphUploadCaster* casterEph = new bncEphUploadCaster(); (void) casterEph;
+    casterEph = new bncEphUploadCaster(); (void) casterEph;
 
-    bncCaster* caster = new bncCaster();
+    caster = new bncCaster();
 
     BNC_CORE->setCaster(caster);
     BNC_CORE->setPortEph(settings.value("ephOutPort").toInt());
@@ -469,13 +478,26 @@ int main(int argc, char* argv[]) {
       BNC_CORE->setMode(t_bncCore::batchPostProcessing);
       BNC_CORE->startPPP();
 
-      bncRawFile*   rawFile   = new bncRawFile(rawFileName, "", bncRawFile::input);
-      bncGetThread* getThread = new bncGetThread(rawFile);
+      rawFile   = new bncRawFile(rawFileName, "", bncRawFile::input);
+      getThread = new bncGetThread(rawFile);
       caster->addGetThread(getThread, true);
     }
   }
 
   // Start the application
   // ---------------------
-  return app.exec();
+  app.exec();
+  if (interactive) {
+    delete bncWin;
+  }
+  if (caster) {
+    delete caster;
+  }
+  if (casterEph) {
+    delete casterEph;
+  }
+  if (rawFile) {
+    delete rawFile;
+  }
+  return 0;
 }

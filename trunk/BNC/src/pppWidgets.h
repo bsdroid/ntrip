@@ -34,6 +34,7 @@ class t_pppWidgets : public QObject {
 
  public:
   t_pppWidgets();
+  ~t_pppWidgets();
   void saveOptions();
 
   QComboBox*     _dataSource;

@@ -206,6 +206,52 @@ t_pppWidgets::t_pppWidgets() {
 
 //
 ////////////////////////////////////////////////////////////////////////////
+t_pppWidgets::~t_pppWidgets() {
+  delete _dataSource;
+  delete _rinexObs;
+  delete _rinexNav;
+  delete _corrMount;
+  delete _corrFile;
+  delete _crdFile;
+  delete _antexFile;
+  delete _logPath;
+  delete _nmeaPath;
+  delete _snxtroPath;
+  delete _snxtroSampl;
+  delete _snxtroIntr;
+  delete _v3filenames;
+  for (int iRow = _staTable->rowCount()-1; iRow >=0; iRow--) {
+    _staTable->removeRow(iRow);
+  }
+  delete _staTable;
+  delete _lcGPS;
+  delete _lcGLONASS;
+  delete _lcGalileo;
+  delete _lcBDS;
+  delete _sigmaC1;
+  delete _sigmaL1;
+  delete _maxResC1;
+  delete _maxResL1;
+  delete _minObs;
+  delete _minEle;
+  delete _eleWgtCode;
+  delete _eleWgtPhase;
+  delete _seedingTime;
+  delete _corrWaitTime;
+  delete _addStaButton;
+  delete _delStaButton;
+  delete _plotCoordinates;
+  delete _mapWinButton;
+  delete _useGoogleMap;
+  delete _useOpenStreetMap;
+  delete _audioResponse;
+  delete _mapWinDotSize;
+  delete _mapWinDotColor;
+  delete _mapSpeedSlider;
+}
+
+//
+////////////////////////////////////////////////////////////////////////////
 void t_pppWidgets::readOptions() {
 
   bncSettings settings;

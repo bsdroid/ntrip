@@ -28,19 +28,19 @@
  *
  * Class:      bncFigure
  *
- * Purpose:    
+ * Purpose:
  *
  * Author:     Perlt, Mervart
  *
  * Created:    11-Nov-2009
  *
- * Changes:    
+ * Changes:
  *
  * -----------------------------------------------------------------------*/
 
 #include <iostream>
 
-#include "bncfigure.h" 
+#include "bncfigure.h"
 #include "bncsettings.h"
 
 using namespace std;
@@ -59,10 +59,15 @@ bncFigure::bncFigure(QWidget *parent) : QWidget(parent) {
 
 // Destructor
 ////////////////////////////////////////////////////////////////////////////
-bncFigure::~bncFigure() { 
+bncFigure::~bncFigure() {
+  QMapIterator<QByteArray, sumAndMean*> it(_bytes);
+  while (it.hasNext()) {
+    it.next();
+    delete it.value();
+  }
 }
 
-// 
+//
 ////////////////////////////////////////////////////////////////////////////
 void bncFigure::updateMountPoints() {
   QMutexLocker locker(&_mutex);
@@ -88,7 +93,7 @@ void bncFigure::updateMountPoints() {
   }
 }
 
-// 
+//
 ////////////////////////////////////////////////////////////////////////////
 void bncFigure::slotNewData(const QByteArray staID, double nbyte) {
   QMutexLocker locker(&_mutex);
@@ -98,7 +103,7 @@ void bncFigure::slotNewData(const QByteArray staID, double nbyte) {
   }
 }
 
-// 
+//
 ////////////////////////////////////////////////////////////////////////////
 void bncFigure::slotNextAnimationFrame() {
   QMutexLocker locker(&_mutex);
@@ -128,7 +133,7 @@ void bncFigure::slotNextAnimationFrame() {
   QTimer::singleShot(1000, this, SLOT(slotNextAnimationFrame()));
 }
 
-// 
+//
 ////////////////////////////////////////////////////////////////////////////
 void bncFigure::paintEvent(QPaintEvent *) {
 
@@ -186,7 +191,7 @@ void bncFigure::paintEvent(QPaintEvent *) {
     if(_maxRate > 0.0) {
       int yy = int(yLength * (it.value()->_mean / maxRateRounded));
       QColor color = QColor::fromRgb(_ran[0][anchor],_ran[1][anchor],_ran[2][anchor],150);
-      painter.fillRect(xx-13, int((yMax-yMin)*xLine)-yy, 9, yy, 
+      painter.fillRect(xx-13, int((yMax-yMin)*xLine)-yy, 9, yy,
                        QBrush(color,Qt::SolidPattern));
       painter.setPen(Qt::black);
       if(it.value()->_mean<=0) {
