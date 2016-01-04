@@ -4457,38 +4457,52 @@ Values for configuration options can be introduced via command line exactly as t
 <tr>
 <td>Sep 2014 &nbsp;</td><td>Version 2.12 &nbsp;</td><td>
 [Add] Started work on new version in Sep 2014<br>
-[Mod] RINEX file concatenation<br>[Add] Observation code selection in RINEX file editing<br>
+[Mod] RINEX file concatenation<br>
+[Add] Observation code selection in RINEX file editing<br>
 [Mod] Routine handling of data input and output in RINEX format re-written<br>
 [Mod] QC routines re-written with the goal of handling all signal types<br>
 [Add] Machine-readable output of RINEX QC<br>
-[Add] Additional PPP client for parallel processing of an arbitrary number of stations in separate threads<br>
+[Add] PPP client functionality for parallel processing of an arbitrary number of stations in separate threads<br>
+[Bug] Receiver antenna PCO in ionosphere-free PPP mode<br>
+[Add] NMEA output for any station processed in PPP mode<br>
 [Add] PPP processing of any number of linear combinations of GNSS measurements selected by user<br>
-[Add] Decoding RTCM SSR phase bias messages<br>
-[Add] Decoding RTCM SSR ionospheric model messages, single-layer model for total electron content<br>
-[Add] RTCM v3 QZSS Broadcast Ephemeris message 1044<br>
+[Add] Encoding/Decoding RTCM SSR I messages for Galileo, BDS, SBAS and QZSS<br>
+[Add] Encoding/Decoding RTCM SSR phase bias messages<br>
+[Add] Encoding/Decoding RTCM SSR ionospheric model messages, single-layer model for total electron content<br>
+[Add] RTCM SSR I messages for Galileo, BDS, SBAS and QZSS support from RTNET interface<br>
+[Add] RTCM SSR II messages (phase biases and SSR ionospheric model) support from RTNET interface<br>
+[Add] Computataion of VTEC and STEC from SSR ionospheric model messages for usage in PPP mode<br>
 [Add] Handle old-fashioned SNR values in RINEX<br>
 [Mod] SNR and MP visualization depending on RINEX observation attribute<br>
 [Bug] Saastamoinen tropospheric correction for very high elevation receivers<br>
 [Add] Comparison of SP3 files<br>
-[Add] RTCM v3 SBAS Broadcast Ephemeris message 1043<br>
-[Add] RTCM v3 BDS Broadcast Ephemeris message 63 (tentative)<br>
+[Add] Encoding/Decoding of RTCM v3 proposal for Galileo Broadcast Ephemeris message 1046<br>
+[Add] Encoding/Decoding of RTCM v3 QZSS Broadcast Ephemeris message 1044<br>
+[Add] Encoding/Decoding of RTCM v3 SBAS Broadcast Ephemeris message 1043<br>
+[Add] Encoding/Decoding of RTCM v3 BDS Broadcast Ephemeris message 63<br>
+[Add] RINEX v3 support of Galileo, BDS, SBAS and QZSS Broadcast Ephemerides<br>
+[Add] Consideration of the aspect that Galileo NAV message can be providet for the same epoch but with different flags (I/NAV, F/NAV, DVS)<br>
 [Bug] VRS support in sending NMEA in Auto/Manual mode to Ntrip Broadcaster<br>
 [Add] Forwarding NMEA GNGGA to Ntrip Broadcaster<br>
 [Bug] Stream failure/recovery reports<br>
-[Add] Compute IODs from CRC over broadcast ephemeris and clock parameters<br>
+[Add] Compute IODs for BDS and SBAS from CRC over broadcast ephemeris and clock parameters<br>
 [Mod] PPP default options<br>
 [Add] Example configuration for SP3 file comparison<br>
 [Add] Chose between code and phase observations when in PPP SSR I mode<br>
 [Bug] Reset time series plot when restarting PPP in post processing mode<br>
 [Add] Broadcast ephemeris check regarding allowed age of data sets<br>
 [Add] Code bias usage for PPP SSR I mode<br>
+[Add] Code bias, phase bias and VTEC usage in extended PPP mode<br>
+[Mod] Consideration of the full antenna PCO vector in all PPP modes<br>
 [Add] Allow GPS-only and GLONASS-only RINEX v2 Navigation files<br>
 [Mod] SSR clock correction converted to seconds to be consistent with broadcast values<br>
 [Add] Support Galileo I/NAV broadcast ephemeris<br>
 [Add] Extended RINEX v3 filenames<br>
 [Add] Stream's country added to configuration string 'mountPoints'<br>
+[Add] destinction of GEO/MEO satellites during BDS velocity derermination <br>
+[Bug] Velocity determination for geostationary BDS satellites<br>
 [Add] Set TOE from BDS week and second<br>
-[Add] Use BDS observations in PPP SSR I mode<br>
+[Add] Use BDS observations and ephemerides in PPP SSR I mode<br>
 [Add] Considering that yaw angle restricted to -180 to +180 deg<br>
 [Mod] Read local RINEX skeleton files<br>
 [Add] Update interval for VTEC in RTNET stream format<br>
@@ -4499,13 +4513,16 @@ Values for configuration options can be introduced via command line exactly as t
 [Add] Decoder interface for PPP SSR I+II messages for Galileo/QZSS/SBAS/BDS<br>
 [Mod] Renaming BDS first frequency from '1' to '2'<br>
 [Add] RINEX QC, receiver/antenna information editable<br>
+[Add] Support of new RINEX header lines regarding phase shifts, GLONAQSS slots and GLONASS biases during file merging<br>
 [Add] Switch to port 443 for skeleton file download from https website<br>
 [Mod] Default observation types for RINEX v3 files<br>
 [Bug] RTCM v2 decoder<br>
 [Add] SINEX Troposphere file output<br>
+[Add] Comments with respect to RINEX v3 to RINEX v2 observation file conversion
 [Add] String for Operating System in logfile output<br>
 [Add] Full integration of 'rtcm3torinex'<br>
 [Add] Extended command line help<br>
+
 </td>
 </tr>
 
