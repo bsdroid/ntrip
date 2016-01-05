@@ -287,7 +287,7 @@ void RTCM3coDecoder::sendResults() {
       orbCorr._dotXr[1]  = _clkOrb.Sat[ii].Orbit.DotDeltaAlongTrack;
       orbCorr._dotXr[2]  = _clkOrb.Sat[ii].Orbit.DotDeltaCrossTrack;
 
-      _orbCorrections[_lastTime].push_back(orbCorr);
+      _orbCorrections[_lastTime].append(orbCorr);
 
       _IODs[orbCorr._prn] = _clkOrb.Sat[ii].IOD;
     }
@@ -321,7 +321,7 @@ void RTCM3coDecoder::sendResults() {
 
       if (_IODs.contains(clkCorr._prn)) {
         clkCorr._iod = _IODs[clkCorr._prn];
-        _clkCorrections[_lastTime].push_back(clkCorr);
+        _clkCorrections[_lastTime].append(clkCorr);
       }
     }
 
@@ -398,7 +398,7 @@ void RTCM3coDecoder::sendResults() {
         satCodeBias._bias.push_back(frqCodeBias);
       }
     }
-    _codeBiases[_lastTime].push_back(satCodeBias);
+    _codeBiases[_lastTime].append(satCodeBias);
   }
 
   // Phase Biases
@@ -458,7 +458,7 @@ void RTCM3coDecoder::sendResults() {
         satPhaseBias._bias.push_back(frqPhaseBias);
       }
     }
-    _phaseBiases[_lastTime].push_back(satPhaseBias);
+    _phaseBiases[_lastTime].append(satPhaseBias);
   }
 
   // Ionospheric Model
