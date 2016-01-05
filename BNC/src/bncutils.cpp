@@ -746,7 +746,7 @@ void deg2DMS(double decDeg, int& deg, int& min, double& sec) {
 ////////////////////////////////////////////////////////////////////////////
 QString fortranFormat(double value, int width, int prec) {
   int    expo = value == 0.0 ? 0 : int(log10(fabs(value)));
-  double mant = value == 0.0 ? 0 : value / pow(10, expo);
+  double mant = value == 0.0 ? 0 : value / pow(10.0, double(expo));
   if (fabs(mant) >= 1.0) {
     mant /= 10.0;
     expo += 1;
