@@ -222,6 +222,9 @@ t_pppRun::~t_pppRun() {
   delete _logFile;
   delete _nmeaFile;
   delete _snxtroFile;
+  while (!_epoData.empty()) {
+    _epoData.pop_front();
+  }
 }
 
 //
