@@ -186,7 +186,9 @@ t_irc bncoutf::reopen(int GPSweek, double GPSweeks) {
       _out.open(_fName.toAscii().data());
       writeHeader(datTim);
     }
-    _headerWritten = true;
+    if (_out.is_open()) {
+      _headerWritten = true;
+    }
   }
 
   return success;
