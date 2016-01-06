@@ -10,12 +10,12 @@
  *
  * Created:    29-Mar-2011
  *
- * Changes:    
+ * Changes:
  *
  * -----------------------------------------------------------------------*/
 
 #include <math.h>
-#include "bncuploadcaster.h" 
+#include "bncuploadcaster.h"
 #include "bncversion.h"
 #include "bnccore.h"
 #include "bnctableitem.h"
@@ -26,7 +26,7 @@ using namespace std;
 ////////////////////////////////////////////////////////////////////////////
 bncUploadCaster::bncUploadCaster(const QString& mountpoint,
                                  const QString& outHost, int outPort,
-                                 const QString& password, int iRow, 
+                                 const QString& password, int iRow,
                                  int rate) {
   _mountpoint    = mountpoint;
   _outHost       = outHost;
@@ -44,12 +44,12 @@ bncUploadCaster::bncUploadCaster(const QString& mountpoint,
   }
   _isToBeDeleted = false;
 
-  connect(this, SIGNAL(newMessage(QByteArray,bool)), 
+  connect(this, SIGNAL(newMessage(QByteArray,bool)),
           BNC_CORE, SLOT(slotMessage(const QByteArray,bool)));
 
   if (BNC_CORE->_uploadTableItems.find(_iRow) != BNC_CORE->_uploadTableItems.end()){
-    connect(this, SIGNAL(newBytes(QByteArray,double)), 
-            BNC_CORE->_uploadTableItems.value(iRow), 
+    connect(this, SIGNAL(newBytes(QByteArray,double)),
+            BNC_CORE->_uploadTableItems.value(iRow),
             SLOT(slotNewBytes(const QByteArray,double)));
   }
 }
@@ -68,6 +68,9 @@ void bncUploadCaster::deleteSafely() {
 bncUploadCaster::~bncUploadCaster() {
   if (isRunning()) {
     wait();
+  }
+  if (_outSocket) {
+    delete _outSocket;
   }
 }
 
@@ -110,7 +113,7 @@ void bncUploadCaster::open() {
     return;
   }
 
-  if (_outSocket != 0 && 
+  if (_outSocket != 0 &&
       _outSocket->state() == QAbstractSocket::ConnectedState) {
     return;
   }
@@ -140,7 +143,7 @@ void bncUploadCaster::open() {
     return;
   }
 
-  QByteArray msg = "SOURCE " + _password.toAscii() + " /" + 
+  QByteArray msg = "SOURCE " + _password.toAscii() + " /" +
                    _mountpoint.toAscii() + "\r\n" +
                    "Source-Agent: NTRIP BNC/" BNCVERSION "\r\n\r\n";
 
