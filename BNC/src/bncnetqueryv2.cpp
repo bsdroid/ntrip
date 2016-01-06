@@ -152,9 +152,7 @@ void bncNetQueryV2::startRequestPrivate(const QUrl& url, const QByteArray& gga,
   }
   request.setRawHeader("Connection"   , "close");
 
-  if (_reply) {
-    delete _reply;
-  }
+  delete _reply;
   _reply = _manager->get(request);
 
   // Connect Signals
