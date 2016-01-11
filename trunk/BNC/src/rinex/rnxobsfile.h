@@ -96,6 +96,8 @@ class t_rnxObsHeader {
   int                     _wlFactorsL1[t_prn::MAXPRN_GPS+1];
   int                     _wlFactorsL2[t_prn::MAXPRN_GPS+1];
   bncTime                 _startTime;
+  bool                    _writeRinexOnlyWithSklObsTypes;
+
   QMap<QString, QPair<double, QStringList> > _phaseShifts;
 };
 

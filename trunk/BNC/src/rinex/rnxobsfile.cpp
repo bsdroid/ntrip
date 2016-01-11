@@ -62,6 +62,8 @@ t_rnxObsHeader::t_rnxObsHeader() {
     _wlFactorsL1[iPrn] = 1;
     _wlFactorsL2[iPrn] = 1;
   }
+  bncSettings settings;
+  _writeRinexOnlyWithSklObsTypes = settings.value("rnxOnlyWithSKL").toBool();
 }
 
 // Destructor
@@ -277,7 +279,12 @@ t_irc t_rnxObsHeader::read(QTextStream* stream, int maxLines) {
   // set default observation types if empty in input file
   // ----------------------------------------------------
   if (_obsTypes.empty()) {
-    setDefault(_markerName, _version);
+    if (!_writeRinexOnlyWithSklObsTypes) {
+      setDefault(_markerName, _version);
+    }
+    else {
+      return failure;
+    }
   }
 
   // Systems used
