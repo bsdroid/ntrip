@@ -47,8 +47,8 @@ bncCustomTrafo::bncCustomTrafo(QWidget* parent) : QDialog(parent) {
  _scrLineEdit = new QLineEdit(settings.value("trafo_scr").toString());
  _t0LineEdit = new QLineEdit(settings.value("trafo_t0").toString());
 
-  // WhatsThis
-  // ---------
+  // WhatsThis, Custom Transformation Parameters
+  // -------------------------------------------
   _dxLineEdit->setWhatsThis(tr("<p>Set translation in X at epoch t0.</p>"));
   _dyLineEdit->setWhatsThis(tr("<p>Set translation in Y at epoch t0.</p>"));
   _dzLineEdit->setWhatsThis(tr("<p>Set translation in Z at epoch t0.</p>"));
