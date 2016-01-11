@@ -59,7 +59,7 @@ class bncTime {
   bncTime &setBDS (int year, int month, int day, int hour, int min, double sec);
   bncTime &setBDS(int gpsw, double gpssec);
 
-  void         reset() {_mjd = 0; _sec = 0;}
+  void         reset() {_mjd = 0; _sec = 0.0;}
   unsigned int mjd()    const;
   double       daysec() const;
   /** Get GPS week.
@@ -100,8 +100,8 @@ class bncTime {
   bncTime      operator+(double sec) const;
   bncTime&     operator+=(double sec);
 
-  std::string timestr(unsigned numdec = 3, char sep = ':') const;  
-  std::string datestr(char sep = '-') const;  
+  std::string timestr(unsigned numdec = 3, char sep = ':') const;
+  std::string datestr(char sep = '-') const;
   operator std::string() const;
 
  private:
