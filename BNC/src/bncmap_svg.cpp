@@ -83,7 +83,7 @@ t_bncMap::t_bncMap(QWidget* parent) : QDialog(parent) {
   connect(_buttonPrint, SIGNAL(clicked()), this, SLOT(slotPrint()));
 
   _buttonWhatsThis = new QPushButton(tr("Help=Shift+F1"), this);
-  _buttonWhatsThis->setMaximumWidth(14*ww); // weber
+  _buttonWhatsThis->setMaximumWidth(14*ww); 
   connect(_buttonWhatsThis, SIGNAL(clicked()), this, SLOT(slotWhatsThis()));
 
   // Layout
@@ -97,8 +97,8 @@ t_bncMap::t_bncMap(QWidget* parent) : QDialog(parent) {
   mainLayout->addWidget(_mapPlot);
   mainLayout->addLayout(buttonLayout);
 
-  // WhatsThis
-  // ---------
+  // WhatsThis, Map
+  // --------------
   _buttonClose->setWhatsThis(tr("<p>Close window.</p>"));
   _buttonPrint->setWhatsThis(tr("<p>Print stream distribution map.</p>"));
 
