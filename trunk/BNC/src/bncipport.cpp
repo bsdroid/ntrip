@@ -70,15 +70,15 @@ bncIpPort::bncIpPort(QWidget* parent) : QDialog(parent) {
   _ipLonLineEdit->setMaximumWidth(9*ww);
   _ipCountryLineEdit->setMaximumWidth(9*ww);
 
-  // WhatsThis
-  // ---------
+  // WhatsThis, Add Stream from TCP/IP Port
+  // --------------------------------------
   _ipHostLineEdit->setWhatsThis(tr("<p>If no proxy server is involed in the communication, BNC allows to retrieve streams via TCP directly from an IP address without using the Ntrip transport protocol.</p><p>Enter the IP address of the stream providing host.</p>"));
   _ipPortLineEdit->setWhatsThis(tr("<p>Enter the IP port number of the stream providing host.</p>"));
   _ipMountLineEdit->setWhatsThis(tr("<p>Specify a mountpoint.</p><p>Recommended is a 4-character station ID.<br>Example: FFMJ</p>"));
   _ipFormatLineEdit->setWhatsThis(tr("<p>Specify the stream format.</p><p>Available options are 'RTCM_2', 'RTCM_3', RTNET, and 'ZERO'.</p>"));
   _ipLatLineEdit->setWhatsThis(tr("<p>Enter the approximate latitude of the stream providing receiver in degrees.<p></p>Example: 45.32</p>"));
   _ipLonLineEdit->setWhatsThis(tr("<p>Enter the approximate longitude of the stream providing receiver in degrees.<p></p>Example: -15.20</p>"));
-  _ipCountryLineEdit->setWhatsThis(tr("<p>Specify the country code.</p><p>Recommended is the ISO 3166-1 alpha-3a code.<br>Example: DEU</p>"));
+  _ipCountryLineEdit->setWhatsThis(tr("<p>Specify the country code.</p><p>Follow the ISO 3166-1 alpha-3a code.<br>Example, Germany: DEU</p>"));
 
   editLayout->addWidget(new QLabel(tr("Host")),      0, 0, Qt::AlignRight);
   editLayout->addWidget(_ipHostLineEdit,             0, 1);
