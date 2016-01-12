@@ -105,7 +105,7 @@ bncTableDlg::bncTableDlg(QWidget* parent) : QDialog(parent) {
   // WhatsThis, Add Streams from Caster, Top
   // ---------------------------------------
   _casterHostComboBox->setWhatsThis(tr("<p>Enter the Ntrip Broadcaster URL or IP number.</p><p>Note that EUREF and IGS operate Ntrip Broadcasters at <u>www.euref-ip.net</u>, <u>www.igs-ip.net</u>, <u>products.igs-ip.net</u>, and <u>mgex.igs-ip.net</u>.</p>"));
-  _casterPortLineEdit->setWhatsThis(tr("<p>Enter the Ntrip Broadcaster port number.</p></p>Note that Ntrip Version 2 via SSL usually requires specifying port 443.</p>"));
+  _casterPortLineEdit->setWhatsThis(tr("<p>Enter the Ntrip Broadcaster port number.</p></p>Note that 80 and 2101 are often used port numbers. Note further that Ntrip Version 2 via SSL usually requires specifying port 443.</p>"));
   _buttonCasterTable->setWhatsThis(tr("<p>Hit 'Show' for a table of known Ntrip Broadcaster installations as maintained at <u>http://www.rtcm-ntrip.org/home.</u></p><p>A window opens which allows to select a broadcaster for stream retrieval.</p>"));
   _casterUserLineEdit->setWhatsThis(tr("<p>Access to streams on Ntrip Broadcasters can be restricted. You may need to enter a valid 'User' ID and 'Password' for access to protected streams.</p><p>Accounts are usually provided per Ntrip Broadcaster following a registration process. Register via <u>https://registration.rtcm-ntrip.org</u> for access to protected streams on <u>www.euref-ip.net</u>, <u>www.igs-ip.net</u>, <u>products.igs-ip.net</u>, or <u>mges.igs-ip.net</u>.</p>"));
   _casterPasswordLineEdit->setWhatsThis(tr("<p>Enter a valid 'Password' for access to protected streams.</p>"));
@@ -612,7 +612,7 @@ bncCasterTableDlg::bncCasterTableDlg(const QString& ntripVersion,
 
   // WhatsThis, List of Ntrip Broadcasters from www.rtcm-ntrip.org
   // -------------------------------------------------------------
-  _casterTable->setWhatsThis(tr("<p>Select an Ntrip Broadcaster and hit 'OK'.</p><p>See <u>http://www.rtcm-ntrip.org/home</u> for further details on known Ntrip Broadcaster installations.</u>."));
+  _casterTable->setWhatsThis(tr("<p>Select an Ntrip Broadcaster and hit 'OK'.</p><p>See <u>http://www.rtcm-ntrip.org/home</u> for further details on known Ntrip Broadcaster installations.</u>"));
 
   QGridLayout* dlgLayout = new QGridLayout();
   dlgLayout->addWidget(new QLabel("  List of Ntrip Broadcasters from www.rtcm-ntrip.org"), 0,0,1,3,Qt::AlignLeft);
