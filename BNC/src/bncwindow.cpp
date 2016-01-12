@@ -1413,8 +1413,12 @@ bncWindow::bncWindow() {
 // Destructor
 ////////////////////////////////////////////////////////////////////////////
 bncWindow::~bncWindow() {
-  delete _caster; BNC_CORE->setCaster(0);
-  delete _casterEph;
+  if (_caster) {
+    delete _caster; BNC_CORE->setCaster(0);
+  }
+  if (_casterEph) {
+    delete _casterEph;
+  }
   delete _bncFigureLate;
   delete _bncFigurePPP;
   delete _actHelp;
