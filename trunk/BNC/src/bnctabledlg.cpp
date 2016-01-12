@@ -153,7 +153,7 @@ bncTableDlg::bncTableDlg(QWidget* parent) : QDialog(parent) {
   // WhatsThis, Add Streams from Caster, Bottom
   // ------------------------------------------
   _table->setWhatsThis(tr("<p>Use the 'Get Table' button to download the source-table from the selected Ntrip Broadcaster. Select the desired streams line by line using +Shift and +Ctrl when necessary. Hit 'OK' to return to the main window.</p><p>Pay attention to data field 'format'. Keep in mind that BNC can only decode and convert streams that come in RTCM Version 2.x, or RTCM Version 3.x format. See data field 'format-details' for available message types and their repetition rates in brackets.</p><p>The content of data field 'nmea' tells you whether or not a stream comes from a virtual reference station (VRS).</p>"));
-  _buttonMap->setWhatsThis(tr("<p>Draw distribution map of streams in downloaded caster source-table.</p>"));
+  _buttonMap->setWhatsThis(tr("<p>Draw distribution map of streams in downloaded caster source-table. Use mouse to zoom in or out.</p><p>Left button: Draw rectangle to zoom in.<br>Right button: Zoom out.<br>Middle button: Zoom back.</p>"));
   _buttonGet->setWhatsThis(tr("<p>Download source-table from specified caster.</p>"));
   _buttonClose->setWhatsThis(tr("<p>Close window.</p>"));
   _buttonSelect->setWhatsThis(tr("<p>Select streams highlighted in downloaded source-table.</p>"));
