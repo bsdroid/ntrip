@@ -34,7 +34,7 @@
  *
  * Created:    24-Dec-2005
  *
- * Changes:    
+ * Changes:
  *
  * -----------------------------------------------------------------------*/
 
@@ -59,7 +59,7 @@ bncCaster::bncCaster() {
 
   bncSettings settings;
 
-  connect(this, SIGNAL(newMessage(QByteArray,bool)), 
+  connect(this, SIGNAL(newMessage(QByteArray,bool)),
           BNC_CORE, SLOT(slotMessage(const QByteArray,bool)));
 
   _outFile = 0;
@@ -158,20 +158,20 @@ void bncCaster::slotNewObs(const QByteArray staID, QList<t_satObs> obsList) {
     // Rename the Station
     // ------------------
     obs._staID = staID.data();
-    
+
     // Output into the socket
     // ----------------------
     if (_uSockets) {
-    
+
       ostringstream oStr;
       oStr.setf(ios::showpoint | ios::fixed);
-      oStr << obs._staID                                        << " " 
+      oStr << obs._staID                                        << " "
            << setw(4)  << obs._time.gpsw()                      << " "
            << setw(14) << setprecision(7) << obs._time.gpssec() << " "
            << bncRinex::asciiSatLine(obs) << endl;
-    
+
       string hlpStr = oStr.str();
-    
+
       QMutableListIterator<QTcpSocket*> is(*_uSockets);
       while (is.hasNext()) {
         QTcpSocket* sock = is.next();
@@ -188,20 +188,20 @@ void bncCaster::slotNewObs(const QByteArray staID, QList<t_satObs> obsList) {
         }
       }
     }
-    
+
     // First time: set the _lastDumpTime
     // ---------------------------------
     if (!_lastDumpTime.valid()) {
       _lastDumpTime = obs._time - 1.0;
     }
-    
+
     // An old observation - throw it away
     // ----------------------------------
     if (obs._time <= _lastDumpTime) {
       if (index == 1) {
         bncSettings settings;
-        if ( !settings.value("outFile").toString().isEmpty() || 
-             !settings.value("outPort").toString().isEmpty() ) { 
+        if ( !settings.value("outFile").toString().isEmpty() ||
+             !settings.value("outPort").toString().isEmpty() ) {
           emit( newMessage(QString("%1: Old epoch %2 thrown away")
           		   .arg(staID.data()).arg(string(obs._time).c_str())
         		   .toAscii(), true) );
@@ -209,10 +209,10 @@ void bncCaster::slotNewObs(const QByteArray staID, QList<t_satObs> obsList) {
       }
       continue;
     }
-    
+
     // Save the observation
     // --------------------
-    _epochs[obs._time].push_back(obs);
+    _epochs[obs._time].append(obs);
 
     // Dump Epochs
     // -----------
@@ -253,7 +253,7 @@ void bncCaster::addGetThread(bncGetThread* getThread, bool noNewThread) {
   connect(getThread, SIGNAL(newRawData(QByteArray, QByteArray)),
           this,      SLOT(slotNewRawData(QByteArray, QByteArray)));
 
-  connect(getThread, SIGNAL(getThreadFinished(QByteArray)), 
+  connect(getThread, SIGNAL(getThreadFinished(QByteArray)),
           this, SLOT(slotGetThreadFinished(QByteArray)));
 
   _staIDs.push_back(getThread->staID());
@@ -301,32 +301,32 @@ void bncCaster::dumpEpochs(const bncTime& maxTime) {
       const QList<t_satObs>& allObs = itEpo.value();
       int sec = int(nint(epoTime.gpssec()));
       if ( (_out || _sockets) && (_samplingRate == 0 || sec % _samplingRate == 0) ) {
-      
+
         QListIterator<t_satObs> it(allObs);
         bool firstObs = true;
         while (it.hasNext()) {
           const t_satObs& obs = it.next();
-        
+
           ostringstream oStr;
           oStr.setf(ios::showpoint | ios::fixed);
-          if (firstObs) { 
+          if (firstObs) {
             firstObs = false;
-            oStr << "> " << obs._time.gpsw() << ' ' 
+            oStr << "> " << obs._time.gpsw() << ' '
                  << setprecision(7) << obs._time.gpssec() << endl;
           }
           oStr << obs._staID << ' ' << bncRinex::asciiSatLine(obs) << endl;
-          if (!it.hasNext()) { 
+          if (!it.hasNext()) {
             oStr << endl;
           }
           string hlpStr = oStr.str();
-        
+
           // Output into the File
           // --------------------
           if (_out) {
             *_out << hlpStr.c_str();
             _out->flush();
           }
-        
+
           // Output into the socket
           // ----------------------
           if (_sockets) {
@@ -334,7 +334,7 @@ void bncCaster::dumpEpochs(const bncTime& maxTime) {
             while (is.hasNext()) {
               QTcpSocket* sock = is.next();
               if (sock->state() == QAbstractSocket::ConnectedState) {
-                int numBytes = hlpStr.length(); 
+                int numBytes = hlpStr.length();
                 if (myWrite(sock, hlpStr.c_str(), numBytes) != numBytes) {
                   delete sock;
                   is.remove();
@@ -407,8 +407,8 @@ void bncCaster::readMountPoints() {
       QByteArray longitude = hlp[4].toAscii();
       QByteArray nmea      = hlp[5].toAscii();
       QByteArray ntripVersion = hlp[6].toAscii();
-      
-      bncGetThread* getThread = new bncGetThread(url, format, latitude, 
+
+      bncGetThread* getThread = new bncGetThread(url, format, latitude,
                                         longitude, nmea, ntripVersion);
       addGetThread(getThread);
 
@@ -485,7 +485,7 @@ void bncCaster::readMountPoints() {
   QTimer::singleShot(ms, this, SLOT(slotReadMountPoints()));
 }
 
-// 
+//
 ////////////////////////////////////////////////////////////////////////////
 int bncCaster::myWrite(QTcpSocket* sock, const char* buf, int bufLen) {
   sock->write(buf, bufLen);
@@ -497,7 +497,7 @@ int bncCaster::myWrite(QTcpSocket* sock, const char* buf, int bufLen) {
   return -1;
 }
 
-// 
+//
 ////////////////////////////////////////////////////////////////////////////
 void bncCaster::reopenOutFile() {
 
@@ -509,7 +509,7 @@ void bncCaster::reopenOutFile() {
     if (!_outFile || _outFile->fileName() != outFileName) {
       delete _out;
       delete _outFile;
-      _outFile = new QFile(outFileName); 
+      _outFile = new QFile(outFileName);
       if ( Qt::CheckState(settings.value("rnxAppend").toInt()) == Qt::Checked) {
         _outFile->open(QIODevice::WriteOnly | QIODevice::Append);
       }
@@ -535,13 +535,13 @@ void bncCaster::slotNewRawData(QByteArray staID, QByteArray data) {
       QTcpSocket* sock = is.next();
       if (sock->state() == QAbstractSocket::ConnectedState) {
         sock->write(data);
-      }       
+      }
       else if (sock->state() != QAbstractSocket::ConnectingState) {
         delete sock;
         is.remove();
-      }       
-    }       
-  } 
+      }
+    }
+  }
 }
 
 // New Connection
