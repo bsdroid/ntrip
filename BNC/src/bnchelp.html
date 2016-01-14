@@ -13,6 +13,8 @@ Georg Weber<sup>(1)</sup>, Leos Mervart<sup>(2)</sup>, Andrea St&uuml;rze<sup>(1
 <b>Copyright</b><br>
 &copy;<sup>&nbsp;</sup> 2005-2016 Federal Agency for Cartography and Geodesy (BKG), Frankfurt, Germany
 <br><br>
+ISSN 1436-3445<br>
+ISBN 978-3-86482-083-0<br><br>
 <b>Citation<sup>&nbsp;</sup></b><br>
 To help justify funding the development of BNC,<sup>&nbsp;</sup>we kindly ask users to include a citation when applying the software results in a publication. We suggest:
 <br><br>
@@ -274,7 +276,7 @@ Weber, G., L. Mervart, A. St&uuml;rze, A. R&uuml;lke and D. St&ouml;cker:<br>
 
 <p><h3>1. <a name="genInstruction">General Information</h3></p>
 <p>
-The BKG Ntrip Client (BNC) is a program for simultaneously retrieving, decoding, converting and processing or analyzing real-time GNSS data streams applying the 'Networked Transport of RTCM via Internet Protocol' (Ntrip) standard. It has been developed within the framework of the IAG sub-commission for Europe (EUREF) and the International GNSS Service (IGS). Although meant as a real-time tool, it comes with some post processing functionality. You may like to use it for data coming from Ntrip Broadcasters like
+The BKG Ntrip Client (BNC) is a program for simultaneously retrieving, decoding, converting and processing or analyzing real-time GNSS data streams applying the 'Networked Transport of RTCM via Internet Protocol' (Ntrip) standard. It has been developed within the framework of the IAG sub-commission for Europe (EUREF) and the International GNSS Service (IGS). Although meant to be a real-time tool, it comes with some post processing functionality. It could be used for data coming from Ntrip Broadcasters like
 <ul>
 <li><u>http://www.euref-ip.net/home</u>,</li>
 <li><u>http://www.igs-ip.net/home</u>,</li>
@@ -316,7 +318,7 @@ Prof. Mervart started working on BNC in 2005. His sole responsibility for writin
 </p>
 
 <p>
-BNC provides context-sensitive help (<i>What's This</i>) related to specific objects. It furthermore comes with the here presented documentation, available as part of the software and as a PDF file. Responsible for online and offline documentation, example configurations (and till February 2014 the overall BNC policy concept) is Dr. Georg Weber [georg.weber@bkg.bund.de].
+BNC provides context-sensitive help (<i>What's This</i>) related to specific objects. It furthermore comes with the here presented documentation, available as part of the software and as a PDF file. Responsible for online and offline documentation, example configurations (and untill February 2014 the overall BNC policy concept) is Dr. Georg Weber [georg.weber@bkg.bund.de].
 </p>
 
 <p>
@@ -326,7 +328,7 @@ BNC includes the following GNU GPL software component:
 </ul>
 </p>
 <p>
-Note that some figures presented in this documentation may show screenshots from earlier versions of BNC. If so then there is either no relevant change compared to the current appearance of the program or no change at all.
+Note that some figures presented in this documentation may show screenshots from earlier versions of BNC. If so, then there is either no relevant change compared to the current appearance of the program or no change at all.
 </p>
 
 <p>
@@ -916,7 +918,7 @@ To cope with an increasing number of transmitting GNSS reference stations, the F
 For BKG as a governmental agency, making Ntrip an Open Industry Standard has been an objective from the very beginning. The 'Radio Technical Commission for Maritime Services' (RTCM) accepted 'Ntrip Version 1' in 2004 as 'RTCM Recommended Standard' (Weber et al. 2005). Nowadays there is almost no geodetic GNSS receiver which does not come with integrated NtripClient and NtripServer functionality as part of the firmware. Hundreds of NtripCaster implementations are operated world-wide for highly accurate satellite navigation through RTK networks. Thousands of reference stations upload observations via NtripServer to central computing facilities for any kind of NtripClient application. In 2011 'Ntrip Version 2' was released (RTCM SC-104 2011) which cleared and fixed some design problems and HTTP protocol violations. It also supports TCP/IP via SSL and adds optional communication over RTSP/RTP and UDP.
 </p>
 <p>
-With the advent of Ntrip as open streaming standard, BKG's interest turned towards taking advantage from free real-time access to GNSS observations. NGOs such as the IAG Reference Frame Sub Commissions for Africa (AFREF), Asia & Pacific (APREF), Europe (EUREF), North America (NAREF) Latin America & Caribbean (SIRGAS), and the International GNSS Service (IGS) maintain continental or even global GNSS networks with the majority of modern receivers supporting Ntrip stream upload. Through operating BKG's NtripCaster software, these networks became extremely valuable sources of real-time GNSS information.  In 2005 this was the starting point for developing the 'BKG Ntrip Client' (BNC) as a multi-stream Open Source NtripClient which allows pulling hundreds of streams simultaneously from any number of NtripCaster installations world-wide. Decoding incoming RTCM streams and output observations epoch by epoch through IP port to feed a real-time GNSS network engine became BNC's first and foremost ability. Converting decoded streams to short high-rate RINEX files to assist near real-time applications became a welcome by-product right from the start of this development.
+With the advent of Ntrip as open streaming standard, BKG's interest turned towards taking advantage from free real-time access to GNSS observations. International Associations such as the IAG Reference Frame Sub Commissions for Africa (AFREF), Asia & Pacific (APREF), Europe (EUREF), North America (NAREF) Latin America & Caribbean (SIRGAS), and the International GNSS Service (IGS) maintain continental or even global GNSS networks with the majority of modern receivers supporting Ntrip stream upload. Through operating BKG's NtripCaster software, these networks became extremely valuable sources of real-time GNSS information.  In 2005 this was the starting point for developing the 'BKG Ntrip Client' (BNC) as a multi-stream Open Source NtripClient which allows pulling hundreds of streams simultaneously from any number of NtripCaster installations world-wide. Decoding incoming RTCM streams and output observations epoch by epoch through IP port to feed a real-time GNSS network engine became BNC's first and foremost ability. Converting decoded streams to short high-rate RINEX files to assist near real-time applications became a welcome by-product right from the start of this development.
 </p>
 <p>
 Adding real-time Precise Point Positioning (PPP) support to BNC began in 2010 as an important completion in view of developing an Open RTCM Standard for that. According to the State Space Representation (SSR) model, new Version 3 messages are proposed to provide e.g. satellite orbit and clock corrections and ionospheric corrections as well as biases for code and phase data. The ultimate goal for SSR standardization is to reach centimeter level accuracy within seconds as an alternative to Network RTK methods like VRS, FKP, and MAC. Because of interoperability aspects, an Open Standard in this area is of particular interest for clients. Regarding stand-alone PPP in BNC it is worth mentioning that the program is not and can never be in competition with a receiver manufacturer's proprietary solution. Only software or services which are part of a receiver firmware could have the potential of becoming a thread for commercial interests. However, implementing or not implementing an Open PPP approach in a firmware is and always remains a manufacturer's decision.
