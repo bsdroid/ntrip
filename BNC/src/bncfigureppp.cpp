@@ -267,6 +267,7 @@ void bncFigurePPP::paintEvent(QPaintEvent *) {
       // Start Time
       // ----------
       QString startStr = QString(_startTime.timestr(0).c_str());
+      startStr = "Start " + startStr;
       painter.setPen(QColor(Qt::black));
       painter.drawText(0, ww, pntP.x() + 31*ww, pntP.x(), Qt::AlignRight, startStr);
     }
