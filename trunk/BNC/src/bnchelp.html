@@ -603,41 +603,35 @@ Records of BNC's activities are shown in the 'Log' tab which is part of the 'Log
 
 <p><h4>1.5 <a name="introInst">Installation</h4></p>
 <p> 
-Precompiled builds of BNC are available for MS Windows, Linux, and Mac OS X systems and can be downloaded for installation from <u>http://igs.bkg.bund.de/ntrip/download</u>. Please ensure that you always use the latest version of the program. 
+Precompiled builds of BNC are available for MS Windows, Linux, and Mac OS X systems. They can be downloaded for installation from <u>http://igs.bkg.bund.de/ntrip/download</u>. Please ensure that you always use the latest released version of the program. 
 </p> 
 <p>
-<u>MS Windows build:</u> A dynamically compiled shared libary build for Mircrosoft Windows systems is provided as Microsoft Installer (MSI) file. MSI files are used for installation, storage, and removal of programs. The BNC files are contained in a MSI package, which is used with the program's client-side installer service, an .EXE file, to open and install the program. After installation your 'bnc.exe' file shows up under 'All Programs'.
+<u>MS Windows Build:</u> A dynamically compiled shared libary build for Mircrosoft Windows systems is provided as Microsoft Installer (MSI) file. MSI files are used for installation, storage, and removal of programs. The BNC files are contained in a MSI package, which is used with the program's client-side installer service, an .EXE file, to open and install the program. We used the MinGW Version 4.4.0 compiler to create BNC for Windows. After installation your 'bnc.exe' file shows up e.g. under 'All Programs'. 
 </p>
 
 <p>
-<u>Linux build:</u> Static library and shared library builds for BNC are provided for a selection of Linux distributions. Download the ZIP archive for a version which fits to your Linux, unzip the archive and run the included BNC binary file. For Linux, static and shared builds of BNC are made available. A <u>static</u> build would be sufficient in case you don't want BNC to trace PPP results using Google Map (GM) or OpenStreetMap (OSM). Note that GM/OSM usage requires the QtWebKit library which can only be part of BNC builds from <u>shared</u> libraries.
+<u>Linux Build:</u> Static library and shared library builds for BNC are provided for a selection of Linux distributions. Download the ZIP archive for a version which fits to your Linux system, unzip the archive and run the included BNC binary. For Linux, static and shared builds of BNC are made available. A <u>static</u> build would be sufficient in case you don't want BNC to trace PPP results using Google Map (GM) or OpenStreetMap (OSM). Note that GM/OSM usage requires BNC builds from <u>shared</u> libraries.
 </p>
 
 <p>
-<u>Mac OS X build:</u> 
-A shared library 'Disk iMaGe' (DMG) file is provided for BNC on OS X systems. It also comes in a ZIP archive. The DMG file format is used in the Mac for distributing software. Mac install packages appear as a virtual disk drive. After download, when the DMG file icon is double clicked, the virtual drive is 'mounted' on the desktop. Install BNC by dragging the 'bnc.app' icon to your /Applications folder. To start BNC, double click on /Applications/bnc.app. You could also start BNC via Command Line Interface (CLI) using command '/Applications/bnc.app/Contents/MacOS/bnc'.
+<u>Mac OS X Build:</u> 
+A shared library 'Disk iMaGe' (DMG) file is provided for BNC on OS X systems. It also comes in a ZIP archive. The DMG file format is used in the Mac for distributing software. Mac install packages appear as a virtual disk drive. After download, when the DMG file icon is double clicked, the virtual drive is 'mounted' on the desktop. Install BNC by dragging the 'bnc.app' icon to your '/Applications' folder. To start BNC, double click on '/Applications/bnc.app'. You could also start BNC via Command Line Interface (CLI) using command '/Applications/bnc.app/Contents/MacOS/bnc'.
 </p>
 
 <p> 
-BNC has been written under GNU General Public License (GPL). This ZIP archive provides the BNC source code Version 2.12.0 as developed using Qt Version 4.8.5. The latest source code is available from Subversion software archive <u>http://software.rtcm-ntrip.org/svn/trunk/BNC</u>. The following describes how to produce your builds of BNC on Windows, Linux, and Mac systems. 
-</p> 
-
-<p> 
- We used the MinGW Version 4.4.0 compiler to create the Windows binaries. It is likely that BNC can be compiled on other systems where a GNU compiler and Qt Version 4.8.4 or any later version are installed. 
-Using a shared library BNC build requires that you first install your own shared Qt library. 
+BNC has been written as Open Source and published under GNU General Public License (GPL). The latest source code can be checked out from Subversion repository <u>http://software.rtcm-ntrip.org/svn/trunk/BNC</u>. A ZIP archive available from <u>http://igs.bkg.bund.de/ntrip/download</u> provides the source code used for BNC Version 2.12.0 and developed using Qt Version 4.8.5. The following describes how you can produce your own builds of BNC on MS Windows, Linux, and Mac systems. It is likely that BNC can also be compiled on other systems where a GNU compiler and Qt Version 4.8.5 or any later version are installed. 
 </p>
 
-<p><b>Static and Shared Libraries</b><br>
-You can produce static or shared builds of BNC. Static builds are sufficient in case you don't want BNC to produce track maps using Google Map (GM) or Open StreetMap (OSM). GM/OSM usage would requires the QtWebKit library which can only be part of BNC builds from shared libraries. So, using a shared library BNC build requires that you first install your own shared library of Qt.
+<p><b>Static versus Shared Libraries</b><br>
+You can produce static or shared builds of BNC. Static builds are sufficient in case you don't want BNC to produce track maps using Google Map (GM) or Open StreetMap (OSM). GM/OSM usage would require the QtWebKit library which can only be part of BNC builds from shared libraries. Hence, producing a shared library BNC build requires that you first install your own shared library of Qt.
 </p>
 
-<p><b>Windows Systems, Shared Library</b><br>
-How to install a shared QT 4.8.5 library on a Windows system to create your
-own shared build of BNC:
+<p><b>MS Windows Systems, Shared Library</b><br>
+This explains how to install a shared QT 4.8.5 library on Windows systems to create your own shared build of BNC.
 </p>
 
 <ol type=b>
-<li>Supposing that "Secure Socket Layer (SSL)" is not available on you system, you should install OpenSSL libraries in C:\OpenSSL-Win32. They are availabel e.g. from http://slproweb.com/download/Win32OpenSSL-1_0_1e.exe. See <u>http://slproweb.com/products/Win32OpenSSL.html</u> for other SSL resources. Ignore possible comments about missing components during installation.</li>
+<li>Supposing that 'Secure Socket Layer (SSL)' is not available on you system, you should install OpenSSL libraries in C:\OpenSSL-Win32. They are availabel e.g. from http://slproweb.com/download/Win32OpenSSL-1_0_1e.exe. See <u>http://slproweb.com/products/Win32OpenSSL.html</u> for other SSL resources. Ignore possible comments about missing components during installation.</li>
 
 <li>Download MinGW compiler Version 4.4.0 e.g. from <u>http://igs.bkg.bund.de/root_ftp/NTRIP/software/MinGW-gcc440_1.zip</u></li>
 
