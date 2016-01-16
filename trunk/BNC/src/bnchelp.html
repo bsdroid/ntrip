@@ -277,17 +277,18 @@ Weber, G., L. Mervart, A. St&uuml;rze, A. R&uuml;lke and D. St&ouml;cker:<br>
 
 <p><h3>1. <a name="genInstruction">General Information</h3></p>
 <p>
-The BKG Ntrip Client (BNC) is a program for simultaneously retrieving, decoding, converting and processing or analyzing real-time GNSS data streams applying the 'Networked Transport of RTCM via Internet Protocol' (Ntrip) standard. It has been developed within the framework of the IAG sub-commission for Europe (EUREF) and the International GNSS Service (IGS). Although meant to be a real-time tool, it comes with some post processing functionality. It could be used for data coming from Ntrip Broadcasters like
+The BKG Ntrip Client (BNC) is a program for simultaneously retrieving, decoding, converting and processing or analyzing real-time GNSS data streams applying the 'Networked Transport of RTCM via Internet Protocol' (Ntrip) standard. It has been developed within the framework of the IAG sub-commission for Europe (EUREF) and the International GNSS Service (IGS). Although meant to be a real-time tool, it comes with some post processing functionality. It can be used for data coming from Ntrip Broadcasters like
 <ul>
-<li><u>http://www.euref-ip.net/home</u>,</li>
-<li><u>http://www.igs-ip.net/home</u>,</li>
-<li><u>http://products.igs-ip.net/home</u>,</li>
-<li><u>http://mgex.igs-ip.net/home</u>. </li>
+<li><u>http://www.euref-ip.net/home</u></li>
+<li><u>http://www.igs-ip.net/home</u></li>
+<li><u>http://products.igs-ip.net/home</u></li>
+<li><u>http://mgex.igs-ip.net/home</u> </li>
 </ul>
+or similar caster installation.
 </p>
 
 <p>
-BNC has been written under GNU General Public License (GPL). Source code is available from Subversion software archive <u>http://software.rtcm-ntrip.org/svn/trunk/BNC.</u> Binaries for BNC are available for Windows, Linux, and Mac OS X systems.
+BNC has been written under GNU General Public License (GPL). Source code is available from Subversion software archive <u>http://software.rtcm-ntrip.org/svn/trunk/BNC</u>. Precompiled binaries of BNC are available for Windows, Linux, and Mac OS X systems. They can be downloaded from <u>http://igs.bkg.bund.de/ntrip/download</u>.
 </p>
 <p>
 Feel free to send us comments, suggestions or bug reports. Any contribution would be appreciated.
@@ -297,20 +298,20 @@ Feel free to send us comments, suggestions or bug reports. Any contribution woul
 <b>Authors</b><br><br>
 The BKG Ntrip Client (BNC) with a Qt Graphical User Interface (GUI) and a Command Line Interface (CLI) has been developed for
 <pre>
-   Federal Agency for Cartography and Geodesy (BKG)
-   c/o Dr. Axel R&uuml;lke
-   Department of Geodesy, Section Navigation
-   Frankfurt, Germany
-   [axel.ruelke@bkg.bund.de]
+Federal Agency for Cartography and Geodesy (BKG)
+c/o Dr. Axel R&uuml;lke
+Department of Geodesy, Section Navigation
+Frankfurt, Germany
+[axel.ruelke@bkg.bund.de]
 </pre>
 
 The software has been written by
 
 <pre>
-   Prof. Dr. Leos Mervart
-   Czech Technical University (CTU)
-   Department of Geodesy
-   Prague, Czech Republic
+Prof. Dr. Leos Mervart
+Czech Technical University (CTU)
+Department of Geodesy
+Prague, Czech Republic
 </pre>
 </p>
 
@@ -539,7 +540,7 @@ The table mentions if a message implementation in BNC could so far only be based
 BNC can be used in different contexts with varying data flows. Typical real-time communication follows the Ntrip protocol over TCP/IP (probably via SSL), RTSP/RTP or UDP, plain TCP/IP protocol, or serial communication links. Stream content could be observations, ephemeris, satellite orbit/clock products or NMEA sentences.
 </p>
 <p>
- The first of the following figures shows a flow chart of BNC connected to a GNSS receiver providing observations via serial or TCP communication link for the purpose of Precise Point Positioning. The second figure shows the conversion of RTCM streams to RINEX files. The third figure shows a flow chart of BNC feeding a real-time GNSS engine which estimates precise orbits and clocks. BNC is used in this scenario to encode correctors to RTCM Version 3 and upload them to an Ntrip Broadcaster. The fourth figure shows BNC combining several Broadcast Correction streams to disseminate the combination product while saving results in SP3 and Clock RINEX files.
+The first of the following figures shows a flow chart of BNC connected to a GNSS receiver providing observations via serial or TCP communication link for the purpose of Precise Point Positioning. The second figure shows the conversion of RTCM streams to RINEX files. The third figure shows a flow chart of BNC feeding a real-time GNSS engine which estimates precise orbits and clocks. BNC is used in this scenario to encode correctors to RTCM Version 3 and upload them to an Ntrip Broadcaster. The fourth figure shows BNC combining several Broadcast Correction streams to disseminate the combination product while saving results in SP3 and Clock RINEX files.
 </p>
 <p><img src="IMG/screenshot10.png"/></p>
 <p><u>Figure 1:</u> Flowchart, BNC connected to a GNSS rover for Precise Point Positioning</p>
@@ -601,11 +602,29 @@ Records of BNC's activities are shown in the 'Log' tab which is part of the 'Log
 </p>
 
 <p><h4>1.5 <a name="introInst">Installation</h4></p>
+<p> 
+Precompiled builds of BNC are available for MS Windows, Linux, and Mac OS X systems and can be downloaded for installation from <u>http://igs.bkg.bund.de/ntrip/download</u>. Please ensure that you always use the latest version of the program. 
+</p> 
 <p>
- We used the MinGW Version 4.4.0 compiler to create the Windows binaries. It is likely that BNC can be compiled on other systems where a GNU compiler and Qt Version 4.8.4 or any later version are installed. Please ensure that you always use the latest precompiled version of BNC available from <u>http://igs.bkg.bund.de/ntrip/download</u>. Note that static and shared builds of BNC are made available. A <u>static</u> build would be sufficient in case you don't want BNC to trace PPP results using Google Map (GM) or OpenStreetMap (OSM). However, GM/OSM usage requires the QtWebKit library which can only be part of BNC builds from <u>shared</u> libraries. Using a shared library BNC build requires that you first install your own shared Qt library. The 'README.txt' file which comes with the BNC source code describes how to install Qt on Windows, Linux and Mac systems.
+<u>MS Windows build:</u> A dynamically compiled shared libary build for Mircrosoft Windows systems is provided as Microsoft Installer (MSI) file. MSI files are used for installation, storage, and removal of programs. The BNC files are contained in a MSI package, which is used with the program's client-side installer service, an .EXE file, to open and install the program. After installation your 'bnc.exe' file shows up under 'All Programs'.
 </p>
+
 <p>
-This ZIP archive provides the BNC source code Version 2.12.0 as developed under GNU GPL using Qt Version 4.8.5. The following describes how to produce your builds of BNC on Windows, Linux, and Mac systems. 
+<u>Linux build:</u> Static library and shared library builds for BNC are provided for a selection of Linux distributions. Download the ZIP archive for a version which fits to your Linux, unzip the archive and run the included BNC binary file. For Linux, static and shared builds of BNC are made available. A <u>static</u> build would be sufficient in case you don't want BNC to trace PPP results using Google Map (GM) or OpenStreetMap (OSM). Note that GM/OSM usage requires the QtWebKit library which can only be part of BNC builds from <u>shared</u> libraries.
+</p>
+
+<p>
+<u>Mac OS X build:</u> 
+A shared library 'Disk iMaGe' (DMG) file is provided for BNC on OS X systems. It also comes in a ZIP archive. The DMG file format is used in the Mac for distributing software. Mac install packages appear as a virtual disk drive. After download, when the DMG file icon is double clicked, the virtual drive is 'mounted' on the desktop. Install BNC by dragging the 'bnc.app' icon to your /Applications folder. To start BNC, double click on /Applications/bnc.app. You could also start BNC via Command Line Interface (CLI) using command '/Applications/bnc.app/Contents/MacOS/bnc'.
+</p>
+
+<p> 
+BNC has been written under GNU General Public License (GPL). This ZIP archive provides the BNC source code Version 2.12.0 as developed using Qt Version 4.8.5. The latest source code is available from Subversion software archive <u>http://software.rtcm-ntrip.org/svn/trunk/BNC</u>. The following describes how to produce your builds of BNC on Windows, Linux, and Mac systems. 
+</p> 
+
+<p> 
+ We used the MinGW Version 4.4.0 compiler to create the Windows binaries. It is likely that BNC can be compiled on other systems where a GNU compiler and Qt Version 4.8.4 or any later version are installed. 
+Using a shared library BNC build requires that you first install your own shared Qt library. 
 </p>
 
 <p><b>Static and Shared Libraries</b><br>
