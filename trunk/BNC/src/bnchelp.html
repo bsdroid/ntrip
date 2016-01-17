@@ -610,36 +610,36 @@ Precompiled builds of BNC are available for MS Windows, Linux, and Mac OS X syst
 </p>
 
 <p>
-<u>Linux Build:</u> Static library and shared library builds for BNC are provided for a selection of Linux distributions. Download the ZIP archive for a version which fits to your Linux system, unzip the archive and run the included BNC binary. For Linux, static and shared builds of BNC are made available. A <u>static</u> build would be sufficient in case you don't want BNC to trace PPP results using Google Map (GM) or OpenStreetMap (OSM). Note that GM/OSM usage requires BNC builds from <u>shared</u> libraries.
+<u>Linux Build:</u> Static library and shared library builds for BNC are provided for a selection of Linux distributions. Download the ZIP archive for a version which fits to your Linux system, unzip the archive and run the included BNC binary. A static build would be sufficient in case you <u>don't want</u> BNC to plot PPP results with Google Map (GM) or OpenStreetMap (OSM) maps in the background. GM/OSM usage requires BNC builds from shared libraries.
 </p>
 
 <p>
 <u>Mac OS X Build:</u> 
-A shared library 'Disk iMaGe' (DMG) file is provided for BNC on OS X systems. It also comes in a ZIP archive. The DMG file format is used in the Mac for distributing software. Mac install packages appear as a virtual disk drive. After download, when the DMG file icon is double clicked, the virtual drive is 'mounted' on the desktop. Install BNC by dragging the 'bnc.app' icon to your '/Applications' folder. To start BNC, double click on '/Applications/bnc.app'. You could also start BNC via Command Line Interface (CLI) using command '/Applications/bnc.app/Contents/MacOS/bnc'.
+A shared library 'Disk iMaGe' (DMG) file is provided for BNC on OS X systems; it also comes in a ZIP archive. The DMG file format is used in the Mac for distributing software. Mac install packages appear as a virtual disk drive. After download, when the DMG file icon is double clicked, the virtual drive is 'mounted' on the desktop. Install BNC by dragging the 'bnc.app' icon to your '/Applications' folder. To start BNC, double click on '/Applications/bnc.app'. You could also start BNC via Command Line Interface (CLI) using command '/Applications/bnc.app/Contents/MacOS/bnc'.
 </p>
 
 <p> 
-BNC has been written as Open Source and published under GNU General Public License (GPL). The latest source code can be checked out from Subversion repository <u>http://software.rtcm-ntrip.org/svn/trunk/BNC</u>. A ZIP archive available from <u>http://igs.bkg.bund.de/ntrip/download</u> provides the source code used for BNC Version 2.12.0 and developed using Qt Version 4.8.5. The following describes how you can produce your own builds of BNC on MS Windows, Linux, and Mac systems. It is likely that BNC can also be compiled on other systems where a GNU compiler and Qt Version 4.8.5 or any later version are installed. 
+BNC has been written as Open Source and published under GNU General Public License (GPL). The latest source code can be checked out from Subversion repository <u>http://software.rtcm-ntrip.org/svn/trunk/BNC</u>. A ZIP archive available from <u>http://igs.bkg.bund.de/ntrip/download</u> provides the source code for BNC Version 2.12.0, developed using Qt Version 4.8.5. The following describes how you can produce your own builds of BNC on MS Windows, Linux, and Mac systems. It is likely that BNC can also be compiled on other systems where a GNU compiler and Qt Version 4.8.5 or any later version are installed. 
 </p>
 
 <p><b>Static versus Shared Libraries</b><br>
-You can produce static or shared builds of BNC. Static builds are sufficient in case you don't want BNC to produce track maps using Google Map (GM) or Open StreetMap (OSM). GM/OSM usage would require the QtWebKit library which can only be part of BNC builds from shared libraries. Hence, producing a shared library BNC build requires that you first install your own shared library of Qt.
+You can produce static or shared builds of BNC. <u>Static</u> builds are sufficient in case you don't want BNC to produce track maps on top of Google Map (GM) or Open StreetMap (OSM). GM/OSM usage would require the QtWebKit library which can only be part of BNC builds from <u>shared</u> Qt libraries. Hence, having a shared library Qt installation available is a precondition for producing a shared library build of BNC.
 </p>
 
 <p><b>MS Windows Systems, Shared Library</b><br>
-This explains how to install a shared QT 4.8.5 library on Windows systems to create your own shared build of BNC.
+This explains how to install a shared QT 4.8.5 library on Windows systems to then create your own shared build of BNC.
 </p>
 
-<ol type=b>
-<li>Supposing that 'Secure Socket Layer (SSL)' is not available on you system, you should install OpenSSL libraries in C:\OpenSSL-Win32. They are availabel e.g. from http://slproweb.com/download/Win32OpenSSL-1_0_1e.exe. See <u>http://slproweb.com/products/Win32OpenSSL.html</u> for other SSL resources. Ignore possible comments about missing components during installation.</li>
+<ol type=f>
+<li>Supposing that 'Secure Socket Layer (SSL)' is not available on you system, you should install OpenSSL libraries in C:\OpenSSL-Win32. They are availabel e.g. from <u>http://code.x2go.org/releases/binary-win32/3rd-party/Win32OpenSSL/Win32OpenSSL-1_0_1e.exe</u>. See <u>http://slproweb.com/products/Win32OpenSSL.html</u> for other SSL resources. Ignore possibly occuring comments about missing components during installation.</li>
 
 <li>Download MinGW compiler Version 4.4.0 e.g. from <u>http://igs.bkg.bund.de/root_ftp/NTRIP/software/MinGW-gcc440_1.zip</u></li>
 
 <li>Unzip the ZIP archive and move its contents to a directory C:\MinGW. Now you can do either (4) or (5, 6, 8, 9, 10). Following (4) is suggested.</li>
 
-<li>Download file 'qt-win-opensource-4.8.5-mingw.exe' (317 MB) e.g. from <u>http://download.qt-project.org/official_releases/qt/4.8/4.8.5</u>. Execute this file to install a pre-compiled shared Qt library.</li>
+<li>Download file 'qt-win-opensource-4.8.5-mingw.exe' (317 MB) e.g. from <u>https://download.qt.io/archive/qt/4.8/4.8.5/</u>. Execute this file to install a pre-compiled shared Qt library.</li>
      
-<li>Download file 'qt-everywhere-opensource-src-4.8.5.zip' (269 MB) e.g. from <u>http://download.qt-project.org/official_releases/qt/4.8/4.8.5</u></li>
+<li>Download file 'qt-everywhere-opensource-src-4.8.5.zip' (269 MB) e.g. from <u>https://download.qt.io/archive/qt/4.8/4.8.5/</u></li>
 
 <li>Unzip the ZIP archive and move the contents of the contained directory into a directory C:\Qt\4.8.5.</li>
 
@@ -662,7 +662,7 @@ This explains how to install a shared QT 4.8.5 library on Windows systems to cre
 This may take quite a long time. Don't worry if the compilation process runs into a problem after some time. It is likely that the libraries you require are already generated at that time.<br>
 Should you want to reconfiguring Qt following steps (8)-(10) you first need to clean the previous configuration using command 'mingw32-make confclean'. Run command 'mingw32-make clean' to delete previously compiled source code.</li>
 
-<li>Download latest BNC from <u>http://software.rtcm-ntrip.org/svn/trunk/BNC</u></li>
+<li>Download latest BNC from SVN repository <u>http://software.rtcm-ntrip.org/svn/trunk/BNC</u></li>
 
 <li>Open command line window and execute file QtEnv.bat, see (7)</li>
 
@@ -685,7 +685,7 @@ On Linux systems you may use the following procedure to install a shared Qt vers
 </p>
 
 <p>
-Download file 'qt-everywhere-opensource-src-4.8.5.tar.gz' (230 MB) available from <u>https://download.qt.io/archive/qt/4.8/4.8.5/</u>. Then unzip file, extract tar archive and change to directory 'qt-everywhere-opensource-src-4.8.5'. Run commands
+Download file 'qt-everywhere-opensource-src-4.8.5.tar.gz' (230 MB) available from <u>https://download.qt.io/archive/qt/4.8/4.8.5/</u>. Unzip file, extract tar archive and change to directory 'qt-everywhere-opensource-src-4.8.5'. Run commands
 <pre>
   ./configure -fast -webkit -nomake examples -nomake tutorial 
               -prefix /usr/local/Trolltech/Qt-4.8.5
@@ -700,20 +700,20 @@ Qt installations on your host. Note further that the following two lines<pre>
   export QTDIR="/usr/local/Trolltech/Qt-4.8.5"
   export PATH="$QTDIR/bin:$PATH"</pre>
 
-need to be introduced either in $HOME/.bash_profile or $HOME/.bashrc. Once that is done, logout/login and start using Qt 4.8.5.
+need to be added either to $HOME/.bash_profile or $HOME/.bashrc. Once that is done, logout/login and start using Qt 4.8.5.
 </p>
 <p>
-To then compile the BNC program you may use the following commands: <pre>
+To compile the BNC program, you first download the source code from SVN repository <u>http://software.rtcm-ntrip.org/svn/trunk/BNC</u>. Go to directory BNC and run the following commands: <pre>
   qmake bnc.pro
   make
 </pre>
+You will find a build of BNC in directory BNC.
 </p>
-
 <p>
 <b>Mac OS X Systems</b><br>
 
 <u>Xcode and Qt Installation</u><br>
-Xcode and Qt are required to compile BNC on OS X. Both tools are freely available. Xcode can be downloaded from the App Store or the Apple Developer Connection website. Once installed, run Xcode, go to Preferences -> Downloads and install the Command Line Tools component. Qt can be downloaded from the QT Project website. Note that as of version 2.6 BNC requires Qt version 4.7.3 or higher due to SSL. The Qt libraries for Mac can be downloaded from http://qt-project.org/downloads. Once downloaded, mount the disk image, run the Qt.mpkg package and follow the instructions from the installation wizard.
+Xcode and Qt are required to compile BNC on OS X. Both tools are freely available. Xcode can be downloaded from the App Store or the Apple Developer Connection website. Once installed, run Xcode, go to 'Preferences->Downloads' and install the Command Line Tools component. Qt can be downloaded from the QT Project website. Note that as of version 2.6 BNC requires Qt version 4.7.3 or higher due to SSL. The Qt libraries for Mac can be downloaded from http://qt-project.org/downloads. Once downloaded, mount the disk image, run the Qt.mpkg package and follow the instructions from the installation wizard.
 </p>
 
 <p>
