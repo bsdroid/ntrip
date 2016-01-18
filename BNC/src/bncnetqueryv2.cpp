@@ -50,10 +50,7 @@ bncNetQueryV2::bncNetQueryV2(bool secure) {
 ////////////////////////////////////////////////////////////////////////////
 bncNetQueryV2::~bncNetQueryV2() {
   delete _eventLoop;
-  if (_reply) {
-    _reply->abort();
-    delete _reply;
-  }
+  delete _reply;
   delete _manager;
 }
 
@@ -62,8 +59,6 @@ bncNetQueryV2::~bncNetQueryV2() {
 void bncNetQueryV2::stop() {
   if (_reply) {
     _reply->abort();
-    delete _reply;
-    _reply = 0;
   }
   _eventLoop->quit();
   _status = finished;
@@ -157,10 +152,7 @@ void bncNetQueryV2::startRequestPrivate(const QUrl& url, const QByteArray& gga,
   }
   request.setRawHeader("Connection"   , "close");
 
-  if (_reply) {
-    delete _reply;
-    _reply = 0;
-  }
+  delete _reply;
   _reply = _manager->get(request);
 
   // Connect Signals
