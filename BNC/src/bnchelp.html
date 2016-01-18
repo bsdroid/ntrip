@@ -31,8 +31,7 @@ Weber, G., L. Mervart, A. St&uuml;rze, A. R&uuml;lke and D. St&ouml;cker:<br>
 &nbsp; &nbsp; &nbsp; 1.4 <a href=#introHandling>Handling</a><br>
 &nbsp; &nbsp; &nbsp; 1.5 <a href=#introInst>Installation</a><br>
 &nbsp; &nbsp; &nbsp; 1.6 <a href=#introConf>Configuration</a><br>
-&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 1.6.1 <a href=#introManage>Management</a><br>
-&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 1.6.2 <a href=#introExamples>Examples</a><br>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 1.6.1 <a href=#introExamples>Examples</a><br>
 &nbsp; &nbsp; &nbsp; 1.7 <a href=#introLimit>Limitations</a><br>
 &nbsp; &nbsp; &nbsp; 1.8 <a href=#introLBack>Looking Back</a><br><br>
 <b>2.</b> <a href=#optsettings><b>Settings Details</b></a><br><br>
@@ -288,7 +287,7 @@ or similar caster installation.
 </p>
 
 <p>
-BNC has been written under GNU General Public License (GPL). Source code is available from Subversion software archive <u>http://software.rtcm-ntrip.org/svn/trunk/BNC</u>. Precompiled binaries of BNC are available for Windows, Linux, and Mac OS X systems. They can be downloaded from <u>http://igs.bkg.bund.de/ntrip/download</u>.
+BNC has been written under GNU General Public License (GPL). Source code is available from Subversion software archive <u>http://software.rtcm-ntrip.org/svn/trunk/BNC</u>. Precompiled binaries of BNC are available for MS Windows, Linux, and Mac OS X systems. They can be downloaded from <u>http://igs.bkg.bund.de/ntrip/download</u>.
 </p>
 <p>
 Feel free to send us comments, suggestions or bug reports. Any contribution would be appreciated.
@@ -300,7 +299,7 @@ The BKG Ntrip Client (BNC) with a Qt Graphical User Interface (GUI) and a Comman
 <pre>
 Federal Agency for Cartography and Geodesy (BKG)
 c/o Dr. Axel R&uuml;lke
-Department of Geodesy, Section Navigation
+Department of Geodesy, Section Satellite Navigation
 Frankfurt, Germany
 [axel.ruelke@bkg.bund.de]
 </pre>
@@ -316,30 +315,27 @@ Prague, Czech Republic
 </p>
 
 <p>
-Prof. Mervart started working on BNC in 2005. His sole responsibility for writing the program code ended February 2015. Since March 2015 the expert in charge at BKG for further BNC programming is Dipl.-Ing. Andrea St&uuml;rze [andrea.stuerze@bkg.bund.de].
+Prof. Mervart started working on BNC in 2005. His sole responsibility for writing the program code ended February 2015. In March 2015, Dipl.-Ing. Andrea St&uuml;rze [andrea.stuerze@bkg.bund.de] took over the responsibility for maintenance  and further development of BNC's source code.
 </p>
 
 <p>
-BNC provides context-sensitive help (<i>What's This</i>) related to specific objects. It furthermore comes with the here presented documentation, available as part of the software and as a PDF file. Responsible for online and offline documentation, example configurations (and untill February 2014 the overall BNC policy concept) is Dr. Georg Weber [georg.weber@bkg.bund.de].
+<b>Documentation</b><br><br>
+BNC provides context-sensitive help (<i>What's This</i>) related to specific objects. It furthermore comes with the here presented documentation, available as part of the software and as a PDF file. Responsible for online and offline documentation and example configurations is Dr. Georg Weber [georg.weber@bkg.bund.de].
 </p>
 
 <p>
-BNC includes the following GNU GPL software component:
-<ul>
-<li> RTCM 2 decoder, written by Oliver Montenbruck, German Space Operations Center, DLR, Oberpfaffenhofen, Germany;</li>
-</ul>
-</p>
-<p>
-Note that some figures presented in this documentation may show screenshots from earlier versions of BNC. If so, then there is either no relevant change compared to the current appearance of the program or no change at all.
+Note that some figures presented in this documentation may show screenshots from earlier versions of BNC. If so, there is either no relevant change compared to the current appearance of the program or no change at all.
 </p>
 
 <p>
 <b>Acknowledgements</b><br>
 <ul>
 <li>
-Thomas Yan, Australian NSW Land and Property Information, proofread earlier versions of BNC's Help Contents. Up to Version 2.11 he also provides builds of BNC for Mac OS X systems.
+Oliver Montenbruck, German Space Operations Center, DLR, Oberpfaffenhofen, Germany published a RTCM Version 2 decoder unter GNU GPL which has been integrated in BNC.
 </li>
 <li>
+Thomas Yan, Australian NSW Land and Property Information, proofread earlier versions of BNC's Help Contents. Up to Version 2.11 he also provides builds of BNC for Mac OS X systems.
+</li>
 Scott Glazier, OmniSTAR Australia, has been helpful in finding BNC bugs in version 1.5.
 </li>
 <li>
@@ -606,7 +602,7 @@ Records of BNC's activities are shown in the 'Log' tab which is part of the 'Log
 Precompiled builds of BNC are available for MS Windows, Linux, and Mac OS X systems. They can be downloaded for installation from <u>http://igs.bkg.bund.de/ntrip/download</u>. Please ensure that you always use the latest released version of the program. 
 </p> 
 <p>
-<u>MS Windows Build:</u> A dynamically compiled shared libary build for Mircrosoft Windows systems is provided as Microsoft Installer (MSI) file. MSI files are used for installation, storage, and removal of programs. The BNC files are contained in a MSI package, which is used with the program's client-side installer service, an .EXE file, to open and install the program. We used the MinGW Version 4.4.0 compiler to create BNC for Windows. After installation your 'bnc.exe' file shows up e.g. under 'All Programs'. 
+<u>MS Windows Build:</u> A dynamically compiled shared library build for Mircrosoft Windows systems is provided as Microsoft Installer (MSI) file. MSI files are used for installation, storage, and removal of programs. The BNC files are contained in a MSI package, which is used with the program's client-side installer service, an .EXE file, to open and install the program. We used the MinGW Version 4.4.0 compiler to create BNC for Windows. After installation your 'bnc.exe' file shows up e.g. under 'All Programs'. 
 </p>
 
 <p>
@@ -633,7 +629,7 @@ This explains how to install a shared QT 4.8.5 library on Windows systems to the
 </p>
 
 <ol type=f>
-<li>Supposing that 'Secure Socket Layer (SSL)' is not available on you system, you should install OpenSSL libraries in C:\OpenSSL-Win32. They are availabel e.g. from <u>http://code.x2go.org/releases/binary-win32/3rd-party/Win32OpenSSL/Win32OpenSSL-1_0_1e.exe</u>. See <u>http://slproweb.com/products/Win32OpenSSL.html</u> for other SSL resources. Ignore possibly occuring comments about missing components during installation.</li>
+<li>Supposing that 'Secure Socket Layer (SSL)' is not available on you system, you should install OpenSSL libraries in C:\OpenSSL-Win32. They are available e.g. from <u>http://igs.bkg.bund.de/root_ftp/NTRIP/software/Win32OpenSSL-1_0_1e.exe</u>. See <u>http://slproweb.com/products/Win32OpenSSL.html</u> for other SSL resources. Ignore possibly occurring comments about missing components during installation.</li>
 
 <li>Download MinGW compiler Version 4.4.0 e.g. from <u>http://igs.bkg.bund.de/root_ftp/NTRIP/software/MinGW-gcc440_1.zip</u></li>
 
@@ -664,7 +660,7 @@ This explains how to install a shared QT 4.8.5 library on Windows systems to the
 This may take quite a long time. Don't worry if the compilation process runs into a problem after some time. It is likely that the libraries you require are already generated at that time.<br>
 Should you want to reconfiguring Qt following steps (8)-(10) you first need to clean the previous configuration using command 'mingw32-make confclean'. Run command 'mingw32-make clean' to delete previously compiled source code.</li>
 
-<li>Download latest BNC from SVN repository <u>http://software.rtcm-ntrip.org/svn/trunk/BNC</u></li>
+<li>Download latest BNC from SVN repository <u>http://software.rtcm-ntrip.org/svn/trunk/BNC.</u></li>
 
 <li>Open command line window and execute file QtEnv.bat, see (7)</li>
 
@@ -715,7 +711,7 @@ You will find a build of BNC in directory BNC.
 <b>Mac OS X Systems</b><br>
 
 <u>Xcode and Qt Installation</u><br>
-Xcode and Qt are required to compile BNC on OS X. Both tools are freely available. Xcode can be downloaded from the App Store or the Apple Developer Connection website. Once installed, run Xcode, go to 'Preferences->Downloads' and install the Command Line Tools component. Qt can be downloaded from the QT Project website. Note that as of version 2.6 BNC requires Qt version 4.7.3 or higher due to SSL. The Qt libraries for Mac can be downloaded from http://qt-project.org/downloads. Once downloaded, mount the disk image, run the Qt.mpkg package and follow the instructions from the installation wizard.
+Xcode and Qt are required to compile BNC on OS X. Both tools are freely available. Xcode can be downloaded from the App Store or the Apple Developer Connection website. Once installed, run Xcode, go to 'Preferences->Downloads' and install the Command Line Tools component. Qt can be downloaded from the QT Project website. We suggest installing version 4.8.4 or higher. The Qt libraries for Mac can be downloaded from <u>http://www.qt.io/download</u>. Once downloaded, mount the disk image, run the Qt.mpkg package and follow the instructions from the installation wizard.
 </p>
 
 <p>
@@ -728,7 +724,7 @@ From the directory where bnc.pro is located, run qmake to create the Makefile an
   qmake -spec macx-g++ bnc.pro
   make
 </pre>
-Refer to the following webpage for further information: <u>http://qt-project.org/doc/qt-4.8/qmake-platform-notes.html</u>.
+Refer to the following webpage for further information: <u>http://doc.qt.io/qt-4.8/qmake-platform-notes.html</u>.
 </p>
 
 <p>
@@ -737,7 +733,10 @@ When distributing BNC it is necessary to bundle in all related Qt resources in t
 <pre>
   macdeployqt bnc.app -dmg
 </pre>
-Refer to the following webpage for further information: <u>http://qt-project.org/doc/qt-4.8/deployment-mac.html</u>.
+Refer to the following webpage for further information: <u>http://doc.qt.io/qt-4.8/deployment-mac.html</u>.
+</p>
+<p>
+Once a DMG file for BNC is created, you can double click it and install BNC by dragging the 'bnc.app' icon to your 'Applications' folder. To start BNC, double click on '/Aplications/bnc.app'.
 </p>
 
 <p><b>Running the Program</b><br>
@@ -745,11 +744,6 @@ If you are not familiar with the BNC program, we suggest to start with the Readm
 </p>
 
 <p><h4>1.6 <a name="introConf">Configuration</h4></p>
-<p>
-The following sections present information on how the BNC configuration works and provide configuration examples which can be adjusted according to specific user needs.
-</p>
-
-<p><h4>1.6.1 <a name="introManage">Management</h4></p>
 <p>
 As a default, configuration files for running BNC on Unix/Linux/Mac OS X systems are saved in directory '${HOME}/.config/BKG'. On Windows systems, they are typically saved in directory 'C:/Documents and Settings/Username/.config/BKG'. The default configuration filename is 'BNC.bnc'.</p>
 <p>
@@ -788,7 +782,7 @@ Configuration options are usually specified using GUI input fields (1) after lau
 </ul>
 </p>
 
-<p><h4>1.6.2 <a name="introExamples">Examples</h4></p>
+<p><h4>1.6.1 <a name="introExamples">Examples</h4></p>
 
 <p>
 BNC comes with a number of configuration examples which can be used on all operating systems. Copy the complete directory 'Example_Configs' which comes with the software to your disc. It includes sub-directories 'Input' and 'Output'. There are several ways to start BNC using one of the example configurations:
@@ -1053,6 +1047,7 @@ Drag and drop of configuration files is currently not supported on Mac OS X. On 
 </ul>
 
 <p><h4>1.8 <a name="introLBack">Looking Back</h4></p>
+(and untill February 2014 the overall BNC policy concept) 
 <p>
 A basic function of BNC is streaming GNSS data over the open Internet using the Ntrip transport protocol. Employing IP streaming for satellite positioning goes back to the beginning of our century. Wolfgang Rupprecht has been the first person who developed TCP/IP server software under the acronym of DGPS-IP (Rupprecht 2000) and published it under GNU General Public License (GPL). While connecting marine beacon receivers to PCs with permanent access to the Internet he transmitted DGPS corrections in an RTCM format to support Differential GPS positioning over North America. With approximately 200 bits/sec the bandwidth requirement for disseminating beacon data was comparatively small. Each stream was transmitted over a unique combination of IP address and port. Websites informed about existing streams and corresponding receiver positions.
 </p>
