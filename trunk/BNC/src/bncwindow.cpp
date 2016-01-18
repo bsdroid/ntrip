@@ -1483,16 +1483,13 @@ bncWindow::~bncWindow() {
   delete _miscPortLineEdit;
   delete _miscIntrComboBox;
   delete _miscScanRTCMCheckBox;
-  _mountPointsTable->setRowCount(0);
   _mountPointsTable->deleteLater();
   delete _log;
-  _cmbTable->setRowCount(0);
   _cmbTable->deleteLater();
   delete _cmbMaxresLineEdit;
   delete _cmbUseGlonass;
   delete _cmbSamplSpinBox;
   delete _cmbMethodComboBox;
-  _uploadTable->setRowCount(0);
   _uploadTable->deleteLater();
   delete _uploadIntrComboBox;
   delete _uploadAntexFile;
