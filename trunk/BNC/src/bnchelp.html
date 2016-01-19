@@ -1209,7 +1209,7 @@ Note that the following configuration options saved on disk can be changed/edite
 <ul>
 <li>'mountPoints' to change the selection of streams to be processed, see section 'Streams';</li>
 <li>'outWait' to change the 'Wait for full obs epoch' option, see section 'Feed Engine';</li>
-<li>'outSampl' to change the 'Sampling' option, see section 'Feed Engine'.</li>
+<li>'outSampl' to change the 'Sampling' option, see section 'Feed Engine';</li>
 <li>'outFile' to change the 'File' name where synchronized observations are saved in plain ASCII format.</li>
 </ul>
 </p>
@@ -1439,7 +1439,7 @@ As an alternative to initiating file uploads through BNC, you may like to call a
 
 <p><h4>2.4.8 <a name="rnxvers2">Version 2 - optional</h4></p>
 <p>
-GNSS observation data are generally available within BNC according to attributes as defined in RINEX Version 3. These attributes describe the tracking mode or channel when generating the observation signals. Capital letters specifying signal generation attributes are A, B, C, D, I, L, M, N, P, Q, S, W, X, Y, and Z, see RINEX Version 3 documentation. Although RINEX Version 3 with its signal generation attributes is the internal default processing format for BNC, there are two applications where the program is explicitly required to produce data in RINEX Version 2 format: 
+GNSS observation data are generally hold available within BNC according to attributes as defined in RINEX Version 3. These attributes describe the tracking mode or channel when generating the observation signals. Capital letters specifying signal generation attributes are A, B, C, D, I, L, M, N, P, Q, S, W, X, Y, and Z, see RINEX Version 3 documentation. Although RINEX Version 3 with its signal generation attributes is the internal default processing format for BNC, there are two applications where the program is explicitly required to produce data in RINEX Version 2 format: 
 <ol type=1>
 <li>When saving the content of incoming observation streams in RINEX Version 2 files as described in this section.</li>
 <li>When editing or concatenating RINEX 3 files to save them in Version 2 format, see section on 'RINEX Editing & QC'.</li>
@@ -1495,7 +1495,7 @@ For RINEX Version 2 Navigation files the last character is 'N' or 'G' for GPS or
 Regarding RINEX Version 3 you will find all ephemeris data for GPS, GLONASS, Galileo, SBAS, QZSS, and BDS gathered in one Navigation file.
 </p>
 <p>
-The following is an example for a RINEX Version 3 Navigation filename. The file contains one days data. 'MN' stands for 'Multi Constellation Navigation' data.
+The following is an example for a RINEX Version 3 Navigation filename. The file contains one day's data. 'MN' stands for 'Multi Constellation Navigation' data.
 <pre>
    BRDC00DEU_S_20121600000_01D_MN.rnx
 </pre>
@@ -2620,7 +2620,7 @@ Select the number of 'Stop bits' for the serial output link. Note that often '1'
 </p>
 <p>Select 'Auto' to automatically forward NMEA messages of type GGA from your serial connected receiver to the Ntrip broadcaster and/or save them in a file.
 </p>
-<p>Select 'Manual GPGGA' or 'Manual GNGGA' if you want BNC to produce and upload GPGGA or GNGGA NMEA messages to the Ntrip broadcaster because your serial connected receiver doesn't generate these messages. A Talker ID 'GP' preceeding the GGA string stands for GPS solutions while a Talker ID 'GN' stands for multi-constellation solutions.
+<p>Select 'Manual GPGGA' or 'Manual GNGGA' if you want BNC to produce and upload GPGGA or GNGGA NMEA messages to the Ntrip broadcaster because your serial connected receiver doesn't generate these messages. A Talker ID 'GP' proceeding the GGA string stands for GPS solutions while a Talker ID 'GN' stands for multi-constellation solutions.
 </p>
 <p>Note that selecting 'Auto' or 'Manual' works only for VRS streams which show up under the 'Streams' canvas on BNC's main window with 'nmea' stream attribute set to 'yes'. This attribute is either extracted from the Ntrip broadcaster's source-table or introduced by the user through editing the BNC configuration file.
 </p>
@@ -2653,7 +2653,7 @@ At any time an incoming stream might become unavailable or corrupted. In such ca
 <u>Stream outages:</u> BNC considers a connection to be broken when there are no incoming data detected for more than 20 seconds. When this occurs, BNC will try to reconnect at a decreasing rate. It will first try to reconnect with 1 second delay and again in 2 seconds if the previous attempt failed. If the attempt is still unsuccessful, it will try to reconnect within 4 seconds after the previous attempt and so on. The waiting time doubles each time with a maximum of 256 seconds.
 </p>
 <p>
-<u>Stream corruption:</u> Not all chunks of bits transfered to BNC's internal decoder may return valid observations. Sometimes several chunks might be needed before the next observation can be properly decoded. BNC buffers all the outputs (both valid and invalid) from the decoder for a short time span (size derived from the expected 'Observation rate') and then determines whether a stream is valid or corrupted.
+<u>Stream corruption:</u> Not all chunks of bits transferred to BNC's internal decoder may return valid observations. Sometimes several chunks might be needed before the next observation can be properly decoded. BNC buffers all the outputs (both valid and invalid) from the decoder for a short time span (size derived from the expected 'Observation rate') and then determines whether a stream is valid or corrupted.
 </p>
 <p>
 Outage and corruption events are reported in the 'Log' tab. They can also be passed on as parameters to a shell script or batch file to generate an advisory note to BNC operator or affected stream providers. This functionality lets users utilize BNC as a real-time performance monitor and alarm system for a network of GNSS reference stations.
@@ -3348,7 +3348,7 @@ Enter a white 'Noise' in meters per second to describe the expected variation of
 </p>
 
 <p><h4>2.13.2.6 <a name="pppnmeaport">NMEA Port - optional</h4></p>
-Specify the IP port number of a local port where Point Positioning results become available as NMEA messages. The default value for 'NMEA Port' is an empty option field, meaning that BNC does not provide NMEA messages vi IP port. Note that the NMEA file output and the NMEA IP port output are the same.
+Specify the IP port number of a local port where Point Positioning results become available as NMEA messages. The default value for 'NMEA Port' is an empty option field, meaning that BNC does not provide NMEA messages via IP port. Note that the NMEA file output and the NMEA IP port output are the same.
 </p>
 <p>
 Note that Tomoji Takasu has written a program named RTKPLOT for visualizing NMEA sentences from IP ports or files. It is available from <u>http://www.rtklib.com</u> and compatible with the NMEA file and port output of BNC's 'PPP' client option.
@@ -3385,7 +3385,7 @@ Specify on which ionosphere-free Linear Combinations (LCs) of observations you w
 <p>Specifying 'no' means that you don't at all want BNC to use observations from the affected GNSS system.
 </p>
 
-<p><h4>2.13.3.1 <a name="pppcodeobs">Code Observations - mandatory</h4></p>
+<p><h4>2.13.3.2 <a name="pppcodeobs">Code Observations - mandatory</h4></p>
 </p>
 Enter a 'Sigma C1' for C1 code observations in meters. The bigger the sigma you enter, the less the contribution of C1 code observations to a PPP solution based on a combination of code and phase data. '2.0' meters is likely to be an appropriate choice.
 </p>
@@ -3709,8 +3709,19 @@ The following satellite specific keys and values are currently specified in BNC:
 <tr><td>YawRate</td><td>Satellite Yaw Rate in radian per second, which is the rate of Yaw Angle</td></tr>
 <tr><td>PhaseBias</td><td>Satellite Phase Biases in meters with two characters for frequency and tracking mode per bias as defined in RINEX 3, preceded by total number of biases and followed by Signal Wilde-Lane Integer Indicator as well as Signal Discontinuity Counter</td></tr>
 </table>
+<p>
 <ul>
 <li> Non-satellite specific parameters
+</ul>
+</p>
+<p>
+The following syntax will be used:
+</p>
+<pre>
+&lt;key&gt; &lt;value1 value2 ...&gt;
+&nbsp;
+</pre>
+<p>
 </ul>
 The following non-satellite specific keys and values are currently specified in BNC:<br><br>
 <table>
@@ -3761,7 +3772,7 @@ When using clocks from Broadcast Ephemeris (with or without applied corrections)
 Having an empty 'Upload Table' is default and means that you don't want BNC to upload orbit and clock correction streams to any Ntrip Broadcaster.
 </p>
 
-<p><h4>2.14.2 <a name="uphost">Host, Port, Mountpoint, Password - optional</h4></p>
+<p><h4>2.15.2 <a name="uphost">Host, Port, Mountpoint, Password - optional</h4></p>
 
 <p>Specify the domain name or IP number of an Ntrip Broadcaster for uploading the stream. Furthermore, specify the caster's listening IP port, an upload mountpoint and an upload password. Note that Ntrip Broadcasters are often configured to provide access through more than one port, usually ports 80 and 2101. If you experience communication problems on port 80, you should try to use the alternative port(s).
 </p>
