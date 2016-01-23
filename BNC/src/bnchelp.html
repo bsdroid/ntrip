@@ -1235,7 +1235,7 @@ Data will be saved in blocks in the received format separated by ASCII time stam
 </pre>
 </p>
 <p>
-This example block header tells you that 67 bytes were saved in the data block following this time stamp. The information in this block is encoded in RTCM Version 3 format, comes from mountpoint RTCM3EPH and was received at 18:05:29 UTC on 2010-08-03. BNC adds its own time stamps in order to allow the reconstruction of a recorded real-time situation.
+This example block header tells you that 67 bytes were saved in the data block following this time stamp. The information in this block is encoded in RTCM Version 3 format, comes from mountpoint RTCM3EPH and was received at 18:05:28 UTC on 2010-08-03. BNC adds its own time stamps in order to allow the reconstruction of a recorded real-time situation.
 </p>
 <p>
 The default value for 'Raw output file' is an empty option field, meaning that BNC will not save all raw data into one single daily file.
@@ -1447,7 +1447,7 @@ GNSS observation data are generally hold available within BNC according to attri
 As the Version 2 format ignores signal generation attributes, BNC is forced to somehow map RINEX Version 3 to RINEX Version 2 although this can't be done in one-to-one correspondence. Hence we introduce a 'Signal priority' list of attributes (characters, forming a string) for mapping Version 3 to Version 2.
 </p>
 <p>
-The default 'Signal priority' list is an empty option string meaning a priority sequence of 'CWPX_?' attributes when mapping RINEX 3 to RINEX 2. The meaning of this sequence of characters - take it as an example - is as follows:
+The default 'Signal priority' list is an empty option string, meaning a priority sequence of 'CWPX_?' attributes when mapping RINEX 3 to RINEX 2. The meaning of this sequence of characters - take it as an example - is as follows:
 <ul>
 <li>Signals with attribute 'C' enjoy the highest priority. If such a Version 3 observation becomes available, it is presented as RINEX Version 2 observation if that is the format you wish to see. Observations with other attributes are being ignored.</li>
 <li>If no signal with 'C' attribute is available but we have an observation with 'W' attribute, BNC presents that one as RINEX Version 2 observation and ignores all observations with other attributes. The same applies mutatis mutandis to observations with P and X attributes.</li>
@@ -1845,7 +1845,7 @@ A note on converting RINEX Version 3 to RINEX Version 2 and vice versa:
 <li>CWPX_? (Same signal priorities valid for all systems)</li>
 <li>G:CWPX_? R:PCX_? E:CPX_? (Specific signal priorities for GPS, GLONASS and Galileo system)</li><br>
 </ul>
-<li>When converting <u>RINEX Version 2 to Version 3</u> Observation files, the tracking mode or channel information in the (last character out of the three characters) observation code is left blank if unknown. This is a compromise, knowing that it is not in accordance with the RINEX Version 3 documentation.</li>
+<li>When converting <u>RINEX Version 2 to Version 3</u> Observation files, the tracking mode or channel information in the (last character out of the 3-character) observation code is left blank if unknown. This is a compromise, knowing that it is not in accordance with the RINEX Version 3 documentation.</li>
 </ul>
 </p>
 
@@ -3443,7 +3443,7 @@ Default is '0 deg', meaning that any observation will be used regardless of the 
 
 <p><h4>2.13.3.7 <a name="pppwaitclockcorr">Wait for Clock Corrections - optional</h4></p>
 <p>
-Specifying 'no for 'Wait for clock corr.' means that BNC processes each epoch of data immediately after its arrival using satellite clock corrections available at that time. A non-zero value means that epochs of data are buffered and the processing of each epoch is postponed till satellite clock corrections not older than 'Wait for clock corr.' seconds are available. Specifying a value of half the update rate of the clock corrections (e.g. 5 sec) may be appropriate. Note that this causes an additional delay of the PPP solutions in the amount of half of the update rate.
+Specifying 'no' for option 'Wait for clock corr.' means that BNC processes each epoch of data immediately after its arrival using satellite clock corrections available at that time. A non-zero value means that epochs of data are buffered and the processing of each epoch is postponed till satellite clock corrections not older than 'Wait for clock corr.' seconds are available. Specifying a value of half the update rate of the clock corrections (e.g. 5 sec) may be appropriate. Note that this causes an additional delay of the PPP solutions in the amount of half of the update rate.
 </p>
 <p>
 Using observations in sync with the corrections can avoid a possible high frequency noise of PPP solutions. Such noise could result from processing observations regardless of how late after a clock correction they were received. Note that applying the 'Wait for clock corr.' option significantly reduces the PPP computation effort for BNC.
@@ -3538,7 +3538,7 @@ With BNC in PPP 'RINEX File' post processing mode, you can specify the speed of 
 
 <p><h4>2.14 <a name="combi">Combine Corrections</h4></p>
 <p>
-BNC allows processing several orbit and clock correction streams in real-time to produce, encode, upload and save a combination of Broadcast Corrections from various providers. All corrections must refer to satellite Antenna Phase Centers (APC). It is so far only the satellite clock corrections which are combined while orbit corrections in the combination product as well as the product update rates are just taken over from one of the incoming Broadcast Correction streams. Combining only clock corrections using a fixed orbit reference imposes the akward potential to introduce some analysis inconsistencies. We may therefore eventually consider improvements on this approach. The clock combination can be based either on a plain 'Single-Epoch' or on a Kalman 'Filter' approach.
+BNC allows processing several orbit and clock correction streams in real-time to produce, encode, upload and save a combination of Broadcast Corrections from various providers. All corrections must refer to satellite Antenna Phase Centers (APC). It is so far only the satellite clock corrections which are combined while orbit corrections in the combination product as well as the product update rates are just taken over from one of the incoming Broadcast Correction streams. Combining only clock corrections using a fixed orbit reference imposes the potential to introduce some analysis inconsistencies. We may therefore eventually consider improvements on this approach. The clock combination can be based either on a plain 'Single-Epoch' or on a Kalman 'Filter' approach.
 </p>
 <p>
 In the Kalman Filter approach, satellite clocks estimated by individual Analyses Centers (ACs) are used as pseudo observations within the adjustment process. Each observation is modeled as a linear function (actually a simple sum) of three estimated parameters: AC specific offset, satellite specific offset common to all ACs, and the actual satellite clock correction which represents the result of the combination. These three parameter types differ in their statistical properties. The satellite clock offsets are assumed to be static parameters while AC specific and satellite specific offsets are stochastic parameters with appropriate white noise.
@@ -4155,7 +4155,7 @@ The streams selection can be changed on-the-fly without interrupting uninvolved 
 
 <p><h4>2.18 <a name="logs">Logging Canvas</h4></p>
 <p>
-The 'Logging Canvas' above the bottom menu bar on the main window labeled 'Log', 'Throughput', 'Lacenty', and 'PPP Plot' provides control of BNC's activities. Tabs are available for continuously showing logfile content, a plot controlling the bandwidth consumption, for a plot showing stream latencies, and for time series plots of PPP results.
+The 'Logging Canvas' above the bottom menu bar on the main window labeled 'Log', 'Throughput', 'Lacenty', and 'PPP Plot' provides control of BNC's activities. Tabs are available for continuously showing logfile content, for a plot controlling the bandwidth consumption, a plot showing stream latencies, and for time series plots of PPP results.
 </p>
 <p><h4>2.18.1 <a name="logfile">Log</h4></p>
 <p>
