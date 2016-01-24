@@ -18,7 +18,7 @@ ISBN 978-3-86482-083-0<br><br>
 <b>Citation<sup>&nbsp;</sup></b><br>
 To help justify funding the development of BNC,<sup>&nbsp;</sup>we kindly ask users to include a citation when applying the software results in a publication. We suggest:
 <br><br>
-Weber, G., L. Mervart, A. St&uuml;rze, A. R&uuml;lke and D. St&ouml;cker:<br>
+Weber, G., L. Mervart, A. St&uuml;rze, A. R&uuml;lke and D. St&ouml;cker (2016):<br>
 &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; BKG Ntrip Client, Version 2.12. Mitteilungen des Bundesamtes<br>
 &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; f&uuml;r Kartographie und Geod&auml;sie, Vol. 49, Frankfurt am Main, 2016.
 <br><br>
@@ -1060,13 +1060,13 @@ Drag and drop of configuration files is currently not supported on Mac OS X. On 
 A basic function of BNC is streaming GNSS data over the open Internet using the Ntrip transport protocol. Employing IP streaming for satellite positioning goes back to the beginning of our century. Wolfgang Rupprecht has been the first person who developed TCP/IP server software under the acronym of DGPS-IP (Rupprecht 2000) and published it under GNU General Public License (GPL). While connecting marine beacon receivers to PCs with permanent access to the Internet he transmitted DGPS corrections in an RTCM format to support Differential GPS positioning over North America. With approximately 200 bits/sec the bandwidth requirement for disseminating beacon data was comparatively small. Each stream was transmitted over a unique combination of IP address and port. Websites informed about existing streams and corresponding receiver positions.
 </p>
 <p>
-To cope with an increasing number of transmitting GNSS reference stations, the Federal Agency for Cartography and Geodesy (BKG) together with the Informatik Centrum Dortmund (ICD) in Germany developed a streaming protocol for satellite navigation data called 'Networked Transport of RTCM via Internet Protocol' (Ntrip). The protocol was built on top of the HTTP standard and included the provision of meta data describing the stream content. Any stream could now be globally transmitted over just one IP port: HTTP port 80. Stream availability and content details became part of the transport protocol. The concept was first published in 2003 (Weber et al. 2004 & 2005) and was based on three software components, namely an NtripServer pushing data from a reference station to an NtripCaster and an NtripClient pulling data from the stream splitting caster to support a rover receiver. (Note that from a socket-programmers perspective NtripServer and NtripClient both act as clients; only the NtripCaster operates as socket-server.) Ntrip could essentially benefit from Internet Radio developments. It was the ICECAST multimedia server which provided the bases for BKG's 'Professional Ntrip Broadcaster' with software published first in 2003 and of course again as Open Source under GPL.
+To cope with an increasing number of transmitting GNSS reference stations, the Federal Agency for Cartography and Geodesy (BKG) together with the Informatik Centrum Dortmund (ICD) in Germany developed a streaming protocol for satellite navigation data called 'Networked Transport of RTCM via Internet Protocol' (Ntrip). The protocol was built on top of the HTTP standard and included the provision of meta data describing the stream content. Any stream could now be globally transmitted over just one IP port: HTTP port 80. Stream availability and content details became part of the transport protocol. The concept was first published in 2003 (Weber and Honkala 2004, Weber et al. 2005a) and was based on three software components, namely an NtripServer pushing data from a reference station to an NtripCaster and an NtripClient pulling data from the stream splitting caster to support a rover receiver. (Note that from a socket-programmers perspective NtripServer and NtripClient both act as clients; only the NtripCaster operates as socket-server.) Ntrip could essentially benefit from Internet Radio developments. It was the ICECAST multimedia server which provided the bases for BKG's 'Professional Ntrip Broadcaster' with software published first in 2003 and of course again as Open Source under GPL.
 </p>
 <p>
-For BKG as a governmental agency, making Ntrip an Open Industry Standard has been an objective from the very beginning. The 'Radio Technical Commission for Maritime Services' (RTCM) accepted 'Ntrip Version 1' in 2004 as 'RTCM Recommended Standard' (Weber et al. 2005). Nowadays there is almost no geodetic GNSS receiver which does not come with integrated NtripClient and NtripServer functionality as part of the firmware. Hundreds of NtripCaster implementations are operated world-wide for highly accurate satellite navigation through RTK networks. Thousands of reference stations upload observations via NtripServer to central computing facilities for any kind of NtripClient application. In 2011 'Ntrip Version 2' was released (RTCM SC-104 2011) which cleared and fixed some design problems and HTTP protocol violations. It also supports TCP/IP via SSL and adds optional communication over RTSP/RTP and UDP.
+For BKG as a governmental agency, making Ntrip an Open Industry Standard has been an objective from the very beginning. The 'Radio Technical Commission for Maritime Services' (RTCM) accepted 'Ntrip Version 1' in 2004 as 'RTCM Recommended Standard' (Weber et al. 2005b). Nowadays there is almost no geodetic GNSS receiver which does not come with integrated NtripClient and NtripServer functionality as part of the firmware. Hundreds of NtripCaster implementations are operated world-wide for highly accurate satellite navigation through RTK networks. Thousands of reference stations upload observations via NtripServer to central computing facilities for any kind of NtripClient application. In 2011 'Ntrip Version 2' was released (RTCM SC-104 2011) which cleared and fixed some design problems and HTTP protocol violations. It also supports TCP/IP via SSL and adds optional communication over RTSP/RTP and UDP.
 </p>
 <p>
-With the advent of Ntrip as an open streaming standard, BKG's interest turned towards taking advantage from free real-time access to GNSS observations. International Associations such as the IAG Reference Frame Sub Commissions for Africa (AFREF), Asia & Pacific (APREF), Europe (EUREF), North America (NAREF) Latin America & Caribbean (SIRGAS), and the International GNSS Service (IGS) maintain continental or even global GNSS networks with the majority of modern receivers supporting Ntrip stream upload. Through operating BKG's NtripCaster software, these networks became extremely valuable sources of real-time GNSS information.  In 2005, this was the starting point for developing the 'BKG Ntrip Client' (BNC) as a multi-stream Open Source NtripClient which allows pulling hundreds of streams simultaneously from any number of NtripCaster installations world-wide. Decoding incoming RTCM streams and output observations epoch by epoch via IP port to feed a real-time GNSS network engine became BNC's first and foremost ability. Converting decoded streams to short high-rate RINEX files to assist near real-time applications became a welcome by-product right from the start of this development.
+With the advent of Ntrip as an open streaming standard, BKG's interest turned towards taking advantage from free real-time access to GNSS observations. International Associations such as the IAG Reference Frame Sub Commissions for Africa (AFREF), Asia & Pacific (APREF), Europe (EUREF), North America (NAREF) Latin America & Caribbean (SIRGAS), and the International GNSS Service (IGS) maintain continental or even global GNSS networks with the majority of modern receivers supporting Ntrip stream upload. Through operating BKG's NtripCaster software, these networks became extremely valuable sources of real-time GNSS information.  In 2005, this was the starting point for developing the 'BKG Ntrip Client' (BNC) as a multi-stream Open Source NtripClient which allows pulling hundreds of streams simultaneously from any number of NtripCaster installations world-wide. Decoding incoming RTCM streams and output observations epoch by epoch via IP port to feed a real-time GNSS network engine became BNC's first and foremost ability (Weber and Mervart 2009). Converting decoded streams to short high-rate RINEX files to assist near real-time applications became a welcome by-product right from the start of this development.
 </p>
 <p>
 Adding real-time Precise Point Positioning (PPP) support to BNC began in 2010 as an important completion in view of developing an Open RTCM Standard for that. According to the State Space Representation (SSR) model, new Version 3 messages are proposed to provide e.g. satellite orbit and clock corrections and ionospheric corrections as well as biases for code and phase data. The ultimate goal for SSR standardization is to reach centimeter level accuracy within seconds as an alternative to Network RTK methods such as VRS, FKP, and MAC. Because of interoperability aspects, an Open Standard in this area is of particular interest for clients. Regarding stand-alone PPP in BNC, it is worth mentioning that the program is not and can never be in competition with a receiver manufacturer's proprietary solution. Only software or services which are part of a receiver firmware could have the potential of becoming a thread for commercial interests. However, implementing or not implementing an Open PPP approach in a firmware is and will always remain a manufacturer's decision.
@@ -2809,7 +2809,7 @@ Be careful when keyword 'ALL' is specified as 'Mountpoint' for involving all inc
 <p>
 BNC can derive coordinates for rover positions following the Precise Point Positioning (PPP) approach. It uses code or code plus phase data from one or more GNSS systems in ionosphere-free linear combinations P3, L3, or P3&L3. Besides pulling streams of observations from dual frequency GNSS receiver, this also
 <ul>
-<li>Requires pulling in addition a stream carrying satellite orbit and clock corrections to Broadcast Ephemeris in the form of RTCM Version 3 'State Space Representation' (SSR) messages. Note that for BNC these Broadcast Corrections need to be referred to the satellite's Antenna Phase Center (APC). Streams providing such messages are listed on <u>http://igs.bkg.bund.de/ntrip/orbits</u>. Stream 'CLK11' on Ntrip Broadcaster 'products.igs-ip.net:2101' (Caissy et al. 2012) is an example.</li>
+<li>Requires pulling in addition a stream carrying satellite orbit and clock corrections to Broadcast Ephemeris in the form of RTCM Version 3 'State Space Representation' (SSR) messages. Note that for BNC these Broadcast Corrections need to be referred to the satellite's Antenna Phase Center (APC). Streams providing such messages are listed on <u>http://igs.bkg.bund.de/ntrip/orbits</u> (Caissy et al. 2012). Stream 'CLK11' on Ntrip Broadcaster 'products.igs-ip.net:2101' is an example.</li>
 <li>May require pulling a stream carrying Broadcast Ephemeris available as RTCM Version 3 message types 1019, 1020, 1043, 1044, 1045, 1046 and 63 (tentative). This becomes a must only when the stream coming from the receiver does not contain Broadcast Ephemeris or provides them only at very low repetition rate. Streams providing such messages are listed on <u>http://igs.bkg.bund.de/ntrip/ephemeris</u>. Stream 'RTCM3EPH' on caster 'products.igs-ip.net:2101' is an example.</li>
 </ul>
 Note that Broadcast Ephemeris parameters pass through a plausibility check in BNC which allows to ignore incorrect or outdated ephemeris data when necessary, leaving a note 'WRONG EPHEMERIS' or 'OUTDATED EPHEMERIS' in the logfile.
@@ -3370,7 +3370,7 @@ The intention of this panel is to specify general processing options to be appli
 <p><h4>2.13.3.1 <a name="ppplinecombi">Linear Combinations - mandatory</h4></p>
 <p>
 <p>
-Specify on which ionosphere-free Linear Combinations (LCs) of observations you want to base ambiguity resolutions. This implicitly defines the kind of GNSS observations you want to use. The specification is to be done per GNSS system ('GPS LCs', 'GLONASS LCs', 'Galileo LCs', 'BDS LCs').
+Specify on which ionosphere-free Linear Combinations (LCs) of observations you want to base ambiguity resolutions (Mervart et al. 2008). This implicitly defines the kind of GNSS observations you want to use. The specification is to be done per GNSS system ('GPS LCs', 'GLONASS LCs', 'Galileo LCs', 'BDS LCs').
 </p>
 <p>
 <ul>
@@ -3548,7 +3548,7 @@ In the Kalman Filter approach, satellite clocks estimated by individual Analyses
 Removing the AC-dependent biases as well as possible is a major issue with clock combinations. Since they vary in time, it can be tricky to do this. Otherwise, there will be artificial jumps in the combined clock stream if one or more AC contributions drop out for certain epochs. Here the Kalman Filter approach is expected to do better than the Single-Epoch approach.
 </p>
 <p>
-In view of IGS real-time products, the 'Combine Corrections' functionality has been integrated in BNC because
+In view of IGS real-time products, the 'Combine Corrections' functionality has been integrated in BNC (Weber and Mervart 2010) because
 <ul>
 <li>The software with its Graphic User Interface and wide range of supported Operating Systems represents a perfect platform to process many Broadcast Correction streams in parallel;</li>
 <li>Outages of single AC product streams can be mitigated through merging several incoming streams into a combined product;</li>
@@ -3805,7 +3805,7 @@ Because a mathematically strict transformation to a regional reference system is
 where s is the transformation scale, c is the speed of light, and &rho; are the topocentric distance between an (approximate) center of the transformation's validity area and the satellite.
 </p>
 <p>
-From a theoretical point of view, this kind of approximation leads to inconsistencies between orbits and clocks and is therefore not allowed. However, it has been proved that resulting errors in Precise Point Positioning are on millimeter level for horizontal components and below one centimeter for height components. The Australian GDA94 transformation with its comparatively large scale parameter is an exception in this as discrepancies may reach up there to two centimeters.
+From a theoretical point of view, this kind of approximation leads to inconsistencies between orbits and clocks and is therefore not allowed (Huisman et al. 2012). However, it has been proved that resulting errors in Precise Point Positioning are on millimeter level for horizontal components and below one centimeter for height components. The Australian GDA94 transformation with its comparatively large scale parameter is an exception in this as discrepancies may reach up there to two centimeters.
 </p>
 
 <p>
@@ -5189,31 +5189,31 @@ Configuration options which contain one or more blank characters must be enclose
 <table>
 <tr><td><b>Publications</b></td></tr>
 
-<tr><td>Estey, Louis H. and Charles M. Meertens</td><td>TEQC: The Multi-Purpose Toolkit for GPS/GLONASS Data, GPS Solutions, Vol. 3, No. 1, pp. 42-49, 1999.</td></tr>
+<tr><td>Caissy, M., L. Agrotis, G. Weber, M. Hernandez-Pajares and U. Hugentobler (2012)</td><td>The International GNSS Real-Time Service, GPS World, June 1, 2012.</td></tr>
 
-<tr><td>Rupprecht, Wolfgang</td><td>DGPS-IP, <u>http://www.wsrcc.com/wolfgang/gps/dgps-ip.html</u>, 2000.</td></tr>
+<tr><td>Estey, L. H. and C. M. Meertens (1999)</td><td>TEQC: The Multi-Purpose Toolkit for GPS/GLONASS Data, GPS Solutions, Vol. 3, No. 1, pp. 42-49, 1999.</td></tr>
 
-<tr><td>Weber, G., and M. Honkala</td><td>The future is talking Ntrip. Newsletter, Trimble GmbH Raunheim, Germany, 2004.</td></tr>
+<tr><td>Huisman, L., P. Teunissen and C. Hu (2012)</td><td>GNSS Precise Point Positioning in Regional Reference Frames Using Real-time Broadcast Corrections, Journal of Applied Geodesy, Vol. 6, pp15-23, 2012.</td></tr>
 
-<tr><td>Weber, G., D. Dettmering and H. Gebhard</td><td>Networked Transport of RTCM via Internet Protocol (NTRIP). In: Sanso F. (Ed.): A Window on the Future, Proceedings of the IAG General Assembly, Sapporo, Japan, 2003, Springer Verlag, Symposia Series, Vol. 128, p. 60-64, 2005.</td></tr>
+<tr><td>Mervart, L., Z. Lukes, C. Rocken and T. Iwabuchi (2008)</td><td>Precise Point Positioning With Ambiguity Resolution in Real-Time, ION GNSS 2008.</td></tr>
 
-<tr><td>Weber, G., D. Dettmering, H. Gebhard and R. Kalafus </td><td>Networked Transport of RTCM via Internet Protocol (Ntrip), IP-Streaming for Real-Time GNSS Applications, ION GNSS 2005.</td></tr>
+<tr><td>RTCM SC-104 (2011)</td><td>Amendment 1 to RTCM Standard 10410.1 Networked Transport of RTCM via Internet Protocol (Ntrip) - Version 2.0, RTCM Papter 139-2011-SC104-STD, 2011.</td></tr>
 
-<tr><td>Weber, G, L. Mervart, Z. Lukes, C. Rocken and J. Dousa </td><td>Real-time Clock and Orbit Corrections for Improved Point Positioning via Ntrip, ION GNSS 2007.</td></tr>
+<tr><td>Rupprecht, W. (2000)</td><td>DGPS-IP, <u>http://www.wsrcc.com/wolfgang/gps/dgps-ip.html</u>, 2000.</td></tr>
 
-<tr><td>Mervart, L., Z. Lukes, C. Rocken and T. Iwabuchi </td><td>Precise Point Positioning With Ambiguity Resolution in Real-Time, ION GNSS 2008.</td></tr>
+<tr><td>Weber, G., D. Dettmering and H. Gebhard (2005a)</td><td>Networked Transport of RTCM via Internet Protocol (NTRIP). In: Sanso F. (Ed.): A Window on the Future, Proceedings of the IAG General Assembly, Sapporo, Japan, 2003, Springer Verlag, Symposia Series, Vol. 128, p. 60-64, 2005.</td></tr>
 
-<tr><td>Weber, G. and L. Mervart </td><td>The BKG Ntrip Client (BNC), Report on EUREF Symposium 2007 in London, Mitteilungen des Bundesamtes fuer Kartographie und Geodaesie, Band 42, Frankfurt, 2009.</td></tr>
+<tr><td>Weber, G., D. Dettmering, H. Gebhard and R. Kalafus (2005b)</td><td>Networked Transport of RTCM via Internet Protocol (Ntrip), IP-Streaming for Real-Time GNSS Applications, ION GNSS 2005.</td></tr>
 
-<tr><td>Weber, G. and L. Mervart </td><td>Real-time Combination of GNSS Orbit and Clock Correction Streams Using a Kalman Filter Approach, ION GNSS 2010.</td></tr>
+<tr><td>Weber, G., and M. Honkala (2004)</td><td>The future is talking Ntrip. Newsletter, Trimble GmbH Raunheim, Germany, 2004.</td></tr>
 
-<tr><td>RTCM SC-104</td><td>Amendment 1 to RTCM Standard 10410.1 Networked Transport of RTCM via Internet Protocol (Ntrip) - Version 2.0, RTCM Papter 139-2011-SC104-STD, 2011.</td></tr>
+<tr><td>Weber, G. and L. Mervart (2009)</td><td>The BKG Ntrip Client (BNC), Report on EUREF Symposium 2007 in London, Mitteilungen des Bundesamtes fuer Kartographie und Geodaesie, Band 42, Frankfurt, 2009.</td></tr>
 
-<tr><td>Caissy, M., L. Agrotis, G. Weber, M. Hernandez-Pajares and U. Hugentobler</td><td>The International GNSS Real-Time Service, GPS World, June 1, 2012.</td></tr>
+<tr><td>Weber, G. and L. Mervart (2010)</td><td>Real-time Combination of GNSS Orbit and Clock Correction Streams Using a Kalman Filter Approach, ION GNSS 2010.</td></tr>
 
-<tr><td>Huisman, L., P. Teunissen and C. Hu </td><td>GNSS Precise Point Positioning in Regional Reference Frames Using Real-time Broadcast Corrections, Journal of Applied Geodesy, Vol. 6, pp15-23, 2012.</td></tr>
+<tr><td>Weber, G, L. Mervart, Z. Lukes, C. Rocken and J. Dousa (2007)</td><td>Real-time Clock and Orbit Corrections for Improved Point Positioning via Ntrip, ION GNSS 2007.</td></tr>
 
-<tr><td>Mervart, L., A. St&uuml;rze, G. Weber, A. R&uuml;lke and D. St&ouml;cker</td><td>BKG Ntrip Client, Version 2.12 Mitteilungen des Bundesamtes f&uuml;r Kartographie und Geod&auml;sie, Vol. 49, Frankfurt am Main, 2016.</td><tr>
+<tr><td>Weber, G., L. Mervart, A. St&uuml;rze, A. R&uuml;lke and D. St&ouml;cker (2016)</td><td>BKG Ntrip Client, Version 2.12 Mitteilungen des Bundesamtes f&uuml;r Kartographie und Geod&auml;sie, Vol. 49, Frankfurt am Main, 2016.</td><tr>
 
 </table>
 
