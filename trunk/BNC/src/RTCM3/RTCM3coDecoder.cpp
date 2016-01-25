@@ -662,6 +662,9 @@ void RTCM3coDecoder::setEpochTime() {
   }
   else if (epoSecBds != -1) {
     epoSecBds += 14.0;
+    if (epoSecBds > 604800.0) {
+      epoSecBds -= 7.0*24.0*60.0*60.0;
+    }
     _lastTime.set(currentWeek, epoSecBds);
   }
 
