@@ -334,7 +334,8 @@ void t_reqcAnalyze::setQcObs(const bncTime& epoTime, const ColumnVector& xyzSta,
 
   t_eph* eph = 0;
   for (int ie = 0; ie < _ephs.size(); ie++) {
-    if (_ephs[ie]->prn() == satObs._prn) {
+    if (_ephs[ie]->prn().system() == satObs._prn.system() &&
+        _ephs[ie]->prn().number() == satObs._prn.number()) {
       eph = _ephs[ie];
       break;
     }
