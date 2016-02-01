@@ -1021,7 +1021,7 @@ t_irc bncComb::processEpoch_singleEpoch(QTextStream& out,
     out.setRealNumberPrecision(3);
     out << _resTime.datestr().c_str() << " " << _resTime.timestr().c_str()
         << " Maximum Residuum " << maxRes << ' '
-        << corrs()[maxResIndex-1]->_acName << ' ' << corrs()[maxResIndex-1]->_prn;
+        << corrs()[maxResIndex-1]->_acName << ' ' << corrs()[maxResIndex-1]->_prn.mid(0,3);
 
     if (maxRes > _MAXRES) {
       out << "  Outlier" << endl;
