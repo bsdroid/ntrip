@@ -81,27 +81,27 @@ void bncEphUploadCaster::ephBufferChanged() {
       int size = 0;
 
       if (ephGPS) {
-        if (eph->checkState() == t_eph::ok && timeDiff <= 4*3600) {
+        if (timeDiff <= 4*3600) {
           size = t_ephEncoder::RTCM3(*ephGPS, Array);
         }
       }
       else if (ephGlo) {
-        if (eph->checkState() == t_eph::ok && timeDiff <= 1*3600) {
+        if (timeDiff <= 1*3600) {
           size = t_ephEncoder::RTCM3(*ephGlo, Array);
         }
       }
       else if (ephGal) {
-        if (eph->checkState() == t_eph::ok && timeDiff <= 4*3600) {
+        if (timeDiff <= 4*3600) {
           size = t_ephEncoder::RTCM3(*ephGal, Array);
         }
       }
       else if (ephSBAS) {
-        if (eph->checkState() == t_eph::ok && timeDiff <= 600) {
+        if (timeDiff <= 600) {
           size = t_ephEncoder::RTCM3(*ephSBAS, Array);
         }
       }
       else if (ephBDS) {
-        if (eph->checkState() == t_eph::ok && timeDiff <= 6*3600) {
+        if (timeDiff <= 6*3600) {
           size = t_ephEncoder::RTCM3(*ephBDS, Array);
         }
       }
