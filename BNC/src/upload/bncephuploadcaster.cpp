@@ -10,13 +10,13 @@
  *
  * Created:    03-Apr-2011
  *
- * Changes:    
+ * Changes:
  *
  * -----------------------------------------------------------------------*/
 
 #include <iostream>
 #include <math.h>
-#include "bncephuploadcaster.h" 
+#include "bncephuploadcaster.h"
 #include "bncsettings.h"
 #include "RTCM3/ephEncoder.h"
 
@@ -37,10 +37,10 @@ bncEphUploadCaster::bncEphUploadCaster() : bncEphUser(true) {
     QString password = settings.value("uploadEphPassword").toString();
     int     sampl    = settings.value("uploadEphSample").toInt();
 
-    _ephUploadCaster = new bncUploadCaster(mountpoint, outHost, outPort, 
+    _ephUploadCaster = new bncUploadCaster(mountpoint, outHost, outPort,
                                            password, -1, sampl);
 
-    connect(_ephUploadCaster, SIGNAL(newBytes(QByteArray,double)), 
+    connect(_ephUploadCaster, SIGNAL(newBytes(QByteArray,double)),
           this, SIGNAL(newBytes(QByteArray,double)));
 
     _ephUploadCaster->start();
@@ -61,9 +61,15 @@ void bncEphUploadCaster::ephBufferChanged() {
   if (_ephUploadCaster) {
     QByteArray outBuffer;
 
+    QDateTime now = currentDateAndTimeGPS();
+    bncTime currentTime(now.toString(Qt::ISODate).toStdString());
+
     QListIterator<QString> it(prnList());
     while (it.hasNext()) {
       const t_eph* eph = ephLast(it.next());
+
+      bncTime toc = eph->TOC();
+      double timeDiff = fabs(toc - currentTime);
 
       const t_ephGPS*  ephGPS  = dynamic_cast<const t_ephGPS*>(eph);
       const t_ephGlo*  ephGlo  = dynamic_cast<const t_ephGlo*>(eph);
@@ -75,19 +81,29 @@ void bncEphUploadCaster::ephBufferChanged() {
       int size = 0;
 
       if (ephGPS) {
-        size = t_ephEncoder::RTCM3(*ephGPS, Array);
+        if (eph->checkState() == t_eph::ok && timeDiff <= 4*3600) {
+          size = t_ephEncoder::RTCM3(*ephGPS, Array);
+        }
       }
       else if (ephGlo) {
-        size = t_ephEncoder::RTCM3(*ephGlo, Array);
+        if (eph->checkState() == t_eph::ok && timeDiff <= 1*3600) {
+          size = t_ephEncoder::RTCM3(*ephGlo, Array);
+        }
       }
       else if (ephGal) {
-        size = t_ephEncoder::RTCM3(*ephGal, Array);
+        if (eph->checkState() == t_eph::ok && timeDiff <= 4*3600) {
+          size = t_ephEncoder::RTCM3(*ephGal, Array);
+        }
       }
       else if (ephSBAS) {
-        size = t_ephEncoder::RTCM3(*ephSBAS, Array);
+        if (eph->checkState() == t_eph::ok && timeDiff <= 600) {
+          size = t_ephEncoder::RTCM3(*ephSBAS, Array);
+        }
       }
       else if (ephBDS) {
-        size = t_ephEncoder::RTCM3(*ephBDS, Array);
+        if (eph->checkState() == t_eph::ok && timeDiff <= 6*3600) {
+          size = t_ephEncoder::RTCM3(*ephBDS, Array);
+        }
       }
       if (size > 0) {
         outBuffer += QByteArray((char*) Array, size);

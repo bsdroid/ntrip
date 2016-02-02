@@ -33,7 +33,7 @@
  *
  * Created:    27-Jan-2011
  *
- * Changes:    
+ * Changes:
  *
  * -----------------------------------------------------------------------*/
 
@@ -50,10 +50,10 @@ bncEphUser::bncEphUser(bool connectSlots) {
   if (connectSlots) {
     connect(BNC_CORE, SIGNAL(newGPSEph(t_ephGPS)),
             this, SLOT(slotNewGPSEph(t_ephGPS)), Qt::DirectConnection);
-  
+
     connect(BNC_CORE, SIGNAL(newGlonassEph(t_ephGlo)),
             this, SLOT(slotNewGlonassEph(t_ephGlo)), Qt::DirectConnection);
-  
+
     connect(BNC_CORE, SIGNAL(newGalileoEph(t_ephGal)),
             this, SLOT(slotNewGalileoEph(t_ephGal)), Qt::DirectConnection);
 
@@ -78,12 +78,12 @@ bncEphUser::~bncEphUser() {
   }
 }
 
-// New GPS Ephemeris 
+// New GPS Ephemeris
 ////////////////////////////////////////////////////////////////////////////
 void bncEphUser::slotNewGPSEph(t_ephGPS eph) {
   putNewEph(&eph, false);
 }
-    
+
 // New Glonass Ephemeris
 ////////////////////////////////////////////////////////////////////////////
 void bncEphUser::slotNewGlonassEph(t_ephGlo eph) {
@@ -108,7 +108,7 @@ void bncEphUser::slotNewBDSEph(t_ephBDS eph) {
   putNewEph(&eph, false);
 }
 
-// 
+//
 ////////////////////////////////////////////////////////////////////////////
 t_irc bncEphUser::putNewEph(t_eph* eph, bool check) {
 
@@ -158,7 +158,7 @@ t_irc bncEphUser::putNewEph(t_eph* eph, bool check) {
        ephOld->checkState() == t_eph::outdated)) {
     ephOld = 0;
   }
-  
+
   if ((ephOld == 0 || newEph->isNewerThan(ephOld)) &&
       (eph->checkState() != t_eph::bad ||
        eph->checkState() != t_eph::outdated)) {
@@ -177,7 +177,7 @@ t_irc bncEphUser::putNewEph(t_eph* eph, bool check) {
   }
 }
 
-// 
+//
 ////////////////////////////////////////////////////////////////////////////
 void bncEphUser::checkEphemeris(t_eph* eph) {
 
@@ -256,21 +256,27 @@ void bncEphUser::checkEphemeris(t_eph* eph) {
     double diff = (xc.Rows(1,3) - xcL.Rows(1,3)).norm_Frobenius();
 
     // some lines to allow update of ephemeris data sets after outage
-    if      ((eph->type() == t_eph::GPS ||
-              eph->type() == t_eph::Galileo)  && dt > 4*3600) {
+    if      (eph->type() == t_eph::GPS    && dt > 4*3600) {
       ephL->setCheckState(t_eph::outdated);
       return;
     }
-    else if ((eph->type() == t_eph::GLONASS ||
-              eph->type() == t_eph::QZSS)     && dt > 2*3600) {
+    else if (eph->type() == t_eph::Galileo && dt > 4*3600) {
       ephL->setCheckState(t_eph::outdated);
       return;
     }
-    else if  (eph->type() == t_eph::SBAS      && dt > 1*3600)   {
+    else if (eph->type() == t_eph::GLONASS && dt > 1*3600) {
       ephL->setCheckState(t_eph::outdated);
       return;
     }
-    else if  (eph->type() == t_eph::BDS       && dt > 6*3600)   {
+    else if (eph->type() == t_eph::QZSS    && dt > 1*1800) {
+      ephL->setCheckState(t_eph::outdated);
+      return;
+    }
+    else if  (eph->type() == t_eph::SBAS   && dt > 600)   {
+      ephL->setCheckState(t_eph::outdated);
+      return;
+    }
+    else if  (eph->type() == t_eph::BDS    && dt > 6*3600)   {
       ephL->setCheckState(t_eph::outdated);
       return;
     }
