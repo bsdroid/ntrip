@@ -294,7 +294,7 @@ void t_bncCore::printEphHeader() {
 
     if (_rinexVers == 3) {
       if (ephV3filenames) {
-        QString country = "WLD";
+        QString country = "WRD"; // WORLD
         QString monNum = "0";
         QString recNum = "0";
         ephFileNameGPS += QString("%1").arg(monNum, 1, 10) +
