@@ -2820,8 +2820,7 @@ Note that Broadcast Ephemeris parameters pass through a plausibility check in BN
 <li>BNC does correct for Solid Earth Tides and Phase Windup.</li>
 <li>Satellite Antenna Phase Center offsets are corrected.</li>
 <li>Satellite Antenna Phase Center variations are neglected because this is a small effect usually less than 2 centimeters.</li>
-<li>Observations can be corrected for a Receiver Antenna Offset. Depending on whether or not this correction is applied, the estimated position is either that of the receiver's Antenna Phase Center or that of the receiver's Antenna Reference Point.</li>
-<li>Receiver Antenna Phase Center variations are not included in the model. The bias caused by this neglect depends on the receiver antenna type. For most antennas it is smaller than a few centimeters.</li>
+<li>Observations can be corrected for a Receiver Antenna Offset and Receiver Antenna Phase Center Variation. Depending on whether or not this correction is applied, the estimated position is either that of the receiver's Antenna Phase Center or that of the receiver's Antenna Reference Point.</li>
 <li>Ocean and atmospheric loading is neglected. Atmospheric loading is pretty small. Ocean loading is usually also a small effect but may reach up to about 10 centimeters for coastal stations.</li>
 <li>Rotational deformation due to polar motion (Polar Tides) is not corrected because this is a small effect usually less than 2 centimeters.</li>
 </ul>
