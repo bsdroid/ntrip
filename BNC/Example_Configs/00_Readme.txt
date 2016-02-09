@@ -220,6 +220,7 @@ The following configuration examples make use of BNC's 'Command Line Interface'
 (CLI). Configuration options are exclusively specified via command line. No 
 configuration file is used. Examples are provided as shell scripts for a Linux
 system. They call BNC in 'no window' batch mode (command line option -nw). 
+The scripts expect 'Example_Configs' to be the current working directory.
 
 22. Shell Script 'RinexQC.sh'
 Purpose: Equals configuration file example 'RinexQC.bnc', checks the quality of
