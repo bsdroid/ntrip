@@ -243,6 +243,12 @@ files. BNC runs online till it's terminated after 10 seconds.  See
 http://igs.bkg.bund.de/ntrip/ephemeris for further real-time Broadcast 
 Ephemeris resources. 
 
+25. Shell Script 'ScanLate.sh'
+Purpose: Scan an observation stream for contained RTCM message types, print
+observation latencies. The output is saved in a logfile. Latencies are 
+reported every 10 seconds. BNC runs online till it's terminated after 20
+seconds.
+
 Georg Weber, BKG
 Frankfurt, January 2016
 igs-ip@bkg.bund.de
