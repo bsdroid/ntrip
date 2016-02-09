@@ -221,7 +221,7 @@ The following configuration examples make use of BNC's 'Command Line Interface'
 configuration file is used. Examples are provided as shell scripts for a Linux
 system. They call BNC in 'no window' batch mode (command line option -nw). 
 
-22. Shell Script 'RinexQC.cli'
+22. Shell Script 'RinexQC.sh'
 Purpose: Equals configuration file example 'RinexQC.bnc', checks the quality of
 a RINEX Version 3 file by means of a multipath analysis. Virtual X-Server 
 'Xvfb' is operated while producing plot files in PNG format. BNC is offline. 
