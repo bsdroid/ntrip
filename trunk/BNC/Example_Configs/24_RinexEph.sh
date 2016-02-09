@@ -8,6 +8,6 @@
        -key ephV3 2 &
 
 psID=`echo $!`
-sleep 20
+sleep 10
 kill $psID
 
