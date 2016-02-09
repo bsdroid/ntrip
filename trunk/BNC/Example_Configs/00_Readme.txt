@@ -227,6 +227,11 @@ a RINEX Version 3 file by means of a multipath analysis. Virtual X-Server
 'Xvfb' is operated while producing plot files in PNG format. BNC is offline. 
 All results are saved on disk. 
 
+23. Shell Script 'RinexConcat.sh'
+Purpose: Equals configuration file example 'RinexConcat.bnc', concatenates
+several RINEX Version 3 files to produce one compiled file and edit the marker
+name in the file header. The sampling interval is set to 30 seconds. 
+
 Georg Weber, BKG
 Frankfurt, January 2016
 igs-ip@bkg.bund.de
