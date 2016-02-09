@@ -505,7 +505,9 @@ void bncGetThread::run() {
         emit newLatency(_staID, _latencyChecker->currentLatency());
       }
 
-      miscScanRTCM();
+      if (irc == success) {
+        miscScanRTCM();
+      }
 
       // Loop over all observations (observations output)
       // ------------------------------------------------
