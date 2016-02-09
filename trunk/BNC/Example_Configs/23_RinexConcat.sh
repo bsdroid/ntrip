@@ -9,5 +9,5 @@
        -key reqcEndDateTime 2099-01-01T00:00:00 \
        -key reqcNewMarkerName BRUX_MARKER \
        -key reqcOutLogFile Output/RinexConcat.log \
-       -key reqcOutObsFile Output/brux350a.12o \
+       -key reqcOutObsFile Output/brux350a.12o
 
