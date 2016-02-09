@@ -230,7 +230,17 @@ All results are saved on disk.
 23. Shell Script 'RinexConcat.sh'
 Purpose: Equals configuration file example 'RinexConcat.bnc', concatenates
 several RINEX Version 3 files to produce one compiled file and edit the marker
-name in the file header. The sampling interval is set to 30 seconds. 
+name in the file header. The sampling interval is set to 30 seconds. BNC is
+offline.
+
+24. Shell Script 'RinexEph.sh' 
+Purpose: Equals configuration file example 'RinexEph.bnc', converts a RTCM 
+stream with navigation messages to RINEX Navigation files. The configuration 
+pulls a RTCM Version 3 stream with Broadcast Ephemeris coming from the 
+real-time EUREF and IGS networks and saves hourly RINEX Version 3 Navigation
+files. BNC runs online till it's terminated after 10 seconds.  See 
+http://igs.bkg.bund.de/ntrip/ephemeris for further real-time Broadcast 
+Ephemeris resources. 
 
 Georg Weber, BKG
 Frankfurt, January 2016
