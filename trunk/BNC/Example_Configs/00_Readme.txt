@@ -239,14 +239,22 @@ Purpose: Equals configuration file example 'RinexEph.bnc', converts a RTCM
 stream with navigation messages to RINEX Navigation files. The configuration 
 pulls a RTCM Version 3 stream with Broadcast Ephemeris coming from the 
 real-time EUREF and IGS networks and saves hourly RINEX Version 3 Navigation
-files. BNC runs online till it's terminated after 10 seconds.  See 
+files. BNC runs online untill it's terminated after 10 seconds.  See 
 http://igs.bkg.bund.de/ntrip/ephemeris for further real-time Broadcast 
 Ephemeris resources. 
 
 25. Shell Script 'ScanLate.sh'
 Purpose: Scan an observation stream for contained RTCM message types, print
 observation latencies. The output is saved in a logfile. Latencies are 
-reported every 10 seconds. BNC runs online till it's terminated after 20
+reported every 10 seconds. BNC runs online untill it's terminated after 20
+seconds.
+
+26. Shell Script 'RinexObs.sh'
+Purpose: Equals configuration file example 'RinexObs.bnc', converts RTCM
+streams to RINEX Observation files. The configuration pulls streams from two
+Ntrip Broadcasters using Ntrip Version 1 to generate 15min 1Hz RINEX Version 3
+Observation files. See http://igs.bkg.bund.de/ntrip/observations for 
+observation stream resources. BNC runs online untill it's terminated after 30
 seconds.
 
 Georg Weber, BKG
