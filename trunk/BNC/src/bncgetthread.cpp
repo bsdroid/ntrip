@@ -492,9 +492,12 @@ void bncGetThread::run() {
         _isToBeDeleted = true;
         continue;
       }
-      decoder()->_obsList.clear();
+
       t_irc irc = decoder()->Decode(data.data(), data.size(), errmsg);
 
+      if (irc != success) {
+        continue;
+      }
       // Perform various scans and checks
       // --------------------------------
       if (_latencyChecker) {
@@ -505,9 +508,7 @@ void bncGetThread::run() {
         emit newLatency(_staID, _latencyChecker->currentLatency());
       }
 
-      if (irc == success) {
-        miscScanRTCM();
-      }
+      miscScanRTCM();
 
       // Loop over all observations (observations output)
       // ------------------------------------------------
@@ -569,7 +570,6 @@ void bncGetThread::run() {
         emit newObs(_staID, obsListHlp);
       }
 
-      decoder()->_obsList.clear();
     }
     catch (Exception& exc) {
       emit(newMessage(_staID + " " + exc.what(), true));
