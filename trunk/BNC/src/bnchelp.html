@@ -1049,7 +1049,7 @@ Purpose: Equals configuration file example 'RinexEph.bnc', converts a RTCM
 stream with navigation messages to RINEX Navigation files. The configuration
 pulls a RTCM Version 3 stream with Broadcast Ephemeris coming from the
 real-time EUREF and IGS networks and saves hourly RINEX Version 3 Navigation
-files. BNC runs online untill it's terminated after 10 seconds.  See
+files. BNC runs online until it's terminated after 10 seconds.  See
 http://igs.bkg.bund.de/ntrip/ephemeris for further real-time Broadcast
 Ephemeris resources.
 </li><br>
@@ -1057,7 +1057,7 @@ Ephemeris resources.
 <li>Shell Script 'ScanLate.sh'<br>
 Purpose: Scan an observation stream for contained RTCM message types, print 
 observation latencies. The output is saved in a logfile. Latencies are 
-reported every 10 seconds. BNC runs online untill it's terminated after 20 
+reported every 10 seconds. BNC runs online until it's terminated after 20 
 seconds.
 </li><br>
 
@@ -1066,7 +1066,7 @@ Purpose: Equals configuration file example 'RinexObs.bnc', converts RTCM
 streams to RINEX Observation files. The configuration pulls streams from two
 Ntrip Broadcasters using Ntrip Version 1 to generate 15min 1Hz RINEX Version 3
 Observation files. See http://igs.bkg.bund.de/ntrip/observations for 
-observation stream resources. BNC runs online untill it's terminated after 30
+observation stream resources. BNC runs online until it's terminated after 30
 seconds.
 </li>
 </ol>
@@ -3457,7 +3457,7 @@ Specify a maximum for residuals 'Max Res L1' for L1 phase observations in a PPP 
 <p>
 As the convergence characteristic of a PPP solution can be influenced by the ratio of sigmas for code and phase, you may like to introduce sigmas, which differ from the default values.
 <ul>
-<li>Introducing a smaller sigma (higher accuracy) for code observations or a bigger sigma for phase observations leads to better results shortly after program start. However, it may take more time untill you finally get the best possible solution.</li>
+<li>Introducing a smaller sigma (higher accuracy) for code observations or a bigger sigma for phase observations leads to better results shortly after program start. However, it may take more time until you finally get the best possible solution.</li>
 <li>Introducing a bigger sigma (lower accuracy) for code observations or a smaller sigma for phase observations may lead to less accurate results shortly after program start and thus a prolonged period of convergence but could provide better positions in the long run.</li>
 </ul>
 </p>
@@ -3495,7 +3495,7 @@ Default is '0 deg', meaning that any observation will be used regardless of the 
 
 <p><h4>2.13.3.7 <a name="pppwaitclockcorr">Wait for Clock Corrections - optional</h4></p>
 <p>
-Specifying 'no' for option 'Wait for clock corr.' means that BNC processes each epoch of data immediately after its arrival using satellite clock corrections available at that time. A non-zero value means that epochs of data are buffered and the processing of each epoch is postponed untill satellite clock corrections not older than 'Wait for clock corr.' seconds are available. Specifying a value of half the update rate of the clock corrections (e.g. 5 sec) may be appropriate. Note that this causes an additional delay of the PPP solutions in the amount of half of the update rate.
+Specifying 'no' for option 'Wait for clock corr.' means that BNC processes each epoch of data immediately after its arrival using satellite clock corrections available at that time. A non-zero value means that epochs of data are buffered and the processing of each epoch is postponed until satellite clock corrections not older than 'Wait for clock corr.' seconds are available. Specifying a value of half the update rate of the clock corrections (e.g. 5 sec) may be appropriate. Note that this causes an additional delay of the PPP solutions in the amount of half of the update rate.
 </p>
 <p>
 Using observations in sync with the corrections can avoid a possible high frequency noise of PPP solutions. Such noise could result from processing observations regardless of how late after a clock correction they were received. Note that applying the 'Wait for clock corr.' option significantly reduces the PPP computation effort for BNC.
@@ -4232,7 +4232,7 @@ The latency of observations in each incoming stream is shown in the 'Latency' ta
 
 <p><h4>2.18.4 <a name="ppptab">PPP Plot</h4></p>
 <p>
-Precise Point Positioning time series of North (red), East (green) and Up (blue) coordinate components are shown in the 'PPP Plot' tab when a 'Mountpoint' option is defined under PPP (4). Values are either referred to reference coordinates (if specified) or referred to the first estimated set of coordinate components. The time as given in format [hh:mm] refers to GPS Time. The sliding PPP time series window covers a period of 5 minutes. Note that it may take up to 30 seconds or more untill the first PPP solutions becomes available. The following figure shows the screenshot of a PPP time series plot of North, East and Up coordinate displacements.
+Precise Point Positioning time series of North (red), East (green) and Up (blue) coordinate components are shown in the 'PPP Plot' tab when a 'Mountpoint' option is defined under PPP (4). Values are either referred to reference coordinates (if specified) or referred to the first estimated set of coordinate components. The time as given in format [hh:mm] refers to GPS Time. The sliding PPP time series window covers a period of 5 minutes. Note that it may take up to 30 seconds or more until the first PPP solutions becomes available. The following figure shows the screenshot of a PPP time series plot of North, East and Up coordinate displacements.
 </p>
 
 <p><img src="IMG/screenshot13.png"/></p>
