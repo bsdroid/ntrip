@@ -826,7 +826,7 @@ We furthermore suggest for convenience reasons that you configure your system to
 </ol>
 
 <p>
-Some of the presented example configuration files contain a user ID 'Example' with a password 'Configs' for accessing a few GNSS streams from public Ntrip Broadcasters. This free generic account is arranged for convenience reasons only. Please be so kind as to replace the generic account details as well as the place holder's 'User' and 'Pass' by the personal user ID and password you receive following an online registration through <u>http://register.rtcm-ntrip.org</u>.
+Some of the presented example configurations contain a user ID 'Example' with a password 'Configs' for accessing a few GNSS streams from public Ntrip Broadcasters. This free generic account is arranged for convenience reasons only. Please be so kind as to replace the generic account details as well as the place holder's 'User' and 'Pass' by the personal user ID and password you receive following an online registration through <u>http://register.rtcm-ntrip.org</u>.
 </p>
 
 <p>
@@ -846,6 +846,7 @@ The example configurations assume that no proxy protects your BNC host. Should a
 </p>
 
 <p>
+<b>(A) Working with Configuration Files</b><br><br>
 You should be able to run all configuration file examples without changing contained options. However, configurations 'Upload.bnc' and 'UploadPPP.bnc' are exceptions because they require an input stream from a connected network engine.
 </p>
 <ol type=b>
@@ -1026,7 +1027,7 @@ BNC, which only contains default settings.
 </li>
 
 </ol>
-
+<b>(B) Working with Command Line configuration options</b><br><br>
 The following configuration examples make use of BNC's 'Command Line Interface' (CLI). Configuration options are exclusively specified via command line. No configuration file is used. Examples are provided as shell scripts for a Linux system. They call BNC in 'no window' batch mode (command line option -nw). The scripts expect 'Example_Configs' to be the current working directory.
 
 <ol start="22">
@@ -1068,7 +1069,15 @@ Observation files. See http://igs.bkg.bund.de/ntrip/observations for
 observation stream resources. BNC runs online untill it's terminated after 30
 seconds.
 </li>
+</ol>
 
+<b>(C) Command Line configuration options overwriting Configuration File options</b><br><br>
+For specific applications you may like to use your own set of standard configuration options from a configuration file and update some of its content via command line. When using a configuration file and command line configuration options together in one BNC call, the command line configuration options will always overrule options contained in the configuration file. 
+
+<ol start="27">
+<li>Shell Script 'CompareSp3.sh'<br>
+Purpose: Equals configuration file example 'CompareSp3.bnc', compares two SP3 files to calculate RMS values for orbit and clock differences. However, instead of excluding GPS satellite G05 and GLONASS satellite R18 from the comparison as specified in 'CompareSp3.bnc', GPS satellite G06 and all GLONASS satellites are excluded via command line option. Comparison results are saved in a logfile.
+</li>
 </ol>
 
 </p>
