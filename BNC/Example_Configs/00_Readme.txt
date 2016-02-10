@@ -68,6 +68,8 @@ The example configurations assume that no proxy protects your BNC host.
 Should a proxy be operated in front of BNC then you need to introduce its 
 name or IP and port number in the 'Network' panel.
 
+(A) Working with Configuration Files
+
 You should be able to run all configuration file examples without changing 
 contained options. However, configurations 'Upload.bnc' and 'UploadPPP.bnc' are 
 exceptions because they require an input stream from a connected network engine. 
@@ -216,6 +218,8 @@ comparison. Comparison results are saved in a logfile.
 Purpose: Provide an empty example configuration file for BNC which only 
 contains the default settings.
 
+(B) Working with Command Line configuration options
+
 The following configuration examples make use of BNC's 'Command Line Interface' 
 (CLI). Configuration options are exclusively specified via command line. No 
 configuration file is used. Examples are provided as shell scripts for a Linux
@@ -256,6 +260,21 @@ Ntrip Broadcasters using Ntrip Version 1 to generate 15min 1Hz RINEX Version 3
 Observation files. See http://igs.bkg.bund.de/ntrip/observations for 
 observation stream resources. BNC runs online untill it's terminated after 30
 seconds.
+
+(C) Command Line configuration options overwriting Configuration File options
+
+For specific applications you may like to use your own set of standard 
+configuration options from a configuration file and update some of its content 
+via command line. When using a configuration file and command line configuration
+options together in one BNC call, the command line configuration options will 
+always overrule options contained in the configuration file.
+
+27. Shell Script 'CompareSp3.sh'
+Purpose: Equals configuration file example 'CompareSp3.bnc', compares two SP3 
+files to calculate RMS values for orbit and clock differences. However, instead 
+of excluding GPS satellite G05 and GLONASS satellite R18 from the comparison as 
+specified in 'CompareSp3.bnc', GPS satellite G06 and all GLONASS satellites are 
+excluded via command line option. Comparison results are saved in a logfile.
 
 Georg Weber, BKG
 Frankfurt, January 2016
