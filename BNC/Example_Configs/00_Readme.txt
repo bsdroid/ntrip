@@ -274,7 +274,8 @@ Purpose: Equals configuration file example 'CompareSp3.bnc', compares two SP3
 files to calculate RMS values for orbit and clock differences. However, instead 
 of excluding GPS satellite G05 and GLONASS satellite R18 from the comparison as 
 specified in 'CompareSp3.bnc', GPS satellite G06 and all GLONASS satellites are 
-excluded via command line option. Comparison results are saved in a logfile.
+excluded via command line option. BNC runs offline. Comparison results are saved
+in a logfile.
 
 Georg Weber, BKG
 Frankfurt, January 2016
