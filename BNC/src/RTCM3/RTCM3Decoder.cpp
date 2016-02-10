@@ -34,7 +34,7 @@
  *
  * Created:    24-Aug-2006
  *
- * Changes:    
+ * Changes:
  *
  * -----------------------------------------------------------------------*/
 
@@ -51,7 +51,7 @@
 #include "bncconst.h"
 #include "bnccore.h"
 #include "bncutils.h"
-#include "bncsettings.h" 
+#include "bncsettings.h"
 
 using namespace std;
 
@@ -62,7 +62,7 @@ void RTCM3Error(const char*, ...) {
 
 // Constructor
 ////////////////////////////////////////////////////////////////////////////
-RTCM3Decoder::RTCM3Decoder(const QString& staID, bncRawFile* rawFile) : 
+RTCM3Decoder::RTCM3Decoder(const QString& staID, bncRawFile* rawFile) :
                 GPSDecoder() {
 
   _staID   = staID;
@@ -88,7 +88,7 @@ RTCM3Decoder::~RTCM3Decoder() {
   }
 }
 
-// 
+//
 ////////////////////////////////////////////////////////////////////////////
 bool RTCM3Decoder::DecodeRTCM3GPS(unsigned char* data, int size)
 {
@@ -108,9 +108,10 @@ bool RTCM3Decoder::DecodeRTCM3GPS(unsigned char* data, int size)
   if(_CurrentTime.valid() && CurrentObsTime != _CurrentTime)
   {
     decoded = true;
-    _obsList = _CurrentObsList;
+    _obsList.append(_CurrentObsList);
     _CurrentObsList.clear();
   }
+
   _CurrentTime = CurrentObsTime;
 
   GETBITS(syncf,1) /* sync */
@@ -198,10 +199,11 @@ bool RTCM3Decoder::DecodeRTCM3GPS(unsigned char* data, int size)
     }
     _CurrentObsList.push_back(CurrentObs);
   }
+
   if(!syncf)
   {
     decoded = true;
-    _obsList = _CurrentObsList;
+    _obsList.append(_CurrentObsList);
     _CurrentTime.reset();
     _CurrentObsList.clear();
   }
@@ -265,7 +267,7 @@ static struct CodeData gps[RTCM3_MSM_NUMSIG] =
 
 /**
  * MSM signal types for GLONASS
- * 
+ *
  * NOTE: Uses 0.0, 1.0 for wavelength as sat index dependence is done later!
  */
 static struct CodeData glo[RTCM3_MSM_NUMSIG] =
@@ -417,7 +419,7 @@ static struct CodeData bds[RTCM3_MSM_NUMSIG] =
 
 #define UINT64(c) c ## ULL
 
-// 
+//
 ////////////////////////////////////////////////////////////////////////////
 bool RTCM3Decoder::DecodeRTCM3MSM(unsigned char* data, int size)
 {
@@ -472,7 +474,7 @@ bool RTCM3Decoder::DecodeRTCM3MSM(unsigned char* data, int size)
   GETBITS(syncf, 1)
   /**
    * Ignore unknown types except for sync flag
-   * 
+   *
    * We actually support types 1-3 in following code, but as they are missing
    * the full cycles and can't be used later we skip interpretation here already.
    */
@@ -848,7 +850,7 @@ bool RTCM3Decoder::DecodeRTCM3MSM(unsigned char* data, int size)
   return decoded;
 }
 
-// 
+//
 ////////////////////////////////////////////////////////////////////////////
 bool RTCM3Decoder::DecodeRTCM3GLONASS(unsigned char* data, int size)
 {
@@ -868,7 +870,7 @@ bool RTCM3Decoder::DecodeRTCM3GLONASS(unsigned char* data, int size)
   if(_CurrentTime.valid() && CurrentObsTime != _CurrentTime)
   {
     decoded = true;
-    _obsList = _CurrentObsList;
+    _obsList.append(_CurrentObsList);
     _CurrentObsList.clear();
   }
   _CurrentTime = CurrentObsTime;
@@ -960,7 +962,7 @@ bool RTCM3Decoder::DecodeRTCM3GLONASS(unsigned char* data, int size)
   if(!syncf)
   {
     decoded = true;
-    _obsList = _CurrentObsList;
+    _obsList.append(_CurrentObsList);
     _CurrentTime.reset();
     _CurrentObsList.clear();
   }
@@ -1105,12 +1107,12 @@ bool RTCM3Decoder::DecodeGLONASSEphemeris(unsigned char* data, int size)
     eph._gps_utc = gnumleap(year, month, day);
     eph._tt = eph._TOC;
 
-    eph._xv(1) = eph._x_pos * 1.e3; 
-    eph._xv(2) = eph._y_pos * 1.e3; 
-    eph._xv(3) = eph._z_pos * 1.e3; 
-    eph._xv(4) = eph._x_velocity * 1.e3; 
-    eph._xv(5) = eph._y_velocity * 1.e3; 
-    eph._xv(6) = eph._z_velocity * 1.e3; 
+    eph._xv(1) = eph._x_pos * 1.e3;
+    eph._xv(2) = eph._y_pos * 1.e3;
+    eph._xv(3) = eph._z_pos * 1.e3;
+    eph._xv(4) = eph._x_velocity * 1.e3;
+    eph._xv(5) = eph._y_velocity * 1.e3;
+    eph._xv(6) = eph._z_velocity * 1.e3;
 
     emit newGlonassEph(eph);
     decoded = true;
@@ -1439,7 +1441,7 @@ bool RTCM3Decoder::DecodeAntennaPosition(unsigned char* data, int size)
   return true;
 }
 
-// 
+//
 ////////////////////////////////////////////////////////////////////////////
 t_irc RTCM3Decoder::Decode(char* buffer, int bufLen, vector<string>& errmsg)
 {
@@ -1471,7 +1473,7 @@ t_irc RTCM3Decoder::Decode(char* buffer, int bufLen, vector<string>& errmsg)
       if((id >= 1057 && id <= 1068) || (id >= 1240 && id <= 1270))
       {
         if (!_coDecoders.contains(_staID.toAscii()))
-          _coDecoders[_staID.toAscii()] = new RTCM3coDecoder(_staID); 
+          _coDecoders[_staID.toAscii()] = new RTCM3coDecoder(_staID);
         RTCM3coDecoder* coDecoder = _coDecoders[_staID.toAscii()];
         if(coDecoder->Decode(reinterpret_cast<char *>(_Message), _BlockSize,
         errmsg) == success)
@@ -1541,7 +1543,7 @@ t_irc RTCM3Decoder::Decode(char* buffer, int bufLen, vector<string>& errmsg)
   return decoded ? success : failure;
 };
 
-// 
+//
 ////////////////////////////////////////////////////////////////////////////
 uint32_t RTCM3Decoder::CRC24(long size, const unsigned char *buf)
 {
@@ -1561,7 +1563,7 @@ uint32_t RTCM3Decoder::CRC24(long size, const unsigned char *buf)
   return crc;
 }
 
-// 
+//
 ////////////////////////////////////////////////////////////////////////////
 int RTCM3Decoder::GetMessage(void)
 {
