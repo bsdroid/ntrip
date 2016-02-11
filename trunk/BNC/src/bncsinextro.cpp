@@ -202,7 +202,7 @@ void bncSinexTro::writeHeader(const QDateTime& datTim) {
        << QString("%1").arg(_opt->_neuEccRover(3), 9, 'f', 4, QLatin1Char(' ')).toStdString()
        << QString("%1").arg(_opt->_neuEccRover(1), 9, 'f', 4, QLatin1Char(' ')).toStdString()
        << QString("%1").arg(_opt->_neuEccRover(2), 9, 'f', 4, QLatin1Char(' ')).toStdString() << endl;
-  _out << "-SITE/ANTENNA" << endl << endl;
+  _out << "-SITE/ECCENTRICITY" << endl << endl;
 
   _out << "+TROP/COORDINATES" << endl;
   _out << "*SITE PT SOLN T STA_X_______ STA_Y_______ STA_Z_______ SYSTEM REMARK" << endl;
