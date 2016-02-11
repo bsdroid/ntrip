@@ -866,7 +866,9 @@ bncWindow::bncWindow() {
   _pppWidgets._crdFile->setMaximumWidth(35*ww);
   _pppWidgets._logPath->setMaximumWidth(35*ww);
   _pppWidgets._snxtroPath->setMaximumWidth(35*ww);
-  _pppWidgets._snxtroIntr->setMaximumWidth(15*ww);
+  _pppWidgets._snxtroIntr->setMaximumWidth(10*ww);
+  _pppWidgets._snxtroAc  ->setMaximumWidth(10*ww);
+  _pppWidgets._snxtroSol ->setMaximumWidth(7*ww);
 
   QGridLayout* pppLayout1 = new QGridLayout();
   int ir = 0;
@@ -901,9 +903,13 @@ bncWindow::bncWindow() {
   pppLayout1->addWidget(_pppWidgets._snxtroPath,             ir, 1);
   pppLayout1->addWidget(new QLabel("   SNX TRO interval"),   ir, 3);
   pppLayout1->addWidget(_pppWidgets._snxtroIntr,             ir, 4);
-  pppLayout1->addWidget(new QLabel("   SNX TRO sampling"),   ir, 5, Qt::AlignRight);
+  pppLayout1->addWidget(new QLabel("   SNX TRO sampling"),   ir, 5);
   pppLayout1->addWidget(_pppWidgets._snxtroSampl,            ir, 6, Qt::AlignRight);
   ++ir;
+  pppLayout1->addWidget(new QLabel("   SNX TRO AC"),         ir, 3);
+  pppLayout1->addWidget(_pppWidgets._snxtroAc,               ir, 4);
+  pppLayout1->addWidget(new QLabel("   SNX TRO solution")    ,ir, 5);
+  pppLayout1->addWidget(_pppWidgets._snxtroSol,              ir, 6, Qt::AlignRight);
   pppLayout1->setRowStretch(ir, 999);
 
   pppGroup1->setLayout(pppLayout1);
@@ -1333,6 +1339,8 @@ bncWindow::bncWindow() {
   _pppWidgets._snxtroPath->setWhatsThis(tr("<p>Specify a directory for saving SINEX Troposphere files. If the specified directory does not exist, BNC will not create such files.</p><p>Default is an empty option field, meaning that no SINEX Troposphere files shall be produced.</p>"));
   _pppWidgets._snxtroIntr->setWhatsThis(tr("<p>Select a length for SINEX Troposphere files.</p><p>Default 'SNX TRO interval' for saving SINEX Troposphere files on disk is '1 hour'.</p>"));
   _pppWidgets._snxtroSampl->setWhatsThis(tr("<p>Select a 'Sampling' rate for saving troposphere parameters.</p><p>Default 'SNX TRO sampling' rate is '0', meaning that all troposphere estimates will be saved on disk.</p>"));
+  _pppWidgets._snxtroAc->setWhatsThis(tr("<p>Specify an abbreviation for the Analysis Center (AC) providing the SINEX Troposphere files.</p>"));
+  _pppWidgets._snxtroSol->setWhatsThis(tr("<p>Specify a solution ID to allow a distinction of different solutions per AC.</p>"));
 
   // WhatsThis, PPP (3)
   // ------------------

@@ -63,6 +63,8 @@ t_pppWidgets::t_pppWidgets() {
   _snxtroPath   = new QLineEdit();     _snxtroPath  ->setObjectName("PPP/snxtroPath");   _widgets << _snxtroPath;
   _snxtroSampl  = new QSpinBox();      _snxtroSampl ->setObjectName("PPP/snxtroSampl");  _widgets << _snxtroSampl;
   _snxtroIntr   = new QComboBox();     _snxtroIntr  ->setObjectName("PPP/snxtroIntr");   _widgets << _snxtroIntr;
+  _snxtroAc     = new QLineEdit();     _snxtroAc    ->setObjectName("PPP/snxtroAc");     _widgets << _snxtroAc;
+  _snxtroSol    = new QLineEdit();     _snxtroSol   ->setObjectName("PPP/snxtroSol");    _widgets << _snxtroSol;
   _v3filenames  = new QCheckBox();     _v3filenames ->setObjectName("PPP/v3filenames");  _widgets << _v3filenames;
   _staTable     = new QTableWidget();  _staTable    ->setObjectName("PPP/staTable");     _widgets << _staTable;
   _lcGPS        = new QComboBox();     _lcGPS       ->setObjectName("PPP/lcGPS");        _widgets << _lcGPS;
@@ -100,6 +102,12 @@ t_pppWidgets::t_pppWidgets() {
   connect(_dataSource, SIGNAL(currentIndexChanged(const QString&)), this, SLOT(slotEnableWidgets()));
 
   connect(_snxtroPath, SIGNAL(textChanged(const QString &)),
+         this, SLOT(slotPPPTextChanged()));
+
+  connect(_snxtroAc, SIGNAL(textChanged(const QString &)),
+         this, SLOT(slotPPPTextChanged()));
+
+  connect(_snxtroSol, SIGNAL(textChanged(const QString &)),
          this, SLOT(slotPPPTextChanged()));
 
   slotEnableWidgets();
@@ -217,6 +225,8 @@ t_pppWidgets::~t_pppWidgets() {
   delete _snxtroPath;
   delete _snxtroSampl;
   delete _snxtroIntr;
+  delete _snxtroAc;
+  delete _snxtroSol;
   delete _v3filenames;
   for (int iRow = _staTable->rowCount()-1; iRow >=0; iRow--) {
     _staTable->removeRow(iRow);
@@ -295,6 +305,8 @@ void t_pppWidgets::readOptions() {
   _logPath    ->setText(settings.value(_logPath    ->objectName()).toString());
   _nmeaPath   ->setText(settings.value(_nmeaPath   ->objectName()).toString());
   _snxtroPath ->setText(settings.value(_snxtroPath ->objectName()).toString());
+  _snxtroAc   ->setText(settings.value(_snxtroAc   ->objectName()).toString());
+  _snxtroSol  ->setText(settings.value(_snxtroSol  ->objectName()).toString());
 
   if (!settings.value(_sigmaC1->objectName()).toString().isEmpty()) {
     _sigmaC1->setText(settings.value(_sigmaC1->objectName()).toString());
@@ -395,8 +407,10 @@ void t_pppWidgets::saveOptions() {
   settings.setValue(_nmeaPath    ->objectName(), _nmeaPath    ->text());
   settings.setValue(_snxtroPath  ->objectName(), _snxtroPath  ->text());
   settings.setValue(_snxtroSampl ->objectName(), _snxtroSampl ->value());
-  settings.setValue(_v3filenames ->objectName(), _v3filenames ->checkState());
   settings.setValue(_snxtroIntr  ->objectName(), _snxtroIntr  ->currentText());
+  settings.setValue(_snxtroAc    ->objectName(), _snxtroAc    ->text());
+  settings.setValue(_snxtroSol   ->objectName(), _snxtroSol   ->text());
+  settings.setValue(_v3filenames ->objectName(), _v3filenames ->checkState());
   settings.setValue(_lcGPS       ->objectName(), _lcGPS       ->currentText());
   settings.setValue(_lcGLONASS   ->objectName(), _lcGLONASS   ->currentText());
   settings.setValue(_lcGalileo   ->objectName(), _lcGalileo   ->currentText());
@@ -466,10 +480,14 @@ void t_pppWidgets::slotEnableWidgets() {
   if ( _snxtroPath->text() != "" && !allDisabled) {
     _snxtroSampl->setEnabled(true);
     _snxtroIntr ->setEnabled(true);
+    _snxtroAc   ->setEnabled(true);
+    _snxtroSol  ->setEnabled(true);
   }
   else {
     _snxtroSampl->setEnabled(false);
     _snxtroIntr ->setEnabled(false);
+    _snxtroAc   ->setEnabled(false);
+    _snxtroSol  ->setEnabled(false);
   }
 
   _dataSource->setEnabled(true);
@@ -537,15 +555,23 @@ void t_pppWidgets::slotPPPTextChanged(){
   if (sender() == 0 || sender() == _snxtroPath) {
     if ( _snxtroPath->text() != "" ) {
       _snxtroSampl->setEnabled(true);
-      _snxtroIntr->setEnabled(true);
+      _snxtroIntr ->setEnabled(true);
+      _snxtroAc   ->setEnabled(true);
+      _snxtroSol  ->setEnabled(true);
       _snxtroSampl->setPalette(paletteWhite);
-      _snxtroIntr->setPalette(paletteWhite);
+      _snxtroIntr ->setPalette(paletteWhite);
+      _snxtroAc   ->setPalette(paletteWhite);
+      _snxtroSol  ->setPalette(paletteWhite);
     }
     else {
     _snxtroSampl->setEnabled(false);
-    _snxtroIntr->setEnabled(false);
+    _snxtroIntr ->setEnabled(false);
+    _snxtroAc   ->setEnabled(false);
+    _snxtroSol  ->setEnabled(false);
     _snxtroSampl->setPalette(paletteGray);
-    _snxtroIntr->setPalette(paletteGray);
+    _snxtroIntr ->setPalette(paletteGray);
+    _snxtroAc   ->setPalette(paletteGray);
+    _snxtroSol  ->setPalette(paletteGray);
     }
   }
 }

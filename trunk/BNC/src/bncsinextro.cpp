@@ -83,35 +83,66 @@ void bncSinexTro::writeHeader(const QDateTime& datTim) {
     intr *= 86400;
   }
 
-
-  QString numberOfEpochs = QString("%1").arg(1, 5, 10, QLatin1Char('0'));
-  _out << "%=TRO 2.00 BNC " << creationTime.toStdString() << " BNC "
-       << startTime.toStdString() << " " << endTime.toStdString() << " P "
+  QString numberOfEpochs = QString("%1").arg(intr * _sampl, 5, 10, QLatin1Char('0'));
+  QString ac   = QString("%1").arg(settings.value("PPP/snxtroAc").toString(),3,QLatin1Char('0'));
+  QString sol  = QString("%1").arg(settings.value("PPP/snxtroSol").toString(),4,QLatin1Char('0'));
+  QString corr = settings.value("PPP/corrMount").toString();
+  _out << "%=TRO 2.00 " << ac.toStdString() << " "
+       << creationTime.toStdString()   << " "   << ac.toStdString() << " "
+       << startTime.toStdString()      << " "   << endTime.toStdString() << " P "
        << numberOfEpochs.toStdString() << " 0 " << " T "  << endl;
-
 
   _out << "+FILE/REFERENCE" << endl;
   _out << " DESCRIPTION        " << "BNC generated SINEX TRO file" << endl;
   _out << " OUTPUT             " << "Total Troposphere Zenith Path Delay Product" << endl;
-  _out << " SOFTWARE           " << BNCPGMNAME <<  endl;
-  _out << " INPUT              " << "Orbit and Clock information used from BRDC and RTCM-SSR streams" << endl;
+  _out << " SOFTWARE           " <<  BNCPGMNAME <<  endl;
+  _out << " INPUT              " << "Additional Orbit and Clock information from Ntrip stream "
+                                 << corr.toStdString() <<endl;
   _out << "-FILE/REFERENCE" << endl << endl;
 
-
+  double recEll[3];
+  int lonD, lonM,  latD, latM;
+  double lonS, latS;
+  xyz2ell(_opt->_xyzAprRover.data(), recEll);
+  recEll[0] = recEll[0] * 180.0 / M_PI;
+  recEll[1] = recEll[1] * 180.0 / M_PI;
+  deg2DMS(recEll[1], lonD, lonM, lonS);
+  deg2DMS(recEll[0], latD, latM, latS);
+  QString country;
+  QListIterator<QString> it(settings.value("mountPoints").toStringList());
+  while (it.hasNext()) {
+    QStringList hlp = it.next().split(" ");
+    if (hlp.size() < 7)
+      continue;
+    if (hlp.join(" ").indexOf(QString::fromStdString(_opt->_roverName), 0) != -1) {
+      country = hlp[2];
+    }
+  }
   _out << "+SITE/ID" << endl;
+  _out << "*CODE PT DOMES____ T _STATION DESCRIPTION___ APPROX_LON_ APPROX_LAT_ _APP_H_" << endl;
+  _out << " " << _opt->_roverName.substr(0,4) << "  A           P "
+       << country.toStdString() << "                   "
+       << QString(" %1").arg(lonD, 3, 10, QLatin1Char(' ')).toStdString()
+       << QString(" %1").arg(lonM, 2, 10, QLatin1Char(' ')).toStdString()
+       << QString(" %1").arg(lonS, 4, 'f', 1, QLatin1Char(' ')).toStdString()
+       << QString(" %1").arg(latD, 3, 10, QLatin1Char(' ')).toStdString()
+       << QString(" %1").arg(latM, 2, 10, QLatin1Char(' ')).toStdString()
+       << QString(" %1").arg(latS, 4, 'f', 1, QLatin1Char(' ')).toStdString()
+       << QString(" %1").arg(recEll[2], 7, 'f', 1, QLatin1Char(' ')).toStdString()
+       << endl;
   _out << "-SITE/ID" << endl << endl;
 
   if (!_opt->_recNameRover.empty()) {
     _out << "+SITE/RECEIVER" << endl;
     _out << "*SITE PT SOLN T DATA_START__ DATA_END____ DESCRIPTION_________ S/N__ FIRMWARE___" << endl;
-    _out << " " << _opt->_roverName.substr(0,4) << "  A    1 P "
+    _out << " " << _opt->_roverName.substr(0,4) << "  A "  <<  sol.toStdString() << " P "
          << startTime.toStdString() << " " << endTime.toStdString() << " " << _opt->_recNameRover << endl;
     _out << "-SITE/RECEIVER" << endl << endl;
   }
 
   _out << "+SITE/ANTENNA" << endl;
   _out << "*SITE PT SOLN T DATA_START__ DATA_END____ DESCRIPTION_________ S/N__" << endl;
-  _out << " " << _opt->_roverName.substr(0,4) << "  A    1 P "
+  _out << " " << _opt->_roverName.substr(0,4) << "  A "  <<  sol.toStdString() << " P "
        << startTime.toStdString() << " " << endTime.toStdString() << " " << _opt->_antNameRover << endl;
   _out << "-SITE/ANTENNA" << endl << endl;
 
@@ -165,23 +196,21 @@ void bncSinexTro::writeHeader(const QDateTime& datTim) {
   _out << "+SITE/ECCENTRICITY" << endl;
   _out << "*                                             UP______ NORTH___ EAST____" << endl;
   _out << "*SITE PT SOLN T DATA_START__ DATA_END____ AXE ARP->BENCHMARK(M)_________" << endl;
-  _out << " " << _opt->_roverName.substr(0,4) << "  A    1 P "
+  _out << " " << _opt->_roverName.substr(0,4) << "  A "  <<  sol.toStdString() << " P "
        << startTime.toStdString() << " " << endTime.toStdString() << " " << " UNE"
        << QString("%1").arg(_opt->_neuEccRover(3), 9, 'f', 4, QLatin1Char(' ')).toStdString()
        << QString("%1").arg(_opt->_neuEccRover(1), 9, 'f', 4, QLatin1Char(' ')).toStdString()
        << QString("%1").arg(_opt->_neuEccRover(2), 9, 'f', 4, QLatin1Char(' ')).toStdString() << endl;
   _out << "-SITE/ANTENNA" << endl << endl;
 
-
   _out << "+TROP/COORDINATES" << endl;
   _out << "*SITE PT SOLN T __STA_X_____ __STA_Y_____ __STA_Z_____ SYSTEM REMRK" << endl;
-  _out << " " << _opt->_roverName.substr(0,4) << "  A    1 P"
+  _out << " " << _opt->_roverName.substr(0,4) << "  A "  <<  sol.toStdString() << " P "
        << QString("%1").arg(_opt->_xyzAprRover(1), 13, 'f', 3, QLatin1Char(' ')).toStdString()
        << QString("%1").arg(_opt->_xyzAprRover(2), 13, 'f', 3, QLatin1Char(' ')).toStdString()
        << QString("%1").arg(_opt->_xyzAprRover(3), 13, 'f', 3, QLatin1Char(' ')).toStdString()
        << " ITRF08"<< endl;
   _out << "-TROP/COORDINATES"<< endl << endl;
-
 
   _out << "+TROP/DESCRIPTION" << endl;
   _out << "*KEYWORD______________________ VALUE(S)______________" << endl;
@@ -194,7 +223,6 @@ void bncSinexTro::writeHeader(const QDateTime& datTim) {
   _out << " TROP MAPPING FUNCTION         " << "Saastamoinen" << endl;
   _out << " SOLUTION_FIELDS_1             " << "TROTOT STDEV" << endl;
   _out << "-TROP/DESCRIPTION"<< endl << endl;
-
 
   _out << "+TROP/SOLUTION" << endl;
   _out << "*SITE EPOCH_______ TROTOT STDEV" << endl;
