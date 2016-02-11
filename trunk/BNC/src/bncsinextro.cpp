@@ -120,7 +120,7 @@ void bncSinexTro::writeHeader(const QDateTime& datTim) {
     }
   }
   _out << "+SITE/ID" << endl;
-  _out << "*CODE PT DOMES____ T _STATION DESCRIPTION___ APPROX_LON_ APPROX_LAT_ _APP_H_" << endl;
+  _out << "*CODE PT DOMES____ T _STATION DESCRIPTION__ APPROX_LON_ APPROX_LAT_ _APP_H_" << endl;
   _out << " " << _opt->_roverName.substr(0,4) << "  A           P "
        << country.toStdString() << "                   "
        << QString(" %1").arg(lonD, 3, 10, QLatin1Char(' ')).toStdString()
