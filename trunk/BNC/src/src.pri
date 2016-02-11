@@ -58,7 +58,6 @@ HEADERS = bnchelp.html bncgetthread.h    bncwindow.h   bnctabledlg.h  \
           RTCM3/RTCM3Decoder.h RTCM3/bits.h RTCM3/gnss.h              \
           RTCM3/RTCM3coDecoder.h RTCM3/ephEncoder.h                   \
           RTCM3/clock_and_orbit/clock_orbit_rtcm.h                    \
-          RTCM3/gnss.h RTCM3/bits.h                                   \
           rinex/rnxobsfile.h                                          \
           rinex/rnxnavfile.h       rinex/corrfile.h                   \
           rinex/reqcedit.h         rinex/reqcanalyze.h                \
