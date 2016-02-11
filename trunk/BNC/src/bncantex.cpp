@@ -110,9 +110,9 @@ QString bncAntex::pcoSinexString(const std::string& antName, t_frequency::type f
 
   t_frqMap* frqMap = map->frqMap[frqType];
 
-  return QString("%1 %2 %3").arg(frqMap->neu[2], 6, 'f', 4)
-                            .arg(frqMap->neu[0], 6, 'f', 4)
-                            .arg(frqMap->neu[1], 6, 'f', 4);
+  return QString(" %1 %2 %3").arg(frqMap->neu[2], 6, 'f', 4)
+                             .arg(frqMap->neu[0], 6, 'f', 4)
+                             .arg(frqMap->neu[1], 6, 'f', 4);
 }
 
 // Read ANTEX File

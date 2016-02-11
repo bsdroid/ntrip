@@ -96,7 +96,7 @@ void bncSinexTro::writeHeader(const QDateTime& datTim) {
   _out << " DESCRIPTION        " << "BNC generated SINEX TRO file" << endl;
   _out << " OUTPUT             " << "Total Troposphere Zenith Path Delay Product" << endl;
   _out << " SOFTWARE           " <<  BNCPGMNAME <<  endl;
-  _out << " INPUT              " << "Additional Orbit and Clock information from Ntrip stream "
+  _out << " INPUT              " << "Ntrip streams, additional Orbit and Clock information from "
                                  << corr.toStdString() <<endl;
   _out << "-FILE/REFERENCE" << endl << endl;
 
@@ -149,8 +149,8 @@ void bncSinexTro::writeHeader(const QDateTime& datTim) {
   if (_antex) {
     if (_opt->_LCsGPS.size()) {
       _out << "+SITE/GPS_PHASE_CENTER" << endl;
-      _out << "*                           UP____ NORTH_ EAST__ UP____ NORTH_ EAST__ " << endl;
-      _out << "*DESCRIPTION_________ S/N__ L1->ARP(M)__________ __L2->ARP(M)________ AZ_EL_____" << endl;
+      _out << "*                           UP____ NORTH_ EAST__ UP____ NORTH_ EAST__" << endl;
+      _out << "*DESCRIPTION_________ S/N__ L1->ARP(m)__________ L2->ARP(m)__________ AZ_EL____" << endl;
       _out << QString(" %1").arg(_opt->_antNameRover.c_str(), 20,QLatin1Char(' ')).toStdString()
            <<  "      "
            << _antex->pcoSinexString(_opt->_antNameRover, t_frequency::G1).toStdString()
@@ -160,8 +160,8 @@ void bncSinexTro::writeHeader(const QDateTime& datTim) {
     }
     if (_opt->_LCsGLONASS.size()) {
       _out << "+SITE/GLONASS_PHASE_CENTER" << endl;
-      _out << "*                           UP____ NORTH_ EAST__ UP____ NORTH_ EAST__ " << endl;
-      _out << "*DESCRIPTION_________ S/N__ L1->ARP(M)__________ __L2->ARP(M)________ AZ_EL_____" << endl;
+      _out << "*                           UP____ NORTH_ EAST__ UP____ NORTH_ EAST__" << endl;
+      _out << "*DESCRIPTION_________ S/N__ L1->ARP(m)__________ L2->ARP(m)__________ AZ_EL____" << endl;
       _out << QString(" %1").arg(_opt->_antNameRover.c_str(), 20,QLatin1Char(' ')).toStdString()
            <<  "      "
            << _antex->pcoSinexString(_opt->_antNameRover, t_frequency::R1).toStdString()
@@ -171,8 +171,8 @@ void bncSinexTro::writeHeader(const QDateTime& datTim) {
     }
     if (_opt->_LCsGalileo.size()) {
       _out << "+SITE/GALILEO_PHASE_CENTER" << endl;
-      _out << "*                           UP____ NORTH_ EAST__ UP____ NORTH_ EAST__ " << endl;
-      _out << "*DESCRIPTION_________ S/N__ L1->ARP(M)__________ __L2->ARP(M)________ AZ_EL_____" << endl;
+      _out << "*                           UP____ NORTH_ EAST__ UP____ NORTH_ EAST__" << endl;
+      _out << "*DESCRIPTION_________ S/N__ L1->ARP(m)__________ L2->ARP(m)__________ AZ_EL____" << endl;
       _out << QString(" %1").arg(_opt->_antNameRover.c_str(), 20,QLatin1Char(' ')).toStdString()
            <<  "      "
            << _antex->pcoSinexString(_opt->_antNameRover, t_frequency::E1).toStdString()
@@ -182,8 +182,8 @@ void bncSinexTro::writeHeader(const QDateTime& datTim) {
     }
     if (_opt->_LCsBDS.size()) {
       _out << "+SITE/BEIDOU_PHASE_CENTER" << endl;
-      _out << "*                           UP____ NORTH_ EAST__ UP____ NORTH_ EAST__ " << endl;
-      _out << "*DESCRIPTION_________ S/N__ L1->ARP(M)__________ __L2->ARP(M)________ AZ_EL_____" << endl;
+      _out << "*                           UP____ NORTH_ EAST__ UP____ NORTH_ EAST__" << endl;
+      _out << "*DESCRIPTION_________ S/N__ L1->ARP(m)__________ L2->ARP(m)__________ AZ_EL____" << endl;
       _out << QString(" %1").arg(_opt->_antNameRover.c_str(), 20,QLatin1Char(' ')).toStdString()
            <<  "      "
            << _antex->pcoSinexString(_opt->_antNameRover, t_frequency::C2).toStdString()
@@ -197,18 +197,18 @@ void bncSinexTro::writeHeader(const QDateTime& datTim) {
   _out << "*                                             UP______ NORTH___ EAST____" << endl;
   _out << "*SITE PT SOLN T DATA_START__ DATA_END____ AXE ARP->BENCHMARK(M)_________" << endl;
   _out << " " << _opt->_roverName.substr(0,4) << "  A "  <<  sol.toStdString() << " P "
-       << startTime.toStdString() << " " << endTime.toStdString() << " " << " UNE"
+       << startTime.toStdString() << " " << endTime.toStdString() << " UNE"
        << QString("%1").arg(_opt->_neuEccRover(3), 9, 'f', 4, QLatin1Char(' ')).toStdString()
        << QString("%1").arg(_opt->_neuEccRover(1), 9, 'f', 4, QLatin1Char(' ')).toStdString()
        << QString("%1").arg(_opt->_neuEccRover(2), 9, 'f', 4, QLatin1Char(' ')).toStdString() << endl;
   _out << "-SITE/ANTENNA" << endl << endl;
 
   _out << "+TROP/COORDINATES" << endl;
-  _out << "*SITE PT SOLN T __STA_X_____ __STA_Y_____ __STA_Z_____ SYSTEM REMRK" << endl;
-  _out << " " << _opt->_roverName.substr(0,4) << "  A "  <<  sol.toStdString() << " P "
-       << QString("%1").arg(_opt->_xyzAprRover(1), 13, 'f', 3, QLatin1Char(' ')).toStdString()
-       << QString("%1").arg(_opt->_xyzAprRover(2), 13, 'f', 3, QLatin1Char(' ')).toStdString()
-       << QString("%1").arg(_opt->_xyzAprRover(3), 13, 'f', 3, QLatin1Char(' ')).toStdString()
+  _out << "*SITE PT SOLN T STA_X_______ STA_Y_______ STA_Z_______ SYSTEM REMARK" << endl;
+  _out << " " << _opt->_roverName.substr(0,4) << "  A "  <<  sol.toStdString() << " P"
+       << QString(" %1").arg(_opt->_xyzAprRover(1), 12, 'f', 3, QLatin1Char(' ')).toStdString()
+       << QString(" %1").arg(_opt->_xyzAprRover(2), 12, 'f', 3, QLatin1Char(' ')).toStdString()
+       << QString(" %1").arg(_opt->_xyzAprRover(3), 12, 'f', 3, QLatin1Char(' ')).toStdString()
        << " ITRF08"<< endl;
   _out << "-TROP/COORDINATES"<< endl << endl;
 
