@@ -59,15 +59,10 @@ void bncSinexTro::writeHeader(const QDateTime& datTim) {
   int daysec    = int(fmod(GPSWeeks, 86400.0));
   int dayOfYear = datTim.date().dayOfYear();
   QString yy    = datTim.toString("yy");
-
   QString creationTime = QString("%1:%2:%3").arg(yy)
                                             .arg(dayOfYear, 3, 10, QLatin1Char('0'))
                                             .arg(daysec   , 5, 10, QLatin1Char('0'));
   QString startTime = creationTime;
-  QString endTime = QString("%1:%2:%3").arg(yy)
-                                       .arg(dayOfYear, 3, 10, QLatin1Char('0'))
-                                       .arg(84600    , 5, 10);
-
   QString intStr = settings.value("PPP/snxtroIntr").toString();
   int intr, indHlp = 0;
   if      ((indHlp = intStr.indexOf("min")) != -1) {
@@ -82,15 +77,21 @@ void bncSinexTro::writeHeader(const QDateTime& datTim) {
     intr = intStr.left(indHlp-1).toInt();
     intr *= 86400;
   }
-
-  QString numberOfEpochs = QString("%1").arg(intr * _sampl, 5, 10, QLatin1Char('0'));
+  int nominalStartSec = daysec - (int(fmod(double(daysec), double(intr))));
+  int nominalEndSec = nominalStartSec + intr - _sampl;
+  QString endTime = QString("%1:%2:%3").arg(yy)
+                                       .arg(dayOfYear     , 3, 10, QLatin1Char('0'))
+                                       .arg(nominalEndSec , 5, 10, QLatin1Char('0'));
+  int numEpochs = ((nominalEndSec - daysec) / _sampl) +1;
+  QString epo  = QString("%1").arg(numEpochs, 5, 10, QLatin1Char('0'));
   QString ac   = QString("%1").arg(settings.value("PPP/snxtroAc").toString(),3,QLatin1Char('0'));
   QString sol  = QString("%1").arg(settings.value("PPP/snxtroSol").toString(),4,QLatin1Char('0'));
   QString corr = settings.value("PPP/corrMount").toString();
+
   _out << "%=TRO 2.00 " << ac.toStdString() << " "
-       << creationTime.toStdString()   << " "   << ac.toStdString() << " "
-       << startTime.toStdString()      << " "   << endTime.toStdString() << " P "
-       << numberOfEpochs.toStdString() << " 0 " << " T "  << endl;
+       << creationTime.toStdString() << " " << ac.toStdString() << " "
+       << startTime.toStdString()    << " " << endTime.toStdString() << " P "
+       << epo.toStdString() << " 0 " << " T " << endl;
 
   _out << "+FILE/REFERENCE" << endl;
   _out << " DESCRIPTION        " << "BNC generated SINEX TRO file" << endl;
