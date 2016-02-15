@@ -1789,7 +1789,7 @@ void bncRtnetUploadCaster::decodeRtnetStream(char* buffer, int bufLen) {
               if (ii >= CLOCKORBIT_NUMBIAS)
                 break;
               phasebiasSat->NumberOfPhaseBiases += 1;
-              phasebiasSat->Biases[ii].Type = CODETYPE_BDS_B2_Q;
+              phasebiasSat->Biases[ii].Type = CODETYPE_BDS_B3_Q;
               phasebiasSat->Biases[ii].Bias = pbSig.bias;
               phasebiasSat->Biases[ii].SignalIntegerIndicator = pbSig.intInd;
               phasebiasSat->Biases[ii].SignalsWideLaneIntegerIndicator =
@@ -1802,7 +1802,7 @@ void bncRtnetUploadCaster::decodeRtnetStream(char* buffer, int bufLen) {
               if (ii >= CLOCKORBIT_NUMBIAS)
                 break;
               phasebiasSat->NumberOfPhaseBiases += 1;
-              phasebiasSat->Biases[ii].Type = CODETYPE_BDS_B2_I;
+              phasebiasSat->Biases[ii].Type = CODETYPE_BDS_B3_I;
               phasebiasSat->Biases[ii].Bias = pbSig.bias;
               phasebiasSat->Biases[ii].SignalIntegerIndicator = pbSig.intInd;
               phasebiasSat->Biases[ii].SignalsWideLaneIntegerIndicator =
@@ -1815,7 +1815,7 @@ void bncRtnetUploadCaster::decodeRtnetStream(char* buffer, int bufLen) {
               if (ii >= CLOCKORBIT_NUMBIAS)
                 break;
               phasebiasSat->NumberOfPhaseBiases += 1;
-              phasebiasSat->Biases[ii].Type = CODETYPE_BDS_B2_IQ;
+              phasebiasSat->Biases[ii].Type = CODETYPE_BDS_B3_IQ;
               phasebiasSat->Biases[ii].Bias = pbSig.bias;
               phasebiasSat->Biases[ii].SignalIntegerIndicator = pbSig.intInd;
               phasebiasSat->Biases[ii].SignalsWideLaneIntegerIndicator =
@@ -1828,7 +1828,7 @@ void bncRtnetUploadCaster::decodeRtnetStream(char* buffer, int bufLen) {
               if (ii >= CLOCKORBIT_NUMBIAS)
                 break;
               phasebiasSat->NumberOfPhaseBiases += 1;
-              phasebiasSat->Biases[ii].Type = CODETYPE_BDS_B3_Q;
+              phasebiasSat->Biases[ii].Type = CODETYPE_BDS_B2_Q;
               phasebiasSat->Biases[ii].Bias = pbSig.bias;
               phasebiasSat->Biases[ii].SignalIntegerIndicator = pbSig.intInd;
               phasebiasSat->Biases[ii].SignalsWideLaneIntegerIndicator =
@@ -1841,7 +1841,7 @@ void bncRtnetUploadCaster::decodeRtnetStream(char* buffer, int bufLen) {
               if (ii >= CLOCKORBIT_NUMBIAS)
                 break;
               phasebiasSat->NumberOfPhaseBiases += 1;
-              phasebiasSat->Biases[ii].Type = CODETYPE_BDS_B3_I;
+              phasebiasSat->Biases[ii].Type = CODETYPE_BDS_B2_I;
               phasebiasSat->Biases[ii].Bias = pbSig.bias;
               phasebiasSat->Biases[ii].SignalIntegerIndicator = pbSig.intInd;
               phasebiasSat->Biases[ii].SignalsWideLaneIntegerIndicator =
@@ -1854,7 +1854,7 @@ void bncRtnetUploadCaster::decodeRtnetStream(char* buffer, int bufLen) {
               if (ii >= CLOCKORBIT_NUMBIAS)
                 break;
               phasebiasSat->NumberOfPhaseBiases += 1;
-              phasebiasSat->Biases[ii].Type = CODETYPE_BDS_B3_IQ;
+              phasebiasSat->Biases[ii].Type = CODETYPE_BDS_B2_IQ;
               phasebiasSat->Biases[ii].Bias = pbSig.bias;
               phasebiasSat->Biases[ii].SignalIntegerIndicator = pbSig.intInd;
               phasebiasSat->Biases[ii].SignalsWideLaneIntegerIndicator =
