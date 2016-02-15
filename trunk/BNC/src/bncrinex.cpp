@@ -582,21 +582,25 @@ string bncRinex::asciiSatLine(const t_satObs& obs) {
   for (unsigned ii = 0; ii < obs._obs.size(); ii++) {
     const t_frqObs* frqObs = obs._obs[ii];
     if (frqObs->_codeValid) {
-      str << " C" << frqObs->_rnxType2ch << ' '
-          << setw(14) << setprecision(3) << frqObs->_code;
+      str << ' '
+          << left  << setw(3)  << "C" + frqObs->_rnxType2ch << ' '
+          << right << setw(14) << setprecision(3) << frqObs->_code;
     }
     if (frqObs->_phaseValid) {
-      str << " L" << frqObs->_rnxType2ch << ' '
-          << setw(14) << setprecision(3) << frqObs->_phase
-          << ' ' << setw(3)  << frqObs->_slipCounter;
+      str << ' '
+          << left  << setw(3) << "L" + frqObs->_rnxType2ch << ' '
+          << right << setw(14) << setprecision(3) << frqObs->_phase << ' '
+          << right << setw(4)                     << frqObs->_slipCounter;
     }
     if (frqObs->_dopplerValid) {
-      str << " D" << frqObs->_rnxType2ch << ' '
-          << setw(14) << setprecision(3) << frqObs->_doppler;
+      str << ' '
+          << left  << setw(3) << "D" + frqObs->_rnxType2ch << ' '
+          << right << setw(14) << setprecision(3) << frqObs->_doppler;
     }
     if (frqObs->_snrValid) {
-      str << " S" << frqObs->_rnxType2ch << ' '
-          << setw(8) << setprecision(3) << frqObs->_snr;
+      str << ' '
+          << left  << setw(3) << "S" + frqObs->_rnxType2ch << ' '
+          << right << setw(8) << setprecision(3) << frqObs->_snr;
     }
   }
 
