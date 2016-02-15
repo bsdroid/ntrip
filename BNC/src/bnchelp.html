@@ -2500,7 +2500,7 @@ Each epoch in the output begins with a line containing the GPS Week Number and t
 </p>
 
 <p>
-The following table describes BNC's synchronized output of GNSS observations via IP port. It consists of 'Epoch Records' and 'Observation Records'. Each Epoch Record is followed by one or more Observation Records. The Observation Record is repeated for each satellite having been observed in the current epoch. The length of an Observation Record is given by the number of observation types for this satellite. Secifications for code, phase, doppler and signal strenght follow definitions presented in the RINEX Version 3.03 documentation.
+The following table describes the format of BNC's synchronized output of GNSS observations via IP port which consists of 'Epoch Records' and 'Observation Records'. Each Epoch Record is followed by one or more Observation Records. The Observation Record is repeated for each satellite having been observed in the current epoch. The length of an Observation Record is given by the number of observation types for this satellite. Specifications for satellite number, code, phase, doppler and signal strenght information follow definitions presented in the RINEX Version 3.03 documentation.
 </p>
 
 <p><u>Table 2:</u> Contents and format of synchronized output of observations via IP port for feeding a GNSS engine</p>
@@ -2624,7 +2624,7 @@ The following figure shows the screenshot of a BNC configuration where a number 
 
 <p><h4>2.9.1 <a name="syncport">Port - optional</h4></p>
 <p>
-BNC can produce synchronized observations in ASCII format on your local host (IP 127.0.0.1) through an IP 'Port'. Synchronized means that BNC collects all observation data for a specific epoch, which become available within a certain number of seconds (see 'Wait for Full Obs Epoch' option). It then - epoch by epoch - outputs whatever has been received. The output comes block-wise per stream. Specify an IP port number here to activate this function. The default is an empty option field, meaning that no binary synchronized output is generated.</p>
+BNC can produce synchronized observations in ASCII format on your local host (IP 127.0.0.1) through an IP 'Port'. Synchronized means that BNC collects all observation data for a specific epoch, which become available within a certain number of seconds (see 'Wait for Full Obs Epoch' option). It then - epoch by epoch - outputs whatever has been received. The output comes block-wise per stream. Specify an IP port number here to activate this function. The default is an empty option field, meaning that no synchronized output is generated.</p>
 </p>
 
 <p><h4>2.9.2 <a name="syncwait">Wait for Full Obs Epoch - mandatory if 'Port' is set</h4></p>
