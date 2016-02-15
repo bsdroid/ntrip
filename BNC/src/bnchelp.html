@@ -274,6 +274,7 @@ Weber, G., L. Mervart, A. St&uuml;rze, A. R&uuml;lke and D. St&ouml;cker (2016):
 <table>
 <tr><td><b>Tab.&nbsp;&nbsp;</b></td><td><b>Title</b></td><td><b>Chapter</b></td></tr>
 <tr><td>1</td><td>Status of RTCM Version 3 message implementations in BNC supporting various GNSS systems</td><td>1.2</td></tr>
+<tr><td>2</td><td>Contents and format of synchronized output of observations via IP port for feeding a GNSS engine</td><td>2.9</td></tr>
 </table>
 </p>
 
@@ -2495,7 +2496,54 @@ The source code for BNC comes with an example Perl script 'test_tcpip_client.pl'
 BNC can produce synchronized or unsynchronized observations epoch by epoch from all stations and satellites to feed a real-time GNSS network engine. Observations can be streamed out through an IP port and/or saved in a local file. The output is always in plain ASCII format and sorted per incoming stream.
 </p>
 <p>
-Each epoch in the output begins with a line containing the GPS Week Number and the seconds within the GPS Week. Following lines begin with the mountpoint string of the stream which provides the observations followed by a satellite ID. Observation types are specified by the 3-character observation code defined in RINEX Version 3. In case of phase observations a Slip Count is added which is put to '-1' if it is not set. The end of an epoch is indicated by an empty line.
+Each epoch in the output begins with a line containing the GPS Week Number and the seconds within the GPS Week. Following lines begin with the mountpoint string of the stream which provides the observations followed by a satellite ID. Observation types are specified by the 3-character observation code defined in RINEX Version 3. In case of phase observations, a Slip Count is added which is put to '-1' if it is not set. The end of an epoch is indicated by an empty line. 
+</p>
+
+<p>
+The following table describes BNC's synchronized output of GNSS observations via IP port. It consists of 'Epoch Records' and 'Observation Records'. Each Epoch Record is followed by one or more Observation Records. The Observation Record is repeated for each satellite having been observed in the current epoch. The length of an Observation Record is given by the number of observation types for this satellite. Secifications for code, phase, doppler and signal strenght follow definitions presented in the RINEX Version 3.03 documentation.
+</p>
+
+<p><u>Table 2:</u> Contents and format of synchronized output of observations via IP port for feeding a GNSS engine</p>
+<p>
+<table> 
+<tr><td></td><td><b>Example</b></td><td><b>Format</b></td></tr>
+
+<tr><td><b>Epoch Record</b></td><td></td><td></td></tr>
+<tr><td>Record Identifier</td><td>></td><td>A1</td></tr>
+<tr><td>GPS Week Number</td><td>1850</td><td>1X,I4</td></tr>
+<tr><td>GPS Seconds of Week</td><td>120556.0000000 &nbsp; &nbsp;</td><td>1X,F14.7</td></tr>
+
+<tr><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>
+<tr><td><b>Observation Record</b></td><td></td><td></td></tr>
+<tr><td>Mountpoint</td><td>WTZR0</td><td>A</td></tr>
+<tr><td>Satellite Number</td><td>G01</td><td>1X,A3</td></tr>
+
+<tr><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>
+
+<tr><td><u>Pseudo-Range Data</u></td><td></td><td></td></tr>
+<tr><td>Observation Code</td><td><b>C</b>1C</td><td>1X,A3</td></tr>
+<tr><td>Pseudo-Range Observation</td><td>25394034.112</td><td>1X,F14.3</td></tr>
+
+<tr><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>
+
+<tr><td><u>Carrier Phase Data</u></td><td></td><td></td></tr>
+<tr><td>Observation Code</td><td><b>L</b>1C</td><td>1X,A3</td></tr>
+<tr><td>Carrier Phase Observation</td><td>133446552.870</td><td>1X,F14.3</td></tr>
+<tr><td>Slip Count</td><td>127</td><td>1X,I4</td></tr>
+
+<tr><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>
+
+<tr><td><u>Doppler Data</u></td><td></td><td></td></tr>
+<tr><td>Observation Code</td><td><b>D</b>1C</td><td>1X,A3</td></tr>
+<tr><td>Doppler Observation</td><td>-87.977</td><td>1X,F14.3</td></tr>
+
+<tr><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>
+
+<tr><td><u>Signal Strength</u></td><td></td><td></td></tr>
+<tr><td>Observation Code</td><td><b>S</b>2W</td><td>1X,A3</td></tr>
+<tr><td>Observed Signal Strength &nbsp; &nbsp;</td><td>34.750</td><td>1X,F8.3</td></tr>
+
+</table>
 </p>
 
 <p>Note on 'Slip Count':<br>
@@ -2503,15 +2551,16 @@ It is the current understanding of BNC's authors that different Slip Counts coul
 </p>
 
 <p>
-The following is an example for file and IP port output, which presents observations from GPS, GLONASS, Galileo, BDS (BeiDou), QZSS, and SBAS satellites as collected through streams WTZR0, CUT07, and COCO0:
-<pre>
+The following is an example for file and IP port output, which presents observations from GPS, GLONASS, Galileo, BDS (BeiDou), QZSS, and SBAS satellites as collected through streams WTZR0, CUT07, and COCO0: <pre>
 > 1850 120556.0000000
 WTZR0 G01  C1C   25394034.112 L1C  133446552.870 127 S1C   43.000 C2W   25394040.832 L2W  103984354.397 127 S2W   34.750
 WTZR0 G12  C1C   21452585.278 L1C  112734165.968 127 S1C   50.500 C2W   21452584.578 L2W   87844835.675 127 S2W   46.250
 WTZR0 G13  C1C   24061255.720 L1C  126442693.941 127 S1C   45.750 C2W   24061259.860 L2W   98526745.844 127 S2W   35.500
 ...
 WTZR0 G28  C1C   25200320.952 L1C  132428507.619 127 S1C   43.500 C2W   25200323.952 L2W  103191035.510 127 S2W   35.000
-WTZR0 R01  C1C   21380903.420 L1C  114293200.377 127 S1C   48.750 C2P   21380907.340 L2P   88894741.570 127 S2P   41.500
+20  C1C   38780509.982 L1C  203793007.659 127 S1C   43.000
+FFMJ1 1884 116910.0000000 S23  C1C   38755689.362 L1C  203662453.796 127 S1C   48.000
+FFMJ1 1884 116910.0000000 S36  C1C   38415048.424 L1C  201872432.186 127 S1C   47.000
 WTZR0 R02  C1C   22644814.432 L1C  120837082.440 127 S1C   46.500 C2P   22644817.592 L2P   93984421.793 127 S2P   42.500
 WTZR0 R08  C1C   23068202.108 L1C  123529160.309 127 S1C   46.500 C2P   23068204.988 L2P   96078225.806 127 S2P   41.750
 ...
@@ -2520,7 +2569,9 @@ CUT07 G02  C1C   23272399.734 L1C  122297070.388 597 D1C        -87.977 S1C   42
 CUT07 G03  C1C   24110497.680 L1C  126701879.242 659 D1C      -3056.984 S1C   37.875 C2W   24110505.621 L2W   98728694.271 659 S2W   21.688 C2X   24110505.926 L2X   98728386.267 659 S2X   40.312 C5X   24110510.094 L5X   94614774.123 659 S5X   45.312
 CUT07 G05  C1C   24944957.625 L1C  131087212.915 520 D1C       3895.703 S1C   37.625 C2W   24944962.168 L2W  102145324.192 520 S2W   20.875 C2X   24944962.004 L2X  102145177.172 520 S2X   36.125
 ...
-CUT07 G30  C1C   20928146.555 L1C  109978415.517 606 D1C       2025.395 S1C   54.000 C2W   20928151.566 L2W   85697602.266 606 S2W   43.188 C2X   20928151.930 L2X   85697012.264 606 S2X   49.875 C5X   20928155.511 L5X   82126237.098 606 S5X   55.812
+20  C1C   38780509.982 L1C  203793007.659 127 S1C   43.000
+FFMJ1 1884 116910.0000000 S23  C1C   38755689.362 L1C  203662453.796 127 S1C   48.000
+FFMJ1 1884 116910.0000000 S36  C1C   38415048.424 L1C  201872432.186 127 S1C   47.000
 CUT07 R04  C1C   22160327.953 L1C  118666825.671 652 D1C      -2522.773 S1C   46.375 C1P   22160327.797 L1P  118667617.662 652 S1P   45.188 C2C   22160332.254 L2C   92297583.036 652 S2C   43.625 C2P   22160332.567 L2P   92297422.037 652 S2P   42.312
 CUT07 R05  C1C   19447023.836 L1C  103954847.683 632 D1C        379.031 S1C   48.500 C1P   19447023.914 L1P  103954847.676 632 S1P   47.000 C2C   19447027.547 L2C   80853787.461 632 S2C   50.500 C2P   19447028.449 L2P   80853787.472 632 S2P   49.875
 CUT07 R06  C1C   21207223.649 L1C  113165770.921 587 D1C       3560.348 S1C   50.875 C1P   21207223.375 L1P  113166378.915 587 S1P   49.125 C2C   21207227.008 L2C   88017617.177 587 S2C   46.000 C2P   21207228.262 L2P   88017377.180 587 S2P   45.500
