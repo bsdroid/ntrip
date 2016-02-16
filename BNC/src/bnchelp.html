@@ -2662,7 +2662,7 @@ Beware that the size of this file can rapidly increase depending on the number o
 BNC can produce unsynchronized observations from all configured streams in ASCII format on your local host (IP 127.0.0.1) through an IP 'Port'. Unsynchronized means that BNC immediately forwards any received observation to the port. Nevertheless, the output is produced block-wise per stream. Specify an IP port number here to activate this function. The default is an empty option field, meaning that no unsynchronized output is generated.
 </p>
 <p>
-The following is an example for unsynchronized IP port output, which presents observations from GPS and GLONASS as collected through stream WTZR0. The format for synchronized and unsynchronized output of observations is very much the same. However, unsynchrozized output does not have 'Epoch Records' and 'Observation Records'. Instead each record contains the 'GPS Week Number' and 'GPS Second of Week' time tag between the mountpoint string and the satellite number, see Table 2 for format details.
+The following is an example for unsynchronized IP port output, which presents observations from GPS and GLONASS as collected through stream WTZR0. The format for synchronized and unsynchronized output of observations is very much the same. However, unsynchronized output does not have 'Epoch Records' and 'Observation Records'. Instead each record contains the 'GPS Week Number' and 'GPS Second of Week' time tag between the mountpoint string and the satellite number, see Table 2 for format details.
 </p>
 
 <pre>
@@ -5354,38 +5354,36 @@ Configuration options which contain one or more blank characters must be enclose
 <tr><td>APC</td><td>Antenna Phase Center</td></tr>
 <tr><td>APREF</td><td>IAG Reference Frame Sub-Commission for Asia and Pacific</td></tr>
 <tr><td>ARP</td><td>Antenna Reference Point</td></tr>
-<tr><td>BKG</td><td>Bundesamt f&uuml;r Geod&auml;sie</td></tr>
+<tr><td>BKG</td><td>Bundesamt f&uuml;r Kartographie und  Geod&auml;sie</td></tr>
 <tr><td>BNC</td><td>BNK Ntrip Client</td></tr>
 <tr><td>BSW</td><td>Bernese GNSS Sofware</td></tr>
 <tr><td>CC</td><td>Combination Center</td></tr>
 <tr><td>CLI</td><td>Command Line Interface</td></tr>
-<tr><td>CNES</td><td>Centre National d'Etudes Spatiales</td></tr>
 <tr><td>CoM</td><td>Center Of Mass</td></tr>
 <tr><td>DGNSS</td><td>Differential GNSS</td></tr>
 <tr><td>DGPS-IP</td><td>Differential GPS via Internet Protocol</td></tr>
 <tr><td>DMG</td><td>Disk Image, File</td></tr>
 <tr><td>DREF91</td><td>Geodetic Datum for Germany 1991</td></tr>
-<tr><td>ECEF</td><td>Earch-Centred-Earth-Fixed</td></tr>
-<tr><td>EDGE</td><td>Enhanded Data Rates for GSM Evolution</td></tr>
+<tr><td>ECEF</td><td>Earth-Centred-Earth-Fixed</td></tr>
+<tr><td>EDGE</td><td>Enhanced Data Rates for GSM Evolution</td></tr>
 <tr><td>ETRF2000</td><td>European Terrestrial Reference Frame 2000</td></tr>
 <tr><td>EUREF</td><td>IAG Reference Frame Sub-Commission for Europe</td></tr>
 <tr><td>EoE</td><td>End of Epoch</td></tr>
 <tr><td>FKP</td><td>Fl&auml;chen-Korrektur-Parameter</td></tr>
 <tr><td>FTP</td><td>File Transfer Protocol</td></tr>
-<tr><td>FTP</td><td>File Transfer Protocol</td></tr>
 <tr><td>GDA94</td><td>Geodetic Datum Australia 1994</td></tr>
 <tr><td>GM</td><td>Google Maps</td></tr>
 <tr><td>GNSS</td><td>Global Navigation Satellite System</td></tr>
 <tr><td>GNU</td><td>GNU's Not Unix</td></tr>
-<tr><td>GPL</td><td>Gereral Public License</td></tr>
+<tr><td>GPL</td><td>General Public License</td></tr>
 <tr><td>GPRS</td><td>General Packet Radio Service</td></tr>
 <tr><td>GPSWD</td><td>GPS Week and Day</td></tr>
 <tr><td>GSM</td><td>Global System for Mobile Communications</td></tr>
 <tr><td>GUI</td><td>Graphical User Interface</td></tr>
 <tr><td>HP MSM</td><td>High Precision Multiple Signal Messages</td></tr>
 <tr><td>HR URA</td><td>High Rate User Range Accuracy</td></tr>
-<tr><td>HTTP</td><td>Hypertext Tranfer Protocol</td></tr>
-<tr><td>HTTPS</td><td>Hypertext Tranfer Protocol Secure</td></tr>
+<tr><td>HTTP</td><td>Hypertext Transfer Protocol</td></tr>
+<tr><td>HTTPS</td><td>Hypertext Transfer Protocol Secure</td></tr>
 <tr><td>IAG</td><td>International Association of Geodesy</td></tr>
 <tr><td>ICECAST</td><td>Streaming Media Server</td></tr>
 <tr><td>IGS08</td><td>IGS Reference Frame 2008</td></tr>
@@ -5393,7 +5391,6 @@ Configuration options which contain one or more blank characters must be enclose
 <tr><td>IOD</td><td>Issue of Data</td></tr>
 <tr><td>IP</td><td>Internet Protocol</td></tr>
 <tr><td>ITRF2008</td><td>International Terrestirial Reference Frame 2008</td></tr>
-<tr><td>ITRF</td><td>International Terrestrial Reference Frame</td></tr>
 <tr><td>L3</td><td>Ionosphere-Free Linear Combination Of Phase Observations</td></tr>
 <tr><td>LAN</td><td>Local Area Network</td></tr>
 <tr><td>LC</td><td>Linea Combination</td></tr>
@@ -5402,23 +5399,23 @@ Configuration options which contain one or more blank characters must be enclose
 <tr><td>MJD</td><td>Modified Julian Date</td></tr>
 <tr><td>MSI</td><td>Microsoft Installer, File</td></tr>
 <tr><td>MSM</td><td>Multiple Signal Messages</td></tr>
-<tr><td>MW</td><td>Melbourne W&uuml;bbena</td></tr>
+<tr><td>MW</td><td>Melbourne W&uuml;bbena Linear Combination</td></tr>
 <tr><td>NAD83</td><td>North American Datum 1983</td></tr>
 <tr><td>NAREF</td><td>IAG Reference Frame Sub-Commission for North America</td></tr>
 <tr><td>NMEA</td><td>National Marine Electronics Association Format</td></tr>
-<tr><td>Ntrip</td><td>Networked Transport of RTCM vi Internet Protocol</td></tr>
+<tr><td>Ntrip</td><td>Networked Transport of RTCM via Internet Protocol</td></tr>
 <tr><td>OSM</td><td>OpenStreetMap</td></tr>
 <tr><td>OSR</td><td>Observation Space Representation</td></tr>
 <tr><td>P3</td><td>Ionosphere-Free Linear Combination Of Code Observations</td></tr>
-<tr><td>PDOP</td><td>Positional Delution Of Precision</td></tr>
+<tr><td>PDOP</td><td>Positional Dilution Of Precision</td></tr>
 <tr><td>PNG</td><td>Portable Network Graphics</td></tr>
 <tr><td>PPP</td><td>Precise Point Positioning</td></tr>
 <tr><td>Qt</td><td>Cross-Platform Application Framework</td></tr>
 <tr><td>REQC</td><td>RINEX Editing and Quality Checking</td></tr>
-<tr><td>RINEX</td><td>Reciever Independent Exchange Format</td></tr>
+<tr><td>RINEX</td><td>Receiver Independent Exchange Format</td></tr>
 <tr><td>RTCM SC-104</td><td>Radio Technical Commission for Maritime Services, Special Committee 104</td></tr>
 <tr><td>RTK</td><td>Real Time Kinematic</td></tr>
-<tr><td>RTKPLOT</td><td>View and Plot Positioning Solutions, Part of RTKLIB</td></tr>
+<tr><td>RTKPLOT</td><td>View and Plot Positioning Solutions Software, Part of RTKLIB</td></tr>
 <tr><td>RTNET</td><td>Real-Time Network Format</td></tr>
 <tr><td>RTP</td><td>Real-Time Transport Protocol</td></tr>
 <tr><td>RTSP</td><td>Real-Time Streaming Protocol</td></tr>
