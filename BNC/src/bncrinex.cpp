@@ -577,7 +577,7 @@ string bncRinex::asciiSatLine(const t_satObs& obs) {
   ostringstream str;
   str.setf(ios::showpoint | ios::fixed);
 
-  str << obs._prn.toString() << ' ';
+  str << obs._prn.toString();
 
   for (unsigned ii = 0; ii < obs._obs.size(); ii++) {
     const t_frqObs* frqObs = obs._obs[ii];
