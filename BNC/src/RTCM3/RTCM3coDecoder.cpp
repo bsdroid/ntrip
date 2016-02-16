@@ -754,9 +754,9 @@ string RTCM3coDecoder::codeTypeToRnxType(char system, CodeType type) const {
   }
   else if (system == 'C') {
     switch (type) {
-    case CODETYPE_BDS_B1_I:         return "1I";
-    case CODETYPE_BDS_B1_Q:         return "1Q";
-    case CODETYPE_BDS_B1_IQ:        return "1X";
+    case CODETYPE_BDS_B1_I:         return "2I";
+    case CODETYPE_BDS_B1_Q:         return "2Q";
+    case CODETYPE_BDS_B1_IQ:        return "2X";
     case CODETYPE_BDS_B2_I:         return "7I";
     case CODETYPE_BDS_B2_Q:         return "7Q";
     case CODETYPE_BDS_B2_IQ:        return "7X";
