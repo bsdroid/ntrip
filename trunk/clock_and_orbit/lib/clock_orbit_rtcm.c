@@ -586,7 +586,7 @@ int moremessagesfollow, char *buffer, size_t size)
       T_SSR_SOLUTION_ID(b->SSRSolutionID)
       T_DISPERSIVE_BIAS_INDICATOR(b->DispersiveBiasConsistencyIndicator ? 1 : 0)
       T_MW_CONSISTENCY_INDICATOR(b->MWConsistencyIndicator ? 1 : 0)
-      T_NO_OF_SATELLITES(b->NumberOfSat[CLOCKORBIT_SATGPS])
+      T_NO_OF_SATELLITES(b->NumberOfSat[s])
       for(i = satoffset[s]; i < satoffset[s]+b->NumberOfSat[s]; ++i)
       {
         switch(s)
@@ -602,7 +602,7 @@ int moremessagesfollow, char *buffer, size_t size)
           T_GLONASS_SATELLITE_ID(b->Sat[i].ID)
           break;
         }
-        T_NO_OF_CODE_BIASES(b->Sat[i].NumberOfPhaseBiases)
+        T_NO_OF_PHASE_BIASES(b->Sat[i].NumberOfPhaseBiases)
         T_YAW_ANGLE(b->Sat[i].YawAngle)
         T_YAW_RATE(b->Sat[i].YawRate)
         for(j = 0; j < b->Sat[i].NumberOfPhaseBiases; ++j)
