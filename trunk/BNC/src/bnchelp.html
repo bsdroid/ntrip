@@ -274,7 +274,7 @@ Weber, G., L. Mervart, A. St&uuml;rze, A. R&uuml;lke and D. St&ouml;cker (2016):
 <table>
 <tr><td><b>Tab.&nbsp;&nbsp;</b></td><td><b>Title</b></td><td><b>Chapter</b></td></tr>
 <tr><td>1</td><td>Status of RTCM Version 3 message implementations in BNC supporting various GNSS systems</td><td>1.2</td></tr>
-<tr><td>2</td><td>Contents and format of synchronized output of observations via IP port for feeding a GNSS engine</td><td>2.9</td></tr>
+<tr><td>2</td><td>Contents and format of synchronized output of observations feeding a GNSS engine</td><td>2.9</td></tr>
 </table>
 </p>
 
@@ -2492,18 +2492,20 @@ The source code for BNC comes with an example Perl script 'test_tcpip_client.pl'
 <p><u>Figure 17:</u> Example for pulling, saving and output of Broadcast Corrections using BNC</p>
 
 <p><h4>2.9 <a name="syncout">Feed Engine</h4></p>
+
 <p>
-BNC can produce synchronized or unsynchronized observations epoch by epoch from all stations and satellites to feed a real-time GNSS network engine. Observations can be streamed out through an IP port and/or saved in a local file. The output is always in plain ASCII format and sorted per incoming stream.
-</p>
-<p>
-Each epoch in the output begins with a line containing the GPS Week Number and the seconds within the GPS Week. Following lines begin with the mountpoint string of the stream which provides the observations followed by a satellite ID. Observation types are specified by the 3-character observation code defined in RINEX Version 3. In case of phase observations, a Slip Count is added which is put to '-1' if it is not set. The end of an epoch is indicated by an empty line. 
+BNC can produce synchronized or unsynchronized observations epoch by epoch from all stations and satellites to feed a real-time GNSS network engine. Observations can be streamed out through an IP port and/or saved in a local file. The output is always in the same plain ASCII format and sorted per incoming stream.
 </p>
 
 <p>
-The following table describes the format of BNC's synchronized output of GNSS observations via IP port which consists of 'Epoch Records' and 'Observation Records'. Each Epoch Record is followed by one or more Observation Records. The Observation Record is repeated for each satellite having been observed in the current epoch. The length of an Observation Record is given by the number of observation types for this satellite. Specifications for satellite number, code, phase, doppler and signal strenght information follow definitions presented in the RINEX Version 3.03 documentation.
+Each epoch in the synchronized output begins with a line containing the GPS Week Number and the seconds within the GPS Week. Following lines begin with the mountpoint string of the stream which provides the observations followed by a satellite number. Specifications for satellite number, code, phase, doppler and signal strength data follow definitions presented in the RINEX Version 3 documentation. In case of phase observations a Slip Count is added which is put to '-1' if it is not set. The end of an epoch is indicated by an empty line.
 </p>
 
-<p><u>Table 2:</u> Contents and format of synchronized output of observations via IP port for feeding a GNSS engine</p>
+<p>
+The following table describes the format of BNC's synchronized output of GNSS observations which consists of 'Epoch Records' and 'Observation Records'. Each Epoch Record is followed by one or more Observation Records. The Observation Record is repeated for each satellite having been observed in the current epoch. The length of an Observation Record is given by the number of observation types for this satellite.
+</p>
+
+<p><u>Table 2:</u> Contents and format of synchronized output of observations feeding a GNSS engine</p>
 <p>
 <table> 
 <tr><td></td><td><b>Example</b></td><td><b>Format</b></td></tr>
