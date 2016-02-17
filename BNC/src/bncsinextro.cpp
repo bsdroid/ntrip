@@ -84,8 +84,8 @@ void bncSinexTro::writeHeader(const QDateTime& datTim) {
                                        .arg(nominalEndSec , 5, 10, QLatin1Char('0'));
   int numEpochs = ((nominalEndSec - daysec) / _sampl) +1;
   QString epo  = QString("%1").arg(numEpochs, 5, 10, QLatin1Char('0'));
-  QString ac   = QString("%1").arg(settings.value("PPP/snxtroAc").toString(),3,QLatin1Char('0'));
-  QString sol  = QString("%1").arg(settings.value("PPP/snxtroSol").toString(),4,QLatin1Char('0'));
+  QString ac   = QString("%1").arg(settings.value("PPP/snxtroAc").toString(),3,QLatin1Char(' '));
+  QString sol  = QString("%1").arg(settings.value("PPP/snxtroSol").toString(),4,QLatin1Char(' '));
   QString corr = settings.value("PPP/corrMount").toString();
 
   _out << "%=TRO 2.00 " << ac.toStdString() << " "
@@ -105,10 +105,8 @@ void bncSinexTro::writeHeader(const QDateTime& datTim) {
   int lonD, lonM,  latD, latM;
   double lonS, latS;
   xyz2ell(_opt->_xyzAprRover.data(), recEll);
-  recEll[0] = recEll[0] * 180.0 / M_PI;
-  recEll[1] = recEll[1] * 180.0 / M_PI;
-  deg2DMS(recEll[1], lonD, lonM, lonS);
-  deg2DMS(recEll[0], latD, latM, latS);
+  deg2DMS(recEll[0] * 180.0 / M_PI, latD, latM, latS);
+  deg2DMS(recEll[1] * 180.0 / M_PI, lonD, lonM, lonS);
   QString country;
   QListIterator<QString> it(settings.value("mountPoints").toStringList());
   while (it.hasNext()) {
@@ -137,14 +135,17 @@ void bncSinexTro::writeHeader(const QDateTime& datTim) {
     _out << "+SITE/RECEIVER" << endl;
     _out << "*SITE PT SOLN T DATA_START__ DATA_END____ DESCRIPTION_________ S/N__ FIRMWARE___" << endl;
     _out << " " << _opt->_roverName.substr(0,4) << "  A "  <<  sol.toStdString() << " P "
-         << startTime.toStdString() << " " << endTime.toStdString() << " " << _opt->_recNameRover << endl;
+         << startTime.toStdString() << " " << endTime.toStdString()
+         << QString(" %1").arg(_opt->_antNameRover.c_str(), 20,QLatin1Char(' ')).toStdString()
+         << " -----" << " -----------" << endl;
     _out << "-SITE/RECEIVER" << endl << endl;
   }
 
   _out << "+SITE/ANTENNA" << endl;
   _out << "*SITE PT SOLN T DATA_START__ DATA_END____ DESCRIPTION_________ S/N__" << endl;
   _out << " " << _opt->_roverName.substr(0,4) << "  A "  <<  sol.toStdString() << " P "
-       << startTime.toStdString() << " " << endTime.toStdString() << " " << _opt->_antNameRover << endl;
+       << startTime.toStdString() << " " << endTime.toStdString() << " "
+       << _opt->_antNameRover << " -----" << endl;
   _out << "-SITE/ANTENNA" << endl << endl;
 
   if (_antex) {
