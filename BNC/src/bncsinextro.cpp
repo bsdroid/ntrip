@@ -154,7 +154,7 @@ void bncSinexTro::writeHeader(const QDateTime& datTim) {
       _out << "*                           UP____ NORTH_ EAST__ UP____ NORTH_ EAST__" << endl;
       _out << "*DESCRIPTION_________ S/N__ L1->ARP(m)__________ L2->ARP(m)__________ AZ_EL____" << endl;
       _out << QString(" %1").arg(_opt->_antNameRover.c_str(), 20,QLatin1Char(' ')).toStdString()
-           <<  "      "
+           <<  " -----"
            << _antex->pcoSinexString(_opt->_antNameRover, t_frequency::G1).toStdString()
            << _antex->pcoSinexString(_opt->_antNameRover, t_frequency::G2).toStdString()
         << endl;
@@ -165,7 +165,7 @@ void bncSinexTro::writeHeader(const QDateTime& datTim) {
       _out << "*                           UP____ NORTH_ EAST__ UP____ NORTH_ EAST__" << endl;
       _out << "*DESCRIPTION_________ S/N__ L1->ARP(m)__________ L2->ARP(m)__________ AZ_EL____" << endl;
       _out << QString(" %1").arg(_opt->_antNameRover.c_str(), 20,QLatin1Char(' ')).toStdString()
-           <<  "      "
+           <<  " -----"
            << _antex->pcoSinexString(_opt->_antNameRover, t_frequency::R1).toStdString()
            << _antex->pcoSinexString(_opt->_antNameRover, t_frequency::R2).toStdString()
         << endl;
@@ -176,7 +176,7 @@ void bncSinexTro::writeHeader(const QDateTime& datTim) {
       _out << "*                           UP____ NORTH_ EAST__ UP____ NORTH_ EAST__" << endl;
       _out << "*DESCRIPTION_________ S/N__ L1->ARP(m)__________ L2->ARP(m)__________ AZ_EL____" << endl;
       _out << QString(" %1").arg(_opt->_antNameRover.c_str(), 20,QLatin1Char(' ')).toStdString()
-           <<  "      "
+           <<  " -----"
            << _antex->pcoSinexString(_opt->_antNameRover, t_frequency::E1).toStdString()
            << _antex->pcoSinexString(_opt->_antNameRover, t_frequency::E5).toStdString()
         << endl;
@@ -187,7 +187,7 @@ void bncSinexTro::writeHeader(const QDateTime& datTim) {
       _out << "*                           UP____ NORTH_ EAST__ UP____ NORTH_ EAST__" << endl;
       _out << "*DESCRIPTION_________ S/N__ L1->ARP(m)__________ L2->ARP(m)__________ AZ_EL____" << endl;
       _out << QString(" %1").arg(_opt->_antNameRover.c_str(), 20,QLatin1Char(' ')).toStdString()
-           <<  "      "
+           <<  " -----"
            << _antex->pcoSinexString(_opt->_antNameRover, t_frequency::C2).toStdString()
            << _antex->pcoSinexString(_opt->_antNameRover, t_frequency::C7).toStdString()
         << endl;
