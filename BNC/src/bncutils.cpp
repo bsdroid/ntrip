@@ -737,9 +737,9 @@ void topos(double xRec, double yRec, double zRec,
 ////////////////////////////////////////////////////////////////////////////
 void deg2DMS(double decDeg, int& deg, int& min, double& sec) {
   int sgn = (decDeg < 0.0 ? -1 : 1);
-  deg = sgn * static_cast<int>(decDeg);
-  min =       static_cast<int>((decDeg - deg)*60);
-  sec =       (decDeg - deg - min/60.0) * 3600.0;
+  deg = static_cast<int>(decDeg);
+  min =  sgn *  static_cast<int>((decDeg - deg)*60);
+  sec =  (sgn* (decDeg - deg) - min/60.0) * 3600.0;
 }
 
 //
