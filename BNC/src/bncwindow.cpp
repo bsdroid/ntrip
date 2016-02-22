@@ -1339,8 +1339,8 @@ bncWindow::bncWindow() {
   _pppWidgets._snxtroPath->setWhatsThis(tr("<p>Specify a directory for saving SINEX Troposphere files. If the specified directory does not exist, BNC will not create such files.</p><p>Default is an empty option field, meaning that no SINEX Troposphere files shall be produced.</p>"));
   _pppWidgets._snxtroIntr->setWhatsThis(tr("<p>Select a length for SINEX Troposphere files.</p><p>Default 'SNX TRO interval' for saving SINEX Troposphere files on disk is '1 hour'.</p>"));
   _pppWidgets._snxtroSampl->setWhatsThis(tr("<p>Select a 'Sampling' rate for saving troposphere parameters.</p><p>Default 'SNX TRO sampling' rate is '0', meaning that all troposphere estimates will be saved on disk.</p>"));
-  _pppWidgets._snxtroAc->setWhatsThis(tr("<p>Specify an abbreviation for the Analysis Center (AC) providing the SINEX Troposphere files.</p>"));
-  _pppWidgets._snxtroSol->setWhatsThis(tr("<p>Specify a solution ID to allow a distinction of different solutions per AC.</p>"));
+  _pppWidgets._snxtroAc->setWhatsThis(tr("<p>Specify a 3-character abbreviation describing you as the generating Analysis Center (AC) in your SINEX troposphere files.</p><p> Default is an empty option field, meaning that you don't want to specify an Analysis Center in your SINEX troposphere files.</p>"));
+  _pppWidgets._snxtroSol->setWhatsThis(tr("<p>Specify a 4-character solution ID to allow a distingtion between different solutions per AC.</p><p> Default is an empty option field, meaning that you don't want to specify a solution ID in your SINEX troposphere files.</p>"));
 
   // WhatsThis, PPP (3)
   // ------------------
