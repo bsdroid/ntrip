@@ -394,6 +394,7 @@ void t_rnxObsHeader::set(const t_rnxObsHeader& header, int version,
   _startTime       = header._startTime;
   _usedSystems     = header._usedSystems;
   _comments        = header._comments;
+  _comments.removeDuplicates();
 
   for (unsigned iPrn = 1; iPrn <= t_prn::MAXPRN_GPS; iPrn++) {
     _wlFactorsL1[iPrn] =  header._wlFactorsL1[iPrn];
