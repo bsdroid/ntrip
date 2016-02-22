@@ -278,6 +278,6 @@ excluded via command line option. BNC runs offline. Comparison results are saved
 in a logfile.
 
 Georg Weber, BKG
-Frankfurt, January 2016
+Frankfurt, March 2016
 igs-ip@bkg.bund.de
 
