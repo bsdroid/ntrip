@@ -1308,12 +1308,14 @@ Observations will be converted to RINEX if they come in either RTCM Version 2 or
 It is important to understand that converting RTCM streams to RINEX files requires a priori information on observation types for specifying a complete RINEX header. Regarding the RINEX Version 2 file header, BNC simply introduces all observation types defined in the Version 2 standard and later reports "0.000" for observations, which are not received. However, following this approach is not possible for RINEX Version 3 files from RTCM Version 3 MSM streams because of the huge number of observation types, which might in principle show up. The solution implemented in BNC is to start with RINEX Version 3 observation type records from skeleton files (see section 'Skeleton Extension' and 'Skeleton Mandatory') and switch to a default selection of observation types when such file is not available or does not contain the required information. The following is the default selection of observation types specified for a RINEX Version 3 file:
 </p>
 <pre>
-C    8 C1  C1P L1  S1  C2  C2P L2  S2                       SYS / # / OBS TYPES
-E    8 C1  C1P L1  S1  C2  C2P L2  S2                       SYS / # / OBS TYPES
-G    8 C1  C1W L1  S1  C2  C2W L2  S2                       SYS / # / OBS TYPES
-J    8 C1  C1P L1  S1  C2  C2P L2  S2                       SYS / # / OBS TYPES
-R    8 C1  C1P L1  S1  C2  C2P L2  S2                       SYS / # / OBS TYPES
-S    8 C1  C1P L1  S1  C2  C2P L2  S2                       SYS / # / OBS TYPES
+C    9 C2I L2I S2I C6I L6I S6I C7I L7I S7I                  SYS / # / OBS TYPES
+E   12 C1X L1X SX1 C5X L5X SX5 C7X L7X SX7 C8X L8X SX8      SYS / # / OBS TYPES
+G   18 C1C L1C S1C C1W L1W S1W C2X L2X S2X C2W L2W S2W C2P  SYS / # / OBS TYPES
+       L2P S2P C5X L5X S5X                                  SYS / # / OBS TYPES
+J   24 C1C L1C S1C C1S L1S S1S C1L L1L S1L C1X L1X S1X C2S  SYS / # / OBS TYPES
+       L2S S2S C2L L2L S2L C2X L2X S2X C5X L5X S5X          SYS / # / OBS TYPES
+R   12 C1C L1C S1C C1P L1P S1P C2C L2C S2C C2P L2P S2P      SYS / # / OBS TYPES
+S    9 C1C L1C S1C C5I L5I S5I C5Q L5Q S5Q                  SYS / # / OBS TYPES
 </pre>
 
 <p>
