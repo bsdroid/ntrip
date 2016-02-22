@@ -196,13 +196,12 @@ bool bncRinex::readSkeleton() {
     if ( !_skeletonDate.isValid() || _skeletonDate != currDate ) {
       if (downloadSkeleton() == success) {
         readDone = true;
+        _skeletonDate = currDate;
       }
-      _skeletonDate = currDate;
     } else if (_skeletonDate.isValid()) {
       readDone = true;
     }
   }
-
   return readDone;
 }
 
