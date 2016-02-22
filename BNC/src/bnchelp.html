@@ -127,6 +127,9 @@ Weber, G., L. Mervart, A. St&uuml;rze, A. R&uuml;lke and D. St&ouml;cker (2016):
 &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 2.13.1.11 <a href=#pppsnxtrofile>SNX TRO Directory</a><br>
 &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 2.13.1.11.1 <a href=#pppsnxtrointr>Interval</a><br>
 &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 2.13.1.11.2 <a href=#pppsnxtrosampl>Sampling</a><br>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 2.13.1.11.3 <a href=#pppsnxAc>Analysis Center</a><br>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 2.13.1.11.4 <a href=#pppsnxSol>Solution ID</a><br>
+
 &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 2.13.2 <a href=#pppStation><b>PPP (2): Processed Stations</b></a><br>
 &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 2.13.2.1 <a href=#pppsite>Station</a><br>
 &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 2.13.2.2 <a href=#pppnehsigma>Sigma North/East/Up</a><br>
@@ -3418,7 +3421,7 @@ You can specify a 'SNX TRO Directory' for saving SINEX Troposphere files on disk
 The default value for 'SNX TRO Directory' is an empty option field, meaning that BNC will not save SINEX Troposphere files. If a specified directory does not exist, BNC will not create SINEX Troposphere files.
 </p>
 
-<p><h4>2.13.1.11.1 <a name="pppsnxtrointr">Interval - mandatory if 'SINEX TRO File' is set</h4></p>
+<p><h4>2.13.1.11.1 <a name="pppsnxtrointr">Interval - mandatory if 'SINEX TRO Directory' is set</h4></p>
 <p>
 Select the length of SINEX Troposphere files.
 </p>
@@ -3426,13 +3429,28 @@ Select the length of SINEX Troposphere files.
 Default 'Interval' for saving SINEX Troposphere files on disk is '1 day'.
 </p>
 
-
-<p><h4>2.13.1.11.2 <a name="pppsnxtrosampl">Sampling - mandatory if 'SINEX TRO File' is set</h4></p>
+<p><h4>2.13.1.11.2 <a name="pppsnxtrosampl">Sampling - mandatory if 'SINEX TRO Directory' is set</h4></p>
 <p>
 Select a 'Sampling' rate in seconds for saving troposphere parameters.
 </p>
 <p>
 Default 'Sampling' rate is '0', meaning that all troposphere estimates will be saved on disk.
+</p>
+
+<p><h4>2.13.1.11.3 <a name="pppsnxAc">Analysis Center - Optional if 'SINEX TRO Directory' is set</h4></p>
+<p>
+Specify a 3-character abbreviation describing you as the generating Analysis Center (AC) in your SINEX troposphere files. String 'BKG' is an example.
+</p>
+<p>
+Default is an empty option field, meaning that you don't want to specify an Analysis Center in your SINEX troposphere files.
+</p>
+
+<p><h4>2.13.1.11.4 <a name="pppsnxSol">Solution ID - Optional if 'SINEX TRO Directory' is set</h4></p>
+<p>
+Specify a 4-character solution ID to allow a distingtion between different solutions per AC. String '0001' is an example.
+</p>
+<p>
+Default is an empty option field, meaning that you don't want to specify a solution ID in your SINEX troposphere files.
 </p>
 
 <p><h4>2.13.2 <a name="pppStation">PPP (2): Processed Stations</h4></p>
@@ -5196,6 +5214,8 @@ Command line option '--help' provides a complete list of all configuration param
    PPP/snxtroPath  {Directory for SINEX troposphere output files [character string]}
    PPP/snxtroIntr  {SINEX troposphere file interval [character string: 1 min|2 min|5 min|10 min|15 min|30 min|1 hour|1 day]}
    PPP/snxtroSampl {SINEX troposphere file sampling rate [integer number of seconds: 0|30|60|90|120|150|180|210|240|270|300]}
+   PPP/snxtroAc    {SINEX troposphere Analysis Center [character string]}
+   PPP/snxtroSol   {SINEX troposphere solution ID [character string]}
 
 <b>PPP Client Panel 2 keys:</b>
    PPP/staTable {Station specifications table [character string, semicolon separated list, each element in quotation marks, example:
