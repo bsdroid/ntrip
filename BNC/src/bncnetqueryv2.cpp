@@ -185,7 +185,9 @@ void bncNetQueryV2::waitForRequestResult(const QUrl& url, QByteArray& outData) {
 
   // Copy Data and Return
   // --------------------
-  outData = _reply->readAll();
+  if (_reply) {
+    outData = _reply->readAll();
+  }
 }
 
 // Wait for next data
