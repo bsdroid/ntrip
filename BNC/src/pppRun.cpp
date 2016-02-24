@@ -352,11 +352,10 @@ void t_pppRun::slotNewObs(QByteArray staID, QList<t_satObs> obsList) {
       }
       emit newNMEAstr(staID, rmcStr.toAscii());
       emit newNMEAstr(staID, ggaStr.toAscii());
-    }
-
-    if (_snxtroFile && output._epoTime.valid()) {
-      _snxtroFile->write(staID, int(output._epoTime.gpsw()), output._epoTime.gpssec(),
-                  output._trp0 + output._trp, output._trpStdev);
+      if (_snxtroFile && output._epoTime.valid()) {
+        _snxtroFile->write(staID, int(output._epoTime.gpsw()), output._epoTime.gpssec(),
+                    output._trp0 + output._trp, output._trpStdev);
+      }
     }
 
     emit newMessage(QByteArray(log.str().c_str()), true);
