@@ -626,11 +626,11 @@ A shared library 'Disk iMaGe' (DMG) file is provided for BNC on OS X systems; it
 <p> 
 BNC has been written as Open Source and published under GNU General Public License (GPL). The latest source code can be checked out from Subversion repository <u>http://software.rtcm-ntrip.org/svn/trunk/BNC</u>. A ZIP archive available from <u>http://igs.bkg.bund.de/ntrip/download</u> provides the source code for BNC Version 2.12.0, developed using Qt Version 4.8.5.
 </p>
-<p>The following describes how you can produce your own builds of BNC on MS Windows, Linux, and Mac systems. It is likely that BNC can also be compiled on other systems where a GNU compiler and Qt Version 4.8.5 or any later version are installed. 
+<p>The following describes how you can produce your own builds of BNC on MS Windows, Linux, and Mac systems. It is likely that BNC can also be compiled on other systems where a GNU compiler and Qt Version 4.8.5 or any later version is installed. 
 </p>
 
 <p><b>Static versus Shared Libraries</b><br>
-You can produce static or shared builds of BNC. <u>Static</u> builds are sufficient in case you do not want BNC to produce track maps on top of Google Map (GM) or OpenStreetMap (OSM). GM/OSM usage would require the QtWebKit library which can only be part of BNC builds from <u>shared</u> Qt libraries. Hence, having a shared library Qt installation available is a precondition for producing a shared library build of BNC.
+You can produce static or shared library builds of BNC. <u>Static</u> builds are sufficient in case you do not want BNC to produce track maps on top of Google Map (GM) or OpenStreetMap (OSM). GM/OSM usage would require the QtWebKit library which can only be part of BNC builds from <u>shared</u> Qt libraries. Hence, having a shared library Qt installation available is a precondition for producing a shared library build of BNC.
 </p>
 
 <p><b>MS Windows Systems, Shared Library</b><br>
@@ -779,7 +779,7 @@ BNC maintains configuration options at three different levels:
 <table>
 <tr><td>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; </td><td>Left:</td><td>BNC in graphics mode; active configuration options are introduced through GUI input fields and finally saved on disk</td></tr>
 <tr><td>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; </td><td>Middle:</td><td>BNC in 'no window' mode; active configuration options are read from disk</td></tr>
-<tr><td>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; </td><td>Right:</td><td>BNC in 'no window' mode without configuration file; default configuration options can be replaced via command line options</td></tr>
+<tr><td>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; </td><td>Right:</td><td>BNC in 'no window' mode without configuration file; default configuration options can be overwritten via command line options</td></tr>
 </table>
 
 <p>
@@ -807,7 +807,7 @@ On graphical systems (except for Mac systems), you may use the computer mouse to
 </li>
 <li>
 You could also start BNC using a command line for naming a specific configuration file (suggested e.g. for Mac systems):<br>
-bnc --conf &lt;configFileName&gt;
+/Applications/bnc.app/Contents/MacOS/bnc --conf &lt;configFileName&gt;
 </li>
 <li>
 On non-graphical systems or when running BNC in batch mode in the background you may start the program using a command line with a configuration file option in '<u>n</u>o <u>w</u>indow' mode (example for Windows systems):<br>
@@ -853,7 +853,7 @@ The example configurations assume that no proxy protects your BNC host. Should a
 
 <p>
 <b>(A) Working with Configuration Files</b><br><br>
-You should be able to run all configuration file examples without changing contained options. However, configurations 'Upload.bnc' and 'UploadPPP.bnc' are exceptions because they require an input stream from a connected network engine.
+You should be able to run all configuration file examples without changing contained options. However, configuration 'Upload.bnc' is an exception because it requires an input stream from a connected network engine.
 </p>
 <ol type=b>
 
@@ -1056,7 +1056,7 @@ stream with navigation messages to RINEX Navigation files. The configuration
 pulls a RTCM Version 3 stream with Broadcast Ephemeris coming from the
 real-time EUREF and IGS networks and saves hourly RINEX Version 3 Navigation
 files. BNC runs online until it's terminated after 10 seconds.  See
-http://igs.bkg.bund.de/ntrip/ephemeris for further real-time Broadcast
+<u>http://igs.bkg.bund.de/ntrip/ephemeris</u> for further real-time Broadcast
 Ephemeris resources.
 </li><br>
 
@@ -1071,7 +1071,7 @@ seconds.
 Purpose: Equals configuration file example 'RinexObs.bnc', converts RTCM
 streams to RINEX Observation files. The configuration pulls streams from two
 Ntrip Broadcasters using Ntrip Version 1 to generate 15min 1Hz RINEX Version 3
-Observation files. See http://igs.bkg.bund.de/ntrip/observations for 
+Observation files. See <u>http://igs.bkg.bund.de/ntrip/observations</u> for 
 observation stream resources. BNC runs online until it's terminated after 30
 seconds.
 </li>
@@ -1146,6 +1146,9 @@ In February 2014 the overall responsibility at BKG for the concept and realizati
 The following chapters describe how to set BNC program options. They explain the 'Top Menu Bar', the 'Settings Canvas' with the processing options, the content of the 'Streams Canvas' and 'Logging Canvas', and the 'Bottom Menu Bar'.
 </p>
 <p>
+The general documentation approach is to create a separate chapter for each processing option in a sequence which follows the layout of BNC's Graphical User Interface (GUI). The advantage is that searching for help by means of the Table of Contents is quite convenient. 
+
+</p>
 
 <p><h4>2.1 <a name="topmenu">Top Menu Bar</h4></p>
 <p>
@@ -1200,7 +1203,7 @@ Note that IP streaming is often not allowed in a LAN. In this case you need to a
 
 <p><h4>2.2.2 <a name="ssl">SSL - Transport Layer Security</h4></p>
 <p>Communication with an Ntrip Broadcaster over Secure Sockets Layer (SSL) as well as the download of RINEX skeleton files when available from HTTPS websites requires the exchange of client and/or server certificates. Specify the path to a directory where you save certificates on your system. You may like to check out <u>http://software.rtcm-ntrip.org/wiki/Certificates</u> for a list of known Ntrip Server certificates. You may also just try communication via SSL to check out whether this is supported by the involved Ntrip Broadcaster. </p>
-<p>SSL communication may involve queries coming from the Ntrip Broadcaster or from a HTTPS website hosting RINEX skeletons. Such a query could show up under BNC's 'Log' tab as follows:
+<p>SSL communication may involve queries coming from the Ntrip Broadcaster or from a HTTPS website hosting RINEX skeletons. Such a query could show up under BNC's 'Log' tab especially when self-signed SSL certificates are used. Example:
 <pre>
    SSL Error
    Server Certificate Issued by:
@@ -1212,6 +1215,9 @@ Note that IP streaming is often not allowed in a LAN. In this case you need to a
    The root CA certificate is not trusted for this purpose
    No certificates could be verified
 </pre>
+Queries should not be received by a client when a server uses official SSL certificates.
+</p>
+<p>
 Tick 'Ignore SSL authorization errors' if you generally trust the server and do not want to be bothered with this. Note that SSL communication is usually done over port 443.
 </p>
 
