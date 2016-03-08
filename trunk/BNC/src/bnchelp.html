@@ -3888,7 +3888,7 @@ When using clocks from Broadcast Ephemeris (with or without applied corrections)
 <pre>
  &nbsp; &nbsp; dt =  -2 (R * V) / c<sup>2</sup>
 </pre>
-where R *V is the scalar product of the satellite position and velocity and c is the speed of light. This can also be found in the GPS Interface Specification, IS-GPS-200, Revision D, 7 March 2006.
+where R * V is the scalar product of the satellite position and velocity and c is the speed of light. This can also be found in the GPS Interface Specification, IS-GPS-200, Revision D, 7 March 2006.
 </p>
 
 <p><h4>2.15.1 <a name="upadd">Add, Delete Row - optional</h4></p>
@@ -4272,14 +4272,14 @@ Streams selected for retrieval are listed under the 'Streams' canvas on BNC's ma
 <p><h4>2.17.1 <a name="streamedit">Edit Streams</h4></p>
 <ul>
 <li>
-BNC automatically allocates one of its internal decoders to a stream based on the stream's 'format' and 'format-details' as given in the source-table. However, there might be cases where you need to override the automatic selection due to incorrect source-table for example. BNC allows users to manually select the required decoder by editing the decoder string. Double click on the 'decoder' field, enter your preferred decoder and then hit Enter. Accepted decoder strings are 'RTCM_2.x', 'RTCM_3.x' and 'RTNET'.
+BNC automatically allocates one of its internal decoders to a stream based on the stream's 'format' and 'format-details' as given in the source-table. However, there might be cases where you need to override the automatic selection due to an incorrect source-table for example. BNC allows users to manually select the required decoder by editing the decoder string. Double click on the 'decoder' field, enter your preferred decoder and then hit Enter. Accepted decoder strings are 'RTCM_2.x', 'RTCM_3.x' and 'RTNET'.
 </li>
 <li>
-In case you need to log the raw data as it is, BNC allows users to by-pass its decoders and directly save the input in daily logfiles. To do this, specify the decoder string as 'ZERO'. The generated filenames are created from the characters of the streams mountpoints plus two-digit numbers each for year, month, and day. Example: Setting the 'decoder' string for mountpoint WTZZ0 to 'ZERO' and running BNC on March 29, 2007 would save the raw data in a file named WTZZ0_070329.
+In case you need to log the raw data as it is, BNC allows users to by-pass its decoders and directly save the input in daily logfiles. To do this, specify the decoder string as 'ZERO'. The generated filenames are created from the characters of the streams mountpoints plus two-digit numbers each for year, month, and day. Example: Setting the 'decoder' string for mountpoint WTZZ0 to 'ZERO' and running BNC on March 29, 2007 would save raw data in a file named WTZZ0_070329.
 </li>
 <li>
 BNC can also retrieve streams from virtual reference stations (VRS). To initiate these streams, an approximate rover position needs to be sent in NMEA format to the Ntrip Broadcaster. In return, a user-specific data stream is generated, typically by Network RTK software. VRS streams are indicated by a 'yes' in the source-table as well as in the 'nmea' column on the 'Streams' canvas in BNC's main window. They are customized exactly to the latitude and longitude transmitted to the Ntrip Broadcaster via NMEA GGA sentences.
-<br>If NMEA GGA sentences are not coming from a serially connected GNSS rover, BNC simulates them from the default latitude and longitude of the source-table as shown in the 'lat' and 'long' columns on the 'Streams' canvas. However, in many cases you would probably want to change these defaults according to your requirement. Double-click on 'lat' and 'long' fields, enter the values you wish to send and then hit Enter. The format is in positive north latitude degrees (e.g. for northern hemisphere: 52.436, for southern hemisphere: -24.567) and eastern longitude degrees (example: 358.872 or -1.128). Only streams with a 'yes' in their 'nmea' column can be edited. The position must preferably be a point within the VRS service area of the network. RINEX files generated from these streams will contain an additional COMMENT line in the header beginning with 'NMEA' showing the 'lat' and 'long' used.
+<br>If NMEA GGA sentences are not coming from a serially connected GNSS rover, BNC simulates them from the default latitude and longitude of the source-table as shown in the 'lat' and 'long' columns on the 'Streams' canvas. However, in many cases you would probably want to change these defaults according to your requirement. Double-click on 'lat' and 'long' fields, enter the values you wish to send and then hit Enter. The format is in positive north latitude degrees (e.g. for northern hemisphere: 52.436, for southern hemisphere: -24.567) and eastern longitude degrees (example: 358.872 or -1.128). Only streams with a 'yes' in their 'nmea' column can be edited. The position should preferably be a point within the VRS service area of the network. RINEX files generated from these streams will contain an additional COMMENT line in the header beginning with 'NMEA' showing the 'lat' and 'long' used.
 <br>Note that when running BNC in a Local Area Network (LAN), NMEA strings may be blocked by a proxy server, firewall or virus scanner when not using the Ntrip Version 2 transport protocol.
 </li>
 </ul>
@@ -4293,9 +4293,9 @@ To remove a stream from the 'Streams' canvas in the main window, highlight it by
 The streams selection can be changed on-the-fly without interrupting uninvolved threads in the running BNC process.
 </p>
 <p>
-<u>Window mode:</u> Hit 'Reread &amp; Save Configuration' while BNC is in window mode and already processing data to let changes of your streams selection immediately become effective.
+<u>Window mode:</u> Hit 'Reread &amp; Save Configuration' while BNC is in window mode and already processing data to let changes of your stream selection immediately become effective.
 <p>
-<u>No window mode:</u> When operating BNC online in 'no window' mode (command line option -nw), you force BNC to reread its 'mountPoints' configuration option from disk at pre-defined intervals. Select '1 min', '1 hour', or '1 day' as 'Reread configuration' option to reread the 'mountPoints' option every full minute, hour, or day. This lets a 'mountPoints' option edited in between in the configuration file become effective without terminating uninvolved threads. See section 'Configuration Examples' for a configuration file example and section 'Reread Configuration' for a list of other on-the-fly changeable options.
+<u>No window mode:</u> When operating BNC online in 'no window' mode (command line option -nw), you force BNC to reread its 'mountPoints' configuration option from disk at pre-defined intervals. Select '1 min', '1 hour', or '1 day' as 'Reread configuration' option to reread the 'mountPoints' option every full minute, hour, or day. This lets a 'mountPoints' option edited in between in the configuration file become effective without terminating uninvolved threads. See section 'Configuration Examples' for configuration file examples and section 'Reread Configuration' for a list of other on-the-fly changeable options.
 </p>
 
 <p><h4>2.18 <a name="logs">Logging Canvas</h4></p>
@@ -4325,7 +4325,7 @@ The latency of observations in each incoming stream is shown in the 'Latency' ta
 
 <p><h4>2.18.4 <a name="ppptab">PPP Plot</h4></p>
 <p>
-Precise Point Positioning time series of North (red), East (green) and Up (blue) coordinate components are shown in the 'PPP Plot' tab when a 'Mountpoint' option is defined under PPP (4). Values are either referred to reference coordinates (if specified) or referred to the first estimated set of coordinate components. The time as given in format [hh:mm] refers to GPS Time. The sliding PPP time series window covers a period of 5 minutes. Note that it may take up to 30 seconds or more until the first PPP solutions becomes available. The following figure shows the screenshot of a PPP time series plot of North, East and Up coordinate displacements.
+Precise Point Positioning time series of North (red), East (green) and Up (blue) coordinate components are shown in the 'PPP Plot' tab when a 'Mountpoint' option is defined under PPP (4). Values are referred to a priori reference coordinates. The time as given in format [hh:mm] refers to GPS Time. The sliding PPP time series window covers a period of 5 minutes. Note that it may take up to 30 seconds or more until the first PPP solutions becomes available. The following figure shows the screenshot of a PPP time series plot of North, East and Up coordinate displacements.
 </p>
 
 <p><img src="IMG/screenshot13.png"/></p>
@@ -4333,7 +4333,7 @@ Precise Point Positioning time series of North (red), East (green) and Up (blue)
 
 <p><h4>2.19 <a name="bottom">Bottom Menu Bar</h4></p>
 <p>
-The bottom menu bar allows to add or delete streams to BNC's configuration and to start or stop it. It also provides access to BNC's online help function. The 'Add Stream' button opens a window that allows users to select one of several input communication links, see figure below.
+The bottom menu bar allows to add or delete streams to or from BNC's configuration and to start or stop it. It also provides access to BNC's online help function. The 'Add Stream' button opens a window that allows users to select one of several input communication links, see figure below.
 </p>
 
 <p><img src="IMG/screenshot06.png"/></p>
@@ -4352,12 +4352,12 @@ Button 'Add Stream' &gt; 'Coming from Caster' opens a window that allows users t
 
 <p><h4>2.19.1.1.1 <a name="streamhost">Caster Host and Port - mandatory</h4></p>
 <p>
-Enter the Ntrip Broadcaster host IP and port number. Note that EUREF and IGS operate Ntrip Broadcasters at <u>http://www.euref-ip.net/home</u>, <u>http://www.igs-ip.net/home</u>, <u>http://www.products.igs-ip.net/home</u> and <u>http://mgex.igs-ip.net/home</u>.
+Enter the Ntrip Broadcaster host IP and port number. Note that EUREF and IGS operate Ntrip Broadcasters at <u>http://www.euref-ip.net/home</u>, <u>http://www.igs-ip.net/home</u>, <u>http://products.igs-ip.net/home</u> and <u>http://mgex.igs-ip.net/home</u>.
 </p>
 
 <p><h4>2.19.1.1.2 <a name="streamtable">Casters Table - optional</h4></p>
 <p>
-It may be that you are not sure about your Ntrip Broadcasters host and port number or you are interested in other broadcaster installations operated elsewhere. Hit 'Show' for a table of known broadcasters maintained at <u>www.rtcm-ntrip.org/home</u>. A window opens which allows selecting a broadcaster for stream retrieval, see figure below.
+It may be that you are not sure about your Ntrip Broadcaster's host and port number or you are interested in other broadcaster installations operated elsewhere. Hit 'Show' for a table of known broadcasters maintained at <u>www.rtcm-ntrip.org/home</u>. A window opens which allows selecting a broadcaster for stream retrieval, see figure below.
 </p>
 </p>
 <p><img src="IMG/screenshot04.png"/></p>
@@ -4371,13 +4371,13 @@ Streams on Ntrip Broadcasters may be protected. Enter a valid 'User' ID and 'Pas
 
 <p><h4>2.19.1.1.4 <a name="gettable">Get Table</h4></p>
 <p>
-Use the 'Get Table' button to download the source-table from the Ntrip Broadcaster. Pay attention to data fields 'format' and 'format-details'. Keep in mind that BNC can only decode and convert streams that come in RTCM Version 2, RTCM Version 3, or RTNET format. For access to observations, Broadcast Ephemeris and Broadcast Corrections in RTCM format streams must contain a selection of appropriate message types as listed in the Annex, cf. data field 'format-details' for available message types and their repetition rates in brackets. Note that in order to produce RINEX Navigation files RTCM Version 3 streams containing message types 1019 (GPS) and 1020 (GLONASS) and 1043 (SBAS) and 1044 (QZSS) and 1045, 1046 (Galileo) and 63 (tentative, BDS/BeiDou) are required. Select your streams line by line, use +Shift and +Ctrl when necessary. The figure below provides an example source-table.
+Use the 'Get Table' button to download the source-table from the Ntrip Broadcaster. Pay attention to data fields 'format' and 'format-details'. Keep in mind that BNC can only decode and convert streams that come in RTCM Version 2, RTCM Version 3, or RTNET format. For access to observations, Broadcast Ephemeris and Broadcast Corrections in RTCM format, streams must contain a selection of appropriate message types as listed in the Annex, cf. data field 'format-details' for available message types and their repetition rates in brackets. Note that in order to produce RINEX Navigation files, RTCM Version 3 streams containing message types 1019 (GPS) and 1020 (GLONASS) and 1043 (SBAS) and 1044 (QZSS) and 1045, 1046 (Galileo) and 63 (BDS/BeiDou, tentative message number) are required. Select your streams line by line, use +Shift and +Ctrl when necessary. The figure below provides an example source-table.
 </p>
 <p>
-The content of data field 'nmea' tells you whether a stream retrieval needs to be initiated by BNC through sending an NMEA-GGA message carrying approximate position coordinates (virtual reference station).
+The content of data field 'nmea' tells you whether a stream retrieval needs to be initiated by BNC through sending an NMEA-GGA message carrying approximate position coordinates (Virtual Reference Station, VRS).
 </p>
 <p>
-Hit 'OK' to return to the main window. If you wish, you can click on 'Add Stream' and repeat the process to retrieve streams from different casters.
+Hit 'OK' to return to the main window. If you wish, you can click on 'Add Stream' and repeat the process of retrieving streams from different casters.
 </p>
 <p><img src="IMG/screenshot05.png"/></p>
 <p><u>Figure 39:</u> Broadcaster source-table shown by BNC</p>
@@ -4505,7 +4505,7 @@ Button 'Map' opens a window to show a distribution map of the streams selected f
 
 <p><h4>2.19.4 <a name="start">Start</h4></p>
 <p>
-Hit 'Start' to start retrieving, decoding or converting GNSS data streams in real-time. Note that 'Start' generally forces BNC to begin with fresh RINEX which might overwrite existing files when necessary unless option 'Append files' is ticked.
+Hit 'Start' to start retrieving, decoding or converting GNSS data streams in real-time. Note that 'Start' generally forces BNC to begin with fresh RINEX files which might overwrite existing files when necessary unless option 'Append files' is ticked.
 </p>
 
 <p><h4>2.19.5 <a name="stop">Stop</h4></p>
@@ -4515,12 +4515,12 @@ Hit the 'Stop' button in order to stop BNC.
 
 <p><h4>2.19.6 <a name="contexthelp">Help? = Shift+F1</h4></p>
 <p>
-BNC comes with a <i>What's This</i> help system providing online information about its functionality and usage. Short descriptions are available for any widget and program option. Focus to the relevant object and press Shift+F1 to request help information. A help text appears immediately; it disappears as soon as the user does something else. The dialogs on some operating systems may provide a '?' button that users can click; click the relevant widget to pop up the help text.
+BNC comes with a <i>What's This</i> help system providing information about its functionality and usage. Short descriptions are available for any widget and program option. Focus to the relevant object and press Shift+F1 to request help information. A help text appears immediately; it disappears as soon as the user does something else. The dialogs on some operating systems may provide a '?' button that users can click; click the relevant widget to pop up the help text.
 </p>
 
 <p><h4>2.20 <a name="cmd">Command Line Options</h4></p>
 <p>
-Command line options are available to run BNC in 'no window' mode or let it read previously recorded input offline from one or several files for debugging purposes. It is also possible to introduce a specific configuration filename instead of using the default filename 'BNC.bnc'. The self-explaining content of the configuration file can easily be edited. 
+Command line options are available to run BNC in 'no window' mode or let it read previously recorded input offline from one or several files for debugging or post processing purposes. It is also possible to introduce a specific configuration filename instead of using the default filename 'BNC.bnc'. The self-explaining content of the configuration file can easily be edited. 
 </p>
 <p>
 In addition to reading processing options from the involved configuration file, BNC can optionally read any configuration option from command line. Running BNC with command line option 'help'
@@ -5174,7 +5174,7 @@ Command line option '--help' provides a complete list of all configuration param
    outFile  {Output file, full path [character string]}
    outUPort {Output port, unsynchronized [integer number]}
 
-<b>Serial Output Panel:</b>
+<b>Serial Output Panel keys:</b>
    serialMountPoint         {Mountpoint [character string]}
    serialPortName           {Port name [character string]}
    serialBaudRate           {Baud rate [integer number: 110|300|600|1200|2400|4800|9600|19200|38400|57600|115200]}
