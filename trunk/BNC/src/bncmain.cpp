@@ -78,7 +78,7 @@ int main(int argc, char* argv[]) {
       "Usage:\n"
       "   bnc --help (MS Windows: bnc.exe --help | more)\n"
       "       --nw\n"
-      "       --version (MS Windows: bnc.exe --help | more)\n"
+      "       --version (MS Windows: bnc.exe --version | more)\n"
       "       --display {name}\n"
       "       --conf {confFileName}\n"
       "       --file {rawFileName}\n"
