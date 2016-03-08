@@ -76,9 +76,9 @@ int main(int argc, char* argv[]) {
 
   QByteArray printHelp =
       "Usage:\n"
-      "   bnc --help\n"
+      "   bnc --help (MS Windows: bnc.exe --help | more)\n"
       "       --nw\n"
-      "       --version\n"
+      "       --version (MS Windows: bnc.exe --help | more)\n"
       "       --display {name}\n"
       "       --conf {confFileName}\n"
       "       --file {rawFileName}\n"
