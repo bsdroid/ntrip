@@ -2522,7 +2522,11 @@ BNC can produce synchronized or unsynchronized observations epoch by epoch from 
 </p>
 
 <p>
-Each epoch in the synchronized output begins with a line containing the GPS Week Number and the seconds within the GPS Week. Following lines begin with the mountpoint string of the stream which provides the observations followed by a satellite number. Specifications for satellite number, code, phase, doppler and signal strength data follow definitions presented in the RINEX Version 3 documentation. In case of phase observations a Slip Count is added which is put to '-1' if it is not set. The end of an epoch is indicated by an empty line.
+Each epoch in the synchronized output begins with a line containing the GPS Week Number and the seconds within the GPS Week. Following lines begin with the mountpoint string of the stream which provides the observations followed by a satellite number. Specifications for satellite number, code, phase, Doppler and signal strength data follow definitions presented in the RINEX Version 3 documentation. In case of phase observations, a 'Lock Time Indicator' is added. The end of an epoch is indicated by an empty line.
+</p>
+
+<p>
+A valid 'Lock Time Indicator' is only presented for observations from RTCM Version 3 streams. The parameter provides a measure of the amount of time that has elapsed during which the receiver has maintained continuous lock on that satellite signal. If a cycle slip occurs during the previous measurement cycle, the lock indicator will be reset to Zero. In case of observations from RTCM Version 2 streams, the 'Lock Time Indicator' is set to '-1'.
 </p>
 
 <p>
@@ -2555,7 +2559,7 @@ The following table describes the format of BNC's synchronized output of GNSS ob
 <tr><td><u>Carrier Phase Data</u></td><td></td><td></td></tr>
 <tr><td>Observation Code</td><td><b>L</b>1C</td><td>1X,A3</td></tr>
 <tr><td>Carrier Phase Observation</td><td>133446552.870</td><td>1X,F14.3</td></tr>
-<tr><td>Slip Count</td><td>127</td><td>1X,I4</td></tr>
+<tr><td>Lock Time Indicator</td><td>11</td><td>1X,I4</td></tr>
 
 <tr><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>
 
@@ -2570,10 +2574,6 @@ The following table describes the format of BNC's synchronized output of GNSS ob
 <tr><td>Observed Signal Strength &nbsp; &nbsp;</td><td>34.750</td><td>1X,F8.3</td></tr>
 
 </table>
-</p>
-
-<p>Note on 'Slip Count':<br>
-It is the current understanding of BNC's authors that different Slip Counts could be referred to different phase measurements (e.g. L1C and L1P). The 'loss-of-lock' flags in RINEX are an example for making such kind of information available per phase measurement. However, it looks like we do have only one Slip Count in RTCM Version 3 for all phase measurements. As it could be that a receiver generates different Slip Counts for different phase measurements, we output one Slip Count per phase measurement to a listening real-time GNSS network engine.
 </p>
 
 <p>
