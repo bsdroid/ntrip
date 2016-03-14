@@ -1149,11 +1149,10 @@ In February 2014 the overall responsibility at BKG for the concept and realizati
 
 <p><h3>2. <a name="optsettings">Settings Details</h3></p>
 <p>
-The following chapters describe how to set BNC program options. They explain the 'Top Menu Bar', the 'Settings Canvas' with the processing options, the content of the 'Streams Canvas' and 'Logging Canvas', and the 'Bottom Menu Bar'.
+The general documentation approach is to create a separate chapter for each processing option in a sequence which follows the layout of BNC's Graphical User Interface (GUI). The advantage is that searching for help by means of the document's Table of Contents (TOC) is quite convenient. A comprehensive number of TOC entries is the accepted downside of this approach.
 </p>
 <p>
-The general documentation approach is to create a separate chapter for each processing option in a sequence which follows the layout of BNC's Graphical User Interface (GUI). The advantage is that searching for help by means of the document's Table of Contents is quite convenient. 
-
+The following chapters describe how to set BNC program options. They explain the 'Top Menu Bar', the 'Settings Canvas' with the processing options, the content of the 'Streams Canvas' and 'Logging Canvas', and the 'Bottom Menu Bar'.
 </p>
 
 <p><h4>2.1 <a name="topmenu">Top Menu Bar</h4></p>
@@ -1297,7 +1296,7 @@ See BNC's command line option '-nw' for an auto-start of BNC in 'no window' mode
 
 <p><h4>2.3.5 <a name="rawout">Raw Output File - optional</h4></p>
 <p>
-BNC can save all data coming in through various streams in one daily file. The information is recorded in the specified 'Raw output file' in the received order and format. This feature allows a BNC user to run the PPP option offline with observations, Broadcast Corrections, and Broadcast Ephemeris being read from a previously saved file. It supports the offline repetition of a real-time situation for debugging purposes and is not meant for post processing.
+BNC can save all data coming in through various streams in one daily file. The information is recorded in the specified 'Raw output file' in the received order and format. This feature allows a BNC user to run the PPP option offline with observations, Broadcast Corrections, and Broadcast Ephemeris being read from a previously saved file. It supports the offline repetition of a real-time situation for debugging purposes (Record &amp; Replay functionality) and is not meant for post processing.
 </p>
 <p>
 Data will be saved in blocks in the received format separated by ASCII time stamps like (example):
@@ -4587,7 +4586,7 @@ for producing QC plots from RINEX files. It could be used via 'crontab':
 
 <p><h4>2.20.4 <a name="post">File Mode - optional</h4></p>
 <p>
-Although BNC is primarily a real-time online tool, for debugging purposes it can be run offline to read data from a file previously saved through option 'Raw output file'. Enter the following command line option for that
+Although BNC is primarily a real-time online tool, for debugging purposes it can be run offline to read data from a file previously saved through option 'Raw output file' (Record &amp; Replay functionality). Enter the following command line option for that
 </p>
 <p>
 &nbsp; &nbsp; &nbsp; --file &lt;<u>inputFileName</u>&gt;
