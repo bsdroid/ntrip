@@ -153,7 +153,8 @@ t_irc RTCM2Decoder::Decode(char* buffer, int bufLen, vector<string>& errmsg) {
           frqObs1P->_code = _ObsBlock.rng_P1[iSat];
           frqObs1P->_phaseValid = true;
           frqObs1P->_phase = _ObsBlock.resolvedPhase_L1(iSat);
-          frqObs1P->_slipCounter = _ObsBlock.slip_L1[iSat];
+          //frqObs1P->_slipCounter = _ObsBlock.slip_L1[iSat];
+          frqObs1P->_slipCounter = -1; // because RTCM2 definition is vice versa to RTCM3
           obs._obs.push_back(frqObs1P);
 
           t_frqObs* frqObs2P = new t_frqObs;
@@ -162,7 +163,8 @@ t_irc RTCM2Decoder::Decode(char* buffer, int bufLen, vector<string>& errmsg) {
           frqObs2P->_code = _ObsBlock.rng_P2[iSat];
           frqObs2P->_phaseValid = true;
           frqObs2P->_phase = _ObsBlock.resolvedPhase_L2(iSat);
-          frqObs2P->_slipCounter = _ObsBlock.slip_L2[iSat];
+          //frqObs2P->_slipCounter = _ObsBlock.slip_L2[iSat];
+          frqObs2P->_slipCounter = -1; // because RTCM2 definition is vice versa to RTCM3
           obs._obs.push_back(frqObs2P);
 
           _obsList.push_back(obs);
@@ -379,12 +381,14 @@ void RTCM2Decoder::translateCorr2Obs(vector<string>& errmsg) {
           case 0: // --- L1 ---
             frqObs1P->_phaseValid = true;
             frqObs1P->_phase = *obsVal / LAMBDA_1;
-            frqObs1P->_slipCounter = corr->lock1;
+            //frqObs1P->_slipCounter = corr->lock1;
+            frqObs1P->_slipCounter = -1; // because RTCM2 definition is vice versa to RTCM3
             break;
           case 1: // --- L2 ---
             frqObs2P->_phaseValid = true;
             frqObs2P->_phase = *obsVal / LAMBDA_2;
-            frqObs2P->_slipCounter = corr->lock2;
+            //frqObs2P->_slipCounter = corr->lock2;
+            frqObs2P->_slipCounter = -1; // because RTCM2 definition is vice versa to RTCM3
             break;
           case 2: // --- C1 / P1 ---
             if (corr->Pind1) {
