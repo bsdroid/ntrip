@@ -1,6 +1,6 @@
 #      
-# Apriori coordinates with eccentricities, antennas and receivers, status 2015-10-20
-#-----------------------------------------------------------------------------------
+# Apriori coordinates with eccentricities, antennas and receivers, Reference System ITRF2008, status 2015-10-20 
+#--------------------------------------------------------------------------------------------------------------
 ABMF0      2919785.7594  -5383744.9861   1774604.7897       0.0000     0.0000     0.0000 TRM57971.00     NONE LEICA GR25
 ABMF7      2919785.7594  -5383744.9861   1774604.7897       0.0000     0.0000     0.0000 TRM57971.00     NONE LEICA GR25
 ADH10      3373730.5499   4733244.3276   2616975.1962       0.0000     0.0000     0.0000 TRM57971.00     NONE TRIMBLE NETR9
