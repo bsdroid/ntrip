@@ -5217,7 +5217,7 @@ Command line option '--help' provides a complete list of all configuration param
 
 <b>PPP Client Panel 2 keys:</b>
    PPP/staTable {Station specifications table [character string, semicolon separated list, each element in quotation marks, example:
-                "FFMJ1,100.0,100.0,100.0,100.0,100.0,100.0,0.1,3e-6,7777";"CUT07,100.0,100.0,100.0,100.0,100.0,100.0,0.1,3e-6,7778"]}
+                "FFMJ1,100.0,100.0,100.0,100.0,100.0,100.0,0.1,3e-6,7777;CUT07,100.0,100.0,100.0,100.0,100.0,100.0,0.1,3e-6,7778"]}
 
 <b>PPP Client Panel 3 keys:</b>
    PPP/lcGPS        {Select linear combination from GPS code or phase data [character string; P3|P3&L3]}
@@ -5246,7 +5246,7 @@ Command line option '--help' provides a complete list of all configuration param
 
 <b>Combine Corrections Panel keys:</b>
    cmbStreams      {Correction streams table [character string, semicolon separated list, each element in quotation marks, example:
-                   "IGS01 ESA 1.0";"IGS03 BKG 1.0"]}
+                   "IGS01 ESA 1.0;IGS03 BKG 1.0"]}
    cmbMethodFilter {Combination approach [character string: Single-Epoch|Filter]
    cmbMaxres       {Clock outlier residuum threshold in meters [floating-point number]
    cmbSampl        {Clock sampling rate [integer number of seconds: 10|20|30|40|50|60]}
@@ -5254,8 +5254,8 @@ Command line option '--help' provides a complete list of all configuration param
 
 <b>Upload Corrections Panel keys:</b>
    uploadMountpointsOut   {Upload corrections table [character string, semicolon separated list, each element in quotation marks, example:
-                          "www.igs-ip.net,2101,IGS01,pass,IGS08,0,/home/user/BNC$[GPSWD}.sp3,/home/user/BNC$[GPSWD}.clk,258,1,0,0 byte(s)";
-                          "www.euref-ip.net,2101,EUREF01,pass,ETRF2000,0,,,258,2,0,0 byte(s)"]}
+                          "www.igs-ip.net,2101,IGS01,pass,IGS08,0,/home/user/BNC$[GPSWD}.sp3,/home/user/BNC$[GPSWD}.clk,258,1,0;
+                           www.euref-ip.net,2101,EUREF01,pass,ETRF2000,0,,,258,2,0"]}
    uploadIntr             {Length of SP3 and Clock RINEX file interval [character string: 1 min|2 min|5 min|10 min|15 min|30 min|1 hour|1 day]}
    uploadSamplRtcmEphCorr {Orbit corrections stream sampling rate [integer number of seconds: 0|5|10|15|20|25|30|35|40|45|50|55|60]}
    uploadSamplSp3         {SP3 file sampling rate [integer number of minutes: 0-15]}
@@ -5287,8 +5287,8 @@ Command line option '--help' provides a complete list of all configuration param
 
 <b>Add Stream keys:</b>
    mountPoints   {Mountpoints [character string, semicolon separated list, example:
-                 //user:pass@www.igs-ip.net:2101/FFMJ1 RTCM_3.1 DEU 50.09 8.66 no 2;
-                 //user:pass@www.igs-ip.net:2101/FFMJ2 RTCM_3.1 DEU 50.09 8.66 no 2}
+                 "//user:pass@www.igs-ip.net:2101/FFMJ1 RTCM_3.1 DEU 50.09 8.66 no 2;
+                 //user:pass@www.igs-ip.net:2101/FFMJ2 RTCM_3.1 DEU 50.09 8.66 no 2"}
    ntripVersion  {Ntrip Version [character string: 1|2|2s|R|U]}
    casterUrlList {Visited Broadcasters [character string, comma separated list]}
 
@@ -5298,17 +5298,25 @@ Command line option '--help' provides a complete list of all configuration param
    font      {Font specification [character string in quotation marks, example: "Helvetica,14,-1,5,50,0,0,0,0,0"]}
 
 <b>Note:</b>
-Configuration options which contain one or more blank characters must be enclosed by quotation marks when specified on command line.
+The syntax of some command line configuration options slightly differs from that 
+used in configuration files: Configuration file options which contain one or more
+blank characters or contain a semicolon separated parameter list must be enclosed
+by quotation marks when specified on command line.
 
 <b>Example command lines:</b>
 (1) /home/weber/bin/bnc
 (2) /Applications/bnc.app/Contents/MacOS/bnc
 (3) /home/weber/bin/bnc --conf /home/weber/MyConfigFile.bnc
 (4) bnc --conf /Users/weber/.config/BKG/BNC.bnc -nw
-(5) bnc --conf /dev/null --key startTab 4 --key reqcAction Edit/Concatenate --key reqcObsFile AGAR.15O --key reqcOutObsFile AGAR_X.15O --key reqcRnxVersion 2 --key reqcSampling 30 --key reqcV2Priority CWPX_?
-(6) bnc --key mountPoints "//user:pass@mgex.igs-ip.net:2101/CUT07 RTCM_3.0 ETH 9.03 38.74 no 2;//user:pass@www.igs-ip.net:2101/FFMJ1 RTCM_3.1 DEU 50.09 8.66 no 2"
+(5) bnc --conf /dev/null --key startTab 4 --key reqcAction Edit/Concatenate --key reqcObsFile AGAR.15O --key reqcOutObsFile AGAR_X.15O 
+        --key reqcRnxVersion 2 --key reqcSampling 30 --key reqcV2Priority CWPX_?
+(6) bnc --key mountPoints "//user:pass@mgex.igs-ip.net:2101/CUT07 RTCM_3.0 ETH 9.03 38.74 no 2;
+                           //user:pass@www.igs-ip.net:2101/FFMJ1 RTCM_3.1 DEU 50.09 8.66 no 2"
 (7) bnc --key cmbStreams "CLK11 BLG 1.0;CLK93 CNES 1.0"
-(8) bnc --key PPP/staTable "FFMJ1,100.0,100.0,100.0,100.0,100.0,100.0,0.1,3e-6,7777;CUT07,100.0,100.0,100.0,100.0,100.0,100.0,0.1,3e-6,7778"
+(8) bnc --key uploadMountpointsOut "products.igs-ip.net,98756,TEST,letmein,IGS08,2,/Users/weber/BNC${GPSWD}.clk,,33,3,2;
+                                    www.euref-ip.net,333,TEST2,aaaaa,NAD83,2,,,33,5,5"
+(9) bnc --key PPP/staTable "FFMJ1,100.0,100.0,100.0,100.0,100.0,100.0,0.1,3e-6,7777;
+                            CUT07,100.0,100.0,100.0,100.0,100.0,100.0,0.1,3e-6,7778"
 </pre>
 <p><h4>3.4 <a name="links">Further Reading</h3></p>
 
