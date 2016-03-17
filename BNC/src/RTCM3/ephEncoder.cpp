@@ -92,7 +92,7 @@ int t_ephEncoder::RTCM3(const t_ephGPS& eph, unsigned char *buffer) {
     GPSADDBITSFLOAT(24, eph._OMEGADOT, M_PI/static_cast<double>(1<<30)
     /static_cast<double>(1<<13))
     GPSADDBITSFLOAT(8, eph._TGD, 1.0/static_cast<double>(1<<30)/static_cast<double>(1<<1))
-    GPSADDBITS(6, eph._health) 
+    GPSADDBITS(6, eph._health)
     GPSADDBITS(1, eph._L2PFlag)
     GPSADDBITS(1, eph._fitInterval)
   }
@@ -125,11 +125,12 @@ int t_ephEncoder::RTCM3(const t_ephGlo& eph, unsigned char *buffer)
   GLONASSADDBITS(1, 0)
   GLONASSADDBITS(1, 0)
   GLONASSADDBITS(2, 0)
-  eph._tki=eph._tki+3*60*60;
-  GLONASSADDBITS(5, static_cast<int>(eph._tki)/(60*60))
-  GLONASSADDBITS(6, (static_cast<int>(eph._tki)/60)%60)
-  GLONASSADDBITS(1, (static_cast<int>(eph._tki)/30)%30)
-  GLONASSADDBITS(1, eph._health) 
+  int tki = static_cast<int>(eph._tki)+3*60*60;
+  if (tki > 86400) {tki -= 86400;}
+  GLONASSADDBITS(5, tki/(60*60))
+  GLONASSADDBITS(6, (tki/60)%60)
+  GLONASSADDBITS(1, (tki/30)%30)
+  GLONASSADDBITS(1, eph._health)
   GLONASSADDBITS(1, 0)
   unsigned long long timeofday = (static_cast<int>(eph._tt.gpssec()+3*60*60-eph._gps_utc)%86400);
   GLONASSADDBITS(7, timeofday/60/15)
