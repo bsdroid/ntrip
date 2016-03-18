@@ -94,25 +94,27 @@ void bncAntex::print() const {
 QString bncAntex::pcoSinexString(const std::string& antName, t_frequency::type frqType) {
 
   if (antName.find("NULLANTENNA") != string::npos) {
-    return QString();
+    return QString(" ------ ------ ------");
   }
 
   QString antNameQ = antName.c_str();
-
   if (_maps.find(antNameQ) == _maps.end()) {
-    return QString();
+    return QString(" ------ ------ ------");
   }
 
   t_antMap* map = _maps[antNameQ];
   if (map->frqMap.find(frqType) == map->frqMap.end()) {
-    return QString();
+    return QString(" ------ ------ ------");
   }
 
   t_frqMap* frqMap = map->frqMap[frqType];
 
-  return QString(" %1 %2 %3").arg(frqMap->neu[2], 6, 'f', 4)
-                             .arg(frqMap->neu[0], 6, 'f', 4)
-                             .arg(frqMap->neu[1], 6, 'f', 4);
+  QString u, n,e;
+  u.sprintf("%+6.4f" ,frqMap->neu[2]); if (u.mid(1,1) == "0") {u.remove(1,1);}
+  n.sprintf("%+6.4f" ,frqMap->neu[0]); if (n.mid(1,1) == "0") {n.remove(1,1);}
+  e.sprintf("%+6.4f" ,frqMap->neu[1]); if (e.mid(1,1) == "0") {e.remove(1,1);}
+
+  return QString(" %1 %2 %3").arg(u).arg(n).arg(e);
 }
 
 // Read ANTEX File

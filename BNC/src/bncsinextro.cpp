@@ -157,6 +157,7 @@ void bncSinexTro::writeHeader(const QDateTime& datTim) {
            <<  " -----"
            << _antex->pcoSinexString(_opt->_antNameRover, t_frequency::G1).toStdString()
            << _antex->pcoSinexString(_opt->_antNameRover, t_frequency::G2).toStdString()
+           <<  " ---------"
         << endl;
       _out << "-SITE/GPS_PHASE_CENTER" << endl << endl;
     }
@@ -168,6 +169,7 @@ void bncSinexTro::writeHeader(const QDateTime& datTim) {
            <<  " -----"
            << _antex->pcoSinexString(_opt->_antNameRover, t_frequency::R1).toStdString()
            << _antex->pcoSinexString(_opt->_antNameRover, t_frequency::R2).toStdString()
+           <<  " ---------"
         << endl;
       _out << "-SITE/GLONASS_PHASE_CENTER" << endl << endl;
     }
