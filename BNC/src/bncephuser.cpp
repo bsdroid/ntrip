@@ -223,7 +223,7 @@ void bncEphUser::checkEphemeris(t_eph* eph) {
     }
   }
   else if (eph->type() == t_eph::QZSS) {
-    if (timeDiff > 1*1800) {
+    if (timeDiff > 4*3600) { // orbit parameters are valid for 7200 seconds (at minimum)
       eph->setCheckState(t_eph::outdated);
       return;
     }
@@ -256,7 +256,7 @@ void bncEphUser::checkEphemeris(t_eph* eph) {
     double diff = (xc.Rows(1,3) - xcL.Rows(1,3)).norm_Frobenius();
 
     // some lines to allow update of ephemeris data sets after outage
-    if      (eph->type() == t_eph::GPS    && dt > 4*3600) {
+    if      (eph->type() == t_eph::GPS     && dt > 4*3600) {
       ephL->setCheckState(t_eph::outdated);
       return;
     }
@@ -268,15 +268,15 @@ void bncEphUser::checkEphemeris(t_eph* eph) {
       ephL->setCheckState(t_eph::outdated);
       return;
     }
-    else if (eph->type() == t_eph::QZSS    && dt > 1*1800) {
+    else if (eph->type() == t_eph::QZSS    && dt > 4*3600) {
       ephL->setCheckState(t_eph::outdated);
       return;
     }
-    else if  (eph->type() == t_eph::SBAS   && dt > 600)   {
+    else if  (eph->type() == t_eph::SBAS   && dt > 600)    {
       ephL->setCheckState(t_eph::outdated);
       return;
     }
-    else if  (eph->type() == t_eph::BDS    && dt > 6*3600)   {
+    else if  (eph->type() == t_eph::BDS    && dt > 6*3600) {
       ephL->setCheckState(t_eph::outdated);
       return;
     }
