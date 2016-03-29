@@ -133,7 +133,7 @@ bool RTCM3Decoder::DecodeRTCM3GPS(unsigned char* data, int size)
     t_frqObs *frqObs = new t_frqObs;
     /* L1 */
     GETBITS(code, 1);
-    frqObs->_rnxType2ch = code ? "1W" : "1C";
+    (code) ? frqObs->_rnxType2ch.assign("1W") : frqObs->_rnxType2ch.assign("1C");
     GETBITS(l1range, 24);
     GETBITSSIGN(i, 20);
     if((i&((1<<20)-1)) != 0x80000)
@@ -167,10 +167,10 @@ bool RTCM3Decoder::DecodeRTCM3GPS(unsigned char* data, int size)
       GETBITS(code,2);
       switch(code)
       {
-      case 3: frqObs->_rnxType2ch = "2W"; /* or "2Y"? */ break;
-      case 2: frqObs->_rnxType2ch = "2W"; break;
-      case 1: frqObs->_rnxType2ch = "2P"; break;
-      case 0: frqObs->_rnxType2ch = "2X"; /* or "2S" or "2L"? */ break;
+      case 3: frqObs->_rnxType2ch.assign("2W"); /* or "2Y"? */ break;
+      case 2: frqObs->_rnxType2ch.assign("2W"); break;
+      case 1: frqObs->_rnxType2ch.assign("2P"); break;
+      case 0: frqObs->_rnxType2ch.assign("2X"); /* or "2S" or "2L"? */ break;
       }
       GETBITSSIGN(i,14);
       if((i&((1<<14)-1)) != 0x2000)
@@ -701,7 +701,7 @@ bool RTCM3Decoder::DecodeRTCM3MSM(unsigned char* data, int size)
           if(cd.code)
           {
             t_frqObs *frqObs = new t_frqObs;
-            frqObs->_rnxType2ch = cd.code;
+            frqObs->_rnxType2ch.assign(cd.code);
 
             switch(type % 10)
             {
@@ -893,7 +893,7 @@ bool RTCM3Decoder::DecodeRTCM3GLONASS(unsigned char* data, int size)
 
     t_frqObs *frqObs = new t_frqObs;
     /* L1 */
-    frqObs->_rnxType2ch = code ? "1P" : "1C";
+    (code) ? frqObs->_rnxType2ch.assign("1P") : frqObs->_rnxType2ch.assign("1C");
     GETBITS(l1range, 25);
     GETBITSSIGN(i, 20);
     if((i&((1<<20)-1)) != 0x80000)
@@ -927,10 +927,10 @@ bool RTCM3Decoder::DecodeRTCM3GLONASS(unsigned char* data, int size)
       GETBITS(code,2);
       switch(code)
       {
-      case 3: frqObs->_rnxType2ch = "2P"; break;
-      case 2: frqObs->_rnxType2ch = "2P"; break;
-      case 1: frqObs->_rnxType2ch = "2P"; break;
-      case 0: frqObs->_rnxType2ch = "2C"; break;
+      case 3: frqObs->_rnxType2ch.assign("2P"); break;
+      case 2: frqObs->_rnxType2ch.assign("2P"); break;
+      case 1: frqObs->_rnxType2ch.assign("2P"); break;
+      case 0: frqObs->_rnxType2ch.assign("2C"); break;
       }
       GETBITSSIGN(i,14);
       if((i&((1<<14)-1)) != 0x2000)

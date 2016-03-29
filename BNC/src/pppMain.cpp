@@ -155,16 +155,16 @@ void t_pppMain::readOptions() {
     opt->_nmeaPort     = hlp[9].toInt();
 
     if (_realTime) {
-      opt->_corrMount = settings.value("PPP/corrMount").toString().toAscii().data();
+      opt->_corrMount.assign(settings.value("PPP/corrMount").toString().toStdString());
     }
     else {
-      opt->_rinexObs = settings.value("PPP/rinexObs").toString().toAscii().data();
-      opt->_rinexNav = settings.value("PPP/rinexNav").toString().toAscii().data();
-      opt->_corrFile = settings.value("PPP/corrFile").toString().toAscii().data();
+      opt->_rinexObs.assign(settings.value("PPP/rinexObs").toString().toStdString());
+      opt->_rinexNav.assign(settings.value("PPP/rinexNav").toString().toStdString());
+      opt->_corrFile.assign(settings.value("PPP/corrFile").toString().toStdString());
     }
 
-    opt->_crdFile       = settings.value("PPP/crdFile").toString().toAscii().data();
-    opt->_antexFileName = settings.value("PPP/antexFile").toString().toAscii().data();
+    opt->_crdFile.assign(settings.value("PPP/crdFile").toString().toStdString());
+    opt->_antexFileName.assign(settings.value("PPP/antexFile").toString().toStdString());
 
     opt->_sigmaC1      = settings.value("PPP/sigmaC1").toDouble(); if (opt->_sigmaC1 <= 0.0) opt->_sigmaC1 =  2.0;
     opt->_sigmaL1      = settings.value("PPP/sigmaL1").toDouble(); if (opt->_sigmaL1 <= 0.0) opt->_sigmaL1 = 0.01;
@@ -352,7 +352,7 @@ void t_pppMain::readOptions() {
 
     // Information from the coordinate file
     // ------------------------------------
-    string crdFileName(settings.value("PPP/crdFile").toString().toAscii().data());
+    string crdFileName(settings.value("PPP/crdFile").toString().toStdString());
     if (!crdFileName.empty()) {
       vector<t_pppCrdFile::t_staInfo> staInfoVec;
       t_pppCrdFile::readCrdFile(crdFileName, staInfoVec);

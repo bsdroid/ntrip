@@ -392,7 +392,7 @@ void RTCM3coDecoder::sendResults() {
     for (unsigned jj = 0; jj < _codeBias.Sat[ii].NumberOfCodeBiases; jj++) {
       const CodeBias::BiasSat::CodeBiasEntry& biasEntry = _codeBias.Sat[ii].Biases[jj];
       t_frqCodeBias frqCodeBias;
-      frqCodeBias._rnxType2ch = codeTypeToRnxType(sysCh, biasEntry.Type);
+      frqCodeBias._rnxType2ch.assign(codeTypeToRnxType(sysCh, biasEntry.Type));
       frqCodeBias._value      = biasEntry.Bias;
       if (!frqCodeBias._rnxType2ch.empty()) {
         satCodeBias._bias.push_back(frqCodeBias);
@@ -449,7 +449,7 @@ void RTCM3coDecoder::sendResults() {
     for (unsigned jj = 0; jj < _phaseBias.Sat[ii].NumberOfPhaseBiases; jj++) {
       const PhaseBias::PhaseBiasSat::PhaseBiasEntry& biasEntry = _phaseBias.Sat[ii].Biases[jj];
       t_frqPhaseBias frqPhaseBias;
-      frqPhaseBias._rnxType2ch           = codeTypeToRnxType(sysCh, biasEntry.Type);
+      frqPhaseBias._rnxType2ch.assign(codeTypeToRnxType(sysCh, biasEntry.Type));
       frqPhaseBias._value                = biasEntry.Bias;
       frqPhaseBias._fixIndicator         = biasEntry.SignalIntegerIndicator;
       frqPhaseBias._fixWideLaneIndicator = biasEntry.SignalsWideLaneIntegerIndicator;
