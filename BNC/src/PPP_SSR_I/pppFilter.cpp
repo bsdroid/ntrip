@@ -294,6 +294,12 @@ t_irc t_pppFilter::cmpBancroft(t_epoData* epoData) {
 
   bancroft(BB, _xcBanc);
 
+  if (isnan(_xcBanc(1)) ||
+      isnan(_xcBanc(2)) ||
+      isnan(_xcBanc(3))) {
+    return failure;
+  }
+
   // Ellipsoidal Coordinates
   // ------------------------
   xyz2ell(_xcBanc.data(), _ellBanc.data());
@@ -1063,6 +1069,11 @@ t_irc t_pppFilter::update_p(t_epoData* epoData) {
                 << epoData->sizeSys(s) << endl;
           }
         }
+      }
+
+      if (!nObs) {
+        restoreState(epoData);
+        return failure;
       }
 
       // Prepare first-design Matrix, vector observed-computed
