@@ -129,6 +129,9 @@ bncCaster::~bncCaster() {
   QListIterator<bncGetThread*> it(_threads);
   while(it.hasNext()){
     bncGetThread* thread = it.next();
+    disconnect(thread, 0, 0, 0);
+    _staIDs.removeAll(thread->staID());
+    _threads.removeAll(thread);
     thread->terminate();
   }
   delete _out;
