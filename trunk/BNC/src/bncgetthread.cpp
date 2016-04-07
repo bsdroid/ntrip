@@ -396,12 +396,17 @@ bncGetThread::~bncGetThread() {
 ////////////////////////////////////////////////////////////////////////////
 void bncGetThread::terminate() {
   _isToBeDeleted = true;
-  if (!isRunning()) {
-    delete this;
+
+  if(_nmeaPortsMap.contains(_staID)) {
+    _nmeaPortsMap.remove(_staID);
   }
-  _nmeaPortsMap.remove(_staID);
-  delete _nmeaServer;
-  delete _nmeaSockets;
+  if (_nmeaServer) {
+    delete _nmeaServer;
+  }
+  if (_nmeaSockets) {
+    delete _nmeaSockets;
+  }
+  delete this;
 }
 
 // Run

@@ -56,9 +56,10 @@
 
 using namespace std;
 
+
 void catch_signal(int) {
   cout << "Program Interrupted by Ctrl-C" << endl;
-  exit(0);
+  qApp->quit();
 }
 
 // Main Program
@@ -496,11 +497,15 @@ int main(int argc, char* argv[]) {
   if (interactive) {
     delete bncWin;
   }
+  else {
+    BNC_CORE->stopPPP();
+    BNC_CORE->stopCombination();
+  }
   if (caster) {
-    delete caster;
+    delete caster; caster = 0; BNC_CORE->setCaster(0);
   }
   if (casterEph) {
-    delete casterEph;
+    delete casterEph; casterEph = 0;
   }
   if (rawFile) {
     delete rawFile;
