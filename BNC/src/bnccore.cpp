@@ -140,6 +140,7 @@ t_bncCore::~t_bncCore() {
   delete _dateAndTimeGPS;
   delete _rawFile;
   delete _bncComb;
+  delete _pppMain;
 }
 
 // Write a Program Message

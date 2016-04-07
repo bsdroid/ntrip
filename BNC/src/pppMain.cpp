@@ -102,6 +102,12 @@ void t_pppMain::stop() {
     while (it.hasNext()) {
       t_pppThread* pppThread = it.next();
       pppThread->exit();
+      if (BNC_CORE->mode() != t_bncCore::interactive) {
+        while(!pppThread->isFinished()) {
+          pppThread->wait();
+        }
+        delete pppThread;
+      }
     }
     _pppThreads.clear();
   }
