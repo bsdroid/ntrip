@@ -3,7 +3,7 @@
 #define BNCVERSION_H
 
 #define BNCVERSION "2.12"
-
+#define BNCRELEASE ".0"
 #define BNCPGMNAME "BNC " BNCVERSION
 
 #if   defined(Q_OS_LINUX)
