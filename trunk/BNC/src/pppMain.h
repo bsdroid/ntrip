@@ -4,6 +4,7 @@
 #include <QtCore>
 #include "pppOptions.h"
 #include "pppThread.h"
+#include "bnccore.h"
 
 namespace BNC_PPP {
 

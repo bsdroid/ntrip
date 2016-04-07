@@ -35,7 +35,7 @@
  *
  * Created:    29-Jul-2014
  *
- * Changes:    
+ * Changes:
  *
  * -----------------------------------------------------------------------*/
 
@@ -61,7 +61,7 @@ t_pppThread::t_pppThread(const t_pppOptions* opt) : QThread(0) {
 
   connect(this, SIGNAL(finished()), this, SLOT(deleteLater()));
 
-  connect(this, SIGNAL(newMessage(QByteArray,bool)), 
+  connect(this, SIGNAL(newMessage(QByteArray,bool)),
           BNC_CORE, SLOT(slotMessage(const QByteArray,bool)));
 }
 
@@ -74,7 +74,7 @@ t_pppThread::~t_pppThread() {
 // Run (virtual)
 ////////////////////////////////////////////////////////////////////////////
 void t_pppThread::run() {
-  
+
   try {
     _pppRun = new t_pppRun(_opt);
     if (_opt->_realTime) {
