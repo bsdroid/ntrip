@@ -23,6 +23,8 @@ debug:MOC_DIR=.moc/debug
 release:OBJECTS_DIR=.obj/release
 release:MOC_DIR=.moc/release
 
+debug:DEFINES  += BNC_DEBUG
+
 # Include Path
 # ------------
 INCLUDEPATH += . ../newmat ./RTCM3 ./RTCM3/clock_and_orbit ./RTCM \
