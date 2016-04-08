@@ -408,14 +408,15 @@ void bncGetThread::terminate() {
   }
 
 #ifdef BNC_DEBUG
-  while (!isFinished()) {
-    wait();
+  if (BNC_CORE->mode() != t_bncCore::interactive) {
+    while (!isFinished()) {wait();}
+    delete this;
   }
-  delete this;
+  else {
+    if (!isRunning()) {delete this;}
+  }
 #else
-    if (!isRunning()) {
-      delete this;
-    }
+    if (!isRunning()) {delete this;}
 #endif
 
 }
