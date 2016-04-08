@@ -2041,7 +2041,7 @@ void bncWindow::startRealTime() {
   connect (_caster, SIGNAL(mountPointsRead(QList<bncGetThread*>)),
            this, SLOT(slotMountPointsRead(QList<bncGetThread*>)));
 
-  BNC_CORE->slotMessage("========== Start BNC v" BNCVERSION " ("BNC_OS") ==========", true);
+  BNC_CORE->slotMessage("========== Start BNC v" BNCVERSION BNCRELEASE" ("BNC_OS") ==========", true);
 
   bncSettings settings;
 

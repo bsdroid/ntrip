@@ -465,7 +465,7 @@ int main(int argc, char* argv[]) {
 
     BNC_CORE->connect(caster, SIGNAL(getThreadsFinished()), &app, SLOT(quit()));
 
-    BNC_CORE->slotMessage("========== Start BNC v" BNCVERSION " ("BNC_OS") ==========", true);
+    BNC_CORE->slotMessage("========== Start BNC v" BNCVERSION BNCRELEASE" ("BNC_OS") ==========", true);
 
     // Normal case - data from Internet
     // --------------------------------
