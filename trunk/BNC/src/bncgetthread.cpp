@@ -406,7 +406,18 @@ void bncGetThread::terminate() {
   if (_nmeaSockets) {
     delete _nmeaSockets;
   }
+
+#ifdef BNC_DEBUG
+  while (!isFinished()) {
+    wait();
+  }
   delete this;
+#else
+    if (!isRunning()) {
+      delete this;
+    }
+#endif
+
 }
 
 // Run
