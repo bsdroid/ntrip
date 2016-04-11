@@ -160,7 +160,7 @@ t_irc bncEphUser::putNewEph(t_eph* eph, bool check) {
   }
 
   if ((ephOld == 0 || newEph->isNewerThan(ephOld)) &&
-      (eph->checkState() != t_eph::bad ||
+      (eph->checkState() != t_eph::bad &&
        eph->checkState() != t_eph::outdated)) {
     deque<t_eph*>& qq = _eph[prn];
     qq.push_back(newEph);
@@ -247,13 +247,15 @@ void bncEphUser::checkEphemeris(t_eph* eph) {
   const double MAXDIFF = 1000.0;
   QString      prn     = QString(eph->prn().toInternalString().c_str());
   t_eph*       ephL    = ephLast(prn);
+
   if (ephL) {
     ColumnVector xcL(4);
     ColumnVector vvL(3);
     ephL->getCrd(eph->TOC(), xcL, vvL, false);
 
-    double dt   = eph->TOC() - ephL->TOC();
-    double diff = (xc.Rows(1,3) - xcL.Rows(1,3)).norm_Frobenius();
+    double dt    = eph->TOC() - ephL->TOC();
+    double diff  = (xc.Rows(1,3) - xcL.Rows(1,3)).norm_Frobenius();
+    double diffC = fabs(xc(4) - xcL(4)) * t_CST::c;
 
     // some lines to allow update of ephemeris data sets after outage
     if      (eph->type() == t_eph::GPS     && dt > 4*3600) {
@@ -281,7 +283,7 @@ void bncEphUser::checkEphemeris(t_eph* eph) {
       return;
     }
 
-    if (diff < MAXDIFF) {
+    if (diff < MAXDIFF && diffC < MAXDIFF) {
       if (dt != 0.0) {
         eph->setCheckState(t_eph::ok);
         ephL->setCheckState(t_eph::ok);
