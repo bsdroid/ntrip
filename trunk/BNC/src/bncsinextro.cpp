@@ -33,12 +33,7 @@ bncSinexTro::bncSinexTro(const t_pppOptions* opt,
   _opt       = opt;
   (!sampl) ? _sampl = 1 : _sampl =  sampl;
 
-  if (!_opt->_antexFileName.empty()) {
-    _antex = new bncAntex(_opt->_antexFileName.c_str());
-  }
-  else {
-    _antex = 0;
-  }
+  _antex = 0;
 }
 
 // Destructor
@@ -148,7 +143,8 @@ void bncSinexTro::writeHeader(const QDateTime& datTim) {
        << _opt->_antNameRover << " -----" << endl;
   _out << "-SITE/ANTENNA" << endl << endl;
 
-  if (_antex) {
+  if (!_opt->_antexFileName.empty()) {
+    _antex = new bncAntex(_opt->_antexFileName.c_str());
     if (_opt->_LCsGPS.size()) {
       _out << "+SITE/GPS_PHASE_CENTER" << endl;
       _out << "*                           UP____ NORTH_ EAST__ UP____ NORTH_ EAST__" << endl;
@@ -195,6 +191,8 @@ void bncSinexTro::writeHeader(const QDateTime& datTim) {
         << endl;
       _out << "-SITE/BEIDOU_PHASE_CENTER" << endl << endl;
     }
+    delete _antex;
+    _antex = 0;
   }
 
   _out << "+SITE/ECCENTRICITY" << endl;
