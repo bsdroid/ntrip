@@ -289,7 +289,7 @@ t_irc bncAntex::readFile(const QString& fileName) {
       }
     }
   }
-
+  inFile.close();
   delete newFrqMap;
   delete newAntMap;
 
