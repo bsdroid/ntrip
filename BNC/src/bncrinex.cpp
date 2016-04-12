@@ -324,6 +324,11 @@ void bncRinex::resolveFileName(const QDateTime& datTim) {
   QString sklExt = settings.value("rnxSkel").toString();
   if (!sklExt.isEmpty()) {
     _sklName = path + ID4 + distStr + "." + sklExt;
+    if (sklExt.indexOf("skl",0, Qt::CaseSensitive) != -1)  {
+      _sklName = _sklName.toLower();
+    } else {
+      _sklName = _sklName.toUpper();
+    }
   }
 
   if (_rnxV3filenames) {
