@@ -2,7 +2,7 @@
 #ifndef BNCVERSION_H
 #define BNCVERSION_H
 
-#define BNCVERSION "2.12"
+#define BNCVERSION "2.13"
 #define BNCRELEASE ".0"
 #define BNCPGMNAME "BNC " BNCVERSION
 
