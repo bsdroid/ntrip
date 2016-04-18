@@ -210,7 +210,7 @@ t_irc RTCM2Decoder::Decode(char* buffer, int bufLen, vector<string>& errmsg) {
         _antList.back().message = _PP.ID();
       }
     } else if (_PP.ID() == 23) {
-      if (_msg23.validMsg) {
+      if (_msg23.validMsg && !_antType.contains(_msg23.antType.c_str())) {
         _antType.push_back(_msg23.antType.c_str());
       }
     } else if (_PP.ID() == 24) {
