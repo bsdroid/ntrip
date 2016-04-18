@@ -1392,7 +1392,7 @@ bool RTCM3Decoder::DecodeBDSEphemeris(unsigned char* data, int size)
 ////////////////////////////////////////////////////////////////////////////
 bool RTCM3Decoder::DecodeAntenna(unsigned char* data, int size)
 {
-  char *antenna;
+  char *antenna, type[256];
   int antnum;
   uint64_t numbits = 0, bitfield = 0;
 
@@ -1400,9 +1400,12 @@ bool RTCM3Decoder::DecodeAntenna(unsigned char* data, int size)
   size -= 6; /* header + crc */
 
   SKIPBITS(12)
-  GETSTRING(antnum,antenna)
-  _antType.push_back(antenna);
-
+  GETSTRING(antnum, antenna)
+  if (antnum < 265) {
+    memcpy(type, antenna, antnum);
+    type[antnum] = 0;
+    _antType.push_back(type);
+  }
   return true;
 }
 
