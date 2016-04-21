@@ -2041,7 +2041,7 @@ void bncWindow::startRealTime() {
   connect (_caster, SIGNAL(mountPointsRead(QList<bncGetThread*>)),
            this, SLOT(slotMountPointsRead(QList<bncGetThread*>)));
 
-  BNC_CORE->slotMessage("========== Start BNC v" BNCVERSION BNCRELEASE" ("BNC_OS") ==========", true);
+  BNC_CORE->slotMessage("========== Start BNC v" BNCVERSION" ("BNC_OS") ==========", true);
 
   bncSettings settings;
 
@@ -2283,7 +2283,7 @@ bncAboutDlg::bncAboutDlg(QWidget* parent) :
   QLabel* img = new QLabel();
   img->setPixmap(QPixmap(":ntrip-logo.png"));
   dlgLayout->addWidget(img, 0,0);
-  dlgLayout->addWidget(new QLabel("BKG Ntrip Client (BNC) Version "BNCVERSION BNCRELEASE), 0,1);
+  dlgLayout->addWidget(new QLabel("BKG Ntrip Client (BNC) Version "BNCVERSION), 0,1);
   dlgLayout->addWidget(tb,1,0,1,2);
   dlgLayout->addWidget(_closeButton,2,1,Qt::AlignRight);
 
