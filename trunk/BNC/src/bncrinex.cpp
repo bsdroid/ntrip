@@ -305,6 +305,7 @@ void bncRinex::resolveFileName(const QDateTime& datTim) {
                                 _rnxV3filenames, &_nextCloseEpoch);
 
   QString ID4 = _statID.left(4);
+  ID4 = ID4.toUpper();
 
   // Check name conflict
   // -------------------
@@ -322,13 +323,14 @@ void bncRinex::resolveFileName(const QDateTime& datTim) {
   }
 
   QString sklExt = settings.value("rnxSkel").toString();
+  QString sklPre;
   if (!sklExt.isEmpty()) {
     if (sklExt.indexOf("skl",0, Qt::CaseSensitive) != -1)  {
-      ID4 = ID4.toLower();
+      sklPre = ID4.toLower();
     } else if (sklExt.indexOf("SKL",0, Qt::CaseSensitive) != -1) {
-      ID4 = ID4.toUpper();
+      sklPre = ID4.toUpper();
     }
-    _sklName = path + ID4 + distStr + "." + sklExt;
+    _sklName = path + sklPre + distStr + "." + sklExt;
   }
 
   if (_rnxV3filenames) {
