@@ -640,8 +640,9 @@ t_irc bncGetThread::tryReconnect() {
       }
 #endif
     }
-
-    delete _query;
+    if (_query) {
+      delete _query;
+    }
     if      (_ntripVersion == "U") {
       _query = new bncNetQueryUdp();
     }

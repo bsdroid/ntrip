@@ -35,14 +35,20 @@ t_eph::~t_eph() {
 //
 ////////////////////////////////////////////////////////////////////////////
 void t_eph::setOrbCorr(const t_orbCorr* orbCorr) {
-  delete _orbCorr;
+  if (_orbCorr) {
+    delete _orbCorr;
+    _orbCorr = 0;
+  }
   _orbCorr = new t_orbCorr(*orbCorr);
 }
 
 //
 ////////////////////////////////////////////////////////////////////////////
 void t_eph::setClkCorr(const t_clkCorr* clkCorr) {
-  delete _clkCorr;
+  if (_clkCorr) {
+    delete _clkCorr;
+    _clkCorr = 0;
+  }
   _clkCorr = new t_clkCorr(*clkCorr);
 }
 
