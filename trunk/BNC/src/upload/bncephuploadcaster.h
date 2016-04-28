@@ -15,7 +15,8 @@ class bncEphUploadCaster : public bncEphUser {
  protected:
   virtual void ephBufferChanged();
  private:
-  bncUploadCaster* _ephUploadCaster;
+//  bncUploadCaster* _ephUploadCaster;
+  QVector<bncUploadCaster*> _casters;
 };
 
 #endif

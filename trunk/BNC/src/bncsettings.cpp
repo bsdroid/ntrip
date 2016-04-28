@@ -198,12 +198,8 @@ void bncSettings::reRead() {
     setValue_p("trafo_scr",           "");
     setValue_p("trafo_t0",            "");
     // Upload (eph)
-    setValue_p("uploadEphHost",       "");
-    setValue_p("uploadEphPort",       "");
-    setValue_p("uploadAntexFile",     "");
-    setValue_p("uploadEphMountpoint", "");
-    setValue_p("uploadEphPassword",   "");
-    setValue_p("uploadEphSample",     "5");
+    setValue_p("uploadEphMountpointsOut","");
+    setValue_p("uploadSamplRtcmEph", "0");
   }
 #ifdef GNSSCENTER_PLUGIN
   settings.endGroup();

@@ -563,19 +563,44 @@ bncWindow::bncWindow() {
 
   // Upload RTCM3 Ephemeris
   // ----------------------
-  _uploadEphHostLineEdit       = new QLineEdit(settings.value("uploadEphHost").toString());
-  _uploadEphPortLineEdit       = new QLineEdit(settings.value("uploadEphPort").toString());
-  _uploadEphPasswordLineEdit   = new QLineEdit(settings.value("uploadEphPassword").toString());
-  _uploadEphPasswordLineEdit->setEchoMode(QLineEdit::PasswordEchoOnEdit);
-  _uploadEphMountpointLineEdit = new QLineEdit(settings.value("uploadEphMountpoint").toString());
-  _uploadEphSampleSpinBox      = new QSpinBox;
-  _uploadEphSampleSpinBox->setMinimum(5);
-  _uploadEphSampleSpinBox->setMaximum(60);
-  _uploadEphSampleSpinBox->setSingleStep(5);
-  _uploadEphSampleSpinBox->setMaximumWidth(9*ww);
-  _uploadEphSampleSpinBox->setValue(settings.value("uploadEphSample").toInt());
-  _uploadEphSampleSpinBox->setSuffix(" sec");
-  _uploadEphBytesCounter       = new bncBytesCounter;
+  _uploadEphTable = new QTableWidget(0,6);
+  _uploadEphTable->setColumnCount(6);
+  _uploadEphTable->setRowCount(0);
+  _uploadEphTable->setHorizontalHeaderLabels(QString("Host, Port, Mount, Password, System, bytes").split(","));
+  _uploadEphTable->setSelectionMode(QAbstractItemView::ExtendedSelection);
+  _uploadEphTable->setSelectionBehavior(QAbstractItemView::SelectRows);
+  _uploadEphTable->horizontalHeader()->resizeSection( 0,13*ww);
+  _uploadEphTable->horizontalHeader()->resizeSection( 1, 5*ww);
+  _uploadEphTable->horizontalHeader()->resizeSection( 2, 8*ww);
+  _uploadEphTable->horizontalHeader()->resizeSection( 3, 8*ww);
+  _uploadEphTable->horizontalHeader()->resizeSection( 4,10*ww);
+  _uploadEphTable->horizontalHeader()->resizeSection( 5,12*ww);
+  _uploadEphTable->horizontalHeader()->setResizeMode(QHeaderView::Interactive);
+  _uploadEphTable->horizontalHeader()->setDefaultAlignment(Qt::AlignLeft);
+
+  connect(_uploadEphTable, SIGNAL(itemSelectionChanged()),
+          SLOT(slotBncTextChanged()));
+
+  QPushButton* addUploadEphRowButton = new QPushButton("Add Row");
+  addUploadEphRowButton->setMaximumWidth(9*ww);
+  QPushButton* delUploadEphRowButton = new QPushButton("Del Row");
+  delUploadEphRowButton->setMaximumWidth(9*ww);
+
+  _uploadSamplRtcmEphSpinBox = new QSpinBox;
+  _uploadSamplRtcmEphSpinBox->setMinimum(0);
+  _uploadSamplRtcmEphSpinBox->setMaximum(60);
+  _uploadSamplRtcmEphSpinBox->setSingleStep(5);
+  _uploadSamplRtcmEphSpinBox->setMaximumWidth(9*ww);
+  _uploadSamplRtcmEphSpinBox->setValue(settings.value("uploadSamplRtcmEph").toInt());
+  _uploadSamplRtcmEphSpinBox->setSuffix(" sec");
+
+  iRowT = _uploadEphTable->rowCount();
+  if (iRowT > 0) {
+    enableWidget(true, _uploadSamplRtcmEphSpinBox);
+  }
+  else {
+    enableWidget(false, _uploadSamplRtcmEphSpinBox);
+  }
 
   // Canvas with Editable Fields
   // ---------------------------
@@ -1190,32 +1215,25 @@ bncWindow::bncWindow() {
 
   // Upload Layout (Ephemeris)
   // -------------------------
-  QGridLayout* uploadLayoutEph = new QGridLayout;
+  QGridLayout* uploadHlpLayoutEph = new QGridLayout();
 
-  uploadLayoutEph->setColumnMinimumWidth(0, 9*ww);
-  _uploadEphPortLineEdit->setMaximumWidth(9*ww);
-  _uploadEphPasswordLineEdit->setMaximumWidth(9*ww);
-  _uploadEphMountpointLineEdit->setMaximumWidth(12*ww);
+  connect(addUploadEphRowButton, SIGNAL(clicked()), this, SLOT(slotAddUploadEphRow()));
+  connect(delUploadEphRowButton, SIGNAL(clicked()), this, SLOT(slotDelUploadEphRow()));
 
-  uploadLayoutEph->addWidget(new QLabel("Upload concatenated RTCMv3 Broadcast Ephemeris to caster.<br>"), 0, 0, 1, 50);
-  uploadLayoutEph->addWidget(new QLabel("Host"),                  1, 0);
-  uploadLayoutEph->addWidget(_uploadEphHostLineEdit,              1, 1, 1, 3);
-  uploadLayoutEph->addWidget(new QLabel("  Port"),                1, 4, Qt::AlignRight);
-  uploadLayoutEph->addWidget(_uploadEphPortLineEdit,              1, 5, 1, 1);
-  uploadLayoutEph->addWidget(new QLabel("Mountpoint           "), 2, 0);
-  uploadLayoutEph->addWidget(_uploadEphMountpointLineEdit,        2, 1);
-  uploadLayoutEph->addWidget(new QLabel("          Password"),    2, 2, Qt::AlignRight);
-  uploadLayoutEph->addWidget(_uploadEphPasswordLineEdit,          2, 3);
-  uploadLayoutEph->addWidget(new QLabel("Sampling"),              3, 0);
-  uploadLayoutEph->addWidget(_uploadEphSampleSpinBox,             3, 1);
-  uploadLayoutEph->addWidget(new QLabel("Uploaded"),              4, 0);
-  uploadLayoutEph->addWidget(_uploadEphBytesCounter,              4, 1);
-  uploadLayoutEph->setRowStretch(5, 999);
+  uploadHlpLayoutEph->addWidget(addUploadEphRowButton,               0, 0);
+  uploadHlpLayoutEph->addWidget(delUploadEphRowButton,               0, 1);
+  uploadHlpLayoutEph->addWidget(new QLabel("     Sampling"),         0, 2, Qt::AlignRight);
+  uploadHlpLayoutEph->addWidget(_uploadSamplRtcmEphSpinBox,          0, 3);
+
+  QBoxLayout* uploadLayoutEph = new QBoxLayout(QBoxLayout::TopToBottom);
+  populateUploadEphTable();
+
+  uploadLayoutEph->addWidget(new QLabel("Upload concatenated RTCMv3 Broadcast Ephemeris to caster.<br>"));
+  uploadLayoutEph->addWidget(_uploadEphTable);
+  uploadLayoutEph->addLayout(uploadHlpLayoutEph);
 
   uploadEphgroup->setLayout(uploadLayoutEph);
 
-  connect(_uploadEphHostLineEdit, SIGNAL(textChanged(const QString &)),
-          this, SLOT(slotBncTextChanged()));
 
   // Main Layout
   // -----------
@@ -1371,7 +1389,7 @@ bncWindow::bncWindow() {
   // -----------------------------
   _uploadTable->setWhatsThis(tr("<p>BNC can upload clock and orbit corrections to Broadcast Ephemeris (Broadcast Corrections) in RTCM Version 3 SSR format. You may have a situation where clocks and orbits come from an external Real-time Network Engine (1) or a situation where clock and orbit corrections are combined within BNC (2).</p><p>(1) BNC identifies a stream as coming from a Real-time Network Engine if its format is specified as 'RTNET' and hence its decoder string in the 'Streams' canvas is 'RTNET'. It encodes and uploads that stream to the specified Ntrip Broadcaster Host and Port</p><p>(2) BNC understands that it is expected to encode and upload combined Broadcast Ephemeris Corrections if you specify correction streams in the 'Combine Corrections' table.</p><p>To fill the 'Upload Corrections' table, hit the 'Add Row' button, double click on the 'Host' field to enter the IP or URL of an Ntrip Broadcaster and hit Enter. Then double click on the 'Port', 'Mount' and 'Password' fields to enter the Ntrip Broadcaster IP port (default is 80), the mountpoint and the stream upload password. An empty 'Host' option field means that you don't want to upload corrections.</p><p>Select a target coordinate reference System (e.g. IGS08) for outgoing clock and orbit corrections.</p><p>By default orbit and clock corrections refer to Antenna Phase Center (APC). Tick 'CoM' to refer uploaded corrections to Center of Mass instead of APC.</p><p>Specify a path for saving generated Broadcast Corrections plus Broadcast Ephemeris as SP3 orbit files. If the specified directory does not exist, BNC will not create such files. The following is a path example for a Linux system: /home/user/BNC${GPSWD}.sp3<br>Note that '${GPSWD}' produces the GPS Week and Day number in the filename.</p><p>Specify a path for saving generated Broadcast Correction clocks plus Broadcast Ephemeris clocks as Clock RINEX files. If the specified directory does not exist, BNC will not create Clock RINEX files. The following is a path example for a Linux system: /home/user/BNC${GPSWD}.clk<br>Note that '${GPSWD}' produces the GPS Week and Day number in the filename.</p><p>Finally, specify a SSR Provider ID (issued by RTCM), SSR Solution ID, and SSR Issue of Data number.</p><p>In case the 'Combine Corrections' table contains only one Broadcast Correction stream, BNC will add that stream content to the Broadcast Ephemeris to save results in files specified via SP3 and/or Clock RINEX file path. You should then define only the SP3 and Clock RINEX file path and no further option in the 'Upload Corrections' table.</p>"));
   addUploadRowButton->setWhatsThis(tr("<p>Hit 'Add Row' button to add another line to the 'Upload Corrections' table.</p>"));
-  delUploadRowButton->setWhatsThis(tr("<p>Hit 'Del Row' button to delete the highlighted line(s) from the Upload Corrections' table.</p>"));
+  delUploadRowButton->setWhatsThis(tr("<p>Hit 'Del Row' button to delete the highlighted line(s) from the 'Upload Corrections' table.</p>"));
   _uploadIntrComboBox->setWhatsThis(tr("<p>Select the length of the SP3 and Clock RINEX files.</p>"));
   _uploadSamplRtcmEphCorrSpinBox->setWhatsThis(tr("<p>Select a stream's orbit correction sampling interval in seconds.</p><p>A value of zero '0' tells BNC to upload all available orbit and clock correction samples together in combined messages.</p>"));
   _uploadSamplSp3SpinBox->setWhatsThis(tr("<p>Select a SP3 orbit file sampling interval in minutes.</p><p>A value of zero '0' tells BNC to store all available samples into SP3 orbit files.</p>"));
@@ -1381,13 +1399,10 @@ bncWindow::bncWindow() {
 
   // WhatsThis, Upload Ephemeris
   // ---------------------------
-  _uploadEphHostLineEdit->setWhatsThis(tr("<p>BNC can upload a Broadcast Ephemeris stream in RTCM Version 3 format. Specify the IP number or URL of an Ntrip Broadcaster to upload the stream.</p><p>An empty option field means that you don't want to upload Broadcast Ephemeris.</p>"));
-  _uploadEphPortLineEdit->setWhatsThis(tr("<p>Specify the IP port of the Ntrip Broadcaster to upload the Broadcast Ephemeris stream. Default is port 80.</p>"));
-  _uploadEphMountpointLineEdit->setWhatsThis(tr("<p>Specify a mountpoint for uploading the Broadcast Ephemeris stream.</p>"));
-  _uploadEphPasswordLineEdit->setWhatsThis(tr("<p>Specify the stream upload password protecting the mounpoint on the Ntrip Broadcaster.</p>"));
-  _uploadEphSampleSpinBox->setWhatsThis(tr("<p>Select the Broadcast Ephemeris sampling interval in seconds.</p><p>Default is '5', meaning that a complete set of Broadcast Ephemeris is uploaded every 5 seconds.</p>"));
-  _uploadEphBytesCounter->setWhatsThis(tr("<p>BNC shows the amount of data uploaded via this stream.</p>"));
-// weber
+  _uploadEphTable->setWhatsThis(tr("<p>BNC can upload a Broadcast Ephemeris stream in RTCM Version 3 format. Specify the IP number or URL of an Ntrip Broadcaster to upload the respective stream.</p>"));
+  addUploadEphRowButton->setWhatsThis(tr("<p>Hit 'Add Row' button to add another line to the 'Upload Ephemeris' table.</p>"));
+  delUploadEphRowButton->setWhatsThis(tr("<p>Hit 'Del Row' button to delete the highlighted line(s) from the 'Upload Ephemeris' table.</p>"));
+  _uploadSamplRtcmEphSpinBox->setWhatsThis(tr("<p>Select the Broadcast Ephemeris sampling interval in seconds.</p><p>Default is '5', meaning that a complete set of Broadcast Ephemeris is uploaded every 5 seconds.</p>"));
 
   // WhatsThis, Streams Canvas
   // -------------------------
@@ -1493,24 +1508,20 @@ bncWindow::~bncWindow() {
   delete _miscScanRTCMCheckBox;
   _mountPointsTable->deleteLater();
   delete _log;
+  delete _loggroup;
   _cmbTable->deleteLater();
   delete _cmbMaxresLineEdit;
   delete _cmbUseGlonass;
   delete _cmbSamplSpinBox;
-  delete _cmbMethodComboBox;
+  delete _cmbMethodComboBox;;
+  _uploadEphTable->deleteLater();
+  delete _uploadSamplRtcmEphCorrSpinBox;
   _uploadTable->deleteLater();
   delete _uploadIntrComboBox;
   delete _uploadAntexFile;
-  delete _uploadSamplRtcmEphCorrSpinBox;
+  delete _uploadSamplRtcmEphSpinBox;
   delete _uploadSamplSp3SpinBox;
   delete _uploadSamplClkRnxSpinBox;
-  delete _uploadEphHostLineEdit;
-  delete _uploadEphPortLineEdit;
-  delete _uploadEphPasswordLineEdit;
-  delete _uploadEphMountpointLineEdit;
-  delete _uploadEphSampleSpinBox;
-  delete _uploadEphBytesCounter;
-  delete _loggroup;
   delete _reqcActionComboBox;
   delete _reqcObsFileChooser;
   delete _reqcNavFileChooser;
@@ -1849,6 +1860,30 @@ void bncWindow::saveOptions() {
     }
   }
 
+  QStringList uploadEphMountpointsOut;
+  for (int iRow = 0; iRow < _uploadEphTable->rowCount(); iRow++) {
+    QString hlp;
+    for (int iCol = 0; iCol < _uploadEphTable->columnCount(); iCol++) {
+      if (_uploadEphTable->cellWidget(iRow, iCol) &&
+          (iCol == 3 || iCol == 4 || iCol == 5)) {
+        if      (iCol == 3) {
+          QLineEdit* passwd = (QLineEdit*)(_uploadEphTable->cellWidget(iRow, iCol));
+          hlp += passwd->text() + ",";
+        }
+        else if (iCol == 4) {
+          QComboBox* system = (QComboBox*)(_uploadEphTable->cellWidget(iRow, iCol));
+          hlp += system->currentText() + ",";
+        }
+      }
+      else if (_uploadEphTable->item(iRow, iCol)) {
+        hlp += _uploadEphTable->item(iRow, iCol)->text() + ",";
+      }
+    }
+    if (!hlp.isEmpty()) {
+      uploadEphMountpointsOut << hlp;
+    }
+  }
+
   bncSettings settings;
 
   settings.setValue("startTab",    _aogroup->currentIndex());
@@ -1955,11 +1990,13 @@ void bncWindow::saveOptions() {
   settings.setValue("uploadSamplClkRnx",      _uploadSamplClkRnxSpinBox->value());
   settings.setValue("uploadAntexFile",        _uploadAntexFile->fileName());
 // Upload Ephemeris
-  settings.setValue("uploadEphHost",      _uploadEphHostLineEdit->text());
-  settings.setValue("uploadEphPort",      _uploadEphPortLineEdit->text());
-  settings.setValue("uploadEphMountpoint",_uploadEphMountpointLineEdit->text());
-  settings.setValue("uploadEphPassword",  _uploadEphPasswordLineEdit->text());
-  settings.setValue("uploadEphSample",    _uploadEphSampleSpinBox->value());
+  if (!uploadEphMountpointsOut.isEmpty()) {
+    settings.setValue("uploadEphMountpointsOut", uploadEphMountpointsOut);
+  }
+  else {
+    settings.setValue("uploadEphMountpointsOut", "");
+  }
+  settings.setValue("uploadSamplRtcmEph", _uploadSamplRtcmEphSpinBox->value());
 
   if (_caster) {
     _caster->readMountPoints();
@@ -2067,7 +2104,7 @@ void bncWindow::startRealTime() {
       BNC_CORE->slotMessage("Panel 'Combine Corrections' active", true);
   if (_uploadTable->rowCount() > 0)
       BNC_CORE->slotMessage("Panel 'Upload Corrections' active", true);
-  if (!_uploadEphHostLineEdit->text().isEmpty())
+  if (_uploadEphTable->rowCount() > 0)
       BNC_CORE->slotMessage("Panel 'UploadEphemeris' active", true);
 
   QDir rnxdir(settings.value("rnxPath").toString());
@@ -2094,8 +2131,6 @@ void bncWindow::startRealTime() {
   _caster->readMountPoints();
 
   _casterEph = new bncEphUploadCaster();
-  connect(_casterEph, SIGNAL(newBytes(QByteArray,double)),
-          _uploadEphBytesCounter, SLOT(slotNewBytes(QByteArray,double)));
 }
 
 // Retrieve Data
@@ -2450,16 +2485,6 @@ void bncWindow::slotBncTextChanged(){
     enableWidget(enable, _miscPortLineEdit);
   }
 
-  // Enable/disable Broadcast Ephemerides
-  // ------------------------------------
-  if (sender() == 0 || sender() == _uploadEphHostLineEdit) {
-    enable = !_uploadEphHostLineEdit->text().isEmpty();
-    enableWidget(enable, _uploadEphPortLineEdit);
-    enableWidget(enable, _uploadEphMountpointLineEdit);
-    enableWidget(enable, _uploadEphPasswordLineEdit);
-    enableWidget(enable, _uploadEphSampleSpinBox);
-  }
-
   // Combine Corrections
   // -------------------
   if (sender() == 0 || sender() == _cmbTable) {
@@ -2494,6 +2519,16 @@ void bncWindow::slotBncTextChanged(){
     enableWidget(false, _uploadSamplClkRnxSpinBox);
     enableWidget(false, _uploadSamplSp3SpinBox);
     enableWidget(false, _uploadAntexFile);
+  }
+
+  // Upload(eph)
+  // -----------
+  iRow = _uploadEphTable->rowCount();
+  if (iRow > 0) {
+    enableWidget(true, _uploadSamplRtcmEphSpinBox);
+  }
+  else {
+    enableWidget(false, _uploadSamplRtcmEphSpinBox);
   }
 
   // QC
@@ -2718,6 +2753,113 @@ void bncWindow::slotSetUploadTrafo() {
   dlg->exec();
   delete dlg;
 }
+
+//
+////////////////////////////////////////////////////////////////////////////
+void bncWindow::slotAddUploadEphRow() {
+  int iRow = _uploadEphTable->rowCount();
+  _uploadEphTable->insertRow(iRow);
+  for (int iCol = 0; iCol < _uploadEphTable->columnCount(); iCol++) {
+    if      (iCol == 3) {
+      QLineEdit* passwd = new QLineEdit();
+      passwd->setFrame(false);
+      passwd->setEchoMode(QLineEdit::PasswordEchoOnEdit);
+      _uploadEphTable->setCellWidget(iRow, iCol, passwd);
+    }
+    else if (iCol == 4) {
+      QComboBox* system = new QComboBox();
+      system->setEditable(false);
+      system->addItems(QString("ALL,GPS,GLONASS,Galileo,BDS,QZSS,SBAS").split(","));
+      system->setFrame(false);
+      _uploadEphTable->setCellWidget(iRow, iCol, system);
+    }
+    else if (iCol == 5) {
+      bncTableItem* bncIt = new bncTableItem();
+      bncIt->setFlags(bncIt->flags() & ~Qt::ItemIsEditable);
+      _uploadEphTable->setItem(iRow, iCol, bncIt);
+      BNC_CORE->_uploadTableItems[iRow] = bncIt;
+    }
+    else {
+      _uploadEphTable->setItem(iRow, iCol, new QTableWidgetItem(""));
+    }
+  }
+}
+
+//
+////////////////////////////////////////////////////////////////////////////
+void bncWindow::slotDelUploadEphRow() {
+  BNC_CORE->_uploadTableItems.clear();
+  int nRows = _uploadEphTable->rowCount();
+  bool flg[nRows];
+  for (int iRow = 0; iRow < nRows; iRow++) {
+    if (_uploadEphTable->isItemSelected(_uploadEphTable->item(iRow,1))) {
+      flg[iRow] = true;
+    }
+    else {
+      flg[iRow] = false;
+    }
+  }
+  for (int iRow = nRows-1; iRow >= 0; iRow--) {
+    if (flg[iRow]) {
+      _uploadEphTable->removeRow(iRow);
+    }
+  }
+  for (int iRow = 0; iRow < _uploadTable->rowCount(); iRow++) {
+    BNC_CORE->_uploadTableItems[iRow] =
+                                (bncTableItem*) _uploadEphTable->item(iRow, 5);
+  }
+  nRows = _uploadEphTable->rowCount();
+  if (nRows < 1) {
+    enableWidget(false, _uploadSamplRtcmEphSpinBox);
+  }
+}
+
+//
+////////////////////////////////////////////////////////////////////////////
+void bncWindow::populateUploadEphTable() {
+  for (int iRow = _uploadEphTable->rowCount()-1; iRow >=0; iRow--) {
+    _uploadEphTable->removeRow(iRow);
+  }
+
+  bncSettings settings;
+
+  int iRow = -1;
+  QListIterator<QString> it(settings.value("uploadEphMountpointsOut").toStringList());
+  while (it.hasNext()) {
+    QStringList hlp = it.next().split(",");
+    if (hlp.size() > 4) {
+      ++iRow;
+      _uploadEphTable->insertRow(iRow);
+    }
+    for (int iCol = 0; iCol < hlp.size(); iCol++) {
+      if      (iCol == 3) {
+        QLineEdit* passwd = new QLineEdit();
+        passwd->setFrame(false);
+        passwd->setEchoMode(QLineEdit::PasswordEchoOnEdit);
+        passwd->setText(hlp[iCol]);
+        _uploadEphTable->setCellWidget(iRow, iCol, passwd);
+      }
+      else if (iCol == 4) {
+        QComboBox* system = new QComboBox();
+        system->setEditable(false);
+        system->addItems(QString("ALL,GPS,GLONASS,Galileo,BDS,QZSS,SBAS").split(","));
+        system->setFrame(false);
+        system->setCurrentIndex(system->findText(hlp[iCol]));
+        _uploadEphTable->setCellWidget(iRow, iCol, system);
+      }
+      else if (iCol == 5) {
+        bncTableItem* bncIt = new bncTableItem();
+        bncIt->setFlags(bncIt->flags() & ~Qt::ItemIsEditable);
+        _uploadEphTable->setItem(iRow, iCol, bncIt);
+        BNC_CORE->_uploadTableItems[iRow] = bncIt;
+      }
+      else {
+        _uploadEphTable->setItem(iRow, iCol, new QTableWidgetItem(hlp[iCol]));
+      }
+    }
+  }
+}
+
 
 // Progress Bar Change
 ////////////////////////////////////////////////////////////////////////////
