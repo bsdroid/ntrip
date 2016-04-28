@@ -64,7 +64,7 @@ class bncWindow : public QMainWindow {
     void CreateMenu();
     void AddToolbar();
 
-  public slots:  
+  public slots:
     void slotMountPointsRead(QList<bncGetThread*>);
     void slotBncTextChanged();
 
@@ -90,6 +90,8 @@ class bncWindow : public QMainWindow {
     void slotDelCmbRow();
     void slotAddUploadRow();
     void slotDelUploadRow();
+    void slotAddUploadEphRow();
+    void slotDelUploadEphRow();
     void slotSetUploadTrafo();
     void slotReqcEditOption();
     void slotPostProcessingFinished();
@@ -103,6 +105,7 @@ class bncWindow : public QMainWindow {
     void populateMountPointsTable();
     void populateCmbTable();
     void populateUploadTable();
+    void populateUploadEphTable();
     void enableWidget(bool enable, QWidget* widget);
     void startRealTime();
     void enableStartStop();
@@ -115,7 +118,7 @@ class bncWindow : public QMainWindow {
     QAction*   _actFlowchart;
     QAction*   _actFontSel;
     QAction*   _actSaveOpt;
-    QAction*   _actQuit; 
+    QAction*   _actQuit;
     QAction*   _actMapMountPoints;
     QAction*   _actStart;
     QAction*   _actStop;
@@ -220,12 +223,8 @@ class bncWindow : public QMainWindow {
     QSpinBox*      _uploadSamplClkRnxSpinBox;
     qtFileChooser* _uploadAntexFile;
 
-    QLineEdit*       _uploadEphHostLineEdit;
-    QLineEdit*       _uploadEphPortLineEdit;
-    QLineEdit*       _uploadEphPasswordLineEdit;
-    QLineEdit*       _uploadEphMountpointLineEdit;
-    QSpinBox*        _uploadEphSampleSpinBox;
-    bncBytesCounter* _uploadEphBytesCounter;
+    QTableWidget*  _uploadEphTable;
+    QSpinBox*      _uploadSamplRtcmEphSpinBox;
 
     bncCaster*          _caster;
     bncEphUploadCaster* _casterEph;
@@ -236,7 +235,7 @@ class bncWindow : public QMainWindow {
     bool _runningQC;
     bool _runningSp3Comp;
 
-    bool running() {return _runningRealTime || _runningPPP || _runningEdit || 
+    bool running() {return _runningRealTime || _runningPPP || _runningEdit ||
                     _runningQC || _runningSp3Comp;}
 
     bncMapWin*           _mapWin;
@@ -252,7 +251,7 @@ class t_bncFactory : public QObject, public GnssCenter::t_pluginFactoryInterface
  Q_OBJECT
  Q_INTERFACES(GnssCenter::t_pluginFactoryInterface)
  public:
-  virtual QWidget* create() {return new bncWindow();} 
+  virtual QWidget* create() {return new bncWindow();}
   virtual QString getName() const {return QString("BNC");}
 };
 #endif
