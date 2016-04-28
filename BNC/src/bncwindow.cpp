@@ -1865,7 +1865,7 @@ void bncWindow::saveOptions() {
     QString hlp;
     for (int iCol = 0; iCol < _uploadEphTable->columnCount(); iCol++) {
       if (_uploadEphTable->cellWidget(iRow, iCol) &&
-          (iCol == 3 || iCol == 4 || iCol == 5)) {
+          (iCol == 3 || iCol == 4)) {
         if      (iCol == 3) {
           QLineEdit* passwd = (QLineEdit*)(_uploadEphTable->cellWidget(iRow, iCol));
           hlp += passwd->text() + ",";
