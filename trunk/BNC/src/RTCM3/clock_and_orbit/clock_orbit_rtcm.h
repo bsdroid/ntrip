@@ -331,8 +331,8 @@ struct VTEC
   double Quality;
   struct IonoLayers {
     double       Height; /* m */
-    unsigned int Degree; /* 1-8 */
-    unsigned int Order; /* 1-8 */
+    unsigned int Degree; /* 1-16 */
+    unsigned int Order; /* 1-16 */
     double       Sinus[CLOCKORBIT_MAXIONODEGREE][CLOCKORBIT_MAXIONOORDER];
     double       Cosinus[CLOCKORBIT_MAXIONODEGREE][CLOCKORBIT_MAXIONOORDER];
   } Layers[CLOCKORBIT_NUMIONOLAYERS];
