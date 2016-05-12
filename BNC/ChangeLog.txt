@@ -1,6 +1,7 @@
 -------------------------------------------------------------------------------
  BNC VERSION 2.13.0 (xx.xx.xxxx) current
 -------------------------------------------------------------------------------
+    Changed (12.05.2016): limits for spherical harmonics degree and order extended
     Fixed   (12.05.2016): wrong RINEX v2 header line excluded
     Fixed   (21.04.2016): RINEX v2 file naming for observation files
     Changed (19.04.2016): start with BNC VERSION 2.13.0
