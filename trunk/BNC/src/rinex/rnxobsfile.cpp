@@ -584,10 +584,12 @@ void t_rnxObsHeader::write(QTextStream* stream,
              << "MARKER NUMBER\n";
   }
 
-  *stream << QString("%1")
-    .arg(_markerType, -60)
-    .leftJustified(60)
-           << "MARKER TYPE\n";
+  if (_version >= 3.0) {
+    *stream << QString("%1")
+      .arg(_markerType, -60)
+      .leftJustified(60)
+             << "MARKER TYPE\n";
+  }
 
   *stream << QString("%1%2")
     .arg(_observer, -20)
