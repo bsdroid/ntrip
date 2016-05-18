@@ -106,7 +106,7 @@ t_reqcAnalyze::~t_reqcAnalyze() {
 ////////////////////////////////////////////////////////////////////////////
 void t_reqcAnalyze::run() {
 
-  static const double QC_FORMAT_VERSION = 1.0;
+  static const double QC_FORMAT_VERSION = 1.1;
 
   // Open Log File
   // -------------
