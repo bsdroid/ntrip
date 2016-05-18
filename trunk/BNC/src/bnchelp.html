@@ -1679,7 +1679,7 @@ Specify the name of a logfile to save information on RINEX file Editing/Concaten
 <p>
 Note that logfiles from analyzing RINEX files may become quite large. Hence, BNC provides an option 'Summary only' to limit logfile content to some essential information in case 'Action' is set to 'Analyze'. The following is an example for a RINEX quality check analysis logfile:
 <pre>
-QC Format Version  : 1.0
+QC Format Version  : 1.1
 
 Navigation File(s) : BRDC2520.15P
 Ephemeris          : 2985 OK   0 BAD
@@ -1706,158 +1706,158 @@ Observation Types S: C1C L1C D1C S1C C5I L5I S5I
   C: Satellites: 13
   C: Signals   : 3    2I 6I 7I
 
-      C:   2I: Observations      : 396567
-      C:   2I: Slips (file+found):      0 +     0
-      C:   2I: Gaps              :   8676
-      C:   2I: Mean SNR          :   41.7
-      C:   2I: Mean Multipath    :   0.42
+      C:   2I: Observations      : 396567 (  511017)    77.60 %
+      C:   2I: Slips (file+found):        0 +       0
+      C:   2I: Gaps              :     8676
+      C:   2I: Mean SNR          :     41.7
+      C:   2I: Mean Multipath    :     0.42
 
-      C:   6I: Observations      : 396233
-      C:   6I: Slips (file+found):      0 +     0
-      C:   6I: Gaps              :   8761
-      C:   6I: Mean SNR          :   44.4
-      C:   6I: Mean Multipath    :   0.00
+      C:   6I: Observations      : 396233 (  511017)    77.54 %
+      C:   6I: Slips (file+found):        0 +       0
+      C:   6I: Gaps              :     8761
+      C:   6I: Mean SNR          :     44.4
+      C:   6I: Mean Multipath    :     0.00
 
-      C:   7I: Observations      : 396233
-      C:   7I: Slips (file+found):      0 +     0
-      C:   7I: Gaps              :   8761
-      C:   7I: Mean SNR          :   43.6
-      C:   7I: Mean Multipath    :   0.30
+      C:   7I: Observations      : 396233 (  511017)    77.54 %
+      C:   7I: Slips (file+found):        0 +       0
+      C:   7I: Gaps              :     8761
+      C:   7I: Mean SNR          :     43.6
+      C:   7I: Mean Multipath    :     0.30
 
   E: Satellites: 5
   E: Signals   : 4    1X 5X 7X 8X
 
-      E:   1X: Observations      :  74468
-      E:   1X: Slips (file+found):      0 +     2
-      E:   1X: Gaps              :   2758
-      E:   1X: Mean SNR          :   45.1
-      E:   1X: Mean Multipath    :   0.37
+      E:   1X: Observations      :  74468 (  196545)    37.89 %
+      E:   1X: Slips (file+found):        0 +       2
+      E:   1X: Gaps              :     2758
+      E:   1X: Mean SNR          :     45.1
+      E:   1X: Mean Multipath    :     0.37
 
-      E:   5X: Observations      :  74422
-      E:   5X: Slips (file+found):      0 +     2
-      E:   5X: Gaps              :   2785
-      E:   5X: Mean SNR          :   45.2
-      E:   5X: Mean Multipath    :   0.32
+      E:   5X: Observations      :  74422 (  196545)    37.87 %
+      E:   5X: Slips (file+found):        0 +       2
+      E:   5X: Gaps              :     2785
+      E:   5X: Mean SNR          :     45.2
+      E:   5X: Mean Multipath    :     0.32
 
-      E:   7X: Observations      :  74422
-      E:   7X: Slips (file+found):      0 +     0
-      E:   7X: Gaps              :   2785
-      E:   7X: Mean SNR          :   44.2
-      E:   7X: Mean Multipath    :   0.00
+      E:   7X: Observations      :  74422 (  196545)    37.87 %
+      E:   7X: Slips (file+found):        0 +       0
+      E:   7X: Gaps              :     2785
+      E:   7X: Mean SNR          :     44.2
+      E:   7X: Mean Multipath    :     0.00
 
-      E:   8X: Observations      :  74429
-      E:   8X: Slips (file+found):      0 +     0
-      E:   8X: Gaps              :   2784
-      E:   8X: Mean SNR          :   49.9
-      E:   8X: Mean Multipath    :   0.00
+      E:   8X: Observations      :  74429 (  196545)    37.87 %
+      E:   8X: Slips (file+found):        0 +       0
+      E:   8X: Gaps              :     2784
+      E:   8X: Mean SNR          :     49.9
+      E:   8X: Mean Multipath    :     0.00
 
   G: Satellites: 28
   G: Signals   : 4    1C 2W 2X 5X
 
-      G:   1C: Observations      : 439952
-      G:   1C: Slips (file+found):      0 +    21
-      G:   1C: Gaps              :  10901
-      G:   1C: Mean SNR          :   44.0
-      G:   1C: Mean Multipath    :   0.63
+      G:   1C: Observations      : 439952 ( 1100652)    39.97 %
+      G:   1C: Slips (file+found):        0 +      21
+      G:   1C: Gaps              :    10901
+      G:   1C: Mean SNR          :     44.0
+      G:   1C: Mean Multipath    :     0.63
 
-      G:   2W: Observations      : 422560
-      G:   2W: Slips (file+found):      0 +    19
-      G:   2W: Gaps              :  11133
-      G:   2W: Mean SNR          :   31.1
-      G:   2W: Mean Multipath    :   0.42
+      G:   2W: Observations      : 422560 ( 1100652)    38.39 %
+      G:   2W: Slips (file+found):        0 +      19
+      G:   2W: Gaps              :    11133
+      G:   2W: Mean SNR          :     31.1
+      G:   2W: Mean Multipath    :     0.42
 
-      G:   2X: Observations      : 205305
-      G:   2X: Slips (file+found):      0 +    10
-      G:   2X: Gaps              :   7269
-      G:   2X: Mean SNR          :   43.3
-      G:   2X: Mean Multipath    :   0.47
+      G:   2X: Observations      : 205305 ( 1100652)    18.65 %
+      G:   2X: Slips (file+found):        0 +      10
+      G:   2X: Gaps              :     7269
+      G:   2X: Mean SNR          :     43.3
+      G:   2X: Mean Multipath    :     0.47
 
-      G:   5X: Observations      : 120638
-      G:   5X: Slips (file+found):      0 +     0
-      G:   5X: Gaps              :   3330
-      G:   5X: Mean SNR          :   49.9
-      G:   5X: Mean Multipath    :   0.00
+      G:   5X: Observations      : 120638 ( 1100652)    10.96 %
+      G:   5X: Slips (file+found):        0 +       0
+      G:   5X: Gaps              :     3330
+      G:   5X: Mean SNR          :     49.9
+      G:   5X: Mean Multipath    :     0.00
 
   J: Satellites: 1
   J: Signals   : 6    1C 1X 1Z 2X 5X 6L
 
-      J:   1C: Observations      :  38040
-      J:   1C: Slips (file+found):      0 +     0
-      J:   1C: Gaps              :   1003
-      J:   1C: Mean SNR          :   49.0
-      J:   1C: Mean Multipath    :   0.33
+      J:   1C: Observations      :  38040 (   39309)    96.77 %
+      J:   1C: Slips (file+found):        0 +       0
+      J:   1C: Gaps              :     1003
+      J:   1C: Mean SNR          :     49.0
+      J:   1C: Mean Multipath    :     0.33
 
-      J:   1X: Observations      :  38040
-      J:   1X: Slips (file+found):      0 +     0
-      J:   1X: Gaps              :   1003
-      J:   1X: Mean SNR          :   51.5
-      J:   1X: Mean Multipath    :   0.32
+      J:   1X: Observations      :  38040 (   39309)    96.77 %
+      J:   1X: Slips (file+found):        0 +       0
+      J:   1X: Gaps              :     1003
+      J:   1X: Mean SNR          :     51.5
+      J:   1X: Mean Multipath    :     0.32
 
-      J:   1Z: Observations      :  38040
-      J:   1Z: Slips (file+found):      0 +     0
-      J:   1Z: Gaps              :   1003
-      J:   1Z: Mean SNR          :   48.4
-      J:   1Z: Mean Multipath    :   0.40
+      J:   1Z: Observations      :  38040 (   39309)    96.77 %
+      J:   1Z: Slips (file+found):        0 +       0
+      J:   1Z: Gaps              :     1003
+      J:   1Z: Mean SNR          :     48.4
+      J:   1Z: Mean Multipath    :     0.40
 
-      J:   2X: Observations      :  38040
-      J:   2X: Slips (file+found):      0 +     0
-      J:   2X: Gaps              :   1003
-      J:   2X: Mean SNR          :   48.7
-      J:   2X: Mean Multipath    :   0.31
+      J:   2X: Observations      :  38040 (   39309)    96.77 %
+      J:   2X: Slips (file+found):        0 +       0
+      J:   2X: Gaps              :     1003
+      J:   2X: Mean SNR          :     48.7
+      J:   2X: Mean Multipath    :     0.31
 
-      J:   5X: Observations      :  38040
-      J:   5X: Slips (file+found):      0 +     0
-      J:   5X: Gaps              :   1003
-      J:   5X: Mean SNR          :   53.0
-      J:   5X: Mean Multipath    :   0.00
+      J:   5X: Observations      :  38040 (   39309)    96.77 %
+      J:   5X: Slips (file+found):        0 +       0
+      J:   5X: Gaps              :     1003
+      J:   5X: Mean SNR          :     53.0
+      J:   5X: Mean Multipath    :     0.00
 
-      J:   6L: Observations      :  38040
-      J:   6L: Slips (file+found):      0 +     0
-      J:   6L: Gaps              :   1003
-      J:   6L: Mean SNR          :   50.6
-      J:   6L: Mean Multipath    :   0.00
+      J:   6L: Observations      :  38040 (   39309)    96.77 %
+      J:   6L: Slips (file+found):        0 +       0
+      J:   6L: Gaps              :     1003
+      J:   6L: Mean SNR          :     50.6
+      J:   6L: Mean Multipath    :     0.00
 
   R: Satellites: 23
   R: Signals   : 4    1C 1P 2C 2P
 
-      R:   1C: Observations      : 323918
-      R:   1C: Slips (file+found):      0 +    44
-      R:   1C: Gaps              :   7295
-      R:   1C: Mean SNR          :   44.9
-      R:   1C: Mean Multipath    :   0.77
+      R:   1C: Observations      : 323918 (  904107)    35.83 %
+      R:   1C: Slips (file+found):        0 +      44
+      R:   1C: Gaps              :     7295
+      R:   1C: Mean SNR          :     44.9
+      R:   1C: Mean Multipath    :     0.77
 
-      R:   1P: Observations      : 323761
-      R:   1P: Slips (file+found):      0 +    44
-      R:   1P: Gaps              :   7305
-      R:   1P: Mean SNR          :   43.4
-      R:   1P: Mean Multipath    :   0.58
+      R:   1P: Observations      : 323761 (  904107)    35.81 %
+      R:   1P: Slips (file+found):        0 +      44
+      R:   1P: Gaps              :     7305
+      R:   1P: Mean SNR          :     43.4
+      R:   1P: Mean Multipath    :     0.58
 
-      R:   2C: Observations      : 323521
-      R:   2C: Slips (file+found):      0 +    44
-      R:   2C: Gaps              :   7305
-      R:   2C: Mean SNR          :   40.8
-      R:   2C: Mean Multipath    :   0.56
+      R:   2C: Observations      : 323521 (  904107)    35.78 %
+      R:   2C: Slips (file+found):        0 +      44
+      R:   2C: Gaps              :     7305
+      R:   2C: Mean SNR          :     40.8
+      R:   2C: Mean Multipath    :     0.56
 
-      R:   2P: Observations      : 321751
-      R:   2P: Slips (file+found):      0 +    37
-      R:   2P: Gaps              :   7317
-      R:   2P: Mean SNR          :   40.3
-      R:   2P: Mean Multipath    :   0.49
+      R:   2P: Observations      : 321751 (  904107)    35.59 %
+      R:   2P: Slips (file+found):        0 +      37
+      R:   2P: Gaps              :     7317
+      R:   2P: Mean SNR          :     40.3
+      R:   2P: Mean Multipath    :     0.49
 
   S: Satellites: 4
   S: Signals   : 2    1C 5I
 
-      S:   1C: Observations      : 152158
-      S:   1C: Slips (file+found):      0 +     1
-      S:   1C: Gaps              :   4013
-      S:   1C: Mean SNR          :   40.4
-      S:   1C: Mean Multipath    :   0.75
+      S:   1C: Observations      : 152158 (  157236)    96.77 %
+      S:   1C: Slips (file+found):        0 +       1
+      S:   1C: Gaps              :     4013
+      S:   1C: Mean SNR          :     40.4
+      S:   1C: Mean Multipath    :     0.75
 
-      S:   5I: Observations      :  76078
-      S:   5I: Slips (file+found):      0 +     1
-      S:   5I: Gaps              :   2007
-      S:   5I: Mean SNR          :   44.1
-      S:   5I: Mean Multipath    :   0.47
+      S:   5I: Observations      :  76078 (  157236)    48.38 %
+      S:   5I: Slips (file+found):        0 +       1
+      S:   5I: Gaps              :     2007
+      S:   5I: Mean SNR          :     44.1
+      S:   5I: Mean Multipath    :     0.47
 
 > 2015 09 09 13 04 50.0000000 23  1.2
 R09   1.46   36.90   8  L1C s. 34.3  C1C  . 0.00  L1P s. 33.2  C1P  . 0.00  L2C s. 26.4  C2C  . 0.00  L2P s. 22.1  C2P  . 0.00
@@ -1867,8 +1867,8 @@ R12  15.62 -148.75   8  L1C .. 40.6  C1C  . 0.94  L1P .. 38.9  C1P  . 0.51  L2C 
 R20  26.26  150.44   8  L1C .. 40.2  C1C  . 0.90  L1P .. 38.8  C1P  . 0.63  L2C .. 44.8  C2C  . 0.57  L2P .. 44.4  C2P  . 0.46
 R21  71.53 -163.80   8  L1C .. 53.3  C1C  . 0.32  L1P .. 51.6  C1P  . 0.40  L2C .. 50.3  C2C  . 0.43  L2P .. 49.3  C2P  . 0.39
 R22  40.38  -54.63   8  L1C .. 50.0  C1C  . 0.44  L1P .. 48.7  C1P  . 0.46  L2C .. 47.1  C2C  . 0.49  L2P .. 46.7  C2P  . 0.44
-E11   0.00    0.00   8  L1X .. 49.9  C1X  . 0.22  L5X .. 49.8  C5X  . 0.19  L7X .. 49.1  C7X  . 0.00  L8X .. 55.3  C8X  . 0.00
-E12   0.00    0.00   8  L1X .. 50.0  C1X  . 0.14  L5X .. 49.4  C5X  . 0.21  L7X .. 48.2  C7X  . 0.00  L8X .. 55.1  C8X  . 0.00
+E11  68.80  -54.74   8  L1X .. 49.9  C1X  . 0.22  L5X .. 49.8  C5X  . 0.19  L7X .. 49.1  C7X  . 0.00  L8X .. 55.3  C8X  . 0.00
+E12  58.84  141.76   8  L1X .. 50.0  C1X  . 0.14  L5X .. 49.4  C5X  . 0.21  L7X .. 48.2  C7X  . 0.00  L8X .. 55.1  C8X  . 0.00
 E18   0.00    0.00   8  L1X .. 53.5  C1X  . 0.11  L5X .. 51.0  C5X  . 0.15  L7X .. 50.1  C7X  . 0.00  L8X .. 56.5  C8X  . 0.00
 J01  21.34   23.40  12  L1C .. 41.2  C1C  . 0.59  L1X .. 43.2  C1X  . 0.38  L1Z .. 41.3  C1Z  . 0.58  L2X .. 40.0  C2X  . 0.47  L5X .. 44.7  C5X  . 0.00  L6L .. 41.6  C6L  . 0.00
 S27  16.04  -73.53   4  L1C .. 37.8  C1C  . 0.81  L5I .. 39.9  C5I  . 0.41
