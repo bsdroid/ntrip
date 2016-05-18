@@ -806,10 +806,12 @@ void t_reqcAnalyze::printReport(const t_rnxObsFile* obsFile) {
                                                         .arg(obsFile->antNEU()(2), 8, 'f', 4)
                                                         .arg(obsFile->antNEU()(1), 8, 'f', 4) << endl
         << "Start Time         : " << _qcFile._startTime.datestr().c_str()         << ' '
-                                  << _qcFile._startTime.timestr(1,'.').c_str()    << endl
+                                   << _qcFile._startTime.timestr(1,'.').c_str()    << endl
         << "End Time           : " << _qcFile._endTime.datestr().c_str()           << ' '
-                                  << _qcFile._endTime.timestr(1,'.').c_str()      << endl
+                                   << _qcFile._endTime.timestr(1,'.').c_str()      << endl
         << "Interval           : " << _qcFile._interval                            << endl;
+
+  int numPossibleObs = int((_qcFile._endTime - _qcFile._startTime + _qcFile._interval)/_qcFile._interval);
 
   // Number of systems
   // -----------------
@@ -904,13 +906,15 @@ void t_reqcAnalyze::printReport(const t_rnxObsFile* obsFile) {
       if (numMP > 0) {
         sumMP /= numMP;
       }
+      double ratio = double(numObs) / ((double(numPossibleObs) * double(qcSatVec.size())));
       *_log << endl
-            << prefixSys2 << prefixFrq << "Observations      : " << QString("%1\n").arg(numObs,           6)
-            << prefixSys2 << prefixFrq << "Slips (file+found): " << QString("%1 +").arg(numSlipsFlagged,  6)
-                                                                << QString("%1\n").arg(numSlipsFound,    6)
-            << prefixSys2 << prefixFrq << "Gaps              : " << QString("%1\n").arg(numGaps,          6)
-            << prefixSys2 << prefixFrq << "Mean SNR          : " << QString("%1\n").arg(sumSNR,   6, 'f', 1)
-            << prefixSys2 << prefixFrq << "Mean Multipath    : " << QString("%1\n").arg(sumMP,    6, 'f', 2);
+            << prefixSys2 << prefixFrq << "Observations      : "
+            << QString("%1 (%2) %3 \%\n").arg(numObs,           6).arg(numPossibleObs*qcSatVec.size(),           8).arg(ratio*100.0, 8, 'f', 2)
+            << prefixSys2 << prefixFrq << "Slips (file+found): " << QString("%1 +").arg(numSlipsFlagged,  8)
+                                                                 << QString("%1\n").arg(numSlipsFound,    8)
+            << prefixSys2 << prefixFrq << "Gaps              : " << QString("%1\n").arg(numGaps,          8)
+            << prefixSys2 << prefixFrq << "Mean SNR          : " << QString("%1\n").arg(sumSNR,   8, 'f', 1)
+            << prefixSys2 << prefixFrq << "Mean Multipath    : " << QString("%1\n").arg(sumMP,    8, 'f', 2);
     }
   }
 
