@@ -170,10 +170,13 @@ Q_OBJECT
 
   void   analyzeFile(t_rnxObsFile* obsFile);
 
-  void   updateQcSat(const t_qcSat& qcSat, t_qcSatSum& qcSatSum);
+  void  updateQcSat(const t_qcSat& qcSat, t_qcSatSum& qcSatSum);
 
-  void   setQcObs(const bncTime& epoTime, const ColumnVector& xyzSta,
-                  const t_satObs& satObs, QMap<QString, bncTime>& lastObsTime, t_qcSat& qcSat);
+  void  setQcObs(const bncTime& epoTime, const ColumnVector& xyzSta,
+                 const t_satObs& satObs, QMap<QString, bncTime>& lastObsTime, t_qcSat& qcSat);
+
+  void   setExpectedObs(const bncTime& startTime, const bncTime& endTime,
+                        double interval, const ColumnVector& xyzSta);
 
   void   analyzeMultipath();
 
@@ -191,6 +194,8 @@ Q_OBJECT
   QStringList                   _navFileNames;
   QString                       _reqcPlotSignals;
   QMap<char, QVector<QString> > _signalTypes;
+  QMap<t_prn, int>              _numExpObs;
+  QVector<char>                 _navFileIncomplete;
   QStringList                   _defaultSignalTypes;
   QVector<t_eph*>               _ephs;
   t_rnxObsFile::t_rnxEpo*       _currEpo;

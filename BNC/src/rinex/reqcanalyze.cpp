@@ -216,6 +216,10 @@ void t_reqcAnalyze::analyzeFile(t_rnxObsFile* obsFile) {
       // ------------------------
       for (unsigned iObs = 0; iObs < _currEpo->rnxSat.size(); iObs++) {
         const t_rnxObsFile::t_rnxSat& rnxSat = _currEpo->rnxSat[iObs];
+        if (_navFileNames.size() &&
+            _numExpObs.find(rnxSat.prn) == _numExpObs.end()) {
+          _numExpObs[rnxSat.prn] = 0;
+        }
         if (_signalTypes.find(rnxSat.prn.system()) == _signalTypes.end()) {
           continue;
         }
@@ -229,6 +233,10 @@ void t_reqcAnalyze::analyzeFile(t_rnxObsFile* obsFile) {
     }
 
     analyzeMultipath();
+
+    if (_navFileNames.size()) {
+      setExpectedObs(_qcFile._startTime, _qcFile._endTime, _qcFile._interval, xyzSta);
+    }
 
     preparePlotData(obsFile);
 
@@ -811,8 +819,6 @@ void t_reqcAnalyze::printReport(const t_rnxObsFile* obsFile) {
                                    << _qcFile._endTime.timestr(1,'.').c_str()      << endl
         << "Interval           : " << _qcFile._interval                            << endl;
 
-  int numPossibleObs = int((_qcFile._endTime - _qcFile._startTime + _qcFile._interval)/_qcFile._interval);
-
   // Number of systems
   // -----------------
   QMap<QChar, QVector<const t_qcSatSum*> > systemMap;
@@ -846,11 +852,20 @@ void t_reqcAnalyze::printReport(const t_rnxObsFile* obsFile) {
     }
   }
 
+  // System specific summary
+  // -----------------------
   itSys.toFront();
   while (itSys.hasNext()) {
     itSys.next();
     const QChar&                      sys      = itSys.key();
     const QVector<const t_qcSatSum*>& qcSatVec = itSys.value();
+    int numExpectedObs = 0;
+    for(QMap<t_prn, int>::iterator it = _numExpObs.begin();
+        it != _numExpObs.end(); it++) {
+      if (sys == it.key().system()) {
+        numExpectedObs += it.value();
+      }
+    }
     QString prefixSys = QString("  ") + sys + QString(": ");
     QMap<QString, QVector<const t_qcFrqSum*> > frqMap;
     for (int ii = 0; ii < qcSatVec.size(); ii++) {
@@ -880,7 +895,6 @@ void t_reqcAnalyze::printReport(const t_rnxObsFile* obsFile) {
       QString                          frqType  = itFrq.key(); if (frqType.length() < 2) frqType += '?';
       const QVector<const t_qcFrqSum*> qcFrqVec = itFrq.value();
       QString prefixFrq = QString("  ") + frqType + QString(": ");
-
       int    numObs          = 0;
       int    numSlipsFlagged = 0;
       int    numSlipsFound   = 0;
@@ -906,11 +920,18 @@ void t_reqcAnalyze::printReport(const t_rnxObsFile* obsFile) {
       if (numMP > 0) {
         sumMP /= numMP;
       }
-      double ratio = double(numObs) / ((double(numPossibleObs) * double(qcSatVec.size())));
+
+      double ratio = (double(numObs) / double(numExpectedObs)) * 100.0;
+
       *_log << endl
-            << prefixSys2 << prefixFrq << "Observations      : "
-            << QString("%1 (%2) %3 \%\n").arg(numObs,           6).arg(numPossibleObs*qcSatVec.size(),           8).arg(ratio*100.0, 8, 'f', 2)
-            << prefixSys2 << prefixFrq << "Slips (file+found): " << QString("%1 +").arg(numSlipsFlagged,  8)
+            << prefixSys2 << prefixFrq << "Observations      : ";
+      if(_navFileNames.isEmpty() || _navFileIncomplete.contains(sys.toLatin1())) {
+        *_log << QString("%1\n").arg(numObs,           6);
+      }
+      else {
+        *_log << QString("%1 (%2) %3 \%\n").arg(numObs,           6).arg(numExpectedObs,           8).arg(ratio, 8, 'f', 2);
+      }
+      *_log << prefixSys2 << prefixFrq << "Slips (file+found): " << QString("%1 +").arg(numSlipsFlagged,  8)
                                                                  << QString("%1\n").arg(numSlipsFound,    8)
             << prefixSys2 << prefixFrq << "Gaps              : " << QString("%1\n").arg(numGaps,          8)
             << prefixSys2 << prefixFrq << "Mean SNR          : " << QString("%1\n").arg(sumSNR,   8, 'f', 1)
@@ -1057,5 +1078,45 @@ void t_reqcAnalyze::checkEphemerides() {
   }
   if (_log) {
     *_log << endl;
+  }
+}
+
+void t_reqcAnalyze::setExpectedObs(const bncTime& startTime, const bncTime& endTime,
+                                   double interval, const ColumnVector& xyzSta) {
+
+  for(QMap<t_prn, int>::iterator it = _numExpObs.begin();
+      it != _numExpObs.end(); it++) {
+    t_eph* eph = 0;
+    for (int ie = 0; ie < _ephs.size(); ie++) {
+      if (_ephs[ie]->prn().system() == it.key().system() &&
+          _ephs[ie]->prn().number() == it.key().number()) {
+        eph = _ephs[ie];
+        break;
+      }
+    }
+    if (eph) {
+      int numExpObs = 0;
+      bncTime epoTime;
+      for (epoTime = startTime - interval; epoTime < endTime;
+           epoTime = epoTime + interval) {
+        ColumnVector xc(4);
+        ColumnVector vv(3);
+        if ( xyzSta.size() == 3 && (xyzSta[0] != 0.0 || xyzSta[1] != 0.0 || xyzSta[2] != 0.0) &&
+             eph->getCrd(epoTime, xc, vv, false) == success) {
+          double rho, eleSat, azSat;
+          topos(xyzSta(1), xyzSta(2), xyzSta(3), xc(1), xc(2), xc(3), rho, eleSat, azSat);
+          if ((eleSat * 180.0/M_PI) > 0.0) {
+            numExpObs++;
+          }
+        }
+      }
+      it.value() = numExpObs;
+    }
+    else {
+      if (!_navFileIncomplete.contains(it.key().system())) {
+        qDebug() <<  it.key().system() << it.key().number();
+        _navFileIncomplete.append(it.key().system());
+      }
+    }
   }
 }
