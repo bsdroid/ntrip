@@ -1114,7 +1114,6 @@ void t_reqcAnalyze::setExpectedObs(const bncTime& startTime, const bncTime& endT
     }
     else {
       if (!_navFileIncomplete.contains(it.key().system())) {
-        qDebug() <<  it.key().system() << it.key().number();
         _navFileIncomplete.append(it.key().system());
       }
     }
