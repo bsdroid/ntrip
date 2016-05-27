@@ -1,6 +1,8 @@
 -------------------------------------------------------------------------------
  BNC VERSION 2.13.0 (xx.xx.xxxx) current
 -------------------------------------------------------------------------------
+    Changed (27.05.2016): RINEX 2.11 ephemeris output for an unknown
+                          transmission time is set to 0.000000000000e+00
     Changed (23.05.2016): the real satellite visibility is considered now,
                           if the expected observations are computed in RINEX QC
     Added   (18.05.2016): expected observations in RINEX QC
