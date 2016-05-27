@@ -424,8 +424,12 @@ QString t_ephGPS::toString(double version) const {
     .arg(_TGD,    19, 'e', 12)
     .arg(_IODC,   19, 'e', 12);
 
+  double tot = _TOT;
+  if (tot == 0.9999e9 && version < 3.0) {
+    tot = 0.0;
+  }
   out << QString(fmt)
-    .arg(_TOT,         19, 'e', 12)
+    .arg(tot,          19, 'e', 12)
     .arg(_fitInterval, 19, 'e', 12)
     .arg("",           19, QChar(' '))
     .arg("",           19, QChar(' '));
@@ -1041,8 +1045,13 @@ QString t_ephGal::toString(double version) const {
     .arg(BGD_1_5A,         19, 'e', 12)
     .arg(BGD_1_5B,         19, 'e', 12);
 
+
+  double tot = _TOT;
+  if (tot == 0.9999e9 && version < 3.0) {
+    tot = 0.0;
+  }
   out << QString(fmt)
-    .arg(_TOT,    19, 'e', 12)
+    .arg(tot,     19, 'e', 12)
     .arg("",      19, QChar(' '))
     .arg("",      19, QChar(' '))
     .arg("",      19, QChar(' '));
