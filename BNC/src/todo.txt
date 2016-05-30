@@ -4,9 +4,9 @@ Todo's sorted by priority:
 procedure like the one Oscar implemented? If not: Can we do something which
 helps a bit and does not involve too much work? Or should we better do nothing?
 
-(a) Calculate, for each satellite, the STD of the code multipath in the 
+(a) Calculate, for each satellite, the STD of the code multipath in the
 iono-free combination Pc, as a combination the carrier phase and the code.
-Do this continuously, using a circular register that contains the observations 
+Do this continuously, using a circular register that contains the observations
 of the previous 10 minutes.
 (b) Introduce a default STD that is used when, either at the beginning or
 after an interruption in the data, there is less than 10 minutes worth of
@@ -17,24 +17,11 @@ actual value used to get the data. This is necessary, because the correct weight
 of the data depends on numerous factors, particularly the weights assigned to
 the phase and to the a priori values of the unknowns. This problem also is true
 for (b), (c), and (d). So the fudge factor really depends on the overall strategy
-and cannot be used in different software implementations. 
+and cannot be used in different software implementations.
 Everyone has to find it the hard way, by trial and error, making lots of solutions.
 (The variance of unit weight is of very limited help for this purpose.)
-(d) Downweight the code by a large factor when a satellite is below 20 degrees 
+(d) Downweight the code by a large factor when a satellite is below 20 degrees
 in elevation, or the 3-D precision of the coordinates being estimated falls
 below something like 25 cm (again, this will be a different threshold with
 different software).
-
-(2) NMEA GGA string is not fully compatible with the standard.
-The following are observations by Tamas Horvath: 
-(a) Time tag should refer to UTC time and not GPS system time.
-(b) Time tag format is hhmmss.ss and not hhmmss.
-(c) The GPS Quality indicator field is 1 (GPS SPS Mode), which is correct, as
-there is no category for PPP. In my opinion the NMEA protocol should be
-extended by a new indicator number for PPP to make a clear difference between
-autonomous GNSS and PPP.
-(d) The HDOP value is constantly 2.0, which is obviously not real. I think this
-field is filled with 2.0 as a default value in BNC.
-(e) The Age of Differential GPS data field is not populated. I believe here the
-age of RTCM SSR data should be put.
 
