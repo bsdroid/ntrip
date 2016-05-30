@@ -186,7 +186,7 @@ t_pppFilter::t_pppFilter(t_pppClient* pppClient) {
   // ---------------
   _neu.ReSize(3); _neu = 0.0;
   _numSat = 0;
-  _pDop   = 0.0;
+  _hDop   = 0.0;
 }
 
 // Destructor
@@ -1341,7 +1341,7 @@ void t_pppFilter::cmpDOP(t_epoData* epoData) {
   Tracer tracer("t_pppFilter::cmpDOP");
 
   _numSat = 0;
-  _pDop   = 0.0;
+  _hDop   = 0.0;
 
   if (_params.size() < 4) {
     return;
@@ -1365,5 +1365,5 @@ void t_pppFilter::cmpDOP(t_epoData* epoData) {
   SymmetricMatrix NN; NN << AA.t() * AA;
   SymmetricMatrix QQ = NN.i();
 
-  _pDop = sqrt(QQ(1,1) + QQ(2,2) + QQ(3,3));
+  _hDop = sqrt(QQ(1,1) + QQ(2,2));
 }
