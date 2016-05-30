@@ -26,17 +26,17 @@ class t_except {
 
 class t_output {
  public:
-  bncTime      _epoTime;           
-  double       _xyzRover[3];  
-  double       _covMatrix[6]; 
-  double       _neu[3];  
+  bncTime      _epoTime;
+  double       _xyzRover[3];
+  double       _covMatrix[6];
+  double       _neu[3];
   double       _trp0;
   double       _trp;
   double       _trpStdev;
-  int          _numSat;       
-  double       _pDop;         
-  std::string  _log;          
-  bool         _error;        
+  int          _numSat;
+  double       _hDop;
+  std::string  _log;
+  bool         _error;
 };
 
 class t_lc {
@@ -91,7 +91,7 @@ class t_lc {
       else if (sys == 'E') return t_frequency::E5;
       else if (sys == 'C') return t_frequency::C7;
       else                 return t_frequency::dummy;
-    case lIF: case cIF: case MW: case CL: 
+    case lIF: case cIF: case MW: case CL:
       return t_frequency::dummy;
     case dummy: case maxLc: return t_frequency::dummy;
     }
@@ -118,11 +118,11 @@ class interface_pppClient {
  public:
   virtual      ~interface_pppClient() {};
   virtual void processEpoch(const std::vector<t_satObs*>& satObs, t_output* output) = 0;
-  virtual void putEphemeris(const t_eph* eph) = 0;                  
-  virtual void putOrbCorrections(const std::vector<t_orbCorr*>& corr) = 0; 
-  virtual void putClkCorrections(const std::vector<t_clkCorr*>& corr) = 0; 
+  virtual void putEphemeris(const t_eph* eph) = 0;
+  virtual void putOrbCorrections(const std::vector<t_orbCorr*>& corr) = 0;
+  virtual void putClkCorrections(const std::vector<t_clkCorr*>& corr) = 0;
   virtual void putCodeBiases(const std::vector<t_satCodeBias*>& satCodeBias) = 0;
-};   
+};
 
 } // namespace BNC_PPP
 

@@ -223,7 +223,7 @@ t_pppRun::~t_pppRun() {
   delete _nmeaFile;
   delete _snxtroFile;
   while (!_epoData.empty()) {
-    delete _epoData.front(); 
+    delete _epoData.front();
     _epoData.pop_front();
   }
 }
@@ -598,6 +598,10 @@ QString t_pppRun::nmeaString(char strType, const t_output& output) {
   double phiDeg = ell[0] * 180 / M_PI;
   double lamDeg = ell[1] * 180 / M_PI;
 
+  unsigned year, month, day;
+  output._epoTime.civil_date(year, month, day);
+  double gps_utc = gnumleap(year, month, day);
+
   char phiCh = 'N';
   if (phiDeg < 0) {
     phiDeg = -phiDeg;
@@ -615,7 +619,7 @@ QString t_pppRun::nmeaString(char strType, const t_output& output) {
   if      (strType == 'R') {
     string datestr = output._epoTime.datestr(0); // yyyymmdd
     out << "GPRMC,"
-        << output._epoTime.timestr(0,0) << ",A,"
+        << (output._epoTime - gps_utc).timestr(3,0) << ",A,"
         << setw(2) << setfill('0') << int(phiDeg)
         << setw(6) << setprecision(3) << setfill('0')
         << fmod(60*phiDeg,60) << ',' << phiCh << ','
@@ -627,7 +631,7 @@ QString t_pppRun::nmeaString(char strType, const t_output& output) {
   }
   else if (strType == 'G') {
     out << "GPGGA,"
-        << output._epoTime.timestr(0,0) << ','
+        << (output._epoTime - gps_utc).timestr(2,0) << ','
         << setw(2) << setfill('0') << int(phiDeg)
         << setw(10) << setprecision(7) << setfill('0')
         << fmod(60*phiDeg,60) << ',' << phiCh << ','
@@ -635,7 +639,7 @@ QString t_pppRun::nmeaString(char strType, const t_output& output) {
         << setw(10) << setprecision(7) << setfill('0')
         << fmod(60*lamDeg,60) << ',' << lamCh
         << ",1," << setw(2) << setfill('0') << output._numSat << ','
-        << setw(3) << setprecision(1) << output._pDop << ','
+        << setw(3) << setprecision(1) << output._hDop << ','
         << setprecision(3) << ell[2] << ",M,0.0,M,,";
   }
   else {
