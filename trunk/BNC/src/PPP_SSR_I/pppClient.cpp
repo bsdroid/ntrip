@@ -169,7 +169,7 @@ void t_pppClient::processEpoch(const vector<t_satObs*>& satObs, t_output* output
     output->_neu[1]      = _filter->neu()[1];
     output->_neu[2]      = _filter->neu()[2];
     output->_numSat      = _filter->numSat();
-    output->_pDop        = _filter->PDOP();
+    output->_hDop        = _filter->HDOP();
     output->_trp0        = _filter->trp0();
     output->_trp         = _filter->trp();
     output->_trpStdev    = _filter->trpStdev();
