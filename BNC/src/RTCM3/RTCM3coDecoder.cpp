@@ -713,15 +713,22 @@ string RTCM3coDecoder::codeTypeToRnxType(char system, CodeType type) const {
     case CODETYPEGALILEO_E1_A:      return "1A";
     case CODETYPEGALILEO_E1_B:      return "1B";
     case CODETYPEGALILEO_E1_C:      return "1C";
+    case CODETYPEGALILEO_E1_BC:     return "1X";
+    case CODETYPEGALILEO_E1_ABC:    return "1Z";
     case CODETYPEGALILEO_E5A_I:     return "5I";
     case CODETYPEGALILEO_E5A_Q:     return "5Q";
+    case CODETYPEGALILEO_E5A_IQ:    return "5X";
     case CODETYPEGALILEO_E5B_I:     return "7I";
     case CODETYPEGALILEO_E5B_Q:     return "7Q";
+    case CODETYPEGALILEO_E5B_IQ:    return "7X";
     case CODETYPEGALILEO_E5_I:      return "8I";
     case CODETYPEGALILEO_E5_Q:      return "8Q";
+    case CODETYPEGALILEO_E5_IQ:     return "8X";
     case CODETYPEGALILEO_E6_A:      return "6A";
     case CODETYPEGALILEO_E6_B:      return "6B";
     case CODETYPEGALILEO_E6_C:      return "6C";
+    case CODETYPEGALILEO_E6_BC:     return "6X";
+    case CODETYPEGALILEO_E6_ABC:    return "6Z";
     default: return "";
     }
   }
@@ -731,9 +738,9 @@ string RTCM3coDecoder::codeTypeToRnxType(char system, CodeType type) const {
     case CODETYPEQZSS_L1C_D:        return "1S";
     case CODETYPEQZSS_L1C_P:        return "1L";
     case CODETYPEQZSS_L1C_DP:       return "1X";
-    case CODETYPEQZSS_L2_CM:        return "2S";
-    case CODETYPEQZSS_L2_CL:        return "2L";
-    case CODETYPEQZSS_L2_CML:       return "2X";
+    case CODETYPEQZSS_L2C_M:        return "2S";
+    case CODETYPEQZSS_L2C_L:        return "2L";
+    case CODETYPEQZSS_L2C_ML:       return "2X";
     case CODETYPEQZSS_L5_I:         return "5I";
     case CODETYPEQZSS_L5_Q:         return "5Q";
     case CODETYPEQZSS_L5_IQ:        return "5X";
