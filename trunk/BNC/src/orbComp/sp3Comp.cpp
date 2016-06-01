@@ -34,7 +34,7 @@
  *
  * Created:    24-Nov-2014
  *
- * Changes:    
+ * Changes:
  *
  * -----------------------------------------------------------------------*/
 
@@ -71,10 +71,10 @@ t_sp3Comp::~t_sp3Comp() {
   delete _logFile;
 }
 
-//  
+//
 ////////////////////////////////////////////////////////////////////////////
 void t_sp3Comp::run() {
- 
+
   // Open Log File
   // -------------
   _logFile = new QFile(_logFileName);
@@ -124,6 +124,7 @@ void t_sp3Comp::run() {
   _log->flush();
   if (BNC_CORE->mode() != t_bncCore::interactive) {
     qApp->exit(0);
+    msleep(100); //sleep 0.1 sec
   }
   else {
     emit finished();
@@ -180,7 +181,7 @@ void t_sp3Comp::processClocks(const set<t_prn>& clkSats, const vector<t_epoch*>&
     const map<t_prn, double>& dc = epochs[ie]->_dc;
     Matrix       AA(dc.size(), nPar); AA = 0.0;
     ColumnVector ll(dc.size());       ll = 0.0;
-    map<t_prn, double>::const_iterator it; 
+    map<t_prn, double>::const_iterator it;
     int ii = -1;
     for (it = dc.begin(); it != dc.end(); it++) {
       const t_prn& prn = it->first;
@@ -199,12 +200,12 @@ void t_sp3Comp::processClocks(const set<t_prn>& clkSats, const vector<t_epoch*>&
 
   // Regularize NN
   // -------------
-  RowVector HH(nPar); 
+  RowVector HH(nPar);
   HH.columns(1, epochs.size())      = 0.0;
   HH.columns(epochs.size()+1, nPar) = 1.0;
   SymmetricMatrix dN; dN << HH.t() * HH;
   NN += dN;
- 
+
   // Estimate Parameters
   // -------------------
   ColumnVector xx = NN.i() * bb;
@@ -416,7 +417,7 @@ void t_sp3Comp::compare(ostringstream& out) const {
   }
 }
 
-// 
+//
 ////////////////////////////////////////////////////////////////////////////
 bool t_sp3Comp::excludeSat(const t_prn& prn) const {
   QStringListIterator it(_excludeSats);
