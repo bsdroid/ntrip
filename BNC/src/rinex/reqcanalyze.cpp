@@ -99,6 +99,7 @@ t_reqcAnalyze::~t_reqcAnalyze() {
   delete _logFile; _logFile = 0;
   if (BNC_CORE->mode() != t_bncCore::interactive) {
     qApp->exit(0);
+    msleep(100); //sleep 0.1 sec
   }
 }
 
