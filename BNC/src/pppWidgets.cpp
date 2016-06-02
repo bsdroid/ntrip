@@ -162,7 +162,6 @@ t_pppWidgets::t_pppWidgets() {
   _corrWaitTime->setMaximum(20);
   _corrWaitTime->setSingleStep(1);
   _corrWaitTime->setSuffix(" sec");
-  _corrWaitTime->setSpecialValueText("no");
 
   _staTable->setColumnCount(10);
   _staTable->setRowCount(0);
@@ -193,7 +192,7 @@ t_pppWidgets::t_pppWidgets() {
 
   // WhatsThis, PPP (3)
   // ------------------
-  _corrWaitTime->setWhatsThis(tr("<p>Specifying 'no' means that BNC will not wait for satellite clock corrections and process each epoch of observation data immediately after arrival using the corrections available at that time.</p><p>Specifying a non-zero value (i.e. 5 sec) means that data will be buffered and their processing is postponed till corrections not older than '5 sec' (example) become available.</p>"));
+  _corrWaitTime->setWhatsThis(tr("<p>Zero value means that BNC processes each epoch of data immediately after its arrival using satellite clock corrections available at that time.</p><p> Specifying a non-zero value (i.e. 5 sec) means that the epochs of data are buffered and the processing of each epoch is postponed till the satellite clock corrections not older than '5 sec' (example) become available.<p>"));
   _seedingTime->setWhatsThis(tr("<p>Enter the length of a startup period in seconds for which you want to fix the PPP solutions to known a priori coordinates as introduced through option 'Coordinates file'. Adjust 'Sigma N/E/H' in the PPP Stations table according to the coordinate's precision. Fixing a priori coordinates is done in BNC through setting 'Sigma N/E/H' temporarily to zero.</p><p>This option allows the PPP solution to rapidly converge. It requires that the antenna remains unmoved on the a priori known position throughout the startup period.</p><p>A value of 60 is likely to be an appropriate choice.</p><p>Default is an empty option field, meaning that you don't want BNC to fix PPP solutions during startup to an a priori coordinate.</p>"));
 
   // WhatsThis, PPP (4)

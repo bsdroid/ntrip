@@ -61,8 +61,6 @@ class t_pppRun : public QObject {
     std::vector<t_satObs*> _satObs;
   };
 
-  bool waitForCorr(const bncTime& epoTime) const;
-
   QMutex                 _mutex;
   const t_pppOptions*    _opt;
   t_pppClient*           _pppClient;

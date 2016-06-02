@@ -177,6 +177,9 @@ void t_pppMain::readOptions() {
     opt->_sigmaC1      = settings.value("PPP/sigmaC1").toDouble(); if (opt->_sigmaC1 <= 0.0) opt->_sigmaC1 =  2.0;
     opt->_sigmaL1      = settings.value("PPP/sigmaL1").toDouble(); if (opt->_sigmaL1 <= 0.0) opt->_sigmaL1 = 0.01;
     opt->_corrWaitTime = settings.value("PPP/corrWaitTime").toDouble();
+    if (!_realTime || opt->_corrMount.empty()) {
+      opt->_corrWaitTime = 0;
+    }
 
     if      (settings.value("PPP/lcGPS").toString() == "P1") {
       opt->_LCsGPS.push_back(t_lc::c1);
