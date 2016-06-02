@@ -227,7 +227,7 @@ int main(int argc, char* argv[]) {
       "   PPP/eleWgtPhase  {Elevation dependent waiting of phase observations [integer number: 0=no,2=yes]}\n"
       "   PPP/minObs       {Minimum number of observations [integer number: 4|5|6]}\n"
       "   PPP/minEle       {Minimum satellite elevation in degrees [integer number: 0-20]}\n"
-      "   PPP/corrWaitTime {Wait for clock corrections [integer number of seconds: no|1-20]}\n"
+      "   PPP/corrWaitTime {Wait for clock corrections [integer number of seconds: 0-20]}\n"
       "   PPP/seedingTime  {Seeding time span for Quick Start [integer number of seconds]}\n"
       "\n"
       "PPP Client Panel 4 keys:\n"
