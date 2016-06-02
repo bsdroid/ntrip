@@ -300,66 +300,89 @@ void t_pppRun::slotNewObs(QByteArray staID, QList<t_satObs> obsList) {
     }
   }
 
+  // Make sure the buffer does not grow beyond any limit
+  // ---------------------------------------------------
+  const unsigned MAX_EPODATA_SIZE = 120;
+  if (_epoData.size() > MAX_EPODATA_SIZE) {
+    delete _epoData.front();
+    _epoData.pop_front();
+  }
+
   // Process the oldest epochs
   // ------------------------
-  while (_epoData.size() && !waitForCorr(_epoData.front()->_time)) {
+  while (_epoData.size()) {
 
     const vector<t_satObs*>& satObs = _epoData.front()->_satObs;
 
-    t_output output;
-    _pppClient->processEpoch(satObs, &output);
-
-    if (!output._error) {
-      QVector<double> xx(6);
-      xx.data()[0] = output._xyzRover[0];
-      xx.data()[1] = output._xyzRover[1];
-      xx.data()[2] = output._xyzRover[2];
-      xx.data()[3] = output._neu[0];
-      xx.data()[4] = output._neu[1];
-      xx.data()[5] = output._neu[2];
-      emit newPosition(staID, output._epoTime, xx);
+    // No corrections yet, skip the epoch
+    // ----------------------------------
+    if (_opt->_corrWaitTime && !_lastClkCorrTime.valid()) {
+      return;
     }
 
-    delete _epoData.front(); _epoData.pop_front();
+    // Process the front epoch
+    // -----------------------
+    if (_opt->_corrWaitTime == 0 ||
+        _epoData.front()->_time - _lastClkCorrTime < _opt->_corrWaitTime) {
 
-    ostringstream log;
-    if (output._error) {
-      log << output._log;
+      t_output output;
+      _pppClient->processEpoch(satObs, &output);
+
+      if (!output._error) {
+        QVector<double> xx(6);
+        xx.data()[0] = output._xyzRover[0];
+        xx.data()[1] = output._xyzRover[1];
+        xx.data()[2] = output._xyzRover[2];
+        xx.data()[3] = output._neu[0];
+        xx.data()[4] = output._neu[1];
+        xx.data()[5] = output._neu[2];
+        emit newPosition(staID, output._epoTime, xx);
+      }
+
+      delete _epoData.front();
+      _epoData.pop_front();
+
+      ostringstream log;
+      if (output._error) {
+        log << output._log;
+      }
+      else {
+        log.setf(ios::fixed);
+        log << string(output._epoTime) << ' ' << staID.data()
+            << " X = "  << setprecision(4) << output._xyzRover[0]
+            << " Y = "  << setprecision(4) << output._xyzRover[1]
+            << " Z = "  << setprecision(4) << output._xyzRover[2]
+            << " NEU: " << showpos << setw(8) << setprecision(4) << output._neu[0]
+            << " "      << showpos << setw(8) << setprecision(4) << output._neu[1]
+            << " "      << showpos << setw(8) << setprecision(4) << output._neu[2]
+            << " TRP: " << showpos << setw(8) << setprecision(4) << output._trp0
+            << " "      << showpos << setw(8) << setprecision(4) << output._trp;
+      }
+
+      if (_logFile && output._epoTime.valid()) {
+          _logFile->write(output._epoTime.gpsw(), output._epoTime.gpssec(),
+                        QString(output._log.c_str()));
+      }
+
+      if (!output._error) {
+        QString rmcStr = nmeaString('R', output);
+        QString ggaStr = nmeaString('G', output);
+        if (_nmeaFile) {
+          _nmeaFile->write(output._epoTime.gpsw(), output._epoTime.gpssec(), rmcStr);
+          _nmeaFile->write(output._epoTime.gpsw(), output._epoTime.gpssec(), ggaStr);
+        }
+        emit newNMEAstr(staID, rmcStr.toAscii());
+        emit newNMEAstr(staID, ggaStr.toAscii());
+        if (_snxtroFile && output._epoTime.valid()) {
+          _snxtroFile->write(staID, int(output._epoTime.gpsw()), output._epoTime.gpssec(),
+                      output._trp0 + output._trp, output._trpStdev);
+        }
+      }
+      emit newMessage(QByteArray(log.str().c_str()), true);
     }
     else {
-      log.setf(ios::fixed);
-      log << string(output._epoTime) << ' ' << staID.data()
-          << " X = "  << setprecision(4) << output._xyzRover[0]
-          << " Y = "  << setprecision(4) << output._xyzRover[1]
-          << " Z = "  << setprecision(4) << output._xyzRover[2]
-          << " NEU: " << showpos << setw(8) << setprecision(4) << output._neu[0]
-          << " "      << showpos << setw(8) << setprecision(4) << output._neu[1]
-          << " "      << showpos << setw(8) << setprecision(4) << output._neu[2]
-          << " TRP: " << showpos << setw(8) << setprecision(4) << output._trp0
-          << " "      << showpos << setw(8) << setprecision(4) << output._trp;
+      return;
     }
-
-    if (_logFile && output._epoTime.valid()) {
-      _logFile->write(output._epoTime.gpsw(), output._epoTime.gpssec(),
-                      QString(output._log.c_str()));
-    }
-
-    if (!output._error) {
-      QString rmcStr = nmeaString('R', output);
-      QString ggaStr = nmeaString('G', output);
-      if (_nmeaFile) {
-        _nmeaFile->write(output._epoTime.gpsw(), output._epoTime.gpssec(), rmcStr);
-        _nmeaFile->write(output._epoTime.gpsw(), output._epoTime.gpssec(), ggaStr);
-      }
-      emit newNMEAstr(staID, rmcStr.toAscii());
-      emit newNMEAstr(staID, ggaStr.toAscii());
-      if (_snxtroFile && output._epoTime.valid()) {
-        _snxtroFile->write(staID, int(output._epoTime.gpsw()), output._epoTime.gpssec(),
-                    output._trp0 + output._trp, output._trpStdev);
-      }
-    }
-
-    emit newMessage(QByteArray(log.str().c_str()), true);
   }
 }
 
@@ -653,26 +676,4 @@ QString t_pppRun::nmeaString(char strType, const t_output& output) {
   }
 
   return '$' + nmStr + QString("*%1\n").arg(int(XOR), 0, 16).toUpper();
-}
-
-//
-////////////////////////////////////////////////////////////////////////////
-bool t_pppRun::waitForCorr(const bncTime& epoTime) const {
-
-  if (!_opt->_realTime || _opt->_corrMount.empty()) {
-    return false;
-  }
-  else if (!_lastClkCorrTime.valid()) {
-    return true;
-  }
-  else {
-    double dt = epoTime - _lastClkCorrTime;
-    if (dt > 1.0 && dt < _opt->_corrWaitTime) {
-      return true;
-    }
-    else {
-      return false;
-    }
-  }
-  return false;
 }
