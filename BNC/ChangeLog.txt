@@ -1,6 +1,8 @@
 -------------------------------------------------------------------------------
  BNC VERSION 2.13.0 (xx.xx.xxxx) current
 -------------------------------------------------------------------------------
+    Fixed   (02.06.2016): the approach how to wait for clock corrections in PPP mode,
+                          which was well proven in BNC verson 2.11 is re-implemented
     Fixed   (30.05.2016): some NMEA components in PPP output are fixed:
                           time stamp is now UTC, hDop value instead of pDop value
     Changed (27.05.2016): RINEX 2.11 ephemeris output for an unknown
