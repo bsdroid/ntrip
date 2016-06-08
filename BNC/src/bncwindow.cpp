@@ -2918,8 +2918,8 @@ void bncWindow::slotMapMountPoints() {
     QStringList hlp = it.next().split(" ");
     if (hlp.size() < 5) continue;
     QUrl   url(hlp[0]);
-    double latDeg = hlp[2].toDouble();
-    double lonDeg = hlp[3].toDouble();
+    double latDeg = hlp[3].toDouble();
+    double lonDeg = hlp[4].toDouble();
     bncMap->slotNewPoint(QFileInfo(url.path()).fileName(), latDeg, lonDeg);
   }
 
