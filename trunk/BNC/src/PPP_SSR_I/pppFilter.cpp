@@ -57,7 +57,7 @@ using namespace std;
 const double   MAXRES_CODE           = 2.98 * 3.0;
 const double   MAXRES_PHASE_GPS      = 2.98 * 0.03;
 const double   MAXRES_PHASE_GLONASS  = 2.98 * 0.03;
-const double   GLONASS_WEIGHT_FACTOR = 1.0;
+const double   GLONASS_WEIGHT_FACTOR = 5.0;
 const double   BDS_WEIGHT_FACTOR     = 2.0;
 
 #define LOG (_pppClient->log())
