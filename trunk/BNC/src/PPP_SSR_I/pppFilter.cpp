@@ -940,9 +940,6 @@ void t_pppFilter::addObs(int iPhase, unsigned& iObs, t_satData* satData,
   // -----------------
   else {
     double sigP3 = 2.98 * OPT->_sigmaC1;
-    if (satData->system() == 'R') {
-      sigP3 *= GLONASS_WEIGHT_FACTOR;
-    }
     ll(iObs)      = satData->P3 - cmpValue(satData, false);
     PP(iObs,iObs) = 1.0 / (sigP3 * sigP3) / (ellWgtCoef * ellWgtCoef);
     for (int iPar = 1; iPar <= _params.size(); iPar++) {
