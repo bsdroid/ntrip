@@ -55,7 +55,7 @@ using namespace BNC_PPP;
 using namespace std;
 
 const double   MAXRES_CODE           = 2.98 * 3.0;
-const double   MAXRES_PHASE_GPS      = 2.98 * 0.03;
+const double   MAXRES_PHASE_GPS      = 0.04;
 const double   MAXRES_PHASE_GLONASS  = 2.98 * 0.03;
 const double   GLONASS_WEIGHT_FACTOR = 5.0;
 const double   BDS_WEIGHT_FACTOR     = 2.0;
@@ -759,7 +759,7 @@ QString t_pppFilter::outlierDetection(int iPhase, const ColumnVector& vv,
       LOG << "Outlier Phase " << prnGlo.mid(0,3).toAscii().data() << ' ' << maxResGlo << endl;
       return prnGlo;
     }
-    else if (maxResGPS > 2.98 * OPT->_maxResL1) {
+    else if (maxResGPS > MAXRES_PHASE_GPS) {
       LOG << "Outlier Phase " << prnGPS.mid(0,3).toAscii().data() << ' ' << maxResGPS << endl;
       return prnGPS;
     }
