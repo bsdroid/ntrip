@@ -916,8 +916,10 @@ bncWindow::bncWindow() {
   ++ir;
   pppLayout1->addWidget(new QLabel("Coordinates file"),      ir, 0);
   pppLayout1->addWidget(_pppWidgets._crdFile,                ir, 1);
-  pppLayout1->addWidget(new QLabel("   Version 3 filenames"),ir, 3);
-  pppLayout1->addWidget(_pppWidgets._v3filenames,            ir, 4, 1, 3);
+#ifdef USE_PPP
+  pppLayout1->addWidget(new QLabel("   BLQ file"),           ir, 3);
+  pppLayout1->addWidget(_pppWidgets._blqFile,                ir, 4, 1, 3);
+#endif
   ++ir;
   pppLayout1->addWidget(new QLabel("Logfile directory"),     ir, 0);
   pppLayout1->addWidget(_pppWidgets._logPath,                ir, 1);
@@ -931,9 +933,11 @@ bncWindow::bncWindow() {
   pppLayout1->addWidget(new QLabel("   SNX TRO sampling"),   ir, 5);
   pppLayout1->addWidget(_pppWidgets._snxtroSampl,            ir, 6, Qt::AlignRight);
   ++ir;
+  pppLayout1->addWidget(new QLabel("Version 3 filenames"),   ir, 0);
+  pppLayout1->addWidget(_pppWidgets._v3filenames,            ir, 1, 1, 3);
   pppLayout1->addWidget(new QLabel("   SNX TRO AC"),         ir, 3);
   pppLayout1->addWidget(_pppWidgets._snxtroAc,               ir, 4);
-  pppLayout1->addWidget(new QLabel("   SNX TRO solution")    ,ir, 5);
+  pppLayout1->addWidget(new QLabel("   SNX TRO solution"),   ir, 5);
   pppLayout1->addWidget(_pppWidgets._snxtroSol,              ir, 6, Qt::AlignRight);
   pppLayout1->setRowStretch(ir, 999);
 
@@ -1350,6 +1354,7 @@ bncWindow::bncWindow() {
   _pppWidgets._corrMount->setWhatsThis(tr("<p>Specify a 'mountpoint' from the 'Streams' canvas below which provides corrections to Broadcast Ephemeris.</p><p>If you don't specify a corrections stream via this option, BNC will fall back to Single Point Positioning (SPP, positioning from observations and Broadcast Ephemeris only) instead of doing PPP.</p>"));
   _pppWidgets._corrFile->setWhatsThis(tr("<p>Specify the Broadcast Ephemeris Corrections file as saved beforehand using BNC.</p><p>If you don't specify corrections by this option, BNC will fall back to Single Point Positioning (SPP, positioning from RINEX Obs and RINEX Nav files only) instead of doing PPP.</p>"));
   _pppWidgets._antexFile->setWhatsThis(tr("<p>Observations in RTCM streams or RINEX files should be referred to the receiver's and to the satellite's Antenna Phase Center (APC) and therefore be corrected for<ul><li>Receiver APC offsets</li><li>Receiver APC variations</li><li>Satellite APC offsets.</li></ul> Specify the full path to an IGS 'ANTEX file' which contains APC offsets and variations.</p><p>If you don't specify an 'ANTEX file' then observations will not be corrected for APC offsets and variations.</p>"));
+  _pppWidgets._blqFile->setWhatsThis(tr("<p>Enter the full path to an ocean loading file in BLQ format. It contains a record for each site, which shows a header with information on the ocean tide model, the site name and the geographic coordinates. The first three rows of numbers designate amplitudes (meter), radial, west, south, and are followed by three lines with the corresponding phase values (degrees).</p>"));
   _pppWidgets._crdFile->setWhatsThis(tr("<p>Enter the full path to an ASCII file which specifies the streams or files of those stations you want to process. Specifying a 'Coordinates file' is optional. If it exists, it should contain one record per station with the following parameters separated by blank character:<p><ul><li>Specify the station either by<ul><li>the 'Mountpoint' of the station's RTCM stream (when in real-time PPP mode), or</li><li>the 4-charater station ID of the RINEX Observations file (when in post processing PPP mode).</li></ul></li><li>Approximate X,Y,Z coordinate of station's Antenna Reference Point [m] (ARP, specify '0.0 0.0 0.0' if unknown).</li><li>North, East and Up component of antenna eccentricity [m] (specify '0.0 0.0 0.0' if unknown).</li><li>20 Characters describing the antenna type and radome following the IGS 'ANTEX file' standard (leave blank if unknown).</li><li>Receiver type following the naming conventions for IGS equipment.</li></ul></p><p>Records with exclamation mark '!' in the first column or blank records will be interpreted as comment lines and ignored.</p>"));
   _pppWidgets._v3filenames->setWhatsThis(tr("<p>Tick 'Version 3 filenames' to let BNC create so-called extended filenames for PPP logfiles, NMEA files and SINEX Troposphere files following the RINEX Version 3 standard.</p><p>Default is an empty check box, meaning to create filenames following the RINEX Version 2 standard. The file content is not affected by this option. It only concerns the filenames.</p>"));
   _pppWidgets._logPath->setWhatsThis(tr("<p>Specify a directory for saving daily PPP logfiles. If the specified directory does not exist, BNC will not create such files.</p><p>Default is an empty option field, meaning that no PPP logfiles shall be produced.</p>"));

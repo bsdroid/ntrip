@@ -37,6 +37,7 @@ class t_pppOptions {
   std::string             _recNameRover;
   std::string             _antNameRover;
   std::string             _antexFileName;
+  std::string             _blqFileName;
   double                  _sigmaC1;
   double                  _sigmaL1;
   double                  _maxResC1;
