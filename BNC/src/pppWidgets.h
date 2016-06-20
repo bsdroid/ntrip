@@ -44,6 +44,7 @@ class t_pppWidgets : public QObject {
   qtFileChooser* _corrFile;
   qtFileChooser* _crdFile;
   qtFileChooser* _antexFile;
+  qtFileChooser* _blqFile;
   QLineEdit*     _logPath;
   QLineEdit*     _nmeaPath;
   QLineEdit*     _snxtroPath;

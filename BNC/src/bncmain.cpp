@@ -203,6 +203,9 @@ int main(int argc, char* argv[]) {
       "   PPP/crdFile     {Coordinates file, full path [character string]}\n"
       "   PPP/logPath     {Directory for PPP log files [character string]}\n"
       "   PPP/antexFile   {ANTEX file, full path [character string]}\n"
+#ifdef USE_PPP
+      "   PPP/blqFile   {ANTEX file, full path [character string]}\n"
+#endif
       "   PPP/nmeaPath    {Directory for NMEA output files [character string]}\n"
       "   PPP/snxtroPath  {Directory for SINEX troposphere output files [character string]}\n"
       "   PPP/snxtroIntr  {SINEX troposphere file interval [character string: 1 min|2 min|5 min|10 min|15 min|30 min|1 hour|1 day]}\n"

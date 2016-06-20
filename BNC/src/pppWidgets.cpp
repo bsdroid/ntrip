@@ -58,6 +58,7 @@ t_pppWidgets::t_pppWidgets() {
   _corrFile     = new qtFileChooser(); _corrFile    ->setObjectName("PPP/corrFile");     _widgets << _corrFile;
   _crdFile      = new qtFileChooser(); _crdFile     ->setObjectName("PPP/crdFile");      _widgets << _crdFile;
   _antexFile    = new qtFileChooser(); _antexFile   ->setObjectName("PPP/antexFile");    _widgets << _antexFile;
+  _blqFile      = new qtFileChooser(); _blqFile     ->setObjectName("PPP/blqFile");      _widgets << _blqFile;
   _logPath      = new QLineEdit();     _logPath     ->setObjectName("PPP/logPath");      _widgets << _logPath;
   _nmeaPath     = new QLineEdit();     _nmeaPath    ->setObjectName("PPP/nmeaPath");     _widgets << _nmeaPath;
   _snxtroPath   = new QLineEdit();     _snxtroPath  ->setObjectName("PPP/snxtroPath");   _widgets << _snxtroPath;
@@ -219,6 +220,7 @@ t_pppWidgets::~t_pppWidgets() {
   delete _corrFile;
   delete _crdFile;
   delete _antexFile;
+  delete _blqFile;
   delete _logPath;
   delete _nmeaPath;
   delete _snxtroPath;
