@@ -172,11 +172,10 @@ void t_pppMain::readOptions() {
     }
 
     opt->_crdFile.assign(settings.value("PPP/crdFile").toString().toStdString());
-#ifdef USE_PPP
     opt->_antexFileName.assign(settings.value("PPP/antexFile").toString().toStdString());
-#endif
+#ifdef USE_PPP
     opt->_blqFileName.assign(settings.value("PPP/blqFile").toString().toStdString());
-
+#endif
     opt->_sigmaC1      = settings.value("PPP/sigmaC1").toDouble(); if (opt->_sigmaC1 <= 0.0) opt->_sigmaC1 =  2.0;
     opt->_sigmaL1      = settings.value("PPP/sigmaL1").toDouble(); if (opt->_sigmaL1 <= 0.0) opt->_sigmaL1 = 0.01;
     opt->_corrWaitTime = settings.value("PPP/corrWaitTime").toDouble();
