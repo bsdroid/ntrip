@@ -884,11 +884,9 @@ bncWindow::bncWindow() {
 
   // PPP
   // ---
-  _pppWidgets._dataSource->setMaximumWidth(20*ww);
-  _pppWidgets._corrMount->setMaximumWidth(20*ww);
-
-  _pppWidgets._corrFile->setMaximumWidth(35*ww);
-  _pppWidgets._crdFile->setMaximumWidth(35*ww);
+  _pppWidgets._dataSource->setMaximumWidth(15*ww);
+  _pppWidgets._corrMount->setMaximumWidth(15*ww);
+  _pppWidgets._nmeaPath->setMaximumWidth(35*ww);
   _pppWidgets._logPath->setMaximumWidth(35*ww);
   _pppWidgets._snxtroPath->setMaximumWidth(35*ww);
   _pppWidgets._snxtroIntr->setMaximumWidth(10*ww);
@@ -897,50 +895,48 @@ bncWindow::bncWindow() {
 
   QGridLayout* pppLayout1 = new QGridLayout();
   int ir = 0;
-  pppLayout1->addWidget(new QLabel("Precise Point Positioning - Input and Output."), ir, 0, 1, 7, Qt::AlignLeft);
+  pppLayout1->addWidget(new QLabel("Precise Point Positioning - Input and Output.<br>"), ir, 0, 1, 7, Qt::AlignLeft);
   ++ir;
   pppLayout1->addWidget(new QLabel("Data source"),           ir, 0);
   pppLayout1->addWidget(_pppWidgets._dataSource,             ir, 1);
-  pppLayout1->addWidget(new QLabel("   RINEX Obs file"),     ir, 3);
-  pppLayout1->addWidget(_pppWidgets._rinexObs,               ir, 4, 1, 3);
+  pppLayout1->addWidget(new QLabel("   Version 3 filenames"),ir, 4);
+  pppLayout1->addWidget(_pppWidgets._v3filenames,            ir, 5, 1, 3);
   ++ir;
   pppLayout1->addWidget(new QLabel("Corrections stream"),    ir, 0);
   pppLayout1->addWidget(_pppWidgets._corrMount,              ir, 1);
-  pppLayout1->addWidget(new QLabel("   RINEX Nav file"),     ir, 3);
-  pppLayout1->addWidget(_pppWidgets._rinexNav,               ir, 4, 1, 3);
+  pppLayout1->addWidget(new QLabel("Corrections file"),      ir, 2);
+  pppLayout1->addWidget(_pppWidgets._corrFile,               ir, 3);
+  pppLayout1->addWidget(new QLabel("   Logfile directory"),  ir, 4);
+  pppLayout1->addWidget(_pppWidgets._logPath,                ir, 5, 1, 3);
   ++ir;
-  pppLayout1->addWidget(new QLabel("Corrections file"),      ir, 0);
-  pppLayout1->addWidget(_pppWidgets._corrFile,               ir, 1);
-  pppLayout1->addWidget(new QLabel("   ANTEX file"),         ir, 3);
-  pppLayout1->addWidget(_pppWidgets._antexFile,              ir, 4, 1, 3);
+  pppLayout1->addWidget(new QLabel("RINEX Obs file"),        ir, 0);
+  pppLayout1->addWidget(_pppWidgets._rinexObs,               ir, 1);
+  pppLayout1->addWidget(new QLabel("RINEX Nav file"),        ir, 2);
+  pppLayout1->addWidget(_pppWidgets._rinexNav,               ir, 3);
+  pppLayout1->addWidget(new QLabel("   NMEA directory"),     ir, 4);
+  pppLayout1->addWidget(_pppWidgets._nmeaPath,               ir, 5, 1, 3);
   ++ir;
   pppLayout1->addWidget(new QLabel("Coordinates file"),      ir, 0);
   pppLayout1->addWidget(_pppWidgets._crdFile,                ir, 1);
+  pppLayout1->addWidget(new QLabel("ANTEX file"),            ir, 2);
+  pppLayout1->addWidget(_pppWidgets._antexFile,              ir, 3);
+  pppLayout1->addWidget(new QLabel("   SNX TRO directory"),  ir, 4);
+  pppLayout1->addWidget(_pppWidgets._snxtroPath,             ir, 5, 1, 3);
+  ++ir;
 #ifdef USE_PPP
-  pppLayout1->addWidget(new QLabel("   BLQ file"),           ir, 3);
-  pppLayout1->addWidget(_pppWidgets._blqFile,                ir, 4, 1, 3);
+  pppLayout1->addWidget(new QLabel("BLQ file"),              ir, 0);
+  pppLayout1->addWidget(_pppWidgets._blqFile,                ir, 1);
 #endif
+  pppLayout1->addWidget(new QLabel("   SNX TRO interval"),   ir, 4);
+  pppLayout1->addWidget(_pppWidgets._snxtroIntr,             ir, 5);
+  pppLayout1->addWidget(new QLabel("   SNX TRO sampling"),   ir, 6);
+  pppLayout1->addWidget(_pppWidgets._snxtroSampl,            ir, 7, Qt::AlignRight);
   ++ir;
-  pppLayout1->addWidget(new QLabel("Logfile directory"),     ir, 0);
-  pppLayout1->addWidget(_pppWidgets._logPath,                ir, 1);
-  pppLayout1->addWidget(new QLabel("   NMEA directory"),     ir, 3);
-  pppLayout1->addWidget(_pppWidgets._nmeaPath,               ir, 4, 1, 3);
-  ++ir;
-  pppLayout1->addWidget(new QLabel("SNX TRO directory"),     ir, 0);
-  pppLayout1->addWidget(_pppWidgets._snxtroPath,             ir, 1);
-  pppLayout1->addWidget(new QLabel("   SNX TRO interval"),   ir, 3);
-  pppLayout1->addWidget(_pppWidgets._snxtroIntr,             ir, 4);
-  pppLayout1->addWidget(new QLabel("   SNX TRO sampling"),   ir, 5);
-  pppLayout1->addWidget(_pppWidgets._snxtroSampl,            ir, 6, Qt::AlignRight);
-  ++ir;
-  pppLayout1->addWidget(new QLabel("Version 3 filenames"),   ir, 0);
-  pppLayout1->addWidget(_pppWidgets._v3filenames,            ir, 1, 1, 3);
-  pppLayout1->addWidget(new QLabel("   SNX TRO AC"),         ir, 3);
-  pppLayout1->addWidget(_pppWidgets._snxtroAc,               ir, 4);
-  pppLayout1->addWidget(new QLabel("   SNX TRO solution"),   ir, 5);
-  pppLayout1->addWidget(_pppWidgets._snxtroSol,              ir, 6, Qt::AlignRight);
-  pppLayout1->setRowStretch(ir, 999);
-
+  pppLayout1->addWidget(new QLabel("   SNX TRO AC"),         ir, 4);
+  pppLayout1->addWidget(_pppWidgets._snxtroAc,               ir, 5);
+  pppLayout1->addWidget(new QLabel("   SNX TRO solution"),   ir, 6);
+  pppLayout1->addWidget(_pppWidgets._snxtroSol,              ir, 7, Qt::AlignRight);
+  pppLayout1->setRowStretch(ir+1, 999);
   pppGroup1->setLayout(pppLayout1);
 
   QVBoxLayout* pppLayout2 = new QVBoxLayout();
