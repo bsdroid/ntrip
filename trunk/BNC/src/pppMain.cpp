@@ -395,7 +395,7 @@ void t_pppMain::readOptions() {
 
     // Some default values
     // -------------------
-    opt->_aprSigAmb   = 100.0;
+    opt->_aprSigAmb   = 1000.0;
     opt->_noiseClk    = 1000.0;
 
     _options << opt;
