@@ -299,6 +299,7 @@ void t_pppWidgets::readOptions() {
   _corrFile ->setFileName(settings.value(_corrFile ->objectName()).toString());
   _crdFile  ->setFileName(settings.value(_crdFile  ->objectName()).toString());
   _antexFile->setFileName(settings.value(_antexFile->objectName()).toString());
+  _blqFile->setFileName(settings.value(_blqFile->objectName()).toString());
 
   // LineEdits
   // ---------
@@ -404,6 +405,7 @@ void t_pppWidgets::saveOptions() {
   settings.setValue(_corrFile    ->objectName(), _corrFile    ->fileName());
   settings.setValue(_crdFile     ->objectName(), _crdFile     ->fileName());
   settings.setValue(_antexFile   ->objectName(), _antexFile   ->fileName());
+  settings.setValue(_blqFile     ->objectName(), _blqFile   ->fileName());
   settings.setValue(_logPath     ->objectName(), _logPath     ->text());
   settings.setValue(_nmeaPath    ->objectName(), _nmeaPath    ->text());
   settings.setValue(_snxtroPath  ->objectName(), _snxtroPath  ->text());
