@@ -559,7 +559,7 @@ void RTCM3coDecoder::checkProviderID() {
   }
 
   if (alreadySet && different) {
-    emit newMessage("RTCM3coDecoder: Provider Changed " + _staID.toAscii() + "\n", true);
+    emit newMessage("RTCM3coDecoder: Provider Changed: " + _staID.toAscii(), true);
     emit providerIDChanged(_staID);
   }
 }
