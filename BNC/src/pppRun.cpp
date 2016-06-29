@@ -121,6 +121,9 @@ t_pppRun::t_pppRun(const t_pppOptions* opt) {
 
     connect(BNC_CMB, SIGNAL(newClkCorrections(QList<t_clkCorr>)),
             this, SLOT(slotNewClkCorrections(QList<t_clkCorr>)),conType);
+            
+    connect(BNC_CORE, SIGNAL(providerIDChanged(QString)),
+            this, SLOT(slotProviderIDChanged(QString)));
   }
   else {
     _rnxObsFile = 0;
@@ -676,4 +679,24 @@ QString t_pppRun::nmeaString(char strType, const t_output& output) {
   }
 
   return '$' + nmStr + QString("*%1\n").arg(int(XOR), 0, 16).toUpper();
+}
+
+//
+////////////////////////////////////////////////////////////////////////////
+void t_pppRun::slotProviderIDChanged(QString mountPoint) {
+  QMutexLocker locker(&_mutex);
+
+  if (mountPoint.toStdString() !=_opt->_corrMount) {
+    return;
+  }
+
+  QString msg = "pppRun " + QString(_opt->_roverName.c_str()) + ": Provider Changed: " + mountPoint;
+  emit newMessage(msg.toAscii(), true);
+
+  _pppClient->reset();
+
+  while (!_epoData.empty()) {
+    delete _epoData.front();
+    _epoData.pop_front();
+  }
 }

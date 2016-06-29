@@ -427,3 +427,21 @@ t_irc t_pppClient::cmpToT(t_satData* satData) {
 
   return failure;
 }
+
+//
+////////////////////////////////////////////////////////////////////////////
+void t_pppClient::reset() {
+
+  // to delete all parameters
+  delete _filter;
+  _filter   = new t_pppFilter(this);
+
+  // to delete old orbit and clock corrections
+  delete _ephUser;
+  _ephUser  = new bncEphUser(false);
+
+  // to delete old code biases
+  delete _pppUtils;
+  _pppUtils = new t_pppUtils();
+
+}

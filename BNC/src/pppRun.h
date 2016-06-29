@@ -47,6 +47,7 @@ class t_pppRun : public QObject {
   void slotNewObs(QByteArray staID, QList<t_satObs> obsList);
   void slotSetSpeed(int speed);
   void slotSetStopFlag();
+  void slotProviderIDChanged(QString mountPoint);
 
  private:
   class t_epoData {
