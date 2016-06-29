@@ -51,6 +51,7 @@ class t_pppClient : public interface_pppClient {
   void                putPhaseBiases(const std::vector<t_satPhaseBias*>& satPhaseBias);
   std::ostringstream& log() {return *_log;}
   const t_pppOptions* opt() const {return _opt;}
+  void                reset();
 
  private:
   t_irc getSatPos(const bncTime& tt, const QString& prn, ColumnVector& xc, ColumnVector& vv);
