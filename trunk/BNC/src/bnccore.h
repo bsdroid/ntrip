@@ -70,6 +70,7 @@ friend class bncSettings;
   bool             GUIenabled() const {return _GUIenabled;}
   void             startPPP();
   void             stopPPP();
+  int              sigintReceived;
 
   QMap<int, bncTableItem*> _uploadTableItems;
 

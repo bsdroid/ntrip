@@ -467,8 +467,8 @@ void bncGetThread::run() {
 
         QCoreApplication::processEvents();
 
-        if (data.isEmpty()) {
-          cout << "no more data" << endl;
+        if (data.isEmpty() || BNC_CORE->sigintReceived) {
+          cout << "no more data or Ctrl-C received" << endl;
           BNC_CORE->stopCombination();
           BNC_CORE->stopPPP();
           ::exit(0);
