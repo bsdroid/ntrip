@@ -56,9 +56,9 @@
 
 using namespace std;
 
-
 void catch_signal(int) {
   cout << "Program Interrupted by Ctrl-C" << endl;
+  BNC_CORE->sigintReceived = 1;
   qApp->quit();
 }
 
@@ -483,6 +483,7 @@ int main(int argc, char* argv[]) {
     // Special case - data from file
     // -----------------------------
     else {
+      BNC_CORE->sigintReceived = 0;
       BNC_CORE->setMode(t_bncCore::batchPostProcessing);
       BNC_CORE->startPPP();
 
