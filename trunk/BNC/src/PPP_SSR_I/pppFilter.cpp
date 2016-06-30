@@ -1071,7 +1071,7 @@ t_irc t_pppFilter::update_p(t_epoData* epoData) {
         }
       }
 
-      if (!nObs) {
+      if (int(nObs) < OPT->_minObs) {
         restoreState(epoData);
         return failure;
       }
