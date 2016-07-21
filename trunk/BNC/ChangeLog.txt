@@ -1,10 +1,19 @@
--------------------------------------------------------------------------------
+--------------------------------------------------------------------------------
  BNC VERSION 2.13.0 (xx.xx.xxxx) current
--------------------------------------------------------------------------------
-    Fixed   (02.06.2016): the approach how to wait for clock corrections in PPP mode,
-                          which was well proven in BNC verson 2.11 is re-implemented
+--------------------------------------------------------------------------------
+    Added   (21.07.2016): frequency specific signal priorities are added for
+                          RINEX version 3 to RINEX version 2 conversion
+    Changed (21.07.2016): Default signal priority list
+    Added   (29.06.2016): consideration of provioder ID changes in SSR streams
+                          during PPP analysis
+    Changed (08.06.2016): weighting factor for GLONASS phase observations
+                          is now enlarged
+    Fixed   (08.06.2016): map generation from sourcetable entry
+    Fixed   (02.06.2016): the approach how to wait for clock corrections
+                          in PPP mode, which was well proven in BNC verson 2.11
+                          is re-implemented
     Fixed   (30.05.2016): some NMEA components in PPP output are fixed:
-                          time stamp is now UTC, hDop value instead of pDop value
+                          time stamp is now UTC, hDop value instead pDop value
     Changed (27.05.2016): RINEX 2.11 ephemeris output for an unknown
                           transmission time is set to 0.000000000000e+00
     Changed (23.05.2016): the real satellite visibility is considered now,
@@ -17,9 +26,9 @@
     Fixed   (21.04.2016): RINEX v2 file naming for observation files
     Changed (19.04.2016): start with BNC VERSION 2.13.0
 
--------------------------------------------------------------------------------
+--------------------------------------------------------------------------------
  BNC VERSION 2.12.0 (19.04.2016)
--------------------------------------------------------------------------------
+--------------------------------------------------------------------------------
     Added: Observation code selection in RINEX file editing
     Added: Machine-readable output of RINEX QC
     Added: PPP client functionality for parallel processing of an arbitrary number of stations in separate threads
