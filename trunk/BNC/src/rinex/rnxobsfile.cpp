@@ -1326,7 +1326,7 @@ void t_rnxObsFile::writeEpochV2(QTextStream* stream, const t_rnxObsHeader& heade
         }
       }
 
-      for (int iPref = 0; iPref < preferredAttribList.size(); iPref++) {
+      for (int iPref = 0; iPref < preferredAttrib.size(); iPref++) {
         QMapIterator<QString, t_rnxObs> itObs(rnxSat.obs);
         while (itObs.hasNext()) {
           itObs.next();
@@ -1558,7 +1558,7 @@ void t_rnxObsFile::setObsFromRnx(const t_rnxObsFile* rnxObsFile, const t_rnxObsF
 QStringList t_rnxObsFile::signalPriorities(char sys) {
 
   bncSettings settings;
-  
+
   QStringList priorList;
   QString reqcAction = settings.value("reqcAction").toString();
 
