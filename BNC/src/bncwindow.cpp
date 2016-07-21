@@ -222,7 +222,7 @@ bncWindow::bncWindow() {
   _rnxV3filenameCheckBox->setCheckState(Qt::CheckState(settings.value("rnxV3filenames").toInt()));
   QString hlp = settings.value("rnxV2Priority").toString();
   if (hlp.isEmpty()) {
-    hlp = "CWPX_?";
+    hlp = "G:12&PWCSLXYN G:5&IQX R:12&PC R:3&IQX E:16&BCX E:578&IQX J:1&SLXCZ J:26&SLX J:5&IQX C:IQX I:ABCX S:1&C S:5&IQX";
   }
   _rnxV2Priority = new QLineEdit(hlp);
 
@@ -705,8 +705,6 @@ bncWindow::bncWindow() {
   _rnxIntrComboBox->setMaximumWidth(9*ww);
   _rnxSamplSpinBox->setMaximumWidth(9*ww);
 
-  _rnxV2Priority->setMaximumWidth(19*ww);
-
   oLayout->addWidget(new QLabel("Saving RINEX observation files.<br>"),0, 0, 1,50);
   oLayout->addWidget(new QLabel("Directory"),                      1, 0);
   oLayout->addWidget(_rnxPathLineEdit,                             1, 1, 1, 15);
@@ -720,9 +718,8 @@ bncWindow::bncWindow() {
   oLayout->addWidget(_rnxFileCheckBox,                             3, 3);
   oLayout->addWidget(new QLabel("Script (full path)"),             4, 0);
   oLayout->addWidget(_rnxScrpLineEdit,                             4, 1, 1, 15);
-  oLayout->addWidget(new QLabel("Version 2"),                      5, 0);
-  oLayout->addWidget(_rnxV2Priority,                               5, 1);
-  oLayout->addWidget(new QLabel("Signal priority"),                5, 2);
+  oLayout->addWidget(new QLabel("Version 2 signal priority"),      5, 0);
+  oLayout->addWidget(_rnxV2Priority,                               5, 1, 1, 15);
   oLayout->addWidget(new QLabel("Version 3"),                      6, 0);
   oLayout->addWidget(_rnxV3CheckBox,                               6, 1);
   oLayout->addWidget(new QLabel("Version 3 filenames"),            6, 2);
@@ -1269,7 +1266,7 @@ bncWindow::bncWindow() {
   _rnxSkelLineEdit->setWhatsThis(tr("<p>BNC allows using personal RINEX skeleton files that contain the RINEX header records you would like to include. You can derive a skeleton file from information given in an up to date sitelog.</p><p>A file in the RINEX Observations 'Directory' with a 'Skeleton extension' skl or SKL is interpreted by BNC as a personal RINEX header skeleton file for the corresponding stream. In case of 'SKL'/'skl' the 4-char ID forming the base name has to be written in upper/lower cases. </p>"));
   _rnxFileCheckBox->setWhatsThis(tr("<p>Tick check box 'Skeleton mandatory' in case you want that RINEX files are only produced if skeleton files are available for BNC. If no skeleton file is available for a particular source then no RINEX Observation file will be produced from the affected stream.</p><p>Note that a skeleton file contains RINEX header information such as receiver and antenna types. In case of stream conversion to RINEX Version 3, a skeleton file should also contain information on potentially available observation types. A missing skeleton file will therefore enforce BNC to only save a default set of RINEX 3 observation types.</p>"));
   _rnxScrpLineEdit->setWhatsThis(tr("<p>Whenever a RINEX Observation file is finally saved, you may want to compress, copy or upload it immediately, for example via FTP. BNC allows you to execute a script/batch file to carry out such operation.</p><p>Specify the full path of a script or batch file. BNC will pass the full RINEX Observation file path to the script as command line parameter (%1 on Windows systems, $1 on Unix/Linux/Mac systems).</p>"));
-  _rnxV2Priority->setWhatsThis(tr("<p>Specify a priority list of characters defining signal attributes as defined in RINEX Version 3. Priorities will be used to map observations with RINEX Version 3 attributes from incoming streams to Version 2. The underscore character '_' stands for undefined attributes. A question mark '?' can be used as wildcard which represents any one character.</p><p>Signal priorities can be specified either as equal for all systems or as system specific. The following are example priority strings:</li><ul><li>'CWPX_?' (Same signal priorities valid for all systems)</li><li>'G:CWPX_? R:PCX_? E:CPX_?' (Specific signal priorities for GPS, GLONASS and Galileo system)</li></ul>Default is priority list 'CWPX_?'.</p>"));
+  _rnxV2Priority->setWhatsThis(tr("<p>Specify a priority list of characters defining signal attributes as defined in RINEX Version 3. Priorities will be used to map observations with RINEX Version 3 attributes from incoming streams to Version 2. The underscore character '_' stands for undefined attributes. A question mark '?' can be used as wildcard which represents any one character.</p><p>Signal priorities can be specified as equal for all systems, as system specific or as system and freq. specific. For example: </li><ul><li>'CWPX_?' (General signal priorities valid for all GNSS) </li><li>'C:IQX I:ABCX' (System specific signal priorities for BDS and IRNSS) </li><li>'G:12&PWCSLXYN G:5&IQX R:12&PC R:3&IQX' (System and frequency specific signal priorities) </li></ul>Default is the following priority list 'G:12&PWCSLXYN G:5&IQX R:12&PC R:3&IQX E:16&BCX E:578&IQX J:1&SLXCZ J:26&SLX J:5&IQX C:IQX I:ABCX S:1&C S:5&IQX'.</p>"));
   _rnxV3CheckBox->setWhatsThis(tr("<p>The default format for RINEX Observation files is RINEX Version 2.</p><p>Select 'Version 3' if you want to save observations in RINEX Version 3 format.</p>"));
   _rnxV3filenameCheckBox->setWhatsThis(tr("<p>Tick 'Version 3 filenames' to let BNC create so-called extended filenames following the RINEX Version 3 standard.</p><p>Default is an empty check box, meaning to create filenames following the RINEX Version 2 standard although the file content is saved in RINEX Version 3 format.</p>"));
 
@@ -2408,10 +2405,10 @@ void bncWindow::slotBncTextChanged(){
     bool enable1 = true;
     enable1 = _rnxV3CheckBox->isChecked();
     if (enable && enable1) {
-    enableWidget(false, _rnxV2Priority);
+      enableWidget(false, _rnxV2Priority);
     }
     if (enable && !enable1) {
-    enableWidget(true, _rnxV2Priority);
+      enableWidget(true, _rnxV2Priority);
     }
   }
 

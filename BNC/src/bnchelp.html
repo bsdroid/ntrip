@@ -1531,7 +1531,20 @@ GNSS observation data are generally hold available within BNC according to attri
 As the Version 2 format ignores signal generation attributes, BNC is forced to somehow map RINEX Version 3 to RINEX Version 2 although this cannot be done in one-to-one correspondence. Hence we introduce a 'Signal priority' list of attributes (characters, forming a string) for mapping Version 3 to Version 2.
 </p>
 <p>
-Default 'Signal priority' list is an empty option string, meaning a priority sequence of 'CWPX_?' attributes when mapping RINEX 3 to RINEX 2. The meaning of this sequence of characters - take it as an example - is as follows:
+Signal priorities can be specified as equal for all systems, as system specific or as system and frequency specific. For example:</li>
+<ul>
+<li>'CWPX_?' (General signal priorities valid for all GNSS)</li>
+<li>'C:IQX I:ABCX' (System specific signal priorities for BDS and IRNSS)</li>
+<li>'G:12&PWCSLXYN G:5&IQX R:12&PC R:3&IQX' (System and frequency specific signal priorities)</li>
+</ul>
+</p>
+<p>
+The default 'Signal priority' list is defined as follows: 
+<ul>
+ <li>'G:12&PWCSLXYN G:5&IQX R:12&PC R:3&IQX E:16&BCX E:578&IQX J:1&SLXCZ J:26&SLX J:5&IQX C:IQX I:ABCX S:1&C S:5&IQX'</li>
+</ul>
+
+As an example the 'Signal priority' of 'CWPX_?' is explained in more detail: 
 <ul>
 <li>Signals with attribute 'C' enjoy the highest priority. If such a Version 3 observation becomes available, it is presented as RINEX Version 2 observation if that is the format you wish to see. Observations with other attributes are being ignored.</li>
 <li>If no signal with 'C' attribute is available but we have an observation with 'W' attribute, BNC presents that one as RINEX Version 2 observation and ignores all observations with other attributes. The same applies mutatis mutandis to observations with P and X attributes.</li>
@@ -1540,14 +1553,6 @@ Default 'Signal priority' list is an empty option string, meaning a priority seq
 </ul>
 </p>
 
-<p>
-Signal priorities can be specified either as equal for all systems or system specific. The following are example priority strings:</li>
-<ul>
-<li>CWPX_? (Same signal priorities valid for all systems)</li>
-<li>G:CWPX_? R:PCX_? E:CPX_? (Specific signal priorities for GPS, GLONASS and Galileo system)</li>
-</ul>
-
-</p>
 <p>
 You may like to specify your own 'Signal priority' string(s) for producing RINEX Version 2 files. If you neither convert observation streams to RINEX Version 2 nor concatenate RINEX Version 3 to Version 2 files, then the 'Version 2' option is meaningless.
 </p>

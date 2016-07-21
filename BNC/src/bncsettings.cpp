@@ -133,7 +133,7 @@ void bncSettings::reRead() {
     setValue_p("reqcOldAntennadU",    "");
     setValue_p("reqcOldReceiverNumber", "");
     setValue_p("reqcUseObsTypes",     "");
-    setValue_p("reqcV2Priority",      "");
+    setValue_p("reqcV2Priority",      "G:12&PWCSLXYN G:5&IQX R:12&PC R:3&IQX E:16&BCX E:578&IQX J:1&SLXCZ J:26&SLX J:5&IQX C:IQX I:ABCX S:1&C S:5&IQX");
     // SP3
     setValue_p("sp3CompFile",         "");
     setValue_p("sp3CompExclude",      "");

@@ -206,7 +206,7 @@ class t_rnxObsFile {
 
   static QString type2to3(char sys, const QString& typeV2);
   static QString type3to2(char sys, const QString& typeV3);
-  static QString signalPriorities(char sys);
+  static QStringList signalPriorities(char sys);
 
   static void writeEpoch(QTextStream* stream, const t_rnxObsHeader& header, const t_rnxEpo* epo) {
     if (epo == 0) {

@@ -1302,20 +1302,31 @@ void t_rnxObsFile::writeEpochV2(QTextStream* stream, const t_rnxObsHeader& heade
     *stream << rnxSat.prn.toString().c_str();
   }
   *stream << endl;
-  for (unsigned iSat = 0; iSat < epo->rnxSat.size(); iSat++) {
 
+  for (unsigned iSat = 0; iSat < epo->rnxSat.size(); iSat++) {
     const t_rnxSat& rnxSat = epo->rnxSat[iSat];
     char            sys    = rnxSat.prn.system();
-
     for (int iTypeV2 = 0; iTypeV2 < header.nTypes(sys); iTypeV2++) {
       if (iTypeV2 > 0 && iTypeV2 % 5 == 0) {
         *stream << endl;
       }
       QString typeV2 = header.obsType(sys, iTypeV2);
       bool    found  = false;
+      QStringList preferredAttribList = signalPriorities(sys);
+      QString preferredAttrib;
+      for (int ii = 0; ii < preferredAttribList.size(); ii++) {
+        if (preferredAttribList[ii].indexOf("&") != -1) {
+          QStringList hlp = preferredAttribList[ii].split("&", QString::SkipEmptyParts);
+          if (hlp.size() == 2 && hlp[0].contains(typeV2[1])) {
+            preferredAttrib = hlp[1];
+          }
+        }
+        else {
+          preferredAttrib = preferredAttribList[ii];
+        }
+      }
 
-      QString preferredAttrib = signalPriorities(sys);
-      for (int iPref = 0; iPref < preferredAttrib.length(); iPref++) {
+      for (int iPref = 0; iPref < preferredAttribList.size(); iPref++) {
         QMapIterator<QString, t_rnxObs> itObs(rnxSat.obs);
         while (itObs.hasNext()) {
           itObs.next();
@@ -1544,42 +1555,62 @@ void t_rnxObsFile::setObsFromRnx(const t_rnxObsFile* rnxObsFile, const t_rnxObsF
 
 // Tracking Mode Priorities
 ////////////////////////////////////////////////////////////////////////////
-QString t_rnxObsFile::signalPriorities(char sys) {
+QStringList t_rnxObsFile::signalPriorities(char sys) {
 
   bncSettings settings;
-
+  
   QStringList priorList;
   QString reqcAction = settings.value("reqcAction").toString();
 
   // Priorities in Edit/Concatenate (post processing) mode
   // ---------------------------------------------------
   if (reqcAction == "Edit/Concatenate") {
-  priorList = settings.value("reqcV2Priority").toString().split(" ", QString::SkipEmptyParts);
+    priorList = settings.value("reqcV2Priority").toString().split(" ", QString::SkipEmptyParts);
   }
 
   // Priorities in real-time mode
   // ----------------------------
   else {
-  priorList = settings.value("rnxV2Priority").toString().split(" ", QString::SkipEmptyParts);
+    priorList = settings.value("rnxV2Priority").toString().split(" ", QString::SkipEmptyParts);
   }
 
-  if (priorList.empty()) {
-    priorList << "CWPX_?";
-  }
-
-  QString result;
+  QStringList result;
   for (int ii = 0; ii < priorList.size(); ii++) {
     if (priorList[ii].indexOf(":") != -1) {
       QStringList hlp = priorList[ii].split(":", QString::SkipEmptyParts);
       if (hlp.size() == 2 && hlp[0].length() == 1 && hlp[0][0] == sys) {
-        result = hlp[1];
-        break;
+        result.append(hlp[1]);
       }
     }
     else {
-      result = priorList[ii];
+      result.append(priorList[ii]);
     }
   }
 
+  if (result.empty()) {
+    switch (sys) {
+      case 'G':
+        result << "G:12&PWCSLXYN G:5&IQX";
+        break;
+      case 'R':
+        result << "R:12&PC R:3&IQX";
+        break;
+      case 'E':
+        result << "E:16&BCX E:578&IQX";
+        break;
+      case 'J':
+        result << "J:1&SLXCZ J:26&SLX J:5&IQX";
+        break;
+      case 'C':
+        result << "C:IQX";
+        break;
+      case 'I':
+        result << "I:ABCX";
+        break;
+      case 'S':
+        result << "S:1&C S:5&IQX";
+        break;
+    }
+  }
   return result;
 }
