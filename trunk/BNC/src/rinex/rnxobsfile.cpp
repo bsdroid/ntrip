@@ -1590,25 +1590,31 @@ QStringList t_rnxObsFile::signalPriorities(char sys) {
   if (result.empty()) {
     switch (sys) {
       case 'G':
-        result << "G:12&PWCSLXYN G:5&IQX";
+        result.append("12&PWCSLXYN");
+        result.append("5&IQX");
         break;
       case 'R':
-        result << "R:12&PC R:3&IQX";
+        result.append("12&PC");
+        result.append("3&IQX");
         break;
       case 'E':
-        result << "E:16&BCX E:578&IQX";
+        result.append("16&BCX");
+        result.append("578&IQX");
         break;
       case 'J':
-        result << "J:1&SLXCZ J:26&SLX J:5&IQX";
+        result.append("1&SLXCZ");
+        result.append("26&SLX");
+        result.append("5&IQX");
         break;
       case 'C':
-        result << "C:IQX";
+        result.append("IQX");
         break;
       case 'I':
-        result << "I:ABCX";
+        result.append("ABCX");
         break;
       case 'S':
-        result << "S:1&C S:5&IQX";
+        result.append("1&C");
+        result.append("5&IQX");
         break;
     }
   }
