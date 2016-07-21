@@ -155,6 +155,7 @@ void t_reqcEdit::run() {
     emit finished();
     deleteLater();
   }
+
 }
 
 // Initialize input observation files, sort them according to start time
@@ -642,32 +643,42 @@ void t_reqcEdit::addRnxConversionDetails(const t_rnxObsFile* obsFile,
 
   int key = 0;
   QString systems = obsFile->header().usedSystems();
-  QString comment = QString("RINEX 3 => 2 CONVERSION DETAILS:");
+  QString comment = QString("Signal priorities for RINEX 3 => 2 conversion:");
   QString commentKey = QString("COMMENT %1").arg(key, 3, 10, QChar('0'));
   txtMap.insert(commentKey, comment);
 
   for(int ii = 0; ii < obsFile->numSys(); ii++) {
-    key++;
     char sys = systems[ii].toAscii();
-    QString preferredAttrib = obsFile->signalPriorities(sys);
-    comment = QString("%1: Signal priority = %2").arg(sys).arg(preferredAttrib);
-    commentKey = QString("COMMENT %1").arg(key, 3, 10, QChar('0'));
     txtMap.insert(commentKey, comment);
+    QMap <char, QString>  signalPriorityMap;
+    QStringList preferredAttribListSys = obsFile->signalPriorities(sys);
     QStringList types = obsFile->header().obsTypes(sys);
     for (int jj = 0; jj < types.size(); jj++) {
-      key++;
       QString inType = types[jj];
-      for (int iPref = 0; iPref < preferredAttrib.length(); iPref++) {
-        if (preferredAttrib[iPref] == '?'                             ||
-            (inType.length() == 2 && preferredAttrib[iPref] == '_'    ) ||
-            (inType.length() == 3 && preferredAttrib[iPref] == inType[2]) ) {
-          QString outType = t_rnxObsFile::type3to2(sys, inType);
-          comment = QString("%1: %2 => %3").arg(sys).arg(inType).arg(outType);
-          commentKey = QString("COMMENT %1").arg(key, 3, 10, QChar('0'));
-          txtMap.insert(commentKey, comment);
-          break;
+      char band = inType[1].toAscii();
+      for (int ii = 0; ii < preferredAttribListSys.size(); ii++) {
+        QString preferredAttrib;
+        if (preferredAttribListSys[ii].indexOf("&") != -1) {
+          QStringList hlp = preferredAttribListSys[ii].split("&", QString::SkipEmptyParts);
+          if (hlp.size() == 2 && hlp[0].contains(band)) {
+            preferredAttrib = hlp[1];
+          }
+        }
+        else {
+          preferredAttrib = preferredAttribListSys[ii];
+        }
+        if (!signalPriorityMap.contains(band) && !preferredAttrib.isEmpty()){
+          signalPriorityMap[band] = preferredAttrib;
         }
       }
+    }
+    QMapIterator<char, QString> it(signalPriorityMap);
+    while (it.hasNext()) {
+        it.next();
+        key++;
+        comment = QString("%1 band %2: %3").arg(sys).arg(it.key()).arg(it.value());
+        commentKey = QString("COMMENT %1").arg(key, 3, 10, QChar('0'));
+        txtMap.insert(commentKey, comment);
     }
   }
 }

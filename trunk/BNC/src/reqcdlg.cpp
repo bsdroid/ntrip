@@ -34,7 +34,7 @@
  *
  * Created:    28-Mar-2012
  *
- * Changes:    
+ * Changes:
  *
  * -----------------------------------------------------------------------*/
 
@@ -137,7 +137,7 @@ reqcDlg::reqcDlg(QWidget* parent) : QDialog(parent) {
 
   QString hlp = settings.value("reqcV2Priority").toString();
   if (hlp.isEmpty()) {
-    hlp = "CWPX_?";
+    hlp = "G:12&PWCSLXYN G:5&IQX R:12&PC R:3&IQX E:16&BCX E:578&IQX J:1&SLXCZ J:26&SLX J:5&IQX C:IQX I:ABCX S:1&C S:5&IQX";
   }
   _reqcV2Priority = new QLineEdit(hlp);
 
@@ -151,8 +151,8 @@ reqcDlg::reqcDlg(QWidget* parent) : QDialog(parent) {
   grid->addWidget(new QLabel("Sampling"),         ir, 3, Qt::AlignRight);
   grid->addWidget(_reqcSampling,                  ir, 4);
   ++ir;
-  grid->addWidget(new QLabel("Version 2 Signal Priority"), ir, 1);
-  grid->addWidget(_reqcV2Priority,                ir, 2);
+  grid->addWidget(new QLabel("Version 2 signal priority"),  ir, 1);
+  grid->addWidget(_reqcV2Priority,                          ir, 2, 1, 4);
   ++ir;
   grid->addWidget(new QLabel("Start"),            ir, 1);
   grid->addWidget(_reqcStartDateTime,             ir, 2);
@@ -229,9 +229,9 @@ reqcDlg::reqcDlg(QWidget* parent) : QDialog(parent) {
 
   // WhatsThis, RINEX Editing & QC
   // -----------------------------
-  _reqcRnxVersion->setWhatsThis(tr("<p>Select version number of emerging new RINEX file.</p><p>Note the following:</p><p>When converting <u>RINEX Version 2 to Version 3 </u>Observation files, the tracking mode or channel information (signal attribute, see RINEX Version 3 documentation) in the (last out of the three characters) observation code is left blank if unknown.</p><p>When converting <u>RINEX Version 3 to Version 2</u>, the mapping of observations follows a 'Signal priority list' with signal attributes as defined in RINEX Version 3.</p>")); 
+  _reqcRnxVersion->setWhatsThis(tr("<p>Select version number of emerging new RINEX file.</p><p>Note the following:</p><p>When converting <u>RINEX Version 2 to Version 3 </u>Observation files, the tracking mode or channel information (signal attribute, see RINEX Version 3 documentation) in the (last out of the three characters) observation code is left blank if unknown.</p><p>When converting <u>RINEX Version 3 to Version 2</u>, the mapping of observations follows a 'Signal priority list' with signal attributes as defined in RINEX Version 3.</p>"));
   _reqcSampling->setWhatsThis(tr("<p>Select sampling rate of emerging new RINEX Observation file.</p><p>'0 sec' means that observations from all epochs in the RINEX input file will become part of the RINEX output file.</p>"));
-  _reqcV2Priority->setWhatsThis(tr("<p>Specify a priority list of characters defining signal attributes as defined in RINEX Version 3. Priorities will be used in post processing mode to map RINEX Version 3 observation files to Version 2. The underscore character '_' stands for undefined attributes. The question mark '?' can be used as wildcard which represents any one character.</p><p>Signal priorities can be specified either as equal for all systems or as system specifics. The following are example priority strings:</li><ul><li>'CWPX_?' (Same signal priorities valid for all systems)</li><li>'G:CWPX_? R:PCX_? E:CPX_?' (Specific signal priorities for GPS, GLONASS and Galileo system)</li></ul>Default is priority list 'CWPX_?'.</p>"));
+  _reqcV2Priority->setWhatsThis(tr("<p>Specify a priority list of characters defining signal attributes as defined in RINEX Version 3. Priorities will be used to map observations with RINEX Version 3 attributes from incoming streams to Version 2. The underscore character '_' stands for undefined attributes. A question mark '?' can be used as wildcard which represents any one character.</p><p>Signal priorities can be specified as equal for all systems, as system specific or as system and freq. specific. For example: </li><ul><li>'CWPX_?' (General signal priorities valid for all GNSS) </li><li>'C:IQX I:ABCX' (System specific signal priorities for BDS and IRNSS) </li><li>'G:12&PWCSLXYN G:5&IQX R:12&PC R:3&IQX' (System and frequency specific signal priorities) </li></ul>Default is the following priority list 'G:12&PWCSLXYN G:5&IQX R:12&PC R:3&IQX E:16&BCX E:578&IQX J:1&SLXCZ J:26&SLX J:5&IQX C:IQX I:ABCX S:1&C S:5&IQX'.</p>"));
   _reqcStartDateTime->setWhatsThis(tr("<p>Specify begin of emerging new RINEX Observation file.</p>"));
   _reqcEndDateTime->setWhatsThis(tr("<p>Specify end of emerging new RINEX Observation file.</p>"));
   _reqcRunBy->setWhatsThis(tr("<p>Specify a 'RUN BY' string to be included in the emerging new RINEX file header.</p><p>Default is an empty option field, meaning the operator's user ID is used as 'RUN BY' string.</p>"));
@@ -280,7 +280,7 @@ void reqcDlg::slotWhatsThis() {
 ////////////////////////////////////////////////////////////////////////////
 void reqcDlg::closeEvent(QCloseEvent* event) {
 
-  int iRet = QMessageBox::question(this, "Close", "Save Options?", 
+  int iRet = QMessageBox::question(this, "Close", "Save Options?",
                                    QMessageBox::Yes, QMessageBox::No,
                                    QMessageBox::Cancel);
 
