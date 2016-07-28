@@ -1,6 +1,8 @@
 --------------------------------------------------------------------------------
  BNC VERSION 2.13.0 (xx.xx.xxxx) current
 --------------------------------------------------------------------------------
+    Changed (28.07.2016): small adaptations in qwtpolar sources to allow the
+                          successful comilation of BNC on a Rasperry Pi
     Added   (21.07.2016): frequency specific signal priorities are added for
                           RINEX version 3 to RINEX version 2 conversion
     Changed (21.07.2016): Default signal priority list
