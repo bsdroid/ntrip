@@ -105,7 +105,7 @@ void t_reqcEdit::run() {
   // ---------------
   if (_log) {
     *_log << QByteArray(78, '-') << endl;
-    *_log << "Concatenation of RINEX Observation and/or Navigation Files\n";
+    *_log << "RINEX File Editing\n";
     *_log << QByteArray(78, '-') << endl;
 
     *_log << QByteArray("Program").leftJustified(15) << ": "
