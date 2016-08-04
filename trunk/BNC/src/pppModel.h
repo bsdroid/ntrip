@@ -3,6 +3,7 @@
 
 #include <math.h>
 #include <newmat.h>
+#include <iostream>
 #include "bnctime.h"
 #include "t_prn.h"
 #include "satObs.h"
