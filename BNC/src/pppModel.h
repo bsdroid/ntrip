@@ -45,6 +45,25 @@ class t_tides {
   double       _rMoon;
 };
 
+class t_loading {
+ public:
+  t_loading(const QString& fileName);
+  ~t_loading();
+  t_irc   readFile(const QString& fileName);
+  void    printAll() const;
+
+ private:
+  class t_blqData {
+   public:
+    t_blqData() {}
+    Matrix amplitudes;
+    Matrix phases;
+  };
+  t_blqData*                 newBlqData;
+  QMap <QString, t_blqData*> blqMap;
+
+};
+
 class t_windUp {
  public:
   t_windUp();
