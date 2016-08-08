@@ -49,8 +49,9 @@ class t_rnxNavFile {
     t_irc  read(QTextStream* stream);
     double _version;
     bool   _glonass;
+    QStringList _comments;
   };
- 
+
  public:
   t_rnxNavFile(const QString& fileName, e_inpOut inpOut);
   ~t_rnxNavFile();
@@ -59,7 +60,8 @@ class t_rnxNavFile {
   double version() const {return _header._version;}
   void   setVersion(double version) {_header._version = version;}
   bool   glonass() const {return _header._glonass;}
-  void   setGlonass(bool glo) {_header._glonass = glo;} 
+  QStringList comments() const {return _header._comments;}
+  void   setGlonass(bool glo) {_header._glonass = glo;}
   void   writeHeader(const QMap<QString, QString>* txtMap = 0);
   void   writeEph(const t_eph* eph);
 
