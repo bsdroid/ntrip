@@ -533,6 +533,24 @@ void t_reqcEdit::editEphemerides() {
   if (_navFileNames.isEmpty() || _outNavFileName.isEmpty()) {
     return;
   }
+  // Concatenate all comments
+  // ------------------------
+  QStringList comments;
+  bncSettings settings;
+  QString comment = settings.value("reqcComment").toString();
+  if (!comment.isEmpty()) {
+    comments.append(comment);
+  }
+  QStringListIterator it(_navFileNames);
+  while (it.hasNext()) {
+    QString fileName = it.next();
+    t_rnxNavFile rnxNavFile(fileName, t_rnxNavFile::input);
+    QStringListIterator itCmnt(rnxNavFile.comments());
+    while (itCmnt.hasNext()) {
+      comments.append(itCmnt.next());
+    }
+  }
+  comments.removeDuplicates();
 
   // Read Ephemerides
   // ----------------
@@ -565,15 +583,13 @@ void t_reqcEdit::editEphemerides() {
     outNavFile.setVersion(t_rnxNavFile::defaultRnxNavVersion2);
   }
 
-  bncSettings settings;
   QMap<QString, QString> txtMap;
   QString runBy = settings.value("reqcRunBy").toString();
   if (!runBy.isEmpty()) {
     txtMap["RUN BY"]  = runBy;
   }
-  QString comment = settings.value("reqcComment").toString();
-  if (!comment.isEmpty()) {
-    txtMap["COMMENT"]  = comment;
+  if (!comments.isEmpty()) {
+    txtMap["COMMENT"]  = comments.join("\\n");
   }
 
   outNavFile.writeHeader(&txtMap);

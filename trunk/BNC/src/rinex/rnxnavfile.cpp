@@ -79,6 +79,9 @@ t_irc t_rnxNavFile::t_rnxNavHeader::read(QTextStream* stream) {
         _glonass = true;
       }
     }
+    else if (key == "COMMENT") {
+      _comments.append(value.trimmed());
+    }
   }
 
   return success;

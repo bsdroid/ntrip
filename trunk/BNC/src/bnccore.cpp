@@ -258,6 +258,19 @@ void t_bncCore::slotNewBDSEph(t_ephBDS eph) {
 void t_bncCore::printEphHeader() {
 
   bncSettings settings;
+  QStringList comments;
+
+  QListIterator<QString> it(settings.value("mountPoints").toStringList());
+  while (it.hasNext()) {
+    QStringList hlp = it.next().split(" ");
+    if (hlp.size() < 7)
+      continue;
+    QUrl url(hlp[0]);
+    QString decoder = hlp[1];
+    comments.append("Source: " + decoder +
+                    " " + url.encodedHost() +
+                    "/" + url.path().mid(1).toAscii());
+  }
 
   // Initialization
   // --------------
@@ -383,6 +396,11 @@ void t_bncCore::printEphHeader() {
                        << hlp.toAscii().data()
                        << "PGM / RUN BY / DATE" << endl;
 
+        QStringListIterator it(comments);
+        while (it.hasNext()) {
+          *_ephStreamGPS << it.next().trimmed().left(60).leftJustified(60) << "COMMENT\n";
+        }
+
         line.sprintf("%60sEND OF HEADER\n", "");
         *_ephStreamGPS << line;
 
@@ -405,6 +423,11 @@ void t_bncCore::printEphHeader() {
                        << hlp.toAscii().data()
                        << "PGM / RUN BY / DATE" << endl;
 
+        QStringListIterator it(comments);
+        while (it.hasNext()) {
+          *_ephStreamGPS << it.next().trimmed().left(60).leftJustified(60) << "COMMENT\n";
+        }
+
         line.sprintf("%60sEND OF HEADER\n", "");
         *_ephStreamGPS << line;
 
@@ -421,6 +444,11 @@ void t_bncCore::printEphHeader() {
                            << _userName.toAscii().data()
                            << hlp.toAscii().data()
                            << "PGM / RUN BY / DATE" << endl;
+
+        QStringListIterator it(comments);
+        while (it.hasNext()) {
+          *_ephStreamGlonass << it.next().trimmed().left(60).leftJustified(60) << "COMMENT\n";
+        }
 
         line.sprintf("%60sEND OF HEADER\n", "");
         *_ephStreamGlonass << line;
