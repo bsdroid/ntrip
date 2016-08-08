@@ -1,6 +1,8 @@
 --------------------------------------------------------------------------------
  BNC VERSION 2.13.0 (xx.xx.xxxx) current
 --------------------------------------------------------------------------------
+    Added   (08.08.2016): some informations about the data source is added as
+                          comment within the header of RINEX navigation files
     Added   (21.07.2016): frequency specific signal priorities are added for
                           RINEX version 3 to RINEX version 2 conversion
     Added   (29.06.2016): consideration of provioder ID changes in SSR streams
