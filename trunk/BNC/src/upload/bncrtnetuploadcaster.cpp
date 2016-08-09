@@ -600,6 +600,30 @@ void bncRtnetUploadCaster::decodeRtnetStream(char* buffer, int bufLen) {
               biasSat->Biases[ii].Type = CODETYPEGPS_L1_CA;
               biasSat->Biases[ii].Bias = it.value();
             }
+            else if (it.key() == "1S") {
+              int ii = biasSat->NumberOfCodeBiases;
+              if (ii >= CLOCKORBIT_NUMBIAS)
+                break;
+              biasSat->NumberOfCodeBiases += 1;
+              biasSat->Biases[ii].Type = CODETYPEGPS_L1C_D;
+              biasSat->Biases[ii].Bias = it.value();
+            }
+            else if (it.key() == "1L") {
+              int ii = biasSat->NumberOfCodeBiases;
+              if (ii >= CLOCKORBIT_NUMBIAS)
+                break;
+              biasSat->NumberOfCodeBiases += 1;
+              biasSat->Biases[ii].Type = CODETYPEGPS_L1C_P;
+              biasSat->Biases[ii].Bias = it.value();
+            }
+            else if (it.key() == "1X") {
+              int ii = biasSat->NumberOfCodeBiases;
+              if (ii >= CLOCKORBIT_NUMBIAS)
+                break;
+              biasSat->NumberOfCodeBiases += 1;
+              biasSat->Biases[ii].Type = CODETYPEGPS_L1C_DP;
+              biasSat->Biases[ii].Bias = it.value();
+            }
             else if (it.key() == "1P") {
               int ii = biasSat->NumberOfCodeBiases;
               if (ii >= CLOCKORBIT_NUMBIAS)
@@ -1179,6 +1203,45 @@ void bncRtnetUploadCaster::decodeRtnetStream(char* buffer, int bufLen) {
                 break;
               phasebiasSat->NumberOfPhaseBiases += 1;
               phasebiasSat->Biases[ii].Type = CODETYPEGPS_L1_CA;
+              phasebiasSat->Biases[ii].Bias = pbSig.bias;
+              phasebiasSat->Biases[ii].SignalIntegerIndicator = pbSig.intInd;
+              phasebiasSat->Biases[ii].SignalsWideLaneIntegerIndicator =
+                  pbSig.wlInd;
+              phasebiasSat->Biases[ii].SignalDiscontinuityCounter =
+                  pbSig.discCount;
+            }
+            else if (pbSig.type == "1S") {
+              int ii = phasebiasSat->NumberOfPhaseBiases;
+              if (ii >= CLOCKORBIT_NUMBIAS)
+                break;
+              phasebiasSat->NumberOfPhaseBiases += 1;
+              phasebiasSat->Biases[ii].Type = CODETYPEGPS_L1C_D;
+              phasebiasSat->Biases[ii].Bias = pbSig.bias;
+              phasebiasSat->Biases[ii].SignalIntegerIndicator = pbSig.intInd;
+              phasebiasSat->Biases[ii].SignalsWideLaneIntegerIndicator =
+                  pbSig.wlInd;
+              phasebiasSat->Biases[ii].SignalDiscontinuityCounter =
+                  pbSig.discCount;
+            }
+            else if (pbSig.type == "1L") {
+              int ii = phasebiasSat->NumberOfPhaseBiases;
+              if (ii >= CLOCKORBIT_NUMBIAS)
+                break;
+              phasebiasSat->NumberOfPhaseBiases += 1;
+              phasebiasSat->Biases[ii].Type = CODETYPEGPS_L1C_P;
+              phasebiasSat->Biases[ii].Bias = pbSig.bias;
+              phasebiasSat->Biases[ii].SignalIntegerIndicator = pbSig.intInd;
+              phasebiasSat->Biases[ii].SignalsWideLaneIntegerIndicator =
+                  pbSig.wlInd;
+              phasebiasSat->Biases[ii].SignalDiscontinuityCounter =
+                  pbSig.discCount;
+            }
+            else if (pbSig.type == "1X") {
+              int ii = phasebiasSat->NumberOfPhaseBiases;
+              if (ii >= CLOCKORBIT_NUMBIAS)
+                break;
+              phasebiasSat->NumberOfPhaseBiases += 1;
+              phasebiasSat->Biases[ii].Type = CODETYPEGPS_L1C_P;
               phasebiasSat->Biases[ii].Bias = pbSig.bias;
               phasebiasSat->Biases[ii].SignalIntegerIndicator = pbSig.intInd;
               phasebiasSat->Biases[ii].SignalsWideLaneIntegerIndicator =
