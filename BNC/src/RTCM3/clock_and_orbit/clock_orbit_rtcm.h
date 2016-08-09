@@ -157,6 +157,9 @@ enum CodeType {
   CODETYPEGPS_L5_I           = 14,
   CODETYPEGPS_L5_Q           = 15,
   CODETYPEGPS_L5_IQ          = 16,
+  CODETYPEGPS_L1C_D          = 17,
+  CODETYPEGPS_L1C_P          = 18,
+  CODETYPEGPS_L1C_DP         = 19,
 
   CODETYPEGLONASS_L1_CA      = 0,
   CODETYPEGLONASS_L1_P       = 1,
