@@ -122,16 +122,16 @@ void bncSettings::reRead() {
     setValue_p("reqcNewAntennaName",  "");
     setValue_p("reqcOldReceiverName", "");
     setValue_p("reqcNewReceiverName", "");
-    setValue_p("reqcNewAntennaNumber","");
-    setValue_p("reqcNewAntennadE",    "");
-    setValue_p("reqcNewAntennadN",    "");
-    setValue_p("reqcNewAntennadU",    "");
-    setValue_p("reqcNewReceiverNumber", "");
     setValue_p("reqcOldAntennaNumber", "");
+    setValue_p("reqcNewAntennaNumber","");
     setValue_p("reqcOldAntennadE",    "");
+    setValue_p("reqcNewAntennadE",    "");
     setValue_p("reqcOldAntennadN",    "");
+    setValue_p("reqcNewAntennadN",    "");
     setValue_p("reqcOldAntennadU",    "");
+    setValue_p("reqcNewAntennadU",    "");
     setValue_p("reqcOldReceiverNumber", "");
+    setValue_p("reqcNewReceiverNumber", "");
     setValue_p("reqcUseObsTypes",     "");
     setValue_p("reqcV2Priority",      "G:12&PWCSLXYN G:5&IQX R:12&PC R:3&IQX E:16&BCX E:578&IQX J:1&SLXCZ J:26&SLX J:5&IQX C:IQX I:ABCX S:1&C S:5&IQX");
     // SP3

@@ -1,6 +1,7 @@
 --------------------------------------------------------------------------------
  BNC VERSION 2.13.0 (xx.xx.xxxx) current
 --------------------------------------------------------------------------------
+    Added   (12.08.2016): resp. config keywords in context help
     Added   (08.08.2016): some informations about the data source is added as
                           comment within the header of RINEX navigation files
     Added   (21.07.2016): frequency specific signal priorities are added for
