@@ -22,6 +22,8 @@
     Changed (12.05.2016): limits for spherical harmonics degree and order extended
     Changed (28.04.2016): ephemeris upload is extended to allow an upload of more
                           than one stream and to choose a single satellite system
+    Fixed   (12.08.2016): check regarding wrong observation epochs is done during
+                          latency check as well to prevent erroneous latencies
     Fixed   (08.06.2016): map generation from sourcetable entry
     Fixed   (02.06.2016): the approach how to wait for clock corrections
                           in PPP mode, which was well proven in BNC verson 2.11
