@@ -248,6 +248,22 @@ QDateTime currentDateAndTimeGPS() {
 
 //
 ////////////////////////////////////////////////////////////////////////////
+bool checkForWrongObsEpoch(bncTime obsEpoch) {
+  const double maxDt = 600.0;
+  long iSec    = long(floor(obsEpoch.gpssec()+0.5));
+  long obsTime = obsEpoch.gpsw()*7*24*3600 + iSec;
+  int    week;
+  double sec;
+  currentGPSWeeks(week, sec);
+  long currTime = week * 7*24*3600 + long(sec);
+
+  if (fabs(currTime - obsTime) > maxDt) {
+    return true;
+  }
+  return false;
+}
+//
+////////////////////////////////////////////////////////////////////////////
 QByteArray ggaString(const QByteArray& latitude,
                      const QByteArray& longitude,
                      const QByteArray& height,

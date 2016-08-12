@@ -34,7 +34,7 @@
  *
  * Created:    02-Feb-2009
  *
- * Changes:    
+ * Changes:
  *
  * -----------------------------------------------------------------------*/
 
@@ -59,7 +59,7 @@ latencyChecker::latencyChecker(QByteArray staID) {
 
   _staID = staID;
 
-  connect(this, SIGNAL(newMessage(QByteArray,bool)), 
+  connect(this, SIGNAL(newMessage(QByteArray,bool)),
           BNC_CORE, SLOT(slotMessage(const QByteArray,bool)));
 
   bncSettings settings;
@@ -68,23 +68,23 @@ latencyChecker::latencyChecker(QByteArray staID) {
   // ----------------
   QString adviseObsRate = settings.value("adviseObsRate").toString();
   _inspSegm = 0;
-  if      ( adviseObsRate.isEmpty() ) { 
-    _inspSegm = 0; 
+  if      ( adviseObsRate.isEmpty() ) {
+    _inspSegm = 0;
   }
-  else if ( adviseObsRate.indexOf("5 Hz")   != -1 ) { 
-    _inspSegm = 20; 
+  else if ( adviseObsRate.indexOf("5 Hz")   != -1 ) {
+    _inspSegm = 20;
   }
-  else if ( adviseObsRate.indexOf("1 Hz")   != -1 ) { 
-    _inspSegm = 10; 
+  else if ( adviseObsRate.indexOf("1 Hz")   != -1 ) {
+    _inspSegm = 10;
   }
-  else if ( adviseObsRate.indexOf("0.5 Hz") != -1 ) { 
-    _inspSegm = 20; 
+  else if ( adviseObsRate.indexOf("0.5 Hz") != -1 ) {
+    _inspSegm = 20;
   }
-  else if ( adviseObsRate.indexOf("0.2 Hz") != -1 ) { 
-    _inspSegm = 40; 
+  else if ( adviseObsRate.indexOf("0.2 Hz") != -1 ) {
+    _inspSegm = 40;
   }
-  else if ( adviseObsRate.indexOf("0.1 Hz") != -1 ) { 
-    _inspSegm = 50; 
+  else if ( adviseObsRate.indexOf("0.1 Hz") != -1 ) {
+    _inspSegm = 50;
   }
   _adviseFail = settings.value("adviseFail").toInt();
   _adviseReco = settings.value("adviseReco").toInt();
@@ -95,32 +95,32 @@ latencyChecker::latencyChecker(QByteArray staID) {
   // ------------------------
   _miscIntr = 1;
   QString miscIntr = settings.value("miscIntr").toString();
-  if      ( miscIntr.isEmpty() ) { 
-    _miscIntr = 1; 
+  if      ( miscIntr.isEmpty() ) {
+    _miscIntr = 1;
   }
-  else if ( miscIntr.indexOf("2 sec")   != -1 ) { 
-    _miscIntr = 2; 
+  else if ( miscIntr.indexOf("2 sec")   != -1 ) {
+    _miscIntr = 2;
   }
-  else if ( miscIntr.indexOf("10 sec")  != -1 ) { 
-    _miscIntr = 10; 
+  else if ( miscIntr.indexOf("10 sec")  != -1 ) {
+    _miscIntr = 10;
   }
-  else if ( miscIntr.indexOf("1 min")   != -1 ) { 
-    _miscIntr = 60; 
+  else if ( miscIntr.indexOf("1 min")   != -1 ) {
+    _miscIntr = 60;
   }
-  else if ( miscIntr.left(5).indexOf("5 min")   != -1 ) { 
-    _miscIntr = 300; 
+  else if ( miscIntr.left(5).indexOf("5 min")   != -1 ) {
+    _miscIntr = 300;
   }
-  else if ( miscIntr.indexOf("15 min")  != -1 ) { 
-    _miscIntr = 900; 
+  else if ( miscIntr.indexOf("15 min")  != -1 ) {
+    _miscIntr = 900;
   }
-  else if ( miscIntr.indexOf("1 hour")  != -1 ) { 
-    _miscIntr = 3600; 
+  else if ( miscIntr.indexOf("1 hour")  != -1 ) {
+    _miscIntr = 3600;
   }
-  else if ( miscIntr.indexOf("6 hours") != -1 ) { 
-    _miscIntr = 21600; 
+  else if ( miscIntr.indexOf("6 hours") != -1 ) {
+    _miscIntr = 21600;
   }
-  else if ( miscIntr.indexOf("1 day")   != -1 ) { 
-    _miscIntr = 86400; 
+  else if ( miscIntr.indexOf("1 day")   != -1 ) {
+    _miscIntr = 86400;
   }
 
   // RTCM message types
@@ -161,7 +161,7 @@ latencyChecker::latencyChecker(QByteArray staID) {
   _decodeStopCorr = QDateTime::currentDateTime();
   _begDateTimeCorr = QDateTime::currentDateTime();
   _endDateTimeCorr = QDateTime::currentDateTime();
-  
+
 }
 
 // Destructor
@@ -179,7 +179,7 @@ void latencyChecker::checkReconnect() {
   // ----------------------
   if (!_fromReconnect) {
     _endDateTimeOut = QDateTime::currentDateTime();
-  } 
+  }
   _fromReconnect = true;
 
   if ( _decodeStop.isValid() ) {
@@ -276,7 +276,7 @@ void latencyChecker::checkOutage(bool decoded) {
           _decodeStopCorr.setTime(QTime());
           _decodeStartCorr = QDateTime::currentDateTime();
         }
-      } 
+      }
       else {
 
         // End corrupt threshold
@@ -306,7 +306,7 @@ void latencyChecker::checkOutage(bool decoded) {
   // --------------------
   if (_fromReconnect) {
     _begDateTimeOut = QDateTime::currentDateTime();
-  } 
+  }
   _fromReconnect = false;
 
   if ( _decodeStart.isValid() ) {
@@ -335,9 +335,9 @@ void latencyChecker::checkObsLatency(const QList<t_satObs>& obsList) {
     QListIterator<t_satObs> it(obsList);
     while (it.hasNext()) {
       const t_satObs& obs = it.next();
-      
+      bool wrongObservationEpoch = checkForWrongObsEpoch(obs._time);
       _newSecGPS = static_cast<int>(obs._time.gpssec());
-      if (_newSecGPS != _oldSecGPS) {
+      if (_newSecGPS != _oldSecGPS && !wrongObservationEpoch) {
         if (_newSecGPS % _miscIntr < _oldSecGPS % _miscIntr) {
           if (_numLat > 0) {
             if (_meanDiff > 0.0) {
@@ -453,7 +453,7 @@ void latencyChecker::checkCorrLatency(int corrGPSEpochTime) {
             if ( _checkMountPoint == _staID || _checkMountPoint == "ALL" ) {
               emit(newMessage(QString(_staID + late ).toAscii(), true) );
             }
-          } 
+          }
           else {
             late = QString(": Mean latency %1 sec, min %2, max %3, rms %4, %5 epochs")
             .arg(int(_sumLat/_numLat*100)/100.)
@@ -499,7 +499,7 @@ void latencyChecker::checkCorrLatency(int corrGPSEpochTime) {
   }
 }
 
-// Call advisory notice script    
+// Call advisory notice script
 ////////////////////////////////////////////////////////////////////////////
 void latencyChecker::callScript(const char* comment) {
   if (!_adviseScript.isEmpty()) {
