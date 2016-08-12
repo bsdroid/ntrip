@@ -536,20 +536,12 @@ void bncGetThread::run() {
       while (it.hasNext()) {
         const t_satObs& obs = it.next();
 
-        QString prn(obs._prn.toString().c_str());
-        long iSec    = long(floor(obs._time.gpssec()+0.5));
-        long obsTime = obs._time.gpsw()*7*24*3600 + iSec;
-
         // Check observation epoch
         // -----------------------
         if (!_rawFile) {
-          int    week;
-          double sec;
-          currentGPSWeeks(week, sec);
-          long currTime = week * 7*24*3600 + long(sec);
-          const double maxDt = 600.0;
-          if (fabs(currTime - obsTime) > maxDt) {
-              emit( newMessage(_staID + ": Wrong observation epoch(s)", false) );
+          bool wrongObservationEpoch = checkForWrongObsEpoch(obs._time);
+          if (wrongObservationEpoch) {
+            emit( newMessage(_staID + ": Wrong observation epoch(s)", false) );
             continue;
           }
         }
@@ -557,6 +549,9 @@ void bncGetThread::run() {
         // Check observations coming twice (e.g. KOUR0 Problem)
         // ----------------------------------------------------
         if (!_rawFile) {
+          QString prn(obs._prn.toString().c_str());
+          long iSec    = long(floor(obs._time.gpssec()+0.5));
+          long obsTime = obs._time.gpsw()*7*24*3600 + iSec;
           QMap<QString, long>::const_iterator it = _prnLastEpo.find(prn);
           if (it != _prnLastEpo.end()) {
             long oldTime = it.value();

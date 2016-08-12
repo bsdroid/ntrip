@@ -49,7 +49,7 @@ int          gnumleap(int year, int month, int day);
  * Convert Moscow time into GPS or UTC. Note that parts of a second are not preserved
  * and must be handled separately.
  * @param week GPS week number (must be prefilled, contains fixed value afterwards)
- * @param secOfWeek seconds in GPS week (must be prefilled, contains fixed value afterwards) 
+ * @param secOfWeek seconds in GPS week (must be prefilled, contains fixed value afterwards)
  * @param mSecOfWeek milli seconds in GLONASS time
  * @param fixnumleap when <code>true</code> then result is UTC time, otherwise it is GPS
  * @return does not return a value, but updates first two arguments
@@ -61,6 +61,8 @@ QDateTime    dateAndTimeFromGPSweek(int GPSWeek, double GPSWeeks);
 void         currentGPSWeeks(int& week, double& sec);
 
 QDateTime    currentDateAndTimeGPS();
+
+bool         checkForWrongObsEpoch(bncTime obsEpoch);
 
 QByteArray   ggaString(const QByteArray& latitude, const QByteArray& longitude,
                        const QByteArray& height, const QString& ggaType);
@@ -83,10 +85,10 @@ void         jacobiXYZ_NEU(const double* Ell, Matrix& jacobi);
 
 void         jacobiEll_XYZ(const double* Ell, Matrix& jacobi);
 
-void         covariXYZ_NEU(const SymmetricMatrix& Qxyz, const double* Ell, 
+void         covariXYZ_NEU(const SymmetricMatrix& Qxyz, const double* Ell,
                            SymmetricMatrix& Qneu);
 
-void         covariNEU_XYZ(const SymmetricMatrix& Qneu, const double* Ell, 
+void         covariNEU_XYZ(const SymmetricMatrix& Qneu, const double* Ell,
                            SymmetricMatrix& Qxyz);
 
 double       Frac(double x);
@@ -95,12 +97,12 @@ double       Modulo(double x, double y);
 
 double       nint(double val);
 
-ColumnVector rungeKutta4(double xi, const ColumnVector& yi, double dx, double* acc, 
+ColumnVector rungeKutta4(double xi, const ColumnVector& yi, double dx, double* acc,
                          ColumnVector (*der)(double x, const ColumnVector& y, double* acc));
 
 void         GPSweekFromDateAndTime(const QDateTime& dateTime, int& GPSWeek, double& GPSWeeks);
 
-void         GPSweekFromYMDhms(int year, int month, int day, int hour, int min, double sec, 
+void         GPSweekFromYMDhms(int year, int month, int day, int hour, int min, double sec,
                                int& GPSWeek, double& GPSWeeks);
 
 void         mjdFromDateAndTime(const QDateTime& dateTime, int& mjd, double& dayfrac);
@@ -111,14 +113,14 @@ int          readInt(const QString& str, int pos, int len, int& value);
 
 int          readDbl(const QString& str, int pos, int len, double& value);
 
-void         topos(double xRec, double yRec, double zRec, double xSat, double ySat, double zSat, 
+void         topos(double xRec, double yRec, double zRec, double xSat, double ySat, double zSat,
                    double& rho, double& eleSat, double& azSat);
 
 void         deg2DMS(double decDeg, int& deg, int& min, double& sec);
 
 QString      fortranFormat(double value, int width, int prec);
 
-void         kalman(const Matrix& AA, const ColumnVector& ll, const DiagonalMatrix& PP, 
+void         kalman(const Matrix& AA, const ColumnVector& ll, const DiagonalMatrix& PP,
                     SymmetricMatrix& QQ, ColumnVector& xx);
 
 double       djul(long j1, long m1, double tt);
