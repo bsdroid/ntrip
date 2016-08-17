@@ -504,6 +504,7 @@ void bncRtnetUploadCaster::decodeRtnetStream(char* buffer, int bufLen) {
           }
         }
         else {
+          in >> numVal;
           for (int ii = 0; ii < numVal; ii++) {
             double dummy;
             in >> dummy;
