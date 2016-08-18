@@ -19,8 +19,8 @@ class bncRtnetUploadCaster : public bncUploadCaster {
  public:
   bncRtnetUploadCaster(const QString& mountpoint,
                   const QString& outHost, int outPort,
-                  const QString& password, 
-                  const QString& crdTrafo, bool  CoM, 
+                  const QString& password,
+                  const QString& crdTrafo, bool  CoM,
                   const QString& sp3FileName,
                   const QString& rnxFileName,
                   int PID, int SID, int IOD, int iRow);
@@ -28,8 +28,8 @@ class bncRtnetUploadCaster : public bncUploadCaster {
  protected:
   virtual ~bncRtnetUploadCaster();
  private:
-  void processSatellite(const t_eph* eph, int GPSweek, 
-                        double GPSweeks, const QString& prn, 
+  void processSatellite(const t_eph* eph, int GPSweek,
+                        double GPSweeks, const QString& prn,
                         const ColumnVector& rtnAPC,
                         double rtnClk,
                         const ColumnVector& rtnVel,
@@ -72,25 +72,25 @@ class bncRtnetUploadCaster : public bncUploadCaster {
 
 struct phaseBiasesSat {
   phaseBiasesSat() {
-    yA = 0.0;
-    yR = 0.0;
+    yawAngle = 0.0;
+    yawRate = 0.0;
   }
-  double yA;
-  double yR;
+  double yawAngle;
+  double yawRate;
 };
 
 struct phaseBiasSignal {
   phaseBiasSignal() {
     bias      = 0.0;
-    intInd    = 0;
-    wlInd     = 0;
-    discCount = 0;
+    integerIndicator     = 0;
+    wlIndicator          = 0;
+    discontinuityCounter = 0;
   }
   QString type;
   double bias;
-  unsigned int intInd;
-  unsigned int wlInd;
-  unsigned int discCount;
+  unsigned int integerIndicator;
+  unsigned int wlIndicator;
+  unsigned int discontinuityCounter;
 };
 
 #endif
