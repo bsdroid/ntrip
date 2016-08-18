@@ -313,8 +313,8 @@ void bncRtnetUploadCaster::decodeRtnetStream(char* buffer, int bufLen) {
 
   struct PhaseBias phasebias;
   memset(&phasebias, 0, sizeof(phasebias));
-  unsigned int dispInd = 0;
-  unsigned int mwInd = 0;
+  unsigned int dispersiveBiasConsistenyIndicator = 0;
+  unsigned int mwConsistencyIndicator = 0;
   phasebias.EpochTime[CLOCKORBIT_SATGPS] = co.EpochTime[CLOCKORBIT_SATGPS];
   phasebias.EpochTime[CLOCKORBIT_SATGLONASS] = co.EpochTime[CLOCKORBIT_SATGLONASS];
   phasebias.EpochTime[CLOCKORBIT_SATGALILEO] = co.EpochTime[CLOCKORBIT_SATGALILEO];
@@ -365,7 +365,7 @@ void bncRtnetUploadCaster::decodeRtnetStream(char* buffer, int bufLen) {
 
     // non-satellite specific parameters
     if (key.contains("IND", Qt::CaseSensitive)) {
-      in >> dispInd >> mwInd;
+      in >> dispersiveBiasConsistenyIndicator >> mwConsistencyIndicator;
       continue;
     }
     // non-satellite specific parameters
@@ -484,22 +484,23 @@ void bncRtnetUploadCaster::decodeRtnetStream(char* buffer, int bufLen) {
           }
         }
         else if (key == "YawAngle") {
-          in >> numVal >> pbSat.yA;
-          if      (pbSat.yA < 0.0) {
-            pbSat.yA += (2*M_PI);
+          in >> numVal >> pbSat.yawAngle;
+          if      (pbSat.yawAngle < 0.0) {
+            pbSat.yawAngle += (2*M_PI);
           }
-          else if (pbSat.yA > 2*M_PI) {
-            pbSat.yA -= (2*M_PI);
+          else if (pbSat.yawAngle > 2*M_PI) {
+            pbSat.yawAngle -= (2*M_PI);
           }
         }
         else if (key == "YawRate") {
-          in >> numVal >> pbSat.yR;
+          in >> numVal >> pbSat.yawRate;
         }
         else if (key == "PhaseBias") {
           in >> numVal;
           for (int ii = 0; ii < numVal; ii++) {
             phaseBiasSignal pb;
-            in >> pb.type >> pb.bias >> pb.intInd >> pb.wlInd >> pb.discCount;
+            in >> pb.type >> pb.bias >> pb.integerIndicator
+              >> pb.wlIndicator >> pb.discontinuityCounter;
             phaseBiasList.append(pb);
           }
         }
@@ -1188,12 +1189,12 @@ void bncRtnetUploadCaster::decodeRtnetStream(char* buffer, int bufLen) {
       }
 
       if (phasebiasSat) {
-        phasebias.DispersiveBiasConsistencyIndicator = dispInd;
-        phasebias.MWConsistencyIndicator = mwInd;
+        phasebias.DispersiveBiasConsistencyIndicator = dispersiveBiasConsistenyIndicator;
+        phasebias.MWConsistencyIndicator = mwConsistencyIndicator;
         phasebiasSat->ID = prn.number();
         phasebiasSat->NumberOfPhaseBiases = 0;
-        phasebiasSat->YawAngle = pbSat.yA;
-        phasebiasSat->YawRate = pbSat.yR;
+        phasebiasSat->YawAngle = pbSat.yawAngle;
+        phasebiasSat->YawRate = pbSat.yawRate;
         if (prn.system() == 'G') {
           QListIterator<phaseBiasSignal> it(phaseBiasList);
           while (it.hasNext()) {
@@ -1205,11 +1206,11 @@ void bncRtnetUploadCaster::decodeRtnetStream(char* buffer, int bufLen) {
               phasebiasSat->NumberOfPhaseBiases += 1;
               phasebiasSat->Biases[ii].Type = CODETYPEGPS_L1_CA;
               phasebiasSat->Biases[ii].Bias = pbSig.bias;
-              phasebiasSat->Biases[ii].SignalIntegerIndicator = pbSig.intInd;
+              phasebiasSat->Biases[ii].SignalIntegerIndicator = pbSig.integerIndicator;
               phasebiasSat->Biases[ii].SignalsWideLaneIntegerIndicator =
-                  pbSig.wlInd;
+                  pbSig.wlIndicator;
               phasebiasSat->Biases[ii].SignalDiscontinuityCounter =
-                  pbSig.discCount;
+                  pbSig.discontinuityCounter;
             }
             else if (pbSig.type == "1S") {
               int ii = phasebiasSat->NumberOfPhaseBiases;
@@ -1218,11 +1219,11 @@ void bncRtnetUploadCaster::decodeRtnetStream(char* buffer, int bufLen) {
               phasebiasSat->NumberOfPhaseBiases += 1;
               phasebiasSat->Biases[ii].Type = CODETYPEGPS_L1C_D;
               phasebiasSat->Biases[ii].Bias = pbSig.bias;
-              phasebiasSat->Biases[ii].SignalIntegerIndicator = pbSig.intInd;
+              phasebiasSat->Biases[ii].SignalIntegerIndicator = pbSig.integerIndicator;
               phasebiasSat->Biases[ii].SignalsWideLaneIntegerIndicator =
-                  pbSig.wlInd;
+                  pbSig.wlIndicator;
               phasebiasSat->Biases[ii].SignalDiscontinuityCounter =
-                  pbSig.discCount;
+                  pbSig.discontinuityCounter;
             }
             else if (pbSig.type == "1L") {
               int ii = phasebiasSat->NumberOfPhaseBiases;
@@ -1231,11 +1232,11 @@ void bncRtnetUploadCaster::decodeRtnetStream(char* buffer, int bufLen) {
               phasebiasSat->NumberOfPhaseBiases += 1;
               phasebiasSat->Biases[ii].Type = CODETYPEGPS_L1C_P;
               phasebiasSat->Biases[ii].Bias = pbSig.bias;
-              phasebiasSat->Biases[ii].SignalIntegerIndicator = pbSig.intInd;
+              phasebiasSat->Biases[ii].SignalIntegerIndicator = pbSig.integerIndicator;
               phasebiasSat->Biases[ii].SignalsWideLaneIntegerIndicator =
-                  pbSig.wlInd;
+                  pbSig.wlIndicator;
               phasebiasSat->Biases[ii].SignalDiscontinuityCounter =
-                  pbSig.discCount;
+                  pbSig.discontinuityCounter;
             }
             else if (pbSig.type == "1X") {
               int ii = phasebiasSat->NumberOfPhaseBiases;
@@ -1244,11 +1245,11 @@ void bncRtnetUploadCaster::decodeRtnetStream(char* buffer, int bufLen) {
               phasebiasSat->NumberOfPhaseBiases += 1;
               phasebiasSat->Biases[ii].Type = CODETYPEGPS_L1C_P;
               phasebiasSat->Biases[ii].Bias = pbSig.bias;
-              phasebiasSat->Biases[ii].SignalIntegerIndicator = pbSig.intInd;
+              phasebiasSat->Biases[ii].SignalIntegerIndicator = pbSig.integerIndicator;
               phasebiasSat->Biases[ii].SignalsWideLaneIntegerIndicator =
-                  pbSig.wlInd;
+                  pbSig.wlIndicator;
               phasebiasSat->Biases[ii].SignalDiscontinuityCounter =
-                  pbSig.discCount;
+                  pbSig.discontinuityCounter;
             }
             else if (pbSig.type == "1P") {
               int ii = phasebiasSat->NumberOfPhaseBiases;
@@ -1257,11 +1258,11 @@ void bncRtnetUploadCaster::decodeRtnetStream(char* buffer, int bufLen) {
               phasebiasSat->NumberOfPhaseBiases += 1;
               phasebiasSat->Biases[ii].Type = CODETYPEGPS_L1_P;
               phasebiasSat->Biases[ii].Bias = pbSig.bias;
-              phasebiasSat->Biases[ii].SignalIntegerIndicator = pbSig.intInd;
+              phasebiasSat->Biases[ii].SignalIntegerIndicator = pbSig.integerIndicator;
               phasebiasSat->Biases[ii].SignalsWideLaneIntegerIndicator =
-                  pbSig.wlInd;
+                  pbSig.wlIndicator;
               phasebiasSat->Biases[ii].SignalDiscontinuityCounter =
-                  pbSig.discCount;
+                  pbSig.discontinuityCounter;
             }
             else if (pbSig.type == "1W") {
               int ii = phasebiasSat->NumberOfPhaseBiases;
@@ -1270,11 +1271,11 @@ void bncRtnetUploadCaster::decodeRtnetStream(char* buffer, int bufLen) {
               phasebiasSat->NumberOfPhaseBiases += 1;
               phasebiasSat->Biases[ii].Type = CODETYPEGPS_L1_Z;
               phasebiasSat->Biases[ii].Bias = pbSig.bias;
-              phasebiasSat->Biases[ii].SignalIntegerIndicator = pbSig.intInd;
+              phasebiasSat->Biases[ii].SignalIntegerIndicator = pbSig.integerIndicator;
               phasebiasSat->Biases[ii].SignalsWideLaneIntegerIndicator =
-                  pbSig.wlInd;
+                  pbSig.wlIndicator;
               phasebiasSat->Biases[ii].SignalDiscontinuityCounter =
-                  pbSig.discCount;
+                  pbSig.discontinuityCounter;
             }
             else if (pbSig.type == "2C") {
               int ii = phasebiasSat->NumberOfPhaseBiases;
@@ -1283,11 +1284,11 @@ void bncRtnetUploadCaster::decodeRtnetStream(char* buffer, int bufLen) {
               phasebiasSat->NumberOfPhaseBiases += 1;
               phasebiasSat->Biases[ii].Type = CODETYPEGPS_L2_CA;
               phasebiasSat->Biases[ii].Bias = pbSig.bias;
-              phasebiasSat->Biases[ii].SignalIntegerIndicator = pbSig.intInd;
+              phasebiasSat->Biases[ii].SignalIntegerIndicator = pbSig.integerIndicator;
               phasebiasSat->Biases[ii].SignalsWideLaneIntegerIndicator =
-                  pbSig.wlInd;
+                  pbSig.wlIndicator;
               phasebiasSat->Biases[ii].SignalDiscontinuityCounter =
-                  pbSig.discCount;
+                  pbSig.discontinuityCounter;
             }
             else if (pbSig.type == "2D") {
               int ii = phasebiasSat->NumberOfPhaseBiases;
@@ -1296,11 +1297,11 @@ void bncRtnetUploadCaster::decodeRtnetStream(char* buffer, int bufLen) {
               phasebiasSat->NumberOfPhaseBiases += 1;
               phasebiasSat->Biases[ii].Type = CODETYPEGPS_SEMI_CODELESS;
               phasebiasSat->Biases[ii].Bias = pbSig.bias;
-              phasebiasSat->Biases[ii].SignalIntegerIndicator = pbSig.intInd;
+              phasebiasSat->Biases[ii].SignalIntegerIndicator = pbSig.integerIndicator;
               phasebiasSat->Biases[ii].SignalsWideLaneIntegerIndicator =
-                  pbSig.wlInd;
+                  pbSig.wlIndicator;
               phasebiasSat->Biases[ii].SignalDiscontinuityCounter =
-                  pbSig.discCount;
+                  pbSig.discontinuityCounter;
             }
             else if (pbSig.type == "2S") {
               int ii = phasebiasSat->NumberOfPhaseBiases;
@@ -1309,11 +1310,11 @@ void bncRtnetUploadCaster::decodeRtnetStream(char* buffer, int bufLen) {
               phasebiasSat->NumberOfPhaseBiases += 1;
               phasebiasSat->Biases[ii].Type = CODETYPEGPS_L2_CM;
               phasebiasSat->Biases[ii].Bias = pbSig.bias;
-              phasebiasSat->Biases[ii].SignalIntegerIndicator = pbSig.intInd;
+              phasebiasSat->Biases[ii].SignalIntegerIndicator = pbSig.integerIndicator;
               phasebiasSat->Biases[ii].SignalsWideLaneIntegerIndicator =
-                  pbSig.wlInd;
+                  pbSig.wlIndicator;
               phasebiasSat->Biases[ii].SignalDiscontinuityCounter =
-                  pbSig.discCount;
+                  pbSig.discontinuityCounter;
             }
             else if (pbSig.type == "2L") {
               int ii = phasebiasSat->NumberOfPhaseBiases;
@@ -1322,11 +1323,11 @@ void bncRtnetUploadCaster::decodeRtnetStream(char* buffer, int bufLen) {
               phasebiasSat->NumberOfPhaseBiases += 1;
               phasebiasSat->Biases[ii].Type = CODETYPEGPS_L2_CL;
               phasebiasSat->Biases[ii].Bias = pbSig.bias;
-              phasebiasSat->Biases[ii].SignalIntegerIndicator = pbSig.intInd;
+              phasebiasSat->Biases[ii].SignalIntegerIndicator = pbSig.integerIndicator;
               phasebiasSat->Biases[ii].SignalsWideLaneIntegerIndicator =
-                  pbSig.wlInd;
+                  pbSig.wlIndicator;
               phasebiasSat->Biases[ii].SignalDiscontinuityCounter =
-                  pbSig.discCount;
+                  pbSig.discontinuityCounter;
             }
             else if (pbSig.type == "2X") {
               int ii = phasebiasSat->NumberOfPhaseBiases;
@@ -1335,11 +1336,11 @@ void bncRtnetUploadCaster::decodeRtnetStream(char* buffer, int bufLen) {
               phasebiasSat->NumberOfPhaseBiases += 1;
               phasebiasSat->Biases[ii].Type = CODETYPEGPS_L2_CML;
               phasebiasSat->Biases[ii].Bias = pbSig.bias;
-              phasebiasSat->Biases[ii].SignalIntegerIndicator = pbSig.intInd;
+              phasebiasSat->Biases[ii].SignalIntegerIndicator = pbSig.integerIndicator;
               phasebiasSat->Biases[ii].SignalsWideLaneIntegerIndicator =
-                  pbSig.wlInd;
+                  pbSig.wlIndicator;
               phasebiasSat->Biases[ii].SignalDiscontinuityCounter =
-                  pbSig.discCount;
+                  pbSig.discontinuityCounter;
             }
             else if (pbSig.type == "2P") {
               int ii = phasebiasSat->NumberOfPhaseBiases;
@@ -1348,11 +1349,11 @@ void bncRtnetUploadCaster::decodeRtnetStream(char* buffer, int bufLen) {
               phasebiasSat->NumberOfPhaseBiases += 1;
               phasebiasSat->Biases[ii].Type = CODETYPEGPS_L2_P;
               phasebiasSat->Biases[ii].Bias = pbSig.bias;
-              phasebiasSat->Biases[ii].SignalIntegerIndicator = pbSig.intInd;
+              phasebiasSat->Biases[ii].SignalIntegerIndicator = pbSig.integerIndicator;
               phasebiasSat->Biases[ii].SignalsWideLaneIntegerIndicator =
-                  pbSig.wlInd;
+                  pbSig.wlIndicator;
               phasebiasSat->Biases[ii].SignalDiscontinuityCounter =
-                  pbSig.discCount;
+                  pbSig.discontinuityCounter;
             }
             else if (pbSig.type == "2W") {
               int ii = phasebiasSat->NumberOfPhaseBiases;
@@ -1361,11 +1362,11 @@ void bncRtnetUploadCaster::decodeRtnetStream(char* buffer, int bufLen) {
               phasebiasSat->NumberOfPhaseBiases += 1;
               phasebiasSat->Biases[ii].Type = CODETYPEGPS_L2_Z;
               phasebiasSat->Biases[ii].Bias = pbSig.bias;
-              phasebiasSat->Biases[ii].SignalIntegerIndicator = pbSig.intInd;
+              phasebiasSat->Biases[ii].SignalIntegerIndicator = pbSig.integerIndicator;
               phasebiasSat->Biases[ii].SignalsWideLaneIntegerIndicator =
-                  pbSig.wlInd;
+                  pbSig.wlIndicator;
               phasebiasSat->Biases[ii].SignalDiscontinuityCounter =
-                  pbSig.discCount;
+                  pbSig.discontinuityCounter;
             }
             else if (pbSig.type == "5I") {
               int ii = phasebiasSat->NumberOfPhaseBiases;
@@ -1374,11 +1375,11 @@ void bncRtnetUploadCaster::decodeRtnetStream(char* buffer, int bufLen) {
               phasebiasSat->NumberOfPhaseBiases += 1;
               phasebiasSat->Biases[ii].Type = CODETYPEGPS_L5_I;
               phasebiasSat->Biases[ii].Bias = pbSig.bias;
-              phasebiasSat->Biases[ii].SignalIntegerIndicator = pbSig.intInd;
+              phasebiasSat->Biases[ii].SignalIntegerIndicator = pbSig.integerIndicator;
               phasebiasSat->Biases[ii].SignalsWideLaneIntegerIndicator =
-                  pbSig.wlInd;
+                  pbSig.wlIndicator;
               phasebiasSat->Biases[ii].SignalDiscontinuityCounter =
-                  pbSig.discCount;
+                  pbSig.discontinuityCounter;
             }
             else if (pbSig.type == "5Q") {
               int ii = phasebiasSat->NumberOfPhaseBiases;
@@ -1387,11 +1388,11 @@ void bncRtnetUploadCaster::decodeRtnetStream(char* buffer, int bufLen) {
               phasebiasSat->NumberOfPhaseBiases += 1;
               phasebiasSat->Biases[ii].Type = CODETYPEGPS_L5_Q;
               phasebiasSat->Biases[ii].Bias = pbSig.bias;
-              phasebiasSat->Biases[ii].SignalIntegerIndicator = pbSig.intInd;
+              phasebiasSat->Biases[ii].SignalIntegerIndicator = pbSig.integerIndicator;
               phasebiasSat->Biases[ii].SignalsWideLaneIntegerIndicator =
-                  pbSig.wlInd;
+                  pbSig.wlIndicator;
               phasebiasSat->Biases[ii].SignalDiscontinuityCounter =
-                  pbSig.discCount;
+                  pbSig.discontinuityCounter;
             }
             else if (pbSig.type == "5X") {
               int ii = phasebiasSat->NumberOfPhaseBiases;
@@ -1400,11 +1401,11 @@ void bncRtnetUploadCaster::decodeRtnetStream(char* buffer, int bufLen) {
               phasebiasSat->NumberOfPhaseBiases += 1;
               phasebiasSat->Biases[ii].Type = CODETYPEGPS_L5_IQ;
               phasebiasSat->Biases[ii].Bias = pbSig.bias;
-              phasebiasSat->Biases[ii].SignalIntegerIndicator = pbSig.intInd;
+              phasebiasSat->Biases[ii].SignalIntegerIndicator = pbSig.integerIndicator;
               phasebiasSat->Biases[ii].SignalsWideLaneIntegerIndicator =
-                  pbSig.wlInd;
+                  pbSig.wlIndicator;
               phasebiasSat->Biases[ii].SignalDiscontinuityCounter =
-                  pbSig.discCount;
+                  pbSig.discontinuityCounter;
             }
           }
         }
@@ -1419,11 +1420,11 @@ void bncRtnetUploadCaster::decodeRtnetStream(char* buffer, int bufLen) {
               phasebiasSat->NumberOfPhaseBiases += 1;
               phasebiasSat->Biases[ii].Type = CODETYPEGLONASS_L1_CA;
               phasebiasSat->Biases[ii].Bias = pbSig.bias;
-              phasebiasSat->Biases[ii].SignalIntegerIndicator = pbSig.intInd;
+              phasebiasSat->Biases[ii].SignalIntegerIndicator = pbSig.integerIndicator;
               phasebiasSat->Biases[ii].SignalsWideLaneIntegerIndicator =
-                  pbSig.wlInd;
+                  pbSig.wlIndicator;
               phasebiasSat->Biases[ii].SignalDiscontinuityCounter =
-                  pbSig.discCount;
+                  pbSig.discontinuityCounter;
             }
             else if (pbSig.type == "1P") {
               int ii = phasebiasSat->NumberOfPhaseBiases;
@@ -1432,11 +1433,11 @@ void bncRtnetUploadCaster::decodeRtnetStream(char* buffer, int bufLen) {
               phasebiasSat->NumberOfPhaseBiases += 1;
               phasebiasSat->Biases[ii].Type = CODETYPEGLONASS_L1_P;
               phasebiasSat->Biases[ii].Bias = pbSig.bias;
-              phasebiasSat->Biases[ii].SignalIntegerIndicator = pbSig.intInd;
+              phasebiasSat->Biases[ii].SignalIntegerIndicator = pbSig.integerIndicator;
               phasebiasSat->Biases[ii].SignalsWideLaneIntegerIndicator =
-                  pbSig.wlInd;
+                  pbSig.wlIndicator;
               phasebiasSat->Biases[ii].SignalDiscontinuityCounter =
-                  pbSig.discCount;
+                  pbSig.discontinuityCounter;
             }
             else if (pbSig.type == "2C") {
               int ii = phasebiasSat->NumberOfPhaseBiases;
@@ -1445,11 +1446,11 @@ void bncRtnetUploadCaster::decodeRtnetStream(char* buffer, int bufLen) {
               phasebiasSat->NumberOfPhaseBiases += 1;
               phasebiasSat->Biases[ii].Type = CODETYPEGLONASS_L2_CA;
               phasebiasSat->Biases[ii].Bias = pbSig.bias;
-              phasebiasSat->Biases[ii].SignalIntegerIndicator = pbSig.intInd;
+              phasebiasSat->Biases[ii].SignalIntegerIndicator = pbSig.integerIndicator;
               phasebiasSat->Biases[ii].SignalsWideLaneIntegerIndicator =
-                  pbSig.wlInd;
+                  pbSig.wlIndicator;
               phasebiasSat->Biases[ii].SignalDiscontinuityCounter =
-                  pbSig.discCount;
+                  pbSig.discontinuityCounter;
             }
             else if (pbSig.type == "2P") {
               int ii = phasebiasSat->NumberOfPhaseBiases;
@@ -1458,11 +1459,11 @@ void bncRtnetUploadCaster::decodeRtnetStream(char* buffer, int bufLen) {
               phasebiasSat->NumberOfPhaseBiases += 1;
               phasebiasSat->Biases[ii].Type = CODETYPEGLONASS_L2_P;
               phasebiasSat->Biases[ii].Bias = pbSig.bias;
-              phasebiasSat->Biases[ii].SignalIntegerIndicator = pbSig.intInd;
+              phasebiasSat->Biases[ii].SignalIntegerIndicator = pbSig.integerIndicator;
               phasebiasSat->Biases[ii].SignalsWideLaneIntegerIndicator =
-                  pbSig.wlInd;
+                  pbSig.wlIndicator;
               phasebiasSat->Biases[ii].SignalDiscontinuityCounter =
-                  pbSig.discCount;
+                  pbSig.discontinuityCounter;
             }
           }
         }
@@ -1477,11 +1478,11 @@ void bncRtnetUploadCaster::decodeRtnetStream(char* buffer, int bufLen) {
               phasebiasSat->NumberOfPhaseBiases += 1;
               phasebiasSat->Biases[ii].Type = CODETYPEGALILEO_E1_A;
               phasebiasSat->Biases[ii].Bias = pbSig.bias;
-              phasebiasSat->Biases[ii].SignalIntegerIndicator = pbSig.intInd;
+              phasebiasSat->Biases[ii].SignalIntegerIndicator = pbSig.integerIndicator;
               phasebiasSat->Biases[ii].SignalsWideLaneIntegerIndicator =
-                  pbSig.wlInd;
+                  pbSig.wlIndicator;
               phasebiasSat->Biases[ii].SignalDiscontinuityCounter =
-                  pbSig.discCount;
+                  pbSig.discontinuityCounter;
             }
             else if (pbSig.type == "1B") {
               int ii = phasebiasSat->NumberOfPhaseBiases;
@@ -1490,11 +1491,11 @@ void bncRtnetUploadCaster::decodeRtnetStream(char* buffer, int bufLen) {
               phasebiasSat->NumberOfPhaseBiases += 1;
               phasebiasSat->Biases[ii].Type = CODETYPEGALILEO_E1_B;
               phasebiasSat->Biases[ii].Bias = pbSig.bias;
-              phasebiasSat->Biases[ii].SignalIntegerIndicator = pbSig.intInd;
+              phasebiasSat->Biases[ii].SignalIntegerIndicator = pbSig.integerIndicator;
               phasebiasSat->Biases[ii].SignalsWideLaneIntegerIndicator =
-                  pbSig.wlInd;
+                  pbSig.wlIndicator;
               phasebiasSat->Biases[ii].SignalDiscontinuityCounter =
-                  pbSig.discCount;
+                  pbSig.discontinuityCounter;
             }
             else if (pbSig.type == "1C") {
               int ii = phasebiasSat->NumberOfPhaseBiases;
@@ -1503,11 +1504,11 @@ void bncRtnetUploadCaster::decodeRtnetStream(char* buffer, int bufLen) {
               phasebiasSat->NumberOfPhaseBiases += 1;
               phasebiasSat->Biases[ii].Type = CODETYPEGALILEO_E1_C;
               phasebiasSat->Biases[ii].Bias = pbSig.bias;
-              phasebiasSat->Biases[ii].SignalIntegerIndicator = pbSig.intInd;
+              phasebiasSat->Biases[ii].SignalIntegerIndicator = pbSig.integerIndicator;
               phasebiasSat->Biases[ii].SignalsWideLaneIntegerIndicator =
-                  pbSig.wlInd;
+                  pbSig.wlIndicator;
               phasebiasSat->Biases[ii].SignalDiscontinuityCounter =
-                  pbSig.discCount;
+                  pbSig.discontinuityCounter;
             }
             else if (pbSig.type == "1X") {
               int ii = phasebiasSat->NumberOfPhaseBiases;
@@ -1516,11 +1517,11 @@ void bncRtnetUploadCaster::decodeRtnetStream(char* buffer, int bufLen) {
               phasebiasSat->NumberOfPhaseBiases += 1;
               phasebiasSat->Biases[ii].Type = CODETYPEGALILEO_E1_BC;
               phasebiasSat->Biases[ii].Bias = pbSig.bias;
-              phasebiasSat->Biases[ii].SignalIntegerIndicator = pbSig.intInd;
+              phasebiasSat->Biases[ii].SignalIntegerIndicator = pbSig.integerIndicator;
               phasebiasSat->Biases[ii].SignalsWideLaneIntegerIndicator =
-                  pbSig.wlInd;
+                  pbSig.wlIndicator;
               phasebiasSat->Biases[ii].SignalDiscontinuityCounter =
-                  pbSig.discCount;
+                  pbSig.discontinuityCounter;
             }
             else if (pbSig.type == "1Z") {
               int ii = phasebiasSat->NumberOfPhaseBiases;
@@ -1529,11 +1530,11 @@ void bncRtnetUploadCaster::decodeRtnetStream(char* buffer, int bufLen) {
               phasebiasSat->NumberOfPhaseBiases += 1;
               phasebiasSat->Biases[ii].Type = CODETYPEGALILEO_E1_ABC;
               phasebiasSat->Biases[ii].Bias = pbSig.bias;
-              phasebiasSat->Biases[ii].SignalIntegerIndicator = pbSig.intInd;
+              phasebiasSat->Biases[ii].SignalIntegerIndicator = pbSig.integerIndicator;
               phasebiasSat->Biases[ii].SignalsWideLaneIntegerIndicator =
-                  pbSig.wlInd;
+                  pbSig.wlIndicator;
               phasebiasSat->Biases[ii].SignalDiscontinuityCounter =
-                  pbSig.discCount;
+                  pbSig.discontinuityCounter;
             }
             else if (pbSig.type == "5I") {
               int ii = phasebiasSat->NumberOfPhaseBiases;
@@ -1542,11 +1543,11 @@ void bncRtnetUploadCaster::decodeRtnetStream(char* buffer, int bufLen) {
               phasebiasSat->NumberOfPhaseBiases += 1;
               phasebiasSat->Biases[ii].Type = CODETYPEGALILEO_E5A_I;
               phasebiasSat->Biases[ii].Bias = pbSig.bias;
-              phasebiasSat->Biases[ii].SignalIntegerIndicator = pbSig.intInd;
+              phasebiasSat->Biases[ii].SignalIntegerIndicator = pbSig.integerIndicator;
               phasebiasSat->Biases[ii].SignalsWideLaneIntegerIndicator =
-                  pbSig.wlInd;
+                  pbSig.wlIndicator;
               phasebiasSat->Biases[ii].SignalDiscontinuityCounter =
-                  pbSig.discCount;
+                  pbSig.discontinuityCounter;
             }
             else if (pbSig.type == "5Q") {
               int ii = phasebiasSat->NumberOfPhaseBiases;
@@ -1555,11 +1556,11 @@ void bncRtnetUploadCaster::decodeRtnetStream(char* buffer, int bufLen) {
               phasebiasSat->NumberOfPhaseBiases += 1;
               phasebiasSat->Biases[ii].Type = CODETYPEGALILEO_E5A_Q;
               phasebiasSat->Biases[ii].Bias = pbSig.bias;
-              phasebiasSat->Biases[ii].SignalIntegerIndicator = pbSig.intInd;
+              phasebiasSat->Biases[ii].SignalIntegerIndicator = pbSig.integerIndicator;
               phasebiasSat->Biases[ii].SignalsWideLaneIntegerIndicator =
-                  pbSig.wlInd;
+                  pbSig.wlIndicator;
               phasebiasSat->Biases[ii].SignalDiscontinuityCounter =
-                  pbSig.discCount;
+                  pbSig.discontinuityCounter;
             }
             else if (pbSig.type == "5X") {
               int ii = phasebiasSat->NumberOfPhaseBiases;
@@ -1568,11 +1569,11 @@ void bncRtnetUploadCaster::decodeRtnetStream(char* buffer, int bufLen) {
               phasebiasSat->NumberOfPhaseBiases += 1;
               phasebiasSat->Biases[ii].Type = CODETYPEGALILEO_E5A_IQ;
               phasebiasSat->Biases[ii].Bias = pbSig.bias;
-              phasebiasSat->Biases[ii].SignalIntegerIndicator = pbSig.intInd;
+              phasebiasSat->Biases[ii].SignalIntegerIndicator = pbSig.integerIndicator;
               phasebiasSat->Biases[ii].SignalsWideLaneIntegerIndicator =
-                  pbSig.wlInd;
+                  pbSig.wlIndicator;
               phasebiasSat->Biases[ii].SignalDiscontinuityCounter =
-                  pbSig.discCount;
+                  pbSig.discontinuityCounter;
             }
             else if (pbSig.type == "7I") {
               int ii = phasebiasSat->NumberOfPhaseBiases;
@@ -1581,11 +1582,11 @@ void bncRtnetUploadCaster::decodeRtnetStream(char* buffer, int bufLen) {
               phasebiasSat->NumberOfPhaseBiases += 1;
               phasebiasSat->Biases[ii].Type = CODETYPEGALILEO_E5B_I;
               phasebiasSat->Biases[ii].Bias = pbSig.bias;
-              phasebiasSat->Biases[ii].SignalIntegerIndicator = pbSig.intInd;
+              phasebiasSat->Biases[ii].SignalIntegerIndicator = pbSig.integerIndicator;
               phasebiasSat->Biases[ii].SignalsWideLaneIntegerIndicator =
-                  pbSig.wlInd;
+                  pbSig.wlIndicator;
               phasebiasSat->Biases[ii].SignalDiscontinuityCounter =
-                  pbSig.discCount;
+                  pbSig.discontinuityCounter;
             }
             else if (pbSig.type == "7Q") {
               int ii = phasebiasSat->NumberOfPhaseBiases;
@@ -1594,11 +1595,11 @@ void bncRtnetUploadCaster::decodeRtnetStream(char* buffer, int bufLen) {
               phasebiasSat->NumberOfPhaseBiases += 1;
               phasebiasSat->Biases[ii].Type = CODETYPEGALILEO_E5B_Q;
               phasebiasSat->Biases[ii].Bias = pbSig.bias;
-              phasebiasSat->Biases[ii].SignalIntegerIndicator = pbSig.intInd;
+              phasebiasSat->Biases[ii].SignalIntegerIndicator = pbSig.integerIndicator;
               phasebiasSat->Biases[ii].SignalsWideLaneIntegerIndicator =
-                  pbSig.wlInd;
+                  pbSig.wlIndicator;
               phasebiasSat->Biases[ii].SignalDiscontinuityCounter =
-                  pbSig.discCount;
+                  pbSig.discontinuityCounter;
             }
             else if (pbSig.type == "7X") {
               int ii = phasebiasSat->NumberOfPhaseBiases;
@@ -1607,11 +1608,11 @@ void bncRtnetUploadCaster::decodeRtnetStream(char* buffer, int bufLen) {
               phasebiasSat->NumberOfPhaseBiases += 1;
               phasebiasSat->Biases[ii].Type = CODETYPEGALILEO_E5B_IQ;
               phasebiasSat->Biases[ii].Bias = pbSig.bias;
-              phasebiasSat->Biases[ii].SignalIntegerIndicator = pbSig.intInd;
+              phasebiasSat->Biases[ii].SignalIntegerIndicator = pbSig.integerIndicator;
               phasebiasSat->Biases[ii].SignalsWideLaneIntegerIndicator =
-                  pbSig.wlInd;
+                  pbSig.wlIndicator;
               phasebiasSat->Biases[ii].SignalDiscontinuityCounter =
-                  pbSig.discCount;
+                  pbSig.discontinuityCounter;
             }
             else if (pbSig.type == "8I") {
               int ii = phasebiasSat->NumberOfPhaseBiases;
@@ -1620,11 +1621,11 @@ void bncRtnetUploadCaster::decodeRtnetStream(char* buffer, int bufLen) {
               phasebiasSat->NumberOfPhaseBiases += 1;
               phasebiasSat->Biases[ii].Type = CODETYPEGALILEO_E5_I;
               phasebiasSat->Biases[ii].Bias = pbSig.bias;
-              phasebiasSat->Biases[ii].SignalIntegerIndicator = pbSig.intInd;
+              phasebiasSat->Biases[ii].SignalIntegerIndicator = pbSig.integerIndicator;
               phasebiasSat->Biases[ii].SignalsWideLaneIntegerIndicator =
-                  pbSig.wlInd;
+                  pbSig.wlIndicator;
               phasebiasSat->Biases[ii].SignalDiscontinuityCounter =
-                  pbSig.discCount;
+                  pbSig.discontinuityCounter;
             }
             else if (pbSig.type == "8Q") {
               int ii = phasebiasSat->NumberOfPhaseBiases;
@@ -1633,11 +1634,11 @@ void bncRtnetUploadCaster::decodeRtnetStream(char* buffer, int bufLen) {
               phasebiasSat->NumberOfPhaseBiases += 1;
               phasebiasSat->Biases[ii].Type = CODETYPEGALILEO_E5_Q;
               phasebiasSat->Biases[ii].Bias = pbSig.bias;
-              phasebiasSat->Biases[ii].SignalIntegerIndicator = pbSig.intInd;
+              phasebiasSat->Biases[ii].SignalIntegerIndicator = pbSig.integerIndicator;
               phasebiasSat->Biases[ii].SignalsWideLaneIntegerIndicator =
-                  pbSig.wlInd;
+                  pbSig.wlIndicator;
               phasebiasSat->Biases[ii].SignalDiscontinuityCounter =
-                  pbSig.discCount;
+                  pbSig.discontinuityCounter;
             }
             else if (pbSig.type == "8X") {
               int ii = phasebiasSat->NumberOfPhaseBiases;
@@ -1646,11 +1647,11 @@ void bncRtnetUploadCaster::decodeRtnetStream(char* buffer, int bufLen) {
               phasebiasSat->NumberOfPhaseBiases += 1;
               phasebiasSat->Biases[ii].Type = CODETYPEGALILEO_E5_IQ;
               phasebiasSat->Biases[ii].Bias = pbSig.bias;
-              phasebiasSat->Biases[ii].SignalIntegerIndicator = pbSig.intInd;
+              phasebiasSat->Biases[ii].SignalIntegerIndicator = pbSig.integerIndicator;
               phasebiasSat->Biases[ii].SignalsWideLaneIntegerIndicator =
-                  pbSig.wlInd;
+                  pbSig.wlIndicator;
               phasebiasSat->Biases[ii].SignalDiscontinuityCounter =
-                  pbSig.discCount;
+                  pbSig.discontinuityCounter;
             }
             else if (pbSig.type == "6A") {
               int ii = phasebiasSat->NumberOfPhaseBiases;
@@ -1659,11 +1660,11 @@ void bncRtnetUploadCaster::decodeRtnetStream(char* buffer, int bufLen) {
               phasebiasSat->NumberOfPhaseBiases += 1;
               phasebiasSat->Biases[ii].Type = CODETYPEGALILEO_E6_A;
               phasebiasSat->Biases[ii].Bias = pbSig.bias;
-              phasebiasSat->Biases[ii].SignalIntegerIndicator = pbSig.intInd;
+              phasebiasSat->Biases[ii].SignalIntegerIndicator = pbSig.integerIndicator;
               phasebiasSat->Biases[ii].SignalsWideLaneIntegerIndicator =
-                  pbSig.wlInd;
+                  pbSig.wlIndicator;
               phasebiasSat->Biases[ii].SignalDiscontinuityCounter =
-                  pbSig.discCount;
+                  pbSig.discontinuityCounter;
             }
             else if (pbSig.type == "6B") {
               int ii = phasebiasSat->NumberOfPhaseBiases;
@@ -1672,11 +1673,11 @@ void bncRtnetUploadCaster::decodeRtnetStream(char* buffer, int bufLen) {
               phasebiasSat->NumberOfPhaseBiases += 1;
               phasebiasSat->Biases[ii].Type = CODETYPEGALILEO_E6_B;
               phasebiasSat->Biases[ii].Bias = pbSig.bias;
-              phasebiasSat->Biases[ii].SignalIntegerIndicator = pbSig.intInd;
+              phasebiasSat->Biases[ii].SignalIntegerIndicator = pbSig.integerIndicator;
               phasebiasSat->Biases[ii].SignalsWideLaneIntegerIndicator =
-                  pbSig.wlInd;
+                  pbSig.wlIndicator;
               phasebiasSat->Biases[ii].SignalDiscontinuityCounter =
-                  pbSig.discCount;
+                  pbSig.discontinuityCounter;
             }
             else if (pbSig.type == "6C") {
               int ii = phasebiasSat->NumberOfPhaseBiases;
@@ -1685,11 +1686,11 @@ void bncRtnetUploadCaster::decodeRtnetStream(char* buffer, int bufLen) {
               phasebiasSat->NumberOfPhaseBiases += 1;
               phasebiasSat->Biases[ii].Type = CODETYPEGALILEO_E6_C;
               phasebiasSat->Biases[ii].Bias = pbSig.bias;
-              phasebiasSat->Biases[ii].SignalIntegerIndicator = pbSig.intInd;
+              phasebiasSat->Biases[ii].SignalIntegerIndicator = pbSig.integerIndicator;
               phasebiasSat->Biases[ii].SignalsWideLaneIntegerIndicator =
-                  pbSig.wlInd;
+                  pbSig.wlIndicator;
               phasebiasSat->Biases[ii].SignalDiscontinuityCounter =
-                  pbSig.discCount;
+                  pbSig.discontinuityCounter;
             }
             else if (pbSig.type == "6X") {
               int ii = phasebiasSat->NumberOfPhaseBiases;
@@ -1698,11 +1699,11 @@ void bncRtnetUploadCaster::decodeRtnetStream(char* buffer, int bufLen) {
               phasebiasSat->NumberOfPhaseBiases += 1;
               phasebiasSat->Biases[ii].Type = CODETYPEGALILEO_E6_BC;
               phasebiasSat->Biases[ii].Bias = pbSig.bias;
-              phasebiasSat->Biases[ii].SignalIntegerIndicator = pbSig.intInd;
+              phasebiasSat->Biases[ii].SignalIntegerIndicator = pbSig.integerIndicator;
               phasebiasSat->Biases[ii].SignalsWideLaneIntegerIndicator =
-                  pbSig.wlInd;
+                  pbSig.wlIndicator;
               phasebiasSat->Biases[ii].SignalDiscontinuityCounter =
-                  pbSig.discCount;
+                  pbSig.discontinuityCounter;
             }
             else if (pbSig.type == "6Z") {
               int ii = phasebiasSat->NumberOfPhaseBiases;
@@ -1711,11 +1712,11 @@ void bncRtnetUploadCaster::decodeRtnetStream(char* buffer, int bufLen) {
               phasebiasSat->NumberOfPhaseBiases += 1;
               phasebiasSat->Biases[ii].Type = CODETYPEGALILEO_E6_ABC;
               phasebiasSat->Biases[ii].Bias = pbSig.bias;
-              phasebiasSat->Biases[ii].SignalIntegerIndicator = pbSig.intInd;
+              phasebiasSat->Biases[ii].SignalIntegerIndicator = pbSig.integerIndicator;
               phasebiasSat->Biases[ii].SignalsWideLaneIntegerIndicator =
-                  pbSig.wlInd;
+                  pbSig.wlIndicator;
               phasebiasSat->Biases[ii].SignalDiscontinuityCounter =
-                  pbSig.discCount;
+                  pbSig.discontinuityCounter;
             }
           }
         }
@@ -1730,11 +1731,11 @@ void bncRtnetUploadCaster::decodeRtnetStream(char* buffer, int bufLen) {
               phasebiasSat->NumberOfPhaseBiases += 1;
               phasebiasSat->Biases[ii].Type = CODETYPEQZSS_L1_CA;
               phasebiasSat->Biases[ii].Bias = pbSig.bias;
-              phasebiasSat->Biases[ii].SignalIntegerIndicator = pbSig.intInd;
+              phasebiasSat->Biases[ii].SignalIntegerIndicator = pbSig.integerIndicator;
               phasebiasSat->Biases[ii].SignalsWideLaneIntegerIndicator =
-                  pbSig.wlInd;
+                  pbSig.wlIndicator;
               phasebiasSat->Biases[ii].SignalDiscontinuityCounter =
-                  pbSig.discCount;
+                  pbSig.discontinuityCounter;
             }
             else if (pbSig.type == "1S") {
               int ii = phasebiasSat->NumberOfPhaseBiases;
@@ -1743,11 +1744,11 @@ void bncRtnetUploadCaster::decodeRtnetStream(char* buffer, int bufLen) {
               phasebiasSat->NumberOfPhaseBiases += 1;
               phasebiasSat->Biases[ii].Type = CODETYPEQZSS_L1C_D;
               phasebiasSat->Biases[ii].Bias = pbSig.bias;
-              phasebiasSat->Biases[ii].SignalIntegerIndicator = pbSig.intInd;
+              phasebiasSat->Biases[ii].SignalIntegerIndicator = pbSig.integerIndicator;
               phasebiasSat->Biases[ii].SignalsWideLaneIntegerIndicator =
-                  pbSig.wlInd;
+                  pbSig.wlIndicator;
               phasebiasSat->Biases[ii].SignalDiscontinuityCounter =
-                  pbSig.discCount;
+                  pbSig.discontinuityCounter;
             }
             else if (pbSig.type == "1L") {
               int ii = phasebiasSat->NumberOfPhaseBiases;
@@ -1756,11 +1757,11 @@ void bncRtnetUploadCaster::decodeRtnetStream(char* buffer, int bufLen) {
               phasebiasSat->NumberOfPhaseBiases += 1;
               phasebiasSat->Biases[ii].Type = CODETYPEQZSS_L1C_P;
               phasebiasSat->Biases[ii].Bias = pbSig.bias;
-              phasebiasSat->Biases[ii].SignalIntegerIndicator = pbSig.intInd;
+              phasebiasSat->Biases[ii].SignalIntegerIndicator = pbSig.integerIndicator;
               phasebiasSat->Biases[ii].SignalsWideLaneIntegerIndicator =
-                  pbSig.wlInd;
+                  pbSig.wlIndicator;
               phasebiasSat->Biases[ii].SignalDiscontinuityCounter =
-                  pbSig.discCount;
+                  pbSig.discontinuityCounter;
             }
             else if (pbSig.type == "1X") {
               int ii = phasebiasSat->NumberOfPhaseBiases;
@@ -1769,11 +1770,11 @@ void bncRtnetUploadCaster::decodeRtnetStream(char* buffer, int bufLen) {
               phasebiasSat->NumberOfPhaseBiases += 1;
               phasebiasSat->Biases[ii].Type = CODETYPEQZSS_L1C_DP;
               phasebiasSat->Biases[ii].Bias = pbSig.bias;
-              phasebiasSat->Biases[ii].SignalIntegerIndicator = pbSig.intInd;
+              phasebiasSat->Biases[ii].SignalIntegerIndicator = pbSig.integerIndicator;
               phasebiasSat->Biases[ii].SignalsWideLaneIntegerIndicator =
-                  pbSig.wlInd;
+                  pbSig.wlIndicator;
               phasebiasSat->Biases[ii].SignalDiscontinuityCounter =
-                  pbSig.discCount;
+                  pbSig.discontinuityCounter;
             }
             else if (pbSig.type == "2S") {
               int ii = phasebiasSat->NumberOfPhaseBiases;
@@ -1782,11 +1783,11 @@ void bncRtnetUploadCaster::decodeRtnetStream(char* buffer, int bufLen) {
               phasebiasSat->NumberOfPhaseBiases += 1;
               phasebiasSat->Biases[ii].Type = CODETYPEQZSS_L2C_M;
               phasebiasSat->Biases[ii].Bias = pbSig.bias;
-              phasebiasSat->Biases[ii].SignalIntegerIndicator = pbSig.intInd;
+              phasebiasSat->Biases[ii].SignalIntegerIndicator = pbSig.integerIndicator;
               phasebiasSat->Biases[ii].SignalsWideLaneIntegerIndicator =
-                  pbSig.wlInd;
+                  pbSig.wlIndicator;
               phasebiasSat->Biases[ii].SignalDiscontinuityCounter =
-                  pbSig.discCount;
+                  pbSig.discontinuityCounter;
             }
             else if (pbSig.type == "2L") {
               int ii = phasebiasSat->NumberOfPhaseBiases;
@@ -1795,11 +1796,11 @@ void bncRtnetUploadCaster::decodeRtnetStream(char* buffer, int bufLen) {
               phasebiasSat->NumberOfPhaseBiases += 1;
               phasebiasSat->Biases[ii].Type = CODETYPEQZSS_L2C_L;
               phasebiasSat->Biases[ii].Bias = pbSig.bias;
-              phasebiasSat->Biases[ii].SignalIntegerIndicator = pbSig.intInd;
+              phasebiasSat->Biases[ii].SignalIntegerIndicator = pbSig.integerIndicator;
               phasebiasSat->Biases[ii].SignalsWideLaneIntegerIndicator =
-                  pbSig.wlInd;
+                  pbSig.wlIndicator;
               phasebiasSat->Biases[ii].SignalDiscontinuityCounter =
-                  pbSig.discCount;
+                  pbSig.discontinuityCounter;
             }
             else if (pbSig.type == "2X") {
               int ii = phasebiasSat->NumberOfPhaseBiases;
@@ -1808,11 +1809,11 @@ void bncRtnetUploadCaster::decodeRtnetStream(char* buffer, int bufLen) {
               phasebiasSat->NumberOfPhaseBiases += 1;
               phasebiasSat->Biases[ii].Type = CODETYPEQZSS_L2C_ML;
               phasebiasSat->Biases[ii].Bias = pbSig.bias;
-              phasebiasSat->Biases[ii].SignalIntegerIndicator = pbSig.intInd;
+              phasebiasSat->Biases[ii].SignalIntegerIndicator = pbSig.integerIndicator;
               phasebiasSat->Biases[ii].SignalsWideLaneIntegerIndicator =
-                  pbSig.wlInd;
+                  pbSig.wlIndicator;
               phasebiasSat->Biases[ii].SignalDiscontinuityCounter =
-                  pbSig.discCount;
+                  pbSig.discontinuityCounter;
             }
             else if (pbSig.type == "5I") {
               int ii = phasebiasSat->NumberOfPhaseBiases;
@@ -1821,11 +1822,11 @@ void bncRtnetUploadCaster::decodeRtnetStream(char* buffer, int bufLen) {
               phasebiasSat->NumberOfPhaseBiases += 1;
               phasebiasSat->Biases[ii].Type = CODETYPEQZSS_L5_I;
               phasebiasSat->Biases[ii].Bias = pbSig.bias;
-              phasebiasSat->Biases[ii].SignalIntegerIndicator = pbSig.intInd;
+              phasebiasSat->Biases[ii].SignalIntegerIndicator = pbSig.integerIndicator;
               phasebiasSat->Biases[ii].SignalsWideLaneIntegerIndicator =
-                  pbSig.wlInd;
+                  pbSig.wlIndicator;
               phasebiasSat->Biases[ii].SignalDiscontinuityCounter =
-                  pbSig.discCount;
+                  pbSig.discontinuityCounter;
             }
             else if (pbSig.type == "5Q") {
               int ii = phasebiasSat->NumberOfPhaseBiases;
@@ -1834,11 +1835,11 @@ void bncRtnetUploadCaster::decodeRtnetStream(char* buffer, int bufLen) {
               phasebiasSat->NumberOfPhaseBiases += 1;
               phasebiasSat->Biases[ii].Type = CODETYPEQZSS_L5_Q;
               phasebiasSat->Biases[ii].Bias = pbSig.bias;
-              phasebiasSat->Biases[ii].SignalIntegerIndicator = pbSig.intInd;
+              phasebiasSat->Biases[ii].SignalIntegerIndicator = pbSig.integerIndicator;
               phasebiasSat->Biases[ii].SignalsWideLaneIntegerIndicator =
-                  pbSig.wlInd;
+                  pbSig.wlIndicator;
               phasebiasSat->Biases[ii].SignalDiscontinuityCounter =
-                  pbSig.discCount;
+                  pbSig.discontinuityCounter;
             }
             else if (pbSig.type == "5X") {
               int ii = phasebiasSat->NumberOfPhaseBiases;
@@ -1847,11 +1848,11 @@ void bncRtnetUploadCaster::decodeRtnetStream(char* buffer, int bufLen) {
               phasebiasSat->NumberOfPhaseBiases += 1;
               phasebiasSat->Biases[ii].Type = CODETYPEQZSS_L5_IQ;
               phasebiasSat->Biases[ii].Bias = pbSig.bias;
-              phasebiasSat->Biases[ii].SignalIntegerIndicator = pbSig.intInd;
+              phasebiasSat->Biases[ii].SignalIntegerIndicator = pbSig.integerIndicator;
               phasebiasSat->Biases[ii].SignalsWideLaneIntegerIndicator =
-                  pbSig.wlInd;
+                  pbSig.wlIndicator;
               phasebiasSat->Biases[ii].SignalDiscontinuityCounter =
-                  pbSig.discCount;
+                  pbSig.discontinuityCounter;
             }
             else if (pbSig.type == "6S") {
               int ii = phasebiasSat->NumberOfPhaseBiases;
@@ -1860,11 +1861,11 @@ void bncRtnetUploadCaster::decodeRtnetStream(char* buffer, int bufLen) {
               phasebiasSat->NumberOfPhaseBiases += 1;
               phasebiasSat->Biases[ii].Type = CODETYPEQZSS_LEX_S;
               phasebiasSat->Biases[ii].Bias = pbSig.bias;
-              phasebiasSat->Biases[ii].SignalIntegerIndicator = pbSig.intInd;
+              phasebiasSat->Biases[ii].SignalIntegerIndicator = pbSig.integerIndicator;
               phasebiasSat->Biases[ii].SignalsWideLaneIntegerIndicator =
-                  pbSig.wlInd;
+                  pbSig.wlIndicator;
               phasebiasSat->Biases[ii].SignalDiscontinuityCounter =
-                  pbSig.discCount;
+                  pbSig.discontinuityCounter;
             }
             else if (pbSig.type == "6L") {
               int ii = phasebiasSat->NumberOfPhaseBiases;
@@ -1873,11 +1874,11 @@ void bncRtnetUploadCaster::decodeRtnetStream(char* buffer, int bufLen) {
               phasebiasSat->NumberOfPhaseBiases += 1;
               phasebiasSat->Biases[ii].Type = CODETYPEQZSS_LEX_L;
               phasebiasSat->Biases[ii].Bias = pbSig.bias;
-              phasebiasSat->Biases[ii].SignalIntegerIndicator = pbSig.intInd;
+              phasebiasSat->Biases[ii].SignalIntegerIndicator = pbSig.integerIndicator;
               phasebiasSat->Biases[ii].SignalsWideLaneIntegerIndicator =
-                  pbSig.wlInd;
+                  pbSig.wlIndicator;
               phasebiasSat->Biases[ii].SignalDiscontinuityCounter =
-                  pbSig.discCount;
+                  pbSig.discontinuityCounter;
             }
             else if (pbSig.type == "6X") {
               int ii = phasebiasSat->NumberOfPhaseBiases;
@@ -1886,11 +1887,11 @@ void bncRtnetUploadCaster::decodeRtnetStream(char* buffer, int bufLen) {
               phasebiasSat->NumberOfPhaseBiases += 1;
               phasebiasSat->Biases[ii].Type = CODETYPEQZSS_LEX_SL;
               phasebiasSat->Biases[ii].Bias = pbSig.bias;
-              phasebiasSat->Biases[ii].SignalIntegerIndicator = pbSig.intInd;
+              phasebiasSat->Biases[ii].SignalIntegerIndicator = pbSig.integerIndicator;
               phasebiasSat->Biases[ii].SignalsWideLaneIntegerIndicator =
-                  pbSig.wlInd;
+                  pbSig.wlIndicator;
               phasebiasSat->Biases[ii].SignalDiscontinuityCounter =
-                  pbSig.discCount;
+                  pbSig.discontinuityCounter;
             }
           }
         }
@@ -1905,11 +1906,11 @@ void bncRtnetUploadCaster::decodeRtnetStream(char* buffer, int bufLen) {
               phasebiasSat->NumberOfPhaseBiases += 1;
               phasebiasSat->Biases[ii].Type = CODETYPE_SBAS_L1_CA;
               phasebiasSat->Biases[ii].Bias = pbSig.bias;
-              phasebiasSat->Biases[ii].SignalIntegerIndicator = pbSig.intInd;
+              phasebiasSat->Biases[ii].SignalIntegerIndicator = pbSig.integerIndicator;
               phasebiasSat->Biases[ii].SignalsWideLaneIntegerIndicator =
-                  pbSig.wlInd;
+                  pbSig.wlIndicator;
               phasebiasSat->Biases[ii].SignalDiscontinuityCounter =
-                  pbSig.discCount;
+                  pbSig.discontinuityCounter;
             }
             else if (pbSig.type == "5I") {
               int ii = phasebiasSat->NumberOfPhaseBiases;
@@ -1918,11 +1919,11 @@ void bncRtnetUploadCaster::decodeRtnetStream(char* buffer, int bufLen) {
               phasebiasSat->NumberOfPhaseBiases += 1;
               phasebiasSat->Biases[ii].Type = CODETYPE_SBAS_L5_I;
               phasebiasSat->Biases[ii].Bias = pbSig.bias;
-              phasebiasSat->Biases[ii].SignalIntegerIndicator = pbSig.intInd;
+              phasebiasSat->Biases[ii].SignalIntegerIndicator = pbSig.integerIndicator;
               phasebiasSat->Biases[ii].SignalsWideLaneIntegerIndicator =
-                  pbSig.wlInd;
+                  pbSig.wlIndicator;
               phasebiasSat->Biases[ii].SignalDiscontinuityCounter =
-                  pbSig.discCount;
+                  pbSig.discontinuityCounter;
             }
             else if (pbSig.type == "5Q") {
               int ii = phasebiasSat->NumberOfPhaseBiases;
@@ -1931,11 +1932,11 @@ void bncRtnetUploadCaster::decodeRtnetStream(char* buffer, int bufLen) {
               phasebiasSat->NumberOfPhaseBiases += 1;
               phasebiasSat->Biases[ii].Type = CODETYPE_SBAS_L5_Q;
               phasebiasSat->Biases[ii].Bias = pbSig.bias;
-              phasebiasSat->Biases[ii].SignalIntegerIndicator = pbSig.intInd;
+              phasebiasSat->Biases[ii].SignalIntegerIndicator = pbSig.integerIndicator;
               phasebiasSat->Biases[ii].SignalsWideLaneIntegerIndicator =
-                  pbSig.wlInd;
+                  pbSig.wlIndicator;
               phasebiasSat->Biases[ii].SignalDiscontinuityCounter =
-                  pbSig.discCount;
+                  pbSig.discontinuityCounter;
             }
             else if (pbSig.type == "5X") {
               int ii = phasebiasSat->NumberOfPhaseBiases;
@@ -1944,11 +1945,11 @@ void bncRtnetUploadCaster::decodeRtnetStream(char* buffer, int bufLen) {
               phasebiasSat->NumberOfPhaseBiases += 1;
               phasebiasSat->Biases[ii].Type = CODETYPE_SBAS_L5_IQ;
               phasebiasSat->Biases[ii].Bias = pbSig.bias;
-              phasebiasSat->Biases[ii].SignalIntegerIndicator = pbSig.intInd;
+              phasebiasSat->Biases[ii].SignalIntegerIndicator = pbSig.integerIndicator;
               phasebiasSat->Biases[ii].SignalsWideLaneIntegerIndicator =
-                  pbSig.wlInd;
+                  pbSig.wlIndicator;
               phasebiasSat->Biases[ii].SignalDiscontinuityCounter =
-                  pbSig.discCount;
+                  pbSig.discontinuityCounter;
             }
           }
         }
@@ -1963,11 +1964,11 @@ void bncRtnetUploadCaster::decodeRtnetStream(char* buffer, int bufLen) {
               phasebiasSat->NumberOfPhaseBiases += 1;
               phasebiasSat->Biases[ii].Type = CODETYPE_BDS_B1_I;
               phasebiasSat->Biases[ii].Bias = pbSig.bias;
-              phasebiasSat->Biases[ii].SignalIntegerIndicator = pbSig.intInd;
+              phasebiasSat->Biases[ii].SignalIntegerIndicator = pbSig.integerIndicator;
               phasebiasSat->Biases[ii].SignalsWideLaneIntegerIndicator =
-                  pbSig.wlInd;
+                  pbSig.wlIndicator;
               phasebiasSat->Biases[ii].SignalDiscontinuityCounter =
-                  pbSig.discCount;
+                  pbSig.discontinuityCounter;
             }
             else if (pbSig.type == "2Q") {
               int ii = phasebiasSat->NumberOfPhaseBiases;
@@ -1976,11 +1977,11 @@ void bncRtnetUploadCaster::decodeRtnetStream(char* buffer, int bufLen) {
               phasebiasSat->NumberOfPhaseBiases += 1;
               phasebiasSat->Biases[ii].Type = CODETYPE_BDS_B1_Q;
               phasebiasSat->Biases[ii].Bias = pbSig.bias;
-              phasebiasSat->Biases[ii].SignalIntegerIndicator = pbSig.intInd;
+              phasebiasSat->Biases[ii].SignalIntegerIndicator = pbSig.integerIndicator;
               phasebiasSat->Biases[ii].SignalsWideLaneIntegerIndicator =
-                  pbSig.wlInd;
+                  pbSig.wlIndicator;
               phasebiasSat->Biases[ii].SignalDiscontinuityCounter =
-                  pbSig.discCount;
+                  pbSig.discontinuityCounter;
             }
             else if (pbSig.type == "2X") {
               int ii = phasebiasSat->NumberOfPhaseBiases;
@@ -1989,11 +1990,11 @@ void bncRtnetUploadCaster::decodeRtnetStream(char* buffer, int bufLen) {
               phasebiasSat->NumberOfPhaseBiases += 1;
               phasebiasSat->Biases[ii].Type = CODETYPE_BDS_B1_IQ;
               phasebiasSat->Biases[ii].Bias = pbSig.bias;
-              phasebiasSat->Biases[ii].SignalIntegerIndicator = pbSig.intInd;
+              phasebiasSat->Biases[ii].SignalIntegerIndicator = pbSig.integerIndicator;
               phasebiasSat->Biases[ii].SignalsWideLaneIntegerIndicator =
-                  pbSig.wlInd;
+                  pbSig.wlIndicator;
               phasebiasSat->Biases[ii].SignalDiscontinuityCounter =
-                  pbSig.discCount;
+                  pbSig.discontinuityCounter;
             }
             else if (pbSig.type == "6I") {
               int ii = phasebiasSat->NumberOfPhaseBiases;
@@ -2002,11 +2003,11 @@ void bncRtnetUploadCaster::decodeRtnetStream(char* buffer, int bufLen) {
               phasebiasSat->NumberOfPhaseBiases += 1;
               phasebiasSat->Biases[ii].Type = CODETYPE_BDS_B3_I;
               phasebiasSat->Biases[ii].Bias = pbSig.bias;
-              phasebiasSat->Biases[ii].SignalIntegerIndicator = pbSig.intInd;
+              phasebiasSat->Biases[ii].SignalIntegerIndicator = pbSig.integerIndicator;
               phasebiasSat->Biases[ii].SignalsWideLaneIntegerIndicator =
-                  pbSig.wlInd;
+                  pbSig.wlIndicator;
               phasebiasSat->Biases[ii].SignalDiscontinuityCounter =
-                  pbSig.discCount;
+                  pbSig.discontinuityCounter;
             }
             else if (pbSig.type == "6Q") {
               int ii = phasebiasSat->NumberOfPhaseBiases;
@@ -2015,11 +2016,11 @@ void bncRtnetUploadCaster::decodeRtnetStream(char* buffer, int bufLen) {
               phasebiasSat->NumberOfPhaseBiases += 1;
               phasebiasSat->Biases[ii].Type = CODETYPE_BDS_B3_Q;
               phasebiasSat->Biases[ii].Bias = pbSig.bias;
-              phasebiasSat->Biases[ii].SignalIntegerIndicator = pbSig.intInd;
+              phasebiasSat->Biases[ii].SignalIntegerIndicator = pbSig.integerIndicator;
               phasebiasSat->Biases[ii].SignalsWideLaneIntegerIndicator =
-                  pbSig.wlInd;
+                  pbSig.wlIndicator;
               phasebiasSat->Biases[ii].SignalDiscontinuityCounter =
-                  pbSig.discCount;
+                  pbSig.discontinuityCounter;
             }
             else if (pbSig.type == "6X") {
               int ii = phasebiasSat->NumberOfPhaseBiases;
@@ -2028,11 +2029,11 @@ void bncRtnetUploadCaster::decodeRtnetStream(char* buffer, int bufLen) {
               phasebiasSat->NumberOfPhaseBiases += 1;
               phasebiasSat->Biases[ii].Type = CODETYPE_BDS_B3_IQ;
               phasebiasSat->Biases[ii].Bias = pbSig.bias;
-              phasebiasSat->Biases[ii].SignalIntegerIndicator = pbSig.intInd;
+              phasebiasSat->Biases[ii].SignalIntegerIndicator = pbSig.integerIndicator;
               phasebiasSat->Biases[ii].SignalsWideLaneIntegerIndicator =
-                  pbSig.wlInd;
+                  pbSig.wlIndicator;
               phasebiasSat->Biases[ii].SignalDiscontinuityCounter =
-                  pbSig.discCount;
+                  pbSig.discontinuityCounter;
             }
             else if (pbSig.type == "7I") {
               int ii = phasebiasSat->NumberOfPhaseBiases;
@@ -2041,11 +2042,11 @@ void bncRtnetUploadCaster::decodeRtnetStream(char* buffer, int bufLen) {
               phasebiasSat->NumberOfPhaseBiases += 1;
               phasebiasSat->Biases[ii].Type = CODETYPE_BDS_B2_I;
               phasebiasSat->Biases[ii].Bias = pbSig.bias;
-              phasebiasSat->Biases[ii].SignalIntegerIndicator = pbSig.intInd;
+              phasebiasSat->Biases[ii].SignalIntegerIndicator = pbSig.integerIndicator;
               phasebiasSat->Biases[ii].SignalsWideLaneIntegerIndicator =
-                  pbSig.wlInd;
+                  pbSig.wlIndicator;
               phasebiasSat->Biases[ii].SignalDiscontinuityCounter =
-                  pbSig.discCount;
+                  pbSig.discontinuityCounter;
             }
             else if (pbSig.type == "7Q") {
               int ii = phasebiasSat->NumberOfPhaseBiases;
@@ -2054,11 +2055,11 @@ void bncRtnetUploadCaster::decodeRtnetStream(char* buffer, int bufLen) {
               phasebiasSat->NumberOfPhaseBiases += 1;
               phasebiasSat->Biases[ii].Type = CODETYPE_BDS_B2_Q;
               phasebiasSat->Biases[ii].Bias = pbSig.bias;
-              phasebiasSat->Biases[ii].SignalIntegerIndicator = pbSig.intInd;
+              phasebiasSat->Biases[ii].SignalIntegerIndicator = pbSig.integerIndicator;
               phasebiasSat->Biases[ii].SignalsWideLaneIntegerIndicator =
-                  pbSig.wlInd;
+                  pbSig.wlIndicator;
               phasebiasSat->Biases[ii].SignalDiscontinuityCounter =
-                  pbSig.discCount;
+                  pbSig.discontinuityCounter;
             }
             else if (pbSig.type == "7X") {
               int ii = phasebiasSat->NumberOfPhaseBiases;
@@ -2067,11 +2068,11 @@ void bncRtnetUploadCaster::decodeRtnetStream(char* buffer, int bufLen) {
               phasebiasSat->NumberOfPhaseBiases += 1;
               phasebiasSat->Biases[ii].Type = CODETYPE_BDS_B2_IQ;
               phasebiasSat->Biases[ii].Bias = pbSig.bias;
-              phasebiasSat->Biases[ii].SignalIntegerIndicator = pbSig.intInd;
+              phasebiasSat->Biases[ii].SignalIntegerIndicator = pbSig.integerIndicator;
               phasebiasSat->Biases[ii].SignalsWideLaneIntegerIndicator =
-                  pbSig.wlInd;
+                  pbSig.wlIndicator;
               phasebiasSat->Biases[ii].SignalDiscontinuityCounter =
-                  pbSig.discCount;
+                  pbSig.discontinuityCounter;
             }
           }
         }
