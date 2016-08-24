@@ -143,26 +143,51 @@ t_irc RTCM2Decoder::Decode(char* buffer, int bufLen, vector<string>& errmsg) {
 
           t_frqObs* frqObs1C = new t_frqObs;
           frqObs1C->_rnxType2ch = "1C";
-          frqObs1C->_codeValid = true;
           frqObs1C->_code = _ObsBlock.rng_C1[iSat];
+          if (frqObs1C->_code) {
+            frqObs1C->_codeValid = true;
+          }
+          else {
+            frqObs1C->_codeValid = false;
+          }
           obs._obs.push_back(frqObs1C);
 
           t_frqObs* frqObs1P = new t_frqObs;
           frqObs1P->_rnxType2ch = (sys == 'G') ? "1W" : "1P";
-          frqObs1P->_codeValid = true;
           frqObs1P->_code = _ObsBlock.rng_P1[iSat];
-          frqObs1P->_phaseValid = true;
+          if (frqObs1P->_code) {
+            frqObs1P->_codeValid = true;
+          }
+          else {
+            frqObs1P->_codeValid = false;
+          }
           frqObs1P->_phase = _ObsBlock.resolvedPhase_L1(iSat);
+          if (frqObs1P->_phase) {
+            frqObs1P->_phaseValid = true;
+          }
+          else {
+            frqObs1P->_phaseValid = false;
+          }
           //frqObs1P->_slipCounter = _ObsBlock.slip_L1[iSat];
           frqObs1P->_slipCounter = -1; // because RTCM2 definition is vice versa to RTCM3
           obs._obs.push_back(frqObs1P);
 
           t_frqObs* frqObs2P = new t_frqObs;
           frqObs2P->_rnxType2ch = (sys == 'G') ? "2W" : "2P";
-          frqObs2P->_codeValid = true;
           frqObs2P->_code = _ObsBlock.rng_P2[iSat];
-          frqObs2P->_phaseValid = true;
+          if (frqObs2P->_code) {
+            frqObs2P->_codeValid = true;
+          }
+          else {
+            frqObs2P->_codeValid = false;
+          }
           frqObs2P->_phase = _ObsBlock.resolvedPhase_L2(iSat);
+          if (frqObs2P->_phase) {
+            frqObs2P->_phaseValid = true;
+          }
+          else {
+            frqObs2P->_phaseValid = false;
+          }
           //frqObs2P->_slipCounter = _ObsBlock.slip_L2[iSat];
           frqObs2P->_slipCounter = -1; // because RTCM2 definition is vice versa to RTCM3
           obs._obs.push_back(frqObs2P);
@@ -172,7 +197,6 @@ t_irc RTCM2Decoder::Decode(char* buffer, int bufLen, vector<string>& errmsg) {
         _ObsBlock.clear();
       }
     }
-
     else if (_PP.ID() == 20 || _PP.ID() == 21) {
       _msg2021.extract(_PP);
 
