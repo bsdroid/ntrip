@@ -541,7 +541,8 @@ void bncGetThread::run() {
         if (!_rawFile) {
           bool wrongObservationEpoch = checkForWrongObsEpoch(obs._time);
           if (wrongObservationEpoch) {
-            emit( newMessage(_staID + ": Wrong observation epoch(s)", false) );
+            QString prn(obs._prn.toString().c_str());
+            emit( newMessage(_staID + " (" + prn.toAscii() + ")" + ": Wrong observation epoch(s)", false) );
             continue;
           }
         }
