@@ -687,6 +687,8 @@ string RTCM3coDecoder::codeTypeToRnxType(char system, CodeType type) const {
       case CODETYPEGPS_L1_CA:         return "1C";
       case CODETYPEGPS_L1_P:          return "1P";
       case CODETYPEGPS_L1_Z:          return "1W";
+      //case CODETYPEGPS_L1_Y:          return "1Y";
+      //case CODETYPEGPS_L1_M:          return "1M";
       case CODETYPEGPS_L2_CA:         return "2C";
       case CODETYPEGPS_SEMI_CODELESS: return "2D";
       case CODETYPEGPS_L2_CM:         return "2S";
@@ -694,6 +696,8 @@ string RTCM3coDecoder::codeTypeToRnxType(char system, CodeType type) const {
       case CODETYPEGPS_L2_CML:        return "2X";
       case CODETYPEGPS_L2_P:          return "2P";
       case CODETYPEGPS_L2_Z:          return "2W";
+      //case CODETYPEGPS_L2_Y:          return "2Y";
+      //case CODETYPEGPS_L2_M:          return "2M";
       case CODETYPEGPS_L5_I:          return "5I";
       case CODETYPEGPS_L5_Q:          return "5Q";
       case CODETYPEGPS_L5_IQ:         return "5X";
@@ -709,6 +713,9 @@ string RTCM3coDecoder::codeTypeToRnxType(char system, CodeType type) const {
       case CODETYPEGLONASS_L1_P:      return "1P";
       case CODETYPEGLONASS_L2_CA:     return "2C";
       case CODETYPEGLONASS_L2_P:      return "2P";
+      case CODETYPEGLONASS_L3_I:      return "3I";
+      case CODETYPEGLONASS_L3_Q:      return "3Q";
+      case CODETYPEGLONASS_L3_IQ:     return "3X";
       default: return "";
     }
   }
@@ -751,8 +758,7 @@ string RTCM3coDecoder::codeTypeToRnxType(char system, CodeType type) const {
       case CODETYPEQZSS_LEX_S:         return "6S";
       case CODETYPEQZSS_LEX_L:         return "6L";
       case CODETYPEQZSS_LEX_SL:        return "6X";
-
-    default: return "";
+      default: return "";
     }
   }
   else if (system == 'S') {
