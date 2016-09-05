@@ -1929,11 +1929,20 @@ A note on converting RINEX Version 3 to RINEX Version 2 and vice versa:
 
 <p>
 <ul>
-<li>The RINEX Version 2 format ignores signal generation attributes. Therefore, when converting <u>RINEX Version 3 to Version 2</u> Observation files, BNC is forced to somehow map signals with attributes to signals without attributes although this cannot be done in one-to-one correspondence. Hence we introduce a 'Version 2 Signal Priority' list of attributes (characters, forming a string) for mapping Version 3 to Version 2, see details in section 'RINEX Observations/Version 2'. The default 'Version 2 Signal Priority' list of observation attributes when mapping RINEX Version 3 to Version 2 is 'CWPX_?'. Signal priorities can be specified either as equal for all systems or system specific. The following are example priority strings:</li>
+<li>The RINEX Version 2 format ignores signal generation attributes. Therefore, when converting <u>RINEX Version 3 to Version 2</u> Observation files, BNC is forced to somehow map signals with attributes to signals without attributes although this cannot be done in one-to-one correspondence. Hence we introduce a 'Version 2 Signal Priority' list of attributes (characters, forming a string) for mapping Version 3 to Version 2, see details in section 'RINEX Observations/Version 2'. Signal priorities can be specified as equal for all systems, as system specific or as system and frequency specific. For example:</li>
 <ul>
-<li>CWPX_? (Same signal priorities valid for all systems)</li>
-<li>G:CWPX_? R:PCX_? E:CPX_? (Specific signal priorities for GPS, GLONASS and Galileo system)</li><br>
+<li>'CWPX_?' (General signal priorities valid for all GNSS)</li>
+<li>'C:IQX I:ABCX' (System specific signal priorities for BDS and IRNSS)</li>
+<li>'G:12&PWCSLXYN G:5&IQX R:12&PC R:3&IQX' (System and frequency specific signal priorities)</li>
 </ul>
+</p>
+<p>
+The default 'Signal priority' list is defined as follows: 
+<ul>
+ <li>'G:12&PWCSLXYN G:5&IQX R:12&PC R:3&IQX E:16&BCX E:578&IQX J:1&SLXCZ J:26&SLX J:5&IQX C:IQX I:ABCX S:1&C S:5&IQX'</li>
+</ul>
+</p>
+<p>
 <li>When converting <u>RINEX Version 2 to Version 3</u> Observation files, the tracking mode or channel information in the (last character out of the 3-character) observation code is left blank if unknown. This is a compromise, knowing that it is not in accordance with the RINEX Version 3 documentation.</li>
 </ul>
 </p>
