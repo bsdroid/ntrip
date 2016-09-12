@@ -346,10 +346,10 @@ void t_rnxObsHeader::setDefault(const QString& markerName, int version) {
                    << "C2C" << "L2C" << "S2C"
                    << "C2P" << "L2P" << "S2P";
 
-    _obsTypes['E'] << "C1X" << "L1X" << "SX1"
-                   << "C5X" << "L5X" << "SX5"
-                   << "C7X" << "L7X" << "SX7"
-                   << "C8X" << "L8X" << "SX8";
+    _obsTypes['E'] << "C1X" << "L1X" << "S1X"
+                   << "C5X" << "L5X" << "S5X"
+                   << "C7X" << "L7X" << "S7X"
+                   << "C8X" << "L8X" << "S8X";
 
     _obsTypes['S'] << "C1C" << "L1C" << "S1C"
                    << "C5I" << "L5I" << "S5I"
