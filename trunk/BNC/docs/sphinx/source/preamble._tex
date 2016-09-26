@@ -1,0 +1,12 @@
+﻿% Some more packages
+\usepackage{tabu}
+\usepackage{lscape}
+
+% Break lines in code-block
+\usepackage{minted}
+\fvset{breaklines=true}
+
+% Create list of acronyms
+\usepackage[style=alttree,nonumberlist,acronym,section=chapter]{glossaries}
+\setacronymstyle{long-sc-short}
+\loadglsentries{../../source/acronyms._tex}
