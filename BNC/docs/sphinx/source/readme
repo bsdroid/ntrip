@@ -1,0 +1,15 @@
+Erstellung des pdf der Dokumentation
+
+sphinx: make latex
+
+Latex File editieren:
+1. CWPX_? Suchen ersetzen, dass es nicht rot erscheint
+2. Rahmen der Tabelle Abb. 4.1 entfernen
+
+Latex ausführen
+
+pdf editieren (Adobe Acrobat)
+Erste zwei Seiten löschen
+4 Seiten Deckblatt davorkopieren
+1 Leerseite am Ende (wenn das Dokument auf eine gerade Seite endet)
+Rückseite dahinterkopieren
