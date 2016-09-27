@@ -1,8 +1,8 @@
-<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
+META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
 <p><img src="IMG/screenshot43.png"/></p>
 
 <h3>BKG Ntrip Client (BNC)<br>
-Version 2.12.0</h3>
+Version 2.13</h3>
 
 <p>
 Georg Weber<sup>(1)</sup>, Leo&scaron; Mervart<sup>(2)</sup>, Andrea St&uuml;rze<sup>(1)</sup>, Axel R&uuml;lke<sup>(1)</sup>, Dirk St&ouml;cker<sup>(3)</sup>
@@ -3007,7 +3007,7 @@ Choose between input from 'Real-time Streams' or 'RINEX Files' for PPP with BNC 
 
 <p>
 <u>Real-time Streams</u><br>
-When choosing 'Real-time Streams' BNC will do PPP solutions in real-time. This requires pulling GNSS observation streams, Broadcast Ephemeris messages and a stream containing corrections to Broadcast Ephemeris. Streams must come in RTCM Version 2 or RTCM Version 3 format.
+When choosing 'Real-time Streams' BNC will do PPP solutions in real-time. This requires pulling GNSS observation streams, Broadcast Ephemeris messages and a stream containing corrections to Broadcast Ephemeris. Streams must come in RTCM Version 3 format.
 </p>
 <p>
 If you do not pull Broadcast Corrections, BNC will switch with its solution to 'Single Point Positioning' (SPP) mode.
@@ -4233,7 +4233,7 @@ The following screenshot shows the encoding and uploading of several Broadcast E
 
 <p><h4>2.16 <a name="upeph">Upload Ephemeris</h4></p>
 <p>
-BNC can generate a stream carrying only Broadcast Ephemeris in RTCM Version 3 format and upload it to an Ntrip Broadcaster.
+BNC can generate streams carrying only Broadcast Ephemeris in RTCM Version 3 format and upload them to an Ntrip Broadcaster. This can be done for individual satellite systems or for all satellite systems, specifying the parameter ‘System’ for each stream.
 </p>
 
 <p>
