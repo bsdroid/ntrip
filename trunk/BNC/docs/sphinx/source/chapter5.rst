@@ -1813,7 +1813,7 @@ Choose between input from 'Real-time Streams' or 'RINEX Files' for PPP with BNC 
 Real-time Streams
 """""""""""""""""
 
-When choosing 'Real-time Streams' BNC will do PPP solutions in real-time. This requires pulling GNSS observation streams, Broadcast Ephemeris messages and a stream containing corrections to Broadcast Ephemeris. Streams must come in RTCM Version 2 or RTCM Version 3 format. If you do not pull Broadcast Corrections, BNC will switch with its solution to 'Single Point Positioning' (SPP) mode. With RTCM Version 2 an ionosphere free linear combination of code-only observations cannot be processed.
+When choosing 'Real-time Streams' BNC will do PPP solutions in real-time. This requires pulling GNSS observation streams, Broadcast Ephemeris messages and a stream containing corrections to Broadcast Ephemeris. Streams must come in RTCM Version 3 format. If you do not pull Broadcast Corrections, BNC will switch with its solution to 'Single Point Positioning' (SPP) mode.
 
 RINEX Files
 """""""""""
