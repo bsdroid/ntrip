@@ -216,15 +216,14 @@ Weber, G., L. Mervart, A. St&uuml;rze, A. R&uuml;lke and D. St&ouml;cker (2016):
 &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 2.20.5 <a href=#conffile>Configuration File</a><br>
 &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 2.20.6 <a href=#confopt>Configuration Options</a><br><br>
 <b>3.</b> <a href=#annex><b>Annex</b></a><br><br>
-&nbsp; &nbsp; &nbsp; 3.1 <a href=#history>Revision History</a><br>
-&nbsp; &nbsp; &nbsp; 3.2 <a href=#rtcm>RTCM Standards</a><br>
-&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 3.2.1 <a href=#ntrip1>Ntrip Version 1</a><br>
-&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 3.2.2 <a href=#ntrip2>Ntrip Version 2</a><br>
-&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 3.2.3 <a href=#rtcm2>RTCM Version 2</a><br>
-&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 3.2.4 <a href=#rtcm3>RTCM Version 3</a><br>
-&nbsp; &nbsp; &nbsp; 3.3 <a href=#confList>Command Line Help</a><br>
-&nbsp; &nbsp; &nbsp; 3.4 <a href=#links>Further Reading</a><br>
-&nbsp; &nbsp; &nbsp; 3.5 <a href=#abbrev>Abbreviations</a>
+&nbsp; &nbsp; &nbsp; 3.1 <a href=#rtcm>RTCM Standards</a><br>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 3.1.1 <a href=#ntrip1>Ntrip Version 1</a><br>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 3.1.2 <a href=#ntrip2>Ntrip Version 2</a><br>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 3.1.3 <a href=#rtcm2>RTCM Version 2</a><br>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 3.1.4 <a href=#rtcm3>RTCM Version 3</a><br>
+&nbsp; &nbsp; &nbsp; 3.2 <a href=#confList>Command Line Help</a><br>
+&nbsp; &nbsp; &nbsp; 3.3 <a href=#links>Further Reading</a><br>
+&nbsp; &nbsp; &nbsp; 3.4 <a href=#abbrev>Abbreviations</a>
 </p>
 
 
@@ -623,11 +622,11 @@ Configuration options are usually first set using BNC's Graphical User Interface
 </p>
 
 <p><h4>1.5 <a name="introInst">Installation</h4></p>
-<p> 
-Precompiled builds of BNC are available for MS Windows, Linux, and Mac OS X systems. They can be downloaded for installation from <u>http://igs.bkg.bund.de/ntrip/download</u>. Please ensure that you always use the latest released version of the program. 
-</p> 
 <p>
-<u>MS Windows Build:</u> A dynamically compiled shared library build for Mircrosoft Windows systems is provided as Microsoft Installer (MSI) file. MSI files are used for installation, storage, and removal of programs. The BNC files are contained in a MSI package, which is used with the program's client-side installer service, an .EXE file, to open and install the program. We used the MinGW Version 4.4.0 compiler to create BNC for Windows. After installation your 'bnc.exe' file shows up e.g. under 'All Programs'. 
+Precompiled builds of BNC are available for MS Windows, Linux, and Mac OS X systems. They can be downloaded for installation from <u>http://igs.bkg.bund.de/ntrip/download</u>. Please ensure that you always use the latest released version of the program.
+</p>
+<p>
+<u>MS Windows Build:</u> A dynamically compiled shared library build for Mircrosoft Windows systems is provided as Microsoft Installer (MSI) file. MSI files are used for installation, storage, and removal of programs. The BNC files are contained in a MSI package, which is used with the program's client-side installer service, an .EXE file, to open and install the program. We used the MinGW Version 4.4.0 compiler to create BNC for Windows. After installation your 'bnc.exe' file shows up e.g. under 'All Programs'.
 </p>
 
 <p>
@@ -635,16 +634,16 @@ Precompiled builds of BNC are available for MS Windows, Linux, and Mac OS X syst
 </p>
 
 <p>
-<u>Mac OS X Build:</u> 
+<u>Mac OS X Build:</u>
 A shared library 'Disk iMaGe' (DMG) file is provided for BNC on OS X systems; it also comes in a ZIP archive. The DMG file format is used in the Mac for distributing software. Mac install packages appear as a virtual disk drive. After download, when the DMG file icon is double clicked, the virtual drive is 'mounted' on the desktop. Install BNC by dragging the 'bnc.app' icon to your '/Applications' folder. To start BNC, double click on '/Applications/bnc.app'. You could also start BNC via Command Line Interface (CLI) using command '/Applications/bnc.app/Contents/MacOS/bnc'.
 </p>
 
 <p><h4>1.5.1 <a name="introCompile">Compilation</h4></p>
 
-<p> 
+<p>
 BNC has been written as Open Source and published under GNU General Public License (GPL). The latest source code can be checked out from Subversion repository <u>http://software.rtcm-ntrip.org/svn/trunk/BNC</u>. A ZIP archive available from <u>http://igs.bkg.bund.de/ntrip/download</u> provides the source code for BNC Version 2.12.0, developed using Qt Version 4.8.5.
 </p>
-<p>The following describes how you can produce your own builds of BNC on MS Windows, Linux, and Mac systems. It is likely that BNC can also be compiled on other systems where a GNU compiler and Qt Version 4.8.5 or any later version is installed. 
+<p>The following describes how you can produce your own builds of BNC on MS Windows, Linux, and Mac systems. It is likely that BNC can also be compiled on other systems where a GNU compiler and Qt Version 4.8.5 or any later version is installed.
 </p>
 
 <p><b>Static versus Shared Libraries</b><br>
@@ -663,7 +662,7 @@ This explains how to install a shared Qt 4.8.5 library on MS Windows systems to 
 <li>Unzip the ZIP archive and move its contents to a directory C:\MinGW. Now you can do either (4) or (5, 6, 8, 9, 10). Following (4) is suggested.</li>
 
 <li>Download file 'qt-win-opensource-4.8.5-mingw.exe' (317 MB) e.g. from <u>https://download.qt.io/archive/qt/4.8/4.8.5/</u>. Execute this file to install a pre-compiled shared Qt library.</li>
-     
+
 <li>Download file 'qt-everywhere-opensource-src-4.8.5.zip' (269 MB) e.g. from <u>https://download.qt.io/archive/qt/4.8/4.8.5/</u></li>
 
 <li>Unzip the ZIP archive and move the contents of the contained directory into a directory C:\Qt\4.8.5.</li>
@@ -721,7 +720,7 @@ On Linux systems you may use the following procedure to install a shared Qt vers
 <p>
 Download file 'qt-everywhere-opensource-src-4.8.5.tar.gz' (230 MB) available from <u>https://download.qt.io/archive/qt/4.8/4.8.5/</u>. Unzip file, extract tar archive and change to directory 'qt-everywhere-opensource-src-4.8.5'. Run commands
 <pre>
-  ./configure -fast -webkit -nomake examples -nomake tutorial 
+  ./configure -fast -webkit -nomake examples -nomake tutorial
               -prefix /usr/local/Trolltech/Qt-4.8.5
   gmake
   gmake install
@@ -779,7 +778,7 @@ Once a DMG file for BNC is created, you can double click it and install BNC by d
 <p>
 As a default, configuration files for running BNC on Unix/Linux/Mac OS X systems are saved in directory '${HOME}/.config/BKG'. On Windows systems, they are typically saved in directory 'C:/Documents and Settings/Username/.config/BKG'. The default configuration filename is 'BNC.bnc'.</p>
 <p>
-The default filename 'BNC.bnc' can be changed and the file content can easily be edited. On graphical user interfaces it is possible to Drag &amp; Drop a configuration file icon to start BNC (not on Mac OS X systems). It is also possible to start and configure BNC via command line. Some configuration options can be changed on-the-fly. See annexed 'Command Line Help' for a complete set of configuration options. 
+The default filename 'BNC.bnc' can be changed and the file content can easily be edited. On graphical user interfaces it is possible to Drag &amp; Drop a configuration file icon to start BNC (not on Mac OS X systems). It is also possible to start and configure BNC via command line. Some configuration options can be changed on-the-fly. See annexed 'Command Line Help' for a complete set of configuration options.
 </p>
 
 <p>
@@ -876,101 +875,101 @@ You should be able to run all configuration file examples without changing conta
 <ol type=b>
 
 <li>Configuration File 'RinexObs.bnc'<br>
-Purpose: Convert RTCM streams to 
-RINEX Observation files. The configuration pulls streams from Ntrip 
-Broadcasters using Ntrip Version 1 to generate 15min 1Hz RINEX Version 3 
-Observation files. See <u>http://igs.bkg.bund.de/ntrip/observations</u> for observation 
-stream resources. 
+Purpose: Convert RTCM streams to
+RINEX Observation files. The configuration pulls streams from Ntrip
+Broadcasters using Ntrip Version 1 to generate 15min 1Hz RINEX Version 3
+Observation files. See <u>http://igs.bkg.bund.de/ntrip/observations</u> for observation
+stream resources.
 </li><br>
 
 <li>Configuration File 'RinexEph.bnc'<br>
-Purpose: Convert a RTCM stream 
+Purpose: Convert a RTCM stream
 with navigation messages to RINEX Navigation files. The configuration
-pulls a RTCM Version 3 stream with Broadcast Ephemeris coming from the 
-real-time EUREF and IGS networks and saves hourly RINEX Version 3 Navigation 
-files. See <u>http://igs.bkg.bund.de/ntrip/ephemeris</u> for further real-time 
-Broadcast Ephemeris resources. 
+pulls a RTCM Version 3 stream with Broadcast Ephemeris coming from the
+real-time EUREF and IGS networks and saves hourly RINEX Version 3 Navigation
+files. See <u>http://igs.bkg.bund.de/ntrip/ephemeris</u> for further real-time
+Broadcast Ephemeris resources.
 </li><br>
 
 <li>Configuration File 'BrdcCorr.bnc'<br>
-Purpose: Save Broadcast Corrections from RTCM 
-SSR messages in hourly plain ASCII files. See 
-<u>http://igs.bkg.bund.de/ntrip/orbits</u> for various real-time IGS or EUREF 
-orbit/clock correction products. 
+Purpose: Save Broadcast Corrections from RTCM
+SSR messages in hourly plain ASCII files. See
+<u>http://igs.bkg.bund.de/ntrip/orbits</u> for various real-time IGS or EUREF
+orbit/clock correction products.
 </li><br>
 
 <li>Configuration File 'RinexConcat.bnc'<br>
-Purpose: Concatenate several RINEX Version 3 files to 
-produce one compiled file and edit the marker name in the file header. The 
-sampling interval is set to 30 seconds. See section 'RINEX Editing & QC' in the 
-documentation for examples on how to call BNC from command line in 'no window' 
-mode for RINEX file editing, concatenation and quality check. 
+Purpose: Concatenate several RINEX Version 3 files to
+produce one compiled file and edit the marker name in the file header. The
+sampling interval is set to 30 seconds. See section 'RINEX Editing & QC' in the
+documentation for examples on how to call BNC from command line in 'no window'
+mode for RINEX file editing, concatenation and quality check.
 </li><br>
 
 <li>Configuration File 'RinexQC.bnc'<br>
-Purpose: Check the quality of a RINEX Version 3 
-file by means of a multipath analysis. Results are saved on disk in terms of a 
-plot in PNG format. See section 'RINEX Editing & QC' in the documentation for 
-examples on how to call BNC from command line in 'no window' mode for RINEX 
-file editing, concatenation and quality check. 
+Purpose: Check the quality of a RINEX Version 3
+file by means of a multipath analysis. Results are saved on disk in terms of a
+plot in PNG format. See section 'RINEX Editing & QC' in the documentation for
+examples on how to call BNC from command line in 'no window' mode for RINEX
+file editing, concatenation and quality check.
 </li><br>
 
 <li>Configuration File 'RTK.bnc'<br>
-Purpose: Feed a serially connected receiver with 
-observations from a nearby reference station for conventional RTK. The stream is 
-scanned for RTCM messages. Message type numbers and latencies of incoming 
-observations are reported in BNC's logfile. 
+Purpose: Feed a serially connected receiver with
+observations from a nearby reference station for conventional RTK. The stream is
+scanned for RTCM messages. Message type numbers and latencies of incoming
+observations are reported in BNC's logfile.
 </li><br>
 
 <li>Configuration File 'FeedEngine.bnc'<br>
-Purpose: Feed a real-time GNSS engine with 
-observations from remote reference stations. The configuration pulls a single 
-stream from an Ntrip Broadcaster. You could also pull 
-several streams from different casters. Incoming observations are decoded, 
-synchronized, output through a local IP port and also saved into a file. Failure 
-and recovery thresholds are specified to inform about outages. 
+Purpose: Feed a real-time GNSS engine with
+observations from remote reference stations. The configuration pulls a single
+stream from an Ntrip Broadcaster. You could also pull
+several streams from different casters. Incoming observations are decoded,
+synchronized, output through a local IP port and also saved into a file. Failure
+and recovery thresholds are specified to inform about outages.
 </li><br>
 
 <li>Configuration File 'PPP.bnc'<br>
-Purpose: Precise Point Positioning from 
-observations of a rover receiver. The configuration reads RTCM Version 3 
-observations, a Broadcast Ephemeris stream and a stream with Broadcast 
-Corrections. Positions are saved in the logfile. 
+Purpose: Precise Point Positioning from
+observations of a rover receiver. The configuration reads RTCM Version 3
+observations, a Broadcast Ephemeris stream and a stream with Broadcast
+Corrections. Positions are saved in the logfile.
 </li><br>
 
 <li>Configuration File 'PPPNet.bnc'<br>
-Purpose: Precise 
-Point Positioning for several rovers or receivers from an entire network of 
-reference stations in one BNC job. The possible maximum number of PPP solutions 
-per job depends on the processing power of the hosting computer. This example 
-configuration reads two RTCM Version 3 observation streams, a Broadcast 
-Ephemeris stream and a stream with Broadcast Corrections. PPP Results for the 
-two stations are saved in PPP logfiles. 
+Purpose: Precise
+Point Positioning for several rovers or receivers from an entire network of
+reference stations in one BNC job. The possible maximum number of PPP solutions
+per job depends on the processing power of the hosting computer. This example
+configuration reads two RTCM Version 3 observation streams, a Broadcast
+Ephemeris stream and a stream with Broadcast Corrections. PPP Results for the
+two stations are saved in PPP logfiles.
 </li><br>
 
 <li>Configuration File 'PPPQuickStart.bnc'<br>
-Purpose: Precise Point Positioning in Quick-Start 
-mode from observations of a static receiver with precisely known position. The 
-configuration reads RTCM Version 3 observations, Broadcast Corrections and a 
-Broadcast Ephemeris stream. Positions are saved in NMEA format on disc. 
-They are also output through IP port for real-time visualization with tools 
-like RTKPLOT. Positions are saved in the logfile. 
+Purpose: Precise Point Positioning in Quick-Start
+mode from observations of a static receiver with precisely known position. The
+configuration reads RTCM Version 3 observations, Broadcast Corrections and a
+Broadcast Ephemeris stream. Positions are saved in NMEA format on disc.
+They are also output through IP port for real-time visualization with tools
+like RTKPLOT. Positions are saved in the logfile.
 </li><br>
 
 <li>Configuration File 'PPPPostProc.bnc'<br>
-Purpose: Precise Point Positioning in post 
-processing mode. BNC reads RINEX Version 3 Observation and Navigation files 
-and a Broadcast Correction file. PPP processing options are set to support 
-the Quick-Start mode. The output is saved in a specific post processing 
-logfile and contains coordinates derived over time following the 
-implemented PPP filter algorithm. 
+Purpose: Precise Point Positioning in post
+processing mode. BNC reads RINEX Version 3 Observation and Navigation files
+and a Broadcast Correction file. PPP processing options are set to support
+the Quick-Start mode. The output is saved in a specific post processing
+logfile and contains coordinates derived over time following the
+implemented PPP filter algorithm.
 </li><br>
 
 <li>Configuration File 'PPPGoogleMaps.bnc'<br>
 Purpose: Track BNC's point positioning
 solutions using Google Maps or OpenStreetMap as background. BNC reads a
 RINEX Observation file and a RINEX Navigation file to carry out a
-'Standard Point Positioning' solution in post processing mode. Although 
+'Standard Point Positioning' solution in post processing mode. Although
 this is not a real-time application, it requires the BNC host to be connected
 to the Internet. Specify a computation speed, then hit button 'Open Map'
 to open the track map, then hit 'Start' to visualize receiver positions
@@ -978,71 +977,71 @@ on top of GM/OSM maps.
 </li><br>
 
 <li>Configuration File 'SPPQuickStartGal.bnc'<br>
-Purpose: Single Point Positioning in Quick-Start mode from observations of a static 
+Purpose: Single Point Positioning in Quick-Start mode from observations of a static
 receiver with quite precisely known position.
-The configuration uses GPS, GLONASS and Galileo observations and a Broadcast 
-Ephemeris stream. 
+The configuration uses GPS, GLONASS and Galileo observations and a Broadcast
+Ephemeris stream.
 </li><br>
 
 <li>Configuration File 'SaveSp3.bnc'<br>
-Purpose: Produces SP3 files from a Broadcast 
-Ephemeris stream and a Broadcast Correction stream. The Broadcast Correction 
-stream is formally introduced in BNC's 'Combine Corrections' table. Note that 
-producing SP3 requires an ANTEX file because SP3 file content should be 
-referred to CoM. 
+Purpose: Produces SP3 files from a Broadcast
+Ephemeris stream and a Broadcast Correction stream. The Broadcast Correction
+stream is formally introduced in BNC's 'Combine Corrections' table. Note that
+producing SP3 requires an ANTEX file because SP3 file content should be
+referred to CoM.
 </li><br>
 
 <li>Configuration File 'Sp3ETRF2000PPP.bnc'<br>
-Purpose: Produce SP3 files from a Broadcast 
-Ephemeris stream and a stream carrying ETRF2000 Broadcast Corrections. The 
-Broadcast Correction stream is formally introduced in BNC's 'Combine 
-Corrections' table. The configuration leads to a SP3 file containing orbits also referred 
-to ETRF2000. Pulling in addition observations from a reference station at 
-precisely known ETRF2000 position allows comparing an 'INTERNAL' PPP solution 
-with a known ETRF2000 reference coordinate. 
+Purpose: Produce SP3 files from a Broadcast
+Ephemeris stream and a stream carrying ETRF2000 Broadcast Corrections. The
+Broadcast Correction stream is formally introduced in BNC's 'Combine
+Corrections' table. The configuration leads to a SP3 file containing orbits also referred
+to ETRF2000. Pulling in addition observations from a reference station at
+precisely known ETRF2000 position allows comparing an 'INTERNAL' PPP solution
+with a known ETRF2000 reference coordinate.
 </li><br>
 
 <li>Configuration File 'Upload.bnc'<br>
-Purpose: Upload orbits and clocks from a 
-real-time GNSS engine to an Ntrip Broadcaster. For that the configuration reads 
-precise orbits and clocks in RTNET format. It also reads a stream carrying 
-Broadcast Ephemeris. BNC converts the orbits and clocks into Broadcast 
-Corrections and encodes them to RTCM Version 3 SSR messages to finally upload them to 
-an Ntrip Broadcaster. The Broadcast Correction stream is referred to satellite 
-Antenna Phase Center (APC) and reference system IGS08. Orbits are saved on disk 
-in SP3 format and clocks are saved in Clock RINEX format. 
+Purpose: Upload orbits and clocks from a
+real-time GNSS engine to an Ntrip Broadcaster. For that the configuration reads
+precise orbits and clocks in RTNET format. It also reads a stream carrying
+Broadcast Ephemeris. BNC converts the orbits and clocks into Broadcast
+Corrections and encodes them to RTCM Version 3 SSR messages to finally upload them to
+an Ntrip Broadcaster. The Broadcast Correction stream is referred to satellite
+Antenna Phase Center (APC) and reference system IGS08. Orbits are saved on disk
+in SP3 format and clocks are saved in Clock RINEX format.
 </li><br>
 
 <li>Configuration File 'Combi.bnc'<br>
-Purpose: Pull several streams carrying Broadcast 
-Corrections and a Broadcast Ephemeris stream from an Ntrip Broadcaster to 
-produce a combined Broadcast Correction stream. BNC encodes the combination 
-product in RTCM Version 3 SSR messages and uploads that to an Ntrip 
-Broadcaster. The Broadcast Correction stream is referred to satellite Antenna Phase Center (APC) and not to satellite 
-Center of Mass (CoM). Its reference system is IGS08. Orbits are saved in SP3 
-format (referred to CoM) and clocks in Clock RINEX format. 
+Purpose: Pull several streams carrying Broadcast
+Corrections and a Broadcast Ephemeris stream from an Ntrip Broadcaster to
+produce a combined Broadcast Correction stream. BNC encodes the combination
+product in RTCM Version 3 SSR messages and uploads that to an Ntrip
+Broadcaster. The Broadcast Correction stream is referred to satellite Antenna Phase Center (APC) and not to satellite
+Center of Mass (CoM). Its reference system is IGS08. Orbits are saved in SP3
+format (referred to CoM) and clocks in Clock RINEX format.
 </li><br>
 
 <li>Configuration File 'CombiPPP.bnc'<br>
-Purpose: This configuration equals the 'Combi.bnc' configuration. However, the combined 
-Broadcast Corrections are in addition used for an 'INTERNAL' PPP solution 
-based on observations from a static reference station with known precise 
-coordinates. This allows a continuous quality check of the combination product 
-through observing coordinate displacements. 
+Purpose: This configuration equals the 'Combi.bnc' configuration. However, the combined
+Broadcast Corrections are in addition used for an 'INTERNAL' PPP solution
+based on observations from a static reference station with known precise
+coordinates. This allows a continuous quality check of the combination product
+through observing coordinate displacements.
 </li><br>
 
 <li>Configuration File 'UploadEph.bnc'<br>
-Purpose: Pull a number of streams from reference 
-stations to get hold of contained Broadcast Ephemeris messages. They are 
-encoded to RTCM Version 3 format and uploaded for the purpose of providing 
-a Broadcast Ephemeris stream with an update rate of 5 seconds. 
+Purpose: Pull a number of streams from reference
+stations to get hold of contained Broadcast Ephemeris messages. They are
+encoded to RTCM Version 3 format and uploaded for the purpose of providing
+a Broadcast Ephemeris stream with an update rate of 5 seconds.
 </li><br>
 
 <li>Configuration File 'CompareSp3.bnc'<br>
-Purpose: Compare two SP3 files to calculate 
-RMS values for orbit and clock differences. GPS satellite G05 and GLONASS 
-satellite R18 are excluded from this comparison. Comparison results are saved 
-in a logfile. 
+Purpose: Compare two SP3 files to calculate
+RMS values for orbit and clock differences. GPS satellite G05 and GLONASS
+satellite R18 are excluded from this comparison. Comparison results are saved
+in a logfile.
 </li><br>
 
 <li>Configuration File 'Empty.bnc'<br>
@@ -1057,9 +1056,9 @@ The following configuration examples make use of BNC's 'Command Line Interface' 
 <ol start="22">
 <li>Shell Script 'RinexQC.sh'<br>
 Purpose: Equals configuration file example 'RinexQC.bnc', checks the quality of
-a RINEX Version 3 file by means of a multipath analysis. Virtual X-Server 
+a RINEX Version 3 file by means of a multipath analysis. Virtual X-Server
 'Xvfb' is operated while producing plot files in PNG format. BNC is offline. All
-results are saved on disk. 
+results are saved on disk.
 </li><br>
 
 <li>Shell Script 'RinexConcat.sh'<br>
@@ -1079,9 +1078,9 @@ Ephemeris resources.
 </li><br>
 
 <li>Shell Script 'ScanLate.sh'<br>
-Purpose: Scan an observation stream for contained RTCM message types, print 
-observation latencies. The output is saved in a logfile. Latencies are 
-reported every 10 seconds. BNC runs online until it's terminated after 20 
+Purpose: Scan an observation stream for contained RTCM message types, print
+observation latencies. The output is saved in a logfile. Latencies are
+reported every 10 seconds. BNC runs online until it's terminated after 20
 seconds.
 </li><br>
 
@@ -1089,14 +1088,14 @@ seconds.
 Purpose: Equals configuration file example 'RinexObs.bnc', converts RTCM
 streams to RINEX Observation files. The configuration pulls streams from two
 Ntrip Broadcasters using Ntrip Version 1 to generate 15min 1Hz RINEX Version 3
-Observation files. See <u>http://igs.bkg.bund.de/ntrip/observations</u> for 
+Observation files. See <u>http://igs.bkg.bund.de/ntrip/observations</u> for
 observation stream resources. BNC runs online until it's terminated after 30
 seconds.
 </li>
 </ol>
 
 <b>(C) Command Line configuration options overwriting Configuration File options</b><br><br>
-For specific applications you may like to use your own set of standard configuration options from a configuration file and update some of its content via command line. When using a configuration file together with command line configuration options in one BNC call, the command line configuration options will always overrule options contained in the configuration file. 
+For specific applications you may like to use your own set of standard configuration options from a configuration file and update some of its content via command line. When using a configuration file together with command line configuration options in one BNC call, the command line configuration options will always overrule options contained in the configuration file.
 
 <ol start="27">
 <li>Shell Script 'CompareSp3.sh'<br>
@@ -1281,7 +1280,7 @@ When BNC is started, new files are created by default and existing files with th
 
 <p><h4>2.3.3 <a name="genconf">Reread Configuration - optional</h4></p>
 <p>
-When operating BNC online in 'no window' mode (command line option -nw), some configuration options can nevertheless be changed on-the-fly without interrupting the running process. For that, you force the program to reread parts of its configuration in pre-defined intervals from disk. Select '1 min', '1 hour', or '1 day' to let BNC reread on-the-fly changeable configuration options every full minute, hour, or day. This lets in-between edited options become effective without interrupting uninvolved threads. 
+When operating BNC online in 'no window' mode (command line option -nw), some configuration options can nevertheless be changed on-the-fly without interrupting the running process. For that, you force the program to reread parts of its configuration in pre-defined intervals from disk. Select '1 min', '1 hour', or '1 day' to let BNC reread on-the-fly changeable configuration options every full minute, hour, or day. This lets in-between edited options become effective without interrupting uninvolved threads.
 </p>
 
 <p>
@@ -1483,13 +1482,13 @@ The following is a skeleton example for a RINEX file:
 <pre>
                     OBSERVATION DATA    M (MIXED)           RINEX VERSION / TYPE
                                                             PGM / RUN BY / DATE
-CUT0                                                        MARKER NAME         
-59945M001                                                   MARKER NUMBER       
-5023K67889          TRIMBLE NETR9       5.01                REC # / TYPE / VERS 
-4928353386          TRM59800.00     SCIS                    ANT # / TYPE        
- -2364337.2699  4870285.5624 -3360809.8398                  APPROX POSITION XYZ 
+CUT0                                                        MARKER NAME
+59945M001                                                   MARKER NUMBER
+5023K67889          TRIMBLE NETR9       5.01                REC # / TYPE / VERS
+4928353386          TRM59800.00     SCIS                    ANT # / TYPE
+ -2364337.2699  4870285.5624 -3360809.8398                  APPROX POSITION XYZ
         0.0000        0.0000        0.0000                  ANTENNA: DELTA H/E/N
-gnss@curtin.edu.au  CUT                                     OBSERVER / AGENCY   
+gnss@curtin.edu.au  CUT                                     OBSERVER / AGENCY
 C   10 C1I L1I D1I S1I C6I L6I S6I C7I L7I S7I              SYS / # / OBS TYPES
 E   13 C1X L1X D1X S1X C5X L5X S5X C7X L7X S7X C8X L8X S8X  SYS / # / OBS TYPES
 G   13 C1C L1C D1C S1C C2W L2W S2W C2X L2X S2X C5X L5X S5X  SYS / # / OBS TYPES
@@ -1497,8 +1496,8 @@ J   19 C1C L1C D1C S1C C1X L1X S1X C1Z L1Z S1Z C2X L2X S2X  SYS / # / OBS TYPES
        C5X L5X S5X C6L L6L S6L                              SYS / # / OBS TYPES
 R   13 C1C L1C D1C S1C C1P L1P S1P C2C L2C S2C C2P L2P S2P  SYS / # / OBS TYPES
 S    7 C1C L1C D1C S1C C5I L5I S5I                          SYS / # / OBS TYPES
-PORTIONS OF THIS HEADER GENERATED BY THE IGS CB FROM        COMMENT             
-SITELOG cut0_20150507.log                                   COMMENT             
+PORTIONS OF THIS HEADER GENERATED BY THE IGS CB FROM        COMMENT
+SITELOG cut0_20150507.log                                   COMMENT
                                                             END OF HEADER
 </pre>
 <p>
@@ -1523,7 +1522,7 @@ As an alternative to initiating file uploads through BNC, you may like to call a
 
 <p><h4>2.4.8 <a name="rnxvers2">Version 2 - optional</h4></p>
 <p>
-GNSS observation data are generally hold available within BNC according to attributes as defined in RINEX Version 3. These attributes describe the tracking mode or channel when generating the observation signals. Capital letters specifying signal generation attributes are A, B, C, D, I, L, M, N, P, Q, S, W, X, Y, and Z, see RINEX Version 3 documentation. Although RINEX Version 3 with its signal generation attributes is the internal default processing format for BNC, there are two applications where the program is explicitly required to produce data files in RINEX Version 2 format: 
+GNSS observation data are generally hold available within BNC according to attributes as defined in RINEX Version 3. These attributes describe the tracking mode or channel when generating the observation signals. Capital letters specifying signal generation attributes are A, B, C, D, I, L, M, N, P, Q, S, W, X, Y, and Z, see RINEX Version 3 documentation. Although RINEX Version 3 with its signal generation attributes is the internal default processing format for BNC, there are two applications where the program is explicitly required to produce data files in RINEX Version 2 format:
 <ol type=1>
 <li>When saving the content of incoming observation streams in RINEX Version 2 files as described in this section.</li>
 <li>When editing or concatenating RINEX 3 files to save them in Version 2 format, see section on 'RINEX Editing & QC'.</li>
@@ -1539,12 +1538,12 @@ Signal priorities can be specified as equal for all systems, as system specific 
 </ul>
 </p>
 <p>
-The default 'Signal priority' list is defined as follows: 
+The default 'Signal priority' list is defined as follows:
 <ul>
  <li>'G:12&PWCSLXYN G:5&IQX R:12&PC R:3&IQX E:16&BCX E:578&IQX J:1&SLXCZ J:26&SLX J:5&IQX C:IQX I:ABCX S:1&C S:5&IQX'</li>
 </ul>
 
-As an example the 'Signal priority' of 'CWPX_?' is explained in more detail: 
+As an example the 'Signal priority' of 'CWPX_?' is explained in more detail:
 <ul>
 <li>Signals with attribute 'C' enjoy the highest priority. If such a Version 3 observation becomes available, it is presented as RINEX Version 2 observation if that is the format you wish to see. Observations with other attributes are being ignored.</li>
 <li>If no signal with 'C' attribute is available but we have an observation with 'W' attribute, BNC presents that one as RINEX Version 2 observation and ignores all observations with other attributes. The same applies mutatis mutandis to observations with P and X attributes.</li>
@@ -1668,7 +1667,7 @@ specify full path to input RINEX Navigation file(s).
 When specifying several input files, BNC will concatenate their contents. In case of RINEX Observation input files with different observation type header records, BNC will output only one set of adjusted observation type records in the RINEX header which fits to the whole file content.
 </p>
 <p>
-Note that you may specify several RINEX Version 2 Navigation files for GPS and GLONASS. 
+Note that you may specify several RINEX Version 2 Navigation files for GPS and GLONASS.
 </p>
 
 <p><h4>2.6.3 <a name="reqcout">Output Files - optional if 'Action' is set to 'Edit/Concatenate'</h4></p>
@@ -1898,7 +1897,7 @@ Note that in addition to cycle slips recorded in the RINEX 'file', cycle slips i
 
 <p><h4>2.6.5 <a name="reqcplots">Plots for Signals - mandatory if 'Action' is set to 'Analyze'</h4></p>
 <p>
-Multipath and signal-to-noise sky plots as well as plots for satellite availability, elevation and PDOP are produced per GNSS system and frequency with the multipath analysis based on CnC observation types (n = band / frequency). The 'Plots for signals' option lets you exactly specify the observation signals to be used for that and also enables the plot production. You can specify the navigation system (C = BDS, E = Galileo, G = GPS, J = QZSS, R = GLONASS, S = SBAS), the frequency, and the tracking mode or channel as defined in RINEX Version 3. Specifications for frequency and tracking mode or channel must be separated by ampersand character '&'. Specifications for each navigation systems must be separated by blank character ' '. The following string is an example for option field 'Plots of signals': 
+Multipath and signal-to-noise sky plots as well as plots for satellite availability, elevation and PDOP are produced per GNSS system and frequency with the multipath analysis based on CnC observation types (n = band / frequency). The 'Plots for signals' option lets you exactly specify the observation signals to be used for that and also enables the plot production. You can specify the navigation system (C = BDS, E = Galileo, G = GPS, J = QZSS, R = GLONASS, S = SBAS), the frequency, and the tracking mode or channel as defined in RINEX Version 3. Specifications for frequency and tracking mode or channel must be separated by ampersand character '&'. Specifications for each navigation systems must be separated by blank character ' '. The following string is an example for option field 'Plots of signals':
 <br>
 <pre>
    C:2&7 E:1&5 G:1&2 J:1&2 R:1&2 S:1&5
@@ -1937,7 +1936,7 @@ A note on converting RINEX Version 3 to RINEX Version 2 and vice versa:
 </ul>
 </p>
 <p>
-The default 'Signal priority' list is defined as follows: 
+The default 'Signal priority' list is defined as follows:
 <ul>
  <li>'G:12&PWCSLXYN G:5&IQX R:12&PC R:3&IQX E:16&BCX E:578&IQX J:1&SLXCZ J:26&SLX J:5&IQX C:IQX I:ABCX S:1&C S:5&IQX'</li>
 </ul>
@@ -1952,7 +1951,7 @@ Optionally you may specify a 'RUN BY' string to be included in the emerging new 
 </p>
 
 <p>
-You can specify a list of observation codes in field 'Use Obs. Types' to limit the output file content to specific observation codes. GNSS system characters in that list are followed by a colon and a 2- or 3-Character observation code. A 2-Character observation code would mean that all available tracking modes of the affected observation type and frequency will be accepted as part of the RINEX output file. Observation codes are separated by a blank character. Default is an empty option field, meaning that any input observation code will become part of the RINEX output file. 
+You can specify a list of observation codes in field 'Use Obs. Types' to limit the output file content to specific observation codes. GNSS system characters in that list are followed by a colon and a 2- or 3-Character observation code. A 2-Character observation code would mean that all available tracking modes of the affected observation type and frequency will be accepted as part of the RINEX output file. Observation codes are separated by a blank character. Default is an empty option field, meaning that any input observation code will become part of the RINEX output file.
 </p>
 
 <p>
@@ -1994,8 +1993,8 @@ Parameter &lt;keyName&gt; stands for the name of an option contained in the conf
 The following example for a Linux platform calls BNC in 'no window' mode with a local configuration file 'rnx.conf' for concatenating four 15min RINEX files from station TLSE residing in the working directory to produce an hourly RINEX Version 3 file with 30 seconds sampling interval:
 </p>
 <pre>
-   ./bnc --nw --conf rnx.conf --key reqcAction Edit/Concatenate --key reqcObsFile 
-   "tlse119b00.12o,tlse119b15.12o,tlse119b30.12o,tlse119b45.12o" --key 
+   ./bnc --nw --conf rnx.conf --key reqcAction Edit/Concatenate --key reqcObsFile
+   "tlse119b00.12o,tlse119b15.12o,tlse119b30.12o,tlse119b45.12o" --key
    reqcOutObsFile tlse119b.12o --key reqcRnxVersion 3 --key reqcSampling 30
 </pre>
 <p>
@@ -2009,7 +2008,7 @@ or:
 
 <p>The following Linux command line produces RINEX QC plots (see Estey and Meertens 1999) offline in 'no window' mode and saves them in directory '/home/user'. Introducing a dummy configuration file /dev/null makes sure that no configuration options previously saved on disc are used:</p>
 <pre>
-   /home/user/bnc --conf /dev/null --key reqcAction Analyze --key reqcObsFile 
+   /home/user/bnc --conf /dev/null --key reqcAction Analyze --key reqcObsFile
    CUT02070.12O --key reqcNavFile BRDC2070.12P --key reqcOutLogFile CUT0.txt --key
    reqcPlotDir /home/user --nw
 </pre>
@@ -2017,7 +2016,7 @@ or:
 <p>The following Linux command line produces the same RINEX QC plots in interactive autoStart mode:
 </p>
 <pre>
-   /home/user/bnc --conf /dev/null --key reqcAction Analyze --key reqcObsFile 
+   /home/user/bnc --conf /dev/null --key reqcAction Analyze --key reqcObsFile
    CUT02070.12O --key reqcNavFile BRDC2070.12P --key reqcOutLogFile CUT0.txt --key
    --key startTab 4 --key autoStart 2
 </pre>
@@ -2066,7 +2065,7 @@ The following is a list of available key names for '<u>R</u>INEX <u>E</u>diting 
 
 <p><h4>2.7 <a name="sp3comp">SP3 Comparison</h4></p>
 <p>
-BNC allows to compare the contents of two files with GNSS orbit and clock data in SP3 format. SP3 ASCII files basically contain a list of records over a certain period of time. Each record carries a time tag, the XYZ position of the satellite's Center of Mass at that time and the corresponding satellite clock value. Both SP3 files may contain some records for different epochs. If so, then BNC only compares records for identical epochs. BNC accepts that a specific GNSS system or a specific satellite is only available from one of the SP3 files. Note that BNC does not interpolate orbits when comparing SP3 files. 
+BNC allows to compare the contents of two files with GNSS orbit and clock data in SP3 format. SP3 ASCII files basically contain a list of records over a certain period of time. Each record carries a time tag, the XYZ position of the satellite's Center of Mass at that time and the corresponding satellite clock value. Both SP3 files may contain some records for different epochs. If so, then BNC only compares records for identical epochs. BNC accepts that a specific GNSS system or a specific satellite is only available from one of the SP3 files. Note that BNC does not interpolate orbits when comparing SP3 files.
 </p>
 <p>
 To compare satellite clocks provided by the two files, BNC first converts coordinate differences dX,dY,dZ into along track, out-of-plane, and radial components. It then corrects the clock differences for the radial components of coordinate differences. RMS values of clock differences are finally calculated after introducing at first one offset 'per epoch for all satellites' and secondly one offset 'per satellite for all epochs'.
@@ -2214,7 +2213,7 @@ When using clocks from Broadcast Ephemeris (with or without applied corrections)
 
 <pre>
  &nbsp; &nbsp; dt =  -2 (R * V) / c<sup>2</sup>
-</pre> 
+</pre>
 
 <p>
 where R * V is the scalar product of the satellite position and velocity and c is the speed of light. This can also be found in the GPS Interface Specification, IS-GPS-200, Revision D, 7 March 2006.
@@ -2518,20 +2517,20 @@ G03 267.89062500   0.00000000    3   1C     3.1267   1   2   4   2W     4.9126  
 G32 255.93750000   0.00000000    3   1C     1.3194   1   2   5   2W     2.1448   1   2   5   5I     0.0000   1   2   5
 > VTEC 2015 06 19 16 41 00.0 6 1 CLK93
  1  6  6   450000.0
-   16.7450     0.0000     0.0000     0.0000     0.0000     0.0000     0.0000 
-    4.9300     8.1600     0.0000     0.0000     0.0000     0.0000     0.0000 
-   -4.4900     0.2550     1.0950     0.0000     0.0000     0.0000     0.0000 
-   -2.2450    -1.9500    -0.7950    -0.4700     0.0000     0.0000     0.0000 
-    1.0250    -0.9000    -0.0900     0.1050     0.1450     0.0000     0.0000 
-    1.5500     0.9750    -0.8150     0.3600     0.0350    -0.0900     0.0000 
-   -0.4050     0.8300     0.0800    -0.0650     0.2200     0.0150    -0.1600 
-    0.0000     0.0000     0.0000     0.0000     0.0000     0.0000     0.0000 
-    0.0000    -0.1250     0.0000     0.0000     0.0000     0.0000     0.0000 
-    0.0000     1.0050    -0.7750     0.0000     0.0000     0.0000     0.0000 
-    0.0000    -0.2300     0.7150     0.7550     0.0000     0.0000     0.0000 
-    0.0000    -0.4100    -0.1250     0.2400     0.2700     0.0000     0.0000 
-    0.0000     0.0850    -0.3400    -0.0500    -0.2200    -0.0750     0.0000 
-    0.0000     0.2000    -0.2850    -0.0150    -0.0250     0.0900     0.0650 
+   16.7450     0.0000     0.0000     0.0000     0.0000     0.0000     0.0000
+    4.9300     8.1600     0.0000     0.0000     0.0000     0.0000     0.0000
+   -4.4900     0.2550     1.0950     0.0000     0.0000     0.0000     0.0000
+   -2.2450    -1.9500    -0.7950    -0.4700     0.0000     0.0000     0.0000
+    1.0250    -0.9000    -0.0900     0.1050     0.1450     0.0000     0.0000
+    1.5500     0.9750    -0.8150     0.3600     0.0350    -0.0900     0.0000
+   -0.4050     0.8300     0.0800    -0.0650     0.2200     0.0150    -0.1600
+    0.0000     0.0000     0.0000     0.0000     0.0000     0.0000     0.0000
+    0.0000    -0.1250     0.0000     0.0000     0.0000     0.0000     0.0000
+    0.0000     1.0050    -0.7750     0.0000     0.0000     0.0000     0.0000
+    0.0000    -0.2300     0.7150     0.7550     0.0000     0.0000     0.0000
+    0.0000    -0.4100    -0.1250     0.2400     0.2700     0.0000     0.0000
+    0.0000     0.0850    -0.3400    -0.0500    -0.2200    -0.0750     0.0000
+    0.0000     0.2000    -0.2850    -0.0150    -0.0250     0.0900     0.0650
 </pre>
 </p>
 <p>
@@ -2561,7 +2560,7 @@ The following table describes the format of BNC's synchronized output of GNSS ob
 
 <p><u>Table 2:</u> Contents and format of synchronized output of observations feeding a GNSS engine</p>
 <p>
-<table> 
+<table>
 <tr><td></td><td><b>Example</b></td><td><b>Format</b></td></tr>
 
 <tr><td><b>Epoch Record</b></td><td></td><td></td></tr>
@@ -3015,7 +3014,7 @@ If you do not pull Broadcast Corrections, BNC will switch with its solution to '
 
 <p>
 <u>RINEX Files</u><br>
-This input mode allows to specify RINEX Observation, RINEX Navigation and Broadcast Correction files. BNC accepts RINEX Version 2 as well as RINEX Version 3 Observation or Navigation file formats. Files carrying Broadcast Corrections must have the format produced by BNC through the 'Broadcast Corrections' panel. 
+This input mode allows to specify RINEX Observation, RINEX Navigation and Broadcast Correction files. BNC accepts RINEX Version 2 as well as RINEX Version 3 Observation or Navigation file formats. Files carrying Broadcast Corrections must have the format produced by BNC through the 'Broadcast Corrections' panel.
 </p>
 <p>
 Specifying only a RINEX Observation and a RINEX Navigation file and no Broadcast Correction file leads BNC to a 'Single Point Positioning' (SPP) solution.
@@ -3028,7 +3027,7 @@ Note that for debugging purposes, BNC's real-time PPP functionality can also be 
 Such a file (here: 'RAW') must be saved beforehand using BNC's 'Raw output file' option.
 </li>
 </ul>
-</p> 
+</p>
 
 <p><h4>2.13.1.2 <a name="ppprnxobs">RINEX Observation File - mandatory if 'Data source' is set to 'RINEX Files'</h4></p>
 <p>
@@ -3093,7 +3092,7 @@ Receiver type following the naming convention for IGS equipment as defined in <u
 Records in the 'Coordinates' file with exclamation mark '!' in the first column or blank records will be understood as comment lines and ignored.
 </p>
 <p>
-The following is the content of an example 'Coordinates file'. Here each record describes the mountpoint of a stream available from the global IGS real-time reference station network. A priori coordinates are followed by North/East/Up eccentricity components of the ARP 
+The following is the content of an example 'Coordinates file'. Here each record describes the mountpoint of a stream available from the global IGS real-time reference station network. A priori coordinates are followed by North/East/Up eccentricity components of the ARP
 followed by the antenna name and radome in use.
 </p>
 <pre>
@@ -3322,7 +3321,7 @@ Default value for 'Logfile directory' is an empty option field, meaning that you
 
 <p><h4>2.13.1.10 <a name="pppnmeafile">NMEA Directory - optional</h4></p>
 <p>
-You can specify a 'NMEA directory' to save daily NMEA files with Point Positioning results recorded as NMEA sentences. Such sentences are usually generated about once per second with pairs of 
+You can specify a 'NMEA directory' to save daily NMEA files with Point Positioning results recorded as NMEA sentences. Such sentences are usually generated about once per second with pairs of
 </p>
 <p>
 <ul>
@@ -3367,7 +3366,7 @@ BNC estimates the tropospheric delay according to equation
 <pre>
    T(z) = T_apr(z) + dT / cos(z)
 </pre>
-where T_apr is the a priori tropospheric delay derived from Saastamoinen model. 
+where T_apr is the a priori tropospheric delay derived from Saastamoinen model.
 </p>
 
 <p>
@@ -3375,7 +3374,7 @@ You can specify a 'SNX TRO Directory' for saving SINEX Troposphere files on disk
 </p>
 
 <pre>
-%=TRO 2.00 BKG 16:053:42824 BKG 16:053:42824 16:053:43199 P 00376 0  T 
+%=TRO 2.00 BKG 16:053:42824 BKG 16:053:42824 16:053:43199 P 00376 0  T
 +FILE/REFERENCE
  DESCRIPTION        BNC generated SINEX TRO file
  OUTPUT             Total Troposphere Zenith Path Delay Product
@@ -3566,7 +3565,7 @@ As the convergence characteristic of a PPP solution can be influenced by the rat
 
 <p><h4>2.13.3.4 <a name="pppeleweight">Elevation Dependent Weighting - mandatory</h4></p>
 <p>
-BNC allows elevation dependent weighting when processing GNSS observations. A weight function 
+BNC allows elevation dependent weighting when processing GNSS observations. A weight function
 </p>
 
 <p>&nbsp; &nbsp; &nbsp; P = cos&sup2; * z</p>
@@ -3617,7 +3616,7 @@ You may need to create your own reference coordinate beforehand through running 
 </p>
 
 <p>
-'Seeding' has also a function for <u>bridging gaps</u> in PPP solutions from failures caused e.g. by longer lasting outages. Should the time span between two consecutive solutions exceed the limit of 60 seconds (maximum solution gap, hard-wired), the algorithm fixes the latest derived coordinate for a period of 'Seeding' seconds. This option avoids time-consuming reconvergences and makes especially sense for stationary operated receivers where convergence can be enforced because a good approximation for the receiver position is known.  
+'Seeding' has also a function for <u>bridging gaps</u> in PPP solutions from failures caused e.g. by longer lasting outages. Should the time span between two consecutive solutions exceed the limit of 60 seconds (maximum solution gap, hard-wired), the algorithm fixes the latest derived coordinate for a period of 'Seeding' seconds. This option avoids time-consuming reconvergences and makes especially sense for stationary operated receivers where convergence can be enforced because a good approximation for the receiver position is known.
 </p>
 
 <p>
@@ -3721,7 +3720,7 @@ Note that the combination process requires real-time access to Broadcast Ephemer
 </p>
 
 <p>
-A combination is carried out following a specified sampling interval. BNC waits for incoming Broadcast Corrections for the period of one such interval. Corrections received later than that will be ignored. If incoming streams have different rates, only epochs that correspond to the sampling interval are used. 
+A combination is carried out following a specified sampling interval. BNC waits for incoming Broadcast Corrections for the period of one such interval. Corrections received later than that will be ignored. If incoming streams have different rates, only epochs that correspond to the sampling interval are used.
 </p>
 
 <p>
@@ -3753,14 +3752,14 @@ The following screenshot shows an example setup of BNC when combining Broadcast 
 <p><u>Figure 28:</u> BNC combining Broadcast Correction streams</p>
 <p></p>
 <p>
-Note that BNC can produce an internal PPP solution from combined Broadcast Corrections. For that you have to specify the keyword 'INTERNAL' as 'Corrections stream' in the PPP (1) panel. The following example combines correction streams IGS01 and IGS02 and simultaneously carries out a PPP solution with observations from stream FFMJ1 to allow monitoring the quality of the combination product in the space domain. 
+Note that BNC can produce an internal PPP solution from combined Broadcast Corrections. For that you have to specify the keyword 'INTERNAL' as 'Corrections stream' in the PPP (1) panel. The following example combines correction streams IGS01 and IGS02 and simultaneously carries out a PPP solution with observations from stream FFMJ1 to allow monitoring the quality of the combination product in the space domain.
 </p>
 <p><img src="IMG/screenshot23.png"/></p>
 <p><u>Figure 29:</u> 'INTERNAL' PPP with BNC using a combination of Broadcast Corrections</p>
 
 <p><h4>2.14.1 <a name="combimounttab">Combine Corrections Table - optional</h4></p>
 <p>
-Hit the 'Add Row' button, double click on the 'Mountpoint' field, enter a Broadcast Correction mountpoint from the 'Streams' section and hit Enter. Then double click on the 'AC Name' field to enter your choice of an abbreviation for the Analysis Center (AC) providing the Antenna Phase Center (APC) related correction stream. Finally, double click on the 'Weight' field to enter a weight to be applied to this stream in the combination. 
+Hit the 'Add Row' button, double click on the 'Mountpoint' field, enter a Broadcast Correction mountpoint from the 'Streams' section and hit Enter. Then double click on the 'AC Name' field to enter your choice of an abbreviation for the Analysis Center (AC) providing the Antenna Phase Center (APC) related correction stream. Finally, double click on the 'Weight' field to enter a weight to be applied to this stream in the combination.
 </p>
 <p>
 The sequence of entries in the 'Combine Corrections' table is not of importance. Note that the orbit information in the final combination stream is just copied from one of the incoming streams. The stream used for providing the orbits may vary over time: if the orbit-providing stream has an outage then BNC switches to the next remaining stream for getting hold of the orbit information.</p>
@@ -3831,7 +3830,7 @@ The usual handling of BNC when uploading a stream with Broadcast Corrections is 
 When uploading an SSR stream generated according to (b) then BNC requires precise GNSS orbits and clocks in the IGS Earth-Centered-Earth-Fixed (ECEF) reference system and in a specific ASCII format named 'RTNET' because the data may come from a real-time engine such as RTNET. The sampling interval for data transmission should not exceed 15 sec. Note that otherwise tools involved in IP streaming such as Ntrip Broadcasters or Ntrip Clients may respond with a timeout.
 </p>
 <p>
-Below you find an example for the 'RTNET' ASCII format coming from a real-time GNSS engine. Each epoch begins with an asterisk character followed by the time as year, month, day of month, hour, minute and second. Subsequent records can provide 
+Below you find an example for the 'RTNET' ASCII format coming from a real-time GNSS engine. Each epoch begins with an asterisk character followed by the time as year, month, day of month, hour, minute and second. Subsequent records can provide
 </p>
 <p>
 <ul>
@@ -3841,7 +3840,7 @@ Below you find an example for the 'RTNET' ASCII format coming from a real-time G
 <p>
 A set of parameters can be defined for each satellite as follows:
 <pre>
-&lt;SatelliteID&gt; &lt;key&gt; &lt;numValues&gt; &lt;value1 value2 ...&gt; 
+&lt;SatelliteID&gt; &lt;key&gt; &lt;numValues&gt; &lt;value1 value2 ...&gt;
               &lt;key&gt; &lt;numValues&gt; &lt;value1 value2 ...&gt; ... &nbsp;
 </pre>
 The following satellite specific keys and values are currently specified for that in BNC:<br><br>
@@ -3888,7 +3887,7 @@ Example for 'RTNET' stream content and format:
 <p>
 <pre>
 * 2015 6 11 15 10 40.000000
-VTEC 0 1 0 6 6 450000.0 20.4660 0.0000 0.0000 0.0000 0.0000 0.0000 0.0000 5.3590 9.6580 0.0000 0.0000 0.0000 0.0000 0.0000 -6.3610 -0.1210 1.1050 0.0000 0.0000 0.0000 0.0000 -2.7140 -1.8200 -0.9920 -0.6430 0.0000 0.0000 0.0000 1.9140 -0.5180 0.2530 0.0870 -0.0110 0.0000 0.0000 2.2950 1.0510 -0.9540 0.6220 -0.0720 -0.0810 0.0000 -0.9760 0.7570 0.2320 -0.2520 0.1970 -0.0680 -0.0280 0.0000 0.0000 0.0000 0.0000 0.0000 0.0000 0.0000 0.0000 0.2720 0.0000 0.0000 0.0000 0.0000 0.0000 0.0000 1.1100 -1.0170 0.0000 0.0000 0.0000 0.0000 0.0000 -1.1500 0.5440 0.9890 0.0000 0.0000 0.0000 0.0000 -0.3770 -0.1990 0.2670 -0.0470 0.0000 0.0000 0.0000 0.6550 -0.0130 -0.2310 -0.4810 -0.3510 0.0000 0.0000 0.2360 -0.0710 0.0280 0.1900 -0.0810 0.0710 
+VTEC 0 1 0 6 6 450000.0 20.4660 0.0000 0.0000 0.0000 0.0000 0.0000 0.0000 5.3590 9.6580 0.0000 0.0000 0.0000 0.0000 0.0000 -6.3610 -0.1210 1.1050 0.0000 0.0000 0.0000 0.0000 -2.7140 -1.8200 -0.9920 -0.6430 0.0000 0.0000 0.0000 1.9140 -0.5180 0.2530 0.0870 -0.0110 0.0000 0.0000 2.2950 1.0510 -0.9540 0.6220 -0.0720 -0.0810 0.0000 -0.9760 0.7570 0.2320 -0.2520 0.1970 -0.0680 -0.0280 0.0000 0.0000 0.0000 0.0000 0.0000 0.0000 0.0000 0.0000 0.2720 0.0000 0.0000 0.0000 0.0000 0.0000 0.0000 1.1100 -1.0170 0.0000 0.0000 0.0000 0.0000 0.0000 -1.1500 0.5440 0.9890 0.0000 0.0000 0.0000 0.0000 -0.3770 -0.1990 0.2670 -0.0470 0.0000 0.0000 0.0000 0.6550 -0.0130 -0.2310 -0.4810 -0.3510 0.0000 0.0000 0.2360 -0.0710 0.0280 0.1900 -0.0810 0.0710
 IND 0 1
 G01 APC 3   -14442611.532   -13311059.070   -18020998.395 Clk 1   -1426.920500 Vel 3  2274.647600   -28.980300 -1787.861900 CoM 3   -14442612.572   -13311059.518   -18020999.539 CodeBias 6 1W -3.760000 1C -3.320000 2W -6.200000 2X -5.780000 1H -3.350000 5I -5.430000 YawAngle 1 -0.315600 YawRate 1 0.0 PhaseBias 3 1C  3.9473 1 2 4 2W  6.3143 1 2 4 5I 6.7895 1 2 4
 G02 APC 3    -8859103.160    14801278.856    20456920.800 Clk 1  171219.083500 Vel 3 -2532.296700  -161.275800 -1042.884100 CoM 3    -8859103.418    14801279.287    20456921.395 CodeBias 6 1W  3.930000 1C  3.610000 2W  6.480000 2X  0.000000 1H  3.580000 5I  0.000000 YawAngle 1 -0.693500 YawRate 1 0.0 PhaseBias 2 1C -4.0902 1 2 4 2W -6.7045 1 2 4
@@ -4191,14 +4190,14 @@ Let us suppose a real-time network engine supporting BNC every <u>5 sec</u> with
 </ul>
 <br>
 <li>With 'Sampling Orb' set to '5' BNC will produce</li>
-<ul> 
+<ul>
 <li>Every 5 sec a 1057 message for GPS orbit corrections to Broadcast Ephemeris,</li>
 <li>Every 5 sec a 1058 message for GPS clock corrections to Broadcast Ephemeris,</li>
 <li>Every 5 sec a 1059 message for GPS code biases.</li>
 </ul>
 <br>
 <li>With 'Sampling Orb' set to '10' BNC will produce</li>
-<ul> 
+<ul>
 <li>Every 10 sec a 1057 message for GPS orbit corrections to Broadcast Ephemeris,</li>
 <li>Every 5 sec a 1058 message for GPS clock corrections to Broadcast Ephemeris,</li>
 <li>Every 5 sec a 1059 message for GPS code biases.</li>
@@ -4246,7 +4245,7 @@ Note that Broadcast Ephemeris received in real-time have a system specific perio
 <li>SBAS ephemeris will be interpreted as outdated and ignored when older than 10 minutes.</li>
 <li>QZSS ephemeris will be interpreted as outdated and ignored when older than 4 hours.</li>
 </ul>
-A note 'OUTDATED EPHEMERIS' will be given in the logfile and the data will be disregarded when necessary. 
+A note 'OUTDATED EPHEMERIS' will be given in the logfile and the data will be disregarded when necessary.
 </p>
 <p>
 Furthermore, received Broadcast Ephemeris parameters pass through a plausibility check in BNC which allows to ignore incorrect ephemeris data when necessary, leaving a note 'WRONG EPHEMERIS' in the logfile.
@@ -4545,7 +4544,7 @@ BNC comes with a <i>What's This</i> help system providing information about its 
 
 <p><h4>2.20 <a name="cmd">Command Line Options</h4></p>
 <p>
-Command line options are available to run BNC in 'no window' mode or let it read previously recorded input offline from one or several files for debugging or post processing purposes. It is also possible to introduce a specific configuration filename instead of using the default filename 'BNC.bnc'. The self-explaining content of the configuration file can easily be edited. 
+Command line options are available to run BNC in 'no window' mode or let it read previously recorded input offline from one or several files for debugging or post processing purposes. It is also possible to introduce a specific configuration filename instead of using the default filename 'BNC.bnc'. The self-explaining content of the configuration file can easily be edited.
 </p>
 <p>
 In addition to reading processing options from the involved configuration file, BNC can optionally read any configuration option from command line. Running BNC with command line option 'help'
@@ -4655,207 +4654,12 @@ Parameter &lt;keyName&gt; stands for the key name of an option contained in the 
 Configuration options which are part of the configuration files PPP section must be prefixed by 'PPP/'. As an example, option 'minObs' from the PPP section of the BNC configuration file would be specified as 'PPP/minObs' on a command line.
 </p>
 <p>
-Values for configuration options can be introduced via command line exactly as they show up in the configuration file. However, any value containing one or more blank characters must be enclosed by quotation marks when specified on command line. 
+Values for configuration options can be introduced via command line exactly as they show up in the configuration file. However, any value containing one or more blank characters must be enclosed by quotation marks when specified on command line.
 </p>
 
 <p><h3>3. <a name="annex">Annex</h3></p>
 
-<p><h4>3.1 <a name=history>Revision History</h3></p>
-<table>
-<tr></tr>
-
-<tr>
-<td>Dec 2006 &nbsp;</td><td>Version 1.0b &nbsp;</td>
-<td>[Add] First Beta Binaries published based on Qt 4.2.3.</td>
-</tr>
-
-<tr>
-<td>Jan 2007 &nbsp;</td><td>Version 1.1b &nbsp;</td>
-<td>[Add] Observables C2, S1, and S2<br>[Add] Virtual reference station access<br>[Bug] RTCM2 decoder time tag fixed<br>[Mod] Small letters for public RINEX skeleton files<br>[Add] Online help through Shift+F1</td>
-</tr>
-
-<tr>
-<td>Apr 2007 &nbsp;</td><td>Version 1.2b &nbsp;</td>
-<td>[Bug] Output only through IP port<br>[Bug] Method 'reconnecting' now thread-save<br> [Add] ZERO decoder added<br> [Mod] Download public RINEX skeletons once per day<br> [Mod] Upgrade to Qt Version 4.2.3<br> [Mod] Replace 'system' call for RINEX script by 'QProcess'<br> [Add] HTTP Host directive for skeleton file download<br> [Add] Percent encoding for user IDs and passwords<br> [Bug] Exit execution of calling thread for RTCM3 streams<br> [Bug] Signal-slot mechanism for threads</td>
-</tr>
-
-<tr>
-<td>May 2007 &nbsp;</td><td>Version 1.3 &nbsp;</td>
-<td>[Add] Source code published.</td>
-</tr>
-
-<tr>
-<td>Jul 2007 &nbsp;</td><td>Version 1.4 &nbsp;</td>
-<td>[Bug] Skip messages from proxy server<br> [Bug] Call RINEX script through 'nohup'</td>
-</tr>
-
-<tr>
-<td>Apr 2008 &nbsp;</td><td>Version 1.5 &nbsp;</td>
-<td>[Add] Handle ephemeris from RTCM Version 3 streams<br> [Add] Upgrade to Qt Version 4.3.2<br> [Add] Optional RINEX v3 output<br> [Add] SBAS support<br> [Bug] RINEX skeleton download following stream outage<br> [Add] Handle ephemeris from RTIGS streams<br> [Add] Monitor stream failure/recovery and latency<br> [Mod] Redesign of main window<br> [Bug] Freezing of About window on Mac OS X<br> [Bug] Fixed problem with PRN 32 in RTCM v2 decoder<br> [Bug] Fix for Trimble 4000SSI receivers in RTCM v2 decoder<br> [Mod] Major revision of input buffer in RTCM v2 decoder</td>
-</tr>
-
-<tr>
-<td>Dec 2008 &nbsp;</td><td>Version 1.6 &nbsp;</td>
-<td>[Mod] Fill blank columns in RINEX v3 with 0.000<br> [Add] RTCM v3 decoder for orbit and clock corrections<br>[Add] Check RTCM v3 streams for incoming message types<br> [Add] Decode RTCM v2 message types 3, 20, 21, and 22<br> [Add] Loss of lock and lock time indicator<br> [Bug] Rounding error in RTCM v3 decoder concerning GLONASS height<br> [Mod] Accept GLONASS in RTCM v3 when transmitted first<br> [Add] Leap second 1 January 2009<br> [Add] Offline mode, read data from file<br> [Add] Output antenna descriptor, coordinates and eccentricities from RTCM v3<br> [Add] Reconfiguration on-the-fly<br> [Mod] Binary output of synchronized observations<br> [Add] Binary output of unsynchronized observations<br> [Bug] Fixed problem with joined RTCM v3 blocks</td>
-</tr>
-
-<tr>
-<td>Dec 2008 &nbsp;</td><td>Version 1.6.1 &nbsp;</td>
-<td>[Mod] HTTP GET when no proxy in front</td>
-</tr>
-
-<tr>
-<td>Nov 2009 &nbsp;</td><td>Version 1.7 &nbsp;</td>
-<td>[Bug] RINEX Navigation file format<br> [Add] Upgrade to Qt Version 4.5.2<br> [Add] Support of Ntrip v2<br> [Add] Rover support via serial port<br> [Add] Show broadcaster table from www.rtcm-ntrip.org<br> [Add] Enable/disable panel widgets<br> [Add] User defined configuration filename<br> [Mod] Switch to configuration files in ini-Format<br> [Add] Daily logfile rotation<br> [Add] Read from TCP/IP port, by-pass Ntrip transport protocol<br> [Add] Save NMEA sentences coming from rover<br> [Add] Auto start<br> [Add] Drag and drop ini files<br> [Add] Read from serial port, by-pass Ntrip transport protocol<br> [Mod] Update of SSR messages following RTCM 091-2009-SC104-542<br> [Add] Read from UPD port, by-pass Ntrip transport protocol<br> [Mod] Output format of Broadcast Corrections<br> [Add] Throughput plot<br> [Add] Latency plot</td>
-</tr>
-
-<tr>
-<td>Nov 2009 &nbsp;</td><td>Version 1.8 &nbsp;</td>
-<td>[Mod] On-the-fly reconfiguration of latency and throughput plots</td>
-</tr>
-
-<tr>
-<td>Feb 2010 &nbsp;</td><td>Version 2.0 &nbsp;</td>
-<td>[Mod] Change sign of Broadcast Corrections<br> [Add] Real-time PPP option</td>
-</tr>
-
-<tr>
-<td>Jun 2010 &nbsp;</td><td>Version 2.1 &nbsp;</td>
-<td>[Bug] SSR GLONASS message generation<br> [Add] PPP in post processing mode<br> [Mod] Update of SSR messages following draft dated 2010-04-12<br> [Mod] Generating error message when observation epoch is wrong</td>
-</tr>
-
-<tr>
-<td>Jul 2010 &nbsp;</td><td>Version 2.2 &nbsp;</td>
-<td>[Bug] GLONASS ephemeris time</td>
-</tr>
-
-<tr>
-<td>Aug 2010 &nbsp;</td><td>Version 2.3 &nbsp;</td>
-<td>[Mod] Internal format for saving raw streams<br> [Bug] Outlier detection in GLONASS ambiguity resolution<br> [Mod] Format of PPP logs in logfile<br> [Bug] Complete acceleration terms for GLONASS ephemeris<br> [Bug] Handling ephemeris IOD's in PPP mode</td>
-</tr>
-
-<tr>
-<td>Dec 2010 &nbsp;</td><td>Version 2.4 &nbsp;</td>
-<td>[Add] Output of averaged positions when in PPP mode<br> [Mod] Use always the latest received set of Broadcast Ephemeris<br> [Add] QuickStart PPP option<br> [Mod] Improvement of data sharing efficiency among different threads<br> [Mod] Design of PPP panel section<br> [Add] Sigmas for observations and parameters<br> [Add] Stream distribution map<br> [Bug] GPS Ephemeris in RINEX v3 format</td>
-</tr>
-
-<tr>
-<td>Feb 2011 &nbsp;</td><td>Version 2.5 &nbsp;</td>
-<td>[Add] PPP option for sync of clock observations and corrections<br> [Add] Drafted RTCM v3 Galileo ephemeris messages 1045<br> [Add] Drafted RTCM v3 Multiple Signal Messages<br> [Add] Optional specification of sigmas for coordinates and troposphere in PPP<br> [Add] Include Galileo in SPP<br> [Add] Include Galileo observations in output via IP port<br> [Add] Include Galileo observations in output via RINEX v3 files<br> [Mod] Interface format for feeding a real-time engine with observations<br> [Add] Correct observations for Antenna Phase Center offsets<br> [Add] Combine orbit/clock correction streams<br> [Add] Specify corrections mountpoint in PPP panel</td>
-</tr>
-
-<tr>
-<td>Apr 2011 &nbsp;</td><td>Version 2.6 &nbsp;</td>
-<td>[Add] Complete integration of BNS in BNC<br> [Add] SP3 and Clock RINEX output<br> [Add] PPP in post processing Mode<br> [Add] Some RINEX editing & QC functionality<br> [Add] Threshold for orbit outliers in combination solution<br> [Add] Real-time engine becomes orbit/clock server instead of client<br> [Mod] 'EOE' added to orbit/clock stream from engine<br> [Add] Correction for antenna eccentricities<br> [Add] Quick start mode for PPP<br> [Mod] Design of format for feeding engine changed to follow RINEX v3<br> [Mod] Implementation of SSR message encoding modified according to standard<br> [Add] SSL/TLS Support of Ntrip Version 2<br> [Mod] Switch to Qt version 4.7.3<br> [Add] RINEX editing, concatenation and quality check<br> [Add] Reading all configuration options from command line<br> [Mod] RTCM v3 Galileo Broadcast Ephemeris message 1045<br> [Mod] Change default configuration file suffix from 'ini' to 'bnc'<br> [Add] Specific rates for orbits and clocks in streams and SP3/RNX files</td>
-</tr>
-
-<tr>
-<td>May 2012 &nbsp;</td><td>Version 2.6 &nbsp;</td>
-<td>[Add] Version 2.6 published</td>
-</tr>
-
-<tr>
-<td>Sep 2012 &nbsp;</td><td>Version 2.7 &nbsp;</td>
-<td>[Bug] Bug in L5 decoding fixed<br> [Bug] Bug in on-the-fly configuration fixed<br> [Add] Clock RINEX file header extended<br> [Add] Decoding/converting BeiDou and QZSS added<br> [Add] Work on RINEX v2 and v3 quality check started<br> [Mod] Source code completely re-arranged<br> [Add] QWT and QWTPOLAR graphics libraries added<br> [Add] RINEX QC through multipath analysis sky plot<br> [Add] RINEX QC through signal-to-noise ratio sky plot<br> [Add] RINEX QC through satellite availability plot<br> [Add] RINEX QC through satellite elevation plot<br> [Add RINEX QC through PDOP plot<br> [Bug] Short periodic outages in PPP time series when 'Sync Corr' set to zero<br> |Add] Log observation types contained in RTCM Version 3 MSM streams<br> [Add] Reading RINEX v3 observation type header records from RINEX skeleton files<br> [Add] Logfile for RINEX file editing and concatenation<br>[Add] Save PNG plot files on disk<br> [Mod] Plot stream distribution map from Ntrip Broadcaster source-table<br> [Add] Plot stream distribution map from selected sources<br> [Add] Version 2.7 published</td>
-</tr>
-
-<tr>
-<td>Mar 2013 &nbsp;</td><td>Version 2.8 &nbsp;</td>
-<td>[Mod] Started work on new version in Sep 2012<br> [Bug] Epoch special event flag in RINEX concatenation<br> [Bug] Limit RINEX v2 records length to 80 characters<br> [Bug] SSR message update interval indicator<br> [Bug] Fixed SSR stream encoding and upload<br> [Add] Concatenate RINEX v3 navigation files containing Galileo ephemeris<br> [Mod] Plausibility check of GLONASS ephemeris<br> [Add] Correcting clocks for scale factor involved in transformation<br> [Mod] Orbit/clock interpolation in SSR stream encoding and upload to caster<br> [Add] Version 2.8 published</td>
-</tr>
-
-<tr>
-<td>Jul 2013 &nbsp;</td><td>Version 2.9 &nbsp;</td>
-<td>[Add] Started work on new version in Mar 2013<br>[Bug] SSR stream upload buffering disabled<br>[Mod] Format for feeding a connected GNSS engine<br>[Mod] RTNET format for receiving data from a connected GNSS engine<br>[Add] Include Galileo in SPP<br>[Add] RINEX QC multipath an SNR sky plots for GLONASS and Galileo<br>[Add] Bias estimation for GLONASS clocks in PPP<br>[Add] Trace positions on GM or OSM maps<br>[Add] Version 2.9 published</td>
-</tr>
-
-<tr>
-<td>Dec 2013 &nbsp;</td><td>Version 2.10 &nbsp;</td>
-<td>[Add] Started work on new version in Aug 2013<br>[Bug] Clock RINEX und SP3 file generation on Windows systems<br>[Bug] Broadcast Ephemeris generation<br>[Add] Transformation ITRF2008 to NAD83 and DREF91<br>[Add] CodeBias added to RTNET stream format<br>[Bug] GPS L2 in 'Feed Engine' output<br>[Mod] Made C1 in BeiDou default observation type instead of C2<br>[Add] Feed engine output sorted per stream<br>[Add] Feed engine output filename change on-the-fly<br>[Add] 'Append files' option for RINEX observation files<br>[Mod] Broadcast Correction ASCII file output for message 1058 &amp; 1064 modified<br>[Bug] GPS L2 phase data in RINEX2<br>[Bug] GLONASS frequency numbers<br>[Add] RTCM v3 Galileo Broadcast Ephemeris message 1046<br>[Add] Reset ambiguities in PPP when orbit/clock correction IDs change<br>[Add] Satellite clock offsets are reset in adjustment for combination when orbit/clock correction IDs change<br>[Add] Version 2.10 published</td>
-</tr>
-
-<tr>
-<td>Sep 2014 &nbsp;</td><td>Version 2.11 &nbsp;</td>
-<td>[Add] Started work on new version in Dec 2013<br>[Mod] SIRGAS transformation parameters adjusted<br>[Mod] ANTEX file updated<br>[Mod] RTCM SSR messages updated<br>[Bug] GLONASS code biases<br>[Mod] Maximum number of GNSS observations increased<br>[Mod] Loss of lock handling changed<br>[Add] Raw stream output through TCP/IP port<br>[Add] Version 2.11.0 published</td>
-</tr>
-
-<tr>
-<td>Mar 2016 &nbsp;</td><td>Version 2.12 &nbsp;</td><td>
-[Add] Started work on new version in Sep 2014<br>
-[Mod] RINEX file concatenation<br>
-[Add] Observation code selection in RINEX file editing<br>
-[Mod] Routine handling of data input and output in RINEX format re-written<br>
-[Mod] QC routines re-written with the goal of handling all signal types<br>
-[Add] Machine-readable output of RINEX QC<br>
-[Add] PPP client functionality for parallel processing of an arbitrary number of stations in separate threads<br>
-[Bug] Receiver antenna PCO in ionosphere-free PPP mode<br>
-[Add] NMEA output for any station processed in PPP mode<br>
-[Add] PPP processing of any number of linear combinations of GNSS measurements selected by user<br>
-[Add] Encoding/Decoding RTCM SSR I messages for Galileo, BDS, SBAS and QZSS<br>
-[Add] Encoding/Decoding RTCM SSR phase bias messages<br>
-[Add] Encoding/Decoding RTCM SSR ionospheric model messages, single-layer model for total electron content<br>
-[Add] RTCM SSR I messages for Galileo, BDS, SBAS and QZSS support from RTNET interface<br>
-[Add] RTCM SSR II messages (phase biases and SSR ionospheric model) support from RTNET interface<br>
-[Add] Computataion of VTEC and STEC from SSR ionospheric model messages for usage in PPP mode<br>
-[Add] Handle old-fashioned SNR values in RINEX<br>
-[Mod] SNR and MP visualization depending on RINEX observation attribute<br>
-[Bug] Saastamoinen tropospheric correction for very high elevation receivers<br>
-[Add] Comparison of SP3 files<br>
-[Add] Encoding/Decoding of RTCM v3 proposal for Galileo Broadcast Ephemeris message 1046<br>
-[Add] Encoding/Decoding of RTCM v3 QZSS Broadcast Ephemeris message 1044<br>
-[Add] Encoding/Decoding of RTCM v3 SBAS Broadcast Ephemeris message 1043<br>
-[Add] Encoding/Decoding of RTCM v3 BDS Broadcast Ephemeris message 63<br>
-[Add] RINEX v3 support of Galileo, BDS, SBAS and QZSS Broadcast Ephemerides<br>
-[Add] Consideration of the aspect that Galileo NAV message can be providet for the same epoch but with different flags (I/NAV, F/NAV, DVS)<br>
-[Bug] VRS support in sending NMEA in Auto/Manual mode to Ntrip Broadcaster<br>
-[Add] Forwarding NMEA GNGGA to Ntrip Broadcaster<br>
-[Bug] Stream failure/recovery reports<br>
-[Add] Compute IODs for BDS and SBAS from CRC over broadcast ephemeris and clock parameters<br>
-[Mod] PPP default options<br>
-[Add] Example configuration for SP3 file comparison<br>
-[Add] Choose between code and phase observations when in PPP SSR I mode<br>
-[Bug] Reset time series plot when restarting PPP in post processing mode<br>
-[Add] Broadcast ephemeris check regarding allowed age of data sets<br>
-[Add] Code bias usage for PPP SSR I mode<br>
-[Add] Code bias, phase bias and VTEC usage in extended PPP mode<br>
-[Mod] Consideration of the full antenna PCO vector in all PPP modes<br>
-[Add] Allow GPS-only and GLONASS-only RINEX v2 Navigation files<br>
-[Mod] SSR clock correction converted to seconds to be consistent with broadcast values<br>
-[Add] Support Galileo I/NAV broadcast ephemeris<br>
-[Add] Extended RINEX v3 filenames<br>
-[Add] Stream's country added to configuration string 'mountPoints'<br>
-[Add] destinction of GEO/MEO satellites during BDS velocity derermination <br>
-[Bug] Velocity determination for geostationary BDS satellites<br>
-[Add] Set TOE from BDS week and second<br>
-[Add] Use BDS observations and ephemerides in PPP SSR I mode<br>
-[Add] Considering that yaw angle restricted to -180 to +180 deg<br>
-[Mod] Read local RINEX skeleton files<br>
-[Add] Update interval for VTEC in RTNET stream format<br>
-[Bug] SBAS IODN<br>
-[Bug] Galileo week number<br>
-[Add] Phase shift records in RINEX v3 headers<br>
-[Add] Output GLONASS slot numbers from scanning stream content<br>
-[Add] Decoder interface for PPP SSR I+II messages for Galileo/QZSS/SBAS/BDS<br>
-[Mod] Renaming BDS first frequency from '1' to '2'<br>
-[Add] RINEX QC, receiver/antenna information editable<br>
-[Add] Support of new RINEX header lines regarding phase shifts, GLONAQSS slots and GLONASS biases during file merging<br>
-[Add] Switch to port 443 for skeleton file download from https website<br>
-[Mod] Default observation types for RINEX v3 files<br>
-[Bug] RTCM v2 decoder<br>
-[Add] SINEX Troposphere file output<br>
-[Add] Comments with respect to RINEX v3 to RINEX v2 observation file conversion
-[Add] String for Operating System in logfile output<br>
-[Add] Full integration of 'rtcm3torinex'<br>
-[Add] Extended command line help<br>
-[Add] Version 2.12.0 published<br>
-
-</td>
-</tr>
-
-</table>
-</p>
-
-<p><h4>3.2 <a name="rtcm">RTCM Standards</h4></p>
+<p><h4>3.1 <a name="rtcm">RTCM Standards</h4></p>
 
 <p>
 The Radio Technical Commission for Maritime Services (RTCM) is an international non-profit scientific, professional and educational organization. Special Committees provide a forum in which governmental and non-governmental members work together to develop technical standards and consensus recommendations in regard to issues of particular concern. RTCM is engaged in the development of international standards for maritime radionavigation and radiocommunication systems. The output documents and reports prepared by RTCM Committees are published as RTCM Recommended Standards. Topics concerning Differential Global Navigation Satellite Systems (DGNSS) are handled by the Special Committee SC 104.
@@ -4863,7 +4667,7 @@ The Radio Technical Commission for Maritime Services (RTCM) is an international 
 Personal copies of RTCM Recommended Standards can be ordered through <u>http://www.rtcm.org/orderinfo.php</u>.
 </p>
 
-<p><h4>3.2.1 <a name="ntrip1">Ntrip Version 1</h4></p>
+<p><h4>3.1.1 <a name="ntrip1">Ntrip Version 1</h4></p>
 
 <p>
 'Networked Transport of RTCM via Internet Protocol' Version 1.0 (Ntrip) stands for an application-level protocol streaming Global Navigation Satellite System (GNSS) data over the Internet. Ntrip is a generic, stateless protocol based on the Hypertext Transfer Protocol HTTP/1.1. The HTTP objects are enhanced to GNSS data streams.
@@ -4902,7 +4706,7 @@ Source-table records of type NET contain the following data fields: 'identifier'
 Source-table records of type CAS contain the following data fields: 'host', 'port', 'identifier', 'operator', 'nmea', 'country', 'latitude', 'longitude', 'misc'.
 </p>
 
-<p><h4>3.2.2 <a name="ntrip2">Ntrip Version 2</h4></p>
+<p><h4>3.1.2 <a name="ntrip2">Ntrip Version 2</h4></p>
 
 <p>
 The major changes of Ntrip Version 2 compared to Version 1.0 are:
@@ -4920,7 +4724,7 @@ The major changes of Ntrip Version 2 compared to Version 1.0 are:
 <p>Ntrip Version 2 allows to communicate either in TCP/IP mode or in RTSP/RTP mode or in UDP mode whereas Version 1 is limited to TCP/IP only. It furthermore allows using the Transport Layer Security (TLS) and its predecessor, Secure Sockets Layer (SSL) cryptographic protocols for secure Ntrip communication over the Internet.
 </p>
 
-<p><h4>3.2.3 <a name="rtcm2">RTCM Version 2</h4></p>
+<p><h4>3.1.3 <a name="rtcm2">RTCM Version 2</h4></p>
 <p>
 Transmitting GNSS carrier phase data can be done through RTCM Version 2 messages. Please note that only RTCM Version 2.2 and 2.3 streams may include GLONASS data. Messages that may be of interest here are:
 </p>
@@ -4958,7 +4762,7 @@ Type 24 message carries the coordinates of the installed antenna's ARP in the GN
 </li>
 </ul>
 
-<p><h4>3.2.4 <a name="rtcm3">RTCM Version 3</h4></p>
+<p><h4>3.1.4 <a name="rtcm3">RTCM Version 3</h4></p>
 <p>
 RTCM Version 3 has been developed as a more efficient alternative to RTCM Version 2. Service providers and vendors have asked for a standard that would be more efficient, easy to use, and more easily adaptable to new situations. The main complaint was that the Version 2 parity scheme was wasteful of bandwidth. Another complaint was that the parity is not independent from word to word. Still another was that even with so many bits devoted to parity, the actual integrity of the message was not as high as it should be. Plus, 30-bit words are awkward to handle. The Version 3 standard is intended to correct these weaknesses.
 </p>
@@ -5101,7 +4905,7 @@ The following are proposed 'Multiple Signal Messages' (MSM) under discussion for
 </ul>
 </p>
 
-<p><h4>3.3 <a name="confList">Command Line Help</h3></p>
+<p><h4>3.2 <a name="confList">Command Line Help</h3></p>
 
 <p>
 Command line option '--help' provides a complete list of all configuration parameters which can be specified via BNC's Command Line Interface (CLI). Note that command line options overrule configuration options specified in the configuration file. The following is the output produced when running BNC with command line option '--help':
@@ -5132,7 +4936,7 @@ Command line option '--help' provides a complete list of all configuration param
 <b>RINEX Observations Panel keys:</b>
    rnxPath        {Directory [character string]}
    rnxIntr        {File interval [character string: 1 min|2 min|5 min|10 min|15 min|30 min|1 hour|1 day]}
-   rnxSampl       {File sampling rate [integer number of seconds: 0,5|10|15|20|25|30|35|40|45|50|55|60]} 
+   rnxSampl       {File sampling rate [integer number of seconds: 0,5|10|15|20|25|30|35|40|45|50|55|60]}
    rnxSkel        {RINEX skeleton file extension [character string]}
    rnxOnlyWithSKL {Using RINEX skeleton file is mandatory [integer number: 0=no,2=yes]}
    rnxScript      {File upload script, full path [character string]}
@@ -5213,7 +5017,7 @@ Command line option '--help' provides a complete list of all configuration param
    serialHeightNMEASampling {Sampling rate [integer number of seconds: 0|10|20|30|...|280|290|300]}
 
 <b>Outages Panel keys:</b>
-   adviseObsRate {Stream observation rate [character string: 0.1 Hz|0.2 Hz|0.5 Hz|1 Hz|5 Hz]} 
+   adviseObsRate {Stream observation rate [character string: 0.1 Hz|0.2 Hz|0.5 Hz|1 Hz|5 Hz]}
    adviseFail    {Failure threshold [integer number of minutes: 0-60]}
    adviseReco    {Recovery threshold [integer number of minutes: 0-60]}
    adviseScript  {Advisory script, full path [character string]}
@@ -5324,7 +5128,7 @@ Command line option '--help' provides a complete list of all configuration param
    font      {Font specification [character string in quotation marks, example: "Helvetica,14,-1,5,50,0,0,0,0,0"]}
 
 <b>Note:</b>
-The syntax of some command line configuration options slightly differs from that 
+The syntax of some command line configuration options slightly differs from that
 used in configuration files: Configuration file options which contain one or more
 blank characters or contain a semicolon separated parameter list must be enclosed
 by quotation marks when specified on command line.
@@ -5334,7 +5138,7 @@ by quotation marks when specified on command line.
 (2) /Applications/bnc.app/Contents/MacOS/bnc
 (3) /home/weber/bin/bnc --conf /home/weber/MyConfigFile.bnc
 (4) bnc --conf /Users/weber/.config/BKG/BNC.bnc -nw
-(5) bnc --conf /dev/null --key startTab 4 --key reqcAction Edit/Concatenate --key reqcObsFile AGAR.15O --key reqcOutObsFile AGAR_X.15O 
+(5) bnc --conf /dev/null --key startTab 4 --key reqcAction Edit/Concatenate --key reqcObsFile AGAR.15O --key reqcOutObsFile AGAR_X.15O
         --key reqcRnxVersion 2 --key reqcSampling 30 --key reqcV2Priority CWPX_?
 (6) bnc --key mountPoints "//user:pass@mgex.igs-ip.net:2101/CUT07 RTCM_3.0 ETH 9.03 38.74 no 2;
                            //user:pass@www.igs-ip.net:2101/FFMJ1 RTCM_3.1 DEU 50.09 8.66 no 2"
@@ -5344,7 +5148,7 @@ by quotation marks when specified on command line.
 (9) bnc --key PPP/staTable "FFMJ1,100.0,100.0,100.0,100.0,100.0,100.0,0.1,3e-6,7777;
                             CUT07,100.0,100.0,100.0,100.0,100.0,100.0,0.1,3e-6,7778"
 </pre>
-<p><h4>3.4 <a name="links">Further Reading</h3></p>
+<p><h4>3.3 <a name="links">Further Reading</h3></p>
 
 <table>
 <tr></tr>
@@ -5397,7 +5201,7 @@ by quotation marks when specified on command line.
 
 </table>
 
-<p><h4>3.5 <a name="abbrev">Abbreviations</h3></p>
+<p><h4>3.4 <a name="abbrev">Abbreviations</h3></p>
 <table>
 
 <tr><td>AC</td><td>Analysis Center</td></tr>
