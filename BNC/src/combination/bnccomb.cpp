@@ -651,7 +651,7 @@ t_irc bncComb::processEpoch_filter(QTextStream& out,
       out.setRealNumberNotation(QTextStream::FixedNotation);
       out.setRealNumberPrecision(4);
       for (int ii = 0; ii < corrs().size(); ii++) {
-    	const cmbCorr* corr = corrs()[ii];
+      const cmbCorr* corr = corrs()[ii];
         out << _resTime.datestr().c_str() << ' '
             << _resTime.timestr().c_str() << " "
             << corr->_acName << ' ' << corr->_prn.mid(0,3);
@@ -1183,6 +1183,8 @@ t_irc bncComb::checkOrbits(QTextStream& out) {
 void bncComb::slotProviderIDChanged(QString mountPoint) {
   QMutexLocker locker(&_mutex);
 
+  QTextStream out(&_log, QIODevice::WriteOnly);
+
   // Find the AC Name
   // ----------------
   QString acName;
@@ -1191,6 +1193,9 @@ void bncComb::slotProviderIDChanged(QString mountPoint) {
     cmbAC* AC = icAC.next();
     if (AC->mountPoint == mountPoint) {
       acName = AC->name;
+      out << "Provider ID changed: AC " << AC->name.toAscii().data()   << " "
+          << _resTime.datestr().c_str()    << " "
+          << _resTime.timestr().c_str()    << endl;
       break;
     }
   }
