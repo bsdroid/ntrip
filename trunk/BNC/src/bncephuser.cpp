@@ -198,7 +198,7 @@ void bncEphUser::checkEphemeris(t_eph* eph) {
 
   const double MINDIST = 2.e7;
   const double MAXDIST = 6.e7;
-  if (rr < MINDIST || rr > MAXDIST) {
+  if (rr < MINDIST || rr > MAXDIST || isnan(rr)) {
     eph->setCheckState(t_eph::bad);
     return;
   }
@@ -253,7 +253,7 @@ void bncEphUser::checkEphemeris(t_eph* eph) {
     ColumnVector vvL(3);
     ephL->getCrd(eph->TOC(), xcL, vvL, false);
 
-    double dt    = eph->TOC() - ephL->TOC();
+    double dt    = fabs(eph->TOC() - ephL->TOC());
     double diff  = (xc.Rows(1,3) - xcL.Rows(1,3)).norm_Frobenius();
     double diffC = fabs(xc(4) - xcL(4)) * t_CST::c;
 
