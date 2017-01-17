@@ -210,36 +210,31 @@ void bncEphUser::checkEphemeris(t_eph* eph) {
   bncTime currentTime(now.toString(Qt::ISODate).toStdString());
   double timeDiff = fabs(toc - currentTime);
 
-  if      (eph->type() == t_eph::GPS  || t_eph::Galileo) {
-    if (timeDiff > 4*3600) { // update interval: 2h, data sets are valid for 4 hours
-      eph->setCheckState(t_eph::outdated);
-      return;
-    }
+  if      (eph->type() == t_eph::GPS     && timeDiff > 4*3600) { // update interval: 2h, data sets are valid for 4 hours
+    eph->setCheckState(t_eph::outdated);
+    return;
   }
-  else if (eph->type() == t_eph::GLONASS) {
-    if (timeDiff > 1*3600) { // updated every 30 minutes
-      eph->setCheckState(t_eph::outdated);
-      return;
-    }
+  else if (eph->type() == t_eph::Galileo && timeDiff > 4*3600) { // update interval: 2h, data sets are valid for 4 hours
+    eph->setCheckState(t_eph::outdated);
+    return;
   }
-  else if (eph->type() == t_eph::QZSS) {
-    if (timeDiff > 4*3600) { // orbit parameters are valid for 7200 seconds (at minimum)
-      eph->setCheckState(t_eph::outdated);
-      return;
-    }
+  else if (eph->type() == t_eph::GLONASS && timeDiff > 1*3600) { // updated every 30 minutes
+    eph->setCheckState(t_eph::outdated);
+    return;
   }
-  else if (eph->type() == t_eph::SBAS) {
-    if (timeDiff > 600) { // maximum update interval: 300 sec
-      eph->setCheckState(t_eph::outdated);
-      return;
-    }
+  else if (eph->type() == t_eph::QZSS    && timeDiff > 4*3600) { // orbit parameters are valid for 7200 seconds (at minimum)
+    eph->setCheckState(t_eph::outdated);
+    return;
   }
-  else if (eph->type() == t_eph::BDS) {
-    if (timeDiff > 6*3600) { // updates 1 (GEO) up to 6 hours
-      eph->setCheckState(t_eph::outdated);
-      return;
-    }
+  else if (eph->type() == t_eph::SBAS    && timeDiff > 600) { // maximum update interval: 300 sec
+    eph->setCheckState(t_eph::outdated);
+    return;
   }
+  else if (eph->type() == t_eph::BDS     && timeDiff > 6*3600) { // updates 1 (GEO) up to 6 hours
+    eph->setCheckState(t_eph::outdated);
+    return;
+  }
+
 
 
   // Check consistency with older ephemerides
