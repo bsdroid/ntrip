@@ -65,12 +65,6 @@ bncAntex::~bncAntex() {
     it.next();
     delete it.value();
   }
-  if (newAntMap) {
-    delete newAntMap;
-  }
-  if (newFrqMap) {
-    delete newFrqMap;
-  }
 }
 
 // Print
@@ -132,8 +126,8 @@ t_irc bncAntex::readFile(const QString& fileName) {
 
   QTextStream in(&inFile);
 
-  newAntMap = 0;
-  newFrqMap = 0;
+  t_antMap* newAntMap = 0;
+  t_frqMap* newFrqMap = 0;
 
   while ( !in.atEnd() ) {
     QString line = in.readLine();

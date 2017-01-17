@@ -80,8 +80,6 @@ class bncAntex {
   };
 
   QMap<QString, t_antMap*> _maps;
-  t_antMap* newAntMap;
-  t_frqMap* newFrqMap;
 };
 
 #endif
