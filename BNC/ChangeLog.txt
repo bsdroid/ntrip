@@ -5,12 +5,13 @@
     Added   (08.08.2016): some informations about the data source is added as
                           comment within the header of RINEX navigation files
     Added   (21.07.2016): frequency specific signal priorities are added for
-                          RINEX version 3 to RINEX version 2 conversion
+                          RINEX v3 to RINEX v2 conversion
     Added   (29.06.2016): consideration of provioder ID changes in SSR streams
                           during PPP analysis
     Added   (18.05.2016): expected observations in RINEX QC
+    Changed (15.02.2017): SIRGAS2000 transformation parameters adjusted to IGb14
     Changed (28.07.2016): small adaptations in qwtpolar sources to allow the
-                          successful comilation of BNC on a Raspberry Pi, see
+                          successful compilation of BNC on a Raspberry Pi, see
                           http://software.rtcm-ntrip.org/ticket/88
     Changed (21.07.2016): Default signal priority list
     Changed (08.06.2016): weighting factor for GLONASS phase observations
