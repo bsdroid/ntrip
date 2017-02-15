@@ -146,10 +146,10 @@ bncRtnetUploadCaster::bncRtnetUploadCaster(const QString& mountpoint,
     _scr = 0.109;
     _t0 = 1994.0;
   }
-  else if (_crdTrafo == "SIRGAS2000") {
-    _dx = 0.0020;
-    _dy = 0.0041;
-    _dz = 0.0039;
+  else if (_crdTrafo == "SIRGAS2000") { // from IGb14 (Sonia Costa, BRA)
+    _dx = 0.0026;
+    _dy = 0.0018;
+    _dz = -0.0061;
     _dxr = 0.0000;
     _dyr = 0.0000;
     _dzr = 0.0000;
