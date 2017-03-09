@@ -129,7 +129,6 @@ latencyChecker::latencyChecker(QByteArray staID) {
 
   // Initialize private members
   // --------------------------
-  _maxDt      = 1000.0;
   _wrongEpoch = false;
   _checkSeg   = false;
   _numSucc    = 0;
@@ -137,18 +136,9 @@ latencyChecker::latencyChecker(QByteArray staID) {
   _secFail    = 0;
   _initPause  = 0;
   _currPause  = 0;
-  _followSec  = false;
-  _oldSecGPS  = 0;
-  _newSecGPS  = 0;
-  _numGaps    = 0;
-  _diffSecGPS = 0;
-  _numLat     = 0;
-  _sumLat     = 0.0;
-  _sumLatQ    = 0.0;
-  _meanDiff   = 0.0;
-  _minLat     =  _maxDt;
-  _maxLat     = -_maxDt;
-  _curLat     = 0.0;
+  _endCorrupt = false;
+  _begCorrupt = false;
+  _fromCorrupt = false;
 
   _checkTime = QDateTime::currentDateTime();
   _decodeSucc = QDateTime::currentDateTime();
@@ -161,7 +151,6 @@ latencyChecker::latencyChecker(QByteArray staID) {
   _decodeStopCorr = QDateTime::currentDateTime();
   _begDateTimeCorr = QDateTime::currentDateTime();
   _endDateTimeCorr = QDateTime::currentDateTime();
-
 }
 
 // Destructor
@@ -331,54 +320,50 @@ void latencyChecker::checkOutage(bool decoded) {
 void latencyChecker::checkObsLatency(const QList<t_satObs>& obsList) {
 
   if (_miscIntr > 0 ) {
-
+    t_latency& l = _lObs; l._type =  "Observations";
     QListIterator<t_satObs> it(obsList);
     while (it.hasNext()) {
       const t_satObs& obs = it.next();
       bool wrongObservationEpoch = checkForWrongObsEpoch(obs._time);
-      _newSecGPS = static_cast<int>(obs._time.gpssec());
-      if (_newSecGPS != _oldSecGPS && !wrongObservationEpoch) {
-        if (_newSecGPS % _miscIntr < _oldSecGPS % _miscIntr) {
-          if (_numLat > 0) {
-            if (_meanDiff > 0.0) {
+      l._newSec = static_cast<int>(obs._time.gpssec());
+      if (l._newSec > l._oldSec && !wrongObservationEpoch) {
+        if (l._newSec % _miscIntr < l._oldSec % _miscIntr) {
+          if (l._numLat > 0) {
+            if (l._meanDiff > 0.0) {
               if ( _checkMountPoint == _staID || _checkMountPoint == "ALL" ) {
-                emit( newMessage(QString("%1: Mean latency %2 sec, min %3, max %4, rms %5, %6 epochs, %7 gaps")
+                emit( newMessage(QString("%1 %2: Mean latency %3 sec, min %4, max %5, rms %6, %7 epochs, %8 gaps")
                   .arg(_staID.data())
-                  .arg(int(_sumLat/_numLat*100)/100.)
-                  .arg(int(_minLat*100)/100.)
-                  .arg(int(_maxLat*100)/100.)
-                  .arg(int((sqrt((_sumLatQ - _sumLat * _sumLat / _numLat)/_numLat))*100)/100.)
-                  .arg(_numLat)
-                  .arg(_numGaps)
+                  .arg(l._type.data())
+                  .arg(int(l._sumLat/l._numLat*100)/100.)
+                  .arg(int(l._minLat*100)/100.)
+                  .arg(int(l._maxLat*100)/100.)
+                  .arg(int((sqrt((l._sumLatQ - l._sumLat * l._sumLat / l._numLat)/l._numLat))*100)/100.)
+                  .arg(l._numLat)
+                  .arg(l._numGaps)
                   .toAscii(), true) );
               }
             } else {
               if ( _checkMountPoint == _staID || _checkMountPoint == "ALL" ) {
-                emit( newMessage(QString("%1: Mean latency %2 sec, min %3, max %4, rms %5, %6 epochs")
+                emit( newMessage(QString("%1 %2: Mean latency %3 sec, min %4, max %5, rms %6, %7 epochs")
                   .arg(_staID.data())
-                  .arg(int(_sumLat/_numLat*100)/100.)
-                  .arg(int(_minLat*100)/100.)
-                  .arg(int(_maxLat*100)/100.)
-                  .arg(int((sqrt((_sumLatQ - _sumLat * _sumLat / _numLat)/_numLat))*100)/100.)
-                  .arg(_numLat)
+                  .arg(l._type.data())
+                  .arg(int(l._sumLat/l._numLat*100)/100.)
+                  .arg(int(l._minLat*100)/100.)
+                  .arg(int(l._maxLat*100)/100.)
+                  .arg(int((sqrt((l._sumLatQ - l._sumLat * l._sumLat / l._numLat)/l._numLat))*100)/100.)
+                  .arg(l._numLat)
                   .toAscii(), true) );
               }
             }
           }
-          _meanDiff  = _diffSecGPS / _numLat;
-          _diffSecGPS = 0;
-          _numGaps    = 0;
-          _sumLat     = 0.0;
-          _sumLatQ    = 0.0;
-          _numLat     = 0;
-          _minLat     = _maxDt;
-          _maxLat     = -_maxDt;
+          l._meanDiff  = l._diffSec / l._numLat;
+          l.init();
         }
-        if (_followSec) {
-          _diffSecGPS += _newSecGPS - _oldSecGPS;
-          if (_meanDiff>0.) {
-            if (_newSecGPS - _oldSecGPS > 1.5 * _meanDiff) {
-              _numGaps += 1;
+        if (l._followSec) {
+          l._diffSec += l._newSec - l._oldSec;
+          if (l._meanDiff>0.) {
+            if (l._newSec - l._oldSec > 1.5 * l._meanDiff) {
+              l._numGaps += 1;
             }
           }
         }
@@ -397,105 +382,157 @@ void latencyChecker::checkObsLatency(const QList<t_satObs>& obsList) {
           week -= 1;
           sec  += secPerWeek;
         }
-         _curLat   = sec - obs._time.gpssec();
-        _sumLat  += _curLat;
-        _sumLatQ += _curLat * _curLat;
-        if (_curLat < _minLat) {
-          _minLat = _curLat;
+        l._curLat   = sec - obs._time.gpssec();
+        l._sumLat  += l._curLat;
+        l._sumLatQ += l._curLat * l._curLat;
+        if (l._curLat < l._minLat) {
+          l._minLat = l._curLat;
         }
-        if (_curLat >= _maxLat) {
-          _maxLat = _curLat;
+        if (l._curLat >= l._maxLat) {
+          l._maxLat = l._curLat;
         }
-        _numLat += 1;
-        _oldSecGPS = _newSecGPS;
-        _followSec = true;
+        l._numLat += 1;
+        l._oldSec    = l._newSec;
+        l._followSec = true;
       }
     }
+    _lObs = l;
+    setCurrentLatency(l._curLat);
   }
 }
 
 // Perform latency checks (corrections)
 //////////////////////////////////////////////////////////////////////////////
-void latencyChecker::checkCorrLatency(int corrGPSEpochTime) {
-
+void latencyChecker::checkCorrLatency(int corrGPSEpochTime, int type) {
   if (corrGPSEpochTime < 0) {
-    return;
+    return ;
+  }
+  t_latency& l = _lOrb; // init
+  switch (type) {
+    case 1057: case 1063: case 1240: case 1246: case 1252: case 1258:
+      l = _lOrb; l._type =  "Orbit";
+      break;
+    case 1058: case 1064: case 1241: case 1247: case 1253: case 1259:
+      l = _lClk; l._type =  "Clock";
+      break;
+    case 1060: case 1066: case 1243: case 1249: case 1255: case 1261:
+      l = _lClkOrb; l._type = "Clock&Orbit";
+      break;
+    case 1059: case 1065: case 1242: case 1248: case 1254: case 1260:
+      l = _lCb; l._type = "Code Biases";
+      break;
+    case 1265: case 1266: case 1267: case 1268: case 1269: case 1270:
+      l = _lPb; l._type = "Phase Biases";
+      break;
+    case 1264:
+      l = _lVtec; l._type = "VTEC";
+      break;
+    case 1061: case 1067: case 1244: case 1250: case 1256: case 1262:
+      l = _lUra; l._type = "URA";
+      break;
+    case 1062: case 1068: case 1245: case 1251: case 1257: case 1263:
+      l = _lHr; l._type = "Hr Clock";
+      break;
+    default:
+      return;
   }
 
   if (_miscIntr > 0) {
-
-    _newSecGPS = corrGPSEpochTime;
-
+    l._newSec = corrGPSEpochTime;
     int week;
     double sec;
     currentGPSWeeks(week, sec);
-    double dt = fabs(sec - _newSecGPS);
+    double dt = fabs(sec - l._newSec);
     const double secPerWeek = 7.0 * 24.0 * 3600.0;
     if (dt > 0.5 * secPerWeek) {
-      if (sec > _newSecGPS) {
+      if (sec > l._newSec) {
         sec  -= secPerWeek;
       } else {
         sec  += secPerWeek;
       }
     }
-    if (_newSecGPS != _oldSecGPS) {
-      if (int(_newSecGPS) % _miscIntr < int(_oldSecGPS) % _miscIntr) {
-        if (_numLat>0) {
+    if (l._newSec > l._oldSec) {
+      if (int(l._newSec) % _miscIntr < int(l._oldSec) % _miscIntr) {
+        if (l._numLat>0) {
           QString late;
-          if (_meanDiff>0.) {
-            late = QString(": Mean latency %1 sec, min %2, max %3, rms %4, %5 epochs, %6 gaps")
-            .arg(int(_sumLat/_numLat*100)/100.)
-            .arg(int(_minLat*100)/100.)
-            .arg(int(_maxLat*100)/100.)
-            .arg(int((sqrt((_sumLatQ - _sumLat * _sumLat / _numLat)/_numLat))*100)/100.)
-            .arg(_numLat)
-            .arg(_numGaps);
+          if (l._meanDiff>0.) {
+            late = QString(" %1: Mean latency %2 sec, min %3, max %4, rms %5, %6 epochs, %7 gaps")
+            .arg(l._type.data())
+            .arg(int(l._sumLat/l._numLat*100)/100.)
+            .arg(int(l._minLat*100)/100.)
+            .arg(int(l._maxLat*100)/100.)
+            .arg(int((sqrt((l._sumLatQ - l._sumLat * l._sumLat / l._numLat)/l._numLat))*100)/100.)
+            .arg(l._numLat)
+            .arg(l._numGaps);
             if ( _checkMountPoint == _staID || _checkMountPoint == "ALL" ) {
               emit(newMessage(QString(_staID + late ).toAscii(), true) );
             }
           }
           else {
-            late = QString(": Mean latency %1 sec, min %2, max %3, rms %4, %5 epochs")
-            .arg(int(_sumLat/_numLat*100)/100.)
-            .arg(int(_minLat*100)/100.)
-            .arg(int(_maxLat*100)/100.)
-            .arg(int((sqrt((_sumLatQ - _sumLat * _sumLat / _numLat)/_numLat))*100)/100.)
-            .arg(_numLat);
+            late = QString(" %1: Mean latency %2 sec, min %3, max %4, rms %5, %6 epochs")
+            .arg(l._type.data())
+            .arg(int(l._sumLat/l._numLat*100)/100.)
+            .arg(int(l._minLat*100)/100.)
+            .arg(int(l._maxLat*100)/100.)
+            .arg(int((sqrt((l._sumLatQ - l._sumLat * l._sumLat / l._numLat)/l._numLat))*100)/100.)
+            .arg(l._numLat);
             if ( _checkMountPoint == _staID || _checkMountPoint == "ALL" ) {
             emit(newMessage(QString(_staID + late ).toAscii(), true) );
             }
           }
         }
-        _meanDiff = int(_diffSecGPS)/_numLat;
-        _diffSecGPS = 0;
-        _numGaps    = 0;
-        _sumLat     = 0.0;
-        _sumLatQ    = 0.0;
-        _numLat     = 0;
-        _minLat     = 1000.;
-        _maxLat     = -1000.;
+        l._meanDiff = int(l._diffSec)/l._numLat;
+        l.init();
       }
-      if (_followSec) {
-        _diffSecGPS += _newSecGPS - _oldSecGPS;
-        if (_meanDiff>0.) {
-          if (_newSecGPS - _oldSecGPS > 1.5 * _meanDiff) {
-            _numGaps += 1;
+
+      if (l._followSec) {
+        l._diffSec += l._newSec - l._oldSec;
+        if (l._meanDiff>0.) {
+          if (l._newSec - l._oldSec > 1.5 * l._meanDiff) {
+            l._numGaps += 1;
           }
         }
       }
-      _curLat   = sec - _newSecGPS;
-      _sumLat  += _curLat;
-      _sumLatQ += _curLat * _curLat;
-      if (_curLat < _minLat) {
-        _minLat = _curLat;
+      l._curLat   = sec - l._newSec;
+      l._sumLat  += l._curLat;
+      l._sumLatQ += l._curLat * l._curLat;
+      if (l._curLat < l._minLat) {
+        l._minLat = l._curLat;
       }
-      if (_curLat >= _maxLat) {
-        _maxLat = _curLat;
+      if (l._curLat >= l._maxLat) {
+        l._maxLat = l._curLat;
       }
-      _numLat += 1;
-      _oldSecGPS = _newSecGPS;
-      _followSec = true;
+      l._numLat += 1;
+      l._oldSec = l._newSec;
+      l._followSec = true;
+      setCurrentLatency(l._curLat);
     }
+    switch (type) {
+       case 1057: case 1063: case 1240: case 1246: case 1252: case 1258:
+         _lOrb = l;
+         break;
+       case 1058: case 1064: case 1241: case 1247: case 1253: case 1259:
+         _lClk = l;
+         break;
+       case 1060: case 1066: case 1243: case 1249: case 1255: case 1261:
+         _lClkOrb = l;
+         break;
+       case 1059: case 1065: case 1242: case 1248: case 1254: case 1260:
+         _lCb = l;
+         break;
+       case 1265: case 1266: case 1267: case 1268: case 1269: case 1270:
+         _lPb = l;
+         break;
+       case 1264:
+         _lVtec = l;
+         break;
+       case 1061: case 1067: case 1244: case 1250: case 1256: case 1262:
+         _lUra = l;
+         break;
+       case 1062: case 1068: case 1245: case 1251: case 1257: case 1263:
+         _lHr = l;
+         break;
+     }
   }
 }
 

@@ -73,10 +73,10 @@ using namespace std;
 ////////////////////////////////////////////////////////////////////////////
 bncGetThread::bncGetThread(bncRawFile* rawFile) {
 
-  _rawFile      = rawFile;
-  _format       = rawFile->format();
-  _staID        = rawFile->staID();
-  _rawOutput    = false;
+  _rawFile = rawFile;
+  _format = rawFile->format();
+  _staID = rawFile->staID();
+  _rawOutput = false;
   _ntripVersion = "N";
 
   initialize();
@@ -84,19 +84,16 @@ bncGetThread::bncGetThread(bncRawFile* rawFile) {
 
 // Constructor 2
 ////////////////////////////////////////////////////////////////////////////
-bncGetThread::bncGetThread(const QUrl& mountPoint,
-                           const QByteArray& format,
-                           const QByteArray& latitude,
-                           const QByteArray& longitude,
-                           const QByteArray& nmea,
-                           const QByteArray& ntripVersion) {
-  _rawFile      = 0;
-  _mountPoint   = mountPoint;
-  _staID        = mountPoint.path().mid(1).toAscii();
-  _format       = format;
-  _latitude     = latitude;
-  _longitude    = longitude;
-  _nmea         = nmea;
+bncGetThread::bncGetThread(const QUrl& mountPoint, const QByteArray& format,
+    const QByteArray& latitude, const QByteArray& longitude,
+    const QByteArray& nmea, const QByteArray& ntripVersion) {
+  _rawFile = 0;
+  _mountPoint = mountPoint;
+  _staID = mountPoint.path().mid(1).toAscii();
+  _format = format;
+  _latitude = latitude;
+  _longitude = longitude;
+  _nmea = nmea;
   _ntripVersion = ntripVersion;
 
   bncSettings settings;
@@ -119,13 +116,13 @@ void bncGetThread::initialize() {
   setTerminationEnabled(true);
 
   connect(this, SIGNAL(newMessage(QByteArray,bool)),
-          BNC_CORE, SLOT(slotMessage(const QByteArray,bool)));
+  BNC_CORE, SLOT(slotMessage(const QByteArray,bool)));
 
   _isToBeDeleted = false;
-  _query         = 0;
-  _nextSleep     = 0;
-  _miscMount     = settings.value("miscMount").toString();
-  _decoder   = 0;
+  _query = 0;
+  _nextSleep = 0;
+  _miscMount = settings.value("miscMount").toString();
+  _decoder = 0;
 
   // NMEA Port
   // -----------
@@ -133,7 +130,9 @@ void bncGetThread::initialize() {
   int nmeaPort = 0;
   while (iSta.hasNext()) {
     QStringList hlp = iSta.next().split(",");
-    if (hlp.size() < 10) {continue;}
+    if (hlp.size() < 10) {
+      continue;
+    }
     QByteArray mp = hlp[0].toAscii();
     if (_staID == mp) {
       nmeaPort = hlp[9].toInt();
@@ -141,13 +140,13 @@ void bncGetThread::initialize() {
   }
   if (nmeaPort != 0) {
     _nmeaServer = new QTcpServer;
-    if ( !_nmeaServer->listen(QHostAddress::Any, nmeaPort) ) {
+    if (!_nmeaServer->listen(QHostAddress::Any, nmeaPort)) {
       emit newMessage("bncCaster: Cannot listen on port", true);
-    }
-    else {
-      connect(_nmeaServer, SIGNAL(newConnection()), this, SLOT(slotNewNMEAConnection()));
-      connect(BNC_CORE, SIGNAL(newNMEAstr(QByteArray, QByteArray)),
-              this, SLOT(slotNewNMEAstr(QByteArray, QByteArray)));
+    } else {
+      connect(_nmeaServer, SIGNAL(newConnection()), this,
+          SLOT(slotNewNMEAConnection()));
+      connect(BNC_CORE, SIGNAL(newNMEAstr(QByteArray, QByteArray)), this,
+          SLOT(slotNewNMEAstr(QByteArray, QByteArray)));
       _nmeaSockets = new QList<QTcpSocket*>;
       _nmeaPortsMap[_staID] = nmeaPort;
     }
@@ -158,88 +157,72 @@ void bncGetThread::initialize() {
 
   // Serial Port
   // -----------
-  _serialNMEA    = NO_NMEA;
+  _serialNMEA = NO_NMEA;
   _serialOutFile = 0;
-  _serialPort    = 0;
+  _serialPort = 0;
 
-  if (!_staID.isEmpty() &&
-      settings.value("serialMountPoint").toString() == _staID) {
-    _serialPort = new QextSerialPort(settings.value("serialPortName").toString() );
-    _serialPort->setTimeout(0,100);
+  if (!_staID.isEmpty()
+      && settings.value("serialMountPoint").toString() == _staID) {
+    _serialPort = new QextSerialPort(
+        settings.value("serialPortName").toString());
+    _serialPort->setTimeout(0, 100);
 
     // Baud Rate
     // ---------
     QString hlp = settings.value("serialBaudRate").toString();
-    if      (hlp == "110") {
+    if (hlp == "110") {
       _serialPort->setBaudRate(BAUD110);
-    }
-    else if (hlp == "300") {
+    } else if (hlp == "300") {
       _serialPort->setBaudRate(BAUD300);
-    }
-    else if (hlp == "600") {
+    } else if (hlp == "600") {
       _serialPort->setBaudRate(BAUD600);
-    }
-    else if (hlp == "1200") {
+    } else if (hlp == "1200") {
       _serialPort->setBaudRate(BAUD1200);
-    }
-    else if (hlp == "2400") {
+    } else if (hlp == "2400") {
       _serialPort->setBaudRate(BAUD2400);
-    }
-    else if (hlp == "4800") {
+    } else if (hlp == "4800") {
       _serialPort->setBaudRate(BAUD4800);
-    }
-    else if (hlp == "9600") {
+    } else if (hlp == "9600") {
       _serialPort->setBaudRate(BAUD9600);
-    }
-    else if (hlp == "19200") {
+    } else if (hlp == "19200") {
       _serialPort->setBaudRate(BAUD19200);
-    }
-    else if (hlp == "38400") {
+    } else if (hlp == "38400") {
       _serialPort->setBaudRate(BAUD38400);
-    }
-    else if (hlp == "57600") {
+    } else if (hlp == "57600") {
       _serialPort->setBaudRate(BAUD57600);
-    }
-    else if (hlp == "115200") {
+    } else if (hlp == "115200") {
       _serialPort->setBaudRate(BAUD115200);
     }
 
     // Parity
     // ------
     hlp = settings.value("serialParity").toString();
-    if      (hlp == "NONE") {
+    if (hlp == "NONE") {
       _serialPort->setParity(PAR_NONE);
-    }
-    else if (hlp == "ODD") {
+    } else if (hlp == "ODD") {
       _serialPort->setParity(PAR_ODD);
-    }
-    else if (hlp == "EVEN") {
+    } else if (hlp == "EVEN") {
       _serialPort->setParity(PAR_EVEN);
-    }
-    else if (hlp == "SPACE") {
+    } else if (hlp == "SPACE") {
       _serialPort->setParity(PAR_SPACE);
     }
 
     // Data Bits
     // ---------
     hlp = settings.value("serialDataBits").toString();
-    if      (hlp == "5") {
+    if (hlp == "5") {
       _serialPort->setDataBits(DATA_5);
-    }
-    else if (hlp == "6") {
+    } else if (hlp == "6") {
       _serialPort->setDataBits(DATA_6);
-    }
-    else if (hlp == "7") {
+    } else if (hlp == "7") {
       _serialPort->setDataBits(DATA_7);
-    }
-    else if (hlp == "8") {
+    } else if (hlp == "8") {
       _serialPort->setDataBits(DATA_8);
     }
     hlp = settings.value("serialStopBits").toString();
-    if      (hlp == "1") {
+    if (hlp == "1") {
       _serialPort->setStopBits(STOP_1);
-    }
-    else if (hlp == "2") {
+    } else if (hlp == "2") {
       _serialPort->setStopBits(STOP_2);
     }
 
@@ -248,24 +231,22 @@ void bncGetThread::initialize() {
     hlp = settings.value("serialFlowControl").toString();
     if (hlp == "XONXOFF") {
       _serialPort->setFlowControl(FLOW_XONXOFF);
-    }
-    else if (hlp == "HARDWARE") {
+    } else if (hlp == "HARDWARE") {
       _serialPort->setFlowControl(FLOW_HARDWARE);
-    }
-    else {
+    } else {
       _serialPort->setFlowControl(FLOW_OFF);
     }
 
     // Open Serial Port
     // ----------------
-    _serialPort->open(QIODevice::ReadWrite|QIODevice::Unbuffered);
+    _serialPort->open(QIODevice::ReadWrite | QIODevice::Unbuffered);
     if (!_serialPort->isOpen()) {
       delete _serialPort;
       _serialPort = 0;
       emit(newMessage((_staID + ": Cannot open serial port\n"), true));
     }
-    connect(_serialPort, SIGNAL(readyRead()),
-            this, SLOT(slotSerialReadyRead()));
+    connect(_serialPort, SIGNAL(readyRead()), this,
+        SLOT(slotSerialReadyRead()));
 
     // Automatic NMEA
     // --------------
@@ -275,33 +256,44 @@ void bncGetThread::initialize() {
       QString fName = settings.value("serialFileNMEA").toString();
       if (!fName.isEmpty()) {
         _serialOutFile = new QFile(fName);
-        if ( Qt::CheckState(settings.value("rnxAppend").toInt()) == Qt::Checked) {
+        if (Qt::CheckState(settings.value("rnxAppend").toInt())
+            == Qt::Checked) {
           _serialOutFile->open(QIODevice::WriteOnly | QIODevice::Append);
-        }
-        else {
+        } else {
           _serialOutFile->open(QIODevice::WriteOnly);
         }
       }
     }
     // Manual NMEA
     // -----------
-    if ((nmeaMode == "Manual GPGGA") ||(nmeaMode == "Manual GNGGA")) {
+    if ((nmeaMode == "Manual GPGGA") || (nmeaMode == "Manual GNGGA")) {
       _serialNMEA = MANUAL_NMEA;
       bncSettings settings;
       _manualNMEASampl = settings.value("serialManualNMEASampling").toInt();
-      QString hlp      = settings.value("serialHeightNMEA").toString();
+      QString hlp = settings.value("serialHeightNMEA").toString();
       if (hlp.isEmpty()) {
         hlp = "0.0";
       }
       QByteArray _serialHeightNMEA = hlp.toAscii();
-      _manualNMEAString = ggaString(_latitude, _longitude, _serialHeightNMEA, nmeaMode);
+      _manualNMEAString = ggaString(_latitude, _longitude, _serialHeightNMEA,
+          nmeaMode);
     }
   }
 
   if (!_staID.isEmpty()) {
     _latencyChecker = new latencyChecker(_staID);
-  }
-  else {
+    obs = false;
+    ssrOrb = false;
+    ssrClk = false;
+    ssrOrbClk = false;
+    ssrCbi = false;
+    ssrPbi = false;
+    ssrVtec = false;
+    ssrUra = false;
+    ssrHr = false;
+    _oldSsrEpoch = 0;
+    _ssrEpoch = 0;
+  } else {
     _latencyChecker = 0;
   }
 }
@@ -312,28 +304,24 @@ t_irc bncGetThread::initDecoder() {
 
   _decoder = 0;
 
-  if      (_format.indexOf("RTCM_2") != -1 || _format.indexOf("RTCM2") != -1 ||
-           _format.indexOf("RTCM 2") != -1 ) {
+  if (_format.indexOf("RTCM_2") != -1 || _format.indexOf("RTCM2") != -1
+      || _format.indexOf("RTCM 2") != -1) {
     emit(newMessage(_staID + ": Get data in RTCM 2.x format", true));
     _decoder = new RTCM2Decoder(_staID.data());
-  }
-  else if (_format.indexOf("RTCM_3") != -1 || _format.indexOf("RTCM3") != -1 ||
-           _format.indexOf("RTCM 3") != -1 ) {
+  } else if (_format.indexOf("RTCM_3") != -1 || _format.indexOf("RTCM3") != -1
+      || _format.indexOf("RTCM 3") != -1) {
     emit(newMessage(_staID + ": Get data in RTCM 3.x format", true));
     RTCM3Decoder* newDecoder = new RTCM3Decoder(_staID, _rawFile);
     _decoder = newDecoder;
     connect((RTCM3Decoder*) newDecoder, SIGNAL(newMessage(QByteArray,bool)),
-            this, SIGNAL(newMessage(QByteArray,bool)));
-  }
-  else if (_format.indexOf("ZERO") != -1) {
+        this, SIGNAL(newMessage(QByteArray,bool)));
+  } else if (_format.indexOf("ZERO") != -1) {
     emit(newMessage(_staID + ": Get data in original format", true));
     _decoder = new bncZeroDecoder(_staID);
-  }
-  else if (_format.indexOf("RTNET") != -1) {
+  } else if (_format.indexOf("RTNET") != -1) {
     emit(newMessage(_staID + ": Get data in RTNet format", true));
     _decoder = new bncRtnetDecoder();
-  }
-  else {
+  } else {
     emit(newMessage(_staID + ": Unknown data format " + _format, true));
     _isToBeDeleted = true;
     return failure;
@@ -341,8 +329,8 @@ t_irc bncGetThread::initDecoder() {
 
   msleep(100); //sleep 0.1 sec
 
-  _decoder->initRinex(_staID, _mountPoint, _latitude, _longitude,
-                               _nmea, _ntripVersion);
+  _decoder->initRinex(_staID, _mountPoint, _latitude, _longitude, _nmea,
+      _ntripVersion);
 
   if (_rawFile) {
     _decodersRaw[_staID] = _decoder;
@@ -356,8 +344,7 @@ t_irc bncGetThread::initDecoder() {
 GPSDecoder* bncGetThread::decoder() {
   if (!_rawFile) {
     return _decoder;
-  }
-  else {
+  } else {
     if (_decodersRaw.contains(_staID) || initDecoder() == success) {
       return _decodersRaw[_staID];
     }
@@ -381,8 +368,7 @@ bncGetThread::~bncGetThread() {
       it.next();
       delete it.value();
     }
-  }
-  else {
+  } else {
     delete _decoder;
   }
   delete _rawFile;
@@ -397,7 +383,7 @@ bncGetThread::~bncGetThread() {
 void bncGetThread::terminate() {
   _isToBeDeleted = true;
 
-  if(_nmeaPortsMap.contains(_staID)) {
+  if (_nmeaPortsMap.contains(_staID)) {
     _nmeaPortsMap.remove(_staID);
   }
   if (_nmeaServer) {
@@ -409,14 +395,17 @@ void bncGetThread::terminate() {
 
 #ifdef BNC_DEBUG
   if (BNC_CORE->mode() != t_bncCore::interactive) {
-    while (!isFinished()) {wait();}
+    while (!isFinished()) {
+      wait();
+    }
     delete this;
-  }
-  else {
-    if (!isRunning()) {delete this;}
+  } else {
+    if (!isRunning()) {
+      delete this;
+    }
   }
 #else
-    if (!isRunning()) {delete this;}
+  if (!isRunning()) {delete this;}
 #endif
 
 }
@@ -449,21 +438,19 @@ void bncGetThread::run() {
           GPSDecoder* decoder = itDec.value();
           decoder->_obsList.clear();
         }
-      }
-      else {
+      } else {
         _decoder->_obsList.clear();
       }
 
       // Read Data
       // ---------
       QByteArray data;
-      if      (_query) {
+      if (_query) {
         _query->waitForReadyRead(data);
-      }
-      else if (_rawFile) {
+      } else if (_rawFile) {
         data = _rawFile->readChunk();
         _format = _rawFile->format();
-        _staID  = _rawFile->staID();
+        _staID = _rawFile->staID();
 
         QCoreApplication::processEvents();
 
@@ -485,8 +472,7 @@ void bncGetThread::run() {
         emit(newMessage(_staID + ": Data timeout, reconnecting", true));
         msleep(10000); //sleep 10 sec, G. Weber
         continue;
-      }
-      else {
+      } else {
         emit newBytes(_staID, nBytes);
         emit newRawData(_staID, data);
       }
@@ -519,12 +505,84 @@ void bncGetThread::run() {
       // --------------------------------
       if (_latencyChecker) {
         _latencyChecker->checkOutage(irc == success);
-        _latencyChecker->checkObsLatency(decoder()->_obsList);
-        _latencyChecker->checkCorrLatency(decoder()->corrGPSEpochTime());
-
+        QListIterator<int> it(decoder()->_typeList);
+        _ssrEpoch = decoder()->corrGPSEpochTime();
+        if (_oldSsrEpoch > 0 && _ssrEpoch && _ssrEpoch > _oldSsrEpoch) {
+          if (ssrOrb) {
+            _latencyChecker->checkCorrLatency(_oldSsrEpoch, 1057);
+            ssrOrb = false;
+          }
+          if (ssrClk) {
+            _latencyChecker->checkCorrLatency(_oldSsrEpoch, 1058);
+            ssrClk = false;
+          }
+          if (ssrOrbClk) {
+            _latencyChecker->checkCorrLatency(_oldSsrEpoch, 1060);
+            ssrOrbClk = false;
+          }
+          if (ssrCbi) {
+            _latencyChecker->checkCorrLatency(_oldSsrEpoch, 1059);
+            ssrCbi = false;
+          }
+          if (ssrPbi) {
+            _latencyChecker->checkCorrLatency(_oldSsrEpoch, 1265);
+            ssrPbi = false;
+          }
+          if (ssrVtec) {
+            _latencyChecker->checkCorrLatency(_oldSsrEpoch, 1264);
+            ssrVtec = false;
+          }
+          if (ssrUra) {
+            _latencyChecker->checkCorrLatency(_oldSsrEpoch, 1061);
+            ssrUra = false;
+          }
+          if (ssrHr) {
+            _latencyChecker->checkCorrLatency(_oldSsrEpoch, 1062);
+            ssrHr = false;
+          }
+        }
+        while (it.hasNext()) {
+          int rtcmType = it.next();
+          if ((rtcmType >= 1001 && rtcmType <= 1004) || // legacy RTCM OBS
+              (rtcmType >= 1009 && rtcmType <= 1012) || // legacy RTCM OBS
+              (rtcmType >= 1071 && rtcmType <= 1127)) { // MSM RTCM OBS
+            obs = true;
+          } else if ((rtcmType >= 1057 && rtcmType <= 1068) ||
+                     (rtcmType >= 1240 && rtcmType <= 1270)) {
+            switch (rtcmType) {
+              case 1057: case 1063: case 1240: case 1246: case 1252: case 1258:
+                ssrOrb = true;
+                break;
+              case 1058: case 1064: case 1241: case 1247: case 1253: case 1259:
+                ssrClk = true;
+                break;
+              case 1060: case 1066: case 1243: case 1249: case 1255: case 1261:
+                ssrOrbClk = true;
+                break;
+              case 1059: case 1065: case 1242:   case 1248: case 1254: case 1260:
+                ssrCbi = true;
+                break;
+              case 1265: case 1266: case 1267: case 1268: case 1269: case 1270:
+                ssrPbi = true;
+                break;
+              case 1264:
+                ssrVtec = true;
+                break;
+              case 1061: case 1067: case 1244: case 1250: case 1256: case 1262:
+                ssrUra = true;
+                break;
+              case 1062: case 1068: case 1245: case 1251: case 1257: case 1263:
+                ssrHr = true;
+                break;
+            }
+          }
+        }
+        if (obs) {
+          _latencyChecker->checkObsLatency(decoder()->_obsList);
+        }
+        _oldSsrEpoch = _ssrEpoch;
         emit newLatency(_staID, _latencyChecker->currentLatency());
       }
-
       miscScanRTCM();
 
       // Loop over all observations (observations output)
@@ -542,7 +600,9 @@ void bncGetThread::run() {
           bool wrongObservationEpoch = checkForWrongObsEpoch(obs._time);
           if (wrongObservationEpoch) {
             QString prn(obs._prn.toString().c_str());
-            emit( newMessage(_staID + " (" + prn.toAscii() + ")" + ": Wrong observation epoch(s)", false) );
+            emit(newMessage(
+                _staID + " (" + prn.toAscii() + ")"
+                    + ": Wrong observation epoch(s)", false));
             continue;
           }
         }
@@ -551,19 +611,19 @@ void bncGetThread::run() {
         // ----------------------------------------------------
         if (!_rawFile) {
           QString prn(obs._prn.toString().c_str());
-          long iSec    = long(floor(obs._time.gpssec()+0.5));
-          long obsTime = obs._time.gpsw()*7*24*3600 + iSec;
+          long iSec = long(floor(obs._time.gpssec() + 0.5));
+          long obsTime = obs._time.gpsw() * 7 * 24 * 3600 + iSec;
           QMap<QString, long>::const_iterator it = _prnLastEpo.find(prn);
           if (it != _prnLastEpo.end()) {
             long oldTime = it.value();
-            if      (obsTime <  oldTime) {
-              emit( newMessage(_staID +
-                 ": old observation " + prn.toAscii(), false));
+            if (obsTime < oldTime) {
+              emit(newMessage(_staID + ": old observation " + prn.toAscii(),
+                  false));
               continue;
-            }
-            else if (obsTime == oldTime) {
-              emit( newMessage(_staID +
-                 ": observation coming more than once " + prn.toAscii(), false));
+            } else if (obsTime == oldTime) {
+              emit(newMessage(
+                  _staID + ": observation coming more than once "
+                      + prn.toAscii(), false));
               continue;
             }
           }
@@ -583,12 +643,10 @@ void bncGetThread::run() {
         emit newObs(_staID, obsListHlp);
       }
 
-    }
-    catch (Exception& exc) {
+    } catch (Exception& exc) {
       emit(newMessage(_staID + " " + exc.what(), true));
       _isToBeDeleted = true;
-    }
-    catch (...) {
+    } catch (...) {
       emit(newMessage(_staID + " bncGetThread exception", true));
       _isToBeDeleted = true;
     }
@@ -610,8 +668,7 @@ t_irc bncGetThread::tryReconnect() {
         GPSDecoder* decoder = itDec.value();
         decoder->setRinexReconnectFlag(false);
       }
-    }
-    else {
+    } else {
       _decoder->setRinexReconnectFlag(false);
     }
     return success;
@@ -624,8 +681,7 @@ t_irc bncGetThread::tryReconnect() {
     sleep(_nextSleep);
     if (_nextSleep == 0) {
       _nextSleep = 1;
-    }
-    else {
+    } else {
       _nextSleep = 2 * _nextSleep;
       if (_nextSleep > 256) {
         _nextSleep = 256;
@@ -639,36 +695,28 @@ t_irc bncGetThread::tryReconnect() {
     if (_query) {
       delete _query;
     }
-    if      (_ntripVersion == "U") {
+    if (_ntripVersion == "U") {
       _query = new bncNetQueryUdp();
-    }
-    else if (_ntripVersion == "R") {
+    } else if (_ntripVersion == "R") {
       _query = new bncNetQueryRtp();
-    }
-    else if (_ntripVersion == "S") {
+    } else if (_ntripVersion == "S") {
       _query = new bncNetQueryS();
-    }
-    else if (_ntripVersion == "N") {
+    } else if (_ntripVersion == "N") {
       _query = new bncNetQueryV0();
-    }
-    else if (_ntripVersion == "UN") {
+    } else if (_ntripVersion == "UN") {
       _query = new bncNetQueryUdp0();
-    }
-    else if (_ntripVersion == "2") {
+    } else if (_ntripVersion == "2") {
       _query = new bncNetQueryV2(false);
-    }
-    else if (_ntripVersion == "2s") {
+    } else if (_ntripVersion == "2s") {
       _query = new bncNetQueryV2(true);
-    }
-    else {
+    } else {
       _query = new bncNetQueryV1();
     }
     if (_nmea == "yes") {
       if (_serialNMEA == MANUAL_NMEA) {
         _query->startRequest(_mountPoint, _manualNMEAString);
         _lastManualNMEA = QDateTime::currentDateTime();
-      }
-      else if (_serialNMEA == AUTO_NMEA) {
+      } else if (_serialNMEA == AUTO_NMEA) {
         if (_serialPort) {
           int nb = _serialPort->bytesAvailable();
           if (nb > 0) {
@@ -687,8 +735,7 @@ t_irc bncGetThread::tryReconnect() {
           }
         }
       }
-    }
-    else {
+    } else {
       _query->startRequest(_mountPoint, "");
     }
 
@@ -704,9 +751,8 @@ t_irc bncGetThread::tryReconnect() {
       GPSDecoder* decoder = itDec.value();
       decoder->setRinexReconnectFlag(false);
     }
-  }
-  else {
-   _decoder->setRinexReconnectFlag(false);
+  } else {
+    _decoder->setRinexReconnectFlag(false);
   }
 
   return success;
@@ -716,19 +762,20 @@ t_irc bncGetThread::tryReconnect() {
 //////////////////////////////////////////////////////////////////////////////
 void bncGetThread::miscScanRTCM() {
 
-  if ( !decoder() ) {
+  if (!decoder()) {
     return;
   }
 
   bncSettings settings;
-  if ( Qt::CheckState(settings.value("miscScanRTCM").toInt()) == Qt::Checked ) {
+  if (Qt::CheckState(settings.value("miscScanRTCM").toInt()) == Qt::Checked) {
 
-    if ( _miscMount == _staID || _miscMount == "ALL" ) {
+    if (_miscMount == _staID || _miscMount == "ALL") {
       // RTCM message types
       // ------------------
       for (int ii = 0; ii < decoder()->_typeList.size(); ii++) {
-        QString type =  QString("%1 ").arg(decoder()->_typeList[ii]);
-        emit(newMessage(_staID + ": Received message type " + type.toAscii(), true));
+        QString type = QString("%1 ").arg(decoder()->_typeList[ii]);
+        emit(newMessage(_staID + ": Received message type " + type.toAscii(),
+            true));
       }
 
       // Check Observation Types
@@ -741,9 +788,9 @@ void bncGetThread::miscScanRTCM() {
           if (obs._obs[iFrq]->_codeValid) {
             QString rnxStr('C');
             rnxStr.append(obs._obs[iFrq]->_rnxType2ch.c_str());
-            if (_format.indexOf("RTCM_2") != -1 ||
-                _format.indexOf("RTCM2") != -1 ||
-                _format.indexOf("RTCM 2") != -1 ) {
+            if (_format.indexOf("RTCM_2") != -1
+                || _format.indexOf("RTCM2") != -1
+                || _format.indexOf("RTCM 2") != -1) {
               rnxStr = t_rnxObsFile::type3to2(obs._prn.system(), rnxStr);
             }
             if (rnxTypes.indexOf(rnxStr) == -1) {
@@ -754,9 +801,9 @@ void bncGetThread::miscScanRTCM() {
           if (obs._obs[iFrq]->_phaseValid) {
             QString rnxStr('L');
             rnxStr.append(obs._obs[iFrq]->_rnxType2ch.c_str());
-            if (_format.indexOf("RTCM_2") != -1 ||
-                _format.indexOf("RTCM2") != -1 ||
-                _format.indexOf("RTCM 2") != -1 ) {
+            if (_format.indexOf("RTCM_2") != -1
+                || _format.indexOf("RTCM2") != -1
+                || _format.indexOf("RTCM 2") != -1) {
               rnxStr = t_rnxObsFile::type3to2(obs._prn.system(), rnxStr);
             }
             if (rnxTypes.indexOf(rnxStr) == -1) {
@@ -764,12 +811,12 @@ void bncGetThread::miscScanRTCM() {
               allFound = false;
             }
           }
-          if (obs._obs[iFrq]->_dopplerValid){
+          if (obs._obs[iFrq]->_dopplerValid) {
             QString rnxStr('D');
             rnxStr.append(obs._obs[iFrq]->_rnxType2ch.c_str());
-            if (_format.indexOf("RTCM_2") != -1 ||
-                _format.indexOf("RTCM2") != -1 ||
-                _format.indexOf("RTCM 2") != -1 ) {
+            if (_format.indexOf("RTCM_2") != -1
+                || _format.indexOf("RTCM2") != -1
+                || _format.indexOf("RTCM 2") != -1) {
               rnxStr = t_rnxObsFile::type3to2(obs._prn.system(), rnxStr);
             }
             if (rnxTypes.indexOf(rnxStr) == -1) {
@@ -777,12 +824,12 @@ void bncGetThread::miscScanRTCM() {
               allFound = false;
             }
           }
-          if (obs._obs[iFrq]->_snrValid){
+          if (obs._obs[iFrq]->_snrValid) {
             QString rnxStr('S');
             rnxStr.append(obs._obs[iFrq]->_rnxType2ch.c_str());
-            if (_format.indexOf("RTCM_2") != -1 ||
-                _format.indexOf("RTCM2") != -1 ||
-                _format.indexOf("RTCM 2") != -1 ) {
+            if (_format.indexOf("RTCM_2") != -1
+                || _format.indexOf("RTCM2") != -1
+                || _format.indexOf("RTCM 2") != -1) {
               rnxStr = t_rnxObsFile::type3to2(obs._prn.system(), rnxStr);
             }
             if (rnxTypes.indexOf(rnxStr) == -1) {
@@ -795,47 +842,51 @@ void bncGetThread::miscScanRTCM() {
           QString msg;
           QTextStream str(&msg);
           QString s;
-          str << obs._prn.system() << "    " << s.sprintf("%2d", rnxTypes.size()) << "  ";
+          str << obs._prn.system() << "    "
+              << s.sprintf("%2d", rnxTypes.size()) << "  ";
           for (int iType = 0; iType < rnxTypes.size(); iType++) {
             str << " " << rnxTypes[iType];
           }
-          emit(newMessage(_staID + ": Observation Types: " + msg.toAscii(), true));
+          emit(newMessage(_staID + ": Observation Types: " + msg.toAscii(),
+              true));
         }
       }
 
       // RTCMv3 antenna descriptor
       // -------------------------
       for (int ii = 0; ii < decoder()->_antType.size(); ii++) {
-        QString ant1 =  QString("%1 ").arg(decoder()->_antType[ii]);
+        QString ant1 = QString("%1 ").arg(decoder()->_antType[ii]);
         emit(newMessage(_staID + ": Antenna descriptor " + ant1.toAscii(), true));
       }
 
       // RTCM Antenna Coordinates
       // ------------------------
-      for (int ii=0; ii < decoder()->_antList.size(); ii++) {
+      for (int ii = 0; ii < decoder()->_antList.size(); ii++) {
         QByteArray antT;
-        if      (decoder()->_antList[ii].type == GPSDecoder::t_antInfo::ARP) {
+        if (decoder()->_antList[ii].type == GPSDecoder::t_antInfo::ARP) {
           antT = "ARP";
-        }
-        else if (decoder()->_antList[ii].type == GPSDecoder::t_antInfo::APC) {
+        } else if (decoder()->_antList[ii].type == GPSDecoder::t_antInfo::APC) {
           antT = "APC";
         }
         QByteArray ant1, ant2, ant3;
-        ant1 = QString("%1 ").arg(decoder()->_antList[ii].xx,0,'f',4).toAscii();
-        ant2 = QString("%1 ").arg(decoder()->_antList[ii].yy,0,'f',4).toAscii();
-        ant3 = QString("%1 ").arg(decoder()->_antList[ii].zz,0,'f',4).toAscii();
+        ant1 =
+            QString("%1 ").arg(decoder()->_antList[ii].xx, 0, 'f', 4).toAscii();
+        ant2 =
+            QString("%1 ").arg(decoder()->_antList[ii].yy, 0, 'f', 4).toAscii();
+        ant3 =
+            QString("%1 ").arg(decoder()->_antList[ii].zz, 0, 'f', 4).toAscii();
         emit(newMessage(_staID + ": " + antT + " (ITRF) X " + ant1 + "m", true));
         emit(newMessage(_staID + ": " + antT + " (ITRF) Y " + ant2 + "m", true));
         emit(newMessage(_staID + ": " + antT + " (ITRF) Z " + ant3 + "m", true));
         double hh = 0.0;
         if (decoder()->_antList[ii].height_f) {
           hh = decoder()->_antList[ii].height;
-          QByteArray ant4 = QString("%1 ").arg(hh,0,'f',4).toAscii();
-          emit(newMessage(_staID + ": Antenna height above marker "  + ant4 + "m", true));
+          QByteArray ant4 = QString("%1 ").arg(hh, 0, 'f', 4).toAscii();
+          emit(newMessage(
+              _staID + ": Antenna height above marker " + ant4 + "m", true));
         }
         emit(newAntCrd(_staID, decoder()->_antList[ii].xx,
-                       decoder()->_antList[ii].yy, decoder()->_antList[ii].zz,
-                       hh, antT));
+            decoder()->_antList[ii].yy, decoder()->_antList[ii].zz, hh, antT));
       }
 
       // RTCM GLONASS slots
@@ -843,14 +894,16 @@ void bncGetThread::miscScanRTCM() {
       if (decoder()->_gloFrq.size()) {
         bool allFound = true;
         QString slot = decoder()->_gloFrq;
-        slot.replace("  "," ").replace(" ",":");
+        slot.replace("  ", " ").replace(" ", ":");
         if (_gloSlots.indexOf(slot) == -1) {
           _gloSlots.append(slot);
           allFound = false;
         }
         if (!allFound) {
           _gloSlots.sort();
-          emit(newMessage(_staID + ": GLONASS Slot:Freq "  + _gloSlots.join(" ").toAscii(), true));
+          emit(newMessage(
+              _staID + ": GLONASS Slot:Freq " + _gloSlots.join(" ").toAscii(),
+              true));
         }
       }
     }
@@ -858,20 +911,20 @@ void bncGetThread::miscScanRTCM() {
 
 #ifdef MLS_SOFTWARE
   for (int ii=0; ii <decoder()->_antList.size(); ii++) {
-        QByteArray antT;
-        if      (decoder()->_antList[ii].type == GPSDecoder::t_antInfo::ARP) {
-          antT = "ARP";
-        }
-        else if (decoder()->_antList[ii].type == GPSDecoder::t_antInfo::APC) {
-          antT = "APC";
-        }
-        double hh = 0.0;
-        if (decoder()->_antList[ii].height_f) {
-          hh = decoder()->_antList[ii].height;
-        }
-        emit(newAntCrd(_staID, decoder()->_antList[ii].xx,
-                       decoder()->_antList[ii].yy, decoder()->_antList[ii].zz,
-                       hh, antT));
+    QByteArray antT;
+    if (decoder()->_antList[ii].type == GPSDecoder::t_antInfo::ARP) {
+      antT = "ARP";
+    }
+    else if (decoder()->_antList[ii].type == GPSDecoder::t_antInfo::APC) {
+      antT = "APC";
+    }
+    double hh = 0.0;
+    if (decoder()->_antList[ii].height_f) {
+      hh = decoder()->_antList[ii].height;
+    }
+    emit(newAntCrd(_staID, decoder()->_antList[ii].xx,
+            decoder()->_antList[ii].yy, decoder()->_antList[ii].zz,
+            hh, antT));
   }
 
   for (int ii = 0; ii <decoder()->_typeList.size(); ii++) {
@@ -929,8 +982,9 @@ void bncGetThread::slotSerialReadyRead() {
 
 void bncGetThread::slotNewNMEAConnection() {
   _nmeaSockets->push_back(_nmeaServer->nextPendingConnection());
-  emit( newMessage(QString("New PPP client on port: # %1")
-                   .arg(_nmeaSockets->size()).toAscii(), true) );
+  emit(newMessage(
+      QString("New PPP client on port: # %1").arg(_nmeaSockets->size()).toAscii(),
+      true));
 }
 
 //
@@ -944,8 +998,7 @@ void bncGetThread::slotNewNMEAstr(QByteArray staID, QByteArray str) {
       if (sock->localPort() == nmeaPort) {
         if (sock->state() == QAbstractSocket::ConnectedState) {
           sock->write(str);
-        }
-        else if (sock->state() != QAbstractSocket::ConnectingState) {
+        } else if (sock->state() != QAbstractSocket::ConnectingState) {
           delete sock;
           is.remove();
         }

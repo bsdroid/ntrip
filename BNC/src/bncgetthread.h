@@ -46,11 +46,11 @@ class bncGetThread : public QThread {
 
  public:
    bncGetThread(bncRawFile* rawFile);
-   bncGetThread(const QUrl& mountPoint, 
+   bncGetThread(const QUrl& mountPoint,
                 const QByteArray& format,
                 const QByteArray& latitude,
                 const QByteArray& longitude,
-                const QByteArray& nmea, 
+                const QByteArray& nmea,
                 const QByteArray& ntripVersion);
 
    bncNetQuery::queryStatus queryStatus() {
@@ -79,7 +79,7 @@ class bncGetThread : public QThread {
    void newRawData(QByteArray staID, QByteArray data);
    void newLatency(QByteArray staID, double clate);
    void newObs(QByteArray staID, QList<t_satObs> obsList);
-   void newAntCrd(QByteArray staID, double xx, double yy, double zz, 
+   void newAntCrd(QByteArray staID, double xx, double yy, double zz,
                   double hh, QByteArray antType);
    void newMessage(QByteArray msg, bool showOnScreen);
    void newRTCMMessage(QByteArray staID, int msgID);
@@ -120,9 +120,17 @@ class bncGetThread : public QThread {
    int                        _manualNMEASampl;
    int                        _nextSleep;
    int                        _iMount;
+   int                        _ssrEpoch;
+   int                        _oldSsrEpoch;
    bncRawFile*                _rawFile;
    QextSerialPort*            _serialPort;
    bool                       _isToBeDeleted;
+   bool obs;
+   bool ssrOrb, ssrClk, ssrOrbClk;
+   bool ssrCbi, ssrPbi;
+   bool ssrVtec;
+   bool ssrUra;
+   bool ssrHr;
    latencyChecker*            _latencyChecker;
    QString                    _miscMount;
    QFile*                     _serialOutFile;
