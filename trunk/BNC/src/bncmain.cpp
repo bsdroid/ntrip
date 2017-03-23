@@ -252,7 +252,7 @@ int main(int argc, char* argv[]) {
       "\n"
       "Upload Corrections Panel keys:\n"
       "   uploadMountpointsOut   {Upload corrections table [character string, semicolon separated list, each element in quotation marks, example:\n"
-      "                          \"www.igs-ip.net,2101,IGS01,pass,IGS08,0,/home/user/BNC$[GPSWD}.sp3,/home/user/BNC$[GPSWD}.clk,258,1,0;\n"
+      "                          \"www.igs-ip.net,2101,IGS01,pass,IGS14,0,/home/user/BNC$[GPSWD}.sp3,/home/user/BNC$[GPSWD}.clk,258,1,0;\n"
       "                          www.euref-ip.net,2101,EUREF01,pass,ETRF2000,0,,,258,2,0\"]}\n"
       "   uploadIntr             {Length of SP3 and Clock RINEX file interval [character string: 1 min|2 min|5 min|10 min|15 min|30 min|1 hour|1 day]}\n"
       "   uploadSamplRtcmEphCorr {Orbit corrections stream sampling rate [integer number of seconds: 0|5|10|15|20|25|30|35|40|45|50|55|60]}\n"
@@ -310,7 +310,7 @@ int main(int argc, char* argv[]) {
       "(6) bnc --key mountPoints \"//user:pass@mgex.igs-ip.net:2101/CUT07 RTCM_3.0 ETH 9.03 38.74 no 2;"
       "//user:pass@www.igs-ip.net:2101/FFMJ1 RTCM_3.1 DEU 50.09 8.66 no 2\"\n"
       "(7) bnc --key cmbStreams \"CLK11 BLG 1.0;CLK93 CNES 1.0\"\n"
-      "(8) bnc --key uploadMountpointsOut \"products.igs-ip.net,98756,TEST,letmein,IGS08,2,/Users/weber/BNC${GPSWD}.clk,,33,3,2;"
+      "(8) bnc --key uploadMountpointsOut \"products.igs-ip.net,98756,TEST,letmein,IGS14,2,/Users/weber/BNC${GPSWD}.clk,,33,3,2;"
       "www.euref-ip.net,333,TEST2,aaaaa,NAD83,2,,,33,5,5\"\n"
       "(9) bnc --key PPP/staTable \"FFMJ1,100.0,100.0,100.0,100.0,100.0,100.0,0.1,3e-6,7777;"
       "CUT07,100.0,100.0,100.0,100.0,100.0,100.0,0.1,3e-6,7778\"\n";

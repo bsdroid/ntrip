@@ -92,7 +92,7 @@ void bncClockRinex::writeHeader(const QDateTime& datTim) {
   _out << "R16 R17 R18 R19 R20 R21 R22 R23 R24                         "
        << "PRN LIST" << endl;
 
-  _out << "     0    IGS08                                             "
+  _out << "     0    IGS14                                             "
        << "# OF SOLN STA / TRF" << endl;
 
   _out << "                                                            "
