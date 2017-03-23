@@ -1008,7 +1008,7 @@ precise orbits and clocks in RTNET format. It also reads a stream carrying
 Broadcast Ephemeris. BNC converts the orbits and clocks into Broadcast
 Corrections and encodes them to RTCM Version 3 SSR messages to finally upload them to
 an Ntrip Broadcaster. The Broadcast Correction stream is referred to satellite
-Antenna Phase Center (APC) and reference system IGS08. Orbits are saved on disk
+Antenna Phase Center (APC) and reference system IGS14. Orbits are saved on disk
 in SP3 format and clocks are saved in Clock RINEX format.
 </li><br>
 
@@ -1018,7 +1018,7 @@ Corrections and a Broadcast Ephemeris stream from an Ntrip Broadcaster to
 produce a combined Broadcast Correction stream. BNC encodes the combination
 product in RTCM Version 3 SSR messages and uploads that to an Ntrip
 Broadcaster. The Broadcast Correction stream is referred to satellite Antenna Phase Center (APC) and not to satellite
-Center of Mass (CoM). Its reference system is IGS08. Orbits are saved in SP3
+Center of Mass (CoM). Its reference system is IGS14. Orbits are saved in SP3
 format (referred to CoM) and clocks in Clock RINEX format.
 </li><br>
 
@@ -3808,11 +3808,11 @@ The procedure taken by BNC to generate the orbit and clock corrections to Broadc
 </ul>
 Then, epoch by epoch:
 <ul>
-<li>Continuously receive the best available orbit and clock estimates for all satellites in XYZ Earth-Centered-Earth-Fixed IGS08 reference system. Receive them every epoch in plain ASCII format as provided by a real-time GNSS engine such as RTNET or generate them following a combination approach. </li>
+<li>Continuously receive the best available orbit and clock estimates for all satellites in XYZ Earth-Centered-Earth-Fixed IGS14 reference system. Receive them every epoch in plain ASCII format as provided by a real-time GNSS engine such as RTNET or generate them following a combination approach. </li>
 <li>Calculate XYZ coordinates from Broadcast Ephemeris orbits. </li>
-<li>Calculate differences dX,dY,dZ between Broadcast Ephemeris and IGS08 orbits. </li>
+<li>Calculate differences dX,dY,dZ between Broadcast Ephemeris and IGS14 orbits. </li>
 <li>Transform these differences into radial, along-track and out-of-plane corrections to Broadcast Ephemeris orbits. </li>
-<li>Calculate corrections to Broadcast Ephemeris clocks as differences between Broadcast Ephemeris clocks and IGS08 clocks. </li>
+<li>Calculate corrections to Broadcast Ephemeris clocks as differences between Broadcast Ephemeris clocks and IGS14 clocks. </li>
 <li>Encode Broadcast Ephemeris orbit and clock corrections in RTCM Version 3 format. </li>
 <li>Upload Broadcast Correction stream to Ntrip Broadcaster. </li>
 </ul>
@@ -3938,14 +3938,14 @@ If 'Host', 'Port', 'Mountpoint' and 'Password' are set, the stream will be encod
 BNC allows configuring several Broadcast Correction streams for upload so that they refer to different reference systems and different Ntrip Broadcasters. You may use this functionality for parallel support of a backup Ntrip Broadcaster or for simultaneous support of various regional reference systems. Available options for transforming orbit and clock corrections to specific target reference systems are
 <p>
 <ul>
-<li>IGS08 which stands for the GNSS-based IGS realization of the International Terrestrial Reference Frame 2008 (ITRF2008), and</li>
+<li>IGS14 which stands for the GNSS-based IGS realization of the International Terrestrial Reference Frame 2014 (ITRF2014), and</li>
 <li>ETRF2000 which stands for the European Terrestrial Reference Frame 2000 adopted by EUREF, and</li>
 <li>NAD83 which stands for the North American Datum 1983 as adopted for the U.S.A., and</li>
 <li>GDA94 which stands for the Geodetic Datum Australia 1994 as adopted for Australia, and</li>
 <li>SIRGAS2000 which stands for the Geodetic Datum adopted for Brazil, and</li>
 <li>SIRGAS95 which stands for the Geodetic Datum adopted e.g. for Venezuela, and</li>
 <li>DREF91 which stands for the Geodetic Datum adopted for Germany, and</li>
-<li>'Custom' which allows a transformation of Broadcast Corrections from the IGS08 system to any other system through specifying up to 14 Helmert Transformation Parameters.</li>
+<li>'Custom' which allows a transformation of Broadcast Corrections from the IGS14 system to any other system through specifying up to 14 Helmert Transformation Parameters.</li>
 </ul>
 </p>
 
@@ -3963,7 +3963,7 @@ From a theoretical point of view, this kind of approximation leads to inconsiste
 </p>
 
 <p>
-<u>IGS08:</u> As the orbits and clocks coming from real-time GNSS engine are expected to be in the IGS08 system, no transformation is carried out if this option is selected.
+<u>IGS14:</u> As the orbits and clocks coming from real-time GNSS engine are expected to be in the IGS14 system, no transformation is carried out if this option is selected.
 </p>
 
 <p>
@@ -4105,7 +4105,7 @@ To: 2000.0
 </p>
 
 <p>
-<u>Custom:</u> Feel free to specify your own 14 Helmert Transformation parameters for transformations from IGS08/ITRF2008 into your own target system.
+<u>Custom:</u> Feel free to specify your own 14 Helmert Transformation parameters for transformations from IGS14/ITRF2008 into your own target system.
 </p>
 
 <p><img src="IMG/screenshot38.png"/></p>
@@ -4219,7 +4219,7 @@ Note that only when specifying a value of zero '0' (default) for 'Sampling Orb',
 IGS provides a file containing absolute phase center variations for GNSS satellite and receiver antennas in ANTEX format. Entering the full path to such an ANTEX file is required here for referring the SP3 file content to the satellite's Center of Mass (CoM). If you do not specify an ANTEX file, the SP3 file will contain orbit information which is referred to Antenna Phase Center (APC) instead of CoM.
 </p>
 <p>
-The following screenshot shows the encoding and uploading of a stream of precise orbits and clocks coming from a real-time network engine in 'RTNET' ASCII format. The stream is uploaded to Ntrip Broadcaster 'products.igs-ip.net'. It is referred to APC and IGS08. Uploaded data are locally saved in SP3 and Clock RINEX format. The SSR Provider ID is set to 3. The SSR Solution ID and the Issue of Data SSR are set to 1. Required Broadcast Ephemeris are received via stream 'RTCM3EPH'.
+The following screenshot shows the encoding and uploading of a stream of precise orbits and clocks coming from a real-time network engine in 'RTNET' ASCII format. The stream is uploaded to Ntrip Broadcaster 'products.igs-ip.net'. It is referred to APC and IGS14. Uploaded data are locally saved in SP3 and Clock RINEX format. The SSR Provider ID is set to 3. The SSR Solution ID and the Issue of Data SSR are set to 1. Required Broadcast Ephemeris are received via stream 'RTCM3EPH'.
 </p>
 <p><img src="IMG/screenshot26.png"/></p>
 <p><u>Figure 31:</u> BNC producing Broadcast Corrections from incoming precise orbits and clocks and uploading them to an Ntrip Broadcaster</p>
@@ -5084,7 +5084,7 @@ Command line option '--help' provides a complete list of all configuration param
 
 <b>Upload Corrections Panel keys:</b>
    uploadMountpointsOut   {Upload corrections table [character string, semicolon separated list, each element in quotation marks, example:
-                          "www.igs-ip.net,2101,IGS01,pass,IGS08,0,/home/user/BNC$[GPSWD}.sp3,/home/user/BNC$[GPSWD}.clk,258,1,0;
+                          "www.igs-ip.net,2101,IGS01,pass,IGS14,0,/home/user/BNC$[GPSWD}.sp3,/home/user/BNC$[GPSWD}.clk,258,1,0;
                            www.euref-ip.net,2101,EUREF01,pass,ETRF2000,0,,,258,2,0"]}
    uploadIntr             {Length of SP3 and Clock RINEX file interval [character string: 1 min|2 min|5 min|10 min|15 min|30 min|1 hour|1 day]}
    uploadSamplRtcmEphCorr {Orbit corrections stream sampling rate [integer number of seconds: 0|5|10|15|20|25|30|35|40|45|50|55|60]}
@@ -5143,7 +5143,7 @@ by quotation marks when specified on command line.
 (6) bnc --key mountPoints "//user:pass@mgex.igs-ip.net:2101/CUT07 RTCM_3.0 ETH 9.03 38.74 no 2;
                            //user:pass@www.igs-ip.net:2101/FFMJ1 RTCM_3.1 DEU 50.09 8.66 no 2"
 (7) bnc --key cmbStreams "CLK11 BLG 1.0;CLK93 CNES 1.0"
-(8) bnc --key uploadMountpointsOut "products.igs-ip.net,98756,TEST,letmein,IGS08,2,/Users/weber/BNC${GPSWD}.clk,,33,3,2;
+(8) bnc --key uploadMountpointsOut "products.igs-ip.net,98756,TEST,letmein,IGS14,2,/Users/weber/BNC${GPSWD}.clk,,33,3,2;
                                     www.euref-ip.net,333,TEST2,aaaaa,NAD83,2,,,33,5,5"
 (9) bnc --key PPP/staTable "FFMJ1,100.0,100.0,100.0,100.0,100.0,100.0,0.1,3e-6,7777;
                             CUT07,100.0,100.0,100.0,100.0,100.0,100.0,0.1,3e-6,7778"
@@ -5242,11 +5242,11 @@ by quotation marks when specified on command line.
 <tr><td>HTTPS</td><td>Hypertext Transfer Protocol Secure</td></tr>
 <tr><td>IAG</td><td>International Association of Geodesy</td></tr>
 <tr><td>ICECAST</td><td>Streaming Media Server</td></tr>
-<tr><td>IGS08</td><td>IGS Reference Frame 2008</td></tr>
+<tr><td>IGS14</td><td>IGS Reference Frame 214</td></tr>
 <tr><td>IGS</td><td>International GNSS Service</td></tr>
 <tr><td>IOD</td><td>Issue of Data</td></tr>
 <tr><td>IP</td><td>Internet Protocol</td></tr>
-<tr><td>ITRF2008</td><td>International Terrestrial Reference Frame 2008</td></tr>
+<tr><td>ITRF2014</td><td>International Terrestrial Reference Frame 2014</td></tr>
 <tr><td>L3</td><td>Ionosphere-Free Linear Combination Of Phase Observations</td></tr>
 <tr><td>LAN</td><td>Local Area Network</td></tr>
 <tr><td>LC</td><td>Linea Combination</td></tr>
