@@ -248,7 +248,7 @@ void bncRtnetUploadCaster::decodeRtnetStream(char* buffer, int bufLen) {
   }
   int iEpoBegEarlier = _rtnetStreamBuffer.indexOf('*');
   if (iEpoBegEarlier != -1 && iEpoBegEarlier < iEpoBeg) { // are there two epoch lines in buffer?
-	  _rtnetStreamBuffer = _rtnetStreamBuffer.mid(iEpoBegEarlier);
+    _rtnetStreamBuffer = _rtnetStreamBuffer.mid(iEpoBegEarlier);
   }
   else {
     _rtnetStreamBuffer = _rtnetStreamBuffer.mid(iEpoBeg);
@@ -2277,7 +2277,7 @@ void bncRtnetUploadCaster::processSatellite(const t_eph* eph, int GPSweek,
   ColumnVector xP = _CoM ? rtnCoM : rtnAPC;
 
   double dc = 0.0;
-  if (_crdTrafo != "IGS08") {
+  if (_crdTrafo != "IGS14") {
     crdTrafo(GPSweek, xP, dc);
   }
 
