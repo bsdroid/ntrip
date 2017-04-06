@@ -42,8 +42,6 @@ bncSettings::~bncSettings() {
 ////////////////////////////////////////////////////////////////////////////
 void bncSettings::reRead() {
 
-  BNC_CORE->_settings.clear();
-
   QSettings settings(BNC_CORE->confFileName(), QSettings::IniFormat);
 
 #ifdef GNSSCENTER_PLUGIN
