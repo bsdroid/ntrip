@@ -165,7 +165,7 @@ bncRtnetUploadCaster::bncRtnetUploadCaster(const QString& mountpoint,
     _ozr =  0.000000;
     _sc  = -1.000;
     _scr =  0.000;
-    _t0  =  2000.0;
+    _t0  =  2000.4;
   }
   // Transformation Parameters from ITRF2008 to DREF91
   else if (_crdTrafo == "DREF91") {
