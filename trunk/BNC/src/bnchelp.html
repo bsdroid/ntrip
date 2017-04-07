@@ -3941,9 +3941,8 @@ BNC allows configuring several Broadcast Correction streams for upload so that t
 <li>IGS14 which stands for the GNSS-based IGS realization of the International Terrestrial Reference Frame 2014 (ITRF2014), and</li>
 <li>ETRF2000 which stands for the European Terrestrial Reference Frame 2000 adopted by EUREF, and</li>
 <li>NAD83 which stands for the North American Datum 1983 as adopted for the U.S.A., and</li>
-<li>GDA94 which stands for the Geodetic Datum Australia 1994 as adopted for Australia, and</li>
+<li>GDA2020 which stands for the Geodetic Datum Australia 2020 as adopted for Australia, and</li>
 <li>SIRGAS2000 which stands for the Geodetic Datum adopted for Brazil, and</li>
-<li>SIRGAS95 which stands for the Geodetic Datum adopted e.g. for Venezuela, and</li>
 <li>DREF91 which stands for the Geodetic Datum adopted for Germany, and</li>
 <li>'Custom' which allows a transformation of Broadcast Corrections from the IGS14 system to any other system through specifying up to 14 Helmert Transformation Parameters.</li>
 </ul>
@@ -3987,6 +3986,7 @@ Scale at epoch To : 0.00000000134
 Scale rate: 0.00000000008 /y
 To: 2000.0
 </pre>
+In order to perform a transformation 'ITRF2014-&gt;ETRF2000', a transformation from 'ITRF2014-&gt;ITRF2008' is done at first.
 </p>
 
 <p>
@@ -4010,28 +4010,29 @@ Scale at epoch To : 0.00000000171504
 Scale rate: -0.00000000010201 /y
 To: 1997.0
 </pre>
+In order to perform a transformation 'ITRF2014-&gt;NAD83', a transformation 'ITRF2014-&gt;ITRF2008' is done at first.
 </p>
 
 <p>
-<u>GDA94:</u> The formulas for the transformation 'ITRF2008-&gt;GDA94' are taken from 'John Dawson, Alex Woods 2010: ITRF to GDA94 coordinate transformations', Journal of Applied Geodesy, 4 (2010), 189-199, de Gruyter 2010. DOI 10.1515/JAG.2010.019'.
+<u>GDA2020:</u> The formulas for the transformation 'ITRF2014-&gt;GDA2020' were provided via personal communication from Ryan Ruddick: 'Geocentric Datum of Australia 2020, Interim Release Note Version 1.01, Intergovernmental Committee on Surveying and Mapping (ICSM), Permanent Committee on Geodesy (PCG), 03 March 2017'.
 </p>
 <p>
 <pre>
-Translation in X at epoch To: -0.08468 m
-Translation in Y at epoch To: -0.01942 m
-Translation in Z at epoch To:  0.03201 m
-Translation rate in X:  0.00142 m/y
-Translation rate in Y:  0.00134 m/y
-Translation rate in Z:  0.00090 m/y
-Rotation in X at epoch To:  0.4254 mas
-Rotation in Y at epoch To: -2.2578 mas
-Rotation in Z at epoch To: -2.4015 mas
-Rotation rate in X: -1.5461 mas/y
-Rotation rate in Y: -1.1820 mas/y
-Rotation rate in Z: -1.1551 mas/y
-Scale at epoch To : 0.000000009710
-Scale rate: 0.000000000109 /y
-To: 1994.0
+Translation in X at epoch To: 0.0 m
+Translation in Y at epoch To: 0.0 m
+Translation in Z at epoch To: 0.0 m
+Translation rate in X:  0.0 m/y
+Translation rate in Y:  0.0 m/y
+Translation rate in Z:  0.0 m/y
+Rotation in X at epoch To: 0.0 mas
+Rotation in Y at epoch To: 0.0 mas
+Rotation in Z at epoch To: 0.0 mas
+Rotation rate in X: 1.50379 mas/y
+Rotation rate in Y: 1.18346 mas/y
+Rotation rate in Z: 1.20716 mas/y
+Scale at epoch To : 0.0
+Scale rate: 0.0/y
+To: 2020.0
 </pre>
 </p>
 
@@ -4046,38 +4047,15 @@ Translation in Z at epoch To: -0.0061 m
 Translation rate in X:  0.0000 m/y
 Translation rate in Y:  0.0000 m/y
 Translation rate in Z:  0.0000 m/y
-Rotation in X at epoch To:  0.170 mas
-Rotation in Y at epoch To: -0.030 mas
-Rotation in Z at epoch To:  0.070 mas
+Rotation in X at epoch To: 0.0000 mas
+Rotation in Y at epoch To: 0.0000 mas
+Rotation in Z at epoch To: 0.0000 mas
 Rotation rate in X:  0.000 mas/y
 Rotation rate in Y:  0.000 mas/y
 Rotation rate in Z:  0.000 mas/y
-Scale at epoch To : -0.000000001000
+Scale at epoch To :  0.000
 Scale rate: 0.000000000000 /y
-To: 0000.0
-</pre>
-</p>
-
-<p>
-<u>SIRGAS95:</u> The formulas for the transformation 'ITRF2005-&gt;SIRGAS95' were provided via personal communication from Gustavo Acuha, Laboratorio de Geodesia Fisica y Satelital at Zulia University (LGFS-LUZ), parameters based on values from Table 4.1 of "Terrestrial Reference Frames (April 10, 2009), Chapter 4" in http://tai.bipm.org/iers/convupdt/convupdt_c4.html.</u>.
-</p>
-<p>
-<pre>
-Translation in X at epoch To:  0.0077 m
-Translation in Y at epoch To:  0.0058 m
-Translation in Z at epoch To: -0.0138 m
-Translation rate in X:  0.0000 m/y
-Translation rate in Y:  0.0000 m/y
-Translation rate in Z:  0.0000 m/y
-Rotation in X at epoch To:  0.000 mas
-Rotation in Y at epoch To:  0.000 mas
-Rotation in Z at epoch To: -0.003 mas
-Rotation rate in X:  0.000 mas/y
-Rotation rate in Y:  0.000 mas/y
-Rotation rate in Z:  0.000 mas/y
-Scale at epoch To : 0.00000000157
-Scale rate: -0.000000000000 /y
-To: 1995.4
+To: 20000.0
 </pre>
 </p>
 
@@ -4102,6 +4080,7 @@ Scale at epoch To : 0.00000001224
 Scale rate: 0.00000000008 /y
 To: 2000.0
 </pre>
+In order to perform a transformation 'ITRF2014-&gt;DREF91', a transformation from 'ITRF2014-&gt;ITRF2008' is done at first.
 </p>
 
 <p>
@@ -5279,7 +5258,6 @@ by quotation marks when specified on command line.
 <tr><td>SINEX TRO</td><td>Troposphere Solution Independent Exchange Format</td></tr>
 <tr><td>SINEX</td><td>Solution Independent Exchange Format</td></tr>
 <tr><td>SIRGAS2000</td><td>Geodetic Datum for Latin America and Caribbean 2000</td></tr>
-<tr><td>SIRGAS95</td><td>Geodetic Datum for Latin America and Caribbean 1995</td></tr>
 <tr><td>SIRGAS</td><td>IAG Reference Frame Sub-Commission for Latin America and Caribbean</td></tr>
 <tr><td>SP3</td><td>Standard Product # 3</td></tr>
 <tr><td>SPP</td><td>Single Point Positioning</td></tr>
