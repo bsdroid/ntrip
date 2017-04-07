@@ -95,107 +95,113 @@ bncRtnetUploadCaster::bncRtnetUploadCaster(const QString& mountpoint,
 
   // Set Transformation Parameters
   // -----------------------------
+  // Transformation Parameters from ITRF2008 to ETRF2000
   if (_crdTrafo == "ETRF2000") {
-    _dx = 0.0521;
-    _dy = 0.0493;
-    _dz = -0.0585;
-    _dxr = 0.0001;
-    _dyr = 0.0001;
+    _dx  =  0.0521;
+    _dy  =  0.0493;
+    _dz  = -0.0585;
+    _dxr =  0.0001;
+    _dyr =  0.0001;
     _dzr = -0.0018;
-    _ox = 0.000891;
-    _oy = 0.005390;
-    _oz = -0.008712;
-    _oxr = 0.000081;
-    _oyr = 0.000490;
+    _ox  =  0.000891;
+    _oy  =  0.005390;
+    _oz  = -0.008712;
+    _oxr =  0.000081;
+    _oyr =  0.000490;
     _ozr = -0.000792;
-    _sc = 1.34;
-    _scr = 0.08;
-    _t0 = 2000.0;
+    _sc  =  1.34;
+    _scr =  0.08;
+    _t0  =  2000.0;
   }
+  // Transformation Parameters from ITRF2008 to NAD83
   else if (_crdTrafo == "NAD83") {
-    _dx = 0.99343;
-    _dy = -1.90331;
-    _dz = -0.52655;
-    _dxr = 0.00079;
+    _dx  =  0.99343;
+    _dy  = -1.90331;
+    _dz  = -0.52655;
+    _dxr =  0.00079;
     _dyr = -0.00060;
     _dzr = -0.00134;
-    _ox = -0.02591467;
-    _oy = -0.00942645;
-    _oz = -0.01159935;
+    _ox  = -0.02591467;
+    _oy  = -0.00942645;
+    _oz  = -0.01159935;
     _oxr = -0.00006667;
-    _oyr = 0.00075744;
-    _ozr = 0.00005133;
-    _sc = 1.71504;
+    _oyr =  0.00075744;
+    _ozr =  0.00005133;
+    _sc  =  1.71504;
     _scr = -0.10201;
-    _t0 = 1997.0;
+    _t0  =  1997.0;
   }
-  else if (_crdTrafo == "GDA94") {
-    _dx = -0.08468;
-    _dy = -0.01942;
-    _dz = 0.03201;
-    _dxr = 0.00142;
-    _dyr = 0.00134;
-    _dzr = 0.00090;
-    _ox = 0.0004254;
-    _oy = -0.0022578;
-    _oz = -0.0024015;
-    _oxr = -0.0015461;
-    _oyr = -0.0011820;
-    _ozr = -0.0011551;
-    _sc = 9.710;
-    _scr = 0.109;
-    _t0 = 1994.0;
+  // Transformation Parameters from ITRF2014 to GDA2020 (Ryan Ruddick, GA)
+  else if (_crdTrafo == "GDA2020") {
+    _dx  = 0.0;
+    _dy  = 0.0;
+    _dz  = 0.0;
+    _dxr = 0.0;
+    _dyr = 0.0;
+    _dzr = 0.0;
+    _ox  = 0.0;
+    _oy  = 0.0;
+    _oz  = 0.0;
+    _oxr = 0.00150379;
+    _oyr = 0.00118346;
+    _ozr = 0.00120716;
+    _sc  = 0.0;
+    _scr = 0.0;
+    _t0  = 2020.0;
   }
-  else if (_crdTrafo == "SIRGAS2000") { // from IGb14 (Sonia Costa, BRA)
-    _dx = 0.0026;
-    _dy = 0.0018;
-    _dz = -0.0061;
-    _dxr = 0.0000;
-    _dyr = 0.0000;
-    _dzr = 0.0000;
-    _ox = 0.000170;
-    _oy = -0.000030;
-    _oz = 0.000070;
-    _oxr = 0.000000;
-    _oyr = 0.000000;
-    _ozr = 0.000000;
-    _sc = -1.000;
-    _scr = 0.000;
-    _t0 = 0000.0;
+  // Transformation Parameters from IGb14 to SIRGAS2000 (Sonia Costa, BRA)
+  else if (_crdTrafo == "SIRGAS2000") {
+    _dx  =  0.0026;
+    _dy  =  0.0018;
+    _dz  = -0.0061;
+    _dxr =  0.0000;
+    _dyr =  0.0000;
+    _dzr =  0.0000;
+    _ox  =  0.000170;
+    _oy  = -0.000030;
+    _oz  =  0.000070;
+    _oxr =  0.000000;
+    _oyr =  0.000000;
+    _ozr =  0.000000;
+    _sc  = -1.000;
+    _scr =  0.000;
+    _t0  =  2000.0;
   }
-  else if (_crdTrafo == "SIRGAS95") {
-    _dx = 0.0077;
-    _dy = 0.0058;
-    _dz = -0.0138;
-    _dxr = 0.0000;
-    _dyr = 0.0000;
-    _dzr = 0.0000;
-    _ox = 0.000000;
-    _oy = 0.000000;
-    _oz = -0.000030;
-    _oxr = 0.000000;
-    _oyr = 0.000000;
-    _ozr = 0.000000;
-    _sc = 1.570;
-    _scr = 0.000;
-    _t0 = 0000.0;
-  }
+  // Transformation Parameters from ITRF2008 to DREF91
   else if (_crdTrafo == "DREF91") {
-    _dx = -0.0118;
-    _dy = 0.1432;
-    _dz = -0.1117;
-    _dxr = 0.0001;
-    _dyr = 0.0001;
+    _dx  = -0.0118;
+    _dy  =  0.1432;
+    _dz  = -0.1117;
+    _dxr =  0.0001;
+    _dyr =  0.0001;
     _dzr = -0.0018;
-    _ox = 0.003291;
-    _oy = 0.006190;
-    _oz = -0.011012;
-    _oxr = 0.000081;
-    _oyr = 0.000490;
+    _ox  =  0.003291;
+    _oy  =  0.006190;
+    _oz  = -0.011012;
+    _oxr =  0.000081;
+    _oyr =  0.000490;
     _ozr = -0.000792;
-    _sc = 12.24;
-    _scr = 0.08;
-    _t0 = 2000.0;
+    _sc  =  12.24;
+    _scr =  0.08;
+    _t0  =  2000.0;
+  }
+  // Transformation Parameters from ITRF2014 to ITRF2008 (http://itrf.ign.fr/doc_ITRF/Transfo-ITRF2014_ITRFs.txt)
+  else if (_crdTrafo == "ITRF2008") {
+    _dx  =  0.0016;
+    _dy  =  0.0019;
+    _dz  =  0.0024;
+    _dxr =  0.0;
+    _dyr =  0.0;
+    _dzr = -0.0001;
+    _ox  =  0.0;
+    _oy  =  0.0;
+    _oz  =  0.0;
+    _oxr =  0.0;
+    _oyr =  0.0;
+    _ozr =  0.0;
+    _sc  = -0.02;
+    _scr =  0.03;
+    _t0  =  2010.0;
   }
   else if (_crdTrafo == "Custom") {
     _dx = settings.value("trafo_dx").toDouble();
@@ -2277,7 +2283,24 @@ void bncRtnetUploadCaster::processSatellite(const t_eph* eph, int GPSweek,
   ColumnVector xP = _CoM ? rtnCoM : rtnAPC;
 
   double dc = 0.0;
-  if (_crdTrafo != "IGS14") {
+  //TODO: the following 3 lines can be activated again if all parameters are updated regarding ITRF2014
+  //if (_crdTrafo != "IGS14") {
+  //  crdTrafo(GPSweek, xP, dc);
+  //}
+  if (_crdTrafo ==  "ETRF2000") {
+    _crdTrafo ==  "ITRF2008"; crdTrafo(GPSweek, xP, dc);
+    _crdTrafo ==  "ETRF2000"; crdTrafo(GPSweek, xP, dc);
+  }
+  else if (_crdTrafo ==  "NAD83") {
+    _crdTrafo ==  "ITRF2008"; crdTrafo(GPSweek, xP, dc);
+    _crdTrafo ==  "NAD83";    crdTrafo(GPSweek, xP, dc);
+  }
+  else if (_crdTrafo ==  "DREF91") {
+    _crdTrafo ==  "ITRF2008"; crdTrafo(GPSweek, xP, dc);
+    _crdTrafo ==  "DREF91";   crdTrafo(GPSweek, xP, dc);
+  }
+  else if (_crdTrafo ==  "SIRGAS2000" ||
+           _crdTrafo ==  "GDA2020") {
     crdTrafo(GPSweek, xP, dc);
   }
 
@@ -2364,7 +2387,7 @@ void bncRtnetUploadCaster::crdTrafo(int GPSWeek, ColumnVector& xyz,
     meanSta(2) = -4383600.0;
     meanSta(3) = 4487420.0;
   }
-  else if (_crdTrafo == "GDA94") {
+  else if (_crdTrafo == "GDA2020") {
     meanSta(1) = -4052050.0;
     meanSta(2) = 4212840.0;
     meanSta(3) = -2545110.0;
@@ -2373,11 +2396,6 @@ void bncRtnetUploadCaster::crdTrafo(int GPSWeek, ColumnVector& xyz,
     meanSta(1) = 3740860.0;
     meanSta(2) = -4964290.0;
     meanSta(3) = -1425420.0;
-  }
-  else if (_crdTrafo == "SIRGAS95") {
-    meanSta(1) = 3135390.0;
-    meanSta(2) = -5017670.0;
-    meanSta(3) = -2374440.0;
   }
   else if (_crdTrafo == "DREF91") {
     meanSta(1) = 3959579.0;
@@ -2389,6 +2407,12 @@ void bncRtnetUploadCaster::crdTrafo(int GPSWeek, ColumnVector& xyz,
     meanSta(2) = 0.0; // TODO
     meanSta(3) = 0.0; // TODO
   }
+  // TODO: has to be deleted as soon all parameters are available with respect to ITRF2014
+  else if (_crdTrafo == "ITRF2008") {
+      meanSta(1) = 0.0; // TODO
+      meanSta(2) = 0.0; // TODO
+      meanSta(3) = 0.0; // TODO
+    }
 
   // Clock correction proportional to topocentric distance to satellites
   // -------------------------------------------------------------------
