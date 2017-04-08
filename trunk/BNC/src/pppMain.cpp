@@ -152,12 +152,12 @@ void t_pppMain::readOptions() {
 
     opt->_realTime     = _realTime;
     opt->_roverName    = hlp[0].toStdString();
-    opt->_aprSigCrd[0] = hlp[1].toDouble()+1e-30;
-    opt->_aprSigCrd[1] = hlp[2].toDouble()+1e-30;
-    opt->_aprSigCrd[2] = hlp[3].toDouble()+1e-30;
-    opt->_noiseCrd[0]  = hlp[4].toDouble()+1e-30;
-    opt->_noiseCrd[1]  = hlp[5].toDouble()+1e-30;
-    opt->_noiseCrd[2]  = hlp[6].toDouble()+1e-30;
+    opt->_aprSigCrd[0] = hlp[1].toDouble()+1e-10;
+    opt->_aprSigCrd[1] = hlp[2].toDouble()+1e-10;
+    opt->_aprSigCrd[2] = hlp[3].toDouble()+1e-10;
+    opt->_noiseCrd[0]  = hlp[4].toDouble()+1e-10;
+    opt->_noiseCrd[1]  = hlp[5].toDouble()+1e-10;
+    opt->_noiseCrd[2]  = hlp[6].toDouble()+1e-10;
     opt->_aprSigTrp    = hlp[7].toDouble();
     opt->_noiseTrp     = hlp[8].toDouble();
     opt->_nmeaPort     = hlp[9].toInt();
