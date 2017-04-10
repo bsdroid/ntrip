@@ -62,7 +62,7 @@ example configuration options according to your needs.
 
 Some BNC options require antenna phase center variations as made available
 from IGS through so-called ANTEX files at ftp://igs.org/pub/station/general.
-An example ANTEX file 'igs08.atx' is part of the BNC package for convenience.
+An example ANTEX file 'igs14.atx' is part of the BNC package for convenience.
 
 The example configurations assume that no proxy protects your BNC host.
 Should a proxy be operated in front of BNC then you need to introduce its
@@ -278,6 +278,6 @@ excluded via command line option. BNC runs offline. Comparison results are saved
 in a logfile.
 
 Georg Weber, BKG
-Frankfurt, March 2016
+Frankfurt, April 2016
 igs-ip@bkg.bund.de
 
