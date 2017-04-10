@@ -122,7 +122,7 @@ uploadSamplSp3=0
 outWait=1
 
 [PPP]
-antexFile=Input/igs08.atx
+antexFile=Input/igs14.atx
 audioResponse=
 corrFile=
 corrMount=

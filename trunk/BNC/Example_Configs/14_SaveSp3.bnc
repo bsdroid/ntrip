@@ -1,4 +1,4 @@
-[General]
+gs08[General]
 adviseFail=15
 adviseReco=5
 adviseScript=
@@ -17,7 +17,7 @@ ephIntr=1 day
 ephPath=
 ephV3=0
 font=
-ignoreSslErrors=0
+sslIgnoreErrors=0
 logFile=Output/SP3.log
 miscMount=
 miscPort=
@@ -108,7 +108,7 @@ trafo_ozr=
 trafo_sc=
 trafo_scr=
 trafo_t0=
-uploadAntexFile=Input/igs08.atx
+uploadAntexFile=Input/igs14.atx
 uploadEphHost=
 uploadEphMountpoint=
 uploadEphPassword=
