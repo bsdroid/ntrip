@@ -125,7 +125,7 @@ rnxV3filenames=0
 sslIgnoreErrors=0
 
 [PPP]
-antexFile=Input/igs08.atx
+antexFile=Input/igs14.atx
 audioResponse=
 corrFile=
 corrMount=
