@@ -10,6 +10,9 @@
                           during PPP analysis
     Added   (18.05.2016): expected observations in RINEX QC
     Changed (15.02.2017): SIRGAS2000 transformation parameters adjusted to IGb14
+    Changed (10.04.2017): Transformation parameters for ITRF2005 to GDA94 removed
+    Changed (10.04.2017): Transformation parameters for ITRF2008 to SIRGAS95 removed
+    Changed (10.04.2017): Transformation parameters for ITRF2014 to GDA2020 added
     Changed (28.07.2016): small adaptations in qwtpolar sources to allow the
                           successful compilation of BNC on a Raspberry Pi, see
                           http://software.rtcm-ntrip.org/ticket/88
@@ -33,6 +36,7 @@
                           time stamp is now UTC, hDop value instead pDop value
     Fixed   (12.05.2016): wrong RINEX v2 header line excluded
     Fixed   (21.04.2016): RINEX v2 file naming for observation files
+    Fixed   (10.04.2017): minor bugs to prevent some irregular crashes of BNC
 
 --------------------------------------------------------------------------------
  BNC VERSION 2.12.0 (19.04.2016)
