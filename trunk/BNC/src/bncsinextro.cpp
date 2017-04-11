@@ -211,7 +211,7 @@ void bncSinexTro::writeHeader(const QDateTime& datTim) {
        << QString(" %1").arg(_opt->_xyzAprRover(1), 12, 'f', 3, QLatin1Char(' ')).toStdString()
        << QString(" %1").arg(_opt->_xyzAprRover(2), 12, 'f', 3, QLatin1Char(' ')).toStdString()
        << QString(" %1").arg(_opt->_xyzAprRover(3), 12, 'f', 3, QLatin1Char(' ')).toStdString()
-       << " ITRF08 " << ac.toStdString() << endl;
+       << " ITRF14 " << ac.toStdString() << endl;
   _out << "-TROP/COORDINATES"<< endl << endl;
 
   _out << "+TROP/DESCRIPTION" << endl;
