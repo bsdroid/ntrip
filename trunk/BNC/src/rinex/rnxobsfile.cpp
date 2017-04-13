@@ -404,20 +404,45 @@ void t_rnxObsHeader::set(const t_rnxObsHeader& header, int version,
   // ---------------------
   _obsTypes.clear();
   if (!useObsTypes || useObsTypes->size() == 0) {
-    if      (int(_version) == int(header._version)) {
+    if (int(_version) == int(header._version)) {
       _obsTypes = header._obsTypes;
     }
     else {
       if (_version >= 3.0) {
-        for (int iSys = 0; iSys < header.numSys(); iSys++) {
-          char sys = header.system(iSys);
-          for (int iType = 0; iType < header.nTypes(sys); iType++) {
-            QString type = header.obsType(sys, iType, _version);
-            if (!_obsTypes[sys].contains(type)) {
-              _obsTypes[sys].push_back(type);
-            }
-          }
-        }
+        _comments << "Default set of observation types used";
+        _comments.removeDuplicates();
+        _obsTypes['G'] << "C1C" << "L1C"  << "S1C"
+                       << "C1W" << "L1W"  << "S1W"
+                       << "C2X" << "L2X"  << "S2X"
+                       << "C2W" << "L2W"  << "S2W"
+                       << "C5X" << "L5X"  << "S5X";
+
+        _obsTypes['J'] << "C1C" << "L1C"  << "S1C"
+                       << "C1S" << "L1S"  << "S1S"
+                       << "C1L" << "L1L"  << "S1L"
+                       << "C1X" << "L1X"  << "S1X"
+                       << "C2S" << "L2S"  << "S2S"
+                       << "C2L" << "L2L"  << "S2L"
+                       << "C2X" << "L2X"  << "S2X"
+                       << "C5X" << "L5X"  << "S5X";
+
+        _obsTypes['R'] << "C1C" << "L1C" << "S1C"
+                       << "C1P" << "L1P" << "S1P"
+                       << "C2C" << "L2C" << "S2C"
+                       << "C2P" << "L2P" << "S2P";
+
+        _obsTypes['E'] << "C1X" << "L1X" << "S1X"
+                       << "C5X" << "L5X" << "S5X"
+                       << "C7X" << "L7X" << "S7X"
+                       << "C8X" << "L8X" << "S8X";
+
+        _obsTypes['S'] << "C1C" << "L1C" << "S1C"
+                       << "C5I" << "L5I" << "S5I"
+                       << "C5Q" << "L5Q" << "S5Q";
+
+        _obsTypes['C'] << "C2I" << "L2I" << "S2I"
+                       << "C6I" << "L6I" << "S6I"
+                       << "C7I" << "L7I" << "S7I";
       }
       else {
         for (int iSys = 0; iSys < header.numSys(); iSys++) {
