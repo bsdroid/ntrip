@@ -206,8 +206,8 @@ void bncCaster::slotNewObs(const QByteArray staID, QList<t_satObs> obsList) {
         if ( !settings.value("outFile").toString().isEmpty() ||
              !settings.value("outPort").toString().isEmpty() ) {
           emit( newMessage(QString("%1: Old epoch %2 thrown away")
-          		   .arg(staID.data()).arg(string(obs._time).c_str())
-        		   .toAscii(), true) );
+                 .arg(staID.data()).arg(string(obs._time).c_str())
+               .toAscii(), true) );
         }
       }
       continue;
@@ -453,18 +453,20 @@ void bncCaster::readMountPoints() {
 
   // (Re-) Start the configuration timer
   // -----------------------------------
-  int ms = 0;
+  if      (settings.value("onTheFlyInterval").toString() == "no") {
+    return;
+  }
 
+  int ms = 0;
   if (_confInterval != -1) {
     ms = 1000 * _confInterval;
   }
   else {
     QTime currTime = currentDateAndTimeGPS().time();
     QTime nextShotTime;
-
     if      (settings.value("onTheFlyInterval").toString() == "1 min") {
-      _confInterval = 60;
-      nextShotTime = QTime(currTime.hour(), currTime.minute()+1, 0);
+          _confInterval = 60;
+          nextShotTime = QTime(currTime.hour(), currTime.minute()+1, 0);
     }
     else if (settings.value("onTheFlyInterval").toString() == "5 min") {
       _confInterval = 300;

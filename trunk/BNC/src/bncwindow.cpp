@@ -186,7 +186,7 @@ bncWindow::bncWindow() {
                                     settings.value("rnxAppend").toInt()));
   _onTheFlyComboBox = new QComboBox();
   _onTheFlyComboBox->setEditable(false);
-  _onTheFlyComboBox->addItems(QString("1 day,1 hour,5 min,1 min").split(","));
+  _onTheFlyComboBox->addItems(QString("no,1 day,1 hour,5 min,1 min").split(","));
   int ii = _onTheFlyComboBox->findText(settings.value("onTheFlyInterval").toString());
   if (ii != -1) {
     _onTheFlyComboBox->setCurrentIndex(ii);
@@ -1254,7 +1254,7 @@ bncWindow::bncWindow() {
   // ------------------
   _logFileLineEdit->setWhatsThis(tr("<p>Records of BNC's activities are shown in the 'Log' tab on the bottom of this window. They can be saved into a file when a valid path for that is specified in the 'Logfile (full path)' field.</p><p>The logfile name will automatically be extended by a string '_YYMMDD' carrying the current date. <i>[key: logFile]</i></p>"));
   _rnxAppendCheckBox->setWhatsThis(tr("<p>When BNC is started, new files are created by default and file content already available under the same name will be overwritten. However, users might want to append already existing files following a regular restart or a crash of BNC or its platform.</p><p>Tick 'Append files' to continue with existing files and keep what has been recorded so far. <i>[key: rnxAppend]</i></p>"));
-  _onTheFlyComboBox->setWhatsThis(tr("<p>When operating BNC online in 'no window' mode, some configuration parameters can be changed on-the-fly without interrupting the running process. For that BNC rereads parts of its configuration in pre-defined intervals.<p></p>Select '1 min', '5 min', '1 hour', or '1 day' to force BNC to reread its configuration every full minute, five minutes, hour, or day and let in between edited configuration options become effective on-the-fly without terminating uninvolved threads.</p><p>Note that when operating BNC in window mode, on-the-fly changeable configuration options become effective immediately via button 'Save & Reread Configuration'. <i>[key: onTheFlyInterval]</i></p>"));
+  _onTheFlyComboBox->setWhatsThis(tr("<p>When operating BNC online in 'no window' mode, some configuration parameters can be changed on-the-fly without interrupting the running process. For that BNC rereads parts of its configuration in pre-defined intervals. The default entry is 'no' that means the reread function is switched of. <p></p>Select '1 min', '5 min', '1 hour', or '1 day' to force BNC to reread its configuration every full minute, five minutes, hour, or day and let in between edited configuration options become effective on-the-fly without terminating uninvolved threads.</p><p>Note that when operating BNC in window mode, on-the-fly changeable configuration options become effective immediately via button 'Save & Reread Configuration'. <i>[key: onTheFlyInterval]</i></p>"));
   _autoStartCheckBox->setWhatsThis(tr("<p>Tick 'Auto start' for auto-start of BNC at startup time in window mode with preassigned processing options. <i>[key: autoStart]</i></p>"));
   _rawOutFileLineEdit->setWhatsThis(tr("<p>Save all data coming in through various streams in the received order and format in one file.</p><p>This option is primarily meant for debugging purposes. <i>[key: rawOutFile]</i></p>"));
 
