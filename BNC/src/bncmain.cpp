@@ -94,7 +94,7 @@ int main(int argc, char* argv[]) {
       "General Panel keys:\n"
       "   logFile          {Logfile, full path [character string]}\n"
       "   rnxAppend        {Append files [integer number: 0=no,2=yes]}\n"
-      "   onTheFlyInterval {Configuration reload interval [character string: 1 day|1 hour|5 min|1 min]}\n"
+      "   onTheFlyInterval {Configuration reload interval [character string: no|1 day|1 hour|5 min|1 min]}\n"
       "   autoStart        {Auto start [integer number: 0=no,2=yes]}\n"
       "   rawOutFile       {Raw output file, full path [character string]}\n"
       "\n"

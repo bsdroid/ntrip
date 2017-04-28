@@ -79,7 +79,7 @@ void bncSettings::reRead() {
     // General
     setValue_p("logFile",             "");
     setValue_p("rnxAppend",           "0");
-    setValue_p("onTheFlyInterval",    "1 day");
+    setValue_p("onTheFlyInterval",    "no");
     setValue_p("autoStart",           "0");
     setValue_p("rawOutFile",          "");
     // RINEX Observations
