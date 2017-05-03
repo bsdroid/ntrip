@@ -461,6 +461,7 @@ void bncGetThread::run() {
           ::exit(0);
         }
       }
+
       qint64 nBytes = data.size();
 
       // Timeout, reconnect
@@ -692,9 +693,7 @@ t_irc bncGetThread::tryReconnect() {
       }
 #endif
     }
-    if (_query) {
-      delete _query;
-    }
+    delete _query;
     if (_ntripVersion == "U") {
       _query = new bncNetQueryUdp();
     } else if (_ntripVersion == "R") {
