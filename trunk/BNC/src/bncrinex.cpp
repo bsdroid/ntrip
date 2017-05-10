@@ -123,7 +123,7 @@ t_irc bncRinex::downloadSkeleton() {
     if (line.indexOf("STR") == 0) {
       QStringList tags = line.split(";");
       if (tags.size() > 7) {
-        if (tags.at(1) == _mountPoint.path().mid(1).toAscii()) {
+        if (tags.at(1) == _mountPoint.path().mid(1).toLatin1()) {
           net = tags.at(7);
           break;
         }
@@ -367,7 +367,7 @@ void bncRinex::resolveFileName(const QDateTime& datTim) {
             hlpStr + distStr + datTim.toString(".yyO");
   }
 
-  _fName = path.toAscii();
+  _fName = path.toLatin1();
 }
 
 // Write RINEX Header

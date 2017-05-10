@@ -169,7 +169,7 @@ void t_bncCore::messagePrivate(const QByteArray& msg) {
     if ( !logFileName.isEmpty() ) {
       expandEnvVar(logFileName);
       _logFile = new QFile(logFileName + "_" +
-                          currDate.toString("yyMMdd").toAscii().data());
+                          currDate.toString("yyMMdd").toLatin1().data());
       _fileDate = currDate;
       if ( Qt::CheckState(settings.value("rnxAppend").toInt()) == Qt::Checked) {
         _logFile->open(QIODevice::WriteOnly | QIODevice::Append);
@@ -188,7 +188,7 @@ void t_bncCore::messagePrivate(const QByteArray& msg) {
       *_logStream << endl;
       msgLocal = msg.mid(1);
     }
-    *_logStream << currentDateAndTimeGPS().toString("yy-MM-dd hh:mm:ss ").toAscii().data();
+    *_logStream << currentDateAndTimeGPS().toString("yy-MM-dd hh:mm:ss ").toLatin1().data();
     *_logStream << msgLocal.data() << endl;
     _logStream->flush();
     _logFile->flush();
@@ -201,11 +201,11 @@ t_irc t_bncCore::checkPrintEph(t_eph* eph) {
   QMutexLocker locker(&_mutex);
   t_irc ircPut = _ephUser.putNewEph(eph, true);
   if      (eph->checkState() == t_eph::bad) {
-    messagePrivate("WRONG EPHEMERIS\n" + eph->toString(3.0).toAscii());
+    messagePrivate("WRONG EPHEMERIS\n" + eph->toString(3.0).toLatin1());
     return failure;
   }
   else if (eph->checkState() == t_eph::outdated) {
-    messagePrivate("OUTDATED EPHEMERIS\n" + eph->toString(3.0).toAscii());
+    messagePrivate("OUTDATED EPHEMERIS\n" + eph->toString(3.0).toLatin1());
     return failure;
   }
   printEphHeader();
@@ -269,7 +269,7 @@ void t_bncCore::printEphHeader() {
     QString decoder = hlp[1];
     comments.append("Source: " + decoder +
                     " " + url.encodedHost() +
-                    "/" + url.path().mid(1).toAscii());
+                    "/" + url.path().mid(1).toLatin1());
   }
 
   // Initialization
@@ -387,13 +387,13 @@ void t_bncCore::printEphHeader() {
         QString line;
         line.sprintf(
           "%9.2f%11sN: GNSS NAV DATA    M: Mixed%12sRINEX VERSION / TYPE\n",
-          t_rnxNavFile::defaultRnxNavVersion3, "", "");
+          defaultRnxNavVersion3, "", "");
         *_ephStreamGPS << line;
 
         QString hlp = currentDateAndTimeGPS().toString("yyyyMMdd hhmmss UTC").leftJustified(20, ' ', true);
-        *_ephStreamGPS << _pgmName.toAscii().data()
-                       << _userName.toAscii().data()
-                       << hlp.toAscii().data()
+        *_ephStreamGPS << _pgmName.toLatin1().data()
+                       << _userName.toLatin1().data()
+                       << hlp.toLatin1().data()
                        << "PGM / RUN BY / DATE" << endl;
 
         QStringListIterator it(comments);
@@ -414,13 +414,13 @@ void t_bncCore::printEphHeader() {
       if (! (appendFlagGPS & QIODevice::Append)) {
         QString line;
         line.sprintf("%9.2f%11sN: GPS NAV DATA%25sRINEX VERSION / TYPE\n",
-                     t_rnxNavFile::defaultRnxNavVersion2, "", "");
+                     defaultRnxNavVersion2, "", "");
         *_ephStreamGPS << line;
 
         QString hlp = currentDateAndTimeGPS().date().toString("dd-MMM-yyyy").leftJustified(20, ' ', true);
-        *_ephStreamGPS << _pgmName.toAscii().data()
-                       << _userName.toAscii().data()
-                       << hlp.toAscii().data()
+        *_ephStreamGPS << _pgmName.toLatin1().data()
+                       << _userName.toLatin1().data()
+                       << hlp.toLatin1().data()
                        << "PGM / RUN BY / DATE" << endl;
 
         QStringListIterator it(comments);
@@ -436,13 +436,13 @@ void t_bncCore::printEphHeader() {
       if (! (appendFlagGlonass & QIODevice::Append)) {
         QString line;
         line.sprintf("%9.2f%11sG: GLONASS NAV DATA%21sRINEX VERSION / TYPE\n",
-                     t_rnxNavFile::defaultRnxNavVersion2, "", "");
+                     defaultRnxNavVersion2, "", "");
         *_ephStreamGlonass << line;
 
         QString hlp = currentDateAndTimeGPS().date().toString("dd-MMM-yyyy").leftJustified(20, ' ', true);
-        *_ephStreamGlonass << _pgmName.toAscii().data()
-                           << _userName.toAscii().data()
-                           << hlp.toAscii().data()
+        *_ephStreamGlonass << _pgmName.toLatin1().data()
+                           << _userName.toLatin1().data()
+                           << hlp.toLatin1().data()
                            << "PGM / RUN BY / DATE" << endl;
 
         QStringListIterator it(comments);
@@ -463,8 +463,8 @@ void t_bncCore::printEphHeader() {
 ////////////////////////////////////////////////////////////////////////////
 void t_bncCore::printEph(const t_eph& eph, bool printFile) {
 
-  QString strV2 = eph.toString(t_rnxNavFile::defaultRnxNavVersion2);
-  QString strV3 = eph.toString(t_rnxObsHeader::defaultRnxObsVersion3);
+  QString strV2 = eph.toString(defaultRnxNavVersion2);
+  QString strV3 = eph.toString(defaultRnxObsVersion3);
 
   if     (_rinexVers == 2 && eph.type() == t_eph::GLONASS) {
     printOutputEph(printFile, _ephStreamGlonass, strV2, strV3);
@@ -486,10 +486,10 @@ void t_bncCore::printOutputEph(bool printFile, QTextStream* stream,
   // ----------------
   if (printFile && stream) {
     if (_rinexVers == 2) {
-      *stream << strV2.toAscii();
+      *stream << strV2.toLatin1();
     }
     else {
-      *stream << strV3.toAscii();
+      *stream << strV3.toLatin1();
     }
     stream->flush();
   }
@@ -501,7 +501,7 @@ void t_bncCore::printOutputEph(bool printFile, QTextStream* stream,
     while (is.hasNext()) {
       QTcpSocket* sock = is.next();
       if (sock->state() == QAbstractSocket::ConnectedState) {
-        if (sock->write(strV3.toAscii()) == -1) {
+        if (sock->write(strV3.toLatin1()) == -1) {
           delete sock;
           is.remove();
         }

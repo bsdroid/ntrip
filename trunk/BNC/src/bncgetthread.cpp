@@ -42,10 +42,14 @@
 #include <iomanip>
 #include <sstream>
 
+#include <QComboBox>
+#include <QDialog>
 #include <QFile>
 #include <QTextStream>
 #include <QMutex>
 #include <QtNetwork>
+#include <QPushButton>
+#include <QTableWidget>
 #include <QTime>
 
 #include "bncgetthread.h"
@@ -89,7 +93,7 @@ bncGetThread::bncGetThread(const QUrl& mountPoint, const QByteArray& format,
     const QByteArray& nmea, const QByteArray& ntripVersion) {
   _rawFile = 0;
   _mountPoint = mountPoint;
-  _staID = mountPoint.path().mid(1).toAscii();
+  _staID = mountPoint.path().mid(1).toLatin1();
   _format = format;
   _latitude = latitude;
   _longitude = longitude;
@@ -133,7 +137,7 @@ void bncGetThread::initialize() {
     if (hlp.size() < 10) {
       continue;
     }
-    QByteArray mp = hlp[0].toAscii();
+    QByteArray mp = hlp[0].toLatin1();
     if (_staID == mp) {
       nmeaPort = hlp[9].toInt();
     }
@@ -274,7 +278,7 @@ void bncGetThread::initialize() {
       if (hlp.isEmpty()) {
         hlp = "0.0";
       }
-      QByteArray _serialHeightNMEA = hlp.toAscii();
+      QByteArray _serialHeightNMEA = hlp.toLatin1();
       _manualNMEAString = ggaString(_latitude, _longitude, _serialHeightNMEA,
           nmeaMode);
     }
@@ -602,7 +606,7 @@ void bncGetThread::run() {
           if (wrongObservationEpoch) {
             QString prn(obs._prn.toString().c_str());
             emit(newMessage(
-                _staID + " (" + prn.toAscii() + ")"
+                _staID + " (" + prn.toLatin1() + ")"
                     + ": Wrong observation epoch(s)", false));
             continue;
           }
@@ -618,13 +622,13 @@ void bncGetThread::run() {
           if (it != _prnLastEpo.end()) {
             long oldTime = it.value();
             if (obsTime < oldTime) {
-              emit(newMessage(_staID + ": old observation " + prn.toAscii(),
+              emit(newMessage(_staID + ": old observation " + prn.toLatin1(),
                   false));
               continue;
             } else if (obsTime == oldTime) {
               emit(newMessage(
                   _staID + ": observation coming more than once "
-                      + prn.toAscii(), false));
+                      + prn.toLatin1(), false));
               continue;
             }
           }
@@ -773,7 +777,7 @@ void bncGetThread::miscScanRTCM() {
       // ------------------
       for (int ii = 0; ii < decoder()->_typeList.size(); ii++) {
         QString type = QString("%1 ").arg(decoder()->_typeList[ii]);
-        emit(newMessage(_staID + ": Received message type " + type.toAscii(),
+        emit(newMessage(_staID + ": Received message type " + type.toLatin1(),
             true));
       }
 
@@ -846,7 +850,7 @@ void bncGetThread::miscScanRTCM() {
           for (int iType = 0; iType < rnxTypes.size(); iType++) {
             str << " " << rnxTypes[iType];
           }
-          emit(newMessage(_staID + ": Observation Types: " + msg.toAscii(),
+          emit(newMessage(_staID + ": Observation Types: " + msg.toLatin1(),
               true));
         }
       }
@@ -855,7 +859,7 @@ void bncGetThread::miscScanRTCM() {
       // -------------------------
       for (int ii = 0; ii < decoder()->_antType.size(); ii++) {
         QString ant1 = QString("%1 ").arg(decoder()->_antType[ii]);
-        emit(newMessage(_staID + ": Antenna descriptor " + ant1.toAscii(), true));
+        emit(newMessage(_staID + ": Antenna descriptor " + ant1.toLatin1(), true));
       }
 
       // RTCM Antenna Coordinates
@@ -869,18 +873,18 @@ void bncGetThread::miscScanRTCM() {
         }
         QByteArray ant1, ant2, ant3;
         ant1 =
-            QString("%1 ").arg(decoder()->_antList[ii].xx, 0, 'f', 4).toAscii();
+            QString("%1 ").arg(decoder()->_antList[ii].xx, 0, 'f', 4).toLatin1();
         ant2 =
-            QString("%1 ").arg(decoder()->_antList[ii].yy, 0, 'f', 4).toAscii();
+            QString("%1 ").arg(decoder()->_antList[ii].yy, 0, 'f', 4).toLatin1();
         ant3 =
-            QString("%1 ").arg(decoder()->_antList[ii].zz, 0, 'f', 4).toAscii();
+            QString("%1 ").arg(decoder()->_antList[ii].zz, 0, 'f', 4).toLatin1();
         emit(newMessage(_staID + ": " + antT + " (ITRF) X " + ant1 + "m", true));
         emit(newMessage(_staID + ": " + antT + " (ITRF) Y " + ant2 + "m", true));
         emit(newMessage(_staID + ": " + antT + " (ITRF) Z " + ant3 + "m", true));
         double hh = 0.0;
         if (decoder()->_antList[ii].height_f) {
           hh = decoder()->_antList[ii].height;
-          QByteArray ant4 = QString("%1 ").arg(hh, 0, 'f', 4).toAscii();
+          QByteArray ant4 = QString("%1 ").arg(hh, 0, 'f', 4).toLatin1();
           emit(newMessage(
               _staID + ": Antenna height above marker " + ant4 + "m", true));
         }
@@ -901,7 +905,7 @@ void bncGetThread::miscScanRTCM() {
         if (!allFound) {
           _gloSlots.sort();
           emit(newMessage(
-              _staID + ": GLONASS Slot:Freq " + _gloSlots.join(" ").toAscii(),
+              _staID + ": GLONASS Slot:Freq " + _gloSlots.join(" ").toLatin1(),
               true));
         }
       }
@@ -982,7 +986,7 @@ void bncGetThread::slotSerialReadyRead() {
 void bncGetThread::slotNewNMEAConnection() {
   _nmeaSockets->push_back(_nmeaServer->nextPendingConnection());
   emit(newMessage(
-      QString("New PPP client on port: # %1").arg(_nmeaSockets->size()).toAscii(),
+      QString("New PPP client on port: # %1").arg(_nmeaSockets->size()).toLatin1(),
       true));
 }
 

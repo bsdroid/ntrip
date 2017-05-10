@@ -63,10 +63,10 @@ t_reqcEdit::t_reqcEdit(QObject* parent) : QThread(parent) {
   _outNavFileName = settings.value("reqcOutNavFile").toString();
   int version     = settings.value("reqcRnxVersion").toInt();
   if (version < 3) {
-    _rnxVersion = t_rnxObsHeader::defaultRnxObsVersion2;
+    _rnxVersion = defaultRnxObsVersion2;
   }
   else {
-    _rnxVersion = t_rnxObsHeader::defaultRnxObsVersion3;
+    _rnxVersion = defaultRnxObsVersion3;
   }
   _samplingRate   = settings.value("reqcSampling").toInt();
   _begTime        = bncTime(settings.value("reqcStartDateTime").toString().toAscii().data());
@@ -577,10 +577,10 @@ void t_reqcEdit::editEphemerides() {
   outNavFile.setGlonass(haveGlonass);
 
   if ( (haveGPS && haveGlonass) || _rnxVersion >= 3.0) {
-    outNavFile.setVersion(t_rnxNavFile::defaultRnxNavVersion3);
+    outNavFile.setVersion(defaultRnxNavVersion3);
   }
   else {
-    outNavFile.setVersion(t_rnxNavFile::defaultRnxNavVersion2);
+    outNavFile.setVersion(defaultRnxNavVersion2);
   }
 
   QMap<QString, QString> txtMap;

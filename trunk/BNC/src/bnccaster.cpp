@@ -207,7 +207,7 @@ void bncCaster::slotNewObs(const QByteArray staID, QList<t_satObs> obsList) {
              !settings.value("outPort").toString().isEmpty() ) {
           emit( newMessage(QString("%1: Old epoch %2 thrown away")
                  .arg(staID.data()).arg(string(obs._time).c_str())
-               .toAscii(), true) );
+               .toLatin1(), true) );
         }
       }
       continue;
@@ -231,13 +231,13 @@ void bncCaster::slotNewObs(const QByteArray staID, QList<t_satObs> obsList) {
 void bncCaster::slotNewConnection() {
   _sockets->push_back( _server->nextPendingConnection() );
   emit( newMessage(QString("New client connection on sync port: # %1")
-                   .arg(_sockets->size()).toAscii(), true) );
+                   .arg(_sockets->size()).toLatin1(), true) );
 }
 
 void bncCaster::slotNewUConnection() {
   _uSockets->push_back( _uServer->nextPendingConnection() );
   emit( newMessage(QString("New client connection on usync port: # %1")
-                   .arg(_uSockets->size()).toAscii(), true) );
+                   .arg(_uSockets->size()).toLatin1(), true) );
 }
 
 // Add New Thread
@@ -285,7 +285,7 @@ void bncCaster::slotGetThreadFinished(QByteArray staID) {
 
   _staIDs.removeAll(staID);
   emit( newMessage(
-           QString("Decoding %1 stream(s)").arg(_staIDs.size()).toAscii(), true) );
+           QString("Decoding %1 stream(s)").arg(_staIDs.size()).toLatin1(), true) );
   if (_staIDs.size() == 0) {
     emit(newMessage("bncCaster: Last get thread terminated", true));
     emit getThreadsFinished();
@@ -405,11 +405,11 @@ void bncCaster::readMountPoints() {
     // New bncGetThread
     // ----------------
     if (!existFlg) {
-      QByteArray format    = hlp[1].toAscii();
-      QByteArray latitude  = hlp[3].toAscii();
-      QByteArray longitude = hlp[4].toAscii();
-      QByteArray nmea      = hlp[5].toAscii();
-      QByteArray ntripVersion = hlp[6].toAscii();
+      QByteArray format    = hlp[1].toLatin1();
+      QByteArray latitude  = hlp[3].toLatin1();
+      QByteArray longitude = hlp[4].toLatin1();
+      QByteArray nmea      = hlp[5].toLatin1();
+      QByteArray ntripVersion = hlp[6].toLatin1();
 
       bncGetThread* getThread = new bncGetThread(url, format, latitude,
                                         longitude, nmea, ntripVersion);
@@ -449,7 +449,7 @@ void bncCaster::readMountPoints() {
   emit( newMessage(QString("Configuration read: "
                            + BNC_CORE->confFileName()
                            + ", %1 stream(s)")
-                            .arg(_threads.count()).toAscii(), true) );
+                            .arg(_threads.count()).toLatin1(), true) );
 
   // (Re-) Start the configuration timer
   // -----------------------------------
@@ -554,5 +554,5 @@ void bncCaster::slotNewRawData(QByteArray staID, QByteArray data) {
 void bncCaster::slotNewMiscConnection() {
   _miscSockets->push_back( _miscServer->nextPendingConnection() );
   emit( newMessage(QString("New client connection on Miscellaneous Output Port: # %1")
-                   .arg(_miscSockets->size()).toAscii(), true) );
+                   .arg(_miscSockets->size()).toLatin1(), true) );
 }

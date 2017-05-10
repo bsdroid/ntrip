@@ -74,7 +74,7 @@ t_availPlot::t_availPlot(QWidget* parent, const QMap<t_prn, t_plotData>& plotDat
 QwtPlot(parent) {
 
   setCanvasBackground(QColor(Qt::white));
-  canvas()->setFrameStyle(QFrame::NoFrame | QFrame::Plain);
+  ((QwtPlotCanvas *)canvas())->setFrameStyle(QFrame::NoFrame | QFrame::Plain);
 
   // Axes
   // ----
@@ -202,7 +202,11 @@ QwtPlotCurve* t_availPlot::addCurve(const QString& name,
                                     const QVector<double>& xData,
                                     const QVector<double>& yData) {
   QwtPlotCurve* curve = new QwtPlotCurve(name);
-  curve->setSymbol(new QwtSymbol(symbol));
+  QwtSymbol *s = new QwtSymbol(symbol.style());
+  s->setSize(symbol.size());
+  s->setBrush(symbol.brush());
+  s->setPen(symbol.pen());
+  curve->setSymbol(s);
   curve->setStyle(QwtPlotCurve::NoCurve);
   curve->setXAxis(QwtPlot::xBottom);
   curve->setYAxis(QwtPlot::yLeft);

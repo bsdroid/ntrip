@@ -5,6 +5,10 @@ CONFIG  += qt qwt staticlib
 CONFIG -= debug
 CONFIG += release
 DEFINES += QWT_POLAR_NO_SVG
+greaterThan(QT_MAJOR_VERSION, 4) {
+    QT += printsupport
+    QT += concurrent
+}
 
 INCLUDEPATH += ../qwt
 
@@ -44,4 +48,3 @@ SOURCES += \
     qwt_polar_layout.cpp \
     qwt_polar_renderer.cpp \
     qwt_polar_plot.cpp
-
