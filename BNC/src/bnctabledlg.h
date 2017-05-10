@@ -27,6 +27,10 @@
 
 #include <QtCore>
 #include <QtGui>
+#include <QComboBox>
+#include <QDialog>
+#include <QPushButton>
+#include <QTableWidget>
 #include <QWhatsThis>
 
 #include "bncconst.h"

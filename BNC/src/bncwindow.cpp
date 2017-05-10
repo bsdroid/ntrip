@@ -40,6 +40,26 @@
 
 #include <iostream>
 
+#include <QAction>
+#include <QApplication>
+#include <QCheckBox>
+#include <QComboBox>
+#include <QDialog>
+#include <QFontDialog>
+#include <QGridLayout>
+#include <QHeaderView>
+#include <QLabel>
+#include <QLineEdit>
+#include <QMenu>
+#include <QMenuBar>
+#include <QMessageBox>
+#include <QPushButton>
+#include <QRadioButton>
+#include <QSpinBox>
+#include <QTableWidgetItem>
+#include <QTextEdit>
+#include <QToolBar>
+
 #include <unistd.h>
 #include "bncwindow.h"
 #include "bnccore.h"
@@ -408,7 +428,11 @@ bncWindow::bncWindow() {
   _mountPointsTable->horizontalHeader()->resizeSection(5,7*ww);
   _mountPointsTable->horizontalHeader()->resizeSection(6,5*ww);
   _mountPointsTable->horizontalHeader()->resizeSection(7,5*ww);
+#if QT_VERSION < 0x050000
   _mountPointsTable->horizontalHeader()->setResizeMode(QHeaderView::Interactive);
+#else
+  _mountPointsTable->horizontalHeader()->setSectionResizeMode(QHeaderView::Interactive);
+#endif
   _mountPointsTable->horizontalHeader()->setStretchLastSection(true);
   _mountPointsTable->horizontalHeader()->setDefaultAlignment(Qt::AlignLeft);
   _mountPointsTable->setHorizontalHeaderLabels(labels);
@@ -438,7 +462,11 @@ bncWindow::bncWindow() {
   _cmbTable->horizontalHeader()->resizeSection(0,10*ww);
   _cmbTable->horizontalHeader()->resizeSection(1,8*ww);
   _cmbTable->horizontalHeader()->resizeSection(2,8*ww);
+#if QT_VERSION < 0x050000
   _cmbTable->horizontalHeader()->setResizeMode(QHeaderView::Interactive);
+#else
+  _cmbTable->horizontalHeader()->setSectionResizeMode(QHeaderView::Interactive);
+#endif
   _cmbTable->horizontalHeader()->setStretchLastSection(true);
   _cmbTable->horizontalHeader()->setDefaultAlignment(Qt::AlignLeft);
 
@@ -500,7 +528,11 @@ bncWindow::bncWindow() {
   _uploadTable->horizontalHeader()->resizeSection( 9, 4*ww);
   _uploadTable->horizontalHeader()->resizeSection(10, 4*ww);
   _uploadTable->horizontalHeader()->resizeSection(11,12*ww);
+#if QT_VERSION < 0x050000
   _uploadTable->horizontalHeader()->setResizeMode(QHeaderView::Interactive);
+#else
+  _uploadTable->horizontalHeader()->setSectionResizeMode(QHeaderView::Interactive);
+#endif
   _uploadTable->horizontalHeader()->setStretchLastSection(true);
   _uploadTable->horizontalHeader()->setDefaultAlignment(Qt::AlignLeft);
 
@@ -575,7 +607,11 @@ bncWindow::bncWindow() {
   _uploadEphTable->horizontalHeader()->resizeSection( 3, 8*ww);
   _uploadEphTable->horizontalHeader()->resizeSection( 4,10*ww);
   _uploadEphTable->horizontalHeader()->resizeSection( 5,12*ww);
+#if QT_VERSION < 0x050000
   _uploadEphTable->horizontalHeader()->setResizeMode(QHeaderView::Interactive);
+#else
+  _uploadEphTable->horizontalHeader()->setSectionResizeMode(QHeaderView::Interactive);
+#endif
   _uploadEphTable->horizontalHeader()->setDefaultAlignment(Qt::AlignLeft);
 
   connect(_uploadEphTable, SIGNAL(itemSelectionChanged()),
@@ -2076,7 +2112,7 @@ void bncWindow::startRealTime() {
   connect (_caster, SIGNAL(mountPointsRead(QList<bncGetThread*>)),
            this, SLOT(slotMountPointsRead(QList<bncGetThread*>)));
 
-  BNC_CORE->slotMessage("========== Start BNC v" BNCVERSION" ("BNC_OS") ==========", true);
+  BNC_CORE->slotMessage("========== Start BNC v" BNCVERSION " (" BNC_OS ") ==========", true);
 
   bncSettings settings;
 
@@ -2316,7 +2352,7 @@ bncAboutDlg::bncAboutDlg(QWidget* parent) :
   QLabel* img = new QLabel();
   img->setPixmap(QPixmap(":ntrip-logo.png"));
   dlgLayout->addWidget(img, 0,0);
-  dlgLayout->addWidget(new QLabel("BKG Ntrip Client (BNC) Version "BNCVERSION), 0,1);
+  dlgLayout->addWidget(new QLabel("BKG Ntrip Client (BNC) Version " BNCVERSION), 0,1);
   dlgLayout->addWidget(tb,1,0,1,2);
   dlgLayout->addWidget(_closeButton,2,1,Qt::AlignRight);
 

@@ -88,8 +88,8 @@ t_graphWin::t_graphWin(QWidget* parent, const QString& fileName,
      _colorScale->setColorMap(*scaleInterval, new t_colorMap());
     
      QwtLinearScaleEngine scaleEngine;
-     _colorScale->setScaleDiv(scaleEngine.transformation(),
-                              scaleEngine.divideScale(scaleInterval->minValue(),
+     _colorScale->setTransformation(scaleEngine.transformation());
+     _colorScale->setScaleDiv(scaleEngine.divideScale(scaleInterval->minValue(),
                                                       scaleInterval->maxValue(),
                                                       8, 5));
   }

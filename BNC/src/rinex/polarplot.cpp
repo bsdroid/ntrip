@@ -31,7 +31,8 @@ void t_polarCurve::drawSymbols(QPainter* painter, const QwtSymbol& symbol,
                                const QPointF& pole, int from, int to) const {
   t_colorMap colorMap;
   for (int ii = from; ii <= to; ii++) {
-    QwtSymbol ss(symbol);
+    QwtSymbol ss(symbol.style());
+    ss.setSize(symbol.size());
     const QwtPointPolar& point = sample(ii);
     const QColor color = colorMap.color(_scaleInterval, point._value);
     ss.setBrush(QBrush(color));

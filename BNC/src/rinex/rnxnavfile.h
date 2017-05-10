@@ -34,13 +34,13 @@ class t_pppOpt;
 class bncPPPclient;
 class t_eph;
 
+#define defaultRnxNavVersion2 2.11
+#define defaultRnxNavVersion3 3.03
+
 class t_rnxNavFile {
 
  public:
   enum e_inpOut {input, output};
-  static const double defaultRnxNavVersion2 = 2.11;
-  static const double defaultRnxNavVersion3 = 3.03;
-
  private:
   class t_rnxNavHeader {
    public:

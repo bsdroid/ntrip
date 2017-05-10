@@ -246,7 +246,7 @@ void t_bncMap::slotPrint() {
   else {
     QwtPlotRenderer renderer;
     renderer.setDiscardFlag(QwtPlotRenderer::DiscardBackground, false);
-    renderer.setLayoutFlag(QwtPlotRenderer::KeepFrames, true);
+    //renderer.setLayoutFlag(QwtPlotRenderer::KeepFrames, true);
     renderer.renderTo(_mapPlot, printer);
   }
 }

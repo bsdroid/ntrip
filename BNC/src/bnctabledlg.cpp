@@ -39,6 +39,11 @@
  * -----------------------------------------------------------------------*/
 
 #include <iostream>
+#include <QHeaderView>
+#include <QLabel>
+#include <QLineEdit>
+#include <QMessageBox>
+#include <QVBoxLayout>
 
 #include "bnctabledlg.h"
 #include "bncgetthread.h"
@@ -491,9 +496,9 @@ void bncTableDlg::slotCasterHostChanged(const QString& newHost) {
     QUrl url(casterUrlList[ii]);
     if (url.host() == newHost) {
       _casterUserLineEdit->setText(
-                QUrl::fromPercentEncoding(url.userName().toAscii()));
+                QUrl::fromPercentEncoding(url.userName().toLatin1()));
       _casterPasswordLineEdit->setText(
-                QUrl::fromPercentEncoding(url.password().toAscii()));
+                QUrl::fromPercentEncoding(url.password().toLatin1()));
       if (url.port() > 0) {
         _casterPortLineEdit->setText(QString("%1").arg(url.port()));
       }

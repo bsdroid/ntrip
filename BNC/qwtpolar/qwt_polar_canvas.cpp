@@ -8,6 +8,7 @@
 
 #include "qwt_polar_canvas.h"
 #include "qwt_polar_plot.h"
+#include <qwt_painter.h>
 #include <qpainter.h>
 #include <qevent.h>
 #include <qpixmap.h>
@@ -212,7 +213,10 @@ void QwtPolarCanvas::paintEvent( QPaintEvent *event )
                 else
                 {
                     QWidget *bgWidget = qwtBackgroundWidget( plot() );
-                    bs.fill( bgWidget, mapTo( bgWidget, rect().topLeft() ) );
+
+					QwtPainter::fillPixmap( bgWidget, bs,
+						mapTo( bgWidget, rect().topLeft() ) );
+
                     p.begin( &bs );
                 }
             }

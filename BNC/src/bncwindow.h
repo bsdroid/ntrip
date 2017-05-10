@@ -26,6 +26,7 @@
 #define BNCWINDOW_H
 
 #include <QtGui>
+#include <QMainWindow>
 #include <QWhatsThis>
 
 #include "bncgetthread.h"

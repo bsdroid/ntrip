@@ -42,7 +42,7 @@ class bncFigurePPP : public QWidget {
   void paintEvent(QPaintEvent *event);
 
  private:
-  const static double _tRange = 300;
+  enum {_tRange = 300};
 
   class pppPos {
    public:

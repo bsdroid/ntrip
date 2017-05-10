@@ -89,7 +89,7 @@ class t_satData {
   double       lkA;
   double       lkB;
   unsigned     obsIndex;
-  char system() const {return prn.toAscii()[0];}
+  char system() const {return prn.toLatin1()[0];}
 };
 
 class t_epoData {

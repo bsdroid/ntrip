@@ -94,8 +94,7 @@ class QwtPolarSpectrogram::PrivateData
 {
 public:
     PrivateData():
-        data( NULL ),
-        renderThreadCount( 1 )
+        data( NULL )
     {
         colorMap = new QwtLinearColorMap();
     }
@@ -108,8 +107,6 @@ public:
 
     QwtRasterData *data;
     QwtColorMap *colorMap;
-
-    uint renderThreadCount;
 
     QwtPolarSpectrogram::PaintAttributes paintAttributes;
 };
@@ -225,37 +222,6 @@ bool QwtPolarSpectrogram::testPaintAttribute( PaintAttribute attribute ) const
 }
 
 /*!
-   Rendering an image from the raster data can often be done
-   parallel on a multicore system.
-
-   \param numThreads Number of threads to be used for rendering.
-                     If numThreads is set to 0, the system specific
-                     ideal thread count is used.
-
-   The default thread count is 1 ( = no additional threads )
-
-   \warning Rendering in multiple threads is only supported for Qt >= 4.4
-   \sa renderThreadCount(), renderImage(), renderTile()
-*/
-void QwtPolarSpectrogram::setRenderThreadCount( uint numThreads )
-{
-    d_data->renderThreadCount = numThreads;
-}
-
-/*!
-   \return Number of threads to be used for rendering.
-           If numThreads is set to 0, the system specific
-           ideal thread count is used.
-
-   \warning Rendering in multiple threads is only supported for Qt >= 4.4
-   \sa setRenderThreadCount(), renderImage(), renderTile()
-*/
-uint QwtPolarSpectrogram::renderThreadCount() const
-{
-    return d_data->renderThreadCount;
-}
-
-/*!
   Draw the spectrogram
 
   \param painter Painter
@@ -356,7 +322,7 @@ QImage QwtPolarSpectrogram::renderImage(
 
 
 #if QT_VERSION >= 0x040400 && !defined(QT_NO_QFUTURE)
-    uint numThreads = d_data->renderThreadCount;
+    uint numThreads = renderThreadCount();
 
     if ( numThreads <= 0 )
         numThreads = QThread::idealThreadCount();

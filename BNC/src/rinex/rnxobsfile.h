@@ -37,13 +37,14 @@
 #include "t_prn.h"
 #include "satObs.h"
 
+#define defaultRnxObsVersion2 2.11
+#define defaultRnxObsVersion3 3.03
+
 class t_rnxObsHeader {
 
  friend class t_rnxObsFile;
 
  public:
-  static const double  defaultRnxObsVersion2 = 2.11;
-  static const double  defaultRnxObsVersion3 = 3.03;
   static const QString defaultSystems;
 
   t_rnxObsHeader();

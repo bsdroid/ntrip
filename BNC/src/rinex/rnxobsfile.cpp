@@ -165,7 +165,7 @@ t_irc t_rnxObsHeader::read(QTextStream* stream, int maxLines) {
     }
     else if (key == "# / TYPES OF OBSERV") {
       if (_version == 0.0) {
-        _version = t_rnxObsHeader::defaultRnxObsVersion2;
+        _version = defaultRnxObsVersion2;
       }
       QTextStream* in = new QTextStream(value.toAscii(), QIODevice::ReadOnly);
       int nTypes;
@@ -189,7 +189,7 @@ t_irc t_rnxObsHeader::read(QTextStream* stream, int maxLines) {
     }
     else if (key == "SYS / # / OBS TYPES") {
       if (_version == 0.0) {
-        _version = t_rnxObsHeader::defaultRnxObsVersion3;
+        _version = defaultRnxObsVersion3;
       }
       QTextStream* in = new QTextStream(value.toAscii(), QIODevice::ReadOnly);
       char sys;
@@ -306,10 +306,10 @@ void t_rnxObsHeader::setDefault(const QString& markerName, int version) {
   _markerName = markerName;
 
   if (version <= 2) {
-    _version = t_rnxObsHeader::defaultRnxObsVersion2;
+    _version = defaultRnxObsVersion2;
   }
   else {
-    _version = t_rnxObsHeader::defaultRnxObsVersion3;
+    _version = defaultRnxObsVersion3;
   }
 
   _comments << "Default set of observation types used";
@@ -370,10 +370,10 @@ void t_rnxObsHeader::set(const t_rnxObsHeader& header, int version,
                          const QStringList* gloSlots) {
 
   if (version <= 2) {
-    _version = t_rnxObsHeader::defaultRnxObsVersion2;
+    _version = defaultRnxObsVersion2;
   }
   else {
-    _version = t_rnxObsHeader::defaultRnxObsVersion3;
+    _version = defaultRnxObsVersion3;
   }
   _interval        = header._interval;
   _antennaNumber   = header._antennaNumber;
