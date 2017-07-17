@@ -131,7 +131,7 @@ void bncSinexTro::writeHeader(const QDateTime& datTim) {
     _out << "*SITE PT SOLN T DATA_START__ DATA_END____ DESCRIPTION_________ S/N__ FIRMWARE___" << endl;
     _out << " " << _opt->_roverName.substr(0,4) << "  A "  <<  sol.toStdString() << " P "
          << startTime.toStdString() << " " << endTime.toStdString()
-         << QString(" %1").arg(_opt->_antNameRover.c_str(), 20,QLatin1Char(' ')).toStdString()
+         << QString(" %1").arg(_opt->_recNameRover.c_str(), 20,QLatin1Char(' ')).toStdString()
          << " -----" << " -----------" << endl;
     _out << "-SITE/RECEIVER" << endl << endl;
   }
