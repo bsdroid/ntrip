@@ -71,6 +71,6 @@
 
 #define R2R_PI          3.1415926535898
 
-#define RTCM3ID_BDS 63
+#define RTCM3ID_BDS 1042
 
 #endif /* GNSS_H */
