@@ -90,7 +90,7 @@ class t_ephGPS : public t_eph {
 
   virtual e_type type() const {return (_prn.system() == 'J' ? t_eph::QZSS : t_eph::GPS); }
   virtual QString toString(double version) const;
-  virtual unsigned int  IOD() const { return static_cast<unsigned int>(_IODC); }
+  virtual unsigned int  IOD() const { return static_cast<unsigned int>(_IODE); }
   double TGD() const {return _TGD;} // Timing Group Delay (P1-P2 DCB)
 
  private:
