@@ -2288,16 +2288,16 @@ void bncRtnetUploadCaster::processSatellite(const t_eph* eph, int GPSweek,
   //  crdTrafo(GPSweek, xP, dc);
   //}
   if (_crdTrafo ==  "ETRF2000") {
-    _crdTrafo ==  "ITRF2008"; crdTrafo(GPSweek, xP, dc);
-    _crdTrafo ==  "ETRF2000"; crdTrafo(GPSweek, xP, dc);
+    _crdTrafo =  "ITRF2008"; crdTrafo(GPSweek, xP, dc);
+    _crdTrafo =  "ETRF2000"; crdTrafo(GPSweek, xP, dc);
   }
   else if (_crdTrafo ==  "NAD83") {
-    _crdTrafo ==  "ITRF2008"; crdTrafo(GPSweek, xP, dc);
-    _crdTrafo ==  "NAD83";    crdTrafo(GPSweek, xP, dc);
+    _crdTrafo =  "ITRF2008"; crdTrafo(GPSweek, xP, dc);
+    _crdTrafo =  "NAD83";    crdTrafo(GPSweek, xP, dc);
   }
   else if (_crdTrafo ==  "DREF91") {
-    _crdTrafo ==  "ITRF2008"; crdTrafo(GPSweek, xP, dc);
-    _crdTrafo ==  "DREF91";   crdTrafo(GPSweek, xP, dc);
+    _crdTrafo =  "ITRF2008"; crdTrafo(GPSweek, xP, dc);
+    _crdTrafo =  "DREF91";   crdTrafo(GPSweek, xP, dc);
   }
   else if (_crdTrafo ==  "SIRGAS2000" ||
            _crdTrafo ==  "GDA2020") {
