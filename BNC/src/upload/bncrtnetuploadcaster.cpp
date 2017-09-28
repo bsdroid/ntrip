@@ -185,24 +185,6 @@ bncRtnetUploadCaster::bncRtnetUploadCaster(const QString& mountpoint,
     _scr =  0.08;
     _t0  =  2000.0;
   }
-  // Transformation Parameters from ITRF2014 to ITRF2008 (http://itrf.ign.fr/doc_ITRF/Transfo-ITRF2014_ITRFs.txt)
-  else if (_crdTrafo == "ITRF2008") {
-    _dx  =  0.0016;
-    _dy  =  0.0019;
-    _dz  =  0.0024;
-    _dxr =  0.0;
-    _dyr =  0.0;
-    _dzr = -0.0001;
-    _ox  =  0.0;
-    _oy  =  0.0;
-    _oz  =  0.0;
-    _oxr =  0.0;
-    _oyr =  0.0;
-    _ozr =  0.0;
-    _sc  = -0.02;
-    _scr =  0.03;
-    _t0  =  2010.0;
-  }
   else if (_crdTrafo == "Custom") {
     _dx = settings.value("trafo_dx").toDouble();
     _dy = settings.value("trafo_dy").toDouble();
@@ -220,6 +202,27 @@ bncRtnetUploadCaster::bncRtnetUploadCaster(const QString& mountpoint,
     _scr = settings.value("trafo_scr").toDouble();
     _t0 = settings.value("trafo_t0").toDouble();
   }
+  // TODO: the following lines can be deleted if all parameters are updated regarding ITRF2014
+  if (_crdTrafo == "ETRF2000" ||
+      _crdTrafo ==  "NAD83" ||
+      _crdTrafo ==  "DREF91" ) {// Transformation Parameters from ITRF2014 to ITRF2008
+                                // (http://itrf.ign.fr/doc_ITRF/Transfo-ITRF2014_ITRFs.txt)
+   _dx8  =  0.0016;
+   _dy8  =  0.0019;
+   _dz8  =  0.0024;
+   _dxr8 =  0.0;
+   _dyr8 =  0.0;
+   _dzr8 = -0.0001;
+   _ox8  =  0.0;
+   _oy8  =  0.0;
+   _oz8  =  0.0;
+   _oxr8 =  0.0;
+   _oyr8 =  0.0;
+   _ozr8 =  0.0;
+   _sc8  = -0.02;
+   _scr8 =  0.03;
+   _t08  =  2010.0;
+ }
 }
 
 // Destructor
@@ -2287,17 +2290,18 @@ void bncRtnetUploadCaster::processSatellite(const t_eph* eph, int GPSweek,
   //if (_crdTrafo != "IGS14") {
   //  crdTrafo(GPSweek, xP, dc);
   //}
+  //TODO: the following 3 lines can be deleted if all parameters are updated regarding ITRF2014
   if (_crdTrafo ==  "ETRF2000") {
-    _crdTrafo =  "ITRF2008"; crdTrafo(GPSweek, xP, dc);
-    _crdTrafo =  "ETRF2000"; crdTrafo(GPSweek, xP, dc);
+    crdTrafo8(GPSweek, xP, dc);
+    crdTrafo(GPSweek, xP, dc);
   }
   else if (_crdTrafo ==  "NAD83") {
-    _crdTrafo =  "ITRF2008"; crdTrafo(GPSweek, xP, dc);
-    _crdTrafo =  "NAD83";    crdTrafo(GPSweek, xP, dc);
+    crdTrafo8(GPSweek, xP, dc);
+    crdTrafo(GPSweek, xP, dc);
   }
   else if (_crdTrafo ==  "DREF91") {
-    _crdTrafo =  "ITRF2008"; crdTrafo(GPSweek, xP, dc);
-    _crdTrafo =  "DREF91";   crdTrafo(GPSweek, xP, dc);
+    crdTrafo8(GPSweek, xP, dc);
+    crdTrafo(GPSweek, xP, dc);
   }
   else if (_crdTrafo ==  "SIRGAS2000" ||
            _crdTrafo ==  "GDA2020") {
@@ -2413,6 +2417,56 @@ void bncRtnetUploadCaster::crdTrafo(int GPSWeek, ColumnVector& xyz,
       meanSta(2) = 0.0; // TODO
       meanSta(3) = 0.0; // TODO
     }
+
+  // Clock correction proportional to topocentric distance to satellites
+  // -------------------------------------------------------------------
+  double rho = (xyz - meanSta).norm_Frobenius();
+  dc = rho * (sc - 1.0) / sc / t_CST::c;
+
+  Matrix rMat(3, 3);
+  rMat(1, 1) = 1.0;
+  rMat(1, 2) = -oz;
+  rMat(1, 3) = oy;
+  rMat(2, 1) = oz;
+  rMat(2, 2) = 1.0;
+  rMat(2, 3) = -ox;
+  rMat(3, 1) = -oy;
+  rMat(3, 2) = ox;
+  rMat(3, 3) = 1.0;
+
+  xyz = sc * rMat * xyz + dx;
+}
+
+// Transform Coordinates
+////////////////////////////////////////////////////////////////////////////
+void bncRtnetUploadCaster::crdTrafo8(int GPSWeek, ColumnVector& xyz,
+    double& dc) {
+
+  // Current epoch minus 2000.0 in years
+  // ------------------------------------
+  double dt = (GPSWeek - (1042.0 + 6.0 / 7.0)) / 365.2422 * 7.0 + 2000.0 - _t0;
+
+  ColumnVector dx(3);
+
+  dx(1) = _dx8 + dt * _dxr8;
+  dx(2) = _dy8 + dt * _dyr8;
+  dx(3) = _dz8 + dt * _dzr8;
+
+  static const double arcSec = 180.0 * 3600.0 / M_PI;
+
+  double ox = (_ox8 + dt * _oxr8) / arcSec;
+  double oy = (_oy8 + dt * _oyr8) / arcSec;
+  double oz = (_oz8 + dt * _ozr8) / arcSec;
+
+  double sc = 1.0 + _sc8 * 1e-9 + dt * _scr8 * 1e-9;
+
+  // Specify approximate center of area
+  // ----------------------------------
+  ColumnVector meanSta(3);
+  meanSta(1) = 0.0; // TODO
+  meanSta(2) = 0.0; // TODO
+  meanSta(3) = 0.0; // TODO
+
 
   // Clock correction proportional to topocentric distance to satellites
   // -------------------------------------------------------------------
