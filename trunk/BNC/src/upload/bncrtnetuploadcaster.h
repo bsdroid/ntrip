@@ -38,6 +38,9 @@ class bncRtnetUploadCaster : public bncUploadCaster {
                         QString& outLine);
   void crdTrafo(int GPSWeek, ColumnVector& xyz, double& dc);
 
+  // TODO: the following lines can be deleted if all parameters are updated regarding ITRF2014
+  void crdTrafo8(int GPSWeek, ColumnVector& xyz, double& dc);
+
   int determineUpdateInd(double samplingRate);
 
   QString        _casterID;
@@ -68,6 +71,22 @@ class bncRtnetUploadCaster : public bncUploadCaster {
   bncClockRinex* _rnx;
   bncSP3*        _sp3;
   QMap<QString, const t_eph*>* _usedEph;
+  // TODO: the following lines can be deleted if all parameters are updated regarding ITRF2014
+  double         _dx8;
+  double         _dy8;
+  double         _dz8;
+  double         _dxr8;
+  double         _dyr8;
+  double         _dzr8;
+  double         _ox8;
+  double         _oy8;
+  double         _oz8;
+  double         _oxr8;
+  double         _oyr8;
+  double         _ozr8;
+  double         _sc8;
+  double         _scr8;
+  double         _t08;
 };
 
 struct phaseBiasesSat {
