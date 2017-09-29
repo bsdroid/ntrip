@@ -6,7 +6,7 @@
 
 using namespace std;
 
-// 
+//
 //////////////////////////////////////////////////////////////////////////////
 int t_prn::toInt() const {
   if      (_system == 'G') {
@@ -30,7 +30,7 @@ int t_prn::toInt() const {
   return 0;
 }
 
-// 
+//
 //////////////////////////////////////////////////////////////////////////////
 string t_prn::toString() const {
   stringstream ss;
@@ -53,7 +53,9 @@ void t_prn::set(const std::string& str) {
   char        system = '\x0';
   const char* number = 0;
   if      ( str[0] == 'G' || str[0] == 'R' || str[0] == 'E' ||
-            str[0] == 'J' || str[0] == 'S' || str[0] == 'C' ) {
+            str[0] == 'J' || str[0] == 'S' || str[0] == 'C' ||
+            str[0] == 'I'
+                ) {
     system = str[0];
     number = str.c_str() + 1;
   }
@@ -79,13 +81,13 @@ void t_prn::set(const std::string& str) {
   }
 }
 
-// 
+//
 //////////////////////////////////////////////////////////////////////////////
 t_prn::operator unsigned() const {
   return toInt();
 }
 
-// 
+//
 //////////////////////////////////////////////////////////////////////////////
 istream& operator >> (istream& in, t_prn& prn) {
   string str;
