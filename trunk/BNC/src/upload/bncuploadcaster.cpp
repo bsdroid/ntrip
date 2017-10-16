@@ -156,10 +156,10 @@ void bncUploadCaster::open() {
   if (ans.indexOf("OK") == -1) {
     delete _outSocket;
     _outSocket = 0;
-    emit(newMessage("Broadcaster: Connection broken for" + _mountpoint.toAscii(), true));
+    emit(newMessage("Broadcaster: Connection broken for " + _mountpoint.toAscii(), true));
   }
   else {
-    emit(newMessage("Broadcaster: Connection opened for" + _mountpoint.toAscii(), true));
+    emit(newMessage("Broadcaster: Connection opened for " + _mountpoint.toAscii(), true));
     _sOpenTrial = 0;
   }
 }
