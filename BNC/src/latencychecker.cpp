@@ -419,10 +419,10 @@ void latencyChecker::checkCorrLatency(int corrGPSEpochTime, int type) {
       l = _lClkOrb; l._type = "Clock&Orbit";
       break;
     case 1059: case 1065: case 1242: case 1248: case 1254: case 1260:
-      l = _lCb; l._type = "Code Biases";
+      l = _lCb; l._type = "CodeBiases";
       break;
     case 1265: case 1266: case 1267: case 1268: case 1269: case 1270:
-      l = _lPb; l._type = "Phase Biases";
+      l = _lPb; l._type = "PhaseBiases";
       break;
     case 1264:
       l = _lVtec; l._type = "VTEC";
@@ -431,7 +431,7 @@ void latencyChecker::checkCorrLatency(int corrGPSEpochTime, int type) {
       l = _lUra; l._type = "URA";
       break;
     case 1062: case 1068: case 1245: case 1251: case 1257: case 1263:
-      l = _lHr; l._type = "Hr Clock";
+      l = _lHr; l._type = "HrClock";
       break;
     default:
       return;
