@@ -108,11 +108,11 @@ bool RTCM3Decoder::DecodeRTCM3GPS(unsigned char* data, int size) {
   SKIPBITS(12)
   /* id */
   GETBITS(i, 30)
-  CurrentObsTime.set(i);
 
+  CurrentObsTime.set(i);
   if (_CurrentTime.valid() && CurrentObsTime != _CurrentTime) {
     decoded = true;
-    _obsList.append(_CurrentObsList);
+    _obsList = _CurrentObsList;
     _CurrentObsList.clear();
   }
 
@@ -731,12 +731,10 @@ bool RTCM3Decoder::DecodeRTCM3MSM(unsigned char* data, int size)
                 }
                 break;
               case 4:
-                qDebug() << "MSM4";
                 if (psr[count] > -1.0 / (1 << 10)) {
                   frqObs->_code = psr[count] * LIGHTSPEED / 1000.0
                       + (rrmod[numsat] + rrint[numsat]) * LIGHTSPEED / 1000.0;
                   frqObs->_codeValid = true;
-                  qDebug() << "frqObs->_codeValid";
                 }
 
                 if (cp[count] > -1.0 / (1 << 8)) {
@@ -744,13 +742,11 @@ bool RTCM3Decoder::DecodeRTCM3MSM(unsigned char* data, int size)
                       + (rrmod[numsat] + rrint[numsat]) * LIGHTSPEED / 1000.0
                           / cd.wl;
                   frqObs->_phaseValid = true;
-                  qDebug() << "frqObs->_phaseValid";
                   frqObs->_slipCounter = ll[count];
                 }
 
                 frqObs->_snr = cnr[count];
                 frqObs->_snrValid = true;
-                qDebug() << "frqObs->_snrValid";
                 break;
               case 5:
                 if (psr[count] > -1.0 / (1 << 10)) {
@@ -821,13 +817,8 @@ bool RTCM3Decoder::DecodeRTCM3MSM(unsigned char* data, int size)
           }
         }
       }
-      qDebug() << CurrentObs._time.datestr().c_str() << " "
-          << CurrentObs._time.timestr().c_str();
-      qDebug() << "CurrentObs._obs.size(): " << CurrentObs._obs.size();
-      if (CurrentObs._obs.size() > 0) {
+      if (CurrentObs._obs.size() > 0)
         _CurrentObsList.push_back(CurrentObs);
-        qDebug() << "_CurrentObsList.push_back(CurrentObs)";
-      }
     }
   }
   else if ((type % 10) < 3) {
