@@ -827,7 +827,7 @@ bool RTCM3Decoder::DecodeRTCM3MSM(unsigned char* data, int size)
   }
   if (!syncf) {
     decoded = true;
-    _obsList = _CurrentObsList;
+    _obsList.append(_CurrentObsList);
     _CurrentTime.reset();
     _CurrentObsList.clear();
   }
