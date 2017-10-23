@@ -112,7 +112,7 @@ bool RTCM3Decoder::DecodeRTCM3GPS(unsigned char* data, int size) {
   CurrentObsTime.set(i);
   if (_CurrentTime.valid() && CurrentObsTime != _CurrentTime) {
     decoded = true;
-    _obsList = _CurrentObsList;
+    _obsList.append(_CurrentObsList);
     _CurrentObsList.clear();
   }
 
