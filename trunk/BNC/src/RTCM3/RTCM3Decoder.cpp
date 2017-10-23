@@ -463,7 +463,7 @@ bool RTCM3Decoder::DecodeRTCM3MSM(unsigned char* data, int size)
   }
   if (_CurrentTime.valid() && CurrentObsTime != _CurrentTime) {
     decoded = true;
-    _obsList = _CurrentObsList;
+    _obsList.append(_CurrentObsList);
     _CurrentObsList.clear();
   }
   _CurrentTime = CurrentObsTime;
