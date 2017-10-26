@@ -53,6 +53,8 @@ double t_CST::freq(t_frequency::type fType, int slotNum) {
   case t_frequency::C2:    return 1561098000.0;
   case t_frequency::C7:    return 1207140000.0;
   case t_frequency::C6:    return 1268520000.0;
+  case t_frequency::I5:    return 1176450000.0;
+  case t_frequency::I9:    return 2492028000.0;
   case t_frequency::dummy:
   case t_frequency::max:   return 0.0;
   }

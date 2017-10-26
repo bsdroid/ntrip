@@ -25,7 +25,10 @@ int t_prn::toInt() const {
 	  return MAXPRN_GPS + MAXPRN_GLONASS + MAXPRN_GALILEO + MAXPRN_QZSS + _number;
   }
   else if (_system == 'C') {
-  	  return MAXPRN_GPS + MAXPRN_GLONASS + MAXPRN_GALILEO + MAXPRN_QZSS + MAXPRN_SBAS + _number;
+  	return MAXPRN_GPS + MAXPRN_GLONASS + MAXPRN_GALILEO + MAXPRN_QZSS + MAXPRN_SBAS + _number;
+  }
+  else if (_system == 'I') {
+    return MAXPRN_GPS + MAXPRN_GLONASS + MAXPRN_GALILEO + MAXPRN_QZSS + MAXPRN_SBAS + MAXPRN_BDS + _number;
   }
   return 0;
 }
@@ -52,10 +55,9 @@ void t_prn::set(const std::string& str) {
   unsigned    prn    = 0;
   char        system = '\x0';
   const char* number = 0;
-  if      ( str[0] == 'G' || str[0] == 'R' || str[0] == 'E' ||
-            str[0] == 'J' || str[0] == 'S' || str[0] == 'C' ||
-            str[0] == 'I'
-                ) {
+  if ( str[0] == 'G' || str[0] == 'R' || str[0] == 'E' ||
+       str[0] == 'J' || str[0] == 'S' || str[0] == 'C' ||
+       str[0] == 'I') {
     system = str[0];
     number = str.c_str() + 1;
   }
