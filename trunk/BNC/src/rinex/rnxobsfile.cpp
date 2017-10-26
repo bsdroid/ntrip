@@ -51,7 +51,7 @@ using namespace std;
 // Constructor
 ////////////////////////////////////////////////////////////////////////////
 t_rnxObsHeader::t_rnxObsHeader() {
-  _usedSystems = "GREJCS";
+  _usedSystems = "GREJCSI";
   _antNEU.ReSize(3); _antNEU = 0.0;
   _antXYZ.ReSize(3); _antXYZ = 0.0;
   _antBSG.ReSize(3); _antBSG = 0.0;
@@ -446,6 +446,9 @@ void t_rnxObsHeader::set(const t_rnxObsHeader& header, int version,
         _obsTypes['C'] << "C2I" << "L2I" << "S2I"
                        << "C6I" << "L6I" << "S6I"
                        << "C7I" << "L7I" << "S7I";
+
+        _obsTypes['I'] << "C5A" << "L5A" << "S5A"
+                       << "C9A" << "L9A" << "S9A";
       }
       else {
         for (int iSys = 0; iSys < header.numSys(); iSys++) {

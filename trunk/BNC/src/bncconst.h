@@ -31,11 +31,11 @@ enum t_irc {failure = -1, success, fatal}; // return code
 
 class t_frequency {
  public:
-  enum type {dummy = 0, G1, G2, G5, R1, R2, 
-                        E1, // E1  / 1575.42          
-                        E5, // E5a / 1176.45          
-                        E7, // E5b / 1207.140         
-                        E8, // E5(E5a+E5b) / 1191.795 
+  enum type {dummy = 0, G1, G2, G5, R1, R2,
+                        E1, // E1  / 1575.42
+                        E5, // E5a / 1176.45
+                        E7, // E5b / 1207.140
+                        E8, // E5(E5a+E5b) / 1191.795
                         E6, // E6  / 1278.75
                         J1, // 1575.42
                         J2, // 1227.60
@@ -46,6 +46,8 @@ class t_frequency {
                         C2, // 1561.098
                         C7, // 1207.14
                         C6, // 1268.52
+                        I5, // 1176.45
+                        I9, // 2492.028
              max};
 
   static std::string toString(type tt) {
@@ -68,6 +70,8 @@ class t_frequency {
     else if (tt == C2) return "C2";
     else if (tt == C7) return "C7";
     else if (tt == C6) return "C6";
+    else if (tt == I5) return "I5";
+    else if (tt == I9) return "I9";
     return std::string();
   }
   static enum type toInt(std::string s) {
@@ -90,6 +94,8 @@ class t_frequency {
     else if (s == "C2") return C2;
     else if (s == "C7") return C7;
     else if (s == "C6") return C6;
+    else if (s == "I5") return I5;
+    else if (s == "I9") return I9;
     return type();
   }
 };

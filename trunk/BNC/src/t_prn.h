@@ -11,8 +11,9 @@ public:
   static const unsigned MAXPRN_QZSS = 10;
   static const unsigned MAXPRN_SBAS = 38;
   static const unsigned MAXPRN_BDS = 37;
+  static const unsigned MAXPRN_IRNSS = 7;
   static const unsigned MAXPRN = MAXPRN_GPS + MAXPRN_GLONASS + MAXPRN_GALILEO
-      + MAXPRN_QZSS + MAXPRN_SBAS + MAXPRN_BDS;
+      + MAXPRN_QZSS + MAXPRN_SBAS + MAXPRN_BDS + MAXPRN_IRNSS;
 
   t_prn() :
       _system('G'), _number(0), _flags(0) {

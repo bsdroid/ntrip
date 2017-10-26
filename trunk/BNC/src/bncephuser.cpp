@@ -234,6 +234,10 @@ void bncEphUser::checkEphemeris(t_eph* eph) {
     eph->setCheckState(t_eph::outdated);
     return;
   }
+  else if (eph->type() == t_eph::IRNSS   && timeDiff > 4*3600) { // update interval: 2h, data sets are valid for 4 hours
+    eph->setCheckState(t_eph::outdated);
+    return;
+  }
 
 
 
@@ -274,6 +278,10 @@ void bncEphUser::checkEphemeris(t_eph* eph) {
       return;
     }
     else if  (eph->type() == t_eph::BDS    && dt > 6*3600) {
+      ephL->setCheckState(t_eph::outdated);
+      return;
+    }
+    else if  (eph->type() == t_eph::IRNSS  && dt > 4*3600) {
       ephL->setCheckState(t_eph::outdated);
       return;
     }

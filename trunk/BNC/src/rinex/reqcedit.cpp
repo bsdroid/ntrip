@@ -650,6 +650,9 @@ void t_reqcEdit::appendEphemerides(const QString& fileName,
       else if (eph->type() == t_eph::BDS) {
         ephs.append(new t_ephBDS(*dynamic_cast<t_ephBDS*>(eph)));
       }
+      else if (eph->type() == t_eph::IRNSS) {
+        ephs.append(new t_ephGPS(*dynamic_cast<t_ephGPS*>(eph)));
+      }
     }
   }
 }

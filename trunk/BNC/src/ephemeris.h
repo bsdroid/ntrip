@@ -16,7 +16,7 @@ class t_clkCorr;
 
 class t_eph {
  public:
-  enum e_type {unknown, GPS, QZSS, GLONASS, Galileo, SBAS, BDS};
+  enum e_type {unknown, GPS, QZSS, GLONASS, Galileo, SBAS, BDS, IRNSS};
   enum e_checkState {unchecked, ok, bad, outdated};
 
   t_eph();
@@ -88,7 +88,15 @@ class t_ephGPS : public t_eph {
   t_ephGPS(float rnxVersion, const QStringList& lines);
   virtual ~t_ephGPS() {}
 
-  virtual e_type type() const {return (_prn.system() == 'J' ? t_eph::QZSS : t_eph::GPS); }
+  virtual e_type type() const {
+    switch (_prn.system()) {
+      case 'J':
+        return t_eph::QZSS;
+      case 'I':
+        return t_eph::IRNSS;
+    };
+    return t_eph::GPS;
+  }
   virtual QString toString(double version) const;
   virtual unsigned int  IOD() const { return static_cast<unsigned int>(_IODE); }
   double TGD() const {return _TGD;} // Timing Group Delay (P1-P2 DCB)
@@ -100,7 +108,7 @@ class t_ephGPS : public t_eph {
   double  _clock_drift;     // [s/s]
   double  _clock_driftrate; // [s/s^2]
 
-  double  _IODE;
+  double  _IODE;            // IODEC in case of IRNSS
   double  _Crs;             // [m]
   double  _Delta_n;         // [rad/s]
   double  _M0;              // [rad]
@@ -121,17 +129,17 @@ class t_ephGPS : public t_eph {
   double  _OMEGADOT;        // [rad/s]
 
   double  _IDOT;            // [rad/s]
-  double  _L2Codes;         // Codes on L2 channel
+  double  _L2Codes;         // Codes on L2 channel  (not valid for IRNSS)
   double  _TOEweek;
-  double  _L2PFlag;         // L2 P data flag
+  double  _L2PFlag;         // L2 P data flag (not valid for IRNSS)
 
   mutable double  _ura;     // SV accuracy
   double  _health;          // SV health
   double  _TGD;             // [s]
-  double  _IODC;
+  double  _IODC;            // (not valid for IRNSS)
 
   double  _TOT;             // Transmisstion time
-  double  _fitInterval;     // Fit interval
+  double  _fitInterval;     // Fit interval (not valid for IRNSS)
 };
 
 class t_ephGlo : public t_eph {
@@ -413,5 +421,4 @@ class t_ephBDS : public t_eph {
   double  _TOEsec;           //  [s] of BDT week
   double  _TOEweek;          //  BDT week will be set only in case of RINEX file input
 };
-
 #endif

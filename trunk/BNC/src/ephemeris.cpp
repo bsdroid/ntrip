@@ -183,7 +183,9 @@ t_ephGPS::t_ephGPS(float rnxVersion, const QStringList& lines) {
       in >> prnStr;
 
       if (prnStr.size() == 1 &&
-          (prnStr[0] == 'G' || prnStr[0] == 'J')) {
+          (prnStr[0] == 'G' ||
+           prnStr[0] == 'J' ||
+           prnStr[0] == 'I')) {
         in >> n;
         prnStr.append(n);
       }
@@ -194,6 +196,9 @@ t_ephGPS::t_ephGPS(float rnxVersion, const QStringList& lines) {
       }
       else if (prnStr.at(0) == 'J') {
         _prn.set('J', prnStr.mid(1).toInt());
+      }
+      else if (prnStr.at(0) == 'I') {
+        _prn.set('I', prnStr.mid(1).toInt());
       }
       else {
         _prn.set('G', prnStr.toInt());
@@ -256,7 +261,7 @@ t_ephGPS::t_ephGPS(float rnxVersion, const QStringList& lines) {
       }
     }
 
-    else if ( iLine == 5 ) {
+    else if ( iLine == 5 && type() != t_eph::IRNSS) {
       if ( readDbl(line, pos[0], fieldLen, _IDOT   ) ||
            readDbl(line, pos[1], fieldLen, _L2Codes) ||
            readDbl(line, pos[2], fieldLen, _TOEweek  ) ||
@@ -265,12 +270,27 @@ t_ephGPS::t_ephGPS(float rnxVersion, const QStringList& lines) {
         return;
       }
     }
+    else if ( iLine == 5 && type() == t_eph::IRNSS) {
+      if ( readDbl(line, pos[0], fieldLen, _IDOT   ) ||
+           readDbl(line, pos[2], fieldLen, _TOEweek) ) {
+        _checkState = bad;
+        return;
+      }
+    }
 
-    else if ( iLine == 6 ) {
+    else if ( iLine == 6 && type() != t_eph::IRNSS) {
       if ( readDbl(line, pos[0], fieldLen, _ura   ) ||
            readDbl(line, pos[1], fieldLen, _health) ||
            readDbl(line, pos[2], fieldLen, _TGD   ) ||
            readDbl(line, pos[3], fieldLen, _IODC  ) ) {
+        _checkState = bad;
+        return;
+      }
+    }
+    else if ( iLine == 6 && type() == t_eph::IRNSS) {
+      if ( readDbl(line, pos[0], fieldLen, _ura   ) ||
+           readDbl(line, pos[1], fieldLen, _health) ||
+           readDbl(line, pos[2], fieldLen, _TGD   ) ) {
         _checkState = bad;
         return;
       }
@@ -412,27 +432,54 @@ QString t_ephGPS::toString(double version) const {
     .arg(_omega,    19, 'e', 12)
     .arg(_OMEGADOT, 19, 'e', 12);
 
-  out << QString(fmt)
-    .arg(_IDOT,    19, 'e', 12)
-    .arg(_L2Codes, 19, 'e', 12)
-    .arg(_TOEweek, 19, 'e', 12)
-    .arg(_L2PFlag, 19, 'e', 12);
+  if (type() == t_eph::IRNSS) {
+    out << QString(fmt)
+      .arg(_IDOT,    19, 'e', 12)
+      .arg("",       19, QChar(' '))
+      .arg(_TOEweek, 19, 'e', 12)
+      .arg("",       19, QChar(' '));
+  }
+  else {
+    out << QString(fmt)
+      .arg(_IDOT,    19, 'e', 12)
+      .arg(_L2Codes, 19, 'e', 12)
+      .arg(_TOEweek, 19, 'e', 12)
+      .arg(_L2PFlag, 19, 'e', 12);
+  }
 
-  out << QString(fmt)
-    .arg(_ura,    19, 'e', 12)
-    .arg(_health, 19, 'e', 12)
-    .arg(_TGD,    19, 'e', 12)
-    .arg(_IODC,   19, 'e', 12);
+  if (type() == t_eph::IRNSS) {
+    out << QString(fmt)
+      .arg(_ura,    19, 'e', 12)
+      .arg(_health, 19, 'e', 12)
+      .arg(_TGD,    19, 'e', 12)
+      .arg("",       19, QChar(' '));
+  }
+  else {
+    out << QString(fmt)
+      .arg(_ura,    19, 'e', 12)
+      .arg(_health, 19, 'e', 12)
+      .arg(_TGD,    19, 'e', 12)
+      .arg(_IODC,   19, 'e', 12);
+  }
 
   double tot = _TOT;
   if (tot == 0.9999e9 && version < 3.0) {
     tot = 0.0;
   }
-  out << QString(fmt)
-    .arg(tot,          19, 'e', 12)
-    .arg(_fitInterval, 19, 'e', 12)
-    .arg("",           19, QChar(' '))
-    .arg("",           19, QChar(' '));
+  if (type() == t_eph::IRNSS) {
+    out << QString(fmt)
+      .arg(tot,          19, 'e', 12)
+      .arg("",           19, QChar(' '))
+      .arg("",           19, QChar(' '))
+      .arg("",           19, QChar(' '));
+  }
+  else {
+    out << QString(fmt)
+      .arg(tot,          19, 'e', 12)
+      .arg(_fitInterval, 19, 'e', 12)
+      .arg("",           19, QChar(' '))
+      .arg("",           19, QChar(' '));
+  }
 
   return rnxStr;
 }

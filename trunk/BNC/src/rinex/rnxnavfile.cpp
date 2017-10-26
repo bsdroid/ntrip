@@ -203,6 +203,12 @@ void t_rnxNavFile::read(QTextStream* stream) {
       }
       eph = new t_ephBDS(version(), lines);
     }
+    else if (prn[0] == 'I') {
+      for (int ii = 1; ii < 8; ii++) {
+        lines << stream->readLine();
+      }
+      eph = new t_ephGPS(version(), lines);
+    }
     if (eph &&
         eph->checkState() != t_eph::bad &&
         eph->checkState() != t_eph::outdated) {
