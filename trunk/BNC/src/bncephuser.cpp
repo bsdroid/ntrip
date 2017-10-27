@@ -230,11 +230,11 @@ void bncEphUser::checkEphemeris(t_eph* eph) {
     eph->setCheckState(t_eph::outdated);
     return;
   }
-  else if (eph->type() == t_eph::BDS     && timeDiff > 6*3600) { // updates 1 (GEO) up to 6 hours
+  else if (eph->type() == t_eph::BDS     && timeDiff > 6*3600) { // updates (GEO) up to 6 hours
     eph->setCheckState(t_eph::outdated);
     return;
   }
-  else if (eph->type() == t_eph::IRNSS   && timeDiff > 4*3600) { // update interval: 2h, data sets are valid for 4 hours
+  else if (eph->type() == t_eph::IRNSS   && timeDiff > 24*3600) { // update interval: up to 24 hours
     eph->setCheckState(t_eph::outdated);
     return;
   }
@@ -281,7 +281,7 @@ void bncEphUser::checkEphemeris(t_eph* eph) {
       ephL->setCheckState(t_eph::outdated);
       return;
     }
-    else if  (eph->type() == t_eph::IRNSS  && dt > 4*3600) {
+    else if  (eph->type() == t_eph::IRNSS  && dt > 24*3600) {
       ephL->setCheckState(t_eph::outdated);
       return;
     }
