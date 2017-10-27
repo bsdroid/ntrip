@@ -124,7 +124,7 @@ int main(int argc, char* argv[]) {
       "   reqcOutNavFile        {Output navigation file, full path [character string]}\n"
       "   reqcOutLogFile        {Output logfile, full path [character string]}\n"
       "   reqcLogSummaryOnly    {Output only summary of logfile [integer number: 0=no,2=yes]}\n"
-      "   reqcSkyPlotSignals    {Observation signals [character string, list separated by blank character, example: C:2&7 E:1&5 G:1&2 J:1&2 R:1&2 S:1&5]}\n"
+      "   reqcSkyPlotSignals    {Observation signals [character string, list separated by blank character, example: C:2&7 E:1&5 G:1&2 J:1&2 R:1&2 S:1&5 I:5&9]}\n"
       "   reqcPlotDir           {QC plots directory [character string]}\n"
       "   reqcRnxVersion        {RINEX version [integer number: 2|3]}\n"
       "   reqcSampling          {RINEX output file sampling rate [integer number of seconds: 0|5|10|15|20|25|30|35|40|45|50|55|60]}\n"
