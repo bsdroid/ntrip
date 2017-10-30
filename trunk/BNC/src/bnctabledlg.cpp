@@ -34,7 +34,7 @@
  *
  * Created:    24-Dec-2005
  *
- * Changes:    
+ * Changes:
  *
  * -----------------------------------------------------------------------*/
 
@@ -144,11 +144,11 @@ bncTableDlg::bncTableDlg(QWidget* parent) : QDialog(parent) {
   _buttonGet = new QPushButton(tr("Get table"), this);
   _buttonGet->setDefault(true);
   connect(_buttonGet, SIGNAL(clicked()), this, SLOT(slotGetTable()));
- 
+
   _buttonMap = new QPushButton(tr("Map"), this);
   _buttonMap->setEnabled(false);
   connect(_buttonMap, SIGNAL(clicked()), this, SLOT(slotShowMap()));
- 
+
   _buttonClose = new QPushButton(tr("Close"), this);
   connect(_buttonClose, SIGNAL(clicked()), this, SLOT(close()));
 
@@ -195,9 +195,9 @@ bncTableDlg::~bncTableDlg() {
 
 // Read full caster table (static)
 ////////////////////////////////////////////////////////////////////////////
-t_irc bncTableDlg::getFullTable(const QString& ntripVersion, 
-                                const QString& casterHost, 
-                                int casterPort, QStringList& allLines, 
+t_irc bncTableDlg::getFullTable(const QString& ntripVersion,
+                                const QString& casterHost,
+                                int casterPort, QStringList& allLines,
                                 bool alwaysRead) {
 
   static QMutex mutex;
@@ -242,7 +242,7 @@ t_irc bncTableDlg::getFullTable(const QString& ntripVersion,
     while ( !line.isNull() ) {
       allLines.append(line);
       line = in.readLine();
-    } 
+    }
     allTables.insert(casterHost, allLines);
     delete query;
     return success;
@@ -259,7 +259,7 @@ void bncTableDlg::slotGetTable() {
 
   _buttonGet->setEnabled(false);
   _buttonMap->setEnabled(true);
-  _buttonCasterTable->setEnabled(false); 
+  _buttonCasterTable->setEnabled(false);
 
   if ( getFullTable(_ntripVersionComboBox->currentText(),
                     _casterHostComboBox->currentText(),
@@ -269,7 +269,7 @@ void bncTableDlg::slotGetTable() {
     _buttonGet->setEnabled(true);
     return;
   }
-  
+
   static const QStringList labels = QString("mountpoint,identifier,format,"
     "format-details,carrier,system,network,country,lat,long,"
     "nmea,solution,generator,compress.,auth.,fee,bitrate,"
@@ -296,10 +296,10 @@ void bncTableDlg::slotGetTable() {
       QStringList columns = lines[nRow].split(";");
       for (int ic = 1; ic < columns.size(); ic++) {
             if (ic == 11) {
-          if (columns[ic] == "0") { 
-            columns[ic] = "no"; 
-          } else { 
-            columns[ic] = "yes"; 
+          if (columns[ic] == "0") {
+            columns[ic] = "no";
+          } else {
+            columns[ic] = "yes";
           }
         }
         QTableWidgetItem* item = new QTableWidgetItem(columns[ic]);
@@ -412,7 +412,7 @@ QWhatsThis::enterWhatsThisMode();
 // Slot caster table
 ////////////////////////////////////////////////////////////////////////////
 void bncTableDlg::slotCasterTable() {
-        
+
   _buttonCasterTable->setEnabled(false);
   _casterHostComboBox->setEnabled(false);
   _casterPortLineEdit->setEnabled(false);
@@ -424,7 +424,7 @@ void bncTableDlg::slotCasterTable() {
   _buttonClose->setEnabled(false);
   _buttonSelect->setEnabled(false);
 
-  bncCasterTableDlg* dlg = 
+  bncCasterTableDlg* dlg =
           new bncCasterTableDlg(_ntripVersionComboBox->currentText(), this);
   dlg->move(this->pos().x()+50, this->pos().y()+50);
   connect(dlg, SIGNAL(newCaster(QString, QString)),
@@ -467,7 +467,7 @@ void bncTableDlg::slotNewCaster(QString newCasterHost, QString newCasterPort) {
   url.setHost(newCasterHost);
   url.setPort(newCasterPort.toInt());
   addUrl(url);
-  
+
   _casterHostComboBox->setCurrentIndex(0);
 }
 
@@ -512,10 +512,10 @@ void bncTableDlg::slotCasterHostChanged(const QString& newHost) {
 // Caster table
 ////////////////////////////////////////////////////////////////////////////
 bncCasterTableDlg::bncCasterTableDlg(const QString& ntripVersion,
-                                     QWidget* parent) : 
+                                     QWidget* parent) :
    QDialog(parent) {
 
-  static const QStringList labels = QString("host,port,identifier,operator,nmea,country,lat,long,link").split(",");
+  static const QStringList labels = QString("host,port,identifier,operator,nmea,country,lat,long,fallback host, fallback port,link").split(",");
 
   _casterTable = new QTableWidget(this);
 
@@ -573,11 +573,11 @@ bncCasterTableDlg::bncCasterTableDlg(const QString& ntripVersion,
     for (int nRow = 0; nRow < lines.size(); nRow++) {
       QStringList columns = lines[nRow].split(";");
       for (int ic = 1; ic < columns.size(); ic++) {
-         if (ic == 5) { 
-           if (columns[ic] == "0") { 
-             columns[ic] = "no"; 
-           } else { 
-             columns[ic] = "yes"; 
+         if (ic == 5) {
+           if (columns[ic] == "0") {
+             columns[ic] = "no";
+           } else {
+             columns[ic] = "yes";
            }
          }
          QTableWidgetItem* item = new QTableWidgetItem(columns[ic]);
@@ -585,7 +585,7 @@ bncCasterTableDlg::bncCasterTableDlg(const QString& ntripVersion,
         _casterTable->setItem(nRow, ic-1, item);
       }
     }
-  } 
+  }
   _casterTable->setHorizontalHeaderLabels(labels);
   _casterTable->setSortingEnabled(true);
   _casterTable->sortItems(0);
@@ -623,13 +623,15 @@ bncCasterTableDlg::bncCasterTableDlg(const QString& ntripVersion,
   dlgLayout->addWidget(new QLabel("  List of Ntrip Broadcasters from www.rtcm-ntrip.org"), 0,0,1,3,Qt::AlignLeft);
   dlgLayout->addWidget(_casterTable,     1, 0, 1, 3);
   dlgLayout->addWidget(_whatsThisButton, 2, 0);
-  dlgLayout->addWidget(_closeButton,     2, 1, Qt::AlignRight);  
+  dlgLayout->addWidget(_closeButton,     2, 1, Qt::AlignRight);
   dlgLayout->addWidget(_okButton,        2, 2);
 
   setMinimumSize(600,400);
   setWindowTitle(tr("Select Broadcaster"));
   setLayout(dlgLayout);
   resize(68*ww, 50*ww);
+  _casterTable->hideColumn(8);
+  _casterTable->hideColumn(9);
   show();
 }
 
@@ -654,7 +656,7 @@ void bncCasterTableDlg::slotAcceptCasterTable() {
   if (_casterTable) {
     for (int ir = _casterTable->rowCount() - 1; ir >= 0 ; ir--) {
       if (_casterTable->isItemSelected(_casterTable->item(ir,0))) {
-        emit newCaster(_casterTable->item(ir,0)->text(), 
+        emit newCaster(_casterTable->item(ir,0)->text(),
                        _casterTable->item(ir,1)->text());
       }
     }
