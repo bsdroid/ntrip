@@ -347,6 +347,15 @@ void bncComb::slotNewClkCorrections(QList<t_clkCorr> clkCorrections) {
       continue;
     }
 
+    if (
+        clkCorr._prn.system() == 'E' ||
+        clkCorr._prn.system() == 'C' ||
+        clkCorr._prn.system() == 'J' ||
+        clkCorr._prn.system() == 'I' ||
+        clkCorr._prn.system() == 'S' )   {
+      continue;
+    }
+    
     // Check Modulo Time
     // -----------------
     if (int(clkCorr._time.gpssec()) % _cmbSampl != 0.0) {
