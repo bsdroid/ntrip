@@ -101,7 +101,7 @@ enum VTECType {
 /* if some systems aren't supported at all, change the following numbers to zero
 for these systems to save space */
 enum COR_CONSTANTS {
-  CLOCKORBIT_BUFFERSIZE=2048,
+  CLOCKORBIT_BUFFERSIZE=8192,
   CLOCKORBIT_NUMGPS=32,
   CLOCKORBIT_NUMGLONASS=26,
   CLOCKORBIT_NUMGALILEO=36,
