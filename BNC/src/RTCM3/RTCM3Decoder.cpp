@@ -1045,9 +1045,6 @@ bool RTCM3Decoder::DecodeGLONASSEphemeris(unsigned char* data, int size) {
 
     GETBITS(i, 5)
     eph._frequency_number = i - 7;
-    GLOFreq[sv - 1] = 100 + i - 7; /* store frequency for other users (MSM) */
-    _gloFrq = QString("%1 %2").arg(eph._prn.toString().c_str()).arg(
-        eph._frequency_number, 2, 'f', 0);
     GETBITS(eph._almanac_health, 1) /* almanac healthy */
     GETBITS(eph._almanac_health_availablility_indicator, 1) /* almanac health ok */
     GETBITS(eph._P1, 2) /*  P1 */
@@ -1101,6 +1098,9 @@ bool RTCM3Decoder::DecodeGLONASSEphemeris(unsigned char* data, int size) {
     eph._xv(4) = eph._x_velocity * 1.e3;
     eph._xv(5) = eph._y_velocity * 1.e3;
     eph._xv(6) = eph._z_velocity * 1.e3;
+
+    GLOFreq[sv - 1] = 100 + eph._frequency_number ; /* store frequency for other users (MSM) */
+    _gloFrq = QString("%1 %2").arg(eph._prn.toString().c_str()).arg(eph._frequency_number, 2, 'f', 0);
 
     emit newGlonassEph(eph);
     decoded = true;
