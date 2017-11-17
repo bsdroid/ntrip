@@ -1077,7 +1077,7 @@ bool RTCM3Decoder::DecodeGLONASSEphemeris(unsigned char* data, int size) {
     GETBITS(eph._M_P, 2) /* GLONASS-M P, */
     GETBITS(eph._M_l3, 1) /*GLONASS-M ln (third string) */
     GETFLOATSIGNM(eph._tau, 22, 1.0 / (double )(1 << 30))    /* GLONASS tau n(tb) */
-    GETFLOATSIGNM(eph._M_delta_tau, 5, 1.0 / (double )(1 << 30))   /* GLONASS-M delta tau n(tb) */
+    GETFLOATSIGNM(eph._M_delta_tau, 5, 1.0 / (double )(1 << 30))  /* GLONASS-M delta tau n(tb) */
     GETBITS(eph._E, 5)
     GETBITS(eph._M_P4, 1) /* GLONASS-M P4 */
     GETBITS(eph._M_FT, 4) /* GLONASS-M Ft */
