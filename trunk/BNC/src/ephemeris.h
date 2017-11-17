@@ -164,6 +164,24 @@ class t_ephGlo : public t_eph {
     _z_velocity       = 0.0;
     _z_acceleration   = 0.0;
     _E                = 0.0;
+    _almanac_health   = 0.0;
+    _almanac_health_availablility_indicator = 0.0;
+    _additional_data_availability = 0.0;
+    _tauC             = 0.0;
+    _P1               = 0.0;
+    _P2               = 0.0;
+    _P3               = 0.0;
+    _NA               = 0.0;
+    _M_P              = 0.0;
+    _M_l3             = 0.0;
+    _M_delta_tau      = 0.0;
+    _M_P4             = 0.0;
+    _M_FT             = 0.0;
+    _M_NT             = 0.0;
+    _M_M              = 0.0;
+    _M_N4             = 0.0;
+    _M_tau_GPS        = 0.0;
+    _M_l5             = 0.0;
   }
   t_ephGlo(float rnxVersion, const QStringList& lines);
   virtual ~t_ephGlo() {}
@@ -182,13 +200,13 @@ class t_ephGlo : public t_eph {
 
   double  _gps_utc;
   double  _tau;              // [s]
-  double  _gamma;            //
+  double  _gamma;            // [-]
   mutable double  _tki;      // message frame time
 
   double  _x_pos;            // [km]
   double  _x_velocity;       // [km/s]
   double  _x_acceleration;   // [km/s^2]
-  double  _health;           // 0 = O.K.
+  double  _health;           // 0 = O.K. MSB of Bn word
 
   double  _y_pos;            // [km]
   double  _y_velocity;       // [km/s]
@@ -199,6 +217,27 @@ class t_ephGlo : public t_eph {
   double  _z_velocity;       // [km/s]
   double  _z_acceleration;   // [km/s^2]
   double  _E;                // Age of Information [days]
+
+  double _almanac_health;     // Cn word
+  double _almanac_health_availablility_indicator;
+
+  double _additional_data_availability;  //
+  double _tauC;               // GLONASS time scale correction to UTC(SU) time [sec]
+  double _P1;                 // flag of the immediate data updating [-]
+  double _P2;                 // flag of oddness or evenness of the value of tb for intervals 30 or 60 minutes [-]
+  double _P3;                 // flag indicating a number of satellites for which almanac is transmitted within given frame [-]
+  double _NA;                 // calendar day number within the 4-year period [days]
+
+  double _M_P;                // control segment parameter that indicates the satellite operation mode with respect of time parameters
+  double _M_l3;               // health flag
+  double _M_delta_tau;        // [sec]
+  double _M_P4;               // flag to show that ephemeris parameters are present [-]
+  double _M_FT;               // indicator for predicted satellite user range accuracy [-]
+  double _M_NT;               // current date, calendar number of day within 4-year interval [days]
+  double _M_M;                // type of satellite transmitting navigation signal: 0 = GLONASS, 1 = GLONASS-M satellite [-]
+  double _M_N4;               // 4-year interval number starting from 1996
+  double _M_tau_GPS;          // correction to GPS time relative to GLONASS time [days]
+  double _M_l5;               // health flag
 };
 
 class t_ephGal : public t_eph {
