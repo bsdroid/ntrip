@@ -1048,8 +1048,9 @@ bool RTCM3Decoder::DecodeGLONASSEphemeris(unsigned char* data, int size) {
     GLOFreq[sv - 1] = 100 + i - 7; /* store frequency for other users (MSM) */
     _gloFrq = QString("%1 %2").arg(eph._prn.toString().c_str()).arg(
         eph._frequency_number, 2, 'f', 0);
-    SKIPBITS(4)
-    /* almanac healthy, almanac health ok, P1 */
+    GETBITS(eph._almanac_health, 1) /* almanac healthy */
+    GETBITS(eph._almanac_health_availablility_indicator, 1) /* almanac health ok */
+    GETBITS(eph._P1, 2) /*  P1 */
     GETBITS(i, 5)
     tk = i * 60 * 60;
     GETBITS(i, 6)
@@ -1057,9 +1058,8 @@ bool RTCM3Decoder::DecodeGLONASSEphemeris(unsigned char* data, int size) {
     GETBITS(i, 1)
     tk += i * 30;
     eph._tki = tk < 3 * 60 * 60 ? tk - 3 * 60 * 60 + 86400 : tk - 3 * 60 * 60;
-    GETBITS(eph._health, 1)
-    SKIPBITS(1)
-    /* P2 */
+    GETBITS(eph._health, 1) /* MSB of Bn*/
+    GETBITS(eph._P2, 1)  /* P2 */
     GETBITS(i, 7)
     eph._TOC.setTk(i * 15 * 60 * 1000); /* tb */
 
@@ -1072,26 +1072,23 @@ bool RTCM3Decoder::DecodeGLONASSEphemeris(unsigned char* data, int size) {
     GETFLOATSIGNM(eph._z_velocity, 24, 1.0 / (double )(1 << 20))
     GETFLOATSIGNM(eph._z_pos, 27, 1.0 / (double )(1 << 11))
     GETFLOATSIGNM(eph._z_acceleration, 5, 1.0 / (double )(1 << 30))
-    SKIPBITS(1)
-    /* P3 */
+    GETBITS(eph._P3, 1)    /* P3 */
     GETFLOATSIGNM(eph._gamma, 11, 1.0 / (double )(1 << 30) / (double )(1 << 10))
-    SKIPBITS(3)
-    /* GLONASS-M P, GLONASS-M ln (third string) */
-    GETFLOATSIGNM(eph._tau, 22, 1.0 / (double )(1 << 30))
-    /* GLONASS tau n(tb) */
-    SKIPBITS(5)
-    /* GLONASS-M delta tau n(tb) */
+    GETBITS(eph._M_P, 2) /* GLONASS-M P, */
+    GETBITS(eph._M_l3, 1) /*GLONASS-M ln (third string) */
+    GETFLOATSIGNM(eph._tau, 22, 1.0 / (double )(1 << 30))    /* GLONASS tau n(tb) */
+    GETFLOATSIGNM(eph._M_delta_tau, 5, 1.0 / (double )(1 << 30))   /* GLONASS-M delta tau n(tb) */
     GETBITS(eph._E, 5)
-    /* GETBITS(i, 1) / * GLONASS-M P4 */
-    /* GETBITS(i, 4) / * GLONASS-M Ft */
-    /* GETBITS(i, 11) / * GLONASS-M Nt */
-    /* GETBITS(i, 2) / * GLONASS-M M */
-    /* GETBITS(i, 1) / * GLONASS-M The Availability of Additional Data */
-    /* GETBITS(i, 11) / * GLONASS-M Na */
-    /* GETFLOATSIGNM(i, 32, 1.0/(double)(1<<30)/(double)(1<<1)) / * GLONASS tau c */
-    /* GETBITS(i, 5) / * GLONASS-M N4 */
-    /* GETFLOATSIGNM(i, 22, 1.0/(double)(1<<30)) / * GLONASS-M tau GPS */
-    /* GETBITS(i, 1) / * GLONASS-M ln (fifth string) */
+    GETBITS(eph._M_P4, 1) /* GLONASS-M P4 */
+    GETBITS(eph._M_FT, 4) /* GLONASS-M Ft */
+    GETBITS(eph._M_NT, 11) /* GLONASS-M Nt */
+    GETBITS(eph._M_M, 2) /* GLONASS-M M */
+    GETBITS(eph._additional_data_availability, 1) /* GLONASS-M The Availability of Additional Data */
+    GETBITS(eph._NA, 11) /* GLONASS-M Na */
+    GETFLOATSIGNM(eph._tauC, 32, 1.0/(double)(1<<30)/(double)(1<<1)) /* GLONASS tau c */
+    GETBITS(eph._M_N4, 5) /* GLONASS-M N4 */
+    GETFLOATSIGNM(eph._M_tau_GPS, 22, 1.0/(double)(1<<30)) /* GLONASS-M tau GPS */
+    GETBITS(eph._M_l5, 1) /* GLONASS-M ln (fifth string) */
 
     unsigned year, month, day;
     eph._TOC.civil_date(year, month, day);

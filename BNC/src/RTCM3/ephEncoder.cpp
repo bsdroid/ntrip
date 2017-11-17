@@ -122,16 +122,16 @@ int t_ephEncoder::RTCM3(const t_ephGlo& eph, unsigned char *buffer)
   GLONASSADDBITS(12, 1020)
   GLONASSADDBITS(6, eph._prn.number())
   GLONASSADDBITS(5, 7+eph._frequency_number)
-  GLONASSADDBITS(1, 0)
-  GLONASSADDBITS(1, 0)
-  GLONASSADDBITS(2, 0)
+  GLONASSADDBITS(1, eph._almanac_health)
+  GLONASSADDBITS(1, eph._almanac_health_availablility_indicator)
+  GLONASSADDBITS(2, eph._P1)
   int tki = static_cast<int>(eph._tki)+3*60*60;
   if (tki > 86400) {tki -= 86400;}
   GLONASSADDBITS(5, static_cast<int>(tki)/(60*60))
   GLONASSADDBITS(6, (static_cast<int>(tki)/60)%60)
   GLONASSADDBITS(1, (static_cast<int>(tki)/30)%30)
   GLONASSADDBITS(1, eph._health)
-  GLONASSADDBITS(1, 0)
+  GLONASSADDBITS(1, eph._P2)
   unsigned long long timeofday = (static_cast<int>(eph._tt.gpssec()+3*60*60-eph._gps_utc)%86400);
   GLONASSADDBITS(7, timeofday/60/15)
   GLONASSADDBITSFLOATM(24, eph._x_velocity*1000, 1000.0/static_cast<double>(1<<20))
@@ -143,24 +143,23 @@ int t_ephEncoder::RTCM3(const t_ephGlo& eph, unsigned char *buffer)
   GLONASSADDBITSFLOATM(24, eph._z_velocity*1000, 1000.0/static_cast<double>(1<<20))
   GLONASSADDBITSFLOATM(27,eph._z_pos*1000, 1000.0/static_cast<double>(1<<11))
   GLONASSADDBITSFLOATM(5, eph._z_acceleration*1000, 1000.0/static_cast<double>(1<<30))
-  GLONASSADDBITS(1, 0)
-  GLONASSADDBITSFLOATM(11, eph._gamma, 1.0/static_cast<double>(1<<30)
-  /static_cast<double>(1<<10))
-  GLONASSADDBITS(2, 0) /* GLONASS-M P */
-  GLONASSADDBITS(1, 0) /* GLONASS-M ln(3) */
+  GLONASSADDBITS(1, eph._P3)
+  GLONASSADDBITSFLOATM(11, eph._gamma, 1.0/static_cast<double>(1<<30)/static_cast<double>(1<<10))
+  GLONASSADDBITS(2, eph._M_P) /* GLONASS-M P */
+  GLONASSADDBITS(1, eph._M_l3) /* GLONASS-M ln(3) */
   GLONASSADDBITSFLOATM(22, eph._tau, 1.0/static_cast<double>(1<<30))
-  GLONASSADDBITS(5, 0) /* GLONASS-M delta tau */
+  GLONASSADDBITSFLOATM(5, eph._M_delta_tau, 1.0/static_cast<double>(1<<30)) /* GLONASS-M delta tau */
   GLONASSADDBITS(5, eph._E)
-  GLONASSADDBITS(1, 0) /* GLONASS-M P4 */
-  GLONASSADDBITS(4, 0) /* GLONASS-M FT */
-  GLONASSADDBITS(11, 0) /* GLONASS-M NT */
-  GLONASSADDBITS(2, 0) /* GLONASS-M active? */
-  GLONASSADDBITS(1, 0) /* GLONASS additional data */
-  GLONASSADDBITS(11, 0) /* GLONASS NA */
-  GLONASSADDBITS(32, 0) /* GLONASS tau C */
-  GLONASSADDBITS(5, 0) /* GLONASS-M N4 */
-  GLONASSADDBITS(22, 0) /* GLONASS-M tau GPS */
-  GLONASSADDBITS(1, 0) /* GLONASS-M ln(5) */
+  GLONASSADDBITS(1, eph._M_P4) /* GLONASS-M P4 */
+  GLONASSADDBITS(4, eph._M_FT) /* GLONASS-M FT */
+  GLONASSADDBITS(11, eph._M_NT) /* GLONASS-M NT */
+  GLONASSADDBITS(2, eph._M_M) /* GLONASS-M active? */
+  GLONASSADDBITS(1, eph._additional_data_availability) /* GLONASS additional data */
+  GLONASSADDBITS(11, eph._NA) /* GLONASS NA */
+  GLONASSADDBITSFLOATM(32, eph._tauC, 1.0/static_cast<double>(1<<30)/static_cast<double>(1<<1)) /* GLONASS tau C */
+  GLONASSADDBITS(5, eph._M_N4) /* GLONASS-M N4 */
+  GLONASSADDBITSFLOATM(22, eph._M_tau_GPS, 1.0/static_cast<double>(1<<30)) /* GLONASS-M tau GPS */
+  GLONASSADDBITS(1, eph._M_l5) /* GLONASS-M ln(5) */
   GLONASSADDBITS(7, 0) /* Reserved */
 
   startbuffer[0]=0xD3;
