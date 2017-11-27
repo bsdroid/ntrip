@@ -185,6 +185,13 @@ void bncEphUser::checkEphemeris(t_eph* eph) {
     return;
   }
 
+  // Check health status
+  // -------------------
+  if (eph->isUnhealthy()) {
+    eph->setCheckState(t_eph::bad);
+    return;
+  }
+
   // Simple Check - check satellite radial distance
   // ----------------------------------------------
   ColumnVector xc(4);
