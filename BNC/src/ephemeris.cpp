@@ -724,6 +724,22 @@ unsigned int t_ephGlo::IOD() const {
   return (unsigned long)tMoscow.daysec() / 900;
 }
 
+// Health status of Glonass Ephemeris (virtual)
+////////////////////////////////////////////////////////////////////////////
+unsigned int t_ephGlo::isUnhealthy() const {
+  if      (_health == 0 && _almanac_health == 0) {
+    return 1;
+  }
+  else if (_health == 1 && _almanac_health == 0) {
+    return 1;
+  }
+  else if (_health == 1 && _almanac_health == 1) {
+    return 1;
+  }
+
+  return 0;
+}
+
 // Constructor
 //////////////////////////////////////////////////////////////////////////////
 t_ephGal::t_ephGal(float rnxVersion, const QStringList& lines) {
@@ -960,6 +976,15 @@ t_irc t_ephGal::position(int GPSweek, double GPSweeks, double* xc, double* vv) c
   //xc[3] -= 2.0 * (xc[0]*vv[0] + xc[1]*vv[1] + xc[2]*vv[2]) / t_CST::c / t_CST::c;
 
   return success;
+}
+
+// Health status of Galileo Ephemeris (virtual)
+////////////////////////////////////////////////////////////////////////////
+unsigned int t_ephGal::isUnhealthy() const {
+  if (_E5aHS && _E5bHS && _E1_bHS) {
+    return 1;
+  }
+  return 0;
 }
 
 // RINEX Format String
