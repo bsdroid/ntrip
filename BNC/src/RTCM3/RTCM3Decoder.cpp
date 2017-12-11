@@ -1378,28 +1378,6 @@ bool RTCM3Decoder::DecodeBDSEphemeris(unsigned char* data, int size) {
   return decoded;
 }
 
-/*
-////////////////////////////////////////////////////////////////////////////
-bool RTCM3Decoder::DecodeAntennaReceiver(unsigned char* data, int size) {
-  char *antenna, type[256];
-  int antnum = -1;
-  uint64_t numbits = 0, bitfield = 0;
-
-  data += 4;
-  size -= 6;
-
-  SKIPBITS(12)
-  GETSTRING(antnum, antenna)
-  if (antnum > -1 && antnum < 265) {
-    memcpy(type, antenna, antnum);
-    type[antnum] = 0;
-    if (!_antType.contains(type)) {
-      _antType.push_back(type);
-    }
-  }
-  return true;
-}*/
-
 //
 ////////////////////////////////////////////////////////////////////////////
 bool RTCM3Decoder::DecodeAntennaReceiver(unsigned char* data, int size) {
