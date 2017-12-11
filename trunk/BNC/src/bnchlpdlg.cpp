@@ -38,6 +38,9 @@
  *
  * -----------------------------------------------------------------------*/
 
+#include <QHBoxLayout>
+#include <QVBoxLayout>
+
 #include "bnchlpdlg.h"
 #include "bnchtml.h"
 

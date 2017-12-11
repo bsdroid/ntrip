@@ -268,7 +268,7 @@ void t_bncCore::printEphHeader() {
     QUrl url(hlp[0]);
     QString decoder = hlp[1];
     comments.append("Source: " + decoder +
-                    " " + url.encodedHost() +
+                    " " + QUrl::toAce(url.host()) +
                     "/" + url.path().mid(1).toLatin1());
   }
 

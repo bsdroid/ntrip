@@ -28,6 +28,8 @@
 #include <QtCore>
 #include <QtGui>
 
+#include <QTableWidgetItem>
+
 class bncGetThread;
 
 class bncTableItem : public QObject, public QTableWidgetItem {

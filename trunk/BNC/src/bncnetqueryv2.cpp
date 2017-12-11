@@ -75,7 +75,7 @@ void bncNetQueryV2::slotFinished() {
   _eventLoop->quit();
   if (_reply && _reply->error() != QNetworkReply::NoError) {
     _status = error;
-    emit newMessage(_url.path().toAscii().replace(0,1,"")  +
+    emit newMessage(_url.path().toLatin1().replace(0,1,"")  +
                     ": NetQueryV2: server replied: " +
                     _reply->attribute(QNetworkRequest::HttpReasonPhraseAttribute).toByteArray(),
                     true);
@@ -143,14 +143,14 @@ void bncNetQueryV2::startRequestPrivate(const QUrl& url, const QByteArray& gga,
   bncSslConfig sslConfig;
   request.setSslConfiguration(sslConfig);
   request.setUrl(_url);
-  request.setRawHeader("Host"         , _url.host().toAscii());
+  request.setRawHeader("Host"         , _url.host().toLatin1());
   request.setRawHeader("Ntrip-Version", "Ntrip/2.0");
-  request.setRawHeader("User-Agent"   , "NTRIP BNC/"BNCVERSION" ("BNC_OS")");
+  request.setRawHeader("User-Agent"   , "NTRIP BNC/" BNCVERSION " (" BNC_OS ")");
   if (!_url.userName().isEmpty()) {
-    QString uName = QUrl::fromPercentEncoding(_url.userName().toAscii());
-    QString passW = QUrl::fromPercentEncoding(_url.password().toAscii());
+    QString uName = QUrl::fromPercentEncoding(_url.userName().toLatin1());
+    QString passW = QUrl::fromPercentEncoding(_url.password().toLatin1());
     request.setRawHeader("Authorization", "Basic " +
-                         (uName + ":" + passW).toAscii().toBase64());
+                         (uName + ":" + passW).toLatin1().toBase64());
   }
   if (!gga.isEmpty()) {
     request.setRawHeader("Ntrip-GGA", gga);
@@ -225,8 +225,13 @@ void bncNetQueryV2::slotSslErrors(QList<QSslError> errors) {
   if (!cert.isNull()) {
     msg += QString("Server Certificate Issued by:\n"
                    "%1\n%2\nCannot be verified\n")
+#if QT_VERSION >= 0x050000
+           .arg(cert.issuerInfo(QSslCertificate::OrganizationalUnitName).at(0))
+           .arg(cert.issuerInfo(QSslCertificate::Organization).at(0));
+#else
            .arg(cert.issuerInfo(QSslCertificate::OrganizationalUnitName))
            .arg(cert.issuerInfo(QSslCertificate::Organization));
+#endif
   }
   QListIterator<QSslError> it(errors);
   while (it.hasNext()) {
@@ -234,7 +239,7 @@ void bncNetQueryV2::slotSslErrors(QList<QSslError> errors) {
     msg += "\n" + err.errorString();
   }
 
-  BNC_CORE->slotMessage(msg.toAscii(), true);
+  BNC_CORE->slotMessage(msg.toLatin1(), true);
 
   if (_sslIgnoreErrors) {
     _reply->ignoreSslErrors();
