@@ -91,7 +91,7 @@ t_irc t_rnxObsHeader::read(QTextStream* stream, int maxLines) {
       break;
     }
     else if (key == "RINEX VERSION / TYPE") {
-      QTextStream in(value.toAscii(), QIODevice::ReadOnly);
+      QTextStream in(value.toLatin1(), QIODevice::ReadOnly);
       in >> _version;
     }
     else if (key == "MARKER NAME") {
@@ -117,14 +117,14 @@ t_irc t_rnxObsHeader::read(QTextStream* stream, int maxLines) {
       _receiverVersion = line.mid(40,20).trimmed();
     }
     else if (key == "INTERVAL") {
-      QTextStream in(value.toAscii(), QIODevice::ReadOnly);
+      QTextStream in(value.toLatin1(), QIODevice::ReadOnly);
       in >> _interval;
     }
     else if (key == "COMMENT") {
       _comments << line.mid(0,60).trimmed();
     }
     else if (key == "WAVELENGTH FACT L1/2") {
-      QTextStream in(value.toAscii(), QIODevice::ReadOnly);
+      QTextStream in(value.toLatin1(), QIODevice::ReadOnly);
       int wlFactL1 = 0;
       int wlFactL2 = 0;
       int numSat   = 0;
@@ -148,42 +148,42 @@ t_irc t_rnxObsHeader::read(QTextStream* stream, int maxLines) {
       }
     }
     else if (key == "APPROX POSITION XYZ") {
-      QTextStream in(value.toAscii(), QIODevice::ReadOnly);
+      QTextStream in(value.toLatin1(), QIODevice::ReadOnly);
       in >> _xyz[0] >> _xyz[1] >> _xyz[2];
     }
     else if (key == "ANTENNA: DELTA H/E/N") {
-      QTextStream in(value.toAscii(), QIODevice::ReadOnly);
+      QTextStream in(value.toLatin1(), QIODevice::ReadOnly);
       in >> _antNEU[2] >> _antNEU[1] >> _antNEU[0];
     }
     else if (key == "ANTENNA: DELTA X/Y/Z") {
-      QTextStream in(value.toAscii(), QIODevice::ReadOnly);
+      QTextStream in(value.toLatin1(), QIODevice::ReadOnly);
       in >> _antXYZ[0] >> _antXYZ[1] >> _antXYZ[2];
     }
     else if (key == "ANTENNA: B.SIGHT XYZ") {
-      QTextStream in(value.toAscii(), QIODevice::ReadOnly);
+      QTextStream in(value.toLatin1(), QIODevice::ReadOnly);
       in >> _antBSG[0] >> _antBSG[1] >> _antBSG[2];
     }
     else if (key == "# / TYPES OF OBSERV") {
       if (_version == 0.0) {
         _version = defaultRnxObsVersion2;
       }
-      QTextStream* in = new QTextStream(value.toAscii(), QIODevice::ReadOnly);
+      QTextStream* in = new QTextStream(value.toLatin1(), QIODevice::ReadOnly);
       int nTypes;
       *in >> nTypes;
-      char sys0 = _usedSystems[0].toAscii();
+      char sys0 = _usedSystems[0].toLatin1();
       _obsTypes[sys0].clear();
       for (int ii = 0; ii < nTypes; ii++) {
         if (ii > 0 && ii % 9 == 0) {
           line = stream->readLine(); ++numLines;
           delete in;
-          in = new QTextStream(line.left(60).toAscii(), QIODevice::ReadOnly);
+          in = new QTextStream(line.left(60).toLatin1(), QIODevice::ReadOnly);
         }
         QString hlp;
         *in >> hlp;
         _obsTypes[sys0].append(hlp);
       }
       for (int ii = 1; ii < _usedSystems.length(); ii++) {
-        char sysI = _usedSystems[ii].toAscii();
+        char sysI = _usedSystems[ii].toLatin1();
         _obsTypes[sysI] = _obsTypes[sys0];
       }
     }
@@ -191,7 +191,7 @@ t_irc t_rnxObsHeader::read(QTextStream* stream, int maxLines) {
       if (_version == 0.0) {
         _version = defaultRnxObsVersion3;
       }
-      QTextStream* in = new QTextStream(value.toAscii(), QIODevice::ReadOnly);
+      QTextStream* in = new QTextStream(value.toLatin1(), QIODevice::ReadOnly);
       char sys;
       int nTypes;
       *in >> sys >> nTypes;
@@ -200,7 +200,7 @@ t_irc t_rnxObsHeader::read(QTextStream* stream, int maxLines) {
         if (ii > 0 && ii % 13 == 0) {
           line = stream->readLine(); ++numLines;
           delete in;
-          in = new QTextStream(line.toAscii(), QIODevice::ReadOnly);
+          in = new QTextStream(line.toLatin1(), QIODevice::ReadOnly);
         }
         QString hlp;
         *in >> hlp;
@@ -212,14 +212,14 @@ t_irc t_rnxObsHeader::read(QTextStream* stream, int maxLines) {
       delete in;
     }
     else if (key == "TIME OF FIRST OBS") {
-      QTextStream in(value.toAscii(), QIODevice::ReadOnly);
+      QTextStream in(value.toLatin1(), QIODevice::ReadOnly);
       int year, month, day, hour, min;
       double sec;
       in >> year >> month >> day >> hour >> min >> sec;
       _startTime.set(year, month, day, hour, min, sec);
     }
     else if (key == "SYS / PHASE SHIFT"){
-      QTextStream* in = new QTextStream(value.toAscii(), QIODevice::ReadOnly);
+      QTextStream* in = new QTextStream(value.toLatin1(), QIODevice::ReadOnly);
       char        sys;
       QString     obstype;
       double      shift;
@@ -232,7 +232,7 @@ t_irc t_rnxObsHeader::read(QTextStream* stream, int maxLines) {
           if (ii > 0 && ii % 10 == 0) {
             line = stream->readLine(); ++numLines;
             delete in;
-            in = new QTextStream(line.left(60).toAscii(), QIODevice::ReadOnly);
+            in = new QTextStream(line.left(60).toLatin1(), QIODevice::ReadOnly);
           }
           *in >> sat;
           satList.append(sat);
@@ -242,7 +242,7 @@ t_irc t_rnxObsHeader::read(QTextStream* stream, int maxLines) {
       _phaseShifts.insert(sys+obstype, QPair<double, QStringList>(shift, satList));
     }
     else if (key == "GLONASS COD/PHS/BIS"){
-      QTextStream in(value.toAscii(), QIODevice::ReadOnly);
+      QTextStream in(value.toLatin1(), QIODevice::ReadOnly);
       for (int ii = 0; ii < 4; ii++) {
         QString type;
         double  value;
@@ -252,14 +252,14 @@ t_irc t_rnxObsHeader::read(QTextStream* stream, int maxLines) {
       }
     }
     else if (key == "GLONASS SLOT / FRQ #") {
-      QTextStream* in = new QTextStream(value.toAscii(), QIODevice::ReadOnly);
+      QTextStream* in = new QTextStream(value.toLatin1(), QIODevice::ReadOnly);
       int nSlots = 0;
       *in >> nSlots;
       for (int ii = 0; ii < nSlots; ii++) {
         if (ii > 0 && ii % 8 == 0) {
           line = stream->readLine(); ++numLines;
           delete in;
-          in = new QTextStream(line.left(60).toAscii(), QIODevice::ReadOnly);
+          in = new QTextStream(line.left(60).toLatin1(), QIODevice::ReadOnly);
         }
         QString sat;
         int    slot;
@@ -456,7 +456,7 @@ void t_rnxObsHeader::set(const t_rnxObsHeader& header, int version,
           for (int iType = 0; iType < header.nTypes(sys); iType++) {
             QString type = header.obsType(sys, iType, _version);
             for (int jSys = 0; jSys < _usedSystems.length(); jSys++) {
-              char thisSys  = _usedSystems[jSys].toAscii();
+              char thisSys  = _usedSystems[jSys].toLatin1();
               if (!_obsTypes[thisSys].contains(type)) {
                 _obsTypes[thisSys].push_back(type);
               }
@@ -472,7 +472,7 @@ void t_rnxObsHeader::set(const t_rnxObsHeader& header, int version,
         QStringList hlp = useObsTypes->at(iType).split(":", QString::SkipEmptyParts);
         if (hlp.size() == 2 && hlp[0].length() == 1) {
           if (_version >= 3.0) {
-            char    sys  = hlp[0][0].toAscii();
+            char    sys  = hlp[0][0].toLatin1();
             QString type = t_rnxObsFile::type2to3(sys, hlp[1]);
             if (!_obsTypes[sys].contains(type)) {
               _obsTypes[sys].push_back(type);
@@ -480,7 +480,7 @@ void t_rnxObsHeader::set(const t_rnxObsHeader& header, int version,
           }
           else {
             for (int iSys = 0; iSys < _usedSystems.length(); iSys++) {
-              char    sys  = _usedSystems[iSys].toAscii();
+              char    sys  = _usedSystems[iSys].toLatin1();
               QString type = t_rnxObsFile::type3to2(sys, hlp[1]);
               if (!_obsTypes[sys].contains(type)) {
                 _obsTypes[sys].push_back(type);
@@ -491,7 +491,7 @@ void t_rnxObsHeader::set(const t_rnxObsHeader& header, int version,
       }
       else {
         for (int iSys = 0; iSys < _usedSystems.length(); iSys++) {
-          char    sys  = _usedSystems[iSys].toAscii();
+          char    sys  = _usedSystems[iSys].toLatin1();
           QString type = _version >= 3.0 ? t_rnxObsFile::type2to3(sys, useObsTypes->at(iType)) :
                                            t_rnxObsFile::type3to2(sys, useObsTypes->at(iType));
           if (!_obsTypes[sys].contains(type)) {
@@ -935,7 +935,7 @@ QStringList t_rnxObsHeader::obsTypesStrings() const {
 
   QStringList strList;
   if (_version < 3.0) {
-    char sys0 = _usedSystems[0].toAscii();
+    char sys0 = _usedSystems[0].toLatin1();
     QString hlp;
     QTextStream(&hlp) << QString("%1").arg(_obsTypes[sys0].size(), 6);
     for (int ii = 0; ii < _obsTypes[sys0].size(); ii++) {
@@ -1130,7 +1130,7 @@ t_rnxObsFile::t_rnxEpo* t_rnxObsFile::nextEpochV3() {
       }
     }
 
-    QTextStream in(line.mid(1).toAscii(), QIODevice::ReadOnly);
+    QTextStream in(line.mid(1).toLatin1(), QIODevice::ReadOnly);
 
     // Epoch Time
     // ----------
@@ -1150,7 +1150,7 @@ t_rnxObsFile::t_rnxEpo* t_rnxObsFile::nextEpochV3() {
     // ------------
     for (int iSat = 0; iSat < numSat; iSat++) {
       line = _stream->readLine();
-      t_prn prn; prn.set(line.left(3).toAscii().data());
+      t_prn prn; prn.set(line.left(3).toLatin1().data());
       _currEpo.rnxSat[iSat].prn = prn;
       char sys = prn.system();
       for (int iType = 0; iType < _header.nTypes(sys); iType++) {
@@ -1201,7 +1201,7 @@ t_rnxObsFile::t_rnxEpo* t_rnxObsFile::nextEpochV2() {
       }
     }
 
-    QTextStream in(line.toAscii(), QIODevice::ReadOnly);
+    QTextStream in(line.toLatin1(), QIODevice::ReadOnly);
 
     // Epoch Time
     // ----------
@@ -1232,7 +1232,7 @@ t_rnxObsFile::t_rnxEpo* t_rnxObsFile::nextEpochV2() {
         pos = 32;
       }
 
-      char sys = line.toAscii()[pos];
+      char sys = line.toLatin1()[pos];
       if (sys == ' ') {
         sys = 'G';
       }
@@ -1511,7 +1511,7 @@ QString t_rnxObsFile::type3to2(char /* sys */, const QString& typeV3) {
 ////////////////////////////////////////////////////////////////////////////
 void t_rnxObsFile::setObsFromRnx(const t_rnxObsFile* rnxObsFile, const t_rnxObsFile::t_rnxEpo* epo,
                                  const t_rnxObsFile::t_rnxSat& rnxSat, t_satObs& obs) {
-  obs._staID = rnxObsFile->markerName().toAscii().constData();
+  obs._staID = rnxObsFile->markerName().toLatin1().constData();
   obs._prn   = rnxSat.prn;
   obs._time  = epo->tt;
 
@@ -1538,7 +1538,7 @@ void t_rnxObsFile::setObsFromRnx(const t_rnxObsFile* rnxObsFile, const t_rnxObsF
     if (rnxSat.obs.contains(type)) {
       const t_rnxObs& rnxObs = rnxSat.obs[type];
       if (rnxObs.value != 0.0) {
-        string type2ch(typeV3.mid(1).toAscii().data());
+        string type2ch(typeV3.mid(1).toLatin1().data());
 
         t_frqObs* frqObs = 0;
         for (unsigned iFrq = 0; iFrq < obs._obs.size(); iFrq++) {
@@ -1553,7 +1553,7 @@ void t_rnxObsFile::setObsFromRnx(const t_rnxObsFile* rnxObsFile, const t_rnxObsF
           obs._obs.push_back(frqObs);
         }
 
-        switch( typeV3.toAscii().data()[0] ) {
+        switch( typeV3.toLatin1().data()[0] ) {
         case 'C':
           frqObs->_codeValid = true;
           frqObs->_code      = rnxObs.value;

@@ -177,9 +177,9 @@ void latencyChecker::checkReconnect() {
       _begDateOut = _endDateTimeOut.toUTC().date().toString("yy-MM-dd");
       _begTimeOut = _endDateTimeOut.toUTC().time().toString("hh:mm:ss");
       emit(newMessage((_staID + ": Failure threshold exceeded, outage since "
-                    + _begDateOut + " " + _begTimeOut + " UTC").toAscii(), true));
+                    + _begDateOut + " " + _begTimeOut + " UTC").toLatin1(), true));
       callScript(("Begin_Outage "
-                    + _begDateOut + " " + _begTimeOut + " UTC").toAscii());
+                    + _begDateOut + " " + _begTimeOut + " UTC").toLatin1());
       _decodeStop.setDate(QDate());
       _decodeStop.setTime(QTime());
       _decodeStart = QDateTime::currentDateTime();
@@ -256,9 +256,9 @@ void latencyChecker::checkOutage(bool decoded) {
           _begDateCorr = _endDateTimeCorr.toUTC().date().toString("yy-MM-dd");
           _begTimeCorr = _endDateTimeCorr.toUTC().time().toString("hh:mm:ss");
           emit(newMessage((_staID + ": Failure threshold exceeded, corrupted since "
-                    + _begDateCorr + " " + _begTimeCorr + " UTC").toAscii(), true));
+                    + _begDateCorr + " " + _begTimeCorr + " UTC").toLatin1(), true));
           callScript(("Begin_Corrupted "
-                    + _begDateCorr + " " + _begTimeCorr + " UTC").toAscii());
+                    + _begDateCorr + " " + _begTimeCorr + " UTC").toLatin1());
           _secSucc = 0;
           _numSucc = 0;
           _decodeStopCorr.setDate(QDate());
@@ -276,10 +276,10 @@ void latencyChecker::checkOutage(bool decoded) {
             _endDateCorr = _begDateTimeCorr.toUTC().date().toString("yy-MM-dd");
             _endTimeCorr = _begDateTimeCorr.toUTC().time().toString("hh:mm:ss");
             emit(newMessage((_staID + ": Recovery threshold exceeded, corruption ended "
-                        + _endDateCorr + " " + _endTimeCorr + " UTC").toAscii(), true));
+                        + _endDateCorr + " " + _endTimeCorr + " UTC").toLatin1(), true));
             callScript(("End_Corrupted "
                         + _endDateCorr + " " + _endTimeCorr + " UTC Begin was "
-                        + _begDateCorr + " " + _begTimeCorr + " UTC").toAscii());
+                        + _begDateCorr + " " + _begTimeCorr + " UTC").toLatin1());
             _decodeStartCorr.setDate(QDate());
             _decodeStartCorr.setTime(QTime());
             _decodeStopCorr = QDateTime::currentDateTime();
@@ -304,10 +304,10 @@ void latencyChecker::checkOutage(bool decoded) {
       _endDateOut = _begDateTimeOut.toUTC().date().toString("yy-MM-dd");
       _endTimeOut = _begDateTimeOut.toUTC().time().toString("hh:mm:ss");
       emit(newMessage((_staID + ": Recovery threshold exceeded, outage ended "
-                    + _endDateOut + " " + _endTimeOut + " UTC").toAscii(), true));
+                    + _endDateOut + " " + _endTimeOut + " UTC").toLatin1(), true));
       callScript(("End_Outage "
                     + _endDateOut + " " + _endTimeOut + " UTC Begin was "
-                    + _begDateOut + " " + _begTimeOut + " UTC").toAscii());
+                    + _begDateOut + " " + _begTimeOut + " UTC").toLatin1());
       _decodeStart.setDate(QDate());
       _decodeStart.setTime(QTime());
       _decodeStop = QDateTime::currentDateTime();
@@ -340,7 +340,7 @@ void latencyChecker::checkObsLatency(const QList<t_satObs>& obsList) {
                   .arg(int((sqrt((l._sumLatQ - l._sumLat * l._sumLat / l._numLat)/l._numLat))*100)/100.)
                   .arg(l._numLat)
                   .arg(l._numGaps)
-                  .toAscii(), true) );
+                  .toLatin1(), true) );
               }
             } else {
               if ( _checkMountPoint == _staID || _checkMountPoint == "ALL" ) {
@@ -352,7 +352,7 @@ void latencyChecker::checkObsLatency(const QList<t_satObs>& obsList) {
                   .arg(int(l._maxLat*100)/100.)
                   .arg(int((sqrt((l._sumLatQ - l._sumLat * l._sumLat / l._numLat)/l._numLat))*100)/100.)
                   .arg(l._numLat)
-                  .toAscii(), true) );
+                  .toLatin1(), true) );
               }
             }
           }
@@ -465,7 +465,7 @@ void latencyChecker::checkCorrLatency(int corrGPSEpochTime, int type) {
             .arg(l._numLat)
             .arg(l._numGaps);
             if ( _checkMountPoint == _staID || _checkMountPoint == "ALL" ) {
-              emit(newMessage(QString(_staID + late ).toAscii(), true) );
+              emit(newMessage(QString(_staID + late ).toLatin1(), true) );
             }
           }
           else {
@@ -477,7 +477,7 @@ void latencyChecker::checkCorrLatency(int corrGPSEpochTime, int type) {
             .arg(int((sqrt((l._sumLatQ - l._sumLat * l._sumLat / l._numLat)/l._numLat))*100)/100.)
             .arg(l._numLat);
             if ( _checkMountPoint == _staID || _checkMountPoint == "ALL" ) {
-            emit(newMessage(QString(_staID + late ).toAscii(), true) );
+            emit(newMessage(QString(_staID + late ).toLatin1(), true) );
             }
           }
         }

@@ -647,7 +647,7 @@ t_irc t_pppFilter::update(t_epoData* epoData) {
     else if (par->type == t_pppParam::AMB_L3) {
       ++par->numEpo;
       LOG << "\n" << _time.datestr() << "_" << _time.timestr(3)
-          << " AMB " << par->prn.mid(0,3).toAscii().data() << " "
+          << " AMB " << par->prn.mid(0,3).toLatin1().data() << " "
           << setw(10) << setprecision(3) << par->xx
           << " +- " << setw(6) << setprecision(3)
           << sqrt(_QQ(par->index,par->index))
@@ -656,7 +656,7 @@ t_irc t_pppFilter::update(t_epoData* epoData) {
     else if (par->type == t_pppParam::TROPO) {
       double aprTrp = delay_saast(M_PI/2.0);
       LOG << "\n" << _time.datestr() << "_" << _time.timestr(3)
-          << " TRP     " << par->prn.mid(0,3).toAscii().data()
+          << " TRP     " << par->prn.mid(0,3).toLatin1().data()
           << setw(7) << setprecision(3) << aprTrp << " "
           << setw(6) << setprecision(3) << showpos << par->xx << noshowpos
           << " +- " << setw(6) << setprecision(3)
@@ -756,16 +756,16 @@ QString t_pppFilter::outlierDetection(int iPhase, const ColumnVector& vv,
 
   if      (iPhase == 1) {
     if      (maxResGlo > 2.98 * OPT->_maxResL1) {
-      LOG << "Outlier Phase " << prnGlo.mid(0,3).toAscii().data() << ' ' << maxResGlo << endl;
+      LOG << "Outlier Phase " << prnGlo.mid(0,3).toLatin1().data() << ' ' << maxResGlo << endl;
       return prnGlo;
     }
     else if (maxResGPS > MAXRES_PHASE_GPS) {
-      LOG << "Outlier Phase " << prnGPS.mid(0,3).toAscii().data() << ' ' << maxResGPS << endl;
+      LOG << "Outlier Phase " << prnGPS.mid(0,3).toLatin1().data() << ' ' << maxResGPS << endl;
       return prnGPS;
     }
   }
   else if (iPhase == 0 && maxResGPS > 2.98 * OPT->_maxResC1) {
-    LOG << "Outlier Code  " << prnGPS.mid(0,3).toAscii().data() << ' ' << maxResGPS << endl;
+    LOG << "Outlier Code  " << prnGPS.mid(0,3).toLatin1().data() << ' ' << maxResGPS << endl;
     return prnGPS;
   }
 
@@ -966,7 +966,7 @@ QByteArray t_pppFilter::printRes(int iPhase, const ColumnVector& vv,
                     useObs = OPT->ambLCs(satData->system()).size();
     if (satData->obsIndex != 0 && useObs) {
       str << _time.datestr() << "_" << _time.timestr(3)
-          << " RES " << satData->prn.mid(0,3).toAscii().data()
+          << " RES " << satData->prn.mid(0,3).toLatin1().data()
           << (iPhase ? "   L3 " : "   P3 ")
           << setw(9) << setprecision(4) << vv(satData->obsIndex) << endl;
     }
@@ -1131,12 +1131,12 @@ t_irc t_pppFilter::update_p(t_epoData* epoData) {
           if (_outlierGPS.size() > 0 || _outlierGlo.size() > 0) {
             LOG << "Neglected PRNs: ";
             if (!_outlierGPS.isEmpty()) {
-              LOG << _outlierGPS.last().mid(0,3).toAscii().data() << ' ';
+              LOG << _outlierGPS.last().mid(0,3).toLatin1().data() << ' ';
             }
             QStringListIterator itGlo(_outlierGlo);
             while (itGlo.hasNext()) {
               QString prn = itGlo.next();
-              LOG << prn.mid(0,3).toAscii().data() << ' ';
+              LOG << prn.mid(0,3).toLatin1().data() << ' ';
             }
             LOG << endl;
           }

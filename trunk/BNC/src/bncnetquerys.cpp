@@ -78,7 +78,7 @@ void bncNetQueryS::startRequest(const QUrl& url, const QByteArray& gga) {
 
   QString hlp;
   QStringList hlpL;
-  hlp = _url.host().toAscii().replace("-"," ");
+  hlp = _url.host().toLatin1().replace("-"," ");
   hlpL = hlp.split(" ");
 
   // Serial Port
@@ -190,7 +190,7 @@ void bncNetQueryS::startRequest(const QUrl& url, const QByteArray& gga) {
     delete _serialPort;
     _serialPort = 0;
     _status = error;
-    emit newMessage(_url.path().toAscii().replace(0,1,"") + ": Cannot open serial port " + _portString.toAscii(), true);
+    emit newMessage(_url.path().toLatin1().replace(0,1,"") + ": Cannot open serial port " + _portString.toLatin1(), true);
     return;
   }
 }

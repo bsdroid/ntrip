@@ -823,7 +823,7 @@ bool RTCM3Decoder::DecodeRTCM3MSM(unsigned char* data, int size)
   }
   else if ((type % 10) < 3) {
     emit(newMessage(QString("%1: Block %2 contain partial data! Ignored!")
-        .arg(_staID).arg(type).toAscii(), true));
+        .arg(_staID).arg(type).toLatin1(), true));
   }
   if (!syncf) {
     decoded = true;
@@ -1481,9 +1481,9 @@ t_irc RTCM3Decoder::Decode(char* buffer, int bufLen, vector<string>& errmsg) {
        * extracted data block. That does no harm, as it anyway skip everything
        * else. */
       if ((id >= 1057 && id <= 1068) || (id >= 1240 && id <= 1270)) {
-        if (!_coDecoders.contains(_staID.toAscii()))
-          _coDecoders[_staID.toAscii()] = new RTCM3coDecoder(_staID);
-        RTCM3coDecoder* coDecoder = _coDecoders[_staID.toAscii()];
+        if (!_coDecoders.contains(_staID.toLatin1()))
+          _coDecoders[_staID.toLatin1()] = new RTCM3coDecoder(_staID);
+        RTCM3coDecoder* coDecoder = _coDecoders[_staID.toLatin1()];
         if (coDecoder->Decode(reinterpret_cast<char *>(_Message), _BlockSize,
             errmsg) == success) {
           decoded = true;
@@ -1499,7 +1499,7 @@ t_irc RTCM3Decoder::Decode(char* buffer, int bufLen, vector<string>& errmsg) {
           case 1003:
             emit(newMessage(
                 QString("%1: Block %2 contain partial data! Ignored!")
-                    .arg(_staID).arg(id).toAscii(), true));
+                    .arg(_staID).arg(id).toLatin1(), true));
             break; /* no use decoding partial data ATM, remove break when data can be used */
           case 1002:
           case 1004:
@@ -1510,7 +1510,7 @@ t_irc RTCM3Decoder::Decode(char* buffer, int bufLen, vector<string>& errmsg) {
           case 1011:
             emit(newMessage(
                 QString("%1: Block %2 contain partial data! Ignored!")
-                    .arg(_staID).arg(id).toAscii(), true));
+                    .arg(_staID).arg(id).toLatin1(), true));
             break; /* no use decoding partial data ATM, remove break when data can be used */
           case 1010:
           case 1012:

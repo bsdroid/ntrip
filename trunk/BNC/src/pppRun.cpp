@@ -374,8 +374,8 @@ void t_pppRun::slotNewObs(QByteArray staID, QList<t_satObs> obsList) {
           _nmeaFile->write(output._epoTime.gpsw(), output._epoTime.gpssec(), rmcStr);
           _nmeaFile->write(output._epoTime.gpsw(), output._epoTime.gpssec(), ggaStr);
         }
-        emit newNMEAstr(staID, rmcStr.toAscii());
-        emit newNMEAstr(staID, ggaStr.toAscii());
+        emit newNMEAstr(staID, rmcStr.toLatin1());
+        emit newNMEAstr(staID, ggaStr.toLatin1());
         if (_snxtroFile && output._epoTime.valid()) {
           _snxtroFile->write(staID, int(output._epoTime.gpsw()), output._epoTime.gpssec(),
                       output._trp0 + output._trp, output._trpStdev);
@@ -675,7 +675,7 @@ QString t_pppRun::nmeaString(char strType, const t_output& output) {
   QString nmStr(out.str().c_str());
   unsigned char XOR = 0;
   for (int ii = 0; ii < nmStr.length(); ii++) {
-    XOR ^= (unsigned char) nmStr[ii].toAscii();
+    XOR ^= (unsigned char) nmStr[ii].toLatin1();
   }
 
   return '$' + nmStr + QString("*%1\n").arg(int(XOR), 0, 16).toUpper();
@@ -691,7 +691,7 @@ void t_pppRun::slotProviderIDChanged(QString mountPoint) {
   }
 
   QString msg = "pppRun " + QString(_opt->_roverName.c_str()) + ": Provider Changed: " + mountPoint;
-  emit newMessage(msg.toAscii(), true);
+  emit newMessage(msg.toLatin1(), true);
 
   _pppClient->reset();
 

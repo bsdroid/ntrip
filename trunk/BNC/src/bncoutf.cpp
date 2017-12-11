@@ -180,10 +180,10 @@ t_irc bncoutf::reopen(int GPSweek, double GPSweeks) {
   if (!_headerWritten) {
     _out.setf(ios::showpoint | ios::fixed);
     if (_append && QFile::exists(_fName)) {
-      _out.open(_fName.toAscii().data(), ios::out | ios::app);
+      _out.open(_fName.toLatin1().data(), ios::out | ios::app);
     }
     else {
-      _out.open(_fName.toAscii().data());
+      _out.open(_fName.toLatin1().data());
       writeHeader(datTim);
     }
     if (_out.is_open()) {
@@ -198,7 +198,7 @@ t_irc bncoutf::reopen(int GPSweek, double GPSweeks) {
 ////////////////////////////////////////////////////////////////////////////
 t_irc bncoutf::write(int GPSweek, double GPSweeks, const QString& str) {
   reopen(GPSweek, GPSweeks);
-  _out << str.toAscii().data();
+  _out << str.toLatin1().data();
   _out.flush();
   return success;
 }

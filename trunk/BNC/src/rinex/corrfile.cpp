@@ -49,7 +49,7 @@ using namespace std;
 ////////////////////////////////////////////////////////////////////////////
 t_corrFile::t_corrFile(QString fileName) {
   expandEnvVar(fileName);
-  _stream.open(fileName.toAscii().data());
+  _stream.open(fileName.toLatin1().data());
 }
 
 // Destructor

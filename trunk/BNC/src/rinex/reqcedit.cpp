@@ -69,8 +69,8 @@ t_reqcEdit::t_reqcEdit(QObject* parent) : QThread(parent) {
     _rnxVersion = defaultRnxObsVersion3;
   }
   _samplingRate   = settings.value("reqcSampling").toInt();
-  _begTime        = bncTime(settings.value("reqcStartDateTime").toString().toAscii().data());
-  _endTime        = bncTime(settings.value("reqcEndDateTime").toString().toAscii().data());
+  _begTime        = bncTime(settings.value("reqcStartDateTime").toString().toLatin1().data());
+  _endTime        = bncTime(settings.value("reqcEndDateTime").toString().toLatin1().data());
 
 }
 
@@ -182,7 +182,7 @@ void t_reqcEdit::initRnxObsFiles(const QStringList& obsFileNames,
         catch (...) {
           delete rnxObsFile;
           if (log) {
-            *log << "Error in rnxObsFile " << filePath.toAscii().data() << endl;
+            *log << "Error in rnxObsFile " << filePath.toLatin1().data() << endl;
           }
         }
       }
@@ -195,7 +195,7 @@ void t_reqcEdit::initRnxObsFiles(const QStringList& obsFileNames,
       }
       catch (...) {
         if (log) {
-          *log << "Error in rnxObsFile " << fileName.toAscii().data() << endl;
+          *log << "Error in rnxObsFile " << fileName.toLatin1().data() << endl;
         }
       }
     }
@@ -667,14 +667,14 @@ void t_reqcEdit::addRnxConversionDetails(const t_rnxObsFile* obsFile,
   txtMap.insert(commentKey, comment);
 
   for(int ii = 0; ii < obsFile->numSys(); ii++) {
-    char sys = systems[ii].toAscii();
+    char sys = systems[ii].toLatin1();
     txtMap.insert(commentKey, comment);
     QMap <char, QString>  signalPriorityMap;
     QStringList preferredAttribListSys = obsFile->signalPriorities(sys);
     QStringList types = obsFile->header().obsTypes(sys);
     for (int jj = 0; jj < types.size(); jj++) {
       QString inType = types[jj];
-      char band = inType[1].toAscii();
+      char band = inType[1].toLatin1();
       for (int ii = 0; ii < preferredAttribListSys.size(); ii++) {
         QString preferredAttrib;
         if (preferredAttribListSys[ii].indexOf("&") != -1) {

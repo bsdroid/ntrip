@@ -156,7 +156,7 @@ void t_reqcAnalyze::analyzePlotSignals(QMap<char, QVector<QString> >& signalType
   for (int ii = 0; ii < signalsOpt.size(); ii++) {
     QStringList input = signalsOpt.at(ii).split(QRegExp("[:&]"), QString::SkipEmptyParts);
     if (input.size() > 1 && input[0].length() == 1) {
-      char system = input[0].toAscii().constData()[0];
+      char system = input[0].toLatin1().constData()[0];
       QStringList sysValid       = _defaultSignalTypes.filter(QString(system));
       QStringList defaultSignals = sysValid.at(0).split(QRegExp("[:&]"));
       if (sysValid.isEmpty()) {continue;}
@@ -399,9 +399,9 @@ void t_reqcAnalyze::setQcObs(const bncTime& epoTime, const ColumnVector& xyzSta,
       std::string frqType1, frqType2;
       if (_signalTypes.find(sys) != _signalTypes.end()) {
         frqType1.push_back(sys);
-        frqType1.push_back(_signalTypes[sys][0][0].toAscii());
+        frqType1.push_back(_signalTypes[sys][0][0].toLatin1());
         frqType2.push_back(sys);
-        frqType2.push_back(_signalTypes[sys][1][0].toAscii());
+        frqType2.push_back(_signalTypes[sys][1][0].toLatin1());
         if      (frqObs->_rnxType2ch[0] == frqType1[1]) {
           fA = t_frequency::toInt(frqType1);
           fB = t_frequency::toInt(frqType2);
@@ -611,7 +611,7 @@ void t_reqcAnalyze::preparePlotData(const t_rnxObsFile* obsFile) {
   // --------------
   if (BNC_CORE->GUIenabled()) {
     QFileInfo  fileInfo(obsFile->fileName());
-    QByteArray title = fileInfo.fileName().toAscii();
+    QByteArray title = fileInfo.fileName().toLatin1();
     emit dspSkyPlot(obsFile->fileName(), mp1Title,  dataMP1,  mp2Title,  dataMP2,  "Meters",  2.0);
     emit dspSkyPlot(obsFile->fileName(), sn1Title, dataSNR1, sn2Title, dataSNR2, "dbHz",   54.0);
     emit dspAvailPlot(obsFile->fileName(), title);
@@ -724,8 +724,8 @@ void t_reqcAnalyze::slotDspAvailPlot(const QString& fileName, const QByteArray& 
         data._eleDeg << qcSat._eleDeg;
       }
 
-      char frqChar1 = _signalTypes[prn.system()][0][0].toAscii();
-      char frqChar2 = _signalTypes[prn.system()][1][0].toAscii();
+      char frqChar1 = _signalTypes[prn.system()][0][0].toLatin1();
+      char frqChar2 = _signalTypes[prn.system()][1][0].toLatin1();
 
       QString frqType1;
       QString frqType2;
