@@ -1378,15 +1378,15 @@ bool RTCM3Decoder::DecodeBDSEphemeris(unsigned char* data, int size) {
   return decoded;
 }
 
-//
+/*
 ////////////////////////////////////////////////////////////////////////////
-bool RTCM3Decoder::DecodeAntenna(unsigned char* data, int size) {
+bool RTCM3Decoder::DecodeAntennaReceiver(unsigned char* data, int size) {
   char *antenna, type[256];
   int antnum = -1;
   uint64_t numbits = 0, bitfield = 0;
 
-  data += 4; /* header */
-  size -= 6; /* header + crc */
+  data += 4;
+  size -= 6;
 
   SKIPBITS(12)
   GETSTRING(antnum, antenna)
@@ -1395,6 +1395,48 @@ bool RTCM3Decoder::DecodeAntenna(unsigned char* data, int size) {
     type[antnum] = 0;
     if (!_antType.contains(type)) {
       _antType.push_back(type);
+    }
+  }
+  return true;
+}*/
+
+//
+////////////////////////////////////////////////////////////////////////////
+bool RTCM3Decoder::DecodeAntennaReceiver(unsigned char* data, int size) {
+  char *antenna, anttype[256];
+  char *dummy;
+  char *receiver, rectype[256];
+
+  int type;
+
+  int dnum = -1;
+  int antnum = -1;
+  int recnum = -1;
+  uint64_t numbits = 0, bitfield = 0;
+
+  data += 3; /* header*/
+  size -= 6; /* header + crc */
+
+  GETBITS(type, 12)  qDebug() << "Type: " << type;
+  SKIPBITS(12)
+  GETSTRING(antnum, antenna)
+  if (antnum > -1 && antnum < 265) {
+    memcpy(anttype, antenna, antnum);
+    anttype[antnum] = 0;
+    if (!_antType.contains(anttype)) {
+      _antType.push_back(anttype);
+    }
+  }
+  if (type == 1033) {
+    SKIPBITS(8)
+    GETSTRING(dnum, dummy)
+    GETSTRING(recnum, receiver)
+    if (recnum > -1 && recnum < 265) {
+      memcpy(rectype, receiver, recnum);
+      rectype[recnum] = 0;
+      if (!_recType.contains(rectype)) {
+        _recType.push_back(rectype);
+      }
     }
   }
   return true;
@@ -1525,7 +1567,7 @@ t_irc RTCM3Decoder::Decode(char* buffer, int bufLen, vector<string>& errmsg) {
           case 1007:
           case 1008:
           case 1033:
-            DecodeAntenna(_Message, _BlockSize);
+            DecodeAntennaReceiver(_Message, _BlockSize);
             break;
           case 1005:
           case 1006:

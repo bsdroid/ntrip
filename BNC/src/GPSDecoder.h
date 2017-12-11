@@ -42,14 +42,14 @@ class GPSDecoder {
   GPSDecoder();
   virtual ~GPSDecoder();
 
-  virtual t_irc Decode(char* buffer, int bufLen, 
+  virtual t_irc Decode(char* buffer, int bufLen,
                        std::vector<std::string>& errmsg) = 0;
 
 
   virtual int corrGPSEpochTime() const {return -1;}
 
   void initRinex(const QByteArray& staID, const QUrl& mountPoint,
-                 const QByteArray& latitude, const QByteArray& longitude, 
+                 const QByteArray& latitude, const QByteArray& longitude,
                  const QByteArray& nmea, const QByteArray& ntripVersion);
 
   void dumpRinexEpoch(const t_satObs& obs, const QByteArray& format);
@@ -79,6 +79,7 @@ class GPSDecoder {
   QList<t_satObs>  _obsList;
   QList<int>       _typeList;  // RTCM message types
   QStringList      _antType;   // RTCM antenna descriptor
+  QStringList      _recType;   // RTCM receiver descriptor
   QList<t_antInfo> _antList;   // RTCM antenna XYZ
   QString          _gloFrq;    // GLONASS slot
   bncRinex*        _rnx;       // RINEX writer
