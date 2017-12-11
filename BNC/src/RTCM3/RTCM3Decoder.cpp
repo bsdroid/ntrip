@@ -1417,7 +1417,7 @@ bool RTCM3Decoder::DecodeAntennaReceiver(unsigned char* data, int size) {
   data += 3; /* header*/
   size -= 6; /* header + crc */
 
-  GETBITS(type, 12)  qDebug() << "Type: " << type;
+  GETBITS(type, 12)
   SKIPBITS(12)
   GETSTRING(antnum, antenna)
   if (antnum > -1 && antnum < 265) {
