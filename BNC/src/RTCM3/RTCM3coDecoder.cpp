@@ -145,10 +145,10 @@ void RTCM3coDecoder::reopen() {
 
     delete _out;
     if ( Qt::CheckState(settings.value("rnxAppend").toInt()) == Qt::Checked) {
-      _out = new ofstream( _fileName.toAscii().data(), ios_base::out | ios_base::app );
+      _out = new ofstream( _fileName.toLatin1().data(), ios_base::out | ios_base::app );
     }
     else {
-      _out = new ofstream( _fileName.toAscii().data() );
+      _out = new ofstream( _fileName.toLatin1().data() );
     }
   }
 }
@@ -559,7 +559,7 @@ void RTCM3coDecoder::checkProviderID() {
   }
 
   if (alreadySet && different) {
-    emit newMessage("RTCM3coDecoder: Provider Changed: " + _staID.toAscii(), true);
+    emit newMessage("RTCM3coDecoder: Provider Changed: " + _staID.toLatin1(), true);
     emit providerIDChanged(_staID);
   }
 }

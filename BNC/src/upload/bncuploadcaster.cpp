@@ -89,7 +89,7 @@ void bncUploadCaster::run() {
       if (_outBuffer.size() > 0) {
         _outSocket->write(_outBuffer);
         _outSocket->flush();
-        emit newBytes(_mountpoint.toAscii(), _outBuffer.size());
+        emit newBytes(_mountpoint.toLatin1(), _outBuffer.size());
       }
     }
     if (_rate == 0) {
@@ -139,12 +139,12 @@ void bncUploadCaster::open() {
   if (!_outSocket->waitForConnected(timeOut)) {
     delete _outSocket;
     _outSocket = 0;
-    emit(newMessage("Broadcaster: Connect timeout for " + _mountpoint.toAscii(), true));
+    emit(newMessage("Broadcaster: Connect timeout for " + _mountpoint.toLatin1(), true));
     return;
   }
 
-  QByteArray msg = "SOURCE " + _password.toAscii() + " /" +
-                   _mountpoint.toAscii() + "\r\n" +
+  QByteArray msg = "SOURCE " + _password.toLatin1() + " /" +
+                   _mountpoint.toLatin1() + "\r\n" +
                    "Source-Agent: NTRIP BNC/" BNCVERSION "\r\n\r\n";
 
   _outSocket->write(msg);
@@ -156,10 +156,10 @@ void bncUploadCaster::open() {
   if (ans.indexOf("OK") == -1) {
     delete _outSocket;
     _outSocket = 0;
-    emit(newMessage("Broadcaster: Connection broken for " + _mountpoint.toAscii(), true));
+    emit(newMessage("Broadcaster: Connection broken for " + _mountpoint.toLatin1(), true));
   }
   else {
-    emit(newMessage("Broadcaster: Connection opened for " + _mountpoint.toAscii(), true));
+    emit(newMessage("Broadcaster: Connection opened for " + _mountpoint.toLatin1(), true));
     _sOpenTrial = 0;
   }
 }

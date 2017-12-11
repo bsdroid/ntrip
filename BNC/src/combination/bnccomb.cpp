@@ -365,7 +365,7 @@ void bncComb::slotNewClkCorrections(QList<t_clkCorr> clkCorrections) {
     // Check Correction Age
     // --------------------
     if (_resTime.valid() && clkCorr._time <= _resTime) {
-      emit newMessage("bncComb: old correction: " + acName.toAscii() + " " + prn.mid(0,3).toAscii(), true);
+      emit newMessage("bncComb: old correction: " + acName.toLatin1() + " " + prn.mid(0,3).toLatin1(), true);
       continue;
     }
 
@@ -400,7 +400,7 @@ void bncComb::slotNewClkCorrections(QList<t_clkCorr> clkCorrections) {
     t_eph* ephLast = _ephUser.ephLast(prn);
     t_eph* ephPrev = _ephUser.ephPrev(prn);
     if (ephLast == 0) {
-      emit newMessage("bncComb: eph not found "  + prn.mid(0,3).toAscii(), true);
+      emit newMessage("bncComb: eph not found "  + prn.mid(0,3).toLatin1(), true);
       delete newCorr;
       continue;
     }
@@ -413,8 +413,8 @@ void bncComb::slotNewClkCorrections(QList<t_clkCorr> clkCorrections) {
         switchToLastEph(ephLast, newCorr);
       }
       else {
-        emit newMessage("bncComb: eph not found "  + prn.mid(0,3).toAscii() +
-                        QString(" %1").arg(newCorr->_iod).toAscii(), true);
+        emit newMessage("bncComb: eph not found "  + prn.mid(0,3).toLatin1() +
+                        QString(" %1").arg(newCorr->_iod).toLatin1(), true);
         delete newCorr;
         continue;
       }
@@ -468,7 +468,7 @@ void bncComb::switchToLastEph(t_eph* lastEph, cmbCorr* corr) {
   QString msg = "switch corr " + corr->_prn.mid(0,3)
     + QString(" %1 -> %2 %3").arg(corr->_iod,3).arg(lastEph->IOD(),3).arg(dC*t_CST::c, 8, 'f', 4);
 
-  emit newMessage(msg.toAscii(), false);
+  emit newMessage(msg.toLatin1(), false);
 
   corr->_iod = lastEph->IOD();
   corr->_eph = lastEph;
@@ -506,7 +506,7 @@ void bncComb::processEpoch() {
         }
       }
     }
-    out << AC->name.toAscii().data() << ": " << AC->numObs << endl;
+    out << AC->name.toLatin1().data() << ": " << AC->numObs << endl;
   }
 
   // If Master not present, switch to another one
@@ -530,8 +530,8 @@ void bncComb::processEpoch() {
         cmbAC* AC = icAC.next();
         if (AC->numObs > 0) {
           out << "Switching Master AC "
-              << _masterOrbitAC.toAscii().data() << " --> "
-              << AC->name.toAscii().data()   << " "
+              << _masterOrbitAC.toLatin1().data() << " --> "
+              << AC->name.toLatin1().data()   << " "
               << _resTime.datestr().c_str()    << " "
               << _resTime.timestr().c_str()    << endl;
           _masterOrbitAC = AC->name;
@@ -751,7 +751,7 @@ void bncComb::dumpResults(const QMap<QString, cmbCorr*>& resCorr) {
       double Mjd = _resTime.mjd() + _resTime.daysec()/86400.0;
       if (_antex->satCoMcorrection(corr->_prn, Mjd, xc.Rows(1,3), dx) != success) {
         dx = 0;
-        _log += "antenna not found " + corr->_prn.mid(0,3).toAscii() + '\n';
+        _log += "antenna not found " + corr->_prn.mid(0,3).toLatin1() + '\n';
       }
     }
 
@@ -776,7 +776,7 @@ void bncComb::dumpResults(const QMap<QString, cmbCorr*>& resCorr) {
                  "   %10.5f %10.5f %10.5f %10.5f"
                  "   %10.5f INTERNAL",
                  messageType, updateInt, _resTime.gpsw(), _resTime.gpssec(),
-                 corr->_prn.mid(0,3).toAscii().data(),
+                 corr->_prn.mid(0,3).toLatin1().data(),
                  corr->_iod,
                  corr->_dClkResult * t_CST::c,
                  corr->_orbCorr._xr[0],
@@ -799,7 +799,7 @@ void bncComb::dumpResults(const QMap<QString, cmbCorr*>& resCorr) {
   }
 
   vector<string> errmsg;
-  _rtnetDecoder->Decode(outLines.toAscii().data(), outLines.length(), errmsg);
+  _rtnetDecoder->Decode(outLines.toLatin1().data(), outLines.length(), errmsg);
 
   // Send new Corrections to PPP etc.
   // --------------------------------
@@ -1168,8 +1168,8 @@ t_irc bncComb::checkOrbits(QTextStream& out) {
           out << _resTime.datestr().c_str()    << " "
               << _resTime.timestr().c_str()    << " "
               << "Orbit Outlier: "
-              << corr->_acName.toAscii().data() << " "
-              << prn.mid(0,3).toAscii().data()           << " "
+              << corr->_acName.toLatin1().data() << " "
+              << prn.mid(0,3).toLatin1().data()           << " "
               << corr->_iod                     << " "
               << norm                           << endl;
           delete corr;
@@ -1202,7 +1202,7 @@ void bncComb::slotProviderIDChanged(QString mountPoint) {
     cmbAC* AC = icAC.next();
     if (AC->mountPoint == mountPoint) {
       acName = AC->name;
-      out << "Provider ID changed: AC " << AC->name.toAscii().data()   << " "
+      out << "Provider ID changed: AC " << AC->name.toLatin1().data()   << " "
           << _resTime.datestr().c_str()    << " "
           << _resTime.timestr().c_str()    << endl;
       break;

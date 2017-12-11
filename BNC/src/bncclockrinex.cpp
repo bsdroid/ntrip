@@ -47,10 +47,10 @@ t_irc bncClockRinex::write(int GPSweek, double GPSweeks, const QString& prn,
       QDateTime datTim = dateAndTimeFromGPSweek(GPSweek, GPSweeks);
       double sec = fmod(GPSweeks, 60.0);
 
-      _out << "AS " << prn.toAscii().data()
-           << datTim.toString("  yyyy MM dd hh mm").toAscii().data()
+      _out << "AS " << prn.toLatin1().data()
+           << datTim.toString("  yyyy MM dd hh mm").toLatin1().data()
            << fixed      << setw(10) << setprecision(6)  << sec
-           << "  1   "   << fortranFormat(sp3Clk, 19, 12).toAscii().data() << endl;
+           << "  1   "   << fortranFormat(sp3Clk, 19, 12).toLatin1().data() << endl;
 
     return success;
   }
@@ -68,7 +68,7 @@ void bncClockRinex::writeHeader(const QDateTime& datTim) {
 
 
   _out << "BNC v" << BNCVERSION     << "                               "
-       << datTim.toString("yyyyMMdd hhmmss").leftJustified(20, ' ', true).toAscii().data()
+       << datTim.toString("yyyyMMdd hhmmss").leftJustified(20, ' ', true).toLatin1().data()
        << "PGM / RUN BY / DATE" << endl;
 
   _out << "     1    AS                                                "

@@ -175,7 +175,7 @@ t_ephGPS::t_ephGPS(float rnxVersion, const QStringList& lines) {
     QString line = lines[iLine];
 
     if      ( iLine == 0 ) {
-      QTextStream in(line.left(pos[1]).toAscii());
+      QTextStream in(line.left(pos[1]).toLatin1());
       int    year, month, day, hour, min;
       double sec;
 
@@ -511,7 +511,7 @@ t_ephGlo::t_ephGlo(float rnxVersion, const QStringList& lines) {
     QString line = lines[iLine];
 
     if      ( iLine == 0 ) {
-      QTextStream in(line.left(pos[1]).toAscii());
+      QTextStream in(line.left(pos[1]).toLatin1());
 
       int    year, month, day, hour, min;
       double sec;
@@ -770,7 +770,7 @@ t_ephGal::t_ephGal(float rnxVersion, const QStringList& lines) {
     QString line = lines[iLine];
 
     if      ( iLine == 0 ) {
-      QTextStream in(line.left(pos[1]).toAscii());
+      QTextStream in(line.left(pos[1]).toLatin1());
       QString n;
       in >> prnStr;
       if (prnStr.size() == 1 && prnStr[0] == 'E') {
@@ -1158,7 +1158,7 @@ t_ephSBAS::t_ephSBAS(float rnxVersion, const QStringList& lines) {
     QString line = lines[iLine];
 
     if      ( iLine == 0 ) {
-      QTextStream in(line.left(pos[1]).toAscii());
+      QTextStream in(line.left(pos[1]).toLatin1());
 
       int    year, month, day, hour, min;
       double sec;
@@ -1352,7 +1352,7 @@ t_ephBDS::t_ephBDS(float rnxVersion, const QStringList& lines) {
     QString line = lines[iLine];
 
     if      ( iLine == 0 ) {
-      QTextStream in(line.left(pos[1]).toAscii());
+      QTextStream in(line.left(pos[1]).toLatin1());
 
       int    year, month, day, hour, min;
       double sec;

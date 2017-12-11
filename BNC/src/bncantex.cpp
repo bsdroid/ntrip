@@ -74,7 +74,7 @@ void bncAntex::print() const {
   while (itAnt.hasNext()) {
     itAnt.next();
     t_antMap* map = itAnt.value();
-    cout << map->antName.toAscii().data() << endl;
+    cout << map->antName.toLatin1().data() << endl;
     cout << "    " << map->zen1 << " " << map->zen2 << " " << map->dZen << endl;
     QMapIterator<t_frequency::type, t_frqMap*> itFrq(map->frqMap);
     while (itFrq.hasNext()) {

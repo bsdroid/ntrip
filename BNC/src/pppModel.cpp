@@ -294,7 +294,7 @@ t_irc t_loading::readFile(const QString& fileName) {
     }
 
     line = line.trimmed();
-    QTextStream inLine(line.toAscii(), QIODevice::ReadOnly);
+    QTextStream inLine(line.toLatin1(), QIODevice::ReadOnly);
 
     switch (row) {
       case 0:

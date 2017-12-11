@@ -88,7 +88,7 @@ void bncFigure::updateMountPoints() {
     QStringList hlp   = it.next().split(" ");
     if (hlp.size() <= 1) continue;
     QUrl        url(hlp[0]);
-    QByteArray  staID = url.path().mid(1).toAscii();
+    QByteArray  staID = url.path().mid(1).toLatin1();
     _bytes[staID] = new sumAndMean();
   }
 }

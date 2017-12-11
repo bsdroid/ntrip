@@ -279,7 +279,7 @@ void bncRtnetUploadCaster::decodeRtnetStream(char* buffer, int bufLen) {
 
   // Read first line (with epoch time)
   // ---------------------------------
-  QTextStream in(lines[0].toAscii());
+  QTextStream in(lines[0].toLatin1());
   QString hlp;
   int year, month, day, hour, min;
   double sec;
@@ -290,7 +290,7 @@ void bncRtnetUploadCaster::decodeRtnetStream(char* buffer, int bufLen) {
   emit(newMessage(
       "bncRtnetUploadCaster: decode " + QByteArray(epoTime.datestr().c_str())
           + " " + QByteArray(epoTime.timestr().c_str()) + " "
-          + _casterID.toAscii(), false));
+          + _casterID.toLatin1(), false));
 
   struct ClockOrbit co;
   memset(&co, 0, sizeof(co));
@@ -368,7 +368,7 @@ void bncRtnetUploadCaster::decodeRtnetStream(char* buffer, int bufLen) {
     double rtnClk;
     t_prn prn;
 
-    QTextStream in(lines[ii].toAscii());
+    QTextStream in(lines[ii].toLatin1());
 
     in >> key;
 
@@ -400,7 +400,7 @@ void bncRtnetUploadCaster::decodeRtnetStream(char* buffer, int bufLen) {
       continue;
     }
     // satellite specific parameters
-    char sys = key.mid(0, 1).at(0).toAscii();
+    char sys = key.mid(0, 1).at(0).toLatin1();
     int number = key.mid(1, 2).toInt();
     int flags = 0;
     if (sys == 'E') { // I/NAV

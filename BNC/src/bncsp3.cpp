@@ -31,7 +31,7 @@ bncSP3::bncSP3(const QString& fileName) : bncoutf(QString(), QString(), 0) {
   _currEpoch = 0;
   _prevEpoch = 0;
 
-  _stream.open(fileName.toAscii().data());
+  _stream.open(fileName.toLatin1().data());
   if (!_stream.good()) {
     throw "t_sp3File: cannot open file " + fileName;
   }
@@ -86,7 +86,7 @@ t_irc bncSP3::write(int GPSweek, double GPSweeks, const QString& prn,
       _lastEpoTime = epoTime;
     }
 
-    _out << "P" << prn.toAscii().data()
+    _out << "P" << prn.toLatin1().data()
          << setw(14) << setprecision(6) << xCoM(1) / 1000.0
          << setw(14) << setprecision(6) << xCoM(2) / 1000.0
          << setw(14) << setprecision(6) << xCoM(3) / 1000.0
@@ -125,7 +125,7 @@ void bncSP3::writeHeader(const QDateTime& datTim) {
     numEpo /= _sampl;
   }
 
-  _out << "#aP" << datTim.toString("yyyy MM dd hh mm").toAscii().data()
+  _out << "#aP" << datTim.toString("yyyy MM dd hh mm").toLatin1().data()
        << setw(12) << setprecision(8) << sec
        << " " << setw(7) << numEpo << " ORBIT IGS14 HLM  IGS" << endl;
 

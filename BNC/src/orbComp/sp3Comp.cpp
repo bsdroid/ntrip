@@ -422,7 +422,7 @@ void t_sp3Comp::compare(ostringstream& out) const {
 bool t_sp3Comp::excludeSat(const t_prn& prn) const {
   QStringListIterator it(_excludeSats);
   while (it.hasNext()) {
-    string prnStr = it.next().toAscii().data();
+    string prnStr = it.next().toLatin1().data();
     if (prnStr == prn.toString() || prnStr == prn.toString().substr(0,1)) {
       return true;
     }

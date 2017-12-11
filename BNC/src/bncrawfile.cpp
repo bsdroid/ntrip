@@ -114,7 +114,7 @@ void bncRawFile::writeRawData(const QByteArray& data, const QByteArray& staID,
                  .arg(QString(staID))
                  .arg(QString(format))
                  .arg(data.size());
-    _outFile->write(chunkHeader.toAscii());
+    _outFile->write(chunkHeader.toLatin1());
     _outFile->write(data);
     _outFile->flush();
   }
@@ -137,8 +137,8 @@ QByteArray bncRawFile::readChunk(){
       
       BNC_CORE->setDateAndTimeGPS(QDateTime(QDateTime::fromString(lst.value(0), Qt::ISODate)));
       
-      _staID  = lst.value(1).toAscii();
-      _format = lst.value(2).toAscii();
+      _staID  = lst.value(1).toLatin1();
+      _format = lst.value(2).toLatin1();
       int nBytes = lst.value(3).toInt();
       
       data = _inpFile->read(nBytes);

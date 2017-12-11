@@ -423,7 +423,7 @@ void RTCM2Decoder::translateCorr2Obs(vector<string>& errmsg) {
           ostream_iterator<string>(missingIODstr, "   "));
 
       errmsg.push_back(
-          "missing eph for " + string(prn.toAscii().data()) + " , IODs "
+          "missing eph for " + string(prn.toLatin1().data()) + " , IODs "
               + missingIODstr.str());
     }
 

@@ -73,7 +73,7 @@ t_irc t_rnxNavFile::t_rnxNavHeader::read(QTextStream* stream) {
       break;
     }
     else if (key == "RINEX VERSION / TYPE") {
-      QTextStream in(value.toAscii(), QIODevice::ReadOnly);
+      QTextStream in(value.toLatin1(), QIODevice::ReadOnly);
       in >> _version;
       if (value.indexOf("GLONASS") != -1) {
         _glonass = true;

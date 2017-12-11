@@ -123,17 +123,17 @@ void bncNetQueryUdp::startRequest(const QUrl& url, const QByteArray& gga) {
 
     // Send Request
     // ------------
-    QString uName = QUrl::fromPercentEncoding(_url.userName().toAscii());
-    QString passW = QUrl::fromPercentEncoding(_url.password().toAscii());
+    QString uName = QUrl::fromPercentEncoding(_url.userName().toLatin1());
+    QString passW = QUrl::fromPercentEncoding(_url.password().toLatin1());
     QByteArray userAndPwd;
     
     if(!uName.isEmpty() || !passW.isEmpty()) {
-      userAndPwd = "Authorization: Basic " + (uName.toAscii() + ":" +
-      passW.toAscii()).toBase64() + "\r\n";
+      userAndPwd = "Authorization: Basic " + (uName.toLatin1() + ":" +
+      passW.toLatin1()).toBase64() + "\r\n";
     }
     
-    QByteArray reqStr = "GET " + _url.path().toAscii() + " HTTP/1.1\r\n"
-                      + "Host: " + _url.host().toAscii() + "\r\n"
+    QByteArray reqStr = "GET " + _url.path().toLatin1() + " HTTP/1.1\r\n"
+                      + "Host: " + _url.host().toLatin1() + "\r\n"
                       + "Ntrip-Version: Ntrip/2.0\r\n"
                       + "User-Agent: NTRIP BNC/" BNCVERSION " (" BNC_OS ")\r\n";
     if (!gga.isEmpty()) {
