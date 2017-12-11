@@ -90,8 +90,8 @@ void bncNetQueryV1::waitForReadyRead(QByteArray& outData) {
         delete _socket;
         _socket = 0;
         _status = error;
-        emit newMessage(_url.path().toAscii().replace(0,1,"")
-                        + ": " + errStr.toAscii(), true);
+        emit newMessage(_url.path().toLatin1().replace(0,1,"")
+                        + ": " + errStr.toLatin1(), true);
         return;
       }
     }
@@ -156,7 +156,7 @@ void bncNetQueryV1::keepAliveRequest(const QUrl& url, const QByteArray& gga) {
      delete _socket;
      _socket = 0;
      _status = error;
-     emit newMessage(_url.path().toAscii().replace(0,1,"")
+     emit newMessage(_url.path().toLatin1().replace(0,1,"")
                      + ": Write timeout", true);
      return;
    }
@@ -207,26 +207,26 @@ void bncNetQueryV1::startRequestPrivate(const QUrl& url,
 
   // Send Request
   // ------------
-  QString uName = QUrl::fromPercentEncoding(_url.userName().toAscii());
-  QString passW = QUrl::fromPercentEncoding(_url.password().toAscii());
+  QString uName = QUrl::fromPercentEncoding(_url.userName().toLatin1());
+  QString passW = QUrl::fromPercentEncoding(_url.password().toLatin1());
   QByteArray userAndPwd;
 
   if(!uName.isEmpty() || !passW.isEmpty()) {
-    userAndPwd = "Authorization: Basic " + (uName.toAscii() + ":" +
-    passW.toAscii()).toBase64() + "\r\n";
+    userAndPwd = "Authorization: Basic " + (uName.toLatin1() + ":" +
+    passW.toLatin1()).toBase64() + "\r\n";
   }
 
   QByteArray reqStr;
   if ( proxyHost.isEmpty() ) {
     if (_url.path().indexOf("/") != 0) _url.setPath("/");
-    reqStr = "GET " + _url.path().toAscii() + " HTTP/1.0\r\n"
+    reqStr = "GET " + _url.path().toLatin1() + " HTTP/1.0\r\n"
              + "User-Agent: NTRIP BNC/" BNCVERSION " (" BNC_OS ")\r\n"
-             + "Host: " + _url.host().toAscii() + "\r\n"
+             + "Host: " + _url.host().toLatin1() + "\r\n"
              + userAndPwd + "\r\n";
   } else {
     reqStr = "GET " + _url.toEncoded() + " HTTP/1.0\r\n"
              + "User-Agent: NTRIP BNC/" BNCVERSION " (" BNC_OS ")\r\n"
-             + "Host: " + _url.host().toAscii() + "\r\n"
+             + "Host: " + _url.host().toLatin1() + "\r\n"
              + userAndPwd + "\r\n";
   }
 
@@ -242,7 +242,7 @@ void bncNetQueryV1::startRequestPrivate(const QUrl& url,
     delete _socket;
     _socket = 0;
     _status = error;
-    emit newMessage(_url.path().toAscii().replace(0,1,"")
+    emit newMessage(_url.path().toLatin1().replace(0,1,"")
                     + ": Write timeout", true);
     return;
   }
@@ -293,7 +293,7 @@ void bncNetQueryV1::startRequestPrivate(const QUrl& url,
         delete _socket;
         _socket = 0;
         _status = error;
-        emit newMessage(_url.path().toAscii().replace(0,1,"") 
+        emit newMessage(_url.path().toLatin1().replace(0,1,"") 
                         + ": Response timeout", true);
         return;
       }
@@ -302,9 +302,9 @@ void bncNetQueryV1::startRequestPrivate(const QUrl& url,
       delete _socket;
       _socket = 0;
       _status = error;
-      emit newMessage(_url.path().toAscii().replace(0,1,"") 
+      emit newMessage(_url.path().toLatin1().replace(0,1,"") 
                       + ": Wrong caster response\n" 
-                      + response.join("").toAscii(), true);
+                      + response.join("").toLatin1(), true);
     }
   }
 }

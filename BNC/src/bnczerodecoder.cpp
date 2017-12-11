@@ -75,7 +75,7 @@ void bncZeroDecoder::reopen() {
   if (!_out || _fileDate != currDate) {
     delete _out;
     QByteArray fileName = 
-           (_fileName + "_" + currDate.toString("yyMMdd")).toAscii();
+           (_fileName + "_" + currDate.toString("yyMMdd")).toLatin1();
     bncSettings settings;
     if (Qt::CheckState(settings.value("rnxAppend").toInt()) == Qt::Checked) {
       _out = new ofstream(fileName.data(), ios::out | ios::app);

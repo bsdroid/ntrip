@@ -47,7 +47,7 @@ void bncNetQueryRtp::stop() {
   _status = finished;
   if (_socket) {
     QByteArray reqStr = "TEARDOWN " + _url.toEncoded() + " RTSP/1.0\r\n"
-                      + "CSeq: " + QString("%1").arg(++_CSeq).toAscii() + "\r\n"
+                      + "CSeq: " + QString("%1").arg(++_CSeq).toLatin1() + "\r\n"
                       + "Session: " + _session + "\r\n"
                       + "\r\n";
     _socket->write(reqStr, reqStr.length());
@@ -59,7 +59,7 @@ void bncNetQueryRtp::stop() {
 void bncNetQueryRtp::slotKeepAlive() {
   if (_socket) {
     QByteArray reqStr = "GET_PARAMETER " + _url.toEncoded() + " RTSP/1.0\r\n"
-                      + "CSeq: " + QString("%1").arg(++_CSeq).toAscii() + "\r\n"
+                      + "CSeq: " + QString("%1").arg(++_CSeq).toLatin1() + "\r\n"
                       + "Session: " + _session + "\r\n"
                       + "\r\n";
     _socket->write(reqStr, reqStr.length());
@@ -125,13 +125,13 @@ void bncNetQueryRtp::startRequest(const QUrl& url, const QByteArray& gga) {
   // Send Request 1
   // --------------
   if (_socket->waitForConnected(timeOut)) {
-    QString uName = QUrl::fromPercentEncoding(_url.userName().toAscii());
-    QString passW = QUrl::fromPercentEncoding(_url.password().toAscii());
+    QString uName = QUrl::fromPercentEncoding(_url.userName().toLatin1());
+    QString passW = QUrl::fromPercentEncoding(_url.password().toLatin1());
     QByteArray userAndPwd;
     
     if(!uName.isEmpty() || !passW.isEmpty()) {
-      userAndPwd = "Authorization: Basic " + (uName.toAscii() + ":" +
-      passW.toAscii()).toBase64() + "\r\n";
+      userAndPwd = "Authorization: Basic " + (uName.toLatin1() + ":" +
+      passW.toLatin1()).toBase64() + "\r\n";
     }
 
     // Setup the RTSP Connection
@@ -140,11 +140,11 @@ void bncNetQueryRtp::startRequest(const QUrl& url, const QByteArray& gga) {
     _udpSocket = new QUdpSocket();
     _udpSocket->bind(0);
     connect(_udpSocket, SIGNAL(readyRead()), _eventLoop, SLOT(quit()));
-    QByteArray clientPort = QString("%1").arg(_udpSocket->localPort()).toAscii();
+    QByteArray clientPort = QString("%1").arg(_udpSocket->localPort()).toLatin1();
 
     QByteArray reqStr;
     reqStr = "SETUP " + _url.toEncoded() + " RTSP/1.0\r\n"
-           + "CSeq: " + QString("%1").arg(++_CSeq).toAscii() + "\r\n"
+           + "CSeq: " + QString("%1").arg(++_CSeq).toLatin1() + "\r\n"
            + "Ntrip-Version: Ntrip/2.0\r\n"
            + "Ntrip-Component: Ntripclient\r\n"
            + "User-Agent: NTRIP BNC/" BNCVERSION " (" BNC_OS ")\r\n"
@@ -166,11 +166,11 @@ void bncNetQueryRtp::startRequest(const QUrl& url, const QByteArray& gga) {
         QString line = in.readLine();
         while (!line.isEmpty()) {
           if (line.indexOf("Session:") == 0) {
-            _session = line.mid(9).toAscii();
+            _session = line.mid(9).toLatin1();
           }
           int iSrv = line.indexOf("server_port=");
           if (iSrv != -1) {
-            serverPort = line.mid(iSrv+12).toAscii();
+            serverPort = line.mid(iSrv+12).toLatin1();
           }
           line = in.readLine();
         }
@@ -202,7 +202,7 @@ void bncNetQueryRtp::startRequest(const QUrl& url, const QByteArray& gga) {
           }
 
           reqStr = "PLAY " + _url.toEncoded() + " RTSP/1.0\r\n"
-                 + "CSeq: " + QString("%1").arg(++_CSeq).toAscii() + "\r\n"
+                 + "CSeq: " + QString("%1").arg(++_CSeq).toLatin1() + "\r\n"
                  + "Session: " + _session + "\r\n"
                  + "\r\n";
           _socket->write(reqStr, reqStr.length());

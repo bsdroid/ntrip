@@ -169,7 +169,7 @@ void expandEnvVar(QString& str) {
     if (it.hasNext()) {
       QString rxStr  = it.next();
       QString envVar = rxStr.mid(2,rxStr.length()-3);
-      str.replace(rxStr, qgetenv(envVar.toAscii()));
+      str.replace(rxStr, qgetenv(envVar.toLatin1()));
     }
   }
 
@@ -306,14 +306,14 @@ QByteArray ggaString(const QByteArray& latitude,
 
   char XOR = 0;
   char Buff[gga.size()];
-  strncpy(Buff, gga.toAscii().data(), gga.size());
+  strncpy(Buff, gga.toLatin1().data(), gga.size());
   int iLen = strlen(Buff);
   for (xori = 0; xori < iLen; xori++) {
     XOR ^= (char)Buff[xori];
   }
   gga = "$" + gga + QString("*%1").arg(XOR, 2, 16, QLatin1Char('0'));
 
-  return gga.toAscii();
+  return gga.toLatin1();
 }
 
 //

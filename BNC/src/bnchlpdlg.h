@@ -28,6 +28,9 @@
 #include <QtCore>
 #include <QtGui>
 
+#include <QDialog>
+#include <QPushButton>
+
 class bncHtml;
 
 class bncHlpDlg : public QDialog {
