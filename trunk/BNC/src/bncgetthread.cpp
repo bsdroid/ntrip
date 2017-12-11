@@ -892,6 +892,13 @@ void bncGetThread::miscScanRTCM() {
             decoder()->_antList[ii].yy, decoder()->_antList[ii].zz, hh, antT));
       }
 
+      // RTCMv3 receiver descriptor
+      // --------------------------
+      for (int ii = 0; ii < decoder()->_recType.size(); ii++) {
+        QString rec1 = QString("%1 ").arg(decoder()->_recType[ii]);
+        emit(newMessage(_staID + ": Receiver descriptor " + rec1.toLatin1(), true));
+      }
+
       // RTCM GLONASS slots
       // ------------------
       if (decoder()->_gloFrq.size()) {
@@ -938,6 +945,7 @@ void bncGetThread::miscScanRTCM() {
   decoder()->_gloFrq.clear();
   decoder()->_typeList.clear();
   decoder()->_antType.clear();
+  decoder()->_recType.clear();
   decoder()->_antList.clear();
 }
 

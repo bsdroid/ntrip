@@ -63,7 +63,7 @@ Q_OBJECT
    * {@link _Message}: contains the message bytes<br>
    * {@link _MessageSize}: contains to current amount of bytes in the buffer<br>
    * {@link _SkipBytes}: amount of bytes to skip at the beginning of the buffer
-   * 
+   *
    * The functions sets following variables:<br>
    * {@link _NeedBytes}: Minimum number of bytes needed on next call<br>
    * {@link _SkipBytes}: internal, Bytes to skip before next call (usually the amount of
@@ -145,12 +145,13 @@ Q_OBJECT
    */
   bool DecodeBDSEphemeris(unsigned char* buffer, int bufLen);
   /**
-   * Extract antenna type from 1007, 1008 or 1033 RTCM3 messages.
-   * @param buffer the buffer containing an antenna RTCM block
+   * Extract antenna type from 1007, 1008 or 1033 RTCM3 messages
+   * and extract receiver type from 1033 RTCM3 messages
+   * @param buffer the buffer containing an antenna (and receiver) RTCM block
    * @param bufLen the length of the buffer (the message length including header+crc)
    * @return <code>true</code> when data block was decodable
    */
-  bool DecodeAntenna(unsigned char* buffer, int bufLen);
+  bool DecodeAntennaReceiver(unsigned char* buffer, int bufLen);
   /**
    * Extract antenna type from 1005 or 1006 RTCM3 messages.
    * @param buffer the buffer containing an antenna RTCM block
@@ -165,7 +166,7 @@ Q_OBJECT
   bncRawFile*            _rawFile;
 
   /** List of decoders for Clock and Orbit data */
-  QMap<QByteArray, RTCM3coDecoder*> _coDecoders; 
+  QMap<QByteArray, RTCM3coDecoder*> _coDecoders;
 
   /** Message buffer for input parsing */
   unsigned char _Message[2048];
