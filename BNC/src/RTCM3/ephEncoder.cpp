@@ -298,7 +298,7 @@ int t_ephEncoder::RTCM3(const t_ephBDS& eph, unsigned char* buffer) {
   int URA = indexFromAccuracy(eph._URA, eph.type());
   BDSADDBITS(12, RTCM3ID_BDS)
   BDSADDBITS(6, eph._prn.number())
-  BDSADDBITS(13, eph._TOC.bdsw() - 1356.0)
+  BDSADDBITS(13, eph._TOC.bdsw())
   BDSADDBITS(4, URA);
   BDSADDBITSFLOAT(14, eph._IDOT, M_PI/static_cast<double>(1<<30)/static_cast<double>(1<<13))
   BDSADDBITS(5, eph._AODE)
