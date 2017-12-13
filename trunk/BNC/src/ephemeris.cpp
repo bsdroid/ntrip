@@ -728,22 +728,21 @@ unsigned int t_ephGlo::IOD() const {
 ////////////////////////////////////////////////////////////////////////////
 unsigned int t_ephGlo::isUnhealthy() const {
 
-  switch (_almanac_health_availablility_indicator) {
-    case 1:
+  if (_almanac_health_availablility_indicator) {
       if ((_health == 0 && _almanac_health == 0) ||
           (_health == 1 && _almanac_health == 0) ||
           (_health == 1 && _almanac_health == 1)) {
         return 1;
       }
-      break;
-    case 0:
-      if (_health) {
-        return 1;
-      }
-      break;
+  }
+  else if (!_almanac_health_availablility_indicator) {
+    if (_health) {
+      return 1;
+    }
   }
   return 0; /* (_health == 0 && _almanac_health == 1) or (_health == 0) */
 }
+
 
 // Constructor
 //////////////////////////////////////////////////////////////////////////////
