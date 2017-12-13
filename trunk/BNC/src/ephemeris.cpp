@@ -727,17 +727,22 @@ unsigned int t_ephGlo::IOD() const {
 // Health status of Glonass Ephemeris (virtual)
 ////////////////////////////////////////////////////////////////////////////
 unsigned int t_ephGlo::isUnhealthy() const {
-  if      (_health == 0 && _almanac_health == 0) {
-    return 1;
-  }
-  else if (_health == 1 && _almanac_health == 0) {
-    return 1;
-  }
-  else if (_health == 1 && _almanac_health == 1) {
-    return 1;
-  }
 
-  return 0;
+  switch (_almanac_health_availablility_indicator) {
+    case 1:
+      if ((_health == 0 && _almanac_health == 0) ||
+          (_health == 1 && _almanac_health == 0) ||
+          (_health == 1 && _almanac_health == 1)) {
+        return 1;
+      }
+      break;
+    case 0:
+      if (_health) {
+        return 1;
+      }
+      break;
+  }
+  return 0; /* (_health == 0 && _almanac_health == 1) or (_health == 0) */
 }
 
 // Constructor
