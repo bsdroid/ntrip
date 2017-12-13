@@ -208,6 +208,9 @@ t_irc t_bncCore::checkPrintEph(t_eph* eph) {
     messagePrivate("OUTDATED EPHEMERIS\n" + eph->toString(3.0).toLatin1());
     return failure;
   }
+  else if (eph->checkState() == t_eph::unhealthy) {
+    messagePrivate("UNHEALTHY EPHEMERIS\n" + eph->toString(3.0).toLatin1());
+  }
   printEphHeader();
   printEph(*eph, (ircPut == success));
   return success;
