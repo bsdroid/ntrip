@@ -898,7 +898,7 @@ t_irc t_ephGal::position(int GPSweek, double GPSweeks, double* xc, double* vv) c
   }
 
   static const double omegaEarth = 7292115.1467e-11;
-  static const double gmWGS = 398.60044e12;
+  static const double gmWGS = 398.6004418e12;
 
   memset(xc, 0, 4*sizeof(double));
   memset(vv, 0, 3*sizeof(double));
