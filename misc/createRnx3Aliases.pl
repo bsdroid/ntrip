@@ -7,7 +7,7 @@
 # Purpose : Helps to create Rnx3 alias mountpoints for a existing
 #           BKG NtripCaster installation. See help for details.
 #
-# Revision: $Id:$
+# Revision: $Id$
 # ========================================================================
 
 # Uses
@@ -137,9 +137,8 @@ sub parseSourcetable {
                 if (@igs_found) {
                     my $rnx3Name = $fourCharId . "00" . $fields[8];
                     $rnx3Name eq $igs_found[0]
-                      || warn
-                      "ERROR: wrong country code \"$fields[8]\" for sourcetable stream $fields[1] (IGS: $igs_found[0])\n"
-                      ;    # die
+                      || die
+                      "wrong country code \"$fields[8]\" for sourcetable stream $fields[1] (IGS: $igs_found[0])\n";
                 }
                 push ( @{ $st{$fourCharId} }, \@fields );
             }
