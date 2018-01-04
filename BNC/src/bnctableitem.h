@@ -26,7 +26,7 @@
 #define BNCTABLEITEM_H
 
 #include <QtCore>
-#include <QtGui>
+#include <QtWidgets>
 
 #include <QTableWidgetItem>
 

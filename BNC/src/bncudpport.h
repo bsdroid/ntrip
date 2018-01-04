@@ -26,7 +26,7 @@
 #define BNCUDPPORT_H
 
 #include <QtCore>
-#include <QtGui>
+#include <QtWidgets>
 #include <QWhatsThis>
 
 class bncUdpPort : public QDialog {

@@ -26,7 +26,9 @@
 #define GRAPHWIN_H
 
 #include <QtCore>
-#include <QtGui>
+#include <QtWidgets>
+#include <QtPrintSupport/QPrinter>
+#include <QtPrintSupport/QPrintDialog>
 #include <qwt_color_map.h>
 #include <qwt_plot.h>
 
@@ -52,7 +54,7 @@ class t_graphWin : public QDialog {
  Q_OBJECT
 
  public:
-  t_graphWin(QWidget* parent, const QString& fileName, 
+  t_graphWin(QWidget* parent, const QString& fileName,
              const QVector<QWidget*>& plots, const QByteArray* scaleTitle,
              const QwtInterval* scaleInterval);
   ~t_graphWin();

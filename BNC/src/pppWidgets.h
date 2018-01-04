@@ -25,7 +25,7 @@
 #ifndef PPPWIDGETS_H
 #define PPPWIDGETS_H
 
-#include <QtGui>
+#include <QtWidgets>
 
 class qtFileChooser;
 

@@ -170,7 +170,7 @@ t_pppWidgets::t_pppWidgets() {
      QString("Station,Sigma N,Sigma E,Sigma H,Noise N,Noise E,Noise H,Tropo Sigma,Tropo Noise, NMEA Port").split(","));
   _staTable->setSelectionMode(QAbstractItemView::ExtendedSelection);
   _staTable->setSelectionBehavior(QAbstractItemView::SelectRows);
-  _staTable->horizontalHeader()->setResizeMode(QHeaderView::Interactive);
+  _staTable->horizontalHeader()->setSectionResizeMode(QHeaderView::Interactive);
   _staTable->horizontalHeader()->setDefaultAlignment(Qt::AlignLeft);
 
   connect(_addStaButton, SIGNAL(clicked()), this, SLOT(slotAddStation()));

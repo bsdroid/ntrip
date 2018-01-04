@@ -34,7 +34,7 @@
  *
  * Created:    23-Jun-2012
  *
- * Changes:    
+ * Changes:
  *
  * -----------------------------------------------------------------------*/
 
@@ -48,7 +48,7 @@ using namespace std;
 
 // Constructor
 ////////////////////////////////////////////////////////////////////////////
-t_graphWin::t_graphWin(QWidget* parent, const QString& fileName, 
+t_graphWin::t_graphWin(QWidget* parent, const QString& fileName,
                        const QVector<QWidget*>& plots,
                        const QByteArray* scaleTitle,
                        const QwtInterval* scaleInterval) :  QDialog(parent) {
@@ -78,15 +78,15 @@ t_graphWin::t_graphWin(QWidget* parent, const QString& fileName,
     _colorScale = new QwtScaleWidget( this );
     _colorScale->setAlignment( QwtScaleDraw::RightScale );
     _colorScale->setColorBarEnabled( true );
-    
+
      QwtText title(*scaleTitle);
      QFont font = _colorScale->font();
      font.setBold( true );
      title.setFont( font );
      _colorScale->setTitle( title );
-    
+
      _colorScale->setColorMap(*scaleInterval, new t_colorMap());
-    
+
      QwtLinearScaleEngine scaleEngine;
      _colorScale->setTransformation(scaleEngine.transformation());
      _colorScale->setScaleDiv(scaleEngine.divideScale(scaleInterval->minValue(),

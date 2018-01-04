@@ -25,7 +25,7 @@
 #ifndef BNCMAPWIN_H
 #define BNCMAPWIN_H
 
-#include <QtGui>
+#include <QtWidgets>
 #include <QtWebKit>
 #include <QNetworkProxy>
 #include "bnctime.h"
