@@ -2239,8 +2239,7 @@ void bncWindow::slotFlowchart() {
 // Help Window
 ////////////////////////////////////////////////////////////////////////////
 void bncWindow::slotHelp() {
-  QUrl url;
-  url.setPath(":bnchelp.html");
+  QUrl url = QUrl::fromLocalFile(":bnchelp.html");
   new bncHlpDlg(0, url);
 }
 
@@ -2339,7 +2338,7 @@ bncAboutDlg::bncAboutDlg(QWidget* parent) :
    QDialog(parent) {
 
   QTextBrowser* tb = new QTextBrowser;
-  QUrl url; url.setPath(":bncabout.html");
+  QUrl url = QUrl::fromLocalFile(":bncabout.html");
   tb->setSource(url);
   tb->setReadOnly(true);
 
