@@ -5,6 +5,8 @@ win32:DEFINES += _TTY_WIN_
 RESOURCES += bnc.qrc
 
 QT += svg
+QT += printsupport
+greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
 unix:QMAKE_CFLAGS_RELEASE   -= -O2
 unix:QMAKE_CXXFLAGS_RELEASE -= -O2

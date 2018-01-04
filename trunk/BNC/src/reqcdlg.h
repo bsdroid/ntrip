@@ -26,7 +26,7 @@
 #define REQCDLG_H
 
 #include <QtCore>
-#include <QtGui>
+#include <QtWidgets>
 
 #include "bncconst.h"
 

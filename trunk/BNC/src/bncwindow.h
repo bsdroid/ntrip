@@ -25,7 +25,7 @@
 #ifndef BNCWINDOW_H
 #define BNCWINDOW_H
 
-#include <QtGui>
+#include <QtWidgets>
 #include <QMainWindow>
 #include <QWhatsThis>
 

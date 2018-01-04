@@ -10,6 +10,8 @@
     Added   (29.06.2016): consideration of provioder ID changes in SSR streams
                           during PPP analysis
     Added   (18.05.2016): expected observations in RINEX QC
+    Changed (04.01.2018): Transition from Qt 4.x to Qt5, see #105
+    Changed (04.01.2018): Use c++11, see #105
     Changed (15.02.2017): SIRGAS2000 transformation parameters adjusted to IGb14
     Changed (10.04.2017): Transformation parameters for ITRF2005 to GDA94 removed
     Changed (10.04.2017): Transformation parameters for ITRF2008 to SIRGAS95 removed

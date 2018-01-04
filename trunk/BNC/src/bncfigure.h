@@ -25,7 +25,7 @@
 #ifndef BNCFIGURE_H
 #define BNCFIGURE_H
 
-#include <QtGui>
+#include <QtWidgets>
 
 class bncFigure : public QWidget {
   Q_OBJECT

@@ -10,7 +10,7 @@
  *
  * Created:    27-Dec-2008
  *
- * Changes:    
+ * Changes:
  *
  * -----------------------------------------------------------------------*/
 
@@ -40,7 +40,7 @@ bncNetQueryRtp::~bncNetQueryRtp() {
   delete _udpSocket;
 }
 
-// 
+//
 ////////////////////////////////////////////////////////////////////////////
 void bncNetQueryRtp::stop() {
   _eventLoop->quit();
@@ -54,7 +54,7 @@ void bncNetQueryRtp::stop() {
   }
 }
 
-// 
+//
 ////////////////////////////////////////////////////////////////////////////
 void bncNetQueryRtp::slotKeepAlive() {
   if (_socket) {
@@ -67,12 +67,12 @@ void bncNetQueryRtp::slotKeepAlive() {
   QTimer::singleShot(30000, this, SLOT(slotKeepAlive()));
 }
 
-// 
+//
 ////////////////////////////////////////////////////////////////////////////
 void bncNetQueryRtp::waitForRequestResult(const QUrl&, QByteArray&) {
 }
 
-// 
+//
 ////////////////////////////////////////////////////////////////////////////
 void bncNetQueryRtp::waitForReadyRead(QByteArray& outData) {
 
@@ -114,7 +114,7 @@ void bncNetQueryRtp::startRequest(const QUrl& url, const QByteArray& gga) {
   bncSettings settings;
   QString proxyHost = settings.value("proxyHost").toString();
   int     proxyPort = settings.value("proxyPort").toInt();
- 
+
   if ( proxyHost.isEmpty() ) {
     _socket->connectToHost(_url.host(), _url.port());
   }
@@ -128,7 +128,7 @@ void bncNetQueryRtp::startRequest(const QUrl& url, const QByteArray& gga) {
     QString uName = QUrl::fromPercentEncoding(_url.userName().toLatin1());
     QString passW = QUrl::fromPercentEncoding(_url.password().toLatin1());
     QByteArray userAndPwd;
-    
+
     if(!uName.isEmpty() || !passW.isEmpty()) {
       userAndPwd = "Authorization: Basic " + (uName.toLatin1() + ":" +
       passW.toLatin1()).toBase64() + "\r\n";
@@ -156,7 +156,7 @@ void bncNetQueryRtp::startRequest(const QUrl& url, const QByteArray& gga) {
     reqStr += "\r\n";
 
     _socket->write(reqStr, reqStr.length());
-    
+
     // Read Server Answer 1
     // --------------------
     if (_socket->waitForBytesWritten(timeOut)) {
@@ -174,10 +174,10 @@ void bncNetQueryRtp::startRequest(const QUrl& url, const QByteArray& gga) {
           }
           line = in.readLine();
         }
-    
+
         // Send Request 2
         // --------------
-        if (!_session.isEmpty()) { 
+        if (!_session.isEmpty()) {
 
           // Send initial RTP packet for firewall handling
           // ---------------------------------------------
@@ -197,7 +197,7 @@ void bncNetQueryRtp::startRequest(const QUrl& url, const QByteArray& gga) {
             rtpbuffer[10] = (sessInt >>  8) & 0xFF;
             rtpbuffer[11] = (sessInt      ) & 0xFF;
 
-            _udpSocket->writeDatagram(rtpbuffer, 12, 
+            _udpSocket->writeDatagram(rtpbuffer, 12,
                               _socket->peerAddress(), serverPort.toInt());
           }
 
@@ -206,7 +206,7 @@ void bncNetQueryRtp::startRequest(const QUrl& url, const QByteArray& gga) {
                  + "Session: " + _session + "\r\n"
                  + "\r\n";
           _socket->write(reqStr, reqStr.length());
-    
+
           // Read Server Answer 2
           // --------------------
           if (_socket->waitForBytesWritten(timeOut)) {
@@ -215,7 +215,7 @@ void bncNetQueryRtp::startRequest(const QUrl& url, const QByteArray& gga) {
               line = in.readLine();
               while (!line.isEmpty()) {
                 if (line.indexOf("200 OK") != -1) {
-                  emit newMessage(_url.encodedPath().replace(0,1,"")
+                  emit newMessage(_url.toEncoded().replace(0,1,"")
                             + ": UDP connection established", true);
                   slotKeepAlive();
                   return;
@@ -232,7 +232,7 @@ void bncNetQueryRtp::startRequest(const QUrl& url, const QByteArray& gga) {
   delete _socket;
   _socket = 0;
   _status = error;
-  emit newMessage(_url.encodedPath().replace(0,1,"")
+  emit newMessage(_url.toEncoded().replace(0,1,"")
                   + ": NetQuery, waiting for connect", true);
 }
 

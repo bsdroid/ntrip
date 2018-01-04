@@ -39,6 +39,8 @@
  * -----------------------------------------------------------------------*/
 
 #include <QtSvg>
+#include <QtPrintSupport/QPrinter>
+#include <QtPrintSupport/QPrintDialog>
 
 #include <qwt_symbol.h>
 #include <qwt_plot.h>
@@ -83,7 +85,7 @@ t_bncMap::t_bncMap(QWidget* parent) : QDialog(parent) {
   connect(_buttonPrint, SIGNAL(clicked()), this, SLOT(slotPrint()));
 
   _buttonWhatsThis = new QPushButton(tr("Help=Shift+F1"), this);
-  _buttonWhatsThis->setMaximumWidth(14*ww); 
+  _buttonWhatsThis->setMaximumWidth(14*ww);
   connect(_buttonWhatsThis, SIGNAL(clicked()), this, SLOT(slotWhatsThis()));
 
   // Layout
@@ -116,19 +118,19 @@ t_bncMap::t_bncMap(QWidget* parent) : QDialog(parent) {
 
 // Destructor
 /////////////////////////////////////////////////////////////////////////////
-t_bncMap::~t_bncMap() { 
+t_bncMap::~t_bncMap() {
   delete _mapPlot;
   delete _buttonWhatsThis;
 }
 
-// 
+//
 /////////////////////////////////////////////////////////////////////////////
 void t_bncMap::slotNewPoint(const QString& name, double latDeg, double lonDeg) {
 
   if (lonDeg > 180.0) lonDeg -= 360.0;
 
   QColor red(220,20,60);
-  QwtSymbol* symbol = new QwtSymbol(QwtSymbol::Rect, QBrush(red), 
+  QwtSymbol* symbol = new QwtSymbol(QwtSymbol::Rect, QBrush(red),
                                     QPen(red), QSize(2,2));
   QwtPlotMarker* marker = new QwtPlotMarker();
   marker->setValue(lonDeg, latDeg);
@@ -183,7 +185,7 @@ void t_bncMap::closeEvent(QCloseEvent* event) {
   QDialog::closeEvent(event);
 }
 
-// 
+//
 ////////////////////////////////////////////////////////////////////////////
 void t_bncMap::showEvent(QShowEvent* event) {
   double width  = _maxPointLon - _minPointLon;

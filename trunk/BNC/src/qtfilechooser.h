@@ -2,7 +2,7 @@
 #ifndef QTFILECHOOSER
 #define QTFILECHOOSER
 
-#include <QtGui>
+#include <QtWidgets>
 
 class qtFileChooser : public QWidget {
   Q_OBJECT

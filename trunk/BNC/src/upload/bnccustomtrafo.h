@@ -2,7 +2,7 @@
 #define BNCCUSTOMTRAFO_H
 
 #include <QtCore>
-#include <QtGui>
+#include <QtWidgets>
 #include <QWhatsThis>
 
 class bncCustomTrafo : public QDialog {
