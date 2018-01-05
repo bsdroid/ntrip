@@ -28,6 +28,7 @@
 #include <map>
 #include <vector>
 #include <list>
+#include <stdio.h>
 
 #include "GPSDecoder.h"
 #include "RTCM2.h"
@@ -70,7 +71,7 @@ class RTCM2Decoder: public GPSDecoder {
     rtcm2::RTCM2_23    _msg23;
     rtcm2::RTCM2_24    _msg24;
     rtcm2::RTCM2_2021  _msg2021;
-    bncEphUser         _ephUser;        
+    bncEphUser         _ephUser;
 };
 
 #endif  // include blocker

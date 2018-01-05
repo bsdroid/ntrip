@@ -201,21 +201,31 @@ t_irc RTCM2Decoder::Decode(char* buffer, int bufLen, vector<string>& errmsg) {
     // Output for RTCM scan
     if (_PP.ID() == 3) {
       if (_msg03.validMsg) {
-        _antList.push_back(t_antInfo());
+        _antList.push_back(t_antRefPoint());
 
-        this->getStaCrd(_antList.back().xx, _antList.back().yy,
-            _antList.back().zz);
+        this->getStaCrd(_antList.back().xx, _antList.back().yy, _antList.back().zz);
 
-        _antList.back().type = t_antInfo::APC;
+        _antList.back().type = t_antRefPoint::APC;
         _antList.back().message = _PP.ID();
       }
     } else if (_PP.ID() == 23) {
-      if (_msg23.validMsg && !_antType.contains(_msg23.antType.c_str())) {
-        _antType.push_back(_msg23.antType.c_str());
+      if (_msg23.validMsg) {
+        int antlen = strlen(_msg23.antType.c_str());
+        int serlen = strlen(_msg23.antSN.c_str());
+        if ((antlen) &&
+            (_antType.empty() || strncmp(_antType.back().descriptor, _msg23.antType.c_str(), antlen) != 0)) {
+          _antType.push_back(t_antInfo());
+          memcpy(_antType.back().descriptor, _msg23.antType.c_str(), antlen);
+          _antType.back().descriptor[antlen] = 0;
+          if (serlen) {
+            memcpy(_antType.back().serialnumber,  _msg23.antSN.c_str(), serlen);
+            _antType.back().serialnumber[serlen] = 0;
+          }
+        }
       }
     } else if (_PP.ID() == 24) {
       if (_msg24.validMsg) {
-        _antList.push_back(t_antInfo());
+        _antList.push_back(t_antRefPoint());
 
         _antList.back().xx = _msg24.x;
         _antList.back().yy = _msg24.y;
@@ -224,7 +234,7 @@ t_irc RTCM2Decoder::Decode(char* buffer, int bufLen, vector<string>& errmsg) {
         _antList.back().height_f = true;
         _antList.back().height = _msg24.h;
 
-        _antList.back().type = t_antInfo::ARP;
+        _antList.back().type = t_antRefPoint::ARP;
         _antList.back().message = _PP.ID();
       }
     }
