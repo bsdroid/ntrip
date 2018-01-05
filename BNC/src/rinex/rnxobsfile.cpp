@@ -1316,12 +1316,12 @@ void t_rnxObsFile::writeEpochV2(QTextStream* stream, const t_rnxObsHeader& heade
 
   QString dateStr;
   QTextStream(&dateStr) << QString(" %1 %2 %3 %4 %5%6")
-    .arg(int(fmod(year, 100)), 2, 10, QChar('0'))
-    .arg(month,                2, 10, QChar('0'))
-    .arg(day,                  2, 10, QChar('0'))
-    .arg(hour,                 2, 10, QChar('0'))
-    .arg(min,                  2, 10, QChar('0'))
-    .arg(sec,                 11, 'f', 7);
+    .arg(int(fmod(double(year), 100.0)), 2, 10, QChar('0'))
+    .arg(month,                          2, 10, QChar('0'))
+    .arg(day,                            2, 10, QChar('0'))
+    .arg(hour,                           2, 10, QChar('0'))
+    .arg(min,                            2, 10, QChar('0'))
+    .arg(sec,                           11, 'f', 7);
 
   int flag = 0;
   *stream << dateStr << QString("%1%2").arg(flag, 3).arg(epo->rnxSat.size(), 3);
