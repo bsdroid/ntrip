@@ -858,26 +858,27 @@ void bncGetThread::miscScanRTCM() {
       // RTCMv3 antenna descriptor
       // -------------------------
       for (int ii = 0; ii < decoder()->_antType.size(); ii++) {
-        QString ant1 = QString("%1 ").arg(decoder()->_antType[ii]);
-        emit(newMessage(_staID + ": Antenna descriptor " + ant1.toLatin1(), true));
+        QString ant1 = QString(": Antenna Descriptor: %1 ").arg(decoder()->_antType[ii].descriptor);
+        emit(newMessage(_staID + ant1.toLatin1(), true));
+        if (strlen(decoder()->_antType[ii].serialnumber)) {
+          QString ant2 = QString(": Antenna Serial Number: %1 ").arg(decoder()->_antType[ii].serialnumber);
+          emit(newMessage(_staID + ant2.toLatin1(), true));
+        }
       }
 
       // RTCM Antenna Coordinates
       // ------------------------
       for (int ii = 0; ii < decoder()->_antList.size(); ii++) {
         QByteArray antT;
-        if (decoder()->_antList[ii].type == GPSDecoder::t_antInfo::ARP) {
+        if (decoder()->_antList[ii].type == GPSDecoder::t_antRefPoint::ARP) {
           antT = "ARP";
-        } else if (decoder()->_antList[ii].type == GPSDecoder::t_antInfo::APC) {
+        } else if (decoder()->_antList[ii].type == GPSDecoder::t_antRefPoint::APC) {
           antT = "APC";
         }
         QByteArray ant1, ant2, ant3;
-        ant1 =
-            QString("%1 ").arg(decoder()->_antList[ii].xx, 0, 'f', 4).toLatin1();
-        ant2 =
-            QString("%1 ").arg(decoder()->_antList[ii].yy, 0, 'f', 4).toLatin1();
-        ant3 =
-            QString("%1 ").arg(decoder()->_antList[ii].zz, 0, 'f', 4).toLatin1();
+        ant1 = QString("%1 ").arg(decoder()->_antList[ii].xx, 0, 'f', 4).toLatin1();
+        ant2 = QString("%1 ").arg(decoder()->_antList[ii].yy, 0, 'f', 4).toLatin1();
+        ant3 = QString("%1 ").arg(decoder()->_antList[ii].zz, 0, 'f', 4).toLatin1();
         emit(newMessage(_staID + ": " + antT + " (ITRF) X " + ant1 + "m", true));
         emit(newMessage(_staID + ": " + antT + " (ITRF) Y " + ant2 + "m", true));
         emit(newMessage(_staID + ": " + antT + " (ITRF) Z " + ant3 + "m", true));
@@ -895,8 +896,12 @@ void bncGetThread::miscScanRTCM() {
       // RTCMv3 receiver descriptor
       // --------------------------
       for (int ii = 0; ii < decoder()->_recType.size(); ii++) {
-        QString rec1 = QString("%1 ").arg(decoder()->_recType[ii]);
-        emit(newMessage(_staID + ": Receiver descriptor " + rec1.toLatin1(), true));
+        QString rec1 = QString(": Receiver Descriptor: %1 ").arg(decoder()->_recType[ii].descriptor);
+        QString rec2 = QString(": Receiver Firmware Version: %1 ").arg(decoder()->_recType[ii].firmware);
+        QString rec3 = QString(": Receiver Serial Number: %1 ").arg(decoder()->_recType[ii].serialnumber);
+        emit(newMessage(_staID + rec1.toLatin1(), true));
+        emit(newMessage(_staID + rec2.toLatin1(), true));
+        emit(newMessage(_staID + rec3.toLatin1(), true));
       }
 
       // RTCM GLONASS slots
