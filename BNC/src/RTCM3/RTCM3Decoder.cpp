@@ -1381,39 +1381,56 @@ bool RTCM3Decoder::DecodeBDSEphemeris(unsigned char* data, int size) {
 //
 ////////////////////////////////////////////////////////////////////////////
 bool RTCM3Decoder::DecodeAntennaReceiver(unsigned char* data, int size) {
-  char *antenna, anttype[256];
-  char *dummy;
-  char *receiver, rectype[256];
-
+  char *antenna;
+  char *antserialnum;
+  char *receiver;
+  char *recfirmware;
+  char *recserialnum;
   int type;
-
-  int dnum = -1;
+  int antsernum = -1;
   int antnum = -1;
   int recnum = -1;
+  int recsernum = -1;
+  int recfirnum = -1;
   uint64_t numbits = 0, bitfield = 0;
 
   data += 3; /* header*/
   size -= 6; /* header + crc */
 
   GETBITS(type, 12)
-  SKIPBITS(12)
+  SKIPBITS(12) /* reference station ID */
   GETSTRING(antnum, antenna)
-  if (antnum > -1 && antnum < 265) {
-    memcpy(anttype, antenna, antnum);
-    anttype[antnum] = 0;
-    if (!_antType.contains(anttype)) {
-      _antType.push_back(anttype);
+  if ((antnum > -1 && antnum < 265) &&
+      (_antType.empty() || strncmp(_antType.back().descriptor, antenna, recnum) != 0)) {
+    _antType.push_back(t_antInfo());
+    memcpy(_antType.back().descriptor, antenna, antnum);
+    _antType.back().descriptor[antnum] = 0;
+  }
+  SKIPBITS(8) /* antenna setup ID */
+  if (type == 1008 || type == 1033 ) {
+    GETSTRING(antsernum, antserialnum)
+    if ((antsernum > -1 && antsernum < 265)) {
+      memcpy(_antType.back().serialnumber, antserialnum, antsernum);
+      _antType.back().serialnumber[antsernum] = 0;
     }
   }
+
   if (type == 1033) {
-    SKIPBITS(8)
-    GETSTRING(dnum, dummy)
     GETSTRING(recnum, receiver)
-    if (recnum > -1 && recnum < 265) {
-      memcpy(rectype, receiver, recnum);
-      rectype[recnum] = 0;
-      if (!_recType.contains(rectype)) {
-        _recType.push_back(rectype);
+    GETSTRING(recfirnum, recfirmware)
+    GETSTRING(recsernum, recserialnum)
+    if ((recnum > -1 && recnum < 265) &&
+        (_recType.empty() || strncmp(_recType.back().descriptor, receiver, recnum) != 0)) {
+      _recType.push_back(t_recInfo());
+      memcpy(_recType.back().descriptor, receiver, recnum);
+      _recType.back().descriptor[recnum] = 0;
+      if (recfirnum > -1 && recfirnum < 265) {
+        memcpy(_recType.back().firmware, recfirmware, recfirnum);
+        _recType.back().firmware[recfirnum] = 0;
+      }
+      if (recsernum > -1 && recsernum < 265) {
+        memcpy(_recType.back().serialnumber, recserialnum, recsernum);
+        _recType.back().serialnumber[recsernum] = 0;
       }
     }
   }
@@ -1431,8 +1448,8 @@ bool RTCM3Decoder::DecodeAntennaPosition(unsigned char* data, int size) {
   size -= 6; /* header + crc */
 
   GETBITS(type, 12)
-  _antList.push_back(t_antInfo());
-  _antList.back().type = t_antInfo::ARP;
+  _antList.push_back(t_antRefPoint());
+  _antList.back().type = t_antRefPoint::ARP;
   SKIPBITS(22)
   GETBITSSIGN(x, 38)
   _antList.back().xx = x * 1e-4;
