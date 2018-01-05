@@ -34,7 +34,7 @@
  *
  * Created:    24-Sep-2006
  *
- * Changes:    
+ * Changes:
  *
  * -----------------------------------------------------------------------*/
 
@@ -85,7 +85,7 @@ bncHlpDlg::bncHlpDlg(QWidget* parent, const QUrl& url) :
   dlgLayout->addLayout(butLayout);
 
   setLayout(dlgLayout);
-  resize(60*ww, 60*ww);
+  resize(110*ww, 100*ww);
   show();
 }
 
