@@ -4,34 +4,77 @@
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>BKG Ntrip Client | Help</title>
+  <style>
+    .center {
+      text-align: center;
+    }
+  </style>
 </head>
 
 <body>
-<h3>BKG Ntrip Client (BNC)<br>
-Version 2.13</h3>
+<div>
+  <img src="IMG/BKG_Logo_oS.jpg" alt="bkg_logo" style="float:left;width:100px;margin-left:20px;margin-top:20px;"/>
+  <img src="ntrip-logo.png" alt="ntrip_logo" style="float:right;width:80px;margin-rigth:20px;margin-top:20px;"/>
+</div>
+<br><br><br><br><br><br>
 
-<p>Georg Weber<sup>(1)</sup>, Leo&scaron; Mervart<sup>(2)</sup>, Andrea St&uuml;rze<sup>(1)</sup>, Axel R&uuml;lke<sup>(1)</sup>, Dirk St&ouml;cker<sup>(3)</sup></p>
+<div class="center">
+  <h1>BKG Ntrip Client (BNC)</h1>
+  <br>
+  <h3>A toolkit for retrieving, decoding, converting and processing<br> real-time GNSS data streams</h3>
+  <br>
+  <h3>Version 2.13</h3>
+</div>
+<br>
 
 <p>
+<h4>Authors</h4>
+Georg Weber<sup>(1)</sup>, Leo&scaron; Mervart<sup>(2)</sup>, Andrea St&uuml;rze<sup>(1)</sup>, Axel R&uuml;lke<sup>(1)</sup>, Dirk St&ouml;cker<sup>(3)</sup><br><br>
+
 <sup>(1) Federal Agency for Cartography and Geodesy (BKG), Frankfurt, Germany</sup><br>
 <sup>(2) Czech Technical University (CTU), Department of Geomatics, Prague, Czech Republic</sup><br>
 <sup>(3) Alberding GmbH, Wildau, Germany</sup>
 </p>
 <br>
 
-<b>Copyright</b><br>
-&copy;<sup>&nbsp;</sup> 2005-2018 Federal Agency for Cartography and Geodesy (BKG), Frankfurt, Germany
-<br><br>
-<b>Citation<sup>&nbsp;</sup></b><br>
-To help justify funding the development of BNC,<sup>&nbsp;</sup>we kindly ask users to include a citation when applying the software results in a publication. We suggest:
-<br><br>
-Weber, G., L. Mervart, A. St&uuml;rze, A. R&uuml;lke and D. St&ouml;cker (2016):<br>
-&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; BKG Ntrip Client, Version 2.12. Mitteilungen des Bundesamtes<br>
-&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; f&uuml;r Kartographie und Geod&auml;sie, Vol. 49, Frankfurt am Main, 2016.
-<br><br>
+<p>
+<h4>Contact</h4>
+Feel free to send comments, suggestions or bug reports to:
+<pre>
+ Federal Agency for Cartography and Geodesy (BKG)
+ Department of Geodesy, Section Satellite Navigation
+ Richard-Strauss-Allee 11
+ 60598 Frankfurt am Main, Germany
+ email: igs-ip@bkg.bund.de
+</pre>
+</p>
+<br>
 
 <p>
-<b>Table of Contents</b><br><br>
+<h4>Legal Notice</h4>
+BNC has been written under GNU General Public License (GPL). Source code is available from Subversion software archive
+ <a href="http://software.rtcm-ntrip.org/svn/trunk/BNC" target="_blank">http://software.rtcm-ntrip.org/svn/trunk/BNC</a>.
+ Precompiled binaries of BNC are available for MS Windows, Linux, and Mac OS X systems. They can be downloaded from
+ <a href="http://igs.bkg.bund.de/ntrip/download" target="_blank">http://igs.bkg.bund.de/ntrip/download</a>.
+ <br>
+ Copyright &copy;<sup>&nbsp;</sup> 2005-2018 Federal Agency for Cartography and Geodesy (BKG), Frankfurt, Germany
+</p>
+<br>
+
+<p>
+<h4>Citation</h4>
+To help justify funding the development of BNC,<sup>&nbsp;</sup>we kindly ask users to include a citation when applying the software results in a publication. We suggest:
+<br>
+<pre>
+  Weber, G., L. Mervart, A. St&uuml;rze, A. R&uuml;lke and D. St&ouml;cker (2016):
+    BKG Ntrip Client, Version 2.12. Mitteilungen des Bundesamtes
+    f&uuml;r Kartographie und Geod&auml;sie, Vol. 49, Frankfurt am Main, 2016.
+</pre>
+</p>
+<br>
+
+<p>
+<h4>Table of Contents</h4>
 <b>1.</b> <a href="#genInstruction"><b>General Information</b></a><br><br>
 &nbsp; &nbsp; &nbsp; 1.1 <a href="#introPurpose">Purpose</a><br>
 &nbsp; &nbsp; &nbsp; 1.2 <a href="#introSystem">Supported GNSS</a><br>
@@ -308,43 +351,6 @@ or similar caster installation.
 </p>
 
 <p>
-BNC has been written under GNU General Public License (GPL). Source code is available from Subversion software archive
- <a href="http://software.rtcm-ntrip.org/svn/trunk/BNC" target="_blank">http://software.rtcm-ntrip.org/svn/trunk/BNC</a>.
- Precompiled binaries of BNC are available for MS Windows, Linux, and Mac OS X systems. They can be downloaded from
- <a href="http://igs.bkg.bund.de/ntrip/download" target="_blank">http://igs.bkg.bund.de/ntrip/download</a>.
-</p>
-<p>
-Feel free to send us comments, suggestions or bug reports. Any contribution would be appreciated.
-</p>
-
-<p>
-<b>Authors</b><br><br>
-The BKG Ntrip Client (BNC) with a Qt Graphical User Interface (GUI) and a Command Line Interface (CLI) has been developed for
-<pre>
-   Federal Agency for Cartography and Geodesy (BKG)
-   c/o Andrea Stuerze
-   Department of Geodesy, Section Satellite Navigation
-   Frankfurt, Germany
-   [andrea.stuerze@bkg.bund.de]
-</pre>
-
-The software has been written by
-
-<pre>
-   Prof. Dr. Leo&scaron; Mervart
-   Czech Technical University (CTU)
-   Department of Geomatics
-   Prague, Czech Republic
-</pre>
-</p>
-
-<p>
-Prof. Mervart started working on BNC in 2005. His sole responsibility for writing the program code ended February 2015.
-In March 2015, Dipl.-Ing. Andrea St&uuml;rze took over the responsibility for maintaining and
-further developing BNC's source code.
-</p>
-
-<p>
 <b>Documentation</b><br><br>
 BNC provides context-sensitive help (<i>What's This</i>) related to specific objects. It furthermore comes with the
 here presented documentation, available as part of the software and as a PDF file. Responsible for offline
@@ -357,18 +363,6 @@ configurations is Dr. Georg Weber.
 <p>
 Note that some figures presented in this documentation may show screenshots from earlier versions of BNC.
 If so, there is either no relevant change compared to the current appearance of the program or no change at all.
-</p>
-
-<p>
-<b>Contact</b><br><br>
-Feel free to send us comments, suggestions or bug reports. Any contribution would be appreciated.
-<pre>
-   Federal Agency for Cartography and Geodesy (BKG)
-   Department of Geodesy, Section Satellite Navigation
-   Richard-Strauss-Allee 11
-   60598 Frankfurt am Main, Germany
-   email: igs-ip@bkg.bund.de
-</pre>
 </p>
 
 <p>
