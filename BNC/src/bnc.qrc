@@ -8,6 +8,7 @@
     <file>world.svg</file>
 </qresource>
 <qresource>
+    <file>IMG/BKG_Logo_oS.jpg</file>
     <file>IMG/screenshot01.png</file>
     <file>IMG/screenshot02.png</file>
     <file>IMG/screenshot03.png</file>
