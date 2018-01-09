@@ -512,7 +512,7 @@ void bncGetThread::run() {
         _latencyChecker->checkOutage(irc == success);
         QListIterator<int> it(decoder()->_typeList);
         _ssrEpoch = decoder()->corrGPSEpochTime();
-        if (_oldSsrEpoch > 0 && _ssrEpoch && _ssrEpoch > _oldSsrEpoch) {
+        if (_oldSsrEpoch && _ssrEpoch && _ssrEpoch != _oldSsrEpoch) {
           if (ssrOrb) {
             _latencyChecker->checkCorrLatency(_oldSsrEpoch, 1057);
             ssrOrb = false;
