@@ -26,9 +26,10 @@
 #define BNCGETTHREAD_H
 
 #include <QThread>
-#include <QtNetwork>
 #include <QDateTime>
 #include <QFile>
+#include <QTcpServer>
+#include <QUrl>
 
 #include "bncconst.h"
 #include "bncnetquery.h"

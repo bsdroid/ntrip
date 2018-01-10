@@ -18,6 +18,8 @@
 #include <iomanip>
 #include <time.h>
 
+#include <QHostInfo>
+
 #include "bncnetqueryudp.h"
 #include "bncsettings.h"
 #include "bncversion.h"

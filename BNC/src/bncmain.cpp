@@ -38,11 +38,12 @@
  *
  * -----------------------------------------------------------------------*/
 
+#include <iostream>
 #include <unistd.h>
 #include <signal.h>
+
 #include <QApplication>
 #include <QFile>
-#include <iostream>
 
 #include "app.h"
 #include "bnccore.h"

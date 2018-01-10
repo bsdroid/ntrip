@@ -40,7 +40,11 @@
 
 #include <iostream>
 
-#include "bncfigureppp.h" 
+#include <QApplication>
+#include <QPainter>
+#include <QVariant>
+
+#include "bncfigureppp.h"
 #include "bncsettings.h"
 #include "bncutils.h"
 

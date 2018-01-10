@@ -16,6 +16,10 @@
 
 #include <iostream>
 
+#include <QApplication>
+#include <QDir>
+#include <QStringList>
+
 #include "bncsslconfig.h"
 #include "bncsettings.h"
 

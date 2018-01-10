@@ -1,7 +1,10 @@
 #ifndef BNCUPLOADCASTER_H
 #define BNCUPLOADCASTER_H
 
-#include <QtNetwork>
+#include <QDateTime>
+#include <QMutex>
+#include <QTcpSocket>
+#include <QThread>
 
 class bncUploadCaster : public QThread {
  Q_OBJECT

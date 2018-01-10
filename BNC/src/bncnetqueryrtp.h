@@ -1,6 +1,8 @@
 #ifndef BNCNETQUERYRTP_H
 #define BNCNETQUERYRTP_H
 
+#include <QUdpSocket>
+
 #include "bncnetquery.h"
 
 class bncNetQueryRtp : public bncNetQuery {

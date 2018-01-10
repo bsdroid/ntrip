@@ -1,7 +1,7 @@
 #ifndef BNCSSLCONFIG_H
 #define BNCSSLCONFIG_H
 
-#include <QtNetwork>
+#include <QSslConfiguration>
 
 // Singleton Class
 // ---------------

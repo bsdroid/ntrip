@@ -25,8 +25,10 @@
 #ifndef PPPFILTER_H
 #define PPPFILTER_H
 
-#include <QtCore>
-#include <QtNetwork>
+#include <QByteArray>
+#include <QMap>
+#include <QStringList>
+#include <QVector>
 #include <newmat.h>
 
 #include "bncconst.h"

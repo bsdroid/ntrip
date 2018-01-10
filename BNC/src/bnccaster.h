@@ -26,8 +26,10 @@
 #define BNCCASTER_H
 
 #include <QFile>
-#include <QtNetwork>
 #include <QMultiMap>
+#include <QTcpServer>
+#include <QTcpSocket>
+
 #include "satObs.h"
 
 class bncGetThread;

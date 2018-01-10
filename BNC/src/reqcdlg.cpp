@@ -40,6 +40,17 @@
 
 #include <iostream>
 
+#include <QCloseEvent>
+#include <QComboBox>
+#include <QDateTimeEdit>
+#include <QGridLayout>
+#include <QLabel>
+#include <QLineEdit>
+#include <QMessageBox>
+#include <QPushButton>
+#include <QSpinBox>
+#include <QWhatsThis>
+
 #include "reqcdlg.h"
 #include "bncsettings.h"
 

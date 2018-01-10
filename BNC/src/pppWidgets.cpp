@@ -40,6 +40,15 @@
 
 #include <iostream>
 
+#include <QCheckBox>
+#include <QComboBox>
+#include <QHeaderView>
+#include <QLineEdit>
+#include <QPushButton>
+#include <QRadioButton>
+#include <QSpinBox>
+#include <QTableWidget>
+
 #include "pppWidgets.h"
 #include "qtfilechooser.h"
 #include "bncsettings.h"
@@ -170,7 +179,9 @@ t_pppWidgets::t_pppWidgets() {
      QString("Station,Sigma N,Sigma E,Sigma H,Noise N,Noise E,Noise H,Tropo Sigma,Tropo Noise, NMEA Port").split(","));
   _staTable->setSelectionMode(QAbstractItemView::ExtendedSelection);
   _staTable->setSelectionBehavior(QAbstractItemView::SelectRows);
+#if QT_VERSION >= 0x050000
   _staTable->horizontalHeader()->setSectionResizeMode(QHeaderView::Interactive);
+#endif
   _staTable->horizontalHeader()->setDefaultAlignment(Qt::AlignLeft);
 
   connect(_addStaButton, SIGNAL(clicked()), this, SLOT(slotAddStation()));

@@ -26,7 +26,6 @@
 #define BNCHLPDLG_H
 
 #include <QtCore>
-#include <QtWidgets>
 
 #include <QDialog>
 #include <QPushButton>

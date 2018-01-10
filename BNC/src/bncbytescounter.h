@@ -25,7 +25,9 @@
 #ifndef BNCBYTESCOUNTER_H
 #define BNCBYTESCOUNTER_H
 
-#include <QtWidgets>
+#include <QByteArray>
+#include <QLabel>
+#include <QMutex>
 
 class bncBytesCounter : public QLabel {
   Q_OBJECT

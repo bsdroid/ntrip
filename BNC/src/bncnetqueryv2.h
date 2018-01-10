@@ -1,6 +1,12 @@
 #ifndef BNCNETQUERYV2_H
 #define BNCNETQUERYV2_H
 
+#include <QEventLoop>
+#include <QNetworkAccessManager>
+#include <QNetworkProxy>
+#include <QNetworkReply>
+#include <QSslError>
+
 #include "bncnetquery.h"
 
 class bncNetQueryV2 : public bncNetQuery {

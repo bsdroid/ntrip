@@ -25,10 +25,10 @@
 #ifndef GRAPHWIN_H
 #define GRAPHWIN_H
 
-#include <QtCore>
-#include <QtWidgets>
-#include <QtPrintSupport/QPrinter>
-#include <QtPrintSupport/QPrintDialog>
+#include <QByteArray>
+#include <QDialog>
+#include <QPrinter>
+#include <QPrintDialog>
 #include <qwt_color_map.h>
 #include <qwt_plot.h>
 

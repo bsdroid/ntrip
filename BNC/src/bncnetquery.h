@@ -1,7 +1,9 @@
 #ifndef BNCNETQUERY_H
 #define BNCNETQUERY_H
 
-#include <QtNetwork>
+#include <QByteArray>
+#include <QUrl>
+
 #include "bncconst.h"
 #include "bnccore.h"
 

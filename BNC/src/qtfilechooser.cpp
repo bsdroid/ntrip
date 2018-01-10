@@ -14,6 +14,11 @@
  *
  * -----------------------------------------------------------------------*/
 
+#include <QFileDialog>
+#include <QHBoxLayout>
+#include <QLineEdit>
+#include <QPushButton>
+
 #include "qtfilechooser.h"
 
 // Constructor

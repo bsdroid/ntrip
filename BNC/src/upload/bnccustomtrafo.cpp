@@ -14,6 +14,12 @@
  *
  * -----------------------------------------------------------------------*/
 
+#include <QLabel>
+#include <QLineEdit>
+#include <QMessageBox>
+#include <QPushButton>
+#include <QVBoxLayout>
+
 #include "bnccustomtrafo.h"
 #include "bncsettings.h"
 
