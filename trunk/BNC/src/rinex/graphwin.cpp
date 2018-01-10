@@ -41,6 +41,12 @@
 #include <qwt_scale_widget.h>
 #include <qwt_scale_engine.h>
 
+#include <QDir>
+#include <QFileInfo>
+#include <QHBoxLayout>
+#include <QVBoxLayout>
+#include <QPushButton>
+
 #include "graphwin.h"
 #include "bncsettings.h"
 

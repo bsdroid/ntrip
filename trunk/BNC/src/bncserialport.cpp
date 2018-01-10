@@ -40,6 +40,13 @@
 
 #include <iostream>
 
+#include <QComboBox>
+#include <QHBoxLayout>
+#include <QLabel>
+#include <QLineEdit>
+#include <QMessageBox>
+#include <QPushButton>
+
 #include "bncserialport.h"
 
 using namespace std;

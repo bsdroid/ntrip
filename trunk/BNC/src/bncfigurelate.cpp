@@ -39,6 +39,13 @@
  * -----------------------------------------------------------------------*/
 
 #include <iostream>
+#include <math.h>
+
+#include <QMapIterator>
+#include <QPainter>
+#include <QTimer>
+#include <QUrl>
+#include <QVariant>
 
 #include "bncfigurelate.h" 
 #include "bncsettings.h"

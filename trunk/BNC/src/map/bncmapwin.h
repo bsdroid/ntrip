@@ -25,9 +25,10 @@
 #ifndef BNCMAPWIN_H
 #define BNCMAPWIN_H
 
-#include <QtWidgets>
-#include <QtWebKit>
+#include <QByteArray>
+#include <QDialog>
 #include <QNetworkProxy>
+#include <QVector>
 #include "bnctime.h"
 
 class bncMapWin : public QDialog {

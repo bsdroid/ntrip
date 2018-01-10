@@ -25,7 +25,14 @@
 #ifndef PPPWIDGETS_H
 #define PPPWIDGETS_H
 
-#include <QtWidgets>
+#include <QCheckBox>
+#include <QComboBox>
+#include <QLineEdit>
+#include <QObject>
+#include <QPushButton>
+#include <QRadioButton>
+#include <QSpinBox>
+#include <QTableWidget>
 
 class qtFileChooser;
 

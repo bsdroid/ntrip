@@ -40,6 +40,12 @@
 
 #include <iostream>
 
+#include <QMapIterator>
+#include <QPainter>
+#include <QTimer>
+#include <QUrl>
+#include <QVariant>
+
 #include "bncfigure.h"
 #include "bncsettings.h"
 

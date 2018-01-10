@@ -47,7 +47,6 @@
 #include <QFile>
 #include <QTextStream>
 #include <QMutex>
-#include <QtNetwork>
 #include <QPushButton>
 #include <QTableWidget>
 #include <QTime>

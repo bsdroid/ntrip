@@ -25,8 +25,10 @@
 #ifndef BNCSERIALPORT_H
 #define BNCSERIALPORT_H
 
-#include <QtCore>
-#include <QtWidgets>
+#include <QComboBox>
+#include <QDialog>
+#include <QLineEdit>
+#include <QPushButton>
 #include <QWhatsThis>
 
 class bncSerialPort : public QDialog {

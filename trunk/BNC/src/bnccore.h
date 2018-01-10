@@ -25,8 +25,6 @@
 #ifndef BNCAPP_H
 #define BNCAPP_H
 
-#include <QtWidgets>
-
 #include "bnctime.h"
 #include "bnccaster.h"
 #include "bncrawfile.h"

@@ -25,7 +25,10 @@
 #ifndef BNCFIGURE_H
 #define BNCFIGURE_H
 
-#include <QtWidgets>
+#include <QByteArray>
+#include <QMap>
+#include <QMutex>
+#include <QWidget>
 
 class bncFigure : public QWidget {
   Q_OBJECT

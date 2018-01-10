@@ -1,6 +1,9 @@
 #ifndef BNCNETQUERYUDP_H
 #define BNCNETQUERYUDP_H
 
+#include <QHostAddress>
+#include <QUdpSocket>
+
 #include "bncnetquery.h"
 
 class bncNetQueryUdp : public bncNetQuery {

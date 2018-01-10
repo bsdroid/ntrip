@@ -25,9 +25,8 @@
 #ifndef BNCTABLEITEM_H
 #define BNCTABLEITEM_H
 
-#include <QtCore>
-#include <QtWidgets>
-
+#include <QMutex>
+#include <QObject>
 #include <QTableWidgetItem>
 
 class bncGetThread;

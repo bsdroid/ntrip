@@ -2,7 +2,9 @@
 #ifndef QTFILECHOOSER
 #define QTFILECHOOSER
 
-#include <QtWidgets>
+#include <QLineEdit>
+#include <QPushButton>
+#include <QWidget>
 
 class qtFileChooser : public QWidget {
   Q_OBJECT

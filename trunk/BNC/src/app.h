@@ -1,7 +1,8 @@
 #ifndef GnssCenter_APP_H
 #define GnssCenter_APP_H
 
-#include <QtWidgets>
+#include <QApplication>
+#include <QEvent>
 
 class t_app : public QApplication {
  Q_OBJECT

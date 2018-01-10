@@ -25,7 +25,7 @@
 #ifndef BNCMAP_H
 #define BNCMAP_H
 
-#include <QtWidgets>
+#include <QDialog>
 #include <QWhatsThis>
 
 class QwtPlot;

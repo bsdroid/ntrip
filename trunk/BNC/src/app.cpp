@@ -14,6 +14,8 @@
  *
  * -----------------------------------------------------------------------*/
 
+#include <QFileOpenEvent>
+
 #include "app.h" 
 #include "bnccore.h"
 

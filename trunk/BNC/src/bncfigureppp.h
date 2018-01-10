@@ -25,7 +25,10 @@
 #ifndef BNCFIGUREPPP_H
 #define BNCFIGUREPPP_H
 
-#include <QtWidgets>
+#include <QByteArray>
+#include <QMutex>
+#include <QPoint>
+#include <QWidget>
 #include "bnctime.h"
 
 class bncFigurePPP : public QWidget {

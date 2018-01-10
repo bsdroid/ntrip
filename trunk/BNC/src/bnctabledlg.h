@@ -26,7 +26,6 @@
 #define BNCTABLEDLG_H
 
 #include <QtCore>
-#include <QtWidgets>
 #include <QComboBox>
 #include <QDialog>
 #include <QPushButton>

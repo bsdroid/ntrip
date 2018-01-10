@@ -38,9 +38,10 @@
  *
  * -----------------------------------------------------------------------*/
 
-#include <QtSvg>
-#include <QtPrintSupport/QPrinter>
-#include <QtPrintSupport/QPrintDialog>
+#include <QHBoxLayout>
+#include <QPrinter>
+#include <QPrintDialog>
+#include <QPushButton>
 
 #include <qwt_symbol.h>
 #include <qwt_plot.h>

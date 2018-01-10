@@ -1,6 +1,8 @@
 #ifndef BNCNETQUERYUDP0_H
 #define BNCNETQUERYUDP0_H
 
+#include <QUdpSocket>
+
 #include "bncnetquery.h"
 
 class bncNetQueryUdp0 : public bncNetQuery {

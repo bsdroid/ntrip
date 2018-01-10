@@ -3,7 +3,8 @@
 
 #include <fstream>
 #include <newmat.h>
-#include <QtCore>
+
+#include <QDateTime>
 
 #include "bncoutf.h"
 

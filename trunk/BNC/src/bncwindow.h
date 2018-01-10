@@ -25,8 +25,10 @@
 #ifndef BNCWINDOW_H
 #define BNCWINDOW_H
 
-#include <QtWidgets>
+#include <QDialog>
+#include <QList>
 #include <QMainWindow>
+#include <QTextEdit>
 #include <QWhatsThis>
 
 #include "bncgetthread.h"

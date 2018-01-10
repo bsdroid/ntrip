@@ -25,8 +25,11 @@
 #ifndef REQCDLG_H
 #define REQCDLG_H
 
-#include <QtCore>
-#include <QtWidgets>
+#include <QComboBox>
+#include <QDateTimeEdit>
+#include <QDialog>
+#include <QLineEdit>
+#include <QSpinBox>
 
 #include "bncconst.h"
 

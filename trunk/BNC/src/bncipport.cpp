@@ -40,6 +40,13 @@
 
 #include <iostream>
 
+#include <QLabel>
+#include <QLineEdit>
+#include <QGridLayout>
+#include <QMessageBox>
+#include <QPushButton>
+#include <QVBoxLayout>
+
 #include "bncipport.h"
 
 using namespace std;

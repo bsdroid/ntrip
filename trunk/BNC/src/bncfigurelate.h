@@ -25,7 +25,10 @@
 #ifndef BNCFIGURELATE_H
 #define BNCFIGURELATE_H
 
-#include <QtWidgets>
+#include <QByteArray>
+#include <QMap>
+#include <QMutex>
+#include <QWidget>
 
 class bncFigureLate : public QWidget {
   Q_OBJECT

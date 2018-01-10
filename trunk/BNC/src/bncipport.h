@@ -26,7 +26,9 @@
 #define BNCIPPORT_H
 
 #include <QtCore>
-#include <QtWidgets>
+#include <QDialog>
+#include <QLineEdit>
+#include <QPushButton>
 #include <QWhatsThis>
 
 class bncIpPort : public QDialog {
