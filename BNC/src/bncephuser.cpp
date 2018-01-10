@@ -37,6 +37,7 @@
  *
  * -----------------------------------------------------------------------*/
 
+#include <cmath>
 #include <iostream>
 
 #include "bncephuser.h"
@@ -204,7 +205,7 @@ void bncEphUser::checkEphemeris(t_eph* eph) {
 
   const double MINDIST = 2.e7;
   const double MAXDIST = 6.e7;
-  if (rr < MINDIST || rr > MAXDIST || isnan(rr)) {
+  if (rr < MINDIST || rr > MAXDIST || std::isnan(rr)) {
     eph->setCheckState(t_eph::bad);
     return;
   }

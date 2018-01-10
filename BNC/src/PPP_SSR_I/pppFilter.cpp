@@ -294,9 +294,9 @@ t_irc t_pppFilter::cmpBancroft(t_epoData* epoData) {
 
   bancroft(BB, _xcBanc);
 
-  if (isnan(_xcBanc(1)) ||
-      isnan(_xcBanc(2)) ||
-      isnan(_xcBanc(3))) {
+  if (std::isnan(_xcBanc(1)) ||
+      std::isnan(_xcBanc(2)) ||
+      std::isnan(_xcBanc(3))) {
     return failure;
   }
 
