@@ -34,7 +34,7 @@
  *
  * Created:    08-Jun-2013
  *
- * Changes:    
+ * Changes:
  *
  * -----------------------------------------------------------------------*/
 
@@ -55,7 +55,12 @@ bncMapWin::bncMapWin(QWidget* parent) : QDialog(parent) {
   _currLat = 50.09057949; // BKG latitude
   _currLon =  8.66496871; // BKG longitude
 
+#ifdef QT_WEBENGINE
+  _webView = new QWebEngineView(this);
+#else
   _webView = new QWebView(this);
+#endif
+
   connect(_webView, SIGNAL(loadFinished(bool)), this, SLOT(slotInitMap(bool)));
 
   // Plot Required Station
@@ -74,7 +79,7 @@ bncMapWin::bncMapWin(QWidget* parent) : QDialog(parent) {
 
   loadHtmlPage();
 
-  _webView->show();  
+  _webView->show();
 
   _statusLabel = new QLabel;
 
@@ -98,7 +103,7 @@ bncMapWin::bncMapWin(QWidget* parent) : QDialog(parent) {
 bncMapWin::~bncMapWin() {
 }
 
-// 
+//
 ////////////////////////////////////////////////////////////////////////////
 void bncMapWin::loadHtmlPage() {
 
@@ -122,7 +127,7 @@ void bncMapWin::loadHtmlPage() {
   _webView->setHtml(html);
 }
 
-// 
+//
 ////////////////////////////////////////////////////////////////////////////
 void bncMapWin::slotInitMap(bool isOk) {
   if (!isOk) {
@@ -138,7 +143,7 @@ void bncMapWin::slotInitMap(bool isOk) {
   _webView->page()->mainFrame()->evaluateJavaScript(QString("initialize( %1 )").arg(location));
 }
 
-// 
+//
 ////////////////////////////////////////////////////////////////////////////
 void bncMapWin::gotoLocation(double lat, double lon) {
   _currLat = lat;
@@ -165,7 +170,7 @@ void bncMapWin::gotoLocation(double lat, double lon) {
   _webView->page()->mainFrame()->evaluateJavaScript(QString("gotoLocation( %1 )").arg(location));
 }
 
-// 
+//
 ////////////////////////////////////////////////////////////////////////////
 void bncMapWin::slotNewPosition(QByteArray staID, bncTime /* time */, QVector<double> xx) {
   if (!_staID.isEmpty() && _staID != staID) {
