@@ -25,6 +25,14 @@
 #ifndef BNCMAPWIN_H
 #define BNCMAPWIN_H
 
+#ifdef QT_WEBENGINE
+  #include <QWebEngineView>
+#else
+  #include <QWebView>
+#endif
+#include <QLabel>
+#include <QHBoxLayout>
+#include <QWebFrame>
 #include <QByteArray>
 #include <QDialog>
 #include <QNetworkProxy>
@@ -39,7 +47,7 @@ class bncMapWin : public QDialog {
   ~bncMapWin();
 
  signals:
-  void mapClosed(); 
+  void mapClosed();
 
  public slots:
   void slotNewPosition(QByteArray staID, bncTime time, QVector<double> xx);
@@ -53,7 +61,11 @@ class bncMapWin : public QDialog {
  private:
   void loadHtmlPage();
   void gotoLocation(double lat, double lon);
-  QWebView*  _webView;
+#ifdef QT_WEBENGINE
+  QWebEngineView*  _webView;
+#else
+  QWebView*        _webView;
+#endif
   QLabel*    _statusLabel;
   double     _currLat;
   double     _currLon;

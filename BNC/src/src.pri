@@ -134,31 +134,23 @@ else {
 
 # Check QtWebKit Library Existence
 # --------------------------------
-win32 {
-  exists("$$[QT_INSTALL_BINS]/QtWebKit4.dll") {
+exists("$$[QT_INSTALL_LIBS]/*WebKit*") {
     DEFINES += QT_WEBKIT
-  }
+    QT      += webkitwidgets
+    message("Configured with QtWebKit")
 }
 
-unix {
-  exists("$$[QT_INSTALL_LIBS]/libQtWebKit.so") {
-    DEFINES += QT_WEBKIT
-  }
+exists("$$[QT_INSTALL_LIBS]/*WebEngineWidgets*") {
+    DEFINES += QT_WEBENGINE
+    QT      += webenginewidgets
+    message("Configured with QtWebEngine")
 }
 
-macx {
-  exists("$$[QT_INSTALL_LIBS]/QtWebKit.framework") {
-    DEFINES += QT_WEBKIT
-  }
-}
-
-contains(DEFINES, QT_WEBKIT) {
-  message("Configured with QtWebKit")
-  QT          += webkit
+contains(DEFINES, QT_WEBENGINE) | contains(DEFINES, QT_WEBKIT) {
   HEADERS     += map/bncmapwin.h
   SOURCES     += map/bncmapwin.cpp
   OTHER_FILES += map/map_gm.html map/map_osm.html
 }
 else {
-  message("No QtWebKit")
+  message("Neither QtWebEngine nor QtWebKit is available")
 }
