@@ -27,12 +27,13 @@
 
 #ifdef QT_WEBENGINE
   #include <QWebEngineView>
+  #include <QWebEnginePage>
 #else
   #include <QWebView>
+  #include <QWebFrame>
 #endif
 #include <QLabel>
 #include <QHBoxLayout>
-#include <QWebFrame>
 #include <QByteArray>
 #include <QDialog>
 #include <QNetworkProxy>

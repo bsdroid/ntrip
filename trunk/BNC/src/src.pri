@@ -136,7 +136,7 @@ else {
 # --------------------------------
 exists("$$[QT_INSTALL_LIBS]/*WebKit*") {
     DEFINES += QT_WEBKIT
-    QT      += webkitwidgets
+    QT      += webkit webkitwidgets
     message("Configured with QtWebKit")
 }
 
