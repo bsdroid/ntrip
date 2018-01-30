@@ -386,10 +386,9 @@ void bncTableDlg::select() {
       QString             nmea = _table->item(ir,10)->text();
       format.replace(" ", "_");
       if (_table->isItemSelected(item)) {
-        url.setPath(item->text());
+        url.setPath("/"+item->text());
         mountPoints->push_back(url.toString() + " " + format + " " + country + " " + latitude
                         + " " + longitude + " " + nmea + " " + ntripVersion);
-
         site.resize(4);
       }
     }
