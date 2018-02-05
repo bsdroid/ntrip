@@ -44,19 +44,19 @@ Q_OBJECT
   class t_latency  {
    public:
     t_latency() {
-      _oldSec     = 0;
-      _newSec     = 0;
-      _numGaps    = 0;
-      _diffSec    = 0;
-      _numLat     = 0;
-      _sumLat     = 0.0;
-      _sumLatQ    = 0.0;
-      _meanDiff   = 0.0;
+      _oldSec     = -1;
+      _newSec     = -1;
+      _numGaps    =  0;
+      _diffSec    =  0;
+      _numLat     =  0;
+      _sumLat     =  0.0;
+      _sumLatQ    =  0.0;
+      _meanDiff   =  0.0;
       _minLat     =  1000.0;
       _maxLat     = -1000.0;
-      _curLat     = 0.0;
-      _type       = "";
-      _followSec  = false;
+      _curLat     =  0.0;
+      _type       =  "";
+      _followSec  =  false;
     }
     void init() {
       _diffSec = 0;

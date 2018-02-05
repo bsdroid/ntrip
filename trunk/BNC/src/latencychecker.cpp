@@ -320,7 +320,8 @@ void latencyChecker::checkOutage(bool decoded) {
 void latencyChecker::checkObsLatency(const QList<t_satObs>& obsList) {
 
   if (_miscIntr > 0 ) {
-    t_latency& l = _lObs; l._type =  "Observations";
+    t_latency& l = _lObs;
+    l._type =  "Observations";
     QListIterator<t_satObs> it(obsList);
     while (it.hasNext()) {
       const t_satObs& obs = it.next();
@@ -392,9 +393,9 @@ void latencyChecker::checkObsLatency(const QList<t_satObs>& obsList) {
           l._maxLat = l._curLat;
         }
         l._numLat += 1;
-        l._oldSec    = l._newSec;
         l._followSec = true;
       }
+      l._oldSec = l._newSec;
     }
     _lObs = l;
     setCurrentLatency(l._curLat);
@@ -405,8 +406,9 @@ void latencyChecker::checkObsLatency(const QList<t_satObs>& obsList) {
 //////////////////////////////////////////////////////////////////////////////
 void latencyChecker::checkCorrLatency(int corrGPSEpochTime, int type) {
   if (corrGPSEpochTime < 0) {
-    return ;
+    return;
   }
+
   t_latency& l = _lOrb; // init
   switch (type) {
     case 1057: case 1063: case 1240: case 1246: case 1252: case 1258:
@@ -439,18 +441,6 @@ void latencyChecker::checkCorrLatency(int corrGPSEpochTime, int type) {
 
   if (_miscIntr > 0) {
     l._newSec = corrGPSEpochTime;
-    int week;
-    double sec;
-    currentGPSWeeks(week, sec);
-    double dt = fabs(sec - l._newSec);
-    const double secPerWeek = 7.0 * 24.0 * 3600.0;
-    if (dt > 0.5 * secPerWeek) {
-      if (sec > l._newSec) {
-        sec  -= secPerWeek;
-      } else {
-        sec  += secPerWeek;
-      }
-    }
     if (l._newSec > l._oldSec) {
       if (int(l._newSec) % _miscIntr < int(l._oldSec) % _miscIntr) {
         if (l._numLat>0) {
@@ -484,13 +474,27 @@ void latencyChecker::checkCorrLatency(int corrGPSEpochTime, int type) {
         l._meanDiff = int(l._diffSec)/l._numLat;
         l.init();
       }
-
       if (l._followSec) {
         l._diffSec += l._newSec - l._oldSec;
         if (l._meanDiff>0.) {
           if (l._newSec - l._oldSec > 1.5 * l._meanDiff) {
             l._numGaps += 1;
           }
+        }
+      }
+
+      // Compute the observations latency
+      // --------------------------------
+      int week;
+      double sec;
+      currentGPSWeeks(week, sec);
+      double dt = fabs(sec - l._newSec);
+      const double secPerWeek = 7.0 * 24.0 * 3600.0;
+      if (dt > 0.5 * secPerWeek) {
+        if (sec > l._newSec) {
+          sec  -= secPerWeek;
+        } else {
+          sec  += secPerWeek;
         }
       }
       l._curLat   = sec - l._newSec;
@@ -503,37 +507,38 @@ void latencyChecker::checkCorrLatency(int corrGPSEpochTime, int type) {
         l._maxLat = l._curLat;
       }
       l._numLat += 1;
-      l._oldSec = l._newSec;
       l._followSec = true;
       setCurrentLatency(l._curLat);
     }
-    switch (type) {
-       case 1057: case 1063: case 1240: case 1246: case 1252: case 1258:
-         _lOrb = l;
-         break;
-       case 1058: case 1064: case 1241: case 1247: case 1253: case 1259:
-         _lClk = l;
-         break;
-       case 1060: case 1066: case 1243: case 1249: case 1255: case 1261:
-         _lClkOrb = l;
-         break;
-       case 1059: case 1065: case 1242: case 1248: case 1254: case 1260:
-         _lCb = l;
-         break;
-       case 1265: case 1266: case 1267: case 1268: case 1269: case 1270:
-         _lPb = l;
-         break;
-       case 1264:
-         _lVtec = l;
-         break;
-       case 1061: case 1067: case 1244: case 1250: case 1256: case 1262:
-         _lUra = l;
-         break;
-       case 1062: case 1068: case 1245: case 1251: case 1257: case 1263:
-         _lHr = l;
-         break;
-     }
+    l._oldSec = l._newSec;
   }
+
+  switch (type) {
+     case 1057: case 1063: case 1240: case 1246: case 1252: case 1258:
+       _lOrb = l;
+       break;
+     case 1058: case 1064: case 1241: case 1247: case 1253: case 1259:
+       _lClk = l;
+       break;
+     case 1060: case 1066: case 1243: case 1249: case 1255: case 1261:
+       _lClkOrb = l;
+       break;
+     case 1059: case 1065: case 1242: case 1248: case 1254: case 1260:
+       _lCb = l;
+       break;
+     case 1265: case 1266: case 1267: case 1268: case 1269: case 1270:
+       _lPb = l;
+       break;
+     case 1264:
+       _lVtec = l;
+       break;
+     case 1061: case 1067: case 1244: case 1250: case 1256: case 1262:
+       _lUra = l;
+       break;
+     case 1062: case 1068: case 1245: case 1251: case 1257: case 1263:
+       _lHr = l;
+       break;
+   }
 }
 
 // Call advisory notice script
