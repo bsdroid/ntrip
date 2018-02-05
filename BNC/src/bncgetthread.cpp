@@ -102,10 +102,16 @@ bncGetThread::bncGetThread(const QUrl& mountPoint, const QByteArray& format,
   bncSettings settings;
   if (!settings.value("rawOutFile").toString().isEmpty()) {
     _rawOutput = true;
-  } else {
+  }
+  else {
     _rawOutput = false;
   }
-
+  if  (!settings.value("miscMount").toString().isEmpty()) {
+    _latencycheck = true;
+  }
+  else {
+    _latencycheck = false;
+  }
   initialize();
   initDecoder();
 }
@@ -283,7 +289,7 @@ void bncGetThread::initialize() {
     }
   }
 
-  if (!_staID.isEmpty()) {
+  if (!_staID.isEmpty() && _latencycheck) {
     _latencyChecker = new latencyChecker(_staID);
     obs = false;
     ssrOrb = false;
@@ -508,10 +514,10 @@ void bncGetThread::run() {
       // Perform various scans and checks
       // --------------------------------
       if (_latencyChecker) {
-        _latencyChecker->checkOutage(irc == success);
+        _latencyChecker->checkOutage(irc);
         QListIterator<int> it(decoder()->_typeList);
-        _ssrEpoch = decoder()->corrGPSEpochTime();
-        if (_oldSsrEpoch && _ssrEpoch && _ssrEpoch != _oldSsrEpoch) {
+        _ssrEpoch = static_cast<int>(decoder()->corrGPSEpochTime());
+        if (_oldSsrEpoch != -1  && _ssrEpoch != _oldSsrEpoch) {
           if (ssrOrb) {
             _latencyChecker->checkCorrLatency(_oldSsrEpoch, 1057);
             ssrOrb = false;
@@ -563,7 +569,7 @@ void bncGetThread::run() {
               case 1060: case 1066: case 1243: case 1249: case 1255: case 1261:
                 ssrOrbClk = true;
                 break;
-              case 1059: case 1065: case 1242:   case 1248: case 1254: case 1260:
+              case 1059: case 1065: case 1242: case 1248: case 1254: case 1260:
                 ssrCbi = true;
                 break;
               case 1265: case 1266: case 1267: case 1268: case 1269: case 1270:
@@ -584,7 +590,9 @@ void bncGetThread::run() {
         if (obs) {
           _latencyChecker->checkObsLatency(decoder()->_obsList);
         }
-        _oldSsrEpoch = _ssrEpoch;
+        if (_ssrEpoch != -1) {
+          _oldSsrEpoch = _ssrEpoch;
+        }
         emit newLatency(_staID, _latencyChecker->currentLatency());
       }
       miscScanRTCM();
