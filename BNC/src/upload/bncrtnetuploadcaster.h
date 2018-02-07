@@ -19,7 +19,8 @@ class bncRtnetUploadCaster : public bncUploadCaster {
  public:
   bncRtnetUploadCaster(const QString& mountpoint,
                   const QString& outHost, int outPort,
-                  const QString& password,
+                  const QString& ntripVersion,
+                  const QString& userName,const QString& password,
                   const QString& crdTrafo, bool  CoM,
                   const QString& sp3FileName,
                   const QString& rnxFileName,

@@ -34,11 +34,12 @@ bncEphUploadCaster::bncEphUploadCaster() : bncEphUser(true) {
   QListIterator<QString> it(settings.value("uploadEphMountpointsOut").toStringList());
   while (it.hasNext()) {
     QStringList hlp = it.next().split(",");
-    if (hlp.size() > 3) {
+    if (hlp.size() > 5) {
       ++iRow;
       int  outPort = hlp[1].toInt();
       bncUploadCaster* newCaster = new bncUploadCaster(hlp[2], hlp[0], outPort,
-                                                       hlp[3], iRow, sampl);
+                                                       hlp[3], hlp[4],
+                                                       hlp[5], iRow, sampl);
 
       connect(newCaster, SIGNAL(newBytes(QByteArray,double)),
               this, SIGNAL(newBytes(QByteArray,double)));

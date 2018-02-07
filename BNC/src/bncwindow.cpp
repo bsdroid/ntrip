@@ -513,22 +513,24 @@ bncWindow::bncWindow() {
 
   // Upload Results
   // -------------
-  _uploadTable = new QTableWidget(0,12);
-  _uploadTable->setHorizontalHeaderLabels(QString("Host, Port, Mount, Password, System, CoM, SP3 File, RNX File, PID, SID, IOD, bytes").split(","));
+  _uploadTable = new QTableWidget(0,14);
+  _uploadTable->setHorizontalHeaderLabels(QString("Host, Port, Mount, Ntrip, User, Password, System, CoM, SP3 File, RNX File, PID, SID, IOD, bytes").split(","));
   _uploadTable->setSelectionMode(QAbstractItemView::ExtendedSelection);
   _uploadTable->setSelectionBehavior(QAbstractItemView::SelectRows);
   _uploadTable->horizontalHeader()->resizeSection( 0,13*ww);
   _uploadTable->horizontalHeader()->resizeSection( 1, 5*ww);
   _uploadTable->horizontalHeader()->resizeSection( 2, 6*ww);
-  _uploadTable->horizontalHeader()->resizeSection( 3, 8*ww);
-  _uploadTable->horizontalHeader()->resizeSection( 4,11*ww);
-  _uploadTable->horizontalHeader()->resizeSection( 5, 4*ww);
-  _uploadTable->horizontalHeader()->resizeSection( 6,15*ww);
-  _uploadTable->horizontalHeader()->resizeSection( 7,15*ww);
-  _uploadTable->horizontalHeader()->resizeSection( 8, 4*ww);
-  _uploadTable->horizontalHeader()->resizeSection( 9, 4*ww);
+  _uploadTable->horizontalHeader()->resizeSection( 3, 6*ww);
+  _uploadTable->horizontalHeader()->resizeSection( 4, 8*ww);
+  _uploadTable->horizontalHeader()->resizeSection( 5, 8*ww);
+  _uploadTable->horizontalHeader()->resizeSection( 6,11*ww);
+  _uploadTable->horizontalHeader()->resizeSection( 7, 4*ww);
+  _uploadTable->horizontalHeader()->resizeSection( 8,15*ww);
+  _uploadTable->horizontalHeader()->resizeSection( 9,15*ww);
   _uploadTable->horizontalHeader()->resizeSection(10, 4*ww);
-  _uploadTable->horizontalHeader()->resizeSection(11,12*ww);
+  _uploadTable->horizontalHeader()->resizeSection(11, 4*ww);
+  _uploadTable->horizontalHeader()->resizeSection(12, 4*ww);
+  _uploadTable->horizontalHeader()->resizeSection(13,12*ww);
 #if QT_VERSION < 0x050000
   _uploadTable->horizontalHeader()->setResizeMode(QHeaderView::Interactive);
 #else
@@ -597,17 +599,19 @@ bncWindow::bncWindow() {
   // Upload RTCM3 Ephemeris
   // ----------------------
   _uploadEphTable = new QTableWidget(0,6);
-  _uploadEphTable->setColumnCount(6);
+  _uploadEphTable->setColumnCount(8);
   _uploadEphTable->setRowCount(0);
-  _uploadEphTable->setHorizontalHeaderLabels(QString("Host, Port, Mount, Password, System, bytes").split(","));
+  _uploadEphTable->setHorizontalHeaderLabels(QString("Host, Port, Mount,  Ntrip, User, Password, System, bytes").split(","));
   _uploadEphTable->setSelectionMode(QAbstractItemView::ExtendedSelection);
   _uploadEphTable->setSelectionBehavior(QAbstractItemView::SelectRows);
   _uploadEphTable->horizontalHeader()->resizeSection( 0,13*ww);
   _uploadEphTable->horizontalHeader()->resizeSection( 1, 5*ww);
   _uploadEphTable->horizontalHeader()->resizeSection( 2, 8*ww);
+  _uploadEphTable->horizontalHeader()->resizeSection( 3, 6*ww);
+  _uploadEphTable->horizontalHeader()->resizeSection( 4, 8*ww);
   _uploadEphTable->horizontalHeader()->resizeSection( 3, 8*ww);
-  _uploadEphTable->horizontalHeader()->resizeSection( 4,10*ww);
-  _uploadEphTable->horizontalHeader()->resizeSection( 5,12*ww);
+  _uploadEphTable->horizontalHeader()->resizeSection( 5,10*ww);
+  _uploadEphTable->horizontalHeader()->resizeSection( 6,12*ww);
 #if QT_VERSION < 0x050000
   _uploadEphTable->horizontalHeader()->setResizeMode(QHeaderView::Interactive);
 #else
@@ -1422,7 +1426,7 @@ bncWindow::bncWindow() {
 
   // WhatsThis, Upload Corrections
   // -----------------------------
-  _uploadTable->setWhatsThis(tr("<p>BNC can upload clock and orbit corrections to Broadcast Ephemeris (Broadcast Corrections) in RTCM Version 3 SSR format. You may have a situation where clocks and orbits come from an external Real-time Network Engine (1) or a situation where clock and orbit corrections are combined within BNC (2).</p><p>(1) BNC identifies a stream as coming from a Real-time Network Engine if its format is specified as 'RTNET' and hence its decoder string in the 'Streams' canvas is 'RTNET'. It encodes and uploads that stream to the specified Ntrip Broadcaster Host and Port</p><p>(2) BNC understands that it is expected to encode and upload combined Broadcast Ephemeris Corrections if you specify correction streams in the 'Combine Corrections' table.</p><p>To fill the 'Upload Corrections' table, hit the 'Add Row' button, double click on the 'Host' field to enter the IP or URL of an Ntrip Broadcaster and hit Enter. Then double click on the 'Port', 'Mount' and 'Password' fields to enter the Ntrip Broadcaster IP port (default is 80), the mountpoint and the stream upload password. An empty 'Host' option field means that you don't want to upload corrections.</p><p>Select a target coordinate reference System (e.g. IGS14) for outgoing clock and orbit corrections.</p><p>By default orbit and clock corrections refer to Antenna Phase Center (APC). Tick 'CoM' to refer uploaded corrections to Center of Mass instead of APC.</p><p>Specify a path for saving generated Broadcast Corrections plus Broadcast Ephemeris as SP3 orbit files. If the specified directory does not exist, BNC will not create such files. The following is a path example for a Linux system: /home/user/BNC${GPSWD}.sp3<br>Note that '${GPSWD}' produces the GPS Week and Day number in the filename.</p><p>Specify a path for saving generated Broadcast Correction clocks plus Broadcast Ephemeris clocks as Clock RINEX files. If the specified directory does not exist, BNC will not create Clock RINEX files. The following is a path example for a Linux system: /home/user/BNC${GPSWD}.clk<br>Note that '${GPSWD}' produces the GPS Week and Day number in the filename.</p><p>Finally, specify a SSR Provider ID (issued by RTCM), SSR Solution ID, and SSR Issue of Data number.</p><p>In case the 'Combine Corrections' table contains only one Broadcast Correction stream, BNC will add that stream content to the Broadcast Ephemeris to save results in files specified via SP3 and/or Clock RINEX file path. You should then define only the SP3 and Clock RINEX file path and no further option in the 'Upload Corrections' table. <i>[key: uploadMountpointsOut]</i></p>"));
+  _uploadTable->setWhatsThis(tr("<p>BNC can upload clock and orbit corrections to Broadcast Ephemeris (Broadcast Corrections) in RTCM Version 3 SSR format. You may have a situation where clocks and orbits come from an external Real-time Network Engine (1) or a situation where clock and orbit corrections are combined within BNC (2).</p><p>(1) BNC identifies a stream as coming from a Real-time Network Engine if its format is specified as 'RTNET' and hence its decoder string in the 'Streams' canvas is 'RTNET'. It encodes and uploads that stream to the specified Ntrip Broadcaster Host and Port</p><p>(2) BNC understands that it is expected to encode and upload combined Broadcast Ephemeris Corrections if you specify correction streams in the 'Combine Corrections' table.</p><p>To fill the 'Upload Corrections' table, hit the 'Add Row' button, double click on the 'Host' field to enter the IP or URL of an Ntrip Broadcaster and hit Enter. Select the Ntrip Version that shall be used for data upload. Then double click on the 'Port', 'Mount' and 'Password' fields to enter the Ntrip Broadcaster IP port (default is 80), the mountpoint and the stream upload password. If Ntrip Version 2 is chosen, click to the 'User' field to enter a stream upload user name. An empty 'Host' option field means that you don't want to upload corrections.</p><p>Select a target coordinate reference System (e.g. IGS14) for outgoing clock and orbit corrections.</p><p>By default orbit and clock corrections refer to Antenna Phase Center (APC). Tick 'CoM' to refer uploaded corrections to Center of Mass instead of APC.</p><p>Specify a path for saving generated Broadcast Corrections plus Broadcast Ephemeris as SP3 orbit files. If the specified directory does not exist, BNC will not create such files. The following is a path example for a Linux system: /home/user/BNC${GPSWD}.sp3<br>Note that '${GPSWD}' produces the GPS Week and Day number in the filename.</p><p>Specify a path for saving generated Broadcast Correction clocks plus Broadcast Ephemeris clocks as Clock RINEX files. If the specified directory does not exist, BNC will not create Clock RINEX files. The following is a path example for a Linux system: /home/user/BNC${GPSWD}.clk<br>Note that '${GPSWD}' produces the GPS Week and Day number in the filename.</p><p>Finally, specify a SSR Provider ID (issued by RTCM), SSR Solution ID, and SSR Issue of Data number.</p><p>In case the 'Combine Corrections' table contains only one Broadcast Correction stream, BNC will add that stream content to the Broadcast Ephemeris to save results in files specified via SP3 and/or Clock RINEX file path. You should then define only the SP3 and Clock RINEX file path and no further option in the 'Upload Corrections' table. <i>[key: uploadMountpointsOut]</i></p>"));
   addUploadRowButton->setWhatsThis(tr("<p>Hit 'Add Row' button to add another line to the 'Upload Corrections' table.</p>"));
   delUploadRowButton->setWhatsThis(tr("<p>Hit 'Del Row' button to delete the highlighted line(s) from the 'Upload Corrections' table.</p>"));
   _uploadIntrComboBox->setWhatsThis(tr("<p>Select the length of the SP3 and Clock RINEX files. <i>[key: uploadIntr]</i></p>"));
@@ -1871,16 +1875,24 @@ void bncWindow::saveOptions() {
     QString hlp;
     for (int iCol = 0; iCol < _uploadTable->columnCount(); iCol++) {
       if (_uploadTable->cellWidget(iRow, iCol) &&
-          (iCol == 3 || iCol == 4 || iCol == 5)) {
-        if      (iCol == 3) {
+          (iCol == 3 || iCol == 4 || iCol == 5 || iCol == 6 || iCol == 7)) {
+        if       (iCol == 3) {
+          QComboBox* ntripversion = (QComboBox*)(_uploadTable->cellWidget(iRow, iCol));
+          hlp += ntripversion->currentText() + ",";
+        }
+        else if (iCol == 4 ) {
+          QLineEdit* user = (QLineEdit*)(_uploadTable->cellWidget(iRow, iCol));
+          hlp += user->text() + ",";
+        }
+        else if (iCol == 5) {
           QLineEdit* passwd = (QLineEdit*)(_uploadTable->cellWidget(iRow, iCol));
           hlp += passwd->text() + ",";
         }
-        else if (iCol == 4) {
+        else if (iCol == 6) {
           QComboBox* system = (QComboBox*)(_uploadTable->cellWidget(iRow, iCol));
           hlp += system->currentText() + ",";
         }
-        else if (iCol == 5) {
+        else if (iCol == 7) {
           QCheckBox* com    = (QCheckBox*)(_uploadTable->cellWidget(iRow, iCol));
           QString state; state.setNum(com->checkState());
           hlp +=  state + ",";
@@ -1900,12 +1912,20 @@ void bncWindow::saveOptions() {
     QString hlp;
     for (int iCol = 0; iCol < _uploadEphTable->columnCount(); iCol++) {
       if (_uploadEphTable->cellWidget(iRow, iCol) &&
-          (iCol == 3 || iCol == 4)) {
-        if      (iCol == 3) {
+          (iCol == 3 || iCol == 4 || iCol == 5 || iCol == 6)) {
+        if       (iCol == 3) {
+          QComboBox* ntripversion = (QComboBox*)(_uploadTable->cellWidget(iRow, iCol));
+          hlp += ntripversion->currentText() + ",";
+        }
+        else if (iCol == 4 ) {
+          QLineEdit* user = (QLineEdit*)(_uploadTable->cellWidget(iRow, iCol));
+          hlp += user->text() + ",";
+        }
+        else if (iCol == 5) {
           QLineEdit* passwd = (QLineEdit*)(_uploadEphTable->cellWidget(iRow, iCol));
           hlp += passwd->text() + ",";
         }
-        else if (iCol == 4) {
+        else if (iCol == 6) {
           QComboBox* system = (QComboBox*)(_uploadEphTable->cellWidget(iRow, iCol));
           hlp += system->currentText() + ",";
         }
@@ -2665,24 +2685,37 @@ void bncWindow::slotAddUploadRow() {
   int iRow = _uploadTable->rowCount();
   _uploadTable->insertRow(iRow);
   for (int iCol = 0; iCol < _uploadTable->columnCount(); iCol++) {
-    if      (iCol == 3) {
+    if (iCol == 3) {
+      QComboBox* ntripversion = new QComboBox();
+      ntripversion->setEditable(false);
+      ntripversion->addItems(QString("1,2,2s").split(","));
+      ntripversion->setFrame(false);
+      _uploadTable->setCellWidget(iRow, iCol, ntripversion);
+
+    }
+    else if (iCol == 4) {
+      QLineEdit* user = new QLineEdit();
+      user->setFrame(false);
+      _uploadTable->setCellWidget(iRow, iCol, user);
+    }
+    else if (iCol == 5) {
       QLineEdit* passwd = new QLineEdit();
       passwd->setFrame(false);
       passwd->setEchoMode(QLineEdit::PasswordEchoOnEdit);
       _uploadTable->setCellWidget(iRow, iCol, passwd);
     }
-    else if (iCol == 4) {
+    else if (iCol == 6) {
       QComboBox* system = new QComboBox();
       system->setEditable(false);
       system->addItems(QString("IGS14,ETRF2000,NAD83,GDA2020,SIRGAS2000,DREF91,Custom").split(","));
       system->setFrame(false);
       _uploadTable->setCellWidget(iRow, iCol, system);
     }
-    else if (iCol == 5) {
+    else if (iCol == 7) {
       QCheckBox* com = new QCheckBox();
       _uploadTable->setCellWidget(iRow, iCol, com);
     }
-    else if (iCol == 11) {
+    else if (iCol == 13) {
       bncTableItem* bncIt = new bncTableItem();
       bncIt->setFlags(bncIt->flags() & ~Qt::ItemIsEditable);
       _uploadTable->setItem(iRow, iCol, bncIt);
@@ -2738,6 +2771,7 @@ void bncWindow::populateUploadTable() {
 
   int iRow = -1;
   QListIterator<QString> it(settings.value("uploadMountpointsOut").toStringList());
+
   while (it.hasNext()) {
     QStringList hlp = it.next().split(",");
     if (hlp.size() > 6) {
@@ -2746,28 +2780,42 @@ void bncWindow::populateUploadTable() {
     }
     for (int iCol = 0; iCol < hlp.size(); iCol++) {
       if      (iCol == 3) {
+        QComboBox* ntripversion = new QComboBox();
+        ntripversion->setEditable(false);
+        ntripversion->addItems(QString("1,2,2s").split(","));
+        ntripversion->setFrame(false);
+        ntripversion->setCurrentIndex(ntripversion->findText(hlp[iCol]));
+        _uploadTable->setCellWidget(iRow, iCol, ntripversion);
+      }
+      else if (iCol == 4) {
+        QLineEdit* user = new QLineEdit();
+        user->setFrame(false);
+        user->setText(hlp[iCol]);
+        _uploadTable->setCellWidget(iRow, iCol, user);
+      }
+      else if (iCol == 5) {
         QLineEdit* passwd = new QLineEdit();
         passwd->setFrame(false);
         passwd->setEchoMode(QLineEdit::PasswordEchoOnEdit);
         passwd->setText(hlp[iCol]);
         _uploadTable->setCellWidget(iRow, iCol, passwd);
       }
-      else if (iCol == 4) {
+      else if (iCol == 6) {
         QComboBox* system = new QComboBox();
         system->setEditable(false);
-        system->addItems(QString(",IGS14,ETRF2000,NAD83,GDA94,SIRGAS2000,DREF91,Custom").split(","));
+        system->addItems(QString("IGS14,ETRF2000,NAD83,GDA2020,SIRGAS2000,DREF91,Custom").split(","));
         system->setFrame(false);
         system->setCurrentIndex(system->findText(hlp[iCol]));
         _uploadTable->setCellWidget(iRow, iCol, system);
       }
-      else if (iCol == 5) {
+      else if (iCol == 7) {
         QCheckBox* com = new QCheckBox();
         if (hlp[iCol].toInt() == Qt::Checked) {
           com->setCheckState(Qt::Checked);
         }
         _uploadTable->setCellWidget(iRow, iCol, com);
       }
-      else if (iCol == 11) {
+      else if (iCol == 13) {
         bncTableItem* bncIt = new bncTableItem();
         bncIt->setFlags(bncIt->flags() & ~Qt::ItemIsEditable);
         _uploadTable->setItem(iRow, iCol, bncIt);
@@ -2795,19 +2843,32 @@ void bncWindow::slotAddUploadEphRow() {
   _uploadEphTable->insertRow(iRow);
   for (int iCol = 0; iCol < _uploadEphTable->columnCount(); iCol++) {
     if      (iCol == 3) {
+      QComboBox* ntripversion = new QComboBox();
+      ntripversion->setEditable(false);
+      ntripversion->addItems(QString("1,2,2s").split(","));
+      ntripversion->setFrame(false);
+      _uploadEphTable->setCellWidget(iRow, iCol, ntripversion);
+
+    }
+    else if (iCol == 4) {
+      QLineEdit* user = new QLineEdit();
+      user->setFrame(false);
+      _uploadEphTable->setCellWidget(iRow, iCol, user);
+    }
+    else if (iCol == 5) {
       QLineEdit* passwd = new QLineEdit();
       passwd->setFrame(false);
       passwd->setEchoMode(QLineEdit::PasswordEchoOnEdit);
       _uploadEphTable->setCellWidget(iRow, iCol, passwd);
     }
-    else if (iCol == 4) {
+    else if (iCol == 6) {
       QComboBox* system = new QComboBox();
       system->setEditable(false);
       system->addItems(QString("ALL,GPS,GLONASS,Galileo,BDS,QZSS,SBAS").split(","));
       system->setFrame(false);
       _uploadEphTable->setCellWidget(iRow, iCol, system);
     }
-    else if (iCol == 5) {
+    else if (iCol == 7) {
       bncTableItem* bncIt = new bncTableItem();
       bncIt->setFlags(bncIt->flags() & ~Qt::ItemIsEditable);
       _uploadEphTable->setItem(iRow, iCol, bncIt);
@@ -2861,19 +2922,32 @@ void bncWindow::populateUploadEphTable() {
   QListIterator<QString> it(settings.value("uploadEphMountpointsOut").toStringList());
   while (it.hasNext()) {
     QStringList hlp = it.next().split(",");
-    if (hlp.size() > 4) {
+    if (hlp.size() > 6) {
       ++iRow;
       _uploadEphTable->insertRow(iRow);
     }
     for (int iCol = 0; iCol < hlp.size(); iCol++) {
-      if      (iCol == 3) {
+      if (iCol == 3) {
+        QComboBox* ntripversion = new QComboBox();
+        ntripversion->setEditable(false);
+        ntripversion->addItems(QString("1,2,2s").split(","));
+        ntripversion->setFrame(false);
+        ntripversion->setCurrentIndex(ntripversion->findText(hlp[iCol]));
+        _uploadEphTable->setCellWidget(iRow, iCol, ntripversion);
+      }
+      else if (iCol == 4) {
+        QLineEdit* user = new QLineEdit();
+        user->setFrame(false);
+        _uploadEphTable->setCellWidget(iRow, iCol, user);
+      }
+      else if (iCol == 5) {
         QLineEdit* passwd = new QLineEdit();
         passwd->setFrame(false);
         passwd->setEchoMode(QLineEdit::PasswordEchoOnEdit);
         passwd->setText(hlp[iCol]);
         _uploadEphTable->setCellWidget(iRow, iCol, passwd);
       }
-      else if (iCol == 4) {
+      else if (iCol == 6) {
         QComboBox* system = new QComboBox();
         system->setEditable(false);
         system->addItems(QString("ALL,GPS,GLONASS,Galileo,BDS,QZSS,SBAS").split(","));
@@ -2881,7 +2955,7 @@ void bncWindow::populateUploadEphTable() {
         system->setCurrentIndex(system->findText(hlp[iCol]));
         _uploadEphTable->setCellWidget(iRow, iCol, system);
       }
-      else if (iCol == 5) {
+      else if (iCol == 7) {
         bncTableItem* bncIt = new bncTableItem();
         bncIt->setFlags(bncIt->flags() & ~Qt::ItemIsEditable);
         _uploadEphTable->setItem(iRow, iCol, bncIt);

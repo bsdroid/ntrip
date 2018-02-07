@@ -27,10 +27,12 @@ using namespace std;
 // Constructor
 ////////////////////////////////////////////////////////////////////////////
 bncRtnetUploadCaster::bncRtnetUploadCaster(const QString& mountpoint,
-    const QString& outHost, int outPort, const QString& password,
+    const QString& outHost, int outPort,
+    const QString& ntripVersion,
+    const QString& userName, const QString& password,
     const QString& crdTrafo, bool CoM, const QString& sp3FileName,
     const QString& rnxFileName, int PID, int SID, int IOD, int iRow) :
-    bncUploadCaster(mountpoint, outHost, outPort, password, iRow, 0) {
+    bncUploadCaster(mountpoint, outHost, outPort, ntripVersion, userName, password, iRow, 0) {
 
   if (!outHost.isEmpty()) {
     _casterID += outHost;
