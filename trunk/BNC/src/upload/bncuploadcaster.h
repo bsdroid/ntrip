@@ -10,8 +10,10 @@ class bncUploadCaster : public QThread {
  Q_OBJECT
  public:
   bncUploadCaster(const QString& mountpoint,
-                  const QString& outHost, int outPort,
-                  const QString& password, int iRow, int rate);
+      const QString& outHost, int outPort,
+      const QString& ntripVersion,
+      const QString& userName, const QString& password,
+      int iRow, int rate);
   virtual void deleteSafely();
   void setOutBuffer(const QByteArray& outBuffer) {
     QMutexLocker locker(&_mutex);
@@ -20,7 +22,7 @@ class bncUploadCaster : public QThread {
 
  protected:
   virtual    ~bncUploadCaster();
-  QMutex     _mutex;  
+  QMutex     _mutex;
   QByteArray _outBuffer;
 
  signals:
@@ -34,7 +36,10 @@ class bncUploadCaster : public QThread {
   QString     _mountpoint;
   QString     _outHost;
   int         _outPort;
+  QString     _userName;
   QString     _password;
+  QString     _ntripVersion;
+  bool        _secure;
   QTcpSocket* _outSocket;
   int         _sOpenTrial;
   QDateTime   _outSocketOpenTime;

@@ -26,11 +26,15 @@ using namespace std;
 ////////////////////////////////////////////////////////////////////////////
 bncUploadCaster::bncUploadCaster(const QString& mountpoint,
                                  const QString& outHost, int outPort,
-                                 const QString& password, int iRow,
+                                 const QString& ntripVersion,
+                                 const QString& userName, const QString& password,
+                                 int iRow,
                                  int rate) {
   _mountpoint    = mountpoint;
   _outHost       = outHost;
   _outPort       = outPort;
+  _ntripVersion  = ntripVersion;
+  _userName      = userName;
   _password      = password;
   _outSocket     = 0;
   _sOpenTrial    = 0;
