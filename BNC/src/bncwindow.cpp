@@ -1914,11 +1914,11 @@ void bncWindow::saveOptions() {
       if (_uploadEphTable->cellWidget(iRow, iCol) &&
           (iCol == 3 || iCol == 4 || iCol == 5 || iCol == 6)) {
         if       (iCol == 3) {
-          QComboBox* ntripversion = (QComboBox*)(_uploadTable->cellWidget(iRow, iCol));
+          QComboBox* ntripversion = (QComboBox*)(_uploadEphTable->cellWidget(iRow, iCol));
           hlp += ntripversion->currentText() + ",";
         }
         else if (iCol == 4 ) {
-          QLineEdit* user = (QLineEdit*)(_uploadTable->cellWidget(iRow, iCol));
+          QLineEdit* user = (QLineEdit*)(_uploadEphTable->cellWidget(iRow, iCol));
           hlp += user->text() + ",";
         }
         else if (iCol == 5) {
