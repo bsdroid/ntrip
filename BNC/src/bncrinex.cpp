@@ -304,6 +304,7 @@ void bncRinex::resolveFileName(const QDateTime& datTim) {
   QString hlpStr = nextEpochStr(datTim, settings.value("rnxIntr").toString(),
                                 _rnxV3filenames, &_nextCloseEpoch);
 
+  int statIDlength = _statID.size() -1;
   QString ID4 = _statID.left(4);
   ID4 = ID4.toUpper();
 
@@ -314,12 +315,12 @@ void bncRinex::resolveFileName(const QDateTime& datTim) {
   QListIterator<QString> it(settings.value("mountPoints").toStringList());
   while (it.hasNext()) {
     QString mp = it.next();
-    if (mp.indexOf(ID4) != -1) {
+    if (mp.indexOf(_statID.left(statIDlength)) != -1) {
       ++num;
     }
   }
   if (num > 1) {
-    distStr = "_" + _statID.mid(4);
+    distStr = "_" + _statID.right(1);
   }
 
   QString sklExt = settings.value("rnxSkel").toString();
@@ -358,8 +359,9 @@ void bncRinex::resolveFileName(const QDateTime& datTim) {
             QString("%1").arg(datTim.date().dayOfYear(), 3, 10, QChar('0')) +
             hlpStr + // HMS_period
             QString("_%1S").arg(sampl, 2, 10, QChar('0')) + // sampling rate
+            "_MO" + // mixed OBS
             distStr +
-            "_MO.rnx"; // mixed OBS
+            ".rnx"; 
   }
   else {
     path += ID4 +
