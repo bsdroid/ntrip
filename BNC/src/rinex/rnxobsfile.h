@@ -218,6 +218,12 @@ class t_rnxObsFile {
     for (unsigned ii = 0; ii < epo->rnxSat.size(); ii++) {
       const t_rnxSat& rnxSat = epo->rnxSat[ii];
       if (header._obsTypes[rnxSat.prn.system()].size() > 0) {
+        if (header.version() < 3.0) { // exclude new GNSS such as BDS, QZSS, IRNSS, etc.
+            if (rnxSat.prn.system() != 'G' && rnxSat.prn.system() != 'R' &&
+                rnxSat.prn.system() != 'E' && rnxSat.prn.system() != 'S') {
+              continue;
+            }
+        }
         epoLocal.rnxSat.push_back(rnxSat);
       }
     }
