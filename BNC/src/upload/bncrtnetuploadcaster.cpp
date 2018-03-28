@@ -600,10 +600,6 @@ void bncRtnetUploadCaster::decodeRtnetStream(char* buffer, int bufLen) {
 
       if (biasSat) {
         biasSat->ID = prn.number();
-        if (prn.system() == 'C' ||
-            prn.system() == 'S') {
-          biasSat->ID--; // DF463 and DF466 with DF range 0-63, first satellite shall be 0
-        }
         biasSat->NumberOfCodeBiases = 0;
         if (prn.system() == 'G') {
           QMapIterator<QString, double> it(codeBiases);
@@ -1207,10 +1203,6 @@ void bncRtnetUploadCaster::decodeRtnetStream(char* buffer, int bufLen) {
         phasebias.DispersiveBiasConsistencyIndicator = dispersiveBiasConsistenyIndicator;
         phasebias.MWConsistencyIndicator = mwConsistencyIndicator;
         phasebiasSat->ID = prn.number();
-        if (prn.system() == 'C' ||
-            prn.system() == 'S') {
-          phasebiasSat->ID--; // DF463 and DF466 with DF range 0-63, first satellite shall be 0
-        }
         phasebiasSat->NumberOfPhaseBiases = 0;
         phasebiasSat->YawAngle = pbSat.yawAngle;
         phasebiasSat->YawRate = pbSat.yawRate;
@@ -2337,11 +2329,6 @@ void bncRtnetUploadCaster::processSatellite(const t_eph* eph, int GPSweek,
 
   if (sd) {
     sd->ID = prn.mid(1).toInt();
-    char sys =  prn.mid(0,1).at(0).toLatin1();
-    if ( sys == 'C' || 
-         sys == 'S') {
-      sd->ID--;// DF463 and DF466 with DF range 0-63, first satellite shall be 0
-    }
     sd->IOD = eph->IOD();
     sd->Clock.DeltaA0 = dClk;
     sd->Clock.DeltaA1 = 0.0; // TODO

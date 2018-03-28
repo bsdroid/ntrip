@@ -274,11 +274,7 @@ void RTCM3coDecoder::sendResults() {
          _clkOrb.messageType == COTYPE_BDSORBIT ) {
 
       t_orbCorr orbCorr;
-      int satID = _clkOrb.Sat[ii].ID;
-      if (sysCh == 'C' || sysCh == 'S') {
-        satID++;// DF463 and DF466 with DF range 0-63, first satellite shall be 0
-      }
-      orbCorr._prn.set(sysCh, satID, flag);
+      orbCorr._prn.set(sysCh, _clkOrb.Sat[ii].ID, flag);
       orbCorr._staID     = _staID.toStdString();
       orbCorr._iod       = _clkOrb.Sat[ii].IOD;
       orbCorr._time      = _lastTime;
@@ -312,11 +308,7 @@ void RTCM3coDecoder::sendResults() {
          _clkOrb.messageType == COTYPE_BDSCLOCK) {
 
       t_clkCorr clkCorr;
-      int satID = _clkOrb.Sat[ii].ID;
-      if (sysCh == 'C' || sysCh == 'S') {
-        satID++;// DF463 and DF466 with DF range 0-63, first satellite shall be 0
-      }
-      clkCorr._prn.set(sysCh, satID, flag);
+      clkCorr._prn.set(sysCh, _clkOrb.Sat[ii].ID, flag);
       clkCorr._staID      = _staID.toStdString();
       clkCorr._time       = _lastTime;
       clkCorr._updateInt  = _clkOrb.UpdateInterval;
@@ -392,11 +384,7 @@ void RTCM3coDecoder::sendResults() {
       continue;
     }
     t_satCodeBias satCodeBias;
-    int satID = _codeBias.Sat[ii].ID;
-    if (sysCh == 'C' || sysCh == 'S') {
-      satID++;// DF463 and DF466 with DF range 0-63, first satellite shall be 0
-    }
-    satCodeBias._prn.set(sysCh, satID);
+    satCodeBias._prn.set(sysCh, _codeBias.Sat[ii].ID);
     satCodeBias._staID     = _staID.toStdString();
     satCodeBias._time      = _lastTime;
     satCodeBias._updateInt = _codeBias.UpdateInterval;
@@ -449,11 +437,7 @@ void RTCM3coDecoder::sendResults() {
       continue;
     }
     t_satPhaseBias satPhaseBias;
-    int satID = _phaseBias.Sat[ii].ID;
-    if (sysCh == 'C' || sysCh == 'S') {
-      satID++;// DF463 and DF466 with DF range 0-63, first satellite shall be 0
-    }
-    satPhaseBias._prn.set(sysCh, satID);
+    satPhaseBias._prn.set(sysCh, _phaseBias.Sat[ii].ID);
     satPhaseBias._staID      = _staID.toStdString();
     satPhaseBias._time       = _lastTime;
     satPhaseBias._updateInt  = _phaseBias.UpdateInterval;
