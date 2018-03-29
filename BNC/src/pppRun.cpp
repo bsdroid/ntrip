@@ -121,7 +121,7 @@ t_pppRun::t_pppRun(const t_pppOptions* opt) {
 
     connect(BNC_CMB, SIGNAL(newClkCorrections(QList<t_clkCorr>)),
             this, SLOT(slotNewClkCorrections(QList<t_clkCorr>)),conType);
-            
+
     connect(BNC_CORE, SIGNAL(providerIDChanged(QString)),
             this, SLOT(slotProviderIDChanged(QString)));
   }
@@ -139,25 +139,39 @@ t_pppRun::t_pppRun(const t_pppOptions* opt) {
 
   _stopFlag = false;
 
-  QString roverName(_opt->_roverName.c_str()), fullRoverName("");
+  QString roverName(_opt->_roverName.c_str()), ID9("");
   QString country;
   QString monNum = "0";
   QString recNum = "0";
   QString intr = "1 day";
   int     sampl  = 0;
+  QString distStr;
+  int num = 0;
+  int statIDlength = roverName.size() -1;
+  QString ID4 = roverName.left(4);
+  ID4 = ID4.toUpper();
   QListIterator<QString> it(settings.value("mountPoints").toStringList());
   while (it.hasNext()) {
-    QStringList hlp = it.next().split(" ");
+    QString mp = it.next();
+    if (mp.indexOf(roverName.left(statIDlength)) != -1) {
+      ++num;
+    }
+    QStringList hlp = mp.split(" ");
     if (hlp.size() < 7)
       continue;
     if (hlp.join(" ").indexOf(roverName, 0) != -1) {
       country = hlp[2];
     }
   }
-  fullRoverName = roverName.left(4) +
-                  QString("%1").arg(monNum, 1, 10) +
-                  QString("%1").arg(recNum, 1, 10) +
-                  country;
+
+  if (num > 1) {
+    distStr = "." + roverName.right(1);
+  }
+
+  ID9 = ID4 +
+        QString("%1").arg(monNum, 1, 10) +
+        QString("%1").arg(recNum, 1, 10) +
+        country;
 
   bool v3filenames = settings.value("PPP/v3filenames").toBool();
   QString logFileSkl = settings.value("PPP/logPath").toString();
@@ -170,10 +184,10 @@ t_pppRun::t_pppRun(const t_pppOptions* opt) {
       logFileSkl += QDir::separator();
     }
     if (v3filenames) {
-      logFileSkl = logFileSkl + fullRoverName + "${V3}" + ".ppp";
+      logFileSkl = logFileSkl + ID9 + "${V3}" + distStr + ".ppp";
     }
     else {
-      logFileSkl = logFileSkl + roverName.left(4) + "${GPSWD}" + ".ppp";
+      logFileSkl = logFileSkl + ID4 + "${GPSWD}" + distStr + ".ppp";
     }
     _logFile = new bncoutf(logFileSkl, intr, sampl);
   }
@@ -188,14 +202,13 @@ t_pppRun::t_pppRun(const t_pppOptions* opt) {
       nmeaFileSkl += QDir::separator();
     }
     if (v3filenames) {
-      nmeaFileSkl = nmeaFileSkl + fullRoverName + "${V3}" + ".nmea";
+      nmeaFileSkl = nmeaFileSkl + ID9 + "${V3}" + distStr + ".nmea";
     }
     else {
-      nmeaFileSkl = nmeaFileSkl + roverName.left(4) + "${GPSWD}" + ".nmea";
+      nmeaFileSkl = nmeaFileSkl + ID4 + "${GPSWD}" + distStr + ".nmea";
     }
     _nmeaFile = new bncoutf(nmeaFileSkl, intr, sampl);
   }
-
   QString snxtroFileSkl = settings.value("PPP/snxtroPath").toString();
   l = snxtroFileSkl.length();
   if (snxtroFileSkl.isEmpty()) {
@@ -206,10 +219,10 @@ t_pppRun::t_pppRun(const t_pppOptions* opt) {
       snxtroFileSkl += QDir::separator();
     }
     if (v3filenames) {
-      snxtroFileSkl = snxtroFileSkl + fullRoverName + "${V3}" + ".tra";
+      snxtroFileSkl = snxtroFileSkl + ID9 + "${V3}" + distStr + ".tra";
     }
     else {
-      snxtroFileSkl = snxtroFileSkl + roverName.left(4) + "${GPSWD}" + ".tro";
+      snxtroFileSkl = snxtroFileSkl + ID4 + "${GPSWD}" + distStr + ".tro";
     }
     sampl = settings.value("PPP/snxtroSampl").toInt();
     intr  = settings.value("PPP/snxtroIntr").toString();

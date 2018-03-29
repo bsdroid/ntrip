@@ -151,7 +151,8 @@ QString bncoutf::resolveFileName(int GPSweek, const QDateTime& datTim) {
   QString baseName = _sklBaseName;
   baseName.replace("${GPSWD}", gpswd);
   baseName.replace("${V3}" , QString("_U_%1%2").arg(yyyy).arg(doy));
-
+  if (_extension.count(".") == 2) {_extension.replace(0,1,"_"); }
+  
   return _path + baseName + epoStr + _extension;
 }
 
