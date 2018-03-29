@@ -154,12 +154,6 @@ t_irc bncEphUser::putNewEph(t_eph* eph, bool check) {
 
   const t_eph* ephOld = ephLast(prn);
 
-  if (ephOld &&
-      (ephOld->checkState() == t_eph::bad ||
-       ephOld->checkState() == t_eph::outdated)) {
-    ephOld = 0;
-  }
-
   if ((ephOld == 0 || newEph->isNewerThan(ephOld)) &&
       (eph->checkState() != t_eph::bad &&
        eph->checkState() != t_eph::outdated)) {
