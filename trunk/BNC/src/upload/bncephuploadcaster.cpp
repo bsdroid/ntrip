@@ -68,7 +68,7 @@ void bncEphUploadCaster::ephBufferChanged() {
     QStringList hlp = it.next().split(",");
     if (hlp.size() > 3) {
       ++iRow;
-      QString system = hlp[4];
+      QString system = hlp[6];
       QByteArray outBuffer;
 
       QDateTime now = currentDateAndTimeGPS();
