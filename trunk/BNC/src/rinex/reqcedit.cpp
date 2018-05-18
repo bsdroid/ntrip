@@ -560,13 +560,35 @@ void t_reqcEdit::editEphemerides() {
   // -----------------------
   bool haveGPS     = false;
   bool haveGlonass = false;
+  QMap<t_eph::e_type, bool> haveGnss;
   for (int ii = 0; ii < _ephs.size(); ii++) {
     const t_eph* eph = _ephs[ii];
-    if      (eph->type() == t_eph::GPS) {
-      haveGPS = true;
-    }
-    else if (eph->type() == t_eph::GLONASS) {
-      haveGlonass = true;
+    switch (eph->type()) {
+      case t_eph::GPS:
+        haveGPS = true;
+        haveGnss[t_eph::GLONASS] = true;
+        break;
+      case t_eph::GLONASS:
+        haveGlonass = true;
+        haveGnss[t_eph::GPS] = true;
+        break;
+      case t_eph::Galileo:
+        haveGnss[t_eph::Galileo] = true;
+        break;
+      case t_eph::BDS:
+        haveGnss[t_eph::BDS] = true;
+        break;
+      case t_eph::QZSS:
+        haveGnss[t_eph::QZSS] = true;
+        break;
+      case t_eph::IRNSS:
+        haveGnss[t_eph::IRNSS] = true;
+        break;
+      case t_eph::SBAS:
+        haveGnss[t_eph::SBAS] = true;
+        break;
+      default:
+        haveGnss[t_eph::unknown] = true;
     }
   }
 
@@ -581,6 +603,15 @@ void t_reqcEdit::editEphemerides() {
   }
   else {
     outNavFile.setVersion(defaultRnxNavVersion2);
+  }
+
+  if (outNavFile.version() > 3.0) {
+    if (haveGnss.size() > 1) {
+      outNavFile.setGnssTypeV3(t_eph::unknown);
+    }
+    else if (haveGnss.size() == 1){
+      outNavFile.setGnssTypeV3(haveGnss.firstKey());
+    }
   }
 
   QMap<QString, QString> txtMap;

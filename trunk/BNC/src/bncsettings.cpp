@@ -91,13 +91,11 @@ void bncSettings::reRead() {
     setValue_p("rnxV2Priority",       "");
     setValue_p("rnxScript",           "");
     setValue_p("rnxV3",               "0");
-    setValue_p("rnxV3filenames",      "0");
     // RINEX Ephemeris
     setValue_p("ephPath",             "");
     setValue_p("ephIntr",             "1 day");
     setValue_p("ephOutPort",          "");
     setValue_p("ephV3",               "0");
-    setValue_p("ephV3filenames",      "0");
     // Reqc
     setValue_p("reqcAction",          "");
     setValue_p("reqcObsFile",         "");
@@ -109,8 +107,8 @@ void bncSettings::reRead() {
     setValue_p("reqcPlotDir",         "");
     setValue_p("reqcRnxVersion",      "");
     setValue_p("reqcSampling",        "");
-    setValue_p("reqcStartDateTime",   "");
-    setValue_p("reqcEndDateTime",     "");
+    setValue_p("reqcStartDateTime",   "1967-11-02T00:00:00");
+    setValue_p("reqcEndDateTime",     "2099-01-01T00:00:00");
     setValue_p("reqcLogSummaryOnly",  "");
     setValue_p("reqcRunBy",           "");
     setValue_p("reqcComment",         "");

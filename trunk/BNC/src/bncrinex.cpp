@@ -93,7 +93,7 @@ bncRinex::bncRinex(const QByteArray& statID, const QUrl& mountPoint,
 
   _writeRinexFileOnlyWithSkl = settings.value("rnxOnlyWithSKL").toBool();
 
-  _rnxV3filenames = settings.value("rnxV3filenames").toBool();
+  _rnxV3 = (Qt::CheckState(settings.value("rnxV3").toInt()) == Qt::Checked) ? true : false;
 }
 
 // Destructor
@@ -208,7 +208,7 @@ bool bncRinex::readSkeleton() {
 // Next File Epoch (static)
 ////////////////////////////////////////////////////////////////////////////
 QString bncRinex::nextEpochStr(const QDateTime& datTim,
-                               const QString& intStr, bool rnxV3filenames,
+                               const QString& intStr, bool rnxV3,
                                QDateTime* nextEpoch) {
 
   QString epoStr = "";
@@ -220,7 +220,7 @@ QString bncRinex::nextEpochStr(const QDateTime& datTim,
 
   if ( indHlp != -1) {
     int step = intStr.left(indHlp-1).toInt();
-    if (rnxV3filenames) {
+    if (rnxV3) {
       epoStr +=  QString("%1").arg(datTim.time().hour(), 2, 10, QChar('0')); // H
     } else {
       epoStr +=  'A' + datTim.time().hour();
@@ -247,13 +247,13 @@ QString bncRinex::nextEpochStr(const QDateTime& datTim,
         }
       }
     }
-    if (rnxV3filenames) {
+    if (rnxV3) {
       epoStr += QString("_%1M").arg(step, 2, 10, QChar('0'));                // period
     }
   }
   else if (intStr == "1 hour") {
     int step = intStr.left(indHlp-1).toInt();
-    if (rnxV3filenames) {
+    if (rnxV3) {
       epoStr += QString("%1").arg(datTim.time().hour(), 2, 10, QChar('0'));  // H
       epoStr += QString("%1").arg(0, 2, 10, QChar('0'));                     // M
       epoStr += QString("_%1H").arg(step+1, 2, 10, QChar('0'));              // period
@@ -271,7 +271,7 @@ QString bncRinex::nextEpochStr(const QDateTime& datTim,
   }
   else {
     int step = intStr.left(indHlp-1).toInt();
-    if (rnxV3filenames) {
+    if (rnxV3) {
       epoStr += QString("%1").arg(0, 2, 10, QChar('0'));                    // H
       epoStr += QString("%1").arg(0, 2, 10, QChar('0'));                    // M
       epoStr += QString("_%1D").arg(step+1, 2, 10, QChar('0'));             // period
@@ -302,7 +302,7 @@ void bncRinex::resolveFileName(const QDateTime& datTim) {
   }
 
   QString hlpStr = nextEpochStr(datTim, settings.value("rnxIntr").toString(),
-                                _rnxV3filenames, &_nextCloseEpoch);
+                                _rnxV3, &_nextCloseEpoch);
 
   int statIDlength = _statID.size() -1;
   QString ID4 = _statID.left(4);
@@ -334,7 +334,7 @@ void bncRinex::resolveFileName(const QDateTime& datTim) {
     _sklName = path + sklPre + distStr + "." + sklExt;
   }
 
-  if (_rnxV3filenames) {
+  if (_rnxV3) {
     QString country;
     QString monNum = "0";
     QString recNum = "0";
@@ -361,7 +361,7 @@ void bncRinex::resolveFileName(const QDateTime& datTim) {
             QString("_%1S").arg(sampl, 2, 10, QChar('0')) + // sampling rate
             "_MO" + // mixed OBS
             distStr +
-            ".rnx"; 
+            ".rnx";
   }
   else {
     path += ID4 +

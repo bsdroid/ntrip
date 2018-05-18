@@ -34,9 +34,9 @@
 
 class bncRinex {
  public:
-   bncRinex(const QByteArray& statID, const QUrl& mountPoint, 
+   bncRinex(const QByteArray& statID, const QUrl& mountPoint,
             const QByteArray& latitude, const QByteArray& longitude,
-            const QByteArray& nmea, const QByteArray& ntripVersion); 
+            const QByteArray& nmea, const QByteArray& ntripVersion);
    ~bncRinex();
 
    int  samplingRate() const {return _samplingRate;}
@@ -45,8 +45,8 @@ class bncRinex {
    void setReconnectFlag(bool flag){_reconnectFlag = flag;}
 
    static QString nextEpochStr(const QDateTime& datTim,
-                               const QString& intStr, 
-                               bool rnxV3filenames,
+                               const QString& intStr,
+                               bool rnxV3,
                                QDateTime* nextEpoch = 0);
    static std::string asciiSatLine(const t_satObs& obs);
 
@@ -69,7 +69,7 @@ class bncRinex {
    QString         _userName;
    QString         _sklName;
    bool            _writeRinexFileOnlyWithSkl;
-   bool            _rnxV3filenames;
+   bool            _rnxV3;
    QByteArray      _latitude;
    QByteArray      _longitude;
    QByteArray      _nmea;
