@@ -239,8 +239,6 @@ bncWindow::bncWindow() {
   _rnxScrpLineEdit    = new QLineEdit(settings.value("rnxScript").toString());
   _rnxV3CheckBox      = new QCheckBox();
   _rnxV3CheckBox->setCheckState(Qt::CheckState(settings.value("rnxV3").toInt()));
-  _rnxV3filenameCheckBox = new QCheckBox();
-  _rnxV3filenameCheckBox->setCheckState(Qt::CheckState(settings.value("rnxV3filenames").toInt()));
   QString hlp = settings.value("rnxV2Priority").toString();
   if (hlp.isEmpty()) {
     hlp = "G:12&PWCSLXYN_ G:5&IQX_ R:12&PC_ R:3&IQX_ E:16&BCX_ E:578&IQX_ J:1&SLXCZ_ J:26&SLX_ J:5&IQX_ C:IQX_ I:ABCX_ S:1&C_ S:5&IQX_";
@@ -265,9 +263,6 @@ bncWindow::bncWindow() {
   _ephOutPortLineEdit    = new QLineEdit(settings.value("ephOutPort").toString());
   _ephV3CheckBox = new QCheckBox();
   _ephV3CheckBox->setCheckState(Qt::CheckState(settings.value("ephV3").toInt()));
-
-  _ephV3filenameCheckBox = new QCheckBox();
-  _ephV3filenameCheckBox->setCheckState(Qt::CheckState(settings.value("ephV3filenames").toInt()));
 
   connect(_ephOutPortLineEdit, SIGNAL(textChanged(const QString &)),
           this, SLOT(slotBncTextChanged()));
@@ -763,8 +758,6 @@ bncWindow::bncWindow() {
   oLayout->addWidget(_rnxV2Priority,                               5, 1, 1, 15);
   oLayout->addWidget(new QLabel("Version 3"),                      6, 0);
   oLayout->addWidget(_rnxV3CheckBox,                               6, 1);
-  oLayout->addWidget(new QLabel("Version 3 filenames"),            6, 2);
-  oLayout->addWidget(_rnxV3filenameCheckBox,                       6, 3);
   oLayout->addWidget(new QLabel(""),                               7, 1);
   oLayout->setRowStretch(8, 999);
 
@@ -786,8 +779,6 @@ bncWindow::bncWindow() {
   eLayout->addWidget(_ephOutPortLineEdit,                         3, 1);
   eLayout->addWidget(new QLabel("Version 3"),                     4, 0);
   eLayout->addWidget(_ephV3CheckBox,                              4, 1);
-  eLayout->addWidget(new QLabel("Version 3 filenames"),           4, 2);
-  eLayout->addWidget(_ephV3filenameCheckBox,                      4, 3);
   eLayout->setRowStretch(5, 999);
 
   egroup->setLayout(eLayout);
@@ -1309,7 +1300,6 @@ bncWindow::bncWindow() {
   _rnxScrpLineEdit->setWhatsThis(tr("<p>Whenever a RINEX Observation file is finally saved, you may want to compress, copy or upload it immediately, for example via FTP. BNC allows you to execute a script/batch file to carry out such operation.</p><p>Specify the full path of a script or batch file. BNC will pass the full RINEX Observation file path to the script as command line parameter (%1 on Windows systems, $1 on Unix/Linux/Mac systems). <i>[key: rnxScript]</i></p>"));
   _rnxV2Priority->setWhatsThis(tr("<p>Specify a priority list of characters defining signal attributes as defined in RINEX Version 3. Priorities will be used to map observations with RINEX Version 3 attributes from incoming streams to Version 2. The underscore character '_' stands for undefined attributes. A question mark '?' can be used as wildcard which represents any one character.</p><p>Signal priorities can be specified as equal for all systems, as system specific or as system and freq. specific. For example: </li><ul><li>'CWPX_?' (General signal priorities valid for all GNSS) </li><li>'C:IQX I:ABCX' (System specific signal priorities for BDS and IRNSS) </li><li>'G:12&PWCSLXYN G:5&IQX R:12&PC R:3&IQX' (System and frequency specific signal priorities) </li></ul>Default is the following priority list 'G:12&PWCSLXYN_ G:5&IQX_ R:12&PC_ R:3&IQX_ E:16&BCX_ E:578&IQX_ J:1&SLXCZ_ J:26&SLX_ J:5&IQX_ C:IQX_ I:ABCX_ S:1&C_ S:5&IQX_'. <i>[key: rnxV2Priority]</i></p>"));
   _rnxV3CheckBox->setWhatsThis(tr("<p>The default format for RINEX Observation files is RINEX Version 2.</p><p>Select 'Version 3' if you want to save observations in RINEX Version 3 format. <i>[key: rnxV3]</i></p>"));
-  _rnxV3filenameCheckBox->setWhatsThis(tr("<p>Tick 'Version 3 filenames' to let BNC create so-called extended filenames following the RINEX Version 3 standard.</p><p>Default is an empty check box, meaning to create filenames following the RINEX Version 2 standard although the file content is saved in RINEX Version 3 format. <i>[key: rnxV3filenames]</i></p>"));
 
   // WhatsThis, RINEX Ephemeris
   // --------------------------
@@ -1317,7 +1307,6 @@ bncWindow::bncWindow() {
   _ephIntrComboBox->setWhatsThis(tr("<p>Select the length of the RINEX Navigation file. <i>[key: ephIntr]</i></p>"));
   _ephOutPortLineEdit->setWhatsThis(tr("<p>BNC can produce ephemeris data in RINEX Navigation ASCII format on your local host through an IP port.</p><p>Specify a port number here to activate this function. <i>[key: ephOutPort]</i></p>"));
   _ephV3CheckBox->setWhatsThis(tr("<p>The default format for output of RINEX Navigation data containing Broadcast Ephemeris is RINEX Version 2.</p><p>Select 'Version 3' if you want to output ephemeris in RINEX Version 3 format. <i>[key: ephV3]</i></p>"));
-  _ephV3filenameCheckBox->setWhatsThis(tr("<p>Tick 'Version 3 filenames' to let BNC create so-called extended filenames following the RINEX Version 3 standard.</p><p>Default is an empty check box, meaning to create filenames following the RINEX Version 2 standard although the file content is saved in RINEX Version 3 format. <i>[key: ephV3filenames]</i></p>"));
 
   // WhatsThis, RINEX Editing & QC
   // -----------------------------
@@ -1511,13 +1500,11 @@ bncWindow::~bncWindow() {
   delete _rnxSkelLineEdit;
   delete _rnxScrpLineEdit;
   delete _rnxV3CheckBox;
-  delete _rnxV3filenameCheckBox;
   delete _rnxV2Priority;
   delete _ephPathLineEdit;
   delete _ephIntrComboBox;
   delete _ephOutPortLineEdit;
   delete _ephV3CheckBox;
-  delete _ephV3filenameCheckBox;
   delete _corrPathLineEdit;
   delete _corrIntrComboBox;
   delete _corrPortLineEdit;
@@ -1961,20 +1948,12 @@ void bncWindow::saveOptions() {
   settings.setValue("rnxSampl",    _rnxSamplSpinBox->value());
   settings.setValue("rnxSkel",     _rnxSkelLineEdit->text());
   settings.setValue("rnxOnlyWithSKL",_rnxFileCheckBox->checkState());
-  settings.setValue("rnxV3filenames",_rnxV3filenameCheckBox->checkState());
   settings.setValue("rnxScript",   _rnxScrpLineEdit->text());
-  (_rnxV3filenameCheckBox->checkState()) ?
-    settings.setValue("rnxV3",       _rnxV3filenameCheckBox->checkState()) :
-    settings.setValue("rnxV3",       _rnxV3CheckBox->checkState());
   settings.setValue("rnxV2Priority",_rnxV2Priority->text());
 // RINEX Ephemeris
   settings.setValue("ephPath",       _ephPathLineEdit->text());
   settings.setValue("ephIntr",       _ephIntrComboBox->currentText());
   settings.setValue("ephOutPort",    _ephOutPortLineEdit->text());
-  settings.setValue("ephV3filenames", _ephV3filenameCheckBox->checkState());
-  (_ephV3filenameCheckBox->checkState()) ?
-    settings.setValue("ephV3",       _ephV3filenameCheckBox->checkState()) :
-    settings.setValue("ephV3",       _ephV3CheckBox->checkState());
 // Broadcast Corrections
   settings.setValue("corrPath",    _corrPathLineEdit->text());
   settings.setValue("corrIntr",    _corrIntrComboBox->currentText());
@@ -2484,7 +2463,6 @@ void bncWindow::slotBncTextChanged(){
     enable = !_ephPathLineEdit->text().isEmpty() || !_ephOutPortLineEdit->text().isEmpty();
     enableWidget(enable, _ephIntrComboBox);
     enableWidget(enable, _ephV3CheckBox);
-    enableWidget(enable, _ephV3filenameCheckBox);
   }
 
   // Broadcast Corrections

@@ -38,12 +38,11 @@
  *
  * -----------------------------------------------------------------------*/
 
-#include <iostream>
 #include <unistd.h>
 #include <signal.h>
-
 #include <QApplication>
 #include <QFile>
+#include <iostream>
 
 #include "app.h"
 #include "bnccore.h"
@@ -108,14 +107,12 @@ int main(int argc, char* argv[]) {
       "   rnxScript      {File upload script, full path [character string]}\n"
       "   rnxV2Priority  {Priority of signal attributes [character string, list separated by blank character, example: G:12&PWCSLXYN G:5&IQX C:IQX]}\n"
       "   rnxV3          {Produce version 3 file contents [integer number: 0=no,2=yes]}\n"
-      "   rnxV3filenames {Produce version 3 filenames [integer number: 0=no,2=yes]}\n"
       "\n"
       "RINEX Ephemeris Panel keys:\n"
       "   ephPath        {Directory [character string]}\n"
       "   ephIntr        {File interval [character string: 1 min|2 min|5 min|10 min|15 min|30 min|1 hour|1 day]}\n"
       "   ephOutPort     {Output port [integer number]}\n"
       "   ephV3          {Produce version 3 file contents [integer number: 0=no,2=yes]}\n"
-      "   ephV3filenames {Produce version 3 filenames [integer number: 0=no,2=yes]}\n"
       "\n"
       "RINEX Editing and QC Panel keys:\n"
       "   reqcAction            {Action specification [character string:  Blank|Edit/Concatenate|Analyze]}\n"

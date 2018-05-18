@@ -304,29 +304,23 @@ void t_bncCore::printEphHeader() {
 
     QString ephFileNameGPS = _ephPath + "BRDC";
 
-    bool ephV3filenames = settings.value("ephV3filenames").toBool();
+    bool ephV3 = (_rinexVers == 3)? true : false;
 
     QString hlpStr = bncRinex::nextEpochStr(datTim,
-                         settings.value("ephIntr").toString(), ephV3filenames);
+                         settings.value("ephIntr").toString(), ephV3);
 
     if (_rinexVers == 3) {
-      if (ephV3filenames) {
-        QString country = "WRD"; // WORLD
-        QString monNum = "0";
-        QString recNum = "0";
-        ephFileNameGPS += QString("%1").arg(monNum, 1, 10) +
-                          QString("%1").arg(recNum, 1, 10) +
-                          country +
-                          "_S_" +     // stream
-                          QString("%1").arg(datTim.date().year()) +
-                          QString("%1").arg(datTim.date().dayOfYear(), 3, 10, QChar('0')) +
-                          hlpStr +   // HM_period
-                          "_MN.rnx"; // mixed BRDC
-      }
-      else { // RNX v3 with old filenames
-        ephFileNameGPS +=  QString("%1").arg(datTim.date().dayOfYear(), 3, 10, QChar('0')) +
-                           hlpStr + datTim.toString(".yyP");
-      }
+      QString country = "WRD"; // WORLD
+      QString monNum = "0";
+      QString recNum = "0";
+      ephFileNameGPS += QString("%1").arg(monNum, 1, 10) +
+                        QString("%1").arg(recNum, 1, 10) +
+                        country +
+                        "_S_" +     // stream
+                        QString("%1").arg(datTim.date().year()) +
+                        QString("%1").arg(datTim.date().dayOfYear(), 3, 10, QChar('0')) +
+                        hlpStr +   // HM_period
+                        "_MN.rnx"; // mixed BRDC
     }
     else { // RNX v2.11
       ephFileNameGPS += QString("%1").arg(datTim.date().dayOfYear(), 3, 10, QChar('0')) +
