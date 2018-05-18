@@ -610,7 +610,7 @@ void t_reqcEdit::editEphemerides() {
       outNavFile.setGnssTypeV3(t_eph::unknown);
     }
     else if (haveGnss.size() == 1){
-      outNavFile.setGnssTypeV3(haveGnss.firstKey());
+      outNavFile.setGnssTypeV3(haveGnss.keys().first());
     }
   }
 
