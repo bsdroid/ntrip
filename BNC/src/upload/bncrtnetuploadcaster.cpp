@@ -34,8 +34,15 @@ bncRtnetUploadCaster::bncRtnetUploadCaster(const QString& mountpoint,
     const QString& rnxFileName, int PID, int SID, int IOD, int iRow) :
     bncUploadCaster(mountpoint, outHost, outPort, ntripVersion, userName, password, iRow, 0) {
 
+
+  if (!mountpoint.isEmpty()) {
+    _casterID += mountpoint;
+  }
   if (!outHost.isEmpty()) {
-    _casterID += outHost;
+    _casterID +=  " " + outHost;
+    if (outPort) {
+      _casterID += ":" +  QString("%1").arg(outPort, 10);
+    }
   }
   if (!crdTrafo.isEmpty()) {
     _casterID += " " + crdTrafo;
