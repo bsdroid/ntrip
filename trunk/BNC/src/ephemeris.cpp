@@ -334,10 +334,15 @@ t_irc t_ephGPS::position(int GPSweek, double GPSweeks, double* xc, double* vv) c
   double M  = _M0 + n*tk;
   double E  = M;
   double E_last;
+  int    nLoop = 0;
   do {
     E_last = E;
     E = M + _e*sin(E);
-  } while ( fabs(E-E_last)*a0 > 0.001 );
+
+    if (++nLoop == 100) {
+      return failure;
+    }
+  } while ( fabs(E-E_last)*a0 > 0.001);
   double v      = 2.0*atan( sqrt( (1.0 + _e)/(1.0 - _e) )*tan( E/2 ) );
   double u0     = v + _omega;
   double sin2u0 = sin(2*u0);
@@ -921,9 +926,14 @@ t_irc t_ephGal::position(int GPSweek, double GPSweeks, double* xc, double* vv) c
   double M  = _M0 + n*tk;
   double E  = M;
   double E_last;
+  int    nLoop = 0;
   do {
     E_last = E;
     E = M + _e*sin(E);
+
+    if (++nLoop == 100) {
+      return failure;
+    }
   } while ( fabs(E-E_last)*a0 > 0.001 );
   double v      = 2.0*atan( sqrt( (1.0 + _e)/(1.0 - _e) )*tan( E/2 ) );
   double u0     = v + _omega;
@@ -1506,6 +1516,8 @@ unsigned int t_ephBDS::IOD() const {
   BDSADDBITS(5, 0)  // the last byte is filled by 0-bits to obtain a length of an integer multiple of 8
 
   return CRC24(size, startbuffer);
+
+
 }
 
 // Compute BDS Satellite Position (virtual)

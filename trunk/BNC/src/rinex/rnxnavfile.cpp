@@ -209,14 +209,7 @@ void t_rnxNavFile::read(QTextStream* stream) {
       }
       eph = new t_ephGPS(version(), lines);
     }
-    if (eph &&
-        eph->checkState() != t_eph::bad &&
-        eph->checkState() != t_eph::outdated) {
-      _ephs.push_back(eph);
-    }
-    else {
-      delete eph;
-    }
+    _ephs.push_back(eph);
   }
 }
 

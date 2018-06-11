@@ -1053,7 +1053,7 @@ void t_reqcAnalyze::checkEphemerides() {
     t_rnxNavFile rnxNavFile(fileName, t_rnxNavFile::input);
     for (unsigned ii = 0; ii < rnxNavFile.ephs().size(); ii++) {
       t_eph* eph = rnxNavFile.ephs()[ii];
-      ephUser.putNewEph(eph, true);
+      ephUser.putNewEph(eph, false);
       if (eph->checkState() == t_eph::bad) {
         ++numBad;
       }
