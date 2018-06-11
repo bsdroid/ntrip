@@ -352,7 +352,6 @@ void t_pppClient::putTec(const t_vTec* /*vTec*/) {
 //
 //////////////////////////////////////////////////////////////////////////////
 void t_pppClient::putEphemeris(const t_eph* eph) {
-  bool check = _opt->_realTime;
   if (_newEph)
     delete _newEph;
   _newEph = 0;
@@ -374,7 +373,7 @@ void t_pppClient::putEphemeris(const t_eph* eph) {
   }
 
   if (_newEph) {
-    _ephUser->putNewEph(_newEph, check);
+    _ephUser->putNewEph(_newEph, _opt->_realTime);
   }
 }
 

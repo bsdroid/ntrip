@@ -82,36 +82,36 @@ bncEphUser::~bncEphUser() {
 // New GPS Ephemeris
 ////////////////////////////////////////////////////////////////////////////
 void bncEphUser::slotNewGPSEph(t_ephGPS eph) {
-  putNewEph(&eph, false);
+  putNewEph(&eph, true);
 }
 
 // New Glonass Ephemeris
 ////////////////////////////////////////////////////////////////////////////
 void bncEphUser::slotNewGlonassEph(t_ephGlo eph) {
-  putNewEph(&eph, false);
+  putNewEph(&eph, true);
 }
 
 // New Galileo Ephemeris
 ////////////////////////////////////////////////////////////////////////////
 void bncEphUser::slotNewGalileoEph(t_ephGal eph) {
-  putNewEph(&eph, false);
+  putNewEph(&eph, true);
 }
 
 // New SBAS Ephemeris
 ////////////////////////////////////////////////////////////////////////////
 void bncEphUser::slotNewSBASEph(t_ephSBAS eph) {
-  putNewEph(&eph, false);
+  putNewEph(&eph, true);
 }
 
 // New BDS Ephemeris
 ////////////////////////////////////////////////////////////////////////////
 void bncEphUser::slotNewBDSEph(t_ephBDS eph) {
-  putNewEph(&eph, false);
+  putNewEph(&eph, true);
 }
 
 //
 ////////////////////////////////////////////////////////////////////////////
-t_irc bncEphUser::putNewEph(t_eph* eph, bool check) {
+t_irc bncEphUser::putNewEph(t_eph* eph, bool realTime) {
 
   QMutexLocker locker(&_mutex);
 
@@ -119,9 +119,7 @@ t_irc bncEphUser::putNewEph(t_eph* eph, bool check) {
     return failure;
   }
 
-  if (check) {
-    checkEphemeris(eph);
-  }
+  checkEphemeris(eph, realTime);
 
   const t_ephGPS*     ephGPS     = dynamic_cast<const t_ephGPS*>(eph);
   const t_ephGlo*     ephGlo     = dynamic_cast<const t_ephGlo*>(eph);
@@ -174,7 +172,7 @@ t_irc bncEphUser::putNewEph(t_eph* eph, bool check) {
 
 //
 ////////////////////////////////////////////////////////////////////////////
-void bncEphUser::checkEphemeris(t_eph* eph) {
+void bncEphUser::checkEphemeris(t_eph* eph, bool realTime) {
 
   if (!eph || eph->checkState() == t_eph::ok || eph->checkState() == t_eph::bad) {
     return;
@@ -206,41 +204,41 @@ void bncEphUser::checkEphemeris(t_eph* eph) {
 
   // Check whether the epoch is too far away the current time
   // --------------------------------------------------------
-  bncTime   toc = eph->TOC();
-  QDateTime now = currentDateAndTimeGPS();
-  bncTime currentTime(now.toString(Qt::ISODate).toStdString());
-  double timeDiff = fabs(toc - currentTime);
+  if (realTime) {
+    bncTime toc = eph->TOC();
+    QDateTime now = currentDateAndTimeGPS();
+    bncTime currentTime(now.toString(Qt::ISODate).toStdString());
+    double timeDiff = fabs(toc - currentTime);
 
-  if      (eph->type() == t_eph::GPS     && timeDiff > 4*3600) { // update interval: 2h, data sets are valid for 4 hours
-    eph->setCheckState(t_eph::outdated);
-    return;
+    if (eph->type() == t_eph::GPS && timeDiff > 4 * 3600) { // update interval: 2h, data sets are valid for 4 hours
+      eph->setCheckState(t_eph::outdated);
+      return;
+    }
+    else if (eph->type() == t_eph::Galileo && timeDiff > 4 * 3600) { // update interval: 2h, data sets are valid for 4 hours
+      eph->setCheckState(t_eph::outdated);
+      return;
+    }
+    else if (eph->type() == t_eph::GLONASS && timeDiff > 1 * 3600) { // updated every 30 minutes
+      eph->setCheckState(t_eph::outdated);
+      return;
+    }
+    else if (eph->type() == t_eph::QZSS && timeDiff > 4 * 3600) { // orbit parameters are valid for 7200 seconds (at minimum)
+      eph->setCheckState(t_eph::outdated);
+      return;
+    }
+    else if (eph->type() == t_eph::SBAS && timeDiff > 600) { // maximum update interval: 300 sec
+      eph->setCheckState(t_eph::outdated);
+      return;
+    }
+    else if (eph->type() == t_eph::BDS && timeDiff > 6 * 3600) { // updates (GEO) up to 6 hours
+      eph->setCheckState(t_eph::outdated);
+      return;
+    }
+    else if (eph->type() == t_eph::IRNSS && timeDiff > 24 * 3600) { // update interval: up to 24 hours
+      eph->setCheckState(t_eph::outdated);
+      return;
+    }
   }
-  else if (eph->type() == t_eph::Galileo && timeDiff > 4*3600) { // update interval: 2h, data sets are valid for 4 hours
-    eph->setCheckState(t_eph::outdated);
-    return;
-  }
-  else if (eph->type() == t_eph::GLONASS && timeDiff > 1*3600) { // updated every 30 minutes
-    eph->setCheckState(t_eph::outdated);
-    return;
-  }
-  else if (eph->type() == t_eph::QZSS    && timeDiff > 4*3600) { // orbit parameters are valid for 7200 seconds (at minimum)
-    eph->setCheckState(t_eph::outdated);
-    return;
-  }
-  else if (eph->type() == t_eph::SBAS    && timeDiff > 600) { // maximum update interval: 300 sec
-    eph->setCheckState(t_eph::outdated);
-    return;
-  }
-  else if (eph->type() == t_eph::BDS     && timeDiff > 6*3600) { // updates (GEO) up to 6 hours
-    eph->setCheckState(t_eph::outdated);
-    return;
-  }
-  else if (eph->type() == t_eph::IRNSS   && timeDiff > 24*3600) { // update interval: up to 24 hours
-    eph->setCheckState(t_eph::outdated);
-    return;
-  }
-
-
 
   // Check consistency with older ephemerides
   // ----------------------------------------
