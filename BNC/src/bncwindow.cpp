@@ -1943,17 +1943,19 @@ void bncWindow::saveOptions() {
   settings.setValue("autoStart",   _autoStartCheckBox->checkState());
   settings.setValue("rawOutFile",  _rawOutFileLineEdit->text());
 // RINEX Observations
-  settings.setValue("rnxPath",     _rnxPathLineEdit->text());
-  settings.setValue("rnxIntr",     _rnxIntrComboBox->currentText());
-  settings.setValue("rnxSampl",    _rnxSamplSpinBox->value());
-  settings.setValue("rnxSkel",     _rnxSkelLineEdit->text());
+  settings.setValue("rnxPath",      _rnxPathLineEdit->text());
+  settings.setValue("rnxIntr",      _rnxIntrComboBox->currentText());
+  settings.setValue("rnxSampl",     _rnxSamplSpinBox->value());
+  settings.setValue("rnxSkel",      _rnxSkelLineEdit->text());
   settings.setValue("rnxOnlyWithSKL",_rnxFileCheckBox->checkState());
-  settings.setValue("rnxScript",   _rnxScrpLineEdit->text());
+  settings.setValue("rnxScript",    _rnxScrpLineEdit->text());
   settings.setValue("rnxV2Priority",_rnxV2Priority->text());
+  settings.setValue("rnxV3",        _rnxV3CheckBox->checkState());
 // RINEX Ephemeris
   settings.setValue("ephPath",       _ephPathLineEdit->text());
   settings.setValue("ephIntr",       _ephIntrComboBox->currentText());
   settings.setValue("ephOutPort",    _ephOutPortLineEdit->text());
+  settings.setValue("ephV3",         _ephV3CheckBox->checkState());
 // Broadcast Corrections
   settings.setValue("corrPath",    _corrPathLineEdit->text());
   settings.setValue("corrIntr",    _corrIntrComboBox->currentText());
