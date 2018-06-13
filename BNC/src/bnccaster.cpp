@@ -302,9 +302,8 @@ void bncCaster::dumpEpochs(const bncTime& maxTime) {
     const bncTime& epoTime = itEpo.key();
     if (epoTime <= maxTime) {
       const QList<t_satObs>& allObs = itEpo.value();
-      int sec = int(nint(epoTime.gpssec()));
-      if ( (_out || _sockets) && (_samplingRate == 0 || sec % _samplingRate == 0) ) {
-
+      int sec = int(nint(epoTime.gpssec()*10));
+      if ( (_out || _sockets) && (_samplingRate == 0 || sec % (_samplingRate*10) == 0) ) {
         QListIterator<t_satObs> it(allObs);
         bool firstObs = true;
         while (it.hasNext()) {
