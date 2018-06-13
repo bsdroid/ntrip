@@ -16,14 +16,14 @@ using namespace std;
 bncTime::bncTime(int gpsw, double gpssec) {
   this->set(gpsw, gpssec);
 }
-  
+
 // Constructor (from ISO String yyyy-mm-ddThh:mm:ss)
 //////////////////////////////////////////////////////////////////////////////
 bncTime::bncTime(const std::string& isoString) {
   if (!isoString.empty()) {
     QDateTime dt = QDateTime::fromString(isoString.c_str(), Qt::ISODate);
     this->set(dt.date().year(), dt.date().month(), dt.date().day(),
-              dt.time().hour(), dt.time().minute(), 
+              dt.time().hour(), dt.time().minute(),
               dt.time().second() + dt.time().msec()/1000.0);
   }
   else {
@@ -31,17 +31,17 @@ bncTime::bncTime(const std::string& isoString) {
   }
 }
 
-// 
+//
 //////////////////////////////////////////////////////////////////////////////
 bncTime& bncTime::set(int gpsw, double gpssec) {
   int  deltad;
   int  dow = 0;
-  while ( gpssec >= 86400 ) {
-    gpssec-=86400;
+  while ( gpssec >= 86400.0 ) {
+    gpssec-=86400.0;
     dow++;
   }
-  while ( gpssec <  0 ) {
-    gpssec+=86400;
+  while ( gpssec <  0.0 ) {
+    gpssec+=86400.0;
     dow--;
   }
   deltad = gpsw*7 + dow;
@@ -58,12 +58,12 @@ bncTime& bncTime::setBDS(int gpsw, double gpssec) {
   int  dow = 0;
   gpssec += 14.0;
   gpsw   += 1356.0;
-  while ( gpssec >= 86400 ) {
-    gpssec-=86400;
+  while ( gpssec >= 86400.0 ) {
+    gpssec-=86400.0;
     dow++;
   }
-  while ( gpssec <  0 ) {
-    gpssec+=86400;
+  while ( gpssec <  0.0 ) {
+    gpssec+=86400.0;
     dow--;
   }
   deltad = gpsw*7 + dow;
@@ -72,7 +72,7 @@ bncTime& bncTime::setBDS(int gpsw, double gpssec) {
   return *this;
 }
 
-// 
+//
 //////////////////////////////////////////////////////////////////////////////
 bncTime &bncTime::set(int msec) {
   int week;
@@ -84,7 +84,7 @@ bncTime &bncTime::set(int msec) {
   return set(week, msec/1000.0);
 }
 
-// 
+//
 //////////////////////////////////////////////////////////////////////////////
 bncTime &bncTime::setTOD(int msec) {
   int week;
@@ -107,7 +107,7 @@ bncTime &bncTime::setTOD(int msec) {
   return set(week, msec/1000.0);
 }
 
-// 
+//
 //////////////////////////////////////////////////////////////////////////////
 bncTime &bncTime::setTk(int msec) {
   int week;
@@ -121,7 +121,7 @@ bncTime &bncTime::setTk(int msec) {
   return set(week, sec);
 }
 
-// 
+//
 //////////////////////////////////////////////////////////////////////////////
 bncTime &bncTime::setBDS(int msec) {
   int week;
@@ -136,23 +136,23 @@ bncTime &bncTime::setBDS(int msec) {
   return set(week, msec/1000.0);
 }
 
-// 
+//
 //////////////////////////////////////////////////////////////////////////////
 bncTime& bncTime::setmjd(double daysec, int mjd) {
   _sec = daysec;
   _mjd = mjd;
-  while ( _sec >= 86400 ) {
-    _sec-=86400;
+  while ( _sec >= 86400.0 ) {
+    _sec-=86400.0;
     _mjd++;
   }
-  while ( _sec <  0 ) {
-    _sec+=86400;
+  while ( _sec <  0.0 ) {
+    _sec+=86400.0;
     _mjd--;
   }
   return *this;
 }
 
-// 
+//
 //////////////////////////////////////////////////////////////////////////////
 bncTime& bncTime::setmjd(double mjddec) {
   _mjd = static_cast<unsigned int>(mjddec);
@@ -160,12 +160,12 @@ bncTime& bncTime::setmjd(double mjddec) {
   return *this;
 }
 
-// 
+//
 //////////////////////////////////////////////////////////////////////////////
 unsigned int bncTime::mjd() const {
   return _mjd;
 }
- 
+
 //
 //////////////////////////////////////////////////////////////////////////////
 double bncTime::daysec() const {
@@ -181,7 +181,7 @@ unsigned int bncTime::gpsw() const {
   return (int)gpsw;
 }
 
-// 
+//
 //////////////////////////////////////////////////////////////////////////////
 double bncTime::gpssec() const {
   double   gsec;
@@ -201,7 +201,7 @@ unsigned int bncTime::bdsw() const {
   return (int)gpsw-1356;
 }
 
-// 
+//
 //////////////////////////////////////////////////////////////////////////////
 double bncTime::bdssec() const {
   double   gsec;
@@ -214,7 +214,7 @@ double bncTime::bdssec() const {
   return gsec + _sec;
 }
 
-// 
+//
 //////////////////////////////////////////////////////////////////////////////
 bool bncTime::operator!=(const bncTime &time1) const {
   if ( fabs((*this) - time1) > 0.000000000001 ) {
@@ -225,7 +225,7 @@ bool bncTime::operator!=(const bncTime &time1) const {
   }
 }
 
-// 
+//
 //////////////////////////////////////////////////////////////////////////////
 bool bncTime::operator==(const bncTime &time1) const {
   if ( fabs((*this) - time1) < 0.000000000001 ) {
@@ -236,7 +236,7 @@ bool bncTime::operator==(const bncTime &time1) const {
   }
 }
 
-// 
+//
 //////////////////////////////////////////////////////////////////////////////
 bool bncTime::operator>(const bncTime &time1) const {
   if ( ((*this) - time1) > 0.0 ) {
@@ -247,7 +247,7 @@ bool bncTime::operator>(const bncTime &time1) const {
   }
 }
 
-// 
+//
 //////////////////////////////////////////////////////////////////////////////
 bool bncTime::operator>=(const bncTime &time1) const {
   if ( ((*this) - time1) >= 0.0 ) {
@@ -258,7 +258,7 @@ bool bncTime::operator>=(const bncTime &time1) const {
   }
 }
 
-// 
+//
 //////////////////////////////////////////////////////////////////////////////
 bool bncTime::operator<(const bncTime &time1) const {
   if ( ((*this) - time1) < 0.0 ) {
@@ -269,7 +269,7 @@ bool bncTime::operator<(const bncTime &time1) const {
   }
 }
 
-// 
+//
 //////////////////////////////////////////////////////////////////////////////
 bool bncTime::operator<=(const bncTime &time1) const {
   if ( ((*this) - time1) <= 0.0 ) {
@@ -280,7 +280,7 @@ bool bncTime::operator<=(const bncTime &time1) const {
   }
 }
 
-// 
+//
 //////////////////////////////////////////////////////////////////////////////
 bncTime bncTime::operator+(double sec) const {
   int     mjd    = this->mjd();
@@ -289,13 +289,13 @@ bncTime bncTime::operator+(double sec) const {
   return bncTime().setmjd(daysec, mjd);
 }
 
-// 
+//
 //////////////////////////////////////////////////////////////////////////////
 bncTime bncTime::operator-(double sec) const {
   return (*this) + (-sec);
 }
 
-// 
+//
 //////////////////////////////////////////////////////////////////////////////
 double bncTime::operator-(const bncTime &time1) const {
   int mjdDiff = this->_mjd - time1._mjd;
@@ -322,7 +322,7 @@ bncTime& bncTime::operator+=(double sec) {
   return *this;
 }
 
-// 
+//
 //////////////////////////////////////////////////////////////////////////////
 void bncTime::civil_date (unsigned int& year, unsigned int& month,
                           unsigned int& day) const {
@@ -334,9 +334,9 @@ void bncTime::civil_date (unsigned int& year, unsigned int& month,
   day   = static_cast<unsigned int>(day_d);
 }
 
-// 
+//
 //////////////////////////////////////////////////////////////////////////////
-void bncTime::civil_time(unsigned int &hour, unsigned int &min, 
+void bncTime::civil_time(unsigned int &hour, unsigned int &min,
                           double &sec) const {
   hour = static_cast<unsigned int>(_sec/3600.0);
   min  = static_cast<unsigned int>((_sec - hour*3600)/60.0);
@@ -351,7 +351,7 @@ void bncTime::civil_time(unsigned int &hour, unsigned int &min,
   }
 }
 
-// 
+//
 //////////////////////////////////////////////////////////////////////////////
 string bncTime::timestr(unsigned numdec, char sep) const {
   ostringstream str;
@@ -385,7 +385,7 @@ string bncTime::timestr(unsigned numdec, char sep) const {
   return str.str();
 }
 
-// 
+//
 //////////////////////////////////////////////////////////////////////////////
 string bncTime::datestr(char sep) const {
   unsigned int year, month, day;
@@ -401,33 +401,33 @@ string bncTime::datestr(char sep) const {
   return str.str();
 }
 
-// 
+//
 //////////////////////////////////////////////////////////////////////////////
 bncTime::operator std::string() const {
   return datestr() + '_' + timestr();
 }
 
-// 
+//
 //////////////////////////////////////////////////////////////////////////////
-bncTime& bncTime::set(int year, int month, int day, 
+bncTime& bncTime::set(int year, int month, int day,
                       int hour, int min, double sec) {
   return set(year, month, day, hour*3600 + min*60 + sec);
 }
 
-// 
+//
 //////////////////////////////////////////////////////////////////////////////
-bncTime& bncTime::setBDS(int year, int month, int day, 
+bncTime& bncTime::setBDS(int year, int month, int day,
                       int hour, int min, double sec) {
   return set(year, month, day, hour*3600 + min*60 + sec+14.0);
 }
 
-// 
+//
 //////////////////////////////////////////////////////////////////////////////
 bncTime& bncTime::set(int year, int month, int day, double daysec) {
   _sec = daysec;
-  
+
   _mjd = (unsigned int)djul(year, month, day);
-  
+
   while ( _sec >= 86400 ) {
     _sec-=86400;
     _mjd++;

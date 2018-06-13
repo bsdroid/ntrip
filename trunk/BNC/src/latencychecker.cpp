@@ -326,9 +326,9 @@ void latencyChecker::checkObsLatency(const QList<t_satObs>& obsList) {
     while (it.hasNext()) {
       const t_satObs& obs = it.next();
       bool wrongObservationEpoch = checkForWrongObsEpoch(obs._time);
-      l._newSec = static_cast<int>(obs._time.gpssec());
+      l._newSec = static_cast<int>(nint(obs._time.gpssec()*10));
       if (l._newSec > l._oldSec && !wrongObservationEpoch) {
-        if (l._newSec % _miscIntr < l._oldSec % _miscIntr) {
+        if (l._newSec % _miscIntr < l._oldSec % (_miscIntr * 10)) {
           if (l._numLat > 0) {
             if (l._meanDiff > 0.0) {
               if ( _checkMountPoint == _staID || _checkMountPoint == "ALL" ) {

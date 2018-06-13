@@ -336,8 +336,8 @@ void t_reqcEdit::editObservations() {
           break;
         }
 
-        if (_samplingRate == 0 ||
-            fmod(round(epo->tt.gpssec()), _samplingRate) == 0) {
+        int sec = int(nint(epo->tt.gpssec()*10));
+        if (_samplingRate == 0 || sec % (_samplingRate*10) == 0) {
           applyLLI(obsFile, epo);
           outObsFile.writeEpoch(epo);
         }
