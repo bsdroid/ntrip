@@ -68,7 +68,7 @@ t_reqcEdit::t_reqcEdit(QObject* parent) : QThread(parent) {
   else {
     _rnxVersion = defaultRnxObsVersion3;
   }
-  _samplingRate   = settings.value("reqcSampling").toInt();
+  _samplingRate   = settings.value("reqcSampling").toString().split("sec").first().toDouble();
   _begTime        = bncTime(settings.value("reqcStartDateTime").toString().toLatin1().data());
   _endTime        = bncTime(settings.value("reqcEndDateTime").toString().toLatin1().data());
 
@@ -117,7 +117,7 @@ void t_reqcEdit::run() {
     *_log << QByteArray("RINEX Version").leftJustified(15) << ": "
           << _rnxVersion << endl;
     *_log << QByteArray("Sampling").leftJustified(15) << ": "
-          << _samplingRate << endl;
+          << _samplingRate << " sec" << endl;
     *_log << QByteArray("Start time").leftJustified(15) << ": "
           << _begTime.datestr().c_str() << ' '
           << _begTime.timestr(0).c_str() << endl;
@@ -337,7 +337,7 @@ void t_reqcEdit::editObservations() {
         }
 
         int sec = int(nint(epo->tt.gpssec()*10));
-        if (_samplingRate == 0 || sec % (_samplingRate*10) == 0) {
+        if (sec % (int(_samplingRate)*10) == 0) {
           applyLLI(obsFile, epo);
           outObsFile.writeEpoch(epo);
         }

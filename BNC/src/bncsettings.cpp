@@ -86,7 +86,7 @@ void bncSettings::reRead() {
     setValue_p("rnxPath",             "");
     setValue_p("rnxIntr",             "1 day");
     setValue_p("rnxOnlyWithSKL",      "");
-    setValue_p("rnxSampl",            "0");
+    setValue_p("rnxSampl",            "1 sec");
     setValue_p("rnxSkel",             "SKL");
     setValue_p("rnxV2Priority",       "");
     setValue_p("rnxScript",           "");
@@ -106,7 +106,7 @@ void bncSettings::reRead() {
     setValue_p("reqcSkyPlotSignals",  "C:2&7 E:1&5 G:1&2 J:1&2 R:1&2 S:1&5 I:5&9");
     setValue_p("reqcPlotDir",         "");
     setValue_p("reqcRnxVersion",      "");
-    setValue_p("reqcSampling",        "");
+    setValue_p("reqcSampling",        "1 sec");
     setValue_p("reqcStartDateTime",   "1967-11-02T00:00:00");
     setValue_p("reqcEndDateTime",     "2099-01-01T00:00:00");
     setValue_p("reqcLogSummaryOnly",  "");
@@ -141,7 +141,7 @@ void bncSettings::reRead() {
     // Feed Engine
     setValue_p("outPort",             "");
     setValue_p("outWait",             "5");
-    setValue_p("outSampl",            "0");
+    setValue_p("outSampl",            "1 sec");
     setValue_p("outFile",             "");
     setValue_p("outUPort",            "");
     // Serial Output

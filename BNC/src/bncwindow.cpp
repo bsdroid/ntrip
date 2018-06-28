@@ -226,14 +226,15 @@ bncWindow::bncWindow() {
   if (ii != -1) {
     _rnxIntrComboBox->setCurrentIndex(ii);
   }
-  _rnxSamplSpinBox    = new QSpinBox();
-  _rnxSamplSpinBox->setMinimum(0);
-  _rnxSamplSpinBox->setMaximum(60);
-  _rnxSamplSpinBox->setSingleStep(5);
-  _rnxSamplSpinBox->setValue(settings.value("rnxSampl").toInt());
+  _rnxSamplComboBox    = new QComboBox();
+  _rnxSamplComboBox->setEditable(false);
+  _rnxSamplComboBox->addItems(QString("0.1 sec,1 sec,5 sec,10 sec,15 sec,30 sec,60 sec").split(","));
+  int ij = _rnxSamplComboBox->findText(settings.value("rnxSampl").toString());
+  if (ij != -1) {
+    _rnxSamplComboBox->setCurrentIndex(ij);
+  }
   _rnxFileCheckBox = new QCheckBox();
   _rnxFileCheckBox->setCheckState(Qt::CheckState(settings.value("rnxOnlyWithSKL").toInt()));
-  _rnxSamplSpinBox->setSuffix(" sec");
   _rnxSkelLineEdit    = new QLineEdit(settings.value("rnxSkel").toString());
   _rnxSkelLineEdit->setMaximumWidth(5*ww);
   _rnxScrpLineEdit    = new QLineEdit(settings.value("rnxScript").toString());
@@ -297,12 +298,12 @@ bncWindow::bncWindow() {
   _outWaitSpinBox->setSingleStep(1);
   _outWaitSpinBox->setSuffix(" sec");
   _outWaitSpinBox->setValue(settings.value("outWait").toInt());
-  _outSamplSpinBox    = new QSpinBox();
-  _outSamplSpinBox->setMinimum(0);
-  _outSamplSpinBox->setMaximum(60);
-  _outSamplSpinBox->setSingleStep(5);
-  _outSamplSpinBox->setValue(settings.value("outSampl").toInt());
-  _outSamplSpinBox->setSuffix(" sec");
+  _outSamplComboBox    = new QComboBox();
+  _outSamplComboBox->addItems(QString("0.1 sec,1 sec,5 sec,10 sec,15 sec,30 sec,60 sec").split(","));
+  int nn = _rnxSamplComboBox->findText(settings.value("rnxSampl").toString());
+    if (nn != -1) {
+      _rnxSamplComboBox->setCurrentIndex(nn);
+    }
   _outFileLineEdit    = new QLineEdit(settings.value("outFile").toString());
   _outUPortLineEdit   = new QLineEdit(settings.value("outUPort").toString());
 
@@ -739,7 +740,7 @@ bncWindow::bncWindow() {
   QGridLayout* oLayout = new QGridLayout;
   oLayout->setColumnMinimumWidth(0,14*ww);
   _rnxIntrComboBox->setMaximumWidth(9*ww);
-  _rnxSamplSpinBox->setMaximumWidth(9*ww);
+  _rnxSamplComboBox->setMaximumWidth(9*ww);
 
   oLayout->addWidget(new QLabel("Saving RINEX observation files.<br>"),0, 0, 1,50);
   oLayout->addWidget(new QLabel("Directory"),                      1, 0);
@@ -747,7 +748,7 @@ bncWindow::bncWindow() {
   oLayout->addWidget(new QLabel("Interval"),                       2, 0);
   oLayout->addWidget(_rnxIntrComboBox,                             2, 1);
   oLayout->addWidget(new QLabel("  Sampling"),                     2, 2, Qt::AlignRight);
-  oLayout->addWidget(_rnxSamplSpinBox,                             2, 3, Qt::AlignLeft);
+  oLayout->addWidget(_rnxSamplComboBox,                            2, 3, Qt::AlignLeft);
   oLayout->addWidget(new QLabel("Skeleton extension"),             3, 0);
   oLayout->addWidget(_rnxSkelLineEdit,                             3, 1, Qt::AlignLeft);
   oLayout->addWidget(new QLabel("Skeleton mandatory"),             3, 2);
@@ -808,16 +809,16 @@ bncWindow::bncWindow() {
   sLayout->setColumnMinimumWidth(0,14*ww);
   _outPortLineEdit->setMaximumWidth(9*ww);
   _outWaitSpinBox->setMaximumWidth(9*ww);
-  _outSamplSpinBox->setMaximumWidth(9*ww);
+  _outSamplComboBox->setMaximumWidth(9*ww);
   _outUPortLineEdit->setMaximumWidth(9*ww);
 
   sLayout->addWidget(new QLabel("Output decoded observations in ASCII format to feed a real-time GNSS network engine.<br>"),0,0,1,50);
   sLayout->addWidget(new QLabel("Port"),                            1, 0);
   sLayout->addWidget(_outPortLineEdit,                              1, 1);
   sLayout->addWidget(new QLabel("       Wait for full obs epoch"),  1, 2, Qt::AlignRight);
-  sLayout->addWidget(_outWaitSpinBox,                              1, 3, Qt::AlignLeft);
+  sLayout->addWidget(_outWaitSpinBox,                               1, 3, Qt::AlignLeft);
   sLayout->addWidget(new QLabel("Sampling"),                        2, 0);
-  sLayout->addWidget(_outSamplSpinBox,                              2, 1, Qt::AlignLeft);
+  sLayout->addWidget(_outSamplComboBox,                             2, 1, Qt::AlignLeft);
   sLayout->addWidget(new QLabel("File (full path)"),                3, 0);
   sLayout->addWidget(_outFileLineEdit,                              3, 1, 1, 10);
   sLayout->addWidget(new QLabel("Port (unsynchronized)"),           4, 0);
@@ -1294,7 +1295,7 @@ bncWindow::bncWindow() {
   // -----------------------------
   _rnxPathLineEdit->setWhatsThis(tr("<p>Here you specify the path to where the RINEX Observation files will be stored.</p><p>If the specified directory does not exist, BNC will not create RINEX Observation files. <i>[key: rnxPath]</i></p>"));
   _rnxIntrComboBox->setWhatsThis(tr("<p>Select the length of the RINEX Observation file. <i>[key: rnxIntr]</i></p>"));
-  _rnxSamplSpinBox->setWhatsThis(tr("<p>Select the RINEX Observation sampling interval in seconds.</p><p>A value of zero '0' tells BNC to store all received epochs into RINEX Observation files. <i>[key: rnxSampl]</i></p>"));
+  _rnxSamplComboBox->setWhatsThis(tr("<p>Select the RINEX Observation sampling interval in seconds. <i>[key: rnxSampl]</i></p>"));
   _rnxSkelLineEdit->setWhatsThis(tr("<p>BNC allows using personal RINEX skeleton files that contain the RINEX header records you would like to include. You can derive a skeleton file from information given in an up to date sitelog.</p><p>A file in the RINEX Observations 'Directory' with a 'Skeleton extension' skl or SKL is interpreted by BNC as a personal RINEX header skeleton file for the corresponding stream. In case of 'SKL'/'skl' the 4-char ID forming the base name has to be written in upper/lower cases. <i>[key: rnxSkel]</i></p>"));
   _rnxFileCheckBox->setWhatsThis(tr("<p>Tick check box 'Skeleton mandatory' in case you want that RINEX files are only produced if skeleton files are available for BNC. If no skeleton file is available for a particular source then no RINEX Observation file will be produced from the affected stream.</p><p>Note that a skeleton file contains RINEX header information such as receiver and antenna types. In case of stream conversion to RINEX Version 3, a skeleton file should also contain information on potentially available observation types. A missing skeleton file will therefore enforce BNC to only save a default set of RINEX 3 observation types. <i>[key: rnxOnlyWithSKL]</i></p>"));
   _rnxScrpLineEdit->setWhatsThis(tr("<p>Whenever a RINEX Observation file is finally saved, you may want to compress, copy or upload it immediately, for example via FTP. BNC allows you to execute a script/batch file to carry out such operation.</p><p>Specify the full path of a script or batch file. BNC will pass the full RINEX Observation file path to the script as command line parameter (%1 on Windows systems, $1 on Unix/Linux/Mac systems). <i>[key: rnxScript]</i></p>"));
@@ -1337,7 +1338,7 @@ bncWindow::bncWindow() {
   // ----------------------
   _outPortLineEdit->setWhatsThis(tr("<p>BNC can produce synchronized observations in a plain ASCII format on your local host via IP port.</p><p>Specify a port number to activate this function. <i>[key: outPort]</i></p>"));
   _outWaitSpinBox->setWhatsThis(tr("<p>When feeding a real-time GNSS network engine waiting for synchronized input epoch by epoch, BNC drops whatever is received later than 'Wait for full obs epoch' seconds.</p><p>A value of 3 to 5 seconds is recommended, depending on the latency of the incoming streams and the delay acceptable to your real-time GNSS network engine or product. <i>[key: outWait]</i></p>"));
-  _outSamplSpinBox->setWhatsThis(tr("<p>Select a synchronized observation sampling interval in seconds.</p><p>A value of zero '0' tells BNC to send/store all received epochs. <i>[key: outSampl]</i></p>"));
+  _outSamplComboBox->setWhatsThis(tr("<p>Select a synchronized observation sampling interval in seconds. <i>[key: outSampl]</i></p>"));
   _outFileLineEdit->setWhatsThis(tr("<p>Specify the full path to a file where synchronized observations are saved in plain ASCII format.</p><p>Beware that the size of this file can rapidly increase depending on the number of incoming streams. <i>[key: outFile]</i></p>"));
   _outUPortLineEdit->setWhatsThis(tr("<p>BNC can produce unsynchronized observations in a plain ASCII format on your local host via IP port.</p><p>Specify a port number to activate this function. <i>[key: outUPort]</i></p>"));
 
@@ -1495,7 +1496,7 @@ bncWindow::~bncWindow() {
   delete _autoStartCheckBox;
   delete _rnxPathLineEdit;
   delete _rnxIntrComboBox;
-  delete _rnxSamplSpinBox;
+  delete _rnxSamplComboBox;
   delete _rnxFileCheckBox;
   delete _rnxSkelLineEdit;
   delete _rnxScrpLineEdit;
@@ -1510,7 +1511,7 @@ bncWindow::~bncWindow() {
   delete _corrPortLineEdit;
   delete _outPortLineEdit;
   delete _outWaitSpinBox;
-  delete _outSamplSpinBox;
+  delete _outSamplComboBox;
   delete _outFileLineEdit;
   delete _outUPortLineEdit;
   delete _serialMountPointLineEdit;
@@ -1945,7 +1946,7 @@ void bncWindow::saveOptions() {
 // RINEX Observations
   settings.setValue("rnxPath",      _rnxPathLineEdit->text());
   settings.setValue("rnxIntr",      _rnxIntrComboBox->currentText());
-  settings.setValue("rnxSampl",     _rnxSamplSpinBox->value());
+  settings.setValue("rnxSampl",     _rnxSamplComboBox->currentText());
   settings.setValue("rnxSkel",      _rnxSkelLineEdit->text());
   settings.setValue("rnxOnlyWithSKL",_rnxFileCheckBox->checkState());
   settings.setValue("rnxScript",    _rnxScrpLineEdit->text());
@@ -1963,7 +1964,7 @@ void bncWindow::saveOptions() {
 // Feed Engine
   settings.setValue("outPort",     _outPortLineEdit->text());
   settings.setValue("outWait",     _outWaitSpinBox->value());
-  settings.setValue("outSampl",    _outSamplSpinBox->value());
+  settings.setValue("outSampl",    _outSamplComboBox->currentText());
   settings.setValue("outFile",     _outFileLineEdit->text());
   settings.setValue("outUPort",    _outUPortLineEdit->text());
 // Serial Output
@@ -2275,7 +2276,7 @@ void bncWindow::slotMountPointsRead(QList<bncGetThread*> threads) {
 
   populateMountPointsTable();
   bncSettings settings;
-  _outSamplSpinBox->setValue(settings.value("outSampl").toInt());
+  _outSamplComboBox->findText(settings.value("rnxSampl").toString());
   _outWaitSpinBox->setValue(settings.value("outWait").toInt());
   QListIterator<bncGetThread*> iTh(threads);
   while (iTh.hasNext()) {
@@ -2432,7 +2433,7 @@ void bncWindow::slotBncTextChanged(){
   if (sender() == 0 || sender() == _rnxPathLineEdit) {
     enable = !_rnxPathLineEdit->text().isEmpty();
     enableWidget(enable, _rnxIntrComboBox);
-    enableWidget(enable, _rnxSamplSpinBox);
+    enableWidget(enable, _rnxSamplComboBox);
     enableWidget(enable, _rnxSkelLineEdit);
     enableWidget(enable, _rnxFileCheckBox);
     enableWidget(enable, _rnxScrpLineEdit);
@@ -2479,7 +2480,7 @@ void bncWindow::slotBncTextChanged(){
   if (sender() == 0 || sender() == _outPortLineEdit || sender() == _outFileLineEdit) {
     enable = !_outPortLineEdit->text().isEmpty() || !_outFileLineEdit->text().isEmpty();
     enableWidget(enable, _outWaitSpinBox);
-    enableWidget(enable, _outSamplSpinBox);
+    enableWidget(enable, _outSamplComboBox);
   }
 
   // Serial Output

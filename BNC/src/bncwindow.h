@@ -171,8 +171,8 @@ class bncWindow : public QMainWindow {
     QComboBox* _rnxIntrComboBox;
     QComboBox* _ephIntrComboBox;
     QComboBox* _corrIntrComboBox;
-    QSpinBox*  _rnxSamplSpinBox;
-    QSpinBox*  _outSamplSpinBox;
+    QComboBox*  _rnxSamplComboBox;
+    QComboBox*  _outSamplComboBox;
     QCheckBox* _rnxAppendCheckBox;
     QCheckBox* _autoStartCheckBox;
     QCheckBox* _miscScanRTCMCheckBox;

@@ -68,7 +68,7 @@ reqcDlg::reqcDlg(QWidget* parent) : QDialog(parent) {
   const QString timeFmtString = "yyyy-MM-dd hh:mm:ss";
 
   _reqcRnxVersion        = new QComboBox(this);
-  _reqcSampling          = new QSpinBox(this);
+  _reqcSampling          = new QComboBox(this);
   _reqcStartDateTime     = new QDateTimeEdit(this);
   _reqcStartDateTime->setDisplayFormat(timeFmtString);
   _reqcEndDateTime       = new QDateTimeEdit(this);
@@ -93,26 +93,25 @@ reqcDlg::reqcDlg(QWidget* parent) : QDialog(parent) {
   _reqcOldReceiverNumber = new QLineEdit(this);
   _reqcNewReceiverNumber = new QLineEdit(this);
 
-
   _reqcRnxVersion->setEditable(false);
   _reqcRnxVersion->addItems(QString("2,3").split(","));
   _reqcRnxVersion->setMaximumWidth(7*ww);
 
-  _reqcSampling->setMinimum(0);
-  _reqcSampling->setMaximum(60);
-  _reqcSampling->setSingleStep(5);
-  _reqcSampling->setSuffix(" sec");
-  _reqcSampling->setMaximumWidth(7*ww);
+  _reqcSampling->setEditable(false);
+  _reqcSampling->addItems(QString("0.1 sec,1 sec,5 sec,10 sec,15 sec,30 sec,60 sec").split(","));
+  bncSettings settings;
+  int ll = _reqcSampling->findText(settings.value("reqcSampl").toString());
+  if (ll != -1) {
+    _reqcSampling->setCurrentIndex(ll);
+  }
 
   // Read Options
   // ------------
-  bncSettings settings;
-
   int kk = _reqcRnxVersion->findText(settings.value("reqcRnxVersion").toString());
   if (kk != -1) {
     _reqcRnxVersion->setCurrentIndex(kk);
   }
-  _reqcSampling->setValue(settings.value("reqcSampling").toInt());
+  _reqcSampling->findText(settings.value("reqcSampling").toString());
   if (settings.value("reqcStartDateTime").toString().isEmpty()) {
     _reqcStartDateTime->setDateTime(QDateTime::fromString("1967-11-02T00:00:00", Qt::ISODate));
   }
@@ -241,7 +240,7 @@ reqcDlg::reqcDlg(QWidget* parent) : QDialog(parent) {
   // WhatsThis, RINEX Editing & QC
   // -----------------------------
   _reqcRnxVersion->setWhatsThis(tr("<p>Select version number of emerging new RINEX file.</p><p>Note the following:</p><p>When converting <u>RINEX Version 2 to Version 3 </u>Observation files, the tracking mode or channel information (signal attribute, see RINEX Version 3 documentation) in the (last out of the three characters) observation code is left blank if unknown.</p><p>When converting <u>RINEX Version 3 to Version 2</u>, the mapping of observations follows a 'Signal priority list' with signal attributes as defined in RINEX Version 3. <i>[key: reqcRnxVersion]</i></p>"));
-  _reqcSampling->setWhatsThis(tr("<p>Select sampling rate of emerging new RINEX Observation file.</p><p>'0 sec' means that observations from all epochs in the RINEX input file will become part of the RINEX output file. <i>[key: reqcSampling]</i></p>"));
+  _reqcSampling->setWhatsThis(tr("<p>Select sampling rate of emerging new RINEX Observation file. <i>[key: reqcSampling]</i></p>"));
   _reqcV2Priority->setWhatsThis(tr("<p>Specify a priority list of characters defining signal attributes as defined in RINEX Version 3. Priorities will be used to map observations with RINEX Version 3 attributes from incoming streams to Version 2. The underscore character '_' stands for undefined attributes. A question mark '?' can be used as wildcard which represents any one character.</p><p>Signal priorities can be specified as equal for all systems, as system specific or as system and freq. specific. For example: </li><ul><li>'CWPX_?' (General signal priorities valid for all GNSS) </li><li>'C:IQX I:ABCX' (System specific signal priorities for BDS and IRNSS) </li><li>'G:12&PWCSLXYN G:5&IQX R:12&PC R:3&IQX' (System and frequency specific signal priorities) </li></ul>Default is the following priority list 'G:12&PWCSLXYN_ G:5&IQX_ R:12&PC_ R:3&IQX_ E:16&BCX_ E:578&IQX_ J:1&SLXCZ_ J:26&SLX_ J:5&IQX_ C:IQX_ I:ABCX_ S:1&C_ S:5&IQX_'. <i>[key: reqcV2Priority]</i></p>"));
   _reqcStartDateTime->setWhatsThis(tr("<p>Specify begin of emerging new RINEX Observation file. <i>[key: reqcStartDateTime]</i></p>"));
   _reqcEndDateTime->setWhatsThis(tr("<p>Specify end of emerging new RINEX Observation file. <i>[key: reqcEndDateTime]</i></p>"));
@@ -313,7 +312,7 @@ void reqcDlg::saveOptions() {
   bncSettings settings;
 
   settings.setValue("reqcRnxVersion"       , _reqcRnxVersion->currentText());
-  settings.setValue("reqcSampling"         , _reqcSampling->value());
+  settings.setValue("reqcSampling"         , _reqcSampling->currentText());
   settings.setValue("reqcV2Priority"       , _reqcV2Priority->text());
   settings.setValue("reqcStartDateTime"    , _reqcStartDateTime->dateTime().toString(Qt::ISODate));
   settings.setValue("reqcEndDateTime"      , _reqcEndDateTime->dateTime().toString(Qt::ISODate));

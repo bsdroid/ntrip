@@ -51,7 +51,7 @@ class bncCaster : public QObject {
 
  signals:
    void mountPointsRead(QList<bncGetThread*>);
-   void getThreadsFinished();   
+   void getThreadsFinished();
    void newMessage(QByteArray msg, bool showOnScreen);
    void newObs(QByteArray staID, QList<t_satObs> obsList);
 
@@ -76,7 +76,7 @@ class bncCaster : public QObject {
    QList<QTcpSocket*>*             _uSockets;
    QList<QByteArray>               _staIDs;
    QList<bncGetThread*>            _threads;
-   int                             _samplingRate;
+   int                             _samplingRateMult10;
    double                          _outWait;
    QMutex                          _mutex;
    int                             _confInterval;

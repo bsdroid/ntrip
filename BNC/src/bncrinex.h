@@ -39,7 +39,7 @@ class bncRinex {
             const QByteArray& nmea, const QByteArray& ntripVersion);
    ~bncRinex();
 
-   int  samplingRate() const {return _samplingRate;}
+   int  samplingRate() const {return _samplingRateMult10;}
    void deepCopy(t_satObs obs);
    void dumpEpoch(const QByteArray& format, const bncTime& maxTime);
    void setReconnectFlag(bool flag){_reconnectFlag = flag;}
@@ -76,7 +76,8 @@ class bncRinex {
    QByteArray      _ntripVersion;
    bool            _reconnectFlag;
    QDate           _skeletonDate;
-   int             _samplingRate;
+   QString         _samplingRateStr;
+   int             _samplingRateMult10;
    QStringList     _addComments;
 
    QMap<QString, int>  _slip_cnt_L1;
