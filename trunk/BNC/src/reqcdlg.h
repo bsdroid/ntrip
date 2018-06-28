@@ -57,7 +57,7 @@ class reqcDlg : public QDialog {
    void saveOptions();
 
    QComboBox*     _reqcRnxVersion;
-   QSpinBox*      _reqcSampling;
+   QComboBox*     _reqcSampling;
    QDateTimeEdit* _reqcStartDateTime;
    QDateTimeEdit* _reqcEndDateTime;
    QLineEdit*     _reqcRunBy;

@@ -89,7 +89,29 @@ bncRinex::bncRinex(const QByteArray& statID, const QUrl& mountPoint,
   expandEnvVar(_userName);
   _userName = _userName.leftJustified(20, ' ', true);
 
-  _samplingRate = settings.value("rnxSampl").toInt();
+  _samplingRateMult10 = int(settings.value("rnxSampl").toString().split("sec").first().toDouble() * 10.0);
+
+  if      (settings.value("rnxSampl").toString() == "0.1 sec") {
+    _samplingRateStr = "_10Z";
+  }
+  else if (settings.value("rnxSampl").toString() == "1 sec") {
+    _samplingRateStr = "_01S";
+  }
+  else if (settings.value("rnxSampl").toString() == "5 sec") {
+    _samplingRateStr = "_05S";
+  }
+  else if (settings.value("rnxSampl").toString() == "10 sec") {
+    _samplingRateStr = "_10S";
+  }
+  else if (settings.value("rnxSampl").toString() == "15 sec") {
+    _samplingRateStr = "_15S";
+  }
+  else if (settings.value("rnxSampl").toString() == "30 sec") {
+    _samplingRateStr = "_30S";
+  }
+  else if (settings.value("rnxSampl").toString() == "60 sec") {
+    _samplingRateStr = "_01M";
+  }
 
   _writeRinexFileOnlyWithSkl = settings.value("rnxOnlyWithSKL").toBool();
 
@@ -347,9 +369,7 @@ void bncRinex::resolveFileName(const QDateTime& datTim) {
         country = hlp[2];
       }
     }
-    int sampl = settings.value("rnxSampl").toString().mid(0,2).toInt();
-    if (!sampl)
-      sampl++;
+
     path += ID4 +
             QString("%1").arg(monNum, 1, 10) +
             QString("%1").arg(recNum, 1, 10) +
@@ -358,7 +378,7 @@ void bncRinex::resolveFileName(const QDateTime& datTim) {
             QString("%1").arg(datTim.date().year()) +
             QString("%1").arg(datTim.date().dayOfYear(), 3, 10, QChar('0')) +
             hlpStr + // HMS_period
-            QString("_%1S").arg(sampl, 2, 10, QChar('0')) + // sampling rate
+            QString("%1").arg(_samplingRateStr) + // sampling rate
             "_MO" + // mixed OBS
             distStr +
             ".rnx";

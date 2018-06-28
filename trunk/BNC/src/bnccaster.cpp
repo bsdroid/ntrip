@@ -95,8 +95,8 @@ bncCaster::bncCaster() {
     _uSockets = 0;
   }
 
-  _samplingRate = settings.value("outSampl").toInt();
-  _outWait      = settings.value("outWait").toDouble();
+  _samplingRateMult10 = int(settings.value("outSampl").toString().split("sec").first().toDouble() * 10.0);
+  _outWait            = settings.value("outWait").toDouble();
   if (_outWait <= 0.0) {
     _outWait = 0.01;
   }
@@ -303,7 +303,7 @@ void bncCaster::dumpEpochs(const bncTime& maxTime) {
     if (epoTime <= maxTime) {
       const QList<t_satObs>& allObs = itEpo.value();
       int sec = int(nint(epoTime.gpssec()*10));
-      if ( (_out || _sockets) && (_samplingRate == 0 || sec % (_samplingRate*10) == 0) ) {
+      if ( (_out || _sockets) && (sec % (_samplingRateMult10) == 0) ) {
         QListIterator<t_satObs> it(allObs);
         bool firstObs = true;
         while (it.hasNext()) {
@@ -373,7 +373,7 @@ void bncCaster::readMountPoints() {
 
   // Reread several options
   // ----------------------
-  _samplingRate = settings.value("outSampl").toInt();
+  _samplingRateMult10 = int(settings.value("outSampl").toString().split("sec").first().toDouble() * 10.0);
   _outWait      = settings.value("outWait").toInt();
   if (_outWait < 1) {
     _outWait = 1;

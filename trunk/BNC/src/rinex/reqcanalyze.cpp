@@ -818,7 +818,7 @@ void t_reqcAnalyze::printReport(const t_rnxObsFile* obsFile) {
                                    << _qcFile._startTime.timestr(1,'.').c_str()    << endl
         << "End Time           : " << _qcFile._endTime.datestr().c_str()           << ' '
                                    << _qcFile._endTime.timestr(1,'.').c_str()      << endl
-        << "Interval           : " << _qcFile._interval                            << endl;
+        << "Interval           : " << _qcFile._interval << " sec"                  << endl;
 
   // Number of systems
   // -----------------
