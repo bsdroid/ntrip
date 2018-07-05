@@ -207,7 +207,7 @@ int main(int argc, char* argv[]) {
       "   PPP/nmeaPath    {Directory for NMEA output files [character string]}\n"
       "   PPP/snxtroPath  {Directory for SINEX troposphere output files [character string]}\n"
       "   PPP/snxtroIntr  {SINEX troposphere file interval [character string: 1 min|2 min|5 min|10 min|15 min|30 min|1 hour|1 day]}\n"
-      "   PPP/snxtroSampl {SINEX troposphere file sampling rate [integer number of seconds: 0|30|60|90|120|150|180|210|240|270|300]}\n"
+      "   PPP/snxtroSampl {SINEX troposphere file sampling rate [character string: 1 sec|5 sec|10 sec|30 sec|60 sec|300 sec]}\n"
       "   PPP/snxtroAc    {SINEX troposphere Analysis Center [character string]}\n"
       "   PPP/snxtroSol   {SINEX troposphere solution ID [character string]}\n"
       "\n"

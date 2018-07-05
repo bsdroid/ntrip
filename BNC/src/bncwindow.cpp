@@ -1385,7 +1385,7 @@ bncWindow::bncWindow() {
   _pppWidgets._nmeaPath->setWhatsThis(tr("<p>Specify a directory for saving coordinates in daily NMEA files. If the specified directory does not exist, BNC will not create such files.</p><p>Default is an empty option field, meaning that no NMEA file shall be produced. <i>[key: PPP/nmeaPath]</i></p>"));
   _pppWidgets._snxtroPath->setWhatsThis(tr("<p>Specify a directory for saving SINEX Troposphere files. If the specified directory does not exist, BNC will not create such files.</p><p>Default is an empty option field, meaning that no SINEX Troposphere files shall be produced. <i>[key: PPP/snxtroPath]</i></p>"));
   _pppWidgets._snxtroIntr->setWhatsThis(tr("<p>Select a length for SINEX Troposphere files.</p><p>Default 'SNX TRO interval' for saving SINEX Troposphere files on disk is '1 hour'. <i>[key: PPP/snxtroIntr]</i></p>"));
-  _pppWidgets._snxtroSampl->setWhatsThis(tr("<p>Select a 'Sampling' rate for saving troposphere parameters.</p><p>Default 'SNX TRO sampling' rate is '0', meaning that all troposphere estimates will be saved on disk. <i>[key: PPP/snxtroSampl]</i></p>"));
+  _pppWidgets._snxtroSampl->setWhatsThis(tr("<p>Select a 'Sampling' rate for saving troposphere parameters. <i>[key: PPP/snxtroSampl]</i></p>"));
   _pppWidgets._snxtroAc->setWhatsThis(tr("<p>Specify a 3-character abbreviation describing you as the generating Analysis Center (AC) in your SINEX troposphere files. <i>[key: PPP/snxtroAc]</i></p>"));
   _pppWidgets._snxtroSol->setWhatsThis(tr("<p>Specify a 4-character solution ID to allow a distingtion between different solutions per AC. <i>[key: PPP/snxtroSol]</i></p>"));
 

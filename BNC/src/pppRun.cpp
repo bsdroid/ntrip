@@ -224,7 +224,7 @@ t_pppRun::t_pppRun(const t_pppOptions* opt) {
     else {
       snxtroFileSkl = snxtroFileSkl + ID4 + "${GPSWD}" + distStr + ".tro";
     }
-    sampl = settings.value("PPP/snxtroSampl").toInt();
+    sampl = settings.value("PPP/snxtroSampl").toString().split("sec").first().toInt();
     intr  = settings.value("PPP/snxtroIntr").toString();
     _snxtroFile = new bncSinexTro(_opt, snxtroFileSkl, intr, sampl);
   }
