@@ -55,7 +55,7 @@ class t_pppWidgets : public QObject {
   QLineEdit*     _logPath;
   QLineEdit*     _nmeaPath;
   QLineEdit*     _snxtroPath;
-  QSpinBox*      _snxtroSampl;
+  QComboBox*     _snxtroSampl;
   QComboBox*     _snxtroIntr;
   QLineEdit*     _snxtroAc;
   QLineEdit*     _snxtroSol;

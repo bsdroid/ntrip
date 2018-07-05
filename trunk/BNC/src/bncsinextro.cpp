@@ -31,7 +31,7 @@ bncSinexTro::bncSinexTro(const t_pppOptions* opt,
   : bncoutf(sklFileName, intr, sampl) {
 
   _opt       = opt;
-  (!sampl) ? _sampl = 1 : _sampl =  sampl;
+  _sampl =  sampl;
 
   _antex = 0;
 }

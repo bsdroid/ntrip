@@ -71,7 +71,7 @@ t_pppWidgets::t_pppWidgets() {
   _logPath      = new QLineEdit();     _logPath     ->setObjectName("PPP/logPath");      _widgets << _logPath;
   _nmeaPath     = new QLineEdit();     _nmeaPath    ->setObjectName("PPP/nmeaPath");     _widgets << _nmeaPath;
   _snxtroPath   = new QLineEdit();     _snxtroPath  ->setObjectName("PPP/snxtroPath");   _widgets << _snxtroPath;
-  _snxtroSampl  = new QSpinBox();      _snxtroSampl ->setObjectName("PPP/snxtroSampl");  _widgets << _snxtroSampl;
+  _snxtroSampl  = new QComboBox();      _snxtroSampl->setObjectName("PPP/snxtroSampl");  _widgets << _snxtroSampl;
   _snxtroIntr   = new QComboBox();     _snxtroIntr  ->setObjectName("PPP/snxtroIntr");   _widgets << _snxtroIntr;
   _snxtroAc     = new QLineEdit();     _snxtroAc    ->setObjectName("PPP/snxtroAc");     _widgets << _snxtroAc;
   _snxtroSol    = new QLineEdit();     _snxtroSol   ->setObjectName("PPP/snxtroSol");    _widgets << _snxtroSol;
@@ -150,10 +150,8 @@ t_pppWidgets::t_pppWidgets() {
   _lcBDS->addItems(QString("no,P2,L2,P2&L2,P7,L7,P7&L7,Pi,Li,Pi&Li,P3,L3,P3&L3").split(","));
 #endif
 
-  _snxtroSampl->setMinimum(0);
-  _snxtroSampl->setMaximum(300);
-  _snxtroSampl->setSingleStep(30);
-  _snxtroSampl->setSuffix(" sec");
+  _snxtroSampl->setEditable(false);
+  _snxtroSampl->addItems(QString("1 sec,5 sec,10 sec,30 sec,60 sec,300 sec").split(","));
 
   _snxtroIntr->setEditable(false);
   _snxtroIntr->addItems(QString("1 min,2 min,5 min,10 min,15 min,30 min,1 hour,1 day").split(","));
@@ -367,7 +365,12 @@ void t_pppWidgets::readOptions() {
   _minObs->setValue(settings.value(_minObs->objectName()).toInt());
   _minEle->setValue(settings.value(_minEle->objectName()).toInt());
   _corrWaitTime->setValue(settings.value(_corrWaitTime->objectName()).toInt());
-  _snxtroSampl->setValue(settings.value(_snxtroSampl->objectName()).toInt());
+
+
+  ii = _snxtroSampl->findText(settings.value(_snxtroSampl->objectName()).toString());
+  if (ii != -1) {
+    _snxtroSampl->setCurrentIndex(ii);
+  }
 
   // Table with stations
   // -------------------
@@ -420,7 +423,7 @@ void t_pppWidgets::saveOptions() {
   settings.setValue(_logPath     ->objectName(), _logPath     ->text());
   settings.setValue(_nmeaPath    ->objectName(), _nmeaPath    ->text());
   settings.setValue(_snxtroPath  ->objectName(), _snxtroPath  ->text());
-  settings.setValue(_snxtroSampl ->objectName(), _snxtroSampl ->value());
+  settings.setValue(_snxtroSampl ->objectName(), _snxtroSampl ->currentText());
   settings.setValue(_snxtroIntr  ->objectName(), _snxtroIntr  ->currentText());
   settings.setValue(_snxtroAc    ->objectName(), _snxtroAc    ->text());
   settings.setValue(_snxtroSol   ->objectName(), _snxtroSol   ->text());
