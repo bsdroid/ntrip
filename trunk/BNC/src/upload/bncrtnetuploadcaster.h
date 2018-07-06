@@ -39,9 +39,6 @@ class bncRtnetUploadCaster : public bncUploadCaster {
                         QString& outLine);
   void crdTrafo(int GPSWeek, ColumnVector& xyz, double& dc);
 
-  // TODO: the following lines can be deleted if all parameters are updated regarding ITRF2014
-  void crdTrafo8(int GPSWeek, ColumnVector& xyz, double& dc);
-
   int determineUpdateInd(double samplingRate);
 
   QString        _casterID;

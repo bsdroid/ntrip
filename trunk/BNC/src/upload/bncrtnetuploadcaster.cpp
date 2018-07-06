@@ -104,41 +104,23 @@ bncRtnetUploadCaster::bncRtnetUploadCaster(const QString& mountpoint,
 
   // Set Transformation Parameters
   // -----------------------------
-  // Transformation Parameters from ITRF2008 to ETRF2000
+  // Transformation Parameters from ITRF2014 to ETRF2000
   if (_crdTrafo == "ETRF2000") {
-    _dx  =  0.0521;
-    _dy  =  0.0493;
-    _dz  = -0.0585;
+    _dx  =  0.0537;
+    _dy  =  0.0512;
+    _dz  = -0.0551;
     _dxr =  0.0001;
     _dyr =  0.0001;
-    _dzr = -0.0018;
-    _ox  =  0.000891;
-    _oy  =  0.005390;
-    _oz  = -0.008712;
-    _oxr =  0.000081;
-    _oyr =  0.000490;
-    _ozr = -0.000792;
-    _sc  =  1.34;
-    _scr =  0.08;
+    _dzr = -0.0019;
+    _ox  = -0.000891;
+    _oy  = -0.005390;
+    _oz  =  0.008712;
+    _oxr = -0.000081;
+    _oyr = -0.000490;
+    _ozr = +0.000792;
+    _sc  =  1.02;
+    _scr =  0.11;
     _t0  =  2000.0;
-  }
-  // Transformation Parameters from ITRF2008 to NAD83
-  else if (_crdTrafo == "NAD83") {
-    _dx  =  0.99343;
-    _dy  = -1.90331;
-    _dz  = -0.52655;
-    _dxr =  0.00079;
-    _dyr = -0.00060;
-    _dzr = -0.00134;
-    _ox  = -0.02591467;
-    _oy  = -0.00942645;
-    _oz  = -0.01159935;
-    _oxr = -0.00006667;
-    _oyr =  0.00075744;
-    _ozr =  0.00005133;
-    _sc  =  1.71504;
-    _scr = -0.10201;
-    _t0  =  1997.0;
   }
   // Transformation Parameters from ITRF2014 to GDA2020 (Ryan Ruddick, GA)
   else if (_crdTrafo == "GDA2020") {
@@ -176,22 +158,22 @@ bncRtnetUploadCaster::bncRtnetUploadCaster(const QString& mountpoint,
     _scr =  0.000;
     _t0  =  2000.4;
   }
-  // Transformation Parameters from ITRF2008 to DREF91
+  // Transformation Parameters from ITRF2014 to DREF91
   else if (_crdTrafo == "DREF91") {
-    _dx  = -0.0118;
-    _dy  =  0.1432;
-    _dz  = -0.1117;
+    _dx  =  0.0537;
+    _dy  =  0.0512;
+    _dz  = -0.0551;
     _dxr =  0.0001;
     _dyr =  0.0001;
-    _dzr = -0.0018;
-    _ox  =  0.003291;
-    _oy  =  0.006190;
-    _oz  = -0.011012;
-    _oxr =  0.000081;
-    _oyr =  0.000490;
-    _ozr = -0.000792;
-    _sc  =  12.24;
-    _scr =  0.08;
+    _dzr = -0.0019;
+    _ox  = -0.000233;
+    _oy  = -0.005598;
+    _oz  =  0.009467;
+    _oxr = -0.000081;
+    _oyr = -0.000490;
+    _ozr =  0.000792;
+    _sc  =  1.02;
+    _scr =  0.11;
     _t0  =  2000.0;
   }
   else if (_crdTrafo == "Custom") {
@@ -211,27 +193,6 @@ bncRtnetUploadCaster::bncRtnetUploadCaster(const QString& mountpoint,
     _scr = settings.value("trafo_scr").toDouble();
     _t0 = settings.value("trafo_t0").toDouble();
   }
-  // TODO: the following lines can be deleted if all parameters are updated regarding ITRF2014
-  if (_crdTrafo == "ETRF2000" ||
-      _crdTrafo ==  "NAD83" ||
-      _crdTrafo ==  "DREF91" ) {// Transformation Parameters from ITRF2014 to ITRF2008
-                                // (http://itrf.ign.fr/doc_ITRF/Transfo-ITRF2014_ITRFs.txt)
-   _dx8  =  0.0016;
-   _dy8  =  0.0019;
-   _dz8  =  0.0024;
-   _dxr8 =  0.0;
-   _dyr8 =  0.0;
-   _dzr8 = -0.0001;
-   _ox8  =  0.0;
-   _oy8  =  0.0;
-   _oz8  =  0.0;
-   _oxr8 =  0.0;
-   _oyr8 =  0.0;
-   _ozr8 =  0.0;
-   _sc8  = -0.02;
-   _scr8 =  0.03;
-   _t08  =  2010.0;
- }
 }
 
 // Destructor
@@ -681,7 +642,7 @@ void bncRtnetUploadCaster::decodeRtnetStream(char* buffer, int bufLen) {
               if (ii >= CLOCKORBIT_NUMBIAS)
                 break;
               biasSat->NumberOfCodeBiases += 1;
-              biasSat->Biases[ii].Type = CODETYPEGPS_L2_CM;
+              biasSat->Biases[ii].Type = CODETYPEGPS_L2C_M;
               biasSat->Biases[ii].Bias = it.value();
             }
             else if (it.key() == "2L") {
@@ -689,7 +650,7 @@ void bncRtnetUploadCaster::decodeRtnetStream(char* buffer, int bufLen) {
               if (ii >= CLOCKORBIT_NUMBIAS)
                 break;
               biasSat->NumberOfCodeBiases += 1;
-              biasSat->Biases[ii].Type = CODETYPEGPS_L2_CL;
+              biasSat->Biases[ii].Type = CODETYPEGPS_L2C_L;
               biasSat->Biases[ii].Bias = it.value();
             }
             else if (it.key() == "2X") {
@@ -697,7 +658,7 @@ void bncRtnetUploadCaster::decodeRtnetStream(char* buffer, int bufLen) {
               if (ii >= CLOCKORBIT_NUMBIAS)
                 break;
               biasSat->NumberOfCodeBiases += 1;
-              biasSat->Biases[ii].Type = CODETYPEGPS_L2_CML;
+              biasSat->Biases[ii].Type = CODETYPEGPS_L2C_ML;
               biasSat->Biases[ii].Bias = it.value();
             }
             else if (it.key() == "2P") {
@@ -1027,7 +988,7 @@ void bncRtnetUploadCaster::decodeRtnetStream(char* buffer, int bufLen) {
               if (ii >= CLOCKORBIT_NUMBIAS)
                 break;
               biasSat->NumberOfCodeBiases += 1;
-              biasSat->Biases[ii].Type = CODETYPEQZSS_LEX_S;
+              biasSat->Biases[ii].Type = CODETYPEQZSS_L6_D;
               biasSat->Biases[ii].Bias = it.value();
             }
             else if (it.key() == "6L") {
@@ -1035,7 +996,7 @@ void bncRtnetUploadCaster::decodeRtnetStream(char* buffer, int bufLen) {
               if (ii >= CLOCKORBIT_NUMBIAS)
                 break;
               biasSat->NumberOfCodeBiases += 1;
-              biasSat->Biases[ii].Type = CODETYPEQZSS_LEX_L;
+              biasSat->Biases[ii].Type = CODETYPEQZSS_L6_P;
               biasSat->Biases[ii].Bias = it.value();
             }
             else if (it.key() == "6X") {
@@ -1043,7 +1004,7 @@ void bncRtnetUploadCaster::decodeRtnetStream(char* buffer, int bufLen) {
               if (ii >= CLOCKORBIT_NUMBIAS)
                 break;
               biasSat->NumberOfCodeBiases += 1;
-              biasSat->Biases[ii].Type = CODETYPEQZSS_LEX_SL;
+              biasSat->Biases[ii].Type = CODETYPEQZSS_L6_DP;
               biasSat->Biases[ii].Bias = it.value();
             }
           }
@@ -1326,7 +1287,7 @@ void bncRtnetUploadCaster::decodeRtnetStream(char* buffer, int bufLen) {
               if (ii >= CLOCKORBIT_NUMBIAS)
                 break;
               phasebiasSat->NumberOfPhaseBiases += 1;
-              phasebiasSat->Biases[ii].Type = CODETYPEGPS_L2_CM;
+              phasebiasSat->Biases[ii].Type = CODETYPEGPS_L2C_M;
               phasebiasSat->Biases[ii].Bias = pbSig.bias;
               phasebiasSat->Biases[ii].SignalIntegerIndicator = pbSig.integerIndicator;
               phasebiasSat->Biases[ii].SignalsWideLaneIntegerIndicator =
@@ -1339,7 +1300,7 @@ void bncRtnetUploadCaster::decodeRtnetStream(char* buffer, int bufLen) {
               if (ii >= CLOCKORBIT_NUMBIAS)
                 break;
               phasebiasSat->NumberOfPhaseBiases += 1;
-              phasebiasSat->Biases[ii].Type = CODETYPEGPS_L2_CL;
+              phasebiasSat->Biases[ii].Type = CODETYPEGPS_L2C_L;
               phasebiasSat->Biases[ii].Bias = pbSig.bias;
               phasebiasSat->Biases[ii].SignalIntegerIndicator = pbSig.integerIndicator;
               phasebiasSat->Biases[ii].SignalsWideLaneIntegerIndicator =
@@ -1352,7 +1313,7 @@ void bncRtnetUploadCaster::decodeRtnetStream(char* buffer, int bufLen) {
               if (ii >= CLOCKORBIT_NUMBIAS)
                 break;
               phasebiasSat->NumberOfPhaseBiases += 1;
-              phasebiasSat->Biases[ii].Type = CODETYPEGPS_L2_CML;
+              phasebiasSat->Biases[ii].Type = CODETYPEGPS_L2C_ML;
               phasebiasSat->Biases[ii].Bias = pbSig.bias;
               phasebiasSat->Biases[ii].SignalIntegerIndicator = pbSig.integerIndicator;
               phasebiasSat->Biases[ii].SignalsWideLaneIntegerIndicator =
@@ -1877,7 +1838,7 @@ void bncRtnetUploadCaster::decodeRtnetStream(char* buffer, int bufLen) {
               if (ii >= CLOCKORBIT_NUMBIAS)
                 break;
               phasebiasSat->NumberOfPhaseBiases += 1;
-              phasebiasSat->Biases[ii].Type = CODETYPEQZSS_LEX_S;
+              phasebiasSat->Biases[ii].Type = CODETYPEQZSS_L6_D;
               phasebiasSat->Biases[ii].Bias = pbSig.bias;
               phasebiasSat->Biases[ii].SignalIntegerIndicator = pbSig.integerIndicator;
               phasebiasSat->Biases[ii].SignalsWideLaneIntegerIndicator =
@@ -1890,7 +1851,7 @@ void bncRtnetUploadCaster::decodeRtnetStream(char* buffer, int bufLen) {
               if (ii >= CLOCKORBIT_NUMBIAS)
                 break;
               phasebiasSat->NumberOfPhaseBiases += 1;
-              phasebiasSat->Biases[ii].Type = CODETYPEQZSS_LEX_L;
+              phasebiasSat->Biases[ii].Type = CODETYPEQZSS_L6_P;
               phasebiasSat->Biases[ii].Bias = pbSig.bias;
               phasebiasSat->Biases[ii].SignalIntegerIndicator = pbSig.integerIndicator;
               phasebiasSat->Biases[ii].SignalsWideLaneIntegerIndicator =
@@ -1903,7 +1864,7 @@ void bncRtnetUploadCaster::decodeRtnetStream(char* buffer, int bufLen) {
               if (ii >= CLOCKORBIT_NUMBIAS)
                 break;
               phasebiasSat->NumberOfPhaseBiases += 1;
-              phasebiasSat->Biases[ii].Type = CODETYPEQZSS_LEX_SL;
+              phasebiasSat->Biases[ii].Type = CODETYPEQZSS_L6_DP;
               phasebiasSat->Biases[ii].Bias = pbSig.bias;
               phasebiasSat->Biases[ii].SignalIntegerIndicator = pbSig.integerIndicator;
               phasebiasSat->Biases[ii].SignalsWideLaneIntegerIndicator =
@@ -2295,25 +2256,7 @@ void bncRtnetUploadCaster::processSatellite(const t_eph* eph, int GPSweek,
   ColumnVector xP = _CoM ? rtnCoM : rtnAPC;
 
   double dc = 0.0;
-  //TODO: the following 3 lines can be activated again if all parameters are updated regarding ITRF2014
-  //if (_crdTrafo != "IGS14") {
-  //  crdTrafo(GPSweek, xP, dc);
-  //}
-  //TODO: the following 3 lines can be deleted if all parameters are updated regarding ITRF2014
-  if (_crdTrafo ==  "ETRF2000") {
-    crdTrafo8(GPSweek, xP, dc);
-    crdTrafo(GPSweek, xP, dc);
-  }
-  else if (_crdTrafo ==  "NAD83") {
-    crdTrafo8(GPSweek, xP, dc);
-    crdTrafo(GPSweek, xP, dc);
-  }
-  else if (_crdTrafo ==  "DREF91") {
-    crdTrafo8(GPSweek, xP, dc);
-    crdTrafo(GPSweek, xP, dc);
-  }
-  else if (_crdTrafo ==  "SIRGAS2000" ||
-           _crdTrafo ==  "GDA2020") {
+  if (_crdTrafo != "IGS14") {
     crdTrafo(GPSweek, xP, dc);
   }
 
@@ -2395,11 +2338,6 @@ void bncRtnetUploadCaster::crdTrafo(int GPSWeek, ColumnVector& xyz,
     meanSta(2) = 845230.0;
     meanSta(3) = 5136850.0;
   }
-  else if (_crdTrafo == "NAD83") {
-    meanSta(1) = -1092950.0;
-    meanSta(2) = -4383600.0;
-    meanSta(3) = 4487420.0;
-  }
   else if (_crdTrafo == "GDA2020") {
     meanSta(1) = -4052050.0;
     meanSta(2) = 4212840.0;
@@ -2420,62 +2358,6 @@ void bncRtnetUploadCaster::crdTrafo(int GPSWeek, ColumnVector& xyz,
     meanSta(2) = 0.0; // TODO
     meanSta(3) = 0.0; // TODO
   }
-  // TODO: has to be deleted as soon all parameters are available with respect to ITRF2014
-  else if (_crdTrafo == "ITRF2008") {
-      meanSta(1) = 0.0; // TODO
-      meanSta(2) = 0.0; // TODO
-      meanSta(3) = 0.0; // TODO
-    }
-
-  // Clock correction proportional to topocentric distance to satellites
-  // -------------------------------------------------------------------
-  double rho = (xyz - meanSta).norm_Frobenius();
-  dc = rho * (sc - 1.0) / sc / t_CST::c;
-
-  Matrix rMat(3, 3);
-  rMat(1, 1) = 1.0;
-  rMat(1, 2) = -oz;
-  rMat(1, 3) = oy;
-  rMat(2, 1) = oz;
-  rMat(2, 2) = 1.0;
-  rMat(2, 3) = -ox;
-  rMat(3, 1) = -oy;
-  rMat(3, 2) = ox;
-  rMat(3, 3) = 1.0;
-
-  xyz = sc * rMat * xyz + dx;
-}
-
-// Transform Coordinates
-////////////////////////////////////////////////////////////////////////////
-void bncRtnetUploadCaster::crdTrafo8(int GPSWeek, ColumnVector& xyz,
-    double& dc) {
-
-  // Current epoch minus 2000.0 in years
-  // ------------------------------------
-  double dt = (GPSWeek - (1042.0 + 6.0 / 7.0)) / 365.2422 * 7.0 + 2000.0 - _t0;
-
-  ColumnVector dx(3);
-
-  dx(1) = _dx8 + dt * _dxr8;
-  dx(2) = _dy8 + dt * _dyr8;
-  dx(3) = _dz8 + dt * _dzr8;
-
-  static const double arcSec = 180.0 * 3600.0 / M_PI;
-
-  double ox = (_ox8 + dt * _oxr8) / arcSec;
-  double oy = (_oy8 + dt * _oyr8) / arcSec;
-  double oz = (_oz8 + dt * _ozr8) / arcSec;
-
-  double sc = 1.0 + _sc8 * 1e-9 + dt * _scr8 * 1e-9;
-
-  // Specify approximate center of area
-  // ----------------------------------
-  ColumnVector meanSta(3);
-  meanSta(1) = 0.0; // TODO
-  meanSta(2) = 0.0; // TODO
-  meanSta(3) = 0.0; // TODO
-
 
   // Clock correction proportional to topocentric distance to satellites
   // -------------------------------------------------------------------
