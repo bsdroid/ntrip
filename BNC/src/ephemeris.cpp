@@ -1488,36 +1488,7 @@ t_ephBDS::t_ephBDS(float rnxVersion, const QStringList& lines) {
 // IOD of BDS Ephemeris (virtual)
 ////////////////////////////////////////////////////////////////////////////
 unsigned int t_ephBDS::IOD() const {
-  unsigned char buffer[80];
-  int size = 0;
-  int numbits = 0;
-  long long bitbuffer = 0;
-  unsigned char *startbuffer = buffer;
-
-  BDSADDBITSFLOAT(14, this->_IDOT, M_PI/static_cast<double>(1<<30)/static_cast<double>(1<<13))
-  BDSADDBITSFLOAT(11, this->_clock_driftrate, 1.0/static_cast<double>(1<<30)
-      /static_cast<double>(1<<30)/static_cast<double>(1<<6))
-  BDSADDBITSFLOAT(22, this->_clock_drift, 1.0/static_cast<double>(1<<30)/static_cast<double>(1<<20))
-  BDSADDBITSFLOAT(24, this->_clock_bias, 1.0/static_cast<double>(1<<30)/static_cast<double>(1<<3))
-  BDSADDBITSFLOAT(18, this->_Crs, 1.0/static_cast<double>(1<<6))
-  BDSADDBITSFLOAT(16, this->_Delta_n, M_PI/static_cast<double>(1<<30)/static_cast<double>(1<<13))
-  BDSADDBITSFLOAT(32, this->_M0, M_PI/static_cast<double>(1<<30)/static_cast<double>(1<<1))
-  BDSADDBITSFLOAT(18, this->_Cuc, 1.0/static_cast<double>(1<<30)/static_cast<double>(1<<1))
-  BDSADDBITSFLOAT(32, this->_e, 1.0/static_cast<double>(1<<30)/static_cast<double>(1<<3))
-  BDSADDBITSFLOAT(18, this->_Cus, 1.0/static_cast<double>(1<<30)/static_cast<double>(1<<1))
-  BDSADDBITSFLOAT(32, this->_sqrt_A, 1.0/static_cast<double>(1<<19))
-  BDSADDBITSFLOAT(18, this->_Cic, 1.0/static_cast<double>(1<<30)/static_cast<double>(1<<1))
-  BDSADDBITSFLOAT(32, this->_OMEGA0, M_PI/static_cast<double>(1<<30)/static_cast<double>(1<<1))
-  BDSADDBITSFLOAT(18, this->_Cis, 1.0/static_cast<double>(1<<30)/static_cast<double>(1<<1))
-  BDSADDBITSFLOAT(32, this->_i0, M_PI/static_cast<double>(1<<30)/static_cast<double>(1<<1))
-  BDSADDBITSFLOAT(18, this->_Crc, 1.0/static_cast<double>(1<<6))
-  BDSADDBITSFLOAT(32, this->_omega, M_PI/static_cast<double>(1<<30)/static_cast<double>(1<<1))
-  BDSADDBITSFLOAT(24, this->_OMEGADOT, M_PI/static_cast<double>(1<<30)/static_cast<double>(1<<13))
-  BDSADDBITS(5, 0)  // the last byte is filled by 0-bits to obtain a length of an integer multiple of 8
-
-  return CRC24(size, startbuffer);
-
-
+  return (int(_TOEsec)/720) % 240;
 }
 
 // Compute BDS Satellite Position (virtual)
@@ -1694,7 +1665,7 @@ t_irc t_ephBDS::position(int GPSweek, double GPSweeks, double* xc, double* vv) c
 // RINEX Format String
 //////////////////////////////////////////////////////////////////////////////
 QString t_ephBDS::toString(double version) const {
-
+IOD();
   QString rnxStr = rinexDateStr(_TOC-14.0, _prn, version);
 
   QTextStream out(&rnxStr);
