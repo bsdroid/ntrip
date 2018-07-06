@@ -686,17 +686,19 @@ string RTCM3coDecoder::codeTypeToRnxType(char system, CodeType type) const {
       case CODETYPEGPS_L1_CA:         return "1C";
       case CODETYPEGPS_L1_P:          return "1P";
       case CODETYPEGPS_L1_Z:          return "1W";
-      //case CODETYPEGPS_L1_Y:          return "1Y";
-      //case CODETYPEGPS_L1_M:          return "1M";
+      case CODETYPEGPS_L1_Y:          return "1Y";
+      case CODETYPEGPS_L1_M:          return "1M";
+
       case CODETYPEGPS_L2_CA:         return "2C";
       case CODETYPEGPS_SEMI_CODELESS: return "2D";
-      case CODETYPEGPS_L2_CM:         return "2S";
-      case CODETYPEGPS_L2_CL:         return "2L";
-      case CODETYPEGPS_L2_CML:        return "2X";
+      case CODETYPEGPS_L2C_M:         return "2S";
+      case CODETYPEGPS_L2C_L:         return "2L";
+      case CODETYPEGPS_L2C_ML:        return "2X";
       case CODETYPEGPS_L2_P:          return "2P";
       case CODETYPEGPS_L2_Z:          return "2W";
-      //case CODETYPEGPS_L2_Y:          return "2Y";
-      //case CODETYPEGPS_L2_M:          return "2M";
+      case CODETYPEGPS_L2_Y:          return "2Y";
+      case CODETYPEGPS_L2_M:          return "2M";
+
       case CODETYPEGPS_L5_I:          return "5I";
       case CODETYPEGPS_L5_Q:          return "5Q";
       case CODETYPEGPS_L5_IQ:         return "5X";
@@ -710,8 +712,17 @@ string RTCM3coDecoder::codeTypeToRnxType(char system, CodeType type) const {
     switch (type) {
       case CODETYPEGLONASS_L1_CA:     return "1C";
       case CODETYPEGLONASS_L1_P:      return "1P";
+
+      case CODETYPEGLONASS_L1a_OCd:   return "1A";
+      case CODETYPEGLONASS_L1a_OCp:   return "1B";
+      case CODETYPEGLONASS_L1a_OCdp:  return "1X";
+
       case CODETYPEGLONASS_L2_CA:     return "2C";
       case CODETYPEGLONASS_L2_P:      return "2P";
+      case CODETYPEGLONASS_L2a_CSI:   return "1A";
+      case CODETYPEGLONASS_L2a_OCp:   return "1B";
+      case CODETYPEGLONASS_L2a_CSIOCp:return "1X";
+
       case CODETYPEGLONASS_L3_I:      return "3I";
       case CODETYPEGLONASS_L3_Q:      return "3Q";
       case CODETYPEGLONASS_L3_IQ:     return "3X";
@@ -725,15 +736,19 @@ string RTCM3coDecoder::codeTypeToRnxType(char system, CodeType type) const {
       case CODETYPEGALILEO_E1_C:       return "1C";
       case CODETYPEGALILEO_E1_BC:      return "1X";
       case CODETYPEGALILEO_E1_ABC:     return "1Z";
+
       case CODETYPEGALILEO_E5A_I:      return "5I";
       case CODETYPEGALILEO_E5A_Q:      return "5Q";
       case CODETYPEGALILEO_E5A_IQ:     return "5X";
+
       case CODETYPEGALILEO_E5B_I:      return "7I";
       case CODETYPEGALILEO_E5B_Q:      return "7Q";
       case CODETYPEGALILEO_E5B_IQ:     return "7X";
+
       case CODETYPEGALILEO_E5_I:       return "8I";
       case CODETYPEGALILEO_E5_Q:       return "8Q";
       case CODETYPEGALILEO_E5_IQ:      return "8X";
+
       case CODETYPEGALILEO_E6_A:       return "6A";
       case CODETYPEGALILEO_E6_B:       return "6B";
       case CODETYPEGALILEO_E6_C:       return "6C";
@@ -748,15 +763,20 @@ string RTCM3coDecoder::codeTypeToRnxType(char system, CodeType type) const {
       case CODETYPEQZSS_L1C_D:         return "1S";
       case CODETYPEQZSS_L1C_P:         return "1L";
       case CODETYPEQZSS_L1C_DP:        return "1X";
+
       case CODETYPEQZSS_L2C_M:         return "2S";
       case CODETYPEQZSS_L2C_L:         return "2L";
       case CODETYPEQZSS_L2C_ML:        return "2X";
+
       case CODETYPEQZSS_L5_I:          return "5I";
       case CODETYPEQZSS_L5_Q:          return "5Q";
       case CODETYPEQZSS_L5_IQ:         return "5X";
-      case CODETYPEQZSS_LEX_S:         return "6S";
-      case CODETYPEQZSS_LEX_L:         return "6L";
-      case CODETYPEQZSS_LEX_SL:        return "6X";
+
+      case CODETYPEQZSS_L6_D:          return "6S";
+      case CODETYPEQZSS_L6_P:          return "6L";
+      case CODETYPEQZSS_L6_DP:         return "6X";
+      case CODETYPEQZSS_L6E:           return "6E";
+
       default: return "";
     }
   }
@@ -764,6 +784,7 @@ string RTCM3coDecoder::codeTypeToRnxType(char system, CodeType type) const {
     switch (type) {
       case CODETYPE_SBAS_L1_CA:       return "1C";
       case CODETYPE_SBAS_L5_I:        return "5I";
+
       case CODETYPE_SBAS_L5_Q:        return "5Q";
       case CODETYPE_SBAS_L5_IQ:       return "5X";
       default: return "";
@@ -774,9 +795,11 @@ string RTCM3coDecoder::codeTypeToRnxType(char system, CodeType type) const {
       case CODETYPE_BDS_B1_I:         return "2I";
       case CODETYPE_BDS_B1_Q:         return "2Q";
       case CODETYPE_BDS_B1_IQ:        return "2X";
+
       case CODETYPE_BDS_B2_I:         return "7I";
       case CODETYPE_BDS_B2_Q:         return "7Q";
       case CODETYPE_BDS_B2_IQ:        return "7X";
+
       case CODETYPE_BDS_B3_I:         return "6I";
       case CODETYPE_BDS_B3_Q:         return "6Q";
       case CODETYPE_BDS_B3_IQ:        return "6X";
