@@ -2688,7 +2688,7 @@ void bncWindow::slotAddUploadRow() {
     else if (iCol == 6) {
       QComboBox* system = new QComboBox();
       system->setEditable(false);
-      system->addItems(QString("IGS14,ETRF2000,NAD83,GDA2020,SIRGAS2000,DREF91,Custom").split(","));
+      system->addItems(QString("IGS14,ETRF2000,GDA2020,SIRGAS2000,DREF91,Custom").split(","));
       system->setFrame(false);
       _uploadTable->setCellWidget(iRow, iCol, system);
     }
