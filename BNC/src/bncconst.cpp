@@ -34,27 +34,38 @@ const double t_CST::fInv  = 298.2572236;
 //////////////////////////////////////////////////////////////////////////////
 double t_CST::freq(t_frequency::type fType, int slotNum) {
   switch (fType) {
+  // GPS
   case t_frequency::G1:    return 1575420000.0;
   case t_frequency::G2:    return 1227600000.0;
   case t_frequency::G5:    return 1176450000.0;
+  // GLONASS
+  case t_frequency::R1:    return 1602000000.0 + 562500.0 * slotNum;
+  //case t_frequency::R1a:   return 1600995000.0;
+  case t_frequency::R2:    return 1246000000.0 + 437500.0 * slotNum;
+  //case t_frequency::R2a:   return 1248060000.0;
+  case t_frequency::R3:    return 1202025000.0;
+  // Galileo
   case t_frequency::E1:    return 1575420000.0;
   case t_frequency::E5:    return 1176450000.0;
   case t_frequency::E7:    return 1207140000.0;
   case t_frequency::E8:    return 1191795000.0;
   case t_frequency::E6:    return 1278750000.0;
-  case t_frequency::R1:    return 1602000000.0 + 562500.0 * slotNum;
-  case t_frequency::R2:    return 1246000000.0 + 437500.0 * slotNum;
+  // QZSS
   case t_frequency::J1:    return 1575420000.0;
   case t_frequency::J2:    return 1227600000.0;
   case t_frequency::J5:    return 1176450000.0;
   case t_frequency::J6:    return 1278750000.0;
-  case t_frequency::S1:    return 1575420000.0;
-  case t_frequency::S5:    return 1176450000.0;
+  // BDS
   case t_frequency::C2:    return 1561098000.0;
+  case t_frequency::C1:    return 1575420000.0;
   case t_frequency::C7:    return 1207140000.0;
   case t_frequency::C6:    return 1268520000.0;
+  // irnss
   case t_frequency::I5:    return 1176450000.0;
   case t_frequency::I9:    return 2492028000.0;
+  // SBAS
+  case t_frequency::S1:    return 1575420000.0;
+  case t_frequency::S5:    return 1176450000.0;
   case t_frequency::dummy:
   case t_frequency::max:   return 0.0;
   }
