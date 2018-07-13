@@ -56,7 +56,8 @@ void t_eph::setClkCorr(const t_clkCorr* clkCorr) {
 ////////////////////////////////////////////////////////////////////////////
 t_irc t_eph::getCrd(const bncTime& tt, ColumnVector& xc, ColumnVector& vv, bool useCorr) const {
 
-  if (_checkState == bad) {
+  if (_checkState == bad ||
+      _checkState == unhealthy) {
     return failure;
   }
   const QVector<int> updateInt = QVector<int>()  << 1 << 2 << 5 << 10 << 15 << 30
@@ -310,7 +311,8 @@ t_ephGPS::t_ephGPS(float rnxVersion, const QStringList& lines) {
 ////////////////////////////////////////////////////////////////////////////
 t_irc t_ephGPS::position(int GPSweek, double GPSweeks, double* xc, double* vv) const {
 
-  if (_checkState == bad) {
+  if (_checkState == bad ||
+      _checkState == unhealthy) {
     return failure;
   }
 
@@ -604,7 +606,8 @@ t_ephGlo::t_ephGlo(float rnxVersion, const QStringList& lines) {
 ////////////////////////////////////////////////////////////////////////////
 t_irc t_ephGlo::position(int GPSweek, double GPSweeks, double* xc, double* vv) const {
 
-  if (_checkState == bad) {
+  if (_checkState == bad ||
+      _checkState == unhealthy) {
     return failure;
   }
 
@@ -902,7 +905,8 @@ t_ephGal::t_ephGal(float rnxVersion, const QStringList& lines) {
 ////////////////////////////////////////////////////////////////////////////
 t_irc t_ephGal::position(int GPSweek, double GPSweeks, double* xc, double* vv) const {
 
-  if (_checkState == bad) {
+  if (_checkState == bad ||
+      _checkState == unhealthy) {
     return failure;
   }
 
@@ -1283,7 +1287,8 @@ unsigned int t_ephSBAS::IOD() const {
 ////////////////////////////////////////////////////////////////////////////
 t_irc t_ephSBAS::position(int GPSweek, double GPSweeks, double* xc, double* vv) const {
 
-  if (_checkState == bad) {
+  if (_checkState == bad ||
+      _checkState == unhealthy) {
     return failure;
   }
 
@@ -1495,7 +1500,8 @@ unsigned int t_ephBDS::IOD() const {
 //////////////////////////////////////////////////////////////////////////////
 t_irc t_ephBDS::position(int GPSweek, double GPSweeks, double* xc, double* vv) const {
 
-  if (_checkState == bad) {
+  if (_checkState == bad ||
+      _checkState == unhealthy) {
     return failure;
   }
 
@@ -1665,7 +1671,7 @@ t_irc t_ephBDS::position(int GPSweek, double GPSweeks, double* xc, double* vv) c
 // RINEX Format String
 //////////////////////////////////////////////////////////////////////////////
 QString t_ephBDS::toString(double version) const {
-IOD();
+
   QString rnxStr = rinexDateStr(_TOC-14.0, _prn, version);
 
   QTextStream out(&rnxStr);
