@@ -495,7 +495,7 @@ void bncRinex::dumpEpoch(const QByteArray& format, const bncTime& maxTime) {
   // Time of Epoch
   // -------------
   const t_satObs& fObs = obsList.first();
-  QDateTime datTimNom  = dateAndTimeFromGPSweek(fObs._time.gpsw(), floor(fObs._time.gpssec()+0.5));
+  QDateTime datTimNom  = dateAndTimeFromGPSweek(fObs._time.gpsw(), fObs._time.gpssec());
 
   // Close the file
   // --------------

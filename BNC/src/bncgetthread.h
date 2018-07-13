@@ -138,7 +138,7 @@ class bncGetThread : public QThread {
    t_serialNMEA               _serialNMEA;
    bool                       _rawOutput;
    bool                       _latencycheck;
-   QMap<QString, long>        _prnLastEpo;
+   QMap<QString, bncTime>     _prnLastEpo;
    QMap<char, QVector<QString> > _rnxTypes;
    QStringList                _gloSlots;
    QList<QTcpSocket*>*        _nmeaSockets;

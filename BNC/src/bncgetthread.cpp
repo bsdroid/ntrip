@@ -55,6 +55,7 @@
 #include "bnctabledlg.h"
 #include "bnccore.h"
 #include "bncutils.h"
+#include "bnctime.h"
 #include "bnczerodecoder.h"
 #include "bncnetqueryv0.h"
 #include "bncnetqueryv1.h"
@@ -623,19 +624,16 @@ void bncGetThread::run() {
         // ----------------------------------------------------
         if (!_rawFile) {
           QString prn(obs._prn.toString().c_str());
-          long iSec = long(floor(obs._time.gpssec() + 0.5));
-          long obsTime = obs._time.gpsw() * 7 * 24 * 3600 + iSec;
-          QMap<QString, long>::const_iterator it = _prnLastEpo.find(prn);
+          bncTime obsTime = obs._time;
+          QMap<QString, bncTime>::const_iterator it = _prnLastEpo.find(prn);
           if (it != _prnLastEpo.end()) {
-            long oldTime = it.value();
+            bncTime oldTime = it.value();
             if (obsTime < oldTime) {
-              emit(newMessage(_staID + ": old observation " + prn.toLatin1(),
-                  false));
+              emit(newMessage(_staID + ": old observation " + prn.toLatin1(), false));
               continue;
             } else if (obsTime == oldTime) {
-              emit(newMessage(
-                  _staID + ": observation coming more than once "
-                      + prn.toLatin1(), false));
+              emit(newMessage(_staID + ": observation coming more than once "
+                              + prn.toLatin1(), false));
               continue;
             }
           }
