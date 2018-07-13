@@ -250,12 +250,11 @@ QDateTime currentDateAndTimeGPS() {
 ////////////////////////////////////////////////////////////////////////////
 bool checkForWrongObsEpoch(bncTime obsEpoch) {
   const double maxDt = 600.0;
-  long iSec    = long(floor(obsEpoch.gpssec()+0.5));
-  long obsTime = obsEpoch.gpsw()*7*24*3600 + iSec;
+  bncTime obsTime = obsEpoch;
   int    week;
   double sec;
   currentGPSWeeks(week, sec);
-  long currTime = week * 7*24*3600 + long(sec);
+  bncTime currTime(week, sec);
 
   if (fabs(currTime - obsTime) > maxDt) {
     return true;
@@ -574,7 +573,7 @@ ColumnVector rungeKutta4(
   double xi,              // the initial x-value
   const ColumnVector& yi, // vector of the initial y-values
   double dx,              // the step size for the integration
-  double* acc,            // aditional acceleration
+  double* acc,            // additional acceleration
   ColumnVector (*der)(double x, const ColumnVector& y, double* acc)
                           // A pointer to a function that computes the
                           // derivative of a function at a point (x,y)

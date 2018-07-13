@@ -5,6 +5,7 @@
 #include <cstdio>
 #include <sstream>
 #include <iomanip>
+#include <iostream>
 
 #include "bnctime.h"
 #include "bncutils.h"
@@ -81,7 +82,7 @@ bncTime &bncTime::set(int msec) {
   currentGPSWeeks(week, sec);
   if(msec/1000.0 < sec - 86400.0)
     ++week;
-  return set(week, msec/1000.0);
+  return set(week, double(msec/1000.0));
 }
 
 //
@@ -117,7 +118,7 @@ bncTime &bncTime::setTk(int msec) {
   currentGPSWeeks(week, sec);
   intsec = sec;
   updatetime(&week, &intsec, msec, 0); /* Moscow -> GPS */
-  sec = intsec+(msec%1000)/1000.0;
+  sec = intsec+double((msec%1000)/1000.0);
   return set(week, sec);
 }
 
@@ -131,9 +132,10 @@ bncTime &bncTime::setBDS(int msec) {
   if(msec >= 7*24*60*60*1000)
     msec -= 7*24*60*60*1000;
   currentGPSWeeks(week, sec);
-  if(msec/1000.0 < sec - 86400.0)
+  if((msec/1000.0) < (sec - 86400.0)) {
     ++week;
-  return set(week, msec/1000.0);
+  }
+  return set(week, double(msec/1000.0));
 }
 
 //
