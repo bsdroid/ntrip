@@ -110,19 +110,7 @@ Q_OBJECT
   void setCurrentLatency(double lat) {
     _curLat = lat;
   }
-  /*
-  void setLatencyObjekt(t_latency& lat, QByteArray type) {
-    qDebug() << "set " << type;
-    l= lat;
-    l._type = type;
-    l.print();
-  }
 
-  void getLatencyObjekt(t_latency& lat) {
-    lat =l;
-  }
-
-*/
  signals:
   void newMessage(QByteArray msg, bool showOnScreen);
 
