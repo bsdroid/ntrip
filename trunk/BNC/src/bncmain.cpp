@@ -309,7 +309,7 @@ int main(int argc, char* argv[]) {
       "//user:pass@www.igs-ip.net:2101/FFMJ1 RTCM_3.1 DEU 50.09 8.66 no 2\"\n"
       "(7) bnc --key cmbStreams \"CLK11 BLG 1.0;CLK93 CNES 1.0\"\n"
       "(8) bnc --key uploadMountpointsOut \"products.igs-ip.net,98756,TEST,letmein,IGS14,2,/Users/weber/BNC${GPSWD}.clk,,33,3,2;"
-      "www.euref-ip.net,333,TEST2,aaaaa,NAD83,2,,,33,5,5\"\n"
+      "www.euref-ip.net,333,TEST2,aaaaa,ETRF2000,2,,,33,5,5\"\n"
       "(9) bnc --key PPP/staTable \"FFMJ1,100.0,100.0,100.0,100.0,100.0,100.0,0.1,3e-6,7777;"
       "CUT07,100.0,100.0,100.0,100.0,100.0,100.0,0.1,3e-6,7778\"\n";
 
