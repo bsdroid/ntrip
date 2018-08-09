@@ -641,7 +641,7 @@ void t_reqcEdit::editEphemerides() {
     if (endTime.valid() && eph->TOC() > endTime) {
       break;
     }
-    if (eph->checkState() != t_eph::bad) {
+    if (eph->checkState() == t_eph::bad) {
       continue;
     }
     outNavFile.writeEph(eph);
