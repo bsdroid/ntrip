@@ -355,10 +355,11 @@ void bncComb::slotNewClkCorrections(QList<t_clkCorr> clkCorrections) {
         clkCorr._prn.system() == 'S' )   {
       continue;
     }
-    
+
     // Check Modulo Time
     // -----------------
-    if (int(clkCorr._time.gpssec()) % _cmbSampl != 0.0) {
+    int sec = int(nint(clkCorr._time.gpssec()*10));
+    if (sec % (_cmbSampl*10) != 0.0) {
       continue;
     }
 
