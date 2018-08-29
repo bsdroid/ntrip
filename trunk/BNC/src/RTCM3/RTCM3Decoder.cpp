@@ -1221,7 +1221,7 @@ bool RTCM3Decoder::DecodeSBASEphemeris(unsigned char* data, int size) {
     GETFLOATSIGN(eph._agf0, 12, 1.0 / (1 << 30) / (1 << 1))
     GETFLOATSIGN(eph._agf1, 8, 1.0 / (1 << 30) / (1 << 10))
 
-    eph._TOW = 0.9999E9;
+    eph._TOT = 0.9999E9;
     eph._health = 0;
 
     emit newSBASEph(eph);
@@ -1371,7 +1371,7 @@ bool RTCM3Decoder::DecodeBDSEphemeris(unsigned char* data, int size) {
     GETFLOATSIGN(eph._TGD2, 10, 0.0000000001)
     GETBITS(eph._SatH1, 1)
 
-    eph._TOW = 0.9999E9;
+    eph._TOT = 0.9999E9;
     emit newBDSEph(eph);
     decoded = true;
   }

@@ -629,6 +629,7 @@ t_irc t_ephGlo::position(int GPSweek, double GPSweeks, double* xc, double* vv) c
   acc[0] = _x_acceleration * 1.e3;
   acc[1] = _y_acceleration * 1.e3;
   acc[2] = _z_acceleration * 1.e3;
+
   for (int ii = 1; ii <= nSteps; ii++) {
     _xv = rungeKutta4(_tt.gpssec(), _xv, step, acc, glo_deriv);
     _tt = _tt + step;
@@ -1206,7 +1207,7 @@ t_ephSBAS::t_ephSBAS(float rnxVersion, const QStringList& lines) {
 
       if ( readDbl(line, pos[1], fieldLen, _agf0 ) ||
            readDbl(line, pos[2], fieldLen, _agf1 ) ||
-           readDbl(line, pos[3], fieldLen, _TOW  ) ) {
+           readDbl(line, pos[3], fieldLen, _TOT  ) ) {
         _checkState = bad;
         return;
       }
@@ -1319,7 +1320,7 @@ QString t_ephSBAS::toString(double version) const {
   out << QString("%1%2%3\n")
     .arg(_agf0, 19, 'e', 12)
     .arg(_agf1, 19, 'e', 12)
-    .arg(_TOW,  19, 'e', 12);
+    .arg(_TOT,  19, 'e', 12);
 
   QString fmt = version < 3.0 ? "   %1%2%3%4\n" : "    %1%2%3%4\n";
 
