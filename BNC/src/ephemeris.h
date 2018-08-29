@@ -342,7 +342,7 @@ class t_ephSBAS : public t_eph {
  public:
   t_ephSBAS() {
     _IODN           = 0;
-    _TOW            = 0.0;
+    _TOT            = 0.0;
     _agf0           = 0.0;
     _agf1           = 0.0;
     _x_pos          = 0.0;
@@ -369,7 +369,7 @@ class t_ephSBAS : public t_eph {
   virtual t_irc position(int GPSweek, double GPSweeks, double* xc, double* vv) const;
 
   int    _IODN;
-  double _TOW;            // not used (set to  0.9999e9)
+  double _TOT;            // not used (set to  0.9999e9)
   double _agf0;           // [s]    clock correction
   double _agf1;           // [s/s]  clock correction drift
 
