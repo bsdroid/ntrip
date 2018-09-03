@@ -1966,30 +1966,90 @@ C10  83.00  -66.65   6  L2I .. 48.8  C2I  . 0.20  L6I .. 50.0  C6I  . 0.00  L7I 
 ...
 </pre>
 </p>
+
 <p>
-In the epoch-specific output every PRN follows its elevation and azimuth, as well as the number of observations types.
-For every observation type a letter for phase and code follows where 's' means cycle slip, 'g' gap and '.' means OK.
-For phase observations the signal-to-noise ratio follows, for code observations the multipath standard deviation.<br>
-<br>
-Note that in addition to cycle slips recorded in the RINEX 'file', cycle slips identified by BNC are reported as 'found'.
+<b>The epoch-specific output </b>
+</p>
+
+<p>
+Each 'Epoch Record' contains 9 parameters. Example:
+</p>
+<pre>
+> 2015 09 09 13 04 50.0000000 23  1.2
+</pre>
+<p>
+Their meaning is as follows:
+</p>
+<ul>
+  <li>Special character '&#62;' is the first character in each 'Epoch Record' (as we have it in RINEX Version 3)</li>
+  <li>Year, GPS time</li>
+  <li>Month, GPS time</li>
+  <li>Day, GPS time</li>
+  <li>Hour, GPS time</li>
+  <li>Minute, GPS time</li>
+  <li>Second, GPS time</li>
+  <li>Number of satellites</li>
+  <li>PDOP value</li>
+</ul>
+<p>
+Each of the 'Satellite Records' in such an epoch block carries information for one specific satellite. Example:
+</p>
+<pre>
+R10  49.67   46.84   8  L1C .. 52.3  C1C  . 0.62  L1P .. 51.2  C1P  . 0.52  L2C .. 42.9  C2C  . 0.51  L2P .. 42.4  C2P  . 0.40
+</pre>
+<p>
+A satellite-specific line starts with:
+</p>
+<ul>
+<li>GNSS Indicator and Satellite Vehicle Pseudo Random Number</li>
+<li>Elevation [&deg;]</li>
+<li>Azimuth [&deg;]</li>
+<li>Number of observations types</li>
+</ul>
+<p>
+An observation type block, for example
+</p>
+<pre>
+L1C s. 34.3
+</pre>
+<p>
+contains 
+</p>
+<ul>
+  <li>RINEX Version 3 observation code </li>
+  <li>for a carrier phase observation: </li>
+  <ul>
+  <li>two characters,  where 's' means cycle slip, 'g' means gap and '.' means OK </li>
+  <li>  signal-to-noise ratio SNR [dBHz] </li>
+  </ul>
+  <li>for a code observation: </li>
+  <ul>
+  <li> two characters: the first one (for slips) is empty, 'g' means gap and '.' means OK </li>
+  <li> multipath standard deviation [m] </li>
+  </ul>
+</ul>
+<p>
+With respect to the summary note, that in addition to cycle slips recorded in the RINEX 'file', cycle slips identified by BNC are reported as 'found'.
 </p>
 
 <p><h4 id="reqcplots">2.6.5 Plots for Signals - mandatory if 'Action' is set to 'Analyze'</h4></p>
 <p>
-Multipath and signal-to-noise sky plots as well as plots for satellite availability, elevation and PDOP are produced per GNSS system and frequency with the multipath analysis based on CnC observation types (n = band / frequency). The 'Plots for signals' option lets you exactly specify the observation signals to be used for that and also enables the plot production. You can specify the navigation system (C = BDS, E = Galileo, G = GPS, J = QZSS, R = GLONASS, S = SBAS), the frequency, and the tracking mode or channel as defined in RINEX Version 3. Specifications for frequency and tracking mode or channel must be separated by ampersand character '&'. Specifications for each navigation systems must be separated by blank character ' '. The following string is an example for option field 'Plots of signals':
-<br>
-<pre>
-   C:2&7 E:1&5 G:1&2 J:1&2 R:1&2 S:1&5
-</pre>
-This default configuration will present:
-<ul>
-<li>BDS plots for L2 and L7,</li>
-<li>Galileo plots for L1 and L5,</li>
-<li>GPS plots for L1 and L2,</li>
-<li>QZSS plots for L1 and L2,</li>
-<li>GLONASS plots for L1 and L2,</li>
-<li>SBAS plots for L1 and L5.</li>
+BNC can produce plots for multipath, signal-to-noise ratio, satellite availability, satellite elevation, and PDOP values. The 'Plots for signals' option lets you exactly specify the observation signals to be used for that and also enables the plot production. 
+You can specify the navigation system (C = BDS, E = Galileo, G = GPS, J = QZSS, R = GLONASS, S = SBAS), the frequency, and the tracking mode or channel as defined in RINEX Version 3. Specifications for frequency 
+and tracking mode or channel must be separated by ampersand character '&'. Specifications for each navigation systems must be separated by blank character ' '. 
+
+<p>Examples for 'Plots for signals' option:<ul><li> G:1&2 R:1&2 J:1&2 E:1&7 C:1&6 S:1<br>
+(Plots will be based on GPS observations on 1st and 2nd frequency, GLONASS observations on 1st and 2nd frequency, 
+QZSS observations on 1st and 2nd frequency, Galileo observations on 1st and 7th frequency, BeiDou observations on 
+1st and 6th frequency, SBAS observations on 1st frequency.)
+</li>
+<li>G:1C&5X<br>(Plots will be based on GPS observations on 1st frequency in C tracking mode and GPS observations on 5th frequency in X tracking mode.)
+</li>
+<li>C:6I&7I<br>(Plots will be based on BeiDou observations on 6th frequency in I tracking mode and BeiDou observations on 7th frequency in I tracking mode.)
 </ul>
+</p>
+<p>
+Default is 'C:2&7 E:1&5 G:1&2 J:1&2 R:1&2 S:1&5 I:5&9'. Specifying an empty option string would be overruled by this default. 
 </p>
 
 <p><h4 id="reqcdir">2.6.6 Directory for Plots - optional if 'Action' is set to 'Analyze'</h4></p>
