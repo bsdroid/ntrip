@@ -2073,20 +2073,7 @@ A note on converting RINEX Version 3 to RINEX Version 2 and vice versa:
 
 <p>
 <ul>
-  <li>The RINEX Version 2 format ignores signal generation attributes. Therefore, when converting <b>RINEX Version 3 to Version 2</b> Observation files, BNC is forced to somehow map signals with attributes to signals without attributes although this cannot be done in one-to-one correspondence. Hence we introduce a 'Version 2 Signal Priority' list of attributes (characters, forming a string) for mapping Version 3 to Version 2, see details in section 'RINEX Observations/Version 2'. Signal priorities can be specified as equal for all systems, as system specific or as system and frequency specific. For example:</li>
-  <ul>
-    <li>'CWPX_?' (General signal priorities valid for all GNSS)</li>
-    <li>'C:IQX I:ABCX' (System specific signal priorities for BDS and IRNSS)</li>
-    <li>'G:12&PWCSLXYN G:5&IQX R:12&PC R:3&IQX' (System and frequency specific signal priorities)</li>
-  </ul>
-  </p>
-  <p>
-  The default 'Signal priority' list is defined as follows:
-  <ul>
-    <li>'G:12&PWCSLXYN_ G:5&IQX_ R:12&PC_ R:3&IQX_ E:16&BCX_ E:578&IQX_ J:1&SLXCZ_ J:26&SLX_ J:5&IQX_ C:IQX_ I:ABCX_ S:1&C_ S:5&IQX_'</li>
-  </ul>
-  </p>
-  <p>
+  <li>The RINEX Version 2 format ignores signal generation attributes. Therefore, when converting <b>RINEX Version 3 to Version 2</b> Observation files, BNC is forced to somehow map signals with attributes to signals without attributes although this cannot be done in one-to-one correspondence. Hence we introduce a 'Version 2 Signal Priority' list of attributes (characters, forming a string) for mapping Version 3 to Version 2, see details in section 'RINEX Observations/Version 2'.
   <li>When converting <b>RINEX Version 2 to Version 3</b> Observation files, the tracking mode or channel information in the (last character out of the 3-character) observation code is left blank if unknown. This is a compromise, knowing that it is not in accordance with the RINEX Version 3 documentation.</li>
 </ul>
 </p>
