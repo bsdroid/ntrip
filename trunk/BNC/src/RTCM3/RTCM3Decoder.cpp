@@ -973,7 +973,6 @@ bool RTCM3Decoder::DecodeGPSEphemeris(unsigned char* data, int size) {
     GETBITS(i, 6)
     eph._prn.set('G', i);
     GETBITS(week, 10)
-    week += 1024;
     GETBITS(i, 4)
     eph._ura = accuracyFromIndex(i, eph.type());
     GETBITS(eph._L2Codes, 2)
@@ -1002,6 +1001,8 @@ bool RTCM3Decoder::DecodeGPSEphemeris(unsigned char* data, int size) {
     bncTime t;
     t.set(i * 1000);
     eph._TOEweek = t.gpsw();
+    int numOfRollOvers = int(floor(t.gpsw()/1024.0));
+    week += (numOfRollOvers * 1024);
     /* week from HOW, differs from TOC, TOE week, we use adapted value instead */
     if (eph._TOEweek > week + 1 || eph._TOEweek < week - 1) /* invalid week */
       return false;
@@ -1126,7 +1127,7 @@ bool RTCM3Decoder::DecodeQZSSEphemeris(unsigned char* data, int size) {
 
     GETBITS(i, 4)
     eph._prn.set('J', i);
-
+    
     GETBITS(i, 16)
     i <<= 4;
     eph._TOC.set(i * 1000);
@@ -1161,7 +1162,8 @@ bool RTCM3Decoder::DecodeQZSSEphemeris(unsigned char* data, int size) {
     GETFLOATSIGN(eph._IDOT, 14, R2R_PI/(double)(1<<30)/(double)(1<<13))
     GETBITS(eph._L2Codes, 2)
     GETBITS(week, 10)
-    week += 1024;
+    int numOfRollOvers = int(floor(t.gpsw()/1024.0));
+    week += (numOfRollOvers * 1024);
     /* week from HOW, differs from TOC, TOE week, we use adapted value instead */
     if (eph._TOEweek > week + 1 || eph._TOEweek < week - 1) /* invalid week */
       return false;
