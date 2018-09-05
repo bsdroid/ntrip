@@ -1149,8 +1149,8 @@ bool RTCM3Decoder::DecodeQZSSEphemeris(unsigned char* data, int size) {
     i <<= 4;
     eph._TOEsec = i;
     bncTime t;
-    t.set(i);
-
+    t.set(i*1000);
+    eph._TOEweek = t.gpsw();
     GETFLOATSIGN(eph._Cic, 16, 1.0 / (double )(1 << 29))
     GETFLOATSIGN(eph._OMEGA0, 32, R2R_PI/(double)(1<<30)/(double)(1<<1))
     GETFLOATSIGN(eph._Cis, 16, 1.0 / (double )(1 << 29))
@@ -1162,7 +1162,6 @@ bool RTCM3Decoder::DecodeQZSSEphemeris(unsigned char* data, int size) {
     GETBITS(eph._L2Codes, 2)
     GETBITS(week, 10)
     week += 1024;
-    eph._TOEweek = t.gpsw();
     /* week from HOW, differs from TOC, TOE week, we use adapted value instead */
     if (eph._TOEweek > week + 1 || eph._TOEweek < week - 1) /* invalid week */
       return false;
