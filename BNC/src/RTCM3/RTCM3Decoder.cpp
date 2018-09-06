@@ -1070,6 +1070,14 @@ bool RTCM3Decoder::DecodeGLONASSEphemeris(unsigned char* data, int size) {
     GETFLOATSIGNM(eph._z_velocity, 24, 1.0 / (double )(1 << 20))
     GETFLOATSIGNM(eph._z_pos, 27, 1.0 / (double )(1 << 11))
     GETFLOATSIGNM(eph._z_acceleration, 5, 1.0 / (double )(1 << 30))
+
+    eph._xv(1) = eph._x_pos * 1.e3;
+    eph._xv(2) = eph._y_pos * 1.e3;
+    eph._xv(3) = eph._z_pos * 1.e3;
+    eph._xv(4) = eph._x_velocity * 1.e3;
+    eph._xv(5) = eph._y_velocity * 1.e3;
+    eph._xv(6) = eph._z_velocity * 1.e3;
+
     GETBITS(eph._P3, 1)    /* P3 */
     GETFLOATSIGNM(eph._gamma, 11, 1.0 / (double )(1 << 30) / (double )(1 << 10))
     GETBITS(eph._M_P, 2) /* GLONASS-M P, */
@@ -1092,13 +1100,6 @@ bool RTCM3Decoder::DecodeGLONASSEphemeris(unsigned char* data, int size) {
     eph._TOC.civil_date(year, month, day);
     eph._gps_utc = gnumleap(year, month, day);
     eph._tt = eph._TOC;
-
-    eph._xv(1) = eph._x_pos * 1.e3;
-    eph._xv(2) = eph._y_pos * 1.e3;
-    eph._xv(3) = eph._z_pos * 1.e3;
-    eph._xv(4) = eph._x_velocity * 1.e3;
-    eph._xv(5) = eph._y_velocity * 1.e3;
-    eph._xv(6) = eph._z_velocity * 1.e3;
 
     GLOFreq[sv - 1] = 100 + eph._frequency_number ; /* store frequency for other users (MSM) */
     _gloFrq = QString("%1 %2").arg(eph._prn.toString().c_str()).arg(eph._frequency_number, 2, 'f', 0);
@@ -1127,7 +1128,7 @@ bool RTCM3Decoder::DecodeQZSSEphemeris(unsigned char* data, int size) {
 
     GETBITS(i, 4)
     eph._prn.set('J', i);
-    
+
     GETBITS(i, 16)
     i <<= 4;
     eph._TOC.set(i * 1000);
