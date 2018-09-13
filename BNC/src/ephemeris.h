@@ -393,7 +393,7 @@ class t_ephBDS : public t_eph {
  friend class t_ephEncoder;
  friend class RTCM3Decoder;
  public:
- t_ephBDS() : _TOEweek(-1.0) {
+ t_ephBDS() {
    _TOT             = 0.0;
    _AODE            = 0;
    _AODC            = 0;
@@ -422,7 +422,7 @@ class t_ephBDS : public t_eph {
    _SatH1           = 0.0;
    _TOW             = 0.0;
    _TOEsec          = 0.0;
-   _TOEweek         = 0.0;
+   _TOEweek         =-1.0;
  }
  t_ephBDS(float rnxVersion, const QStringList& lines);
   virtual ~t_ephBDS() {}
