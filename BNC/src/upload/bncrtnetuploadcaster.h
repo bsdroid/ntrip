@@ -32,9 +32,11 @@ class bncRtnetUploadCaster : public bncUploadCaster {
   void processSatellite(const t_eph* eph, int GPSweek,
                         double GPSweeks, const QString& prn,
                         const ColumnVector& rtnAPC,
-                        double rtnClk,
+                        double ura,
+                        const ColumnVector& rtnClk,
                         const ColumnVector& rtnVel,
                         const ColumnVector& rtnCoM,
+                        const ColumnVector& rtnClkSig,
                         struct ClockOrbit::SatData* sd,
                         QString& outLine);
   void crdTrafo(int GPSWeek, ColumnVector& xyz, double& dc);

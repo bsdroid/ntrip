@@ -109,6 +109,19 @@ class t_clkCorr {
   double         _dotDotDClk;
 };
 
+class t_URA {
+ public:
+  t_URA();
+  static void writeEpoch(std::ostream* out, const QList<t_URA>& corrList);
+  static void readEpoch(const std::string& epoLine, std::istream& in, QList<t_URA>& corrList);
+  std::string    _staID;
+  t_prn          _prn;
+  unsigned int   _iod;
+  bncTime        _time;
+  unsigned int   _updateInt;
+  double         _ura;
+};
+
 class t_frqCodeBias {
  public:
   t_frqCodeBias() {
@@ -188,7 +201,7 @@ class t_vTec {
 
 class t_corrSSR {
  public:
-  enum e_type {clkCorr, orbCorr, codeBias, phaseBias, vTec, unknown};
+  enum e_type {clkCorr, orbCorr, codeBias, phaseBias, vTec, URA, unknown};
   static e_type readEpoLine(const std::string& line, bncTime& epoTime,
                             unsigned int& updateInt, int& numEntries, std::string& staID);
 };

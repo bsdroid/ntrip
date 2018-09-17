@@ -332,10 +332,12 @@ void bncRtnetUploadCaster::decodeRtnetStream(char* buffer, int bufLen) {
 
   for (int ii = 1; ii < lines.size(); ii++) {
     QString key;  // prn or key VTEC, IND (phase bias indicators)
-    ColumnVector rtnAPC;
-    ColumnVector rtnVel;
-    ColumnVector rtnCoM;
-    double rtnClk;
+    double rtnUra;          // [m]
+    ColumnVector rtnAPC;    // [m, m, m]
+    ColumnVector rtnVel;    // [m/s, m/s, m/s]]
+    ColumnVector rtnCoM;    // [m, m, m]
+    ColumnVector rtnClk;    // [m, m/s, m/s²]
+    ColumnVector rtnClkSig; // [m, m/s, m/s²]
     t_prn prn;
 
     QTextStream in(lines[ii].toLatin1());
@@ -434,10 +436,30 @@ void bncRtnetUploadCaster::decodeRtnetStream(char* buffer, int bufLen) {
             in >> rtnAPC[ii];
           }
         }
-        else if (key == "Clk") {
+        else if (key == "Ura") {
           in >> numVal;
           if (numVal == 1)
-            in >> rtnClk;
+            in >> rtnUra;
+        }
+        else if (key == "Clk") {
+          rtnClk.ReSize(3);
+          for (int ii = 0; ii < 3; ii++) {
+            rtnClk[ii] = 0.0;
+          }
+          in >> numVal;
+          for (int ii = 0; ii < numVal; ii++) {
+            in >> rtnClk[ii];
+          }
+        }
+        else if (key == "ClkSig") {
+          rtnClkSig.ReSize(3);
+          for (int ii = 0; ii < 3; ii++) {
+            rtnClkSig[ii] = 0.0;
+          }
+          in >> numVal;
+          for (int ii = 0; ii < numVal; ii++) {
+            in >> rtnClkSig[ii];
+          }
         }
         else if (key == "Vel") {
           rtnVel.ReSize(3);
@@ -525,8 +547,8 @@ void bncRtnetUploadCaster::decodeRtnetStream(char* buffer, int bufLen) {
       }
       if (sd) {
         QString outLine;
-        processSatellite(eph, epoTime.gpsw(), epoTime.gpssec(), prnStr, rtnAPC,
-            rtnClk, rtnVel, rtnCoM, sd, outLine);
+        processSatellite(eph, epoTime.gpsw(), epoTime.gpssec(), prnStr, rtnAPC, rtnUra,
+            rtnClk, rtnVel, rtnCoM, rtnClkSig, sd, outLine);
       }
 
       // Code Biases
@@ -2242,12 +2264,13 @@ void bncRtnetUploadCaster::decodeRtnetStream(char* buffer, int bufLen) {
 ////////////////////////////////////////////////////////////////////////////
 void bncRtnetUploadCaster::processSatellite(const t_eph* eph, int GPSweek,
     double GPSweeks, const QString& prn, const ColumnVector& rtnAPC,
-    double rtnClk, const ColumnVector& rtnVel, const ColumnVector& rtnCoM,
+    double rtnUra, const ColumnVector& rtnClk, const ColumnVector& rtnVel,
+    const ColumnVector& rtnCoM, const ColumnVector& rtnClkSig,
     struct ClockOrbit::SatData* sd, QString& outLine) {
 
   // Broadcast Position and Velocity
   // -------------------------------
-  ColumnVector xB(4);
+  ColumnVector xB(7);
   ColumnVector vB(3);
   eph->getCrd(bncTime(GPSweek, GPSweeks), xB, vB, false);
 
@@ -2275,34 +2298,43 @@ void bncRtnetUploadCaster::processSatellite(const t_eph* eph, int GPSweek,
 
   // Clock Correction
   // ----------------
-  double dClk = rtnClk - (xB(4) - dc) * t_CST::c;
+  double dClkA0 = rtnClk(1) - (xB(5) - dc) * t_CST::c;
+  double dClkA1 = rtnClk(2) - xB(6) * t_CST::c;
+  double dClkA2 = rtnClk(3) - xB(7) * t_CST::c;
 
   if (sd) {
     sd->ID = prn.mid(1).toInt();
     sd->IOD = eph->IOD();
-    sd->Clock.DeltaA0 = dClk;
-    sd->Clock.DeltaA1 = 0.0; // TODO
-    sd->Clock.DeltaA2 = 0.0; // TODO
-    sd->Orbit.DeltaRadial = rsw(1);
+    sd->Clock.DeltaA0 = dClkA0;
+    sd->Clock.DeltaA1 = dClkA1;
+    sd->Clock.DeltaA2 = dClkA2;
+    sd->UserRangeAccuracy = rtnUra;
+    sd->Orbit.DeltaRadial     = rsw(1);
     sd->Orbit.DeltaAlongTrack = rsw(2);
     sd->Orbit.DeltaCrossTrack = rsw(3);
-    sd->Orbit.DotDeltaRadial = dotRsw(1);
+    sd->Orbit.DotDeltaRadial     = dotRsw(1);
     sd->Orbit.DotDeltaAlongTrack = dotRsw(2);
     sd->Orbit.DotDeltaCrossTrack = dotRsw(3);
   }
 
-  outLine.sprintf("%d %.1f %s  %u  %10.3f  %8.3f %8.3f %8.3f\n", GPSweek,
-      GPSweeks, eph->prn().toString().c_str(), eph->IOD(), dClk, rsw(1), rsw(2),
-      rsw(3));
+  outLine.sprintf("%d %.1f %s  %u  %10.3f %8.3f %8.3f  %8.3f %8.3f %8.3f\n", GPSweek,
+      GPSweeks, eph->prn().toString().c_str(), eph->IOD(), dClkA0, dClkA1, dClkA2,
+      rsw(1), rsw(2), rsw(3));
 
   double relativity = -2.0 * DotProduct(xP, rtnVel) / t_CST::c;
-  double sp3Clk = (rtnClk - relativity) / t_CST::c;  // in seconds
+  double clkRnx     = (rtnClk[0] - relativity) / t_CST::c;  // in seconds
+  double clkRnxRate = rtnClk[1] / t_CST::c;                 // [s/s = -]
+  double clkRnxAcc  = rtnClk[2] / t_CST::c;                 // [s/s² ) -/s]
 
   if (_rnx) {
-    _rnx->write(GPSweek, GPSweeks, prn, sp3Clk);
+    double clkRnxSig     = rtnClkSig[0] / t_CST::c;           // in seconds
+    double clkRnxRateSig = rtnClkSig[1] / t_CST::c;           // [s/s = -]
+    double clkRnxAccSig  = rtnClkSig[2] / t_CST::c;           // [s/s² ) -/s]
+    _rnx->write(GPSweek, GPSweeks, prn, clkRnx, clkRnxRate, clkRnxAcc,
+                clkRnxSig, clkRnxRateSig, clkRnxAccSig);
   }
   if (_sp3) {
-    _sp3->write(GPSweek, GPSweeks, prn, rtnCoM, sp3Clk);
+    _sp3->write(GPSweek, GPSweeks, prn, rtnCoM, clkRnx, rtnVel, clkRnxRate);
   }
 }
 

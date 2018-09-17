@@ -350,7 +350,7 @@ void t_reqcAnalyze::setQcObs(const bncTime& epoTime, const ColumnVector& xyzSta,
     }
   }
   if (eph) {
-    ColumnVector xc(4);
+    ColumnVector xc(7);
     ColumnVector vv(3);
     if ( xyzSta.size() == 3 && (xyzSta[0] != 0.0 || xyzSta[1] != 0.0 || xyzSta[2] != 0.0) &&
          eph->getCrd(epoTime, xc, vv, false) == success) {
@@ -1100,7 +1100,7 @@ void t_reqcAnalyze::setExpectedObs(const bncTime& startTime, const bncTime& endT
       bncTime epoTime;
       for (epoTime = startTime - interval; epoTime < endTime;
            epoTime = epoTime + interval) {
-        ColumnVector xc(4);
+        ColumnVector xc(7);
         ColumnVector vv(3);
         if ( xyzSta.size() == 3 && (xyzSta[0] != 0.0 || xyzSta[1] != 0.0 || xyzSta[2] != 0.0) &&
              eph->getCrd(epoTime, xc, vv, false) == success) {

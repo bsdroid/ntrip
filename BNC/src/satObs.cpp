@@ -17,7 +17,7 @@ t_clkCorr::t_clkCorr() {
   _dotDotDClk = 0.0;
 }
 
-// 
+//
 ////////////////////////////////////////////////////////////////////////////
 void t_clkCorr::writeEpoch(ostream* out, const QList<t_clkCorr>& corrList) {
   if (!out || corrList.size() == 0) {
@@ -42,7 +42,7 @@ void t_clkCorr::writeEpoch(ostream* out, const QList<t_clkCorr>& corrList) {
   out->flush();
 }
 
-// 
+//
 ////////////////////////////////////////////////////////////////////////////
 void t_clkCorr::readEpoch(const string& epoLine, istream& inStream, QList<t_clkCorr>& corrList) {
   bncTime      epoTime;
@@ -61,7 +61,7 @@ void t_clkCorr::readEpoch(const string& epoLine, istream& inStream, QList<t_clkC
     string line;
     getline(inStream, line);
     istringstream in(line.c_str());
-    
+
     in >> corr._prn >> corr._iod >> corr._dClk >> corr._dotDClk >> corr._dotDotDClk;
     if (corr._prn.system() == 'E') {
       corr._prn.setFlags(1);// I/NAV
@@ -84,7 +84,7 @@ t_orbCorr::t_orbCorr() {
   _dotXr.ReSize(3); _dotXr = 0.0;
 }
 
-// 
+//
 ////////////////////////////////////////////////////////////////////////////
 void t_orbCorr::writeEpoch(ostream* out, const QList<t_orbCorr>& corrList) {
   if (!out || corrList.size() == 0) {
@@ -112,7 +112,7 @@ void t_orbCorr::writeEpoch(ostream* out, const QList<t_orbCorr>& corrList) {
   out->flush();
 }
 
-// 
+//
 ////////////////////////////////////////////////////////////////////////////
 void t_orbCorr::readEpoch(const string& epoLine, istream& inStream, QList<t_orbCorr>& corrList) {
   bncTime      epoTime;
@@ -131,9 +131,9 @@ void t_orbCorr::readEpoch(const string& epoLine, istream& inStream, QList<t_orbC
     string line;
     getline(inStream, line);
     istringstream in(line.c_str());
-    
+
     in >> corr._prn      >> corr._iod
-       >> corr._xr[0]    >> corr._xr[1]    >> corr._xr[2]   
+       >> corr._xr[0]    >> corr._xr[1]    >> corr._xr[2]
        >> corr._dotXr[0] >> corr._dotXr[1] >> corr._dotXr[2];
 
     if (corr._prn.system() == 'E') {
@@ -143,7 +143,64 @@ void t_orbCorr::readEpoch(const string& epoLine, istream& inStream, QList<t_orbC
   }
 }
 
-// 
+// Constructor
+////////////////////////////////////////////////////////////////////////////
+t_URA::t_URA() {
+  _updateInt  = 0;
+  _iod        = 0;
+  _ura        = 0.0;
+}
+
+//
+////////////////////////////////////////////////////////////////////////////
+void t_URA::writeEpoch(ostream* out, const QList<t_URA>& corrList) {
+  if (!out || corrList.size() == 0) {
+    return;
+  }
+  out->setf(ios::fixed);
+  bncTime epoTime;
+  QListIterator<t_URA> it(corrList);
+  while (it.hasNext()) {
+    const t_URA& corr = it.next();
+    if (!epoTime.valid()) {
+      epoTime = corr._time;
+      *out << "> URA " << epoTime.datestr(' ') << ' ' << epoTime.timestr(1,' ') << " "
+          <<  corr._updateInt <<  " "
+           << corrList.size() << ' ' << corr._staID << endl;
+    }
+    *out << corr._prn.toString() << ' ' << setw(11) << corr._iod << ' '
+         << setw(10) << setprecision(4) << corr._ura << endl;
+  }
+  out->flush();
+}
+
+//
+////////////////////////////////////////////////////////////////////////////
+void t_URA::readEpoch(const string& epoLine, istream& inStream, QList<t_URA>& corrList) {
+  bncTime      epoTime;
+  unsigned int updateInt;
+  int          numCorr;
+  string       staID;
+  if (t_corrSSR::readEpoLine(epoLine, epoTime, updateInt, numCorr, staID) != t_corrSSR::URA) {
+    return;
+  }
+  for (int ii = 0; ii < numCorr; ii++) {
+    t_URA corr;
+    corr._time      = epoTime;
+    corr._updateInt = updateInt;
+    corr._staID     = staID;
+
+    string line;
+    getline(inStream, line);
+    istringstream in(line.c_str());
+
+    in >> corr._prn >> corr._iod >> corr._ura;
+
+    corrList.push_back(corr);
+  }
+}
+
+//
 ////////////////////////////////////////////////////////////////////////////
 void t_satCodeBias::writeEpoch(ostream* out, const QList<t_satCodeBias>& biasList) {
   if (!out || biasList.size() == 0) {
@@ -171,7 +228,7 @@ void t_satCodeBias::writeEpoch(ostream* out, const QList<t_satCodeBias>& biasLis
   out->flush();
 }
 
-// 
+//
 ////////////////////////////////////////////////////////////////////////////
 void t_satCodeBias::readEpoch(const string& epoLine, istream& inStream, QList<t_satCodeBias>& biasList) {
   bncTime      epoTime;
@@ -190,7 +247,7 @@ void t_satCodeBias::readEpoch(const string& epoLine, istream& inStream, QList<t_
     string line;
     getline(inStream, line);
     istringstream in(line.c_str());
-    
+
     int numBias;
     in >> satCodeBias._prn >> numBias;
 
@@ -206,7 +263,7 @@ void t_satCodeBias::readEpoch(const string& epoLine, istream& inStream, QList<t_
   }
 }
 
-// 
+//
 ////////////////////////////////////////////////////////////////////////////
 void t_satPhaseBias::writeEpoch(ostream* out, const QList<t_satPhaseBias>& biasList) {
   if (!out || biasList.size() == 0) {
@@ -241,8 +298,8 @@ void t_satPhaseBias::writeEpoch(ostream* out, const QList<t_satPhaseBias>& biasL
   }
   out->flush();
 }
-  
-// 
+
+//
 ////////////////////////////////////////////////////////////////////////////
 void t_satPhaseBias::readEpoch(const string& epoLine, istream& inStream, QList<t_satPhaseBias>& biasList) {
   bncTime      epoTime;
@@ -289,7 +346,7 @@ void t_satPhaseBias::readEpoch(const string& epoLine, istream& inStream, QList<t
   }
 }
 
-// 
+//
 ////////////////////////////////////////////////////////////////////////////
 void t_vTec::write(ostream* out, const t_vTec& vTec) {
   if (!out || vTec._layers.size() == 0) {
@@ -305,14 +362,14 @@ void t_vTec::write(ostream* out, const t_vTec& vTec) {
     *out << setw(2)  << ii+1 << ' '
          << setw(2)  << layer._C.Nrows()-1 << ' '
          << setw(2)  << layer._C.Ncols()-1 << ' '
-         << setw(10) << setprecision(1) << layer._height << endl  
-         << setw(10) << setprecision(4) << layer._C 
+         << setw(10) << setprecision(1) << layer._height << endl
+         << setw(10) << setprecision(4) << layer._C
          << setw(10) << setprecision(4) << layer._S;
   }
   out->flush();
 }
 
-// 
+//
 ////////////////////////////////////////////////////////////////////////////
 void t_vTec::read(const string& epoLine, istream& inStream, t_vTec& vTec) {
   bncTime      epoTime;
@@ -356,9 +413,9 @@ void t_vTec::read(const string& epoLine, istream& inStream, t_vTec& vTec) {
   }
 }
 
-// 
+//
 ////////////////////////////////////////////////////////////////////////////
-t_corrSSR::e_type t_corrSSR::readEpoLine(const string& line, bncTime& epoTime, 
+t_corrSSR::e_type t_corrSSR::readEpoLine(const string& line, bncTime& epoTime,
                                          unsigned int& updateInt, int& numEntries,
                                          string& staID) {
 
@@ -369,7 +426,7 @@ t_corrSSR::e_type t_corrSSR::readEpoLine(const string& line, bncTime& epoTime,
   int    year, month, day, hour, min;
   double sec;
 
-  inLine >> epoChar >> typeString 
+  inLine >> epoChar >> typeString
          >> year >> month >> day >> hour >> min >> sec >> updateInt >> numEntries >> staID;
 
   if (epoChar == '>') {
@@ -388,6 +445,9 @@ t_corrSSR::e_type t_corrSSR::readEpoLine(const string& line, bncTime& epoTime,
     }
     else if (typeString == "VTEC") {
       return vTec;
+    }
+    else if (typeString == "URA") {
+      return URA;
     }
   }
 

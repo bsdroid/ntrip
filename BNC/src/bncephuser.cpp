@@ -186,7 +186,7 @@ void bncEphUser::checkEphemeris(t_eph* eph, bool realTime) {
 
   // Simple Check - check satellite radial distance
   // ----------------------------------------------
-  ColumnVector xc(4);
+  ColumnVector xc(7);
   ColumnVector vv(3);
   if (eph->getCrd(eph->TOC(), xc, vv, false) != success) {
     eph->setCheckState(t_eph::bad);

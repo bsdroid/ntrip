@@ -407,7 +407,7 @@ t_irc t_pppClient::cmpToT(t_satData* satData) {
 
     bncTime ToT = satData->tt - prange / t_CST::c - clkSat;
 
-    ColumnVector xc(4);
+    ColumnVector xc(7);
     ColumnVector vv(3);
     if (getSatPos(ToT, satData->prn, xc, vv) != success) {
       return failure;
