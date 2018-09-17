@@ -368,6 +368,10 @@ t_irc t_ephGPS::position(int GPSweek, double GPSweeks, double* xc, double* vv) c
   double tc = tt - _TOC;
   xc[3] = _clock_bias + _clock_drift*tc + _clock_driftrate*tc*tc;
 
+  xc[4] = _clock_bias;
+  xc[5] = _clock_drift;
+  xc[6] = _clock_driftrate;
+
   // Velocity
   // --------
   double tanv2 = tan(v/2);
@@ -649,6 +653,10 @@ t_irc t_ephGlo::position(int GPSweek, double GPSweeks, double* xc, double* vv) c
   // ----------------
   double dtClk = bncTime(GPSweek, GPSweeks) - _TOC;
   xc[3] = -_tau + _gamma * dtClk;
+
+  xc[4] = -_tau;
+  xc[5] = _gamma;
+  xc[6] = 0.0;
 
   return success;
 }
@@ -962,6 +970,10 @@ t_irc t_ephGal::position(int GPSweek, double GPSweeks, double* xc, double* vv) c
 
   double tc = tt - _TOC;
   xc[3] = _clock_bias + _clock_drift*tc + _clock_driftrate*tc*tc;
+
+  xc[4] = _clock_bias;
+  xc[5] = _clock_drift;
+  xc[6] = _clock_driftrate;
 
   // Velocity
   // --------
@@ -1305,6 +1317,10 @@ t_irc t_ephSBAS::position(int GPSweek, double GPSweeks, double* xc, double* vv) 
   vv[2] = _z_velocity + _z_acceleration * dt;
 
   xc[3] = _agf0 + _agf1 * dt;
+
+  xc[4] = _agf0;
+  xc[5] = _agf1;
+  xc[6] = 0.0;
 
   return success;
 }
@@ -1655,6 +1671,10 @@ t_irc t_ephBDS::position(int GPSweek, double GPSweeks, double* xc, double* vv) c
 
   double tc = tt - _TOC;
   xc[3] = _clock_bias + _clock_drift*tc + _clock_driftrate*tc*tc;
+
+  xc[4] = _clock_bias;
+  xc[5] = _clock_drift;
+  xc[6] = _clock_driftrate;
 
   // dotC  = _clock_drift + _clock_driftrate*tc
   //       - 4.442807633e-10*_e*sqrt(a0)*cos(E) * dEdM * n;

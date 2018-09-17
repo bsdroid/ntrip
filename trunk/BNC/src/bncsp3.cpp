@@ -63,7 +63,8 @@ bncSP3::~bncSP3() {
 // Write One Epoch
 ////////////////////////////////////////////////////////////////////////////
 t_irc bncSP3::write(int GPSweek, double GPSweeks, const QString& prn,
-                    const ColumnVector& xCoM, double sp3Clk) {
+                    const ColumnVector& xCoM, double sp3Clk,
+                    const ColumnVector& v, double sp3ClkRate) {
 
   if (reopen(GPSweek, GPSweeks) == success) {
 
@@ -87,11 +88,20 @@ t_irc bncSP3::write(int GPSweek, double GPSweeks, const QString& prn,
     }
 
     _out << "P" << prn.toLatin1().data()
-         << setw(14) << setprecision(6) << xCoM(1) / 1000.0
-         << setw(14) << setprecision(6) << xCoM(2) / 1000.0
-         << setw(14) << setprecision(6) << xCoM(3) / 1000.0
-         << setw(14) << setprecision(6) << sp3Clk * 1e6 << endl;
+         << setw(14) << setprecision(6) << xCoM(1) / 1000.0 // [km]
+         << setw(14) << setprecision(6) << xCoM(2) / 1000.0 // [km]
+         << setw(14) << setprecision(6) << xCoM(3) / 1000.0 // [km]
+         << setw(14) << setprecision(6) << sp3Clk * 1e6     // microseconds
+         << endl;
 
+    if (sp3ClkRate) {
+      _out << "V" << prn.toLatin1().data()
+           << setw(14) << setprecision(6) << v(1) * 10.0      // [dm/s]
+           << setw(14) << setprecision(6) << v(2) * 10.0      // [dm/s]
+           << setw(14) << setprecision(6) << v(3) * 10.0      // [dm/s]
+           << setw(14) << setprecision(6) << sp3ClkRate * 1e2 // 10^⁻4 microseconds/sec
+           << endl;
+    }
     return success;
   }
   else {

@@ -448,11 +448,11 @@ void bncComb::switchToLastEph(t_eph* lastEph, cmbCorr* corr) {
     return;
   }
 
-  ColumnVector oldXC(4);
+  ColumnVector oldXC(7);
   ColumnVector oldVV(3);
   corr->_eph->getCrd(corr->_time, oldXC, oldVV, false);
 
-  ColumnVector newXC(4);
+  ColumnVector newXC(7);
   ColumnVector newVV(3);
   lastEph->getCrd(corr->_time, newXC, newVV, false);
 
@@ -687,7 +687,7 @@ void bncComb::printResults(QTextStream& out,
     cmbCorr* corr = it.value();
     const t_eph* eph = corr->_eph;
     if (eph) {
-      ColumnVector xc(4);
+      ColumnVector xc(7);
       ColumnVector vv(3);
       eph->getCrd(_resTime, xc, vv, false);
 
@@ -739,7 +739,7 @@ void bncComb::dumpResults(const QMap<QString, cmbCorr*>& resCorr) {
     clkCorr._dotDotDClk = 0.0;
     clkCorrections.push_back(clkCorr);
 
-    ColumnVector xc(4);
+    ColumnVector xc(7);
     ColumnVector vv(3);
     corr->_eph->setClkCorr(dynamic_cast<const t_clkCorr*>(&clkCorr));
     corr->_eph->setOrbCorr(dynamic_cast<const t_orbCorr*>(&orbCorr));
