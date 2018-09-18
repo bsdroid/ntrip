@@ -319,7 +319,7 @@ t_irc t_ephGPS::position(int GPSweek, double GPSweeks, double* xc, double* vv) c
   static const double omegaEarth = 7292115.1467e-11;
   static const double gmGRS      = 398.6005e12;
 
-  memset(xc, 0, 4*sizeof(double));
+  memset(xc, 0, 7*sizeof(double));
   memset(vv, 0, 3*sizeof(double));
 
   double a0 = _sqrt_A * _sqrt_A;
@@ -617,7 +617,7 @@ t_irc t_ephGlo::position(int GPSweek, double GPSweeks, double* xc, double* vv) c
 
   static const double nominalStep = 10.0;
 
-  memset(xc, 0, 4*sizeof(double));
+  memset(xc, 0, 7*sizeof(double));
   memset(vv, 0, 3*sizeof(double));
 
   double dtPos = bncTime(GPSweek, GPSweeks) - _tt;
@@ -922,7 +922,7 @@ t_irc t_ephGal::position(int GPSweek, double GPSweeks, double* xc, double* vv) c
   static const double omegaEarth = 7292115.1467e-11;
   static const double gmWGS = 398.6004418e12;
 
-  memset(xc, 0, 4*sizeof(double));
+  memset(xc, 0, 7*sizeof(double));
   memset(vv, 0, 3*sizeof(double));
 
   double a0 = _sqrt_A * _sqrt_A;
