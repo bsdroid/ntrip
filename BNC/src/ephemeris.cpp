@@ -64,7 +64,7 @@ t_irc t_eph::getCrd(const bncTime& tt, ColumnVector& xc, ColumnVector& vv, bool 
                                                  << 60 << 120 << 240 << 300 << 600
                                                  << 900 << 1800 << 3600 << 7200
                                                  << 10800;
-  xc.ReSize(4);
+  xc.ReSize(7);
   vv.ReSize(3);
   if (position(tt.gpsw(), tt.gpssec(), xc.data(), vv.data()) != success) {
     return failure;
