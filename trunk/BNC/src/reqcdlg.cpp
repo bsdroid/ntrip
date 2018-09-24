@@ -100,7 +100,7 @@ reqcDlg::reqcDlg(QWidget* parent) : QDialog(parent) {
   _reqcSampling->setEditable(false);
   _reqcSampling->addItems(QString("0.1 sec,1 sec,5 sec,10 sec,15 sec,30 sec,60 sec").split(","));
   bncSettings settings;
-  int ll = _reqcSampling->findText(settings.value("reqcSampl").toString());
+  int ll = _reqcSampling->findText(settings.value("reqcSampling").toString());
   if (ll != -1) {
     _reqcSampling->setCurrentIndex(ll);
   }

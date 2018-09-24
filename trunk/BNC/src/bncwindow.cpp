@@ -300,9 +300,9 @@ bncWindow::bncWindow() {
   _outWaitSpinBox->setValue(settings.value("outWait").toInt());
   _outSamplComboBox    = new QComboBox();
   _outSamplComboBox->addItems(QString("0.1 sec,1 sec,5 sec,10 sec,15 sec,30 sec,60 sec").split(","));
-  int nn = _rnxSamplComboBox->findText(settings.value("rnxSampl").toString());
+  int nn = _outSamplComboBox->findText(settings.value("outSampl").toString());
     if (nn != -1) {
-      _rnxSamplComboBox->setCurrentIndex(nn);
+      _outSamplComboBox->setCurrentIndex(nn);
     }
   _outFileLineEdit    = new QLineEdit(settings.value("outFile").toString());
   _outUPortLineEdit   = new QLineEdit(settings.value("outUPort").toString());
@@ -2276,7 +2276,7 @@ void bncWindow::slotMountPointsRead(QList<bncGetThread*> threads) {
 
   populateMountPointsTable();
   bncSettings settings;
-  _outSamplComboBox->findText(settings.value("rnxSampl").toString());
+  _outSamplComboBox->findText(settings.value("outSampl").toString());
   _outWaitSpinBox->setValue(settings.value("outWait").toInt());
   QListIterator<bncGetThread*> iTh(threads);
   while (iTh.hasNext()) {
