@@ -287,7 +287,7 @@ double t_reqcAnalyze::cmpDOP(const ColumnVector& xyzSta) const {
       }
     }
     if (eph) {
-      ColumnVector xSat(4);
+      ColumnVector xSat(7);
       ColumnVector vv(3);
       if (eph->getCrd(_currEpo->tt, xSat, vv, false) == success) {
         ++nSatUsed;

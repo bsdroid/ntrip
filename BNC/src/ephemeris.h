@@ -149,7 +149,7 @@ class t_ephGlo : public t_eph {
  friend class RTCM3Decoder;
  public:
   t_ephGlo() {
-    _xv.ReSize(6);
+    _xv.ReSize(6); _xv = 0.0;
     _gps_utc          = 0.0;
     _tau              = 0.0;
     _gamma            = 0.0;
