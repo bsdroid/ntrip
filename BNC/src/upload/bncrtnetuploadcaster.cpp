@@ -2298,9 +2298,16 @@ void bncRtnetUploadCaster::processSatellite(const t_eph* eph, int GPSweek,
 
   // Clock Correction
   // ----------------
-  double dClkA0 = rtnClk(1) - (xB(5) - dc) * t_CST::c;
-  double dClkA1 = rtnClk(2) - xB(6) * t_CST::c;
-  double dClkA2 = rtnClk(3) - xB(7) * t_CST::c;
+  double dClkA0 = rtnClk(1) - (xB(4) - dc) * t_CST::c;
+  double dClkA1 = 0.0;
+  double dClkA2 = 0.0;
+  if (rtnClk(2)) {
+    dClkA0 = rtnClk(1) - (xB(5) - dc) * t_CST::c;
+    dClkA1 = rtnClk(2) -  xB(6) * t_CST::c;
+  }
+  if (rtnClk(3)) {
+    dClkA2 = rtnClk(3) - xB(7) * t_CST::c;
+  }
 
   if (sd) {
     sd->ID = prn.mid(1).toInt();
@@ -2321,13 +2328,15 @@ void bncRtnetUploadCaster::processSatellite(const t_eph* eph, int GPSweek,
       GPSweeks, eph->prn().toString().c_str(), eph->IOD(), dClkA0, dClkA1, dClkA2,
       rsw(1), rsw(2), rsw(3));
 
+  // RTNET full clock for RINEX and SP3 file
+  // ---------------------------------------
   double relativity = -2.0 * DotProduct(xP, rtnVel) / t_CST::c;
-  double clkRnx     = (rtnClk[0] - relativity) / t_CST::c;  // in seconds
+  double clkRnx     = (rtnClk[0] - relativity) / t_CST::c;  // [s]
   double clkRnxRate = rtnClk[1] / t_CST::c;                 // [s/s = -]
   double clkRnxAcc  = rtnClk[2] / t_CST::c;                 // [s/s² ) -/s]
 
   if (_rnx) {
-    double clkRnxSig     = rtnClkSig[0] / t_CST::c;           // in seconds
+    double clkRnxSig     = rtnClkSig[0] / t_CST::c;           // [s]
     double clkRnxRateSig = rtnClkSig[1] / t_CST::c;           // [s/s = -]
     double clkRnxAccSig  = rtnClkSig[2] / t_CST::c;           // [s/s² ) -/s]
     _rnx->write(GPSweek, GPSweeks, prn, clkRnx, clkRnxRate, clkRnxAcc,
