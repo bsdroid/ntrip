@@ -61,8 +61,9 @@ class bncTableDlg : public QDialog {
   public:
     bncTableDlg(QWidget* parent);
     ~bncTableDlg();
-    static t_irc getFullTable(const QString& ntripVersion, 
+    static t_irc getFullTable(const QString& ntripVersion,
                               const QString& casterHost, int casterPort,
+                              const QString& casterUser, const QString& casterPassword,
                               QStringList& allLines, bool alwaysRead = true);
 
   signals:

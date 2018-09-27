@@ -136,8 +136,8 @@ t_irc bncRinex::downloadSkeleton() {
   t_irc irc = failure;
 
   QStringList table;
-  bncTableDlg::getFullTable(_ntripVersion, _mountPoint.host(),
-                            _mountPoint.port(), table, true);
+  bncTableDlg::getFullTable(_ntripVersion, _mountPoint.host(), _mountPoint.port(),
+      _mountPoint.userName(), _mountPoint.password(), table, true);
   QString net;
   QStringListIterator it(table);
   while (it.hasNext()) {

@@ -197,7 +197,10 @@ bncTableDlg::~bncTableDlg() {
 ////////////////////////////////////////////////////////////////////////////
 t_irc bncTableDlg::getFullTable(const QString& ntripVersion,
                                 const QString& casterHost,
-                                int casterPort, QStringList& allLines,
+                                int casterPort,
+                                const QString& casterUser,
+                                const QString& casterPassword,
+                                QStringList& allLines,
                                 bool alwaysRead) {
 
   static QMutex mutex;
@@ -233,7 +236,8 @@ t_irc bncTableDlg::getFullTable(const QString& ntripVersion,
   else {
     url.setScheme("http");
   }
-
+  url.setUserName(QUrl::toPercentEncoding(casterUser));
+  url.setPassword(QUrl::toPercentEncoding(casterPassword));
   QByteArray outData;
   query->waitForRequestResult(url, outData);
   if (query->status() == bncNetQuery::finished) {
@@ -264,6 +268,8 @@ void bncTableDlg::slotGetTable() {
   if ( getFullTable(_ntripVersionComboBox->currentText(),
                     _casterHostComboBox->currentText(),
                     _casterPortLineEdit->text().toInt(),
+                    _casterUserLineEdit->text(),
+                    _casterPasswordLineEdit->text(),
                     _allLines, true) != success ) {
     QMessageBox::warning(0, "BNC", "Cannot retrieve table of data");
     _buttonGet->setEnabled(true);
