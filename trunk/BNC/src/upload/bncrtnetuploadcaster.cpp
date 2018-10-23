@@ -423,6 +423,16 @@ void bncRtnetUploadCaster::decodeRtnetStream(char* buffer, int bufLen) {
       phaseBiasesSat pbSat;
 
       while (true) {
+        rtnClk.ReSize(3);
+        for (int ii = 0; ii < 3; ii++) {
+          rtnClk[ii] = 0.0;
+        }
+        rtnClkSig.ReSize(3);
+        for (int ii = 0; ii < 3; ii++) {
+          rtnClkSig[ii] = 0.0;
+        }
+        rtnVel.ReSize(3);
+        rtnCoM.ReSize(3);
         QString key;
         int numVal = 0;
         in >> key;
@@ -442,34 +452,24 @@ void bncRtnetUploadCaster::decodeRtnetStream(char* buffer, int bufLen) {
             in >> rtnUra;
         }
         else if (key == "Clk") {
-          rtnClk.ReSize(3);
-          for (int ii = 0; ii < 3; ii++) {
-            rtnClk[ii] = 0.0;
-          }
           in >> numVal;
           for (int ii = 0; ii < numVal; ii++) {
             in >> rtnClk[ii];
           }
         }
         else if (key == "ClkSig") {
-          rtnClkSig.ReSize(3);
-          for (int ii = 0; ii < 3; ii++) {
-            rtnClkSig[ii] = 0.0;
-          }
           in >> numVal;
           for (int ii = 0; ii < numVal; ii++) {
             in >> rtnClkSig[ii];
           }
         }
         else if (key == "Vel") {
-          rtnVel.ReSize(3);
           in >> numVal;
           for (int ii = 0; ii < numVal; ii++) {
             in >> rtnVel[ii];
           }
         }
         else if (key == "CoM") {
-          rtnCoM.ReSize(3);
           in >> numVal;
           for (int ii = 0; ii < numVal; ii++) {
             in >> rtnCoM[ii];
@@ -513,6 +513,7 @@ void bncRtnetUploadCaster::decodeRtnetStream(char* buffer, int bufLen) {
           }
         }
       }
+
 
       struct ClockOrbit::SatData* sd = 0;
       if (prn.system() == 'G') {
