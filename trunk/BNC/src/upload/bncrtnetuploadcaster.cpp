@@ -423,16 +423,6 @@ void bncRtnetUploadCaster::decodeRtnetStream(char* buffer, int bufLen) {
       phaseBiasesSat pbSat;
 
       while (true) {
-        rtnClk.ReSize(3);
-        for (int ii = 0; ii < 3; ii++) {
-          rtnClk[ii] = 0.0;
-        }
-        rtnClkSig.ReSize(3);
-        for (int ii = 0; ii < 3; ii++) {
-          rtnClkSig[ii] = 0.0;
-        }
-        rtnVel.ReSize(3);
-        rtnCoM.ReSize(3);
         QString key;
         int numVal = 0;
         in >> key;
@@ -452,24 +442,34 @@ void bncRtnetUploadCaster::decodeRtnetStream(char* buffer, int bufLen) {
             in >> rtnUra;
         }
         else if (key == "Clk") {
+          rtnClk.ReSize(3);
+          for (int ii = 0; ii < 3; ii++) {
+            rtnClk[ii] = 0.0;
+          }
           in >> numVal;
           for (int ii = 0; ii < numVal; ii++) {
             in >> rtnClk[ii];
           }
         }
         else if (key == "ClkSig") {
+          rtnClkSig.ReSize(3);
+          for (int ii = 0; ii < 3; ii++) {
+            rtnClkSig[ii] = 0.0;
+          }
           in >> numVal;
           for (int ii = 0; ii < numVal; ii++) {
             in >> rtnClkSig[ii];
           }
         }
         else if (key == "Vel") {
+          rtnVel.ReSize(3);
           in >> numVal;
           for (int ii = 0; ii < numVal; ii++) {
             in >> rtnVel[ii];
           }
         }
         else if (key == "CoM") {
+          rtnCoM.ReSize(3);
           in >> numVal;
           for (int ii = 0; ii < numVal; ii++) {
             in >> rtnCoM[ii];
@@ -2337,9 +2337,25 @@ void bncRtnetUploadCaster::processSatellite(const t_eph* eph, int GPSweek,
   double clkRnxAcc  = rtnClk[2] / t_CST::c;                 // [s/s² ) -/s]
 
   if (_rnx) {
-    double clkRnxSig     = rtnClkSig[0] / t_CST::c;           // [s]
-    double clkRnxRateSig = rtnClkSig[1] / t_CST::c;           // [s/s = -]
-    double clkRnxAccSig  = rtnClkSig[2] / t_CST::c;           // [s/s² ) -/s]
+    double clkRnxSig, clkRnxRateSig, clkRnxAccSig;
+    int s = rtnClkSig.size();
+    switch (s) {
+      case 1:
+        clkRnxSig     = rtnClkSig[0] / t_CST::c;    // [s]
+        clkRnxRateSig = 0.0;                        // [s/s = -]
+        clkRnxAccSig  = 0.0;                        // [s/s² ) -/s]
+        break;
+      case 2:
+        clkRnxSig     = rtnClkSig[0] / t_CST::c;     // [s]
+        clkRnxRateSig = rtnClkSig[1] / t_CST::c;     // [s/s = -]
+        clkRnxAccSig  = 0.0;                         // [s/s² ) -/s]
+        break;
+      case 3:
+        clkRnxSig     = rtnClkSig[0] / t_CST::c;     // [s]
+        clkRnxRateSig = rtnClkSig[1] / t_CST::c;     // [s/s = -]
+        clkRnxAccSig  = rtnClkSig[2] / t_CST::c;     // [s/s² ) -/s]
+        break;
+    }
     _rnx->write(GPSweek, GPSweeks, prn, clkRnx, clkRnxRate, clkRnxAcc,
                 clkRnxSig, clkRnxRateSig, clkRnxAccSig);
   }
